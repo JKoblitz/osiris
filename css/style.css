@@ -1,0 +1,83 @@
+.form-control.is-valid, .form-control.is-valid:hover, .form-group.is-valid .form-control, .form-group.is-valid .form-control:hover {
+    color: rgba(0, 0, 0, .85);
+    background-color: #fff;
+    border-color: var(--success-color);
+    -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+    -webkit-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+    box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+}
+
+.sidebar-link.with-icon.sidebar-link-signal .sidebar-icon, .sidebar-link.with-icon.sidebar-link-signal i {
+    color: var(--signal-color);
+}
+
+.sidebar-link.with-icon.sidebar-link-signal:hover .sidebar-icon, .sidebar-link.with-icon.sidebar-link-signal:hover i {
+    border-color: var(--signal-color);
+}
+
+.sidebar-link.with-icon.sidebar-link-signal.active .sidebar-icon, .sidebar-link.with-icon.sidebar-link-signal.active i {
+    background-color: var(--signal-color);
+    color: white;
+}
+
+.sidebar-menu {
+    top: 8rem;
+}
+
+
+.navbar-nav .breadcrumb {
+    font-size: unset;
+    margin-left: 0;
+}
+
+.author-list {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #afafaf;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    border-radius: 2pt;
+    vertical-align: middle;
+}
+
+.author-list .author,
+.author-list input {
+    display: inline-block;
+    background-color: var(--body-color);
+    padding: .4rem .6rem;
+    margin: .4rem .3rem;
+    height: 2.8rem;
+    border: 1px solid #afafaf;
+    border-radius: 2pt;
+    cursor: pointer;
+}
+
+.author.author-dsmz {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.author.author-dsmz::before {
+    content: 'DSMZ';
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-right: .6rem;
+}
+
+.author a {
+    margin-left: .6rem;
+    color: var(--danger-color-dark);
+}
+
+.nav-pills div {
+    display: inline-block;
+}
+
+.nav-pills input {
+    display: none;
+}
+/* 
+.nav-pills label:focus-within {
+    background-color: var(--primary-color);
+    color : white;
+} */
