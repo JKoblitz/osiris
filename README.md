@@ -24,17 +24,3 @@ Affiliation-Abfrage: https://api.crossref.org/works?query.affiliation=Leibniz+In
 Beispiel für eine Jahresabfrage:
 https://api.crossref.org/works?query.affiliation=DSMZ&filter=from-pub-date:2021
 
-
-
-title
-journal_id
-year
-date_publication
-issue
-pages
-volume
-doi
-pubmed
-type
-book_title
-open_access 

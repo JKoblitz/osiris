@@ -46,13 +46,13 @@
 <h3>Grundlegende Funktionen der Applikation</h3>
 
 <ul class="check-list">
-    <li>Alle Datenfelder implementieren
+    <li>Alle Datenfelder implementieren (Datenbank und Interface)
         <ul>
             <li class="checked">Publikationen</li>
-            <li>Bücher und Zeitschriften</li>
+            <li class="checked">Bücher und Zeitschriften</li>
             <li>Corrections?</li>
-            <li>Poster</li>
-            <li>Vorträge</li>
+            <li class="checked">Poster</li>
+            <li class="checked">Vorträge</li>
             <li class="checked">Reviews und Editorials</li>
             <li>Gäste</li>
             <li>Doktoranden-Betreuung</li>
@@ -61,13 +61,15 @@
             <li>Sonstige Aktivitäten</li>
         </ul>
     </li>
+    <li>Alle Datenfelder können über ein Interface zur DB hinzugefügt werden</li>
+    <li>Alle Datenfelder können bearbetet und entfernt werden</li>
     <li>Übersichtsseite eines Wissenschaftlers</li>
     <li>Import der DSMZ-Bibliographie</li>
     <li>Vermeidung von Datendoppelungen</li>
     <li class="checked">Quartal-Auswahl</li>
     <li>Knopf auf der Wissenschaftlerseite, um Daten zu bestätigen</li>
     <li>Übersetzung der Seite in zwei Sprachen</li>
-    <li>Nutzerrollen zufügen (Admin, Controller, Group leader, Scientist)</li>
+    <li class="checked">Nutzerrollen zufügen (Admin, Controller, Group leader, Scientist)</li>
     <li>Zugriff auf verschiedene Seiten sind rollenspezifisch</li>
 </ul>
 
@@ -84,7 +86,7 @@
     <li>Service: Impact factor-Abfrage (https://developer.clarivate.com/apis/wos-journal)</li>
     <li>Implementation einer API, um anderen Services der DSMZ Abfragen zu erlauben</li>
     <li>LOM-Punktesystem</li>
-    <li>Ko-Autoren-Netzwerk</li>
+    <li>Ko-Autoren-Netzwerk (chord diagram)</li>
     <li>Impact Factor-Verteilung</li>
     <li>Abteilungszusammenarbeit (als Netzwerk)</li>
 </ul>
