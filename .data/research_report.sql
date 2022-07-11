@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Erstellungszeit: 05. Jul 2022 um 04:17
+-- Erstellungszeit: 07. Jul 2022 um 04:28
 -- Server-Version: 10.4.10-MariaDB
 -- PHP-Version: 8.1.3
 
@@ -30,12 +30,12 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `activity`;
 CREATE TABLE IF NOT EXISTS `activity` (
   `activity_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` varchar(6) NOT NULL,
-  `category` varchar(100) NOT NULL,
-  `title` mediumtext NOT NULL,
+  `activity` varchar(20) NOT NULL,
+  `date_activity` date DEFAULT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `title` mediumtext DEFAULT NULL,
   `activity_count` int(11) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`activity_id`),
-  KEY `user` (`user`)
+  PRIMARY KEY (`activity_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `journal` (
   `journal_abbr` varchar(255) DEFAULT NULL,
   `impact_factor` float(6,3) DEFAULT NULL,
   PRIMARY KEY (`journal_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Daten für Tabelle `journal`
@@ -124,7 +124,9 @@ INSERT INTO `journal` (`journal_id`, `journal_name`, `journal_abbr`, `impact_fac
 (1, 'Nucleic Acids Research', 'Nucleic Acids Research', NULL),
 (2, 'F1000Research', 'F1000Research', NULL),
 (3, 'Environmental Microbiology', 'Environmental Microbiology', NULL),
-(4, 'Antonie van Leeuwenhoek', 'Antonie van Leeuwenhoek', NULL);
+(4, 'Antonie van Leeuwenhoek', 'Antonie van Leeuwenhoek', NULL),
+(5, 'Nature', 'Nature', NULL),
+(6, 'Cell', 'Cell', NULL);
 
 -- --------------------------------------------------------
 
@@ -141,6 +143,8 @@ CREATE TABLE IF NOT EXISTS `poster` (
   `date_end` date DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
   `quartal` char(6) NOT NULL,
+  `ctr_year` year(4) NOT NULL,
+  `ctrquarter` tinyint(1) NOT NULL,
   PRIMARY KEY (`poster_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
@@ -148,8 +152,8 @@ CREATE TABLE IF NOT EXISTS `poster` (
 -- Daten für Tabelle `poster`
 --
 
-INSERT INTO `poster` (`poster_id`, `title`, `conference`, `date_start`, `date_end`, `location`, `quartal`) VALUES
-(1, 'BacMedia: a culture media database and its application for predicting cultivation conditions of so far uncultured microorganisms', 'VAAM 2022', '2021-10-29', '2021-10-29', 'online', '2022Q4');
+INSERT INTO `poster` (`poster_id`, `title`, `conference`, `date_start`, `date_end`, `location`, `quartal`, `ctr_year`, `ctrquarter`) VALUES
+(1, 'BacMedia: a culture media database and its application for predicting cultivation conditions of so far uncultured microorganisms', 'VAAM 2022', '2021-10-29', '2021-10-29', 'online', '2022Q4', 0000, 0);
 
 -- --------------------------------------------------------
 
@@ -174,6 +178,8 @@ CREATE TABLE IF NOT EXISTS `publication` (
   `open_access` tinyint(1) DEFAULT NULL,
   `epub` tinyint(1) NOT NULL DEFAULT 0,
   `quartal` char(6) DEFAULT NULL,
+  `ctr_year` year(4) NOT NULL,
+  `ctr_quarter` tinyint(4) NOT NULL,
   PRIMARY KEY (`publication_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
@@ -181,11 +187,11 @@ CREATE TABLE IF NOT EXISTS `publication` (
 -- Daten für Tabelle `publication`
 --
 
-INSERT INTO `publication` (`publication_id`, `title`, `journal_id`, `year`, `date_publication`, `issue`, `pages`, `volume`, `doi`, `pubmed`, `type`, `book_title`, `open_access`, `epub`, `quartal`) VALUES
-(4, 'DSMZCellDive: Diving into high-throughput cell line data', 2, 2022, '2022-04-13', '', '420', 11, '10.12688/f1000research.111175.1', NULL, 'journal-article', '', 1, 1, '2022Q2'),
-(2, 'Bac<i>Dive</i> in 2022: the knowledge base for standardized bacterial and archaeal data', 1, 2022, '2021-10-29', 'D1', 'D741-D746', 50, '10.1093/nar/gkab961', NULL, 'journal-article', '', 1, 0, '2022Q1'),
-(5, 'New insights into the energy metabolism and taxonomy of            <i>Deferribacteres</i>            revealed by the characterization of a new isolate from a hypersaline microbial mat', 3, 2022, '2022-05-01', '5', '2543-2575', 24, '10.1111/1462-2920.15999', NULL, 'journal-article', '', 0, 0, '2022Q2'),
-(6, 'Streptomonospora litoralis sp. nov., a halophilic thiopeptides producer isolated from sand collected at Cuxhaven beach', 4, 2021, '2021-10-01', '10', '1483-1496', 114, '10.1007/s10482-021-01609-4', NULL, 'journal-article', '', 0, 0, '2021Q4');
+INSERT INTO `publication` (`publication_id`, `title`, `journal_id`, `year`, `date_publication`, `issue`, `pages`, `volume`, `doi`, `pubmed`, `type`, `book_title`, `open_access`, `epub`, `quartal`, `ctr_year`, `ctr_quarter`) VALUES
+(4, 'DSMZCellDive: Diving into high-throughput cell line data', 2, 2022, '2022-04-13', '', '420', 11, '10.12688/f1000research.111175.1', NULL, 'journal-article', '', 1, 1, '2022Q2', 0000, 0),
+(2, 'Bac<i>Dive</i> in 2022: the knowledge base for standardized bacterial and archaeal data', 1, 2022, '2021-10-29', 'D1', 'D741-D746', 50, '10.1093/nar/gkab961', NULL, 'journal-article', '', 1, 0, '2022Q1', 0000, 0),
+(5, 'New insights into the energy metabolism and taxonomy of            <i>Deferribacteres</i>            revealed by the characterization of a new isolate from a hypersaline microbial mat', 3, 2022, '2022-05-01', '5', '2543-2575', 24, '10.1111/1462-2920.15999', NULL, 'journal-article', '', 0, 0, '2022Q2', 0000, 0),
+(6, 'Streptomonospora litoralis sp. nov., a halophilic thiopeptides producer isolated from sand collected at Cuxhaven beach', 4, 2021, '2021-10-01', '10', '1483-1496', 114, '10.1007/s10482-021-01609-4', NULL, 'journal-article', '', 0, 0, '2021Q4', 0000, 0);
 
 -- --------------------------------------------------------
 
@@ -199,6 +205,36 @@ CREATE TABLE IF NOT EXISTS `quartal` (
   `quartal` tinyint(1) NOT NULL,
   `year` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `review`
+--
+
+DROP TABLE IF EXISTS `review`;
+CREATE TABLE IF NOT EXISTS `review` (
+  `review_id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` enum('review','editor') NOT NULL DEFAULT 'review',
+  `user` varchar(6) NOT NULL,
+  `review_count` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `journal_id` int(11) NOT NULL,
+  `quartal` char(6) NOT NULL,
+  `ctr_year` year(4) NOT NULL,
+  `ctr_quarter` tinyint(1) NOT NULL,
+  PRIMARY KEY (`review_id`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `review`
+--
+
+INSERT INTO `review` (`review_id`, `type`, `user`, `review_count`, `journal_id`, `quartal`, `ctr_year`, `ctr_quarter`) VALUES
+(1, 'review', 'juk20', 1, 2, '2022Q1', 2022, 1),
+(2, 'editor', 'juk20', 1, 3, '2022Q2', 2022, 2),
+(5, 'review', 'juk20', 1, 5, '2022Q2', 2022, 2),
+(6, 'review', 'juk20', 1, 6, '2022Q3', 2022, 3);
 
 -- --------------------------------------------------------
 

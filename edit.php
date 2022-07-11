@@ -1,7 +1,9 @@
 
 <h1>Edit <?= ucfirst($page) ?>: #<?= $dataset[$idname] ?></h1>
 
-
+<p class="text-danger lead">
+    <?=lang('Editing does not work yet!', 'Bearbeiten funktioniert noch nicht!')?>
+</p>
 
 <div class="p-0" id="meta-form">
     <form action="#" class="" id="edit-form">
@@ -113,7 +115,7 @@
                         </td>
                         <td>
                             <div class='custom-switch'>
-                                <input data-value='<?= $author['dsmz_affiliation'] ?>' autocomplete='off' type='checkbox' id='switch-dsmz-<?= $i ?>' value='1' name='dsmz[]' <?= ($author['dsmz_affiliation'] == 1 ? 'checked' : '') ?> required>
+                                <input data-value='<?= $author['aoi'] ?>' autocomplete='off' type='checkbox' id='switch-dsmz-<?= $i ?>' value='1' name='dsmz[]' <?= ($author['aoi'] == 1 ? 'checked' : '') ?> required>
                                 <label for='switch-dsmz-<?= $i ?>' class='blank'></label>
                             </div>
                         </td>

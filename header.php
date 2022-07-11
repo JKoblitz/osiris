@@ -6,7 +6,7 @@ if (!function_exists('str_contains')) {
     }
 }
 $breadcrumb = $breadcrumb ?? [];
-$pagetitle = array('Research report');
+$pagetitle = array('OSIRIS');
 foreach ($breadcrumb as $crumb) {
     array_push($pagetitle, $crumb['name']);
 }
@@ -31,11 +31,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <meta name="viewport" content="width=device-width" />
 
     <!-- Favicon and title -->
-    <!-- <link rel="icon" href="path/to/fav.png"> -->
-    <link rel="apple-touch-icon" sizes="180x180" href="<?= ROOTPATH ?>/img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?= ROOTPATH ?>/img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?= ROOTPATH ?>/img/favicon-16x16.png">
-    <title><?= $pagetitle ?? 'Research report' ?></title>
+    <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
+    <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
     <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
@@ -72,9 +69,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
         <!-- Navbar start -->
         <div class="navbar navbar-top">
-            <a href="index.php" class="navbar-brand ml-20">
-                <i class="fad fa-abacus mr-10"></i>
-                Research report
+            <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
+                <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
             </a>
 
             <a href="//www.dsmz.de/" class="navbar-brand ml-auto">
@@ -106,14 +102,19 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-            <!-- <form id="navbar-search" action="/media" method="get" class="nav-search">
+            <form id="navbar-search" action="" method="get" class="nav-search">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" autocomplete="off" placeholder="Search database">
+                    <select name="select-quarter" id="select-quarter" class="form-control">
+                        <option value="2022Q3" <?= SELECTEDQUARTER == '2022Q3' ? 'selected' : '' ?>>2022-Q3</option>
+                        <option value="2022Q2" <?= SELECTEDQUARTER == '2022Q2' ? 'selected' : '' ?>>2022-Q2</option>
+                        <option value="2022Q1" <?= SELECTEDQUARTER == '2022Q1' ? 'selected' : '' ?>>2022-Q1</option>
+                        <option value="2021Q4" <?= SELECTEDQUARTER == '2021Q4' ? 'selected' : '' ?>>2021-Q4</option>
+                    </select>
                     <div class="input-group-append">
                         <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
-            </form> -->
+            </form>
 
         </nav>
 
@@ -127,36 +128,27 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <?php } else { ?>
 
                     <div class="sidebar-title">
-                        Content
+                        <?= lang('Content', 'Inhalte') ?>
                     </div>
                     <a href="<?= ROOTPATH ?>/browse/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
                         <i class="far fa-books" aria-hidden="true"></i>
-                        Publications
+                        <?= lang('Publications', 'Publikationen') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/browse/poster" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('poster') ?>">
                         <i class="far fa-screen-users" aria-hidden="true"></i>
-                        Posters
+                        <?= lang('Posters', 'Poster') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/browse/activity" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('activity') ?>">
+                    <!-- <a href="<?= ROOTPATH ?>/browse/activity" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('activity') ?>">
                         <i class="far fa-calendar-days" aria-hidden="true"></i>
-                        Activities
-                    </a>
+                        <?= lang('Activities', 'Aktivitäten') ?>
+                    </a> -->
 
-                    
-                    <a href="<?= ROOTPATH ?>/browse/scientist" class="sidebar-link with-icon <?= $pageactive('scientist') ?>">
-                        <i class="far fa-user-graduate" aria-hidden="true"></i>
-                        Scientists
-                    </a>
 
-                    <a href="<?= ROOTPATH ?>/browse/journal" class="sidebar-link with-icon <?= $pageactive('journal') ?>">
-                        <i class="far fa-institution" aria-hidden="true"></i>
-                        Journals
-                    </a>
 
                     <div class="sidebar-title">
-                        User
+                        <?= lang('User', 'Nutzer') ?>
                     </div>
 
                     <a href="<?= ROOTPATH ?>/" class="sidebar-link with-icon">
@@ -164,36 +156,72 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= $_SESSION["name"] ?? 'User' ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/add-publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('add-publication') ?>">
-                        <i class="far fa-book-medical" aria-hidden="true"></i>
-                        Add publication
-                    </a>
-                    <a href="<?= ROOTPATH ?>/add-poster" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('add-poster') ?>">
-                        <i class="far fa-file-plus" aria-hidden="true"></i>
-                        Add poster
-                    </a>
-                    <a href="<?= ROOTPATH ?>/add-activity" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('add-activity') ?>">
-                        <i class="far fa-calendar-plus" aria-hidden="true"></i>
-                        Add activity
-                    </a>
 
-                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
-                        <i class="far fa-right-from-bracket" aria-hidden="true"></i>
-                        Logout
-                    </a>
+                    <?php if (USER->is_admin() || USER->is_scientist() || USER->is_controlling()) { ?>
+
+                        <a href="<?= ROOTPATH ?>/my-publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('my-publication') ?>">
+                            <i class="far fa-book-bookmark" aria-hidden="true"></i>
+                            <?= lang('My publications', 'Meine Publikationen') ?>
+                        </a>
+                        <a href="<?= ROOTPATH ?>/my-review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('my-review') ?>">
+                            <i class="far fa-book-open-cover" aria-hidden="true"></i>
+                            <?= lang('My reviews &amp; editorials', 'Meine Reviews &amp; Editorials') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>/my-poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-poster') ?>">
+                            <i class="far fa-file-invoice" aria-hidden="true"></i>
+                            <?= lang('My posters', 'Meine Poster') ?>
+                        </a>
+                        <a href="<?= ROOTPATH ?>/my-lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('my-lecture') ?>">
+                            <i class="far fa-keynote" aria-hidden="true"></i>
+                            <?= lang('My lectures', 'Meine Vorträge') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>?msg=TODO" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
+                            <i class="far fa-icons" aria-hidden="true"></i>
+                            <?= lang('Misc') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>?msg=TODO" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
+                            <i class="far fa-people" aria-hidden="true"></i>
+                            <?= lang('Teaching &amp; Guests') ?>
+                        </a>
+                       
+
+                        <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
+                            <i class="far fa-right-from-bracket" aria-hidden="true"></i>
+                            Logout
+                        </a>
+                        <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
+                            <i class="far fa-language" aria-hidden="true"></i>
+                            <?= lang('Deutsch', 'English') ?>
+                        </a>
 
 
-                    <div class="sidebar-title">
-                        Other stuff
-                    </div>
+                       
+                    <?php } ?>
 
-                    <a href="<?= ROOTPATH ?>/todo" class="sidebar-link with-icon">
+                    <?php if (USER->is_admin() || USER->is_controlling()) { ?>
+
+                        <div class="sidebar-title">
+                            <?= lang('Controlling') ?>
+                        </div>
+
+                        <a href="<?= ROOTPATH ?>/browse/scientist" class="sidebar-link with-icon <?= $pageactive('scientist') ?>">
+                            <i class="far fa-user-graduate" aria-hidden="true"></i>
+                            <?= lang('Scientists', 'Wissenschaftler:innen') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>/browse/journal" class="sidebar-link with-icon <?= $pageactive('journal') ?>">
+                            <i class="far fa-institution" aria-hidden="true"></i>
+                            <?= lang('Journals', 'Journale') ?>
+                        </a>
+                    <?php } ?>
+
+
+                    <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon">
                         <i class="far fa-signs-post" aria-hidden="true"></i>
-                        Roadmap
-                    </a>
-                    <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
-                        <i class="far fa-language" aria-hidden="true"></i>
-                        <?= lang('Deutsch', 'English') ?>
+                        <?= lang('About', 'Über OSIRIS') ?>
                     </a>
                 <?php } ?>
 
@@ -205,3 +233,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <div class="content-wrapper">
 
             <div class="content-container">
+                <?php
+
+                if (function_exists('printMsg') && isset($_GET['msg'])) {
+                    printMsg();
+                }
+                ?>

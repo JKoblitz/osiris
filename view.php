@@ -57,7 +57,7 @@
                         <td><?= $author['last_name'] ?></td>
                         <td><?= $author['first_name'] ?></td>
                         <td><?= $author['position'] ?></td>
-                        <td><?= $author['dsmz_affiliation'] == 1 ? 'DSMZ' : '' ?></td>
+                        <td><?= $author['aoi'] == 1 ? 'DSMZ' : '' ?></td>
                     </tr>
                 <?php } ?>
             </table>

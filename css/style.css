@@ -1,23 +1,12 @@
-.form-control.is-valid, .form-control.is-valid:hover, .form-group.is-valid .form-control, .form-group.is-valid .form-control:hover {
-    color: rgba(0, 0, 0, .85);
-    background-color: #fff;
-    border-color: var(--success-color);
-    -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
-    -webkit-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
-    box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+.quarter{
+    width: 9rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
 }
 
-.sidebar-link.with-icon.sidebar-link-signal .sidebar-icon, .sidebar-link.with-icon.sidebar-link-signal i {
-    color: var(--signal-color);
-}
 
-.sidebar-link.with-icon.sidebar-link-signal:hover .sidebar-icon, .sidebar-link.with-icon.sidebar-link-signal:hover i {
-    border-color: var(--signal-color);
-}
-
-.sidebar-link.with-icon.sidebar-link-signal.active .sidebar-icon, .sidebar-link.with-icon.sidebar-link-signal.active i {
-    background-color: var(--signal-color);
-    color: white;
+.table tbody tr.row-muted td {
+    background-color: #f1f1f1;
 }
 
 .sidebar-menu {
@@ -51,6 +40,9 @@
     border-radius: 2pt;
     cursor: pointer;
 }
+/* .author-list .author {
+    pointer-events: fill;
+} */
 
 .author.author-dsmz {
     color: var(--primary-color);

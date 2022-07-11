@@ -24,7 +24,7 @@ switch ($page) {
         break;
     case 'publication':
         $datafields = [
-            "quartal" => "Quartal",
+            "q_id" => "Quarter",
             // "title" => "Title",
             // "journal_id" => "Journal-ID",
             // "year" => "Year",
@@ -40,7 +40,7 @@ switch ($page) {
         break;
     case 'poster':
         $datafields = [
-            "quartal" => "Quartal"
+            "q_id" => "Quarter"
             // 'title' => "Titel",
             // 'conference' => 'Conference',
             // 'location' => 'Location',
@@ -49,9 +49,9 @@ switch ($page) {
         break;
     case 'journal':
         $datafields = [
-            'journal_name' => "Journal name",
+            'journal' => "Journal name",
             'journal_abbr' => 'Abbr.',
-            'impact_factor' => 'Impact factor'
+            'issn' => 'ISSN'
         ];
         break;
     case 'scientist':
@@ -87,30 +87,30 @@ switch ($page) {
 // }
 // $orderby .= $asc == 1 ? " ASC" : " DESC";
 
-// $sql = "FROM `$page` c ";
+$sql = "FROM `$page` c ";
 // if ($page == "metabolite" || $page == "derivative") {
 //     $sql .= "LEFT JOIN Derivative_Group g ON c.Derivative_Group = g.id ";
 // }
 
-// $where = array();
-// $values = array();
+$where = array();
+$values = array();
 
-// if (!empty($search)) {
-//     // if (is_numeric($search)) {
-//     //     $where[] = "retention_index = ?";
-//     //     $values[] = floatval($search);
-//     // } else {
-//     //     if ($page == "metabolite" || $page == "derivative") {
-//     //         $where[] = "(name LIKE ? OR derivative_group_name LIKE ?)";
-//     //         $values[] = "%$search%";
-//     //         $values[] = "%$search%";
-//     //     } else {
-//     //         $where[] = "name LIKE ?";
-//     //         $values[] = "%$search%";
-//     //     }
+if (!empty($search)) {
+    // if (is_numeric($search)) {
+    //     $where[] = "retention_index = ?";
+    //     $values[] = floatval($search);
+    // } else {
+    //     if ($page == "metabolite" || $page == "derivative") {
+    //         $where[] = "(name LIKE ? OR derivative_group_name LIKE ?)";
+    //         $values[] = "%$search%";
+    //         $values[] = "%$search%";
+    //     } else {
+    //         $where[] = "name LIKE ?";
+    //         $values[] = "%$search%";
+    //     }
 
-//     // }
-// }
+    // }
+}
 
 // if (!empty($where)) {
 //     $sql .= " WHERE " . implode(' AND ', $where);
@@ -135,11 +135,22 @@ switch ($page) {
 //     $select .= ", g.derivative_group_name";
 // }
 
-$stmt = $db->prepare("SELECT * FROM `$page`");
+$stmt = $db->prepare("SELECT * FROM $table");
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
 $count = count($result);
+$last = ceil($count / $limit);
+if ($p > $last) {
+    $p = $last;
+} elseif ($p < 1) {
+    $p = 1;
+}
+$offset = $p * $limit - $limit;
+
+$result = array_slice($result, $offset, min($limit, $count-$offset));
+
 ?>
 
 
@@ -187,7 +198,7 @@ $count = count($result);
 
             <?php foreach ($result as $row) { ?>
                 <tr>
-                   <td>
+                    <td>
                         <a href="<?= ROOTPATH ?>/view/<?= $page ?>/<?= $row[$idname] ?>" class="btn btn-sm"><i class="far fa-search"></i></a>
                         <!-- <a href="<?= ROOTPATH ?>/edit/<?= $page ?>/" class="btn btn-sm"><i class="far fa-edit"></i></a> -->
                     </td>
@@ -196,15 +207,15 @@ $count = count($result);
                             <?= $row[$key] ?>
                         </td>
                     <?php } ?>
-                    <?php if ($page=='poster') {
+                    <?php if ($page == 'poster') {
                         echo "<td>";
-                        print_poster($row['poster_id']);
+                        $activity->print($row['poster_id']);
                         echo "</td>";
-                     } elseif ($page=='publication') { 
+                    } elseif ($page == 'publication') {
                         echo "<td>";
-                        print_publication($row['publication_id']);
+                        $activity->print($row['publication_id']);
                         echo "</td>";
-                      } ?>
+                    } ?>
                 </tr>
             <?php } ?>
         </table>
@@ -215,11 +226,66 @@ $count = count($result);
     <div class="text-right">
         <?php
         if ($count <= 0) {
-            echo "No results";
-        } else {
-            echo "$count result(s)";
+            echo lang("No results", "Keine Ergebnisse");
+        } elseif (isset($offset)) {
+            echo "Show " . ($offset + 1) . " to " . min($offset + $limit, $count) . " (" . $count . " total)";
         }
         ?>
+    </div>
+
+    <div class="table-footer justify-content-between">
+        <nav class="d-inline-block">
+            <form action="" method="get" class="">
+                <ul class="pagination">
+
+                    <?php
+                    hiddenFieldsFromGet(['p']);
+                    ?>
+                    <button type="submit" name="p" value="1" class="direction <?= ($p <= 1 ? "disabled" : "") ?>" tabindex="-1" title="first">&lt;&lt;</button>
+                    <button type="submit" name="p" value="<?= ($p - 1) ?>" class="direction <?= ($p <= 1 ? "disabled" : "") ?>" tabindex="-1" title="previous">&lt;</button>
+                    <?php
+                    if ($p - 1 > 1 && $p == $last) {
+                        echo '<button type="submit" name="p" value="' . ($p - 2) . '" class="">' . ($p - 2) . '</button>';
+                    }
+                    if ($p > 1) {
+                        echo '<button type="submit" name="p" value="' . ($p - 1) . '" class="">' . ($p - 1) . '</button>';
+                    }
+                    echo '<button type="submit" name="p" value="' . ($p) . '" class="active">' . ($p) . '</button>';
+                    if ($p < $last) {
+                        echo '<button type="submit" name="p" value="' . ($p + 1) . '" class="">' . ($p + 1) . '</button>';
+                    }
+                    if ($p + 1 < $last && $p == 1) {
+                        echo '<button type="submit" name="p" value="' . ($p + 2) . '" class="">' . ($p + 2) . '</button>';
+                    }
+                    ?>
+                    <button type="submit" name="p" value="<?= ($p + 1) ?>" class="direction <?= ($p >= $last ? "disabled" : "") ?>" title="next">&gt;</button>
+                    <button type="submit" name="p" value="<?= ($last) ?>" class="direction <?= ($p >= $last ? "disabled" : "") ?>" title="last">&gt;&gt;</button>
+                </ul>
+            </form>
+        </nav>
+
+        <form action="" method="get" class="d-inline-block float-md-right">
+            <?php
+            hiddenFieldsFromGet(['limit']);
+            ?>
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <small class="input-group-text"><?= lang('Results per page', 'Ergebnisse pro Seite') ?></small>
+                </div>
+                <select name="limit" class="form-control">
+                    <option value="10" <?= ($limit == "10" ? 'selected' : '') ?>>10</option>
+                    <option value="20" <?= ($limit == "20" ? 'selected' : '') ?>>20</option>
+                    <option value="50" <?= ($limit == "50" ? 'selected' : '') ?>>50</option>
+                    <option value="100" <?= ($limit == "100" ? 'selected' : '') ?>>100</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn" type="submit"><i class="fas fa-check"></i></button>
+                </div>
+            </div>
+        </form>
+
+
     </div>
 
 </div>

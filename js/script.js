@@ -5,10 +5,10 @@ const SCIENTISTS = Object.values(
     })
 )
 
-$('input[name=activity]').on('change', function(){
+$('input[name=activity]').on('change', function () {
     $('input[name=activity]').removeClass('btn-primary')
     $(this).addClass('btn-primary')
-    
+
 })
 
 function toastError(msg = "") {
@@ -27,7 +27,40 @@ function toastSuccess(msg = "") {
         hasDismissButton: true
     })
 }
-
+function toastWarning(msg = "") {
+    digidive.initStickyAlert({
+        content: msg,
+        title: "Warning",
+        alertType: "signal",
+        hasDismissButton: true
+    })
+}
+function getCookie(cname) {
+    let decodedCookie = decodeURIComponent(document.cookie);
+    if (cname === null) {
+        return decodedCookie
+    }
+    let name = cname + "=";
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+function lang(en, de = null) {
+    var language = getCookie('mediadive-language');
+    if (de === null) return en;
+    if (language === undefined) return en;
+    if (language == "en") return en;
+    if (language == "de") return de;
+    return en;
+}
 
 function objectifyForm(formArray) {
     //serialize data function
@@ -166,19 +199,270 @@ function downloadCSVFile(csv_data) {
     document.body.removeChild(temp_link);
 }
 
+function getPublication(id) {
+    if (/^(10\.\d{4,5}\/[\S]+[^;,.\s])$/.test(id)) {
+        getDOI(id)
+    } else if (/^(\d{7,8})$/.test(id)) {
+        getPubmed(id)
+    } else {
+        toastError('This is neither DOI nor Pubmed-ID. Sorry.');
+        return
+    }
+}
+
+function getPubmed(id) {
+    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+    var data = {
+        db: 'pubmed',
+        id: id,
+        retmode: 'json'
+    }
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+        url: url,
+        success: function (data) {
+            console.log(data);
+            var pmid = data.result.uids[0]
+            var pub = data.result[pmid]
+
+            // var date = pub.pubdate
+            var doi = ""
+            pub.articleids.forEach(el => {
+                if (el.idtype == 'doi') doi = el.value
+            });
+
+            var date = new Date(pub.sortpubdate)
+
+            var authors = [];
+            var editors = [];
+            pub.authors.forEach((a, i) => {
+                var name = a.name.split(' ', 2)
+                name = {
+                    family: name[0],
+                    given: name[1].split('').join(' ')
+                }
+                if (a.authtype == "Author") {
+                    authors.push(name)
+                } else if (a.authtype == "Editor") {
+                    editors.push(name)
+                }
+            });
+
+
+            var pubdata = {
+                title: pub.title,
+                // first_authors: pub.first_authors,
+                authors: authors,
+                year: date.getFullYear(),
+                month: date.getMonth() + 1,
+                day: date.getDate(),
+                type: pub.doctype == 'chapter' ? 'book' : pub.pubtype[0],
+                journal: pub.fulljournalname,
+                issue: pub.issue,
+                volume: pub.volume,
+                pages: pub.pages,
+                doi: doi,
+                pubmed: pmid,
+                book: pub.booktitle,
+                edition: pub.edition,
+                publisher: pub.publishername,
+                city: pub.publisherlocation,
+                editors: editors,
+                // open_access: pub.open_access,
+                epub: pub.pubstatus == 10,
+            }
+            fillForm(pubdata)
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('#loader').hide()
+        }
+    })
+}
+
+
+function getDOI(doi) {
+    url = "https://api.crossref.org/works/" + doi //+ '&mailto=juk20@dsmz.de'
+    $.ajax({
+        type: "GET",
+        // data: data,
+        dataType: "json",
+        url: url,
+        success: function (data) {
+            console.log(data);
+            var pub = data.message
+            console.log(pub);
+
+
+            var date = getPublishingDate(pub)
+            if (pub['journal-issue'] !== undefined && pub['journal-issue'].length !== 0) {
+                var date2 = getPublishingDate(pub['journal-issue'])
+            }
+
+            var authors = [];
+            // var editors = [];
+            var first = 1
+            pub.author.forEach((a, i) => {
+                var aoi = false
+                a.affiliation.forEach(e => {
+                    if (e.name.includes("DSMZ")) {
+                        aoi = true
+                    }
+                })
+                if (a.sequence == "first") {
+                    first = i + 1
+                }
+                var name = {
+                    family: a.family,
+                    given: a.given,
+                    affiliation: aoi
+                }
+                // if (a.authtype == "Author") {
+                authors.push(name)
+                // } else if (a.authtype == "Editor") {
+                //     editors.push(name)
+                // }
+            });
+
+            var pubdata = {
+                title: pub.title[0],
+                first_authors: first,
+                authors: authors,
+                year: date[0],
+                month: date[1],
+                day: date[2],
+                type: pub.type,
+                journal: pub['container-title'][0],
+                issue: pub['journal-issue'].issue,
+                volume: pub.volume ?? '',
+                pages: pub.page,
+                doi: pub.DOI,
+                // pubmed: null,
+                book: pub['container-title'][0],
+                // edition: pub.edition,
+                publisher: pub['publisher-name'],
+                city: pub['publisher-location'],
+                // open_access: pub.open_access,
+                epub: pub.issued === undefined,
+            }
+            fillForm(pubdata)
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('#loader').hide()
+        }
+    })
+}
+
+function fillForm(pub) {
+    console.log(pub);
+    $('#publication-form').find('input').val('').removeClass('is-valid')
+
+    switch (pub.type.toLowerCase()) {
+        case 'journal-article':
+            togglePubType('article')
+            break;
+        case 'magazine article':
+            togglePubType('magazine')
+            break;
+        case 'book chapter':
+            togglePubType('chapter')
+            break;
+        case 'book':
+            if (pub.editors.length > 0 && pub.authors.length > 0) {
+                togglePubType('chapter')
+            } else if (pub.editors.length > 0) {
+                togglePubType('editor')
+            } else {
+                togglePubType('book')
+            }
+            break;
+
+        default:
+            togglePubType('article')
+            break;
+    }
+
+    if (pub.title !== undefined)
+        $('#title').val(pub.title).addClass('is-valid')
+    if (pub.first_authors !== undefined)
+        $('#first_authors').val(pub.first_authors).addClass('is-valid')
+    if (pub.year !== undefined)
+        $('#year').val(pub.year).addClass('is-valid')
+    if (pub.month !== undefined)
+        $('#month').val(pub.month).addClass('is-valid')
+    if (pub.day !== undefined)
+        $('#day').val(pub.day).addClass('is-valid')
+    if (pub.type !== undefined)
+        $('#type').val(pub.type).addClass('is-valid')
+    if (pub.journal !== undefined)
+        $('#journal').val(pub.journal).addClass('is-valid')
+    if (pub.issue !== undefined)
+        $('#issue').val(pub.issue).addClass('is-valid')
+    if (pub.volume !== undefined)
+        $('#volume').val(pub.volume).addClass('is-valid')
+    if (pub.pages !== undefined)
+        $('#pages').val(pub.pages).addClass('is-valid')
+    if (pub.doi !== undefined)
+        $('#doi').val(pub.doi).addClass('is-valid')
+    if (pub.pubmed !== undefined)
+        $('#pubmed').val(pub.pubmed).addClass('is-valid')
+    if (pub.book !== undefined)
+        $('#book').val(pub.book).addClass('is-valid')
+    if (pub.edition !== undefined)
+        $('#edition').val(pub.edition).addClass('is-valid')
+    if (pub.publisher !== undefined)
+        $('#publisher').val(pub.publisher).addClass('is-valid')
+    if (pub.city !== undefined)
+        $('#city').val(pub.city).addClass('is-valid')
+    // if (pub.open_access !== undefined)
+    //     $('#open_access').val(pub.open_access).addClass('is-valid')
+    if (pub.epub !== undefined)
+        $('#epub').attr('checked', pub.epub).addClass('is-valid')
+
+
+    $('.author-list').addClass('is-valid').find('.author').remove()
+
+    var aff_undef = false
+    pub.authors.forEach(function (d, i) {
+        if (d.affiliation === undefined) {
+            aff_undef = true
+        }
+        addAuthorDiv(d.family, d.given, d.affiliation ?? false)
+    })
+    if (pub.editors !== undefined) {
+        pub.editors.forEach(function (d, i) {
+            addAuthorDiv(d.family, d.given, d.affiliation ?? false, true)
+        })
+    }
+    if (aff_undef)
+        toastWarning('Not all affiliations could be parsed automatically. Please click on every DSMZ author to mark them.')
+
+
+    toastSuccess('Bibliographic data were updated.')
+
+}
+
+
 function getPubData(event, form) {
     event.preventDefault();
-    $('#loader').show()
+    // $('#loader').show()
     console.log(form);
     if (form !== null) {
         param = $(form).serializeArray()
         param = objectifyForm(param)
     }
     console.log(param);
+
+    getPublication(param.doi)
+
+    return;
     // TODO: check if doi is valid
 
     if (param.doi !== null && param.doi !== "") {
-        url = "https://api.crossref.org/works/" + param.doi
+        url = "https://api.crossref.org/works/" + param.doi //+ '&mailto=juk20@dsmz.de'
     }
     // data = {}
     $.ajax({
@@ -190,6 +474,26 @@ function getPubData(event, form) {
             $('#loader').hide()
             console.log(data);
             var pub = data.message
+
+            switch (pub.type) {
+                case 'journal-article':
+                    togglePubType('article')
+                    break;
+                case 'Magazine article':
+                    togglePubType('magazine')
+                    break;
+                case 'Book chapter':
+                    togglePubType('chapter')
+                    break;
+                case 'Book':
+                    togglePubType('book')
+                    break;
+
+                default:
+                    togglePubType('article')
+                    break;
+            }
+
             date = ""
             var date = getPublishingDate(pub)
 
@@ -211,7 +515,10 @@ function getPubData(event, form) {
             $('#pages').val(pub.page).addClass('is-valid')
             $('#doi').val(pub.DOI).addClass('is-valid')
             // $('#pubmed').val()
-            $('#date_publication').val(date).addClass('is-valid')
+            $('#year').val(date[0]).addClass('is-valid')
+            $('#month').val(date[1]).addClass('is-valid')
+            $('#day').val(date[2]).addClass('is-valid')
+            // $('#date_publication').val(date).addClass('is-valid')
             $('#type').val(pub.type).addClass('is-valid')
             // $('#book_title').val()
 
@@ -224,13 +531,12 @@ function getPubData(event, form) {
                         dsmz = true
                     }
                 })
-                var first = false
                 if (d.sequence == "first") {
-                    first = true
+                    first = i + 1
                 }
                 addAuthorDiv(d.family, d.given, dsmz)
-
             })
+            $('#first-authors').val(first).addClass('is-valid')
 
 
             toastSuccess('Bibliographic data were updated.')
@@ -243,7 +549,7 @@ function getPubData(event, form) {
 }
 
 
-function addAuthorDiv(lastname, firstname, dsmz = false) {
+function addAuthorDiv(lastname, firstname, dsmz = false, editor = false) {
     var author = $('<div class="author">')
         .on('click', function () {
             toggleAffiliation(this)
@@ -258,12 +564,17 @@ function addAuthorDiv(lastname, firstname, dsmz = false) {
 
     author.append('<input type="hidden" name="author[]" value="' + val + '">')
     author.append('<a onclick="removeAuthor(event, this)">&times;</a>')
+    if (editor) {
+        author.insertBefore($('#add-editor'))
 
-    author.insertBefore($('#add-author'))
+    } else {
+        author.insertBefore($('#add-author'))
+
+    }
 }
 
 function getPublishingDate(pub) {
-    var date = "";
+    var date = ["", "", ""];
     if (pub['published-print']) {
         date = getDate(pub['published-print'])
     } else if (pub['published']) {
@@ -278,15 +589,15 @@ function getDate(element) {
     if (element['date-parts'] !== undefined) {
         element = element['date-parts'][0];
     }
-    var date = ""
+    var date = ["", "", ""]
     // 2022-07-06
-    if (element[0]) date = element[0]
+    if (element[0]) date[0] = element[0]
 
-    if (element[1]) date += "-" + ("0" + element[1]).slice(-2)
-    else date += "-01"
+    if (element[1]) date[1] = element[1] //+= "-" + ("0" + element[1]).slice(-2)
+    //else date += "-01"
 
-    if (element[2]) date += "-" + ("0" + element[2]).slice(-2)
-    else date += "-01"
+    if (element[2]) date[2] = element[2] //+= "-" + ("0" + element[2]).slice(-2)
+    //else date += "-01"
 
     console.log(date);
     // if (element[1]) date = ("0" + element[1]).slice(-2) + "." + date
@@ -323,6 +634,85 @@ function addAuthor(event, el) {
     }
 }
 function removeAuthor(event, el) {
-        event.preventDefault();
-        $(el).parent().remove()
+    event.preventDefault();
+    $(el).parent().remove()
 }
+
+function updateReview(id, value) {
+    todo()
+}
+
+function addRow2db(el) {
+    var tr = $(el).closest('tr');
+    //init data string
+    var data = {};
+    var correct = true
+    // for each input in the TR
+    tr.find(':input').each(function () {
+        //retrieve field name and value from the DOM
+        var input = $(this)
+        var field = input.attr('name');
+        if (input.attr('type') == 'checkbox') {
+            if (input.prop('checked')) {
+                data[field] = 1;
+            }
+        } else {
+            if (input.prop('required') && !$(this).val()) {
+                // toastError(lang('The field ' + field + ' is required.', 'Das Feld ' + field + ' wird benötigt.'))
+                input.addClass('is-invalid');
+                correct = false;
+            }
+            data[field] = input.val();
+        }
+    });
+    console.log("addRow2db", data);
+    if (correct && data.type !== undefined) {
+        $.ajax({
+            type: "POST",
+            data: data,
+            dataType: "html",
+            url: ROOTPATH + '/ajax/' + data.type + '.php',
+            success: function (response) {
+                if (response.startsWith('Error')) {
+                    toastError(response)
+                } else {
+                    // toastSuccess()
+                    tr.before(response)
+                }
+            },
+            error: function (response) {
+                toastError(response.responseText)
+                $('#loader').hide()
+            }
+        })
+    }
+}
+
+
+function togglePubType(type) {
+    var types = {
+        article: "Journal article",
+        magazine: "Magazine article",
+        book: "Book",
+        editor: "Book",
+        chapter: "Book chapter"
+    }
+
+    $('#select-btns').find('.btn').removeClass('btn-primary')
+    $('#'+type+'-btn').addClass('btn-primary')
+    var form = $('#publication-form')
+    $('#type').val(types[type])
+    form.find('[data-visible]').hide()
+    form.find('[data-visible*=' + type + ']').show()
+    form.slideDown()
+}
+
+function todo() {
+    digidive.initStickyAlert({
+        content: lang('Sorry, but this button does not work yet.', 'Sorry, aber der Knopf funktioniert noch nicht.'),
+        title: '<i class="fa-solid fa-face-shush fa-3x text-signal"></i>',
+        alertType: "",
+        hasDismissButton: true
+    })
+}
+

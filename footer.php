@@ -5,8 +5,9 @@
 
 <div class="footer justify-content-between d-flex">
    <span>
-        Developed with <i class="far fa-heart"></i> at the weekend
+        Developed with <i class="far fa-heart"></i> in Helmstedt
    </span>
+   <a href="<?=ROOTPATH?>/license">License</a>
     <span>
         &copy; Julia Koblitz 2022
     </span>

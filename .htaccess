@@ -1,9 +1,9 @@
-ErrorDocument 400 /research-report/error?error=400
-ErrorDocument 401 /research-report/error?error=401
-ErrorDocument 403 /research-report/error?error=403
-ErrorDocument 404 /research-report/error?error=404
-ErrorDocument 500 /research-report/error?error=500
-ErrorDocument 503 /research-report/error?error=503
+ErrorDocument 400 /osiris/error?error=400
+ErrorDocument 401 /osiris/error?error=401
+ErrorDocument 403 /osiris/error?error=403
+ErrorDocument 404 /osiris/error?error=404
+ErrorDocument 500 /osiris/error?error=500
+ErrorDocument 503 /osiris/error?error=503
 
 DirectoryIndex index.php
 
@@ -12,7 +12,7 @@ RewriteEngine on
 
 # set your rewrite base
 # Edit this in your init method too if you script lives in a subfolder
-RewriteBase /research-report
+RewriteBase /osiris
 
 # Deliver the folder or file directly if it exists on the server
 RewriteRule ^(css|img|js)($|/) - [L]
