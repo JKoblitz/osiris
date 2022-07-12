@@ -14,9 +14,8 @@ if (!function_exists('str_contains')) {
 define('ROOTPATH', '/osiris');
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
 
-include_once BASEPATH . "/php/User.php";
-$user = new User($_SESSION['username'] ?? null);
-define('USER', $user);
+// $userClass 
+// define('USER', $user);
 
 // Language settings and cookies
 if (!empty($_GET['language'])) {
@@ -66,13 +65,14 @@ Route::add('/', function () {
     include BASEPATH . "/header.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/main.php";
-    } elseif (USER->is_controlling()) {
+    } elseif ($userClass->is_controlling()) {
         include BASEPATH . "/controlling.php";
-    } elseif (USER->is_scientist()) {
+    } elseif ($userClass->is_scientist()) {
         $user = $_SESSION['username'];
         $name = $_SESSION['name'];
         include_once BASEPATH . "/php/Publication.php";
         include_once BASEPATH . "/php/Poster.php";
+        include_once BASEPATH . "/php/Lecture.php";
         include BASEPATH . "/scientist.php";
     }
     include BASEPATH . "/footer.php";
@@ -359,13 +359,14 @@ Route::add('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/Publication.php";
     include_once BASEPATH . "/php/Poster.php";
+    include_once BASEPATH . "/php/Lecture.php";
     $idname = "user";
 
     $stmt = $db->prepare("SELECT * FROM `users` WHERE `user` LIKE ? LIMIT 1");
     $stmt->execute([$user]);
-    $dataset = $stmt->fetch(PDO::FETCH_ASSOC);
+    $userArr = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $name = $dataset['last_name'] . ", " . $dataset['first_name'];
+    $name = $userArr['last_name'] . ", " . $userArr['first_name'];
 
     $breadcrumb = [
         ['name' => ucfirst($page), 'path' => "/browse/$page"],
@@ -415,7 +416,8 @@ Route::add('/user/login', function () {
     include BASEPATH . "/php/_db.php";
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
-        if ($_SERVER['SERVER_NAME'] == 'testserver') {
+        // TODO: remove before live!
+        if ($_SERVER['SERVER_NAME'] == 'testserver' || $_POST['username'] == 'juk20') {
             $_SESSION['username'] = "juk20";
             $_SESSION['loggedin'] = true;
             $_SESSION['name'] = "Julia Koblitz";

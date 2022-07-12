@@ -1,7 +1,8 @@
 <div class="content">
 
-    <h3><?= lang('My reviews and editorial boards', 'Meine Reviews und Editorial Boards') ?></h3>
-    <table class="table">
+<h1><i class="fa-regular fa-book-open-cover text-success fa-lg mr-10"></i> <?= lang('My reviews &amp; editorial boards', 'Meine Reviews &amp; Editorial Boards') ?></h1>
+
+<table class="table">
         <thead>
             <tr>
                 <td><?= lang('Quarter', 'Quartal') ?></td>

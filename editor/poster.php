@@ -5,7 +5,7 @@ include_once BASEPATH . "/php/Poster.php";
 
 <div class="content">
 
-    <h3 class=""><?= lang('My poster', 'Meine Poster') ?></h3>
+<h1><i class="fa-regular fa-presentation-screen text-danger fa-lg mr-10"></i> <?= lang('My poster', 'Meine Poster') ?></h1>
 
     <div class="box box-primary" id="poster-form" style="display:none">
         <div class="content">

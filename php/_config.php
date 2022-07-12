@@ -6,6 +6,10 @@ $db = new PDO("mysql:host=localhost;dbname=osiris;charset=utf8mb4", 'juk', 'Zees
 
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+global $userClass;
+include_once BASEPATH . "/php/User.php";
+// global $userClass;
+$userClass = new User($_SESSION['username'] ?? null);
 
 function printMsg($msg = null, $type = 'info', $header = "default")
 {

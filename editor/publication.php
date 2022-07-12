@@ -7,7 +7,7 @@ $subpage = $_GET['add'] ?? 'view';
 
 <div class="content">
 
-    <h3 class=""><i class="fa-regular fa-book-bookmark"></i> <?= lang('My publications', 'Meine Publikationen') ?></h3>
+    <h1 class=""><i class="fa-regular fa-book-bookmark text-primary fa-lg mr-10"></i>  <?= lang('My publications', 'Meine Publikationen') ?></h1>
 
 
 <a href="<?=ROOTPATH?>/my-publication/add"><i class="fas fa-plus"></i> <?=lang('Add publication', 'Publikation hinzufügen')?></a>

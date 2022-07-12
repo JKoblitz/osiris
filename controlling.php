@@ -1,4 +1,4 @@
-<h2><?= lang('Welcome', 'Willkommen') ?>, <?= USER->name ?></h2>
+<h2><?= lang('Welcome', 'Willkommen') ?>, <?= $userClass->name ?></h2>
 
 <h4 class="text-muted font-weight-normal">Controlling</h4>
 

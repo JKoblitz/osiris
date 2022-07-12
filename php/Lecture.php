@@ -38,6 +38,12 @@ class Lecture extends Database
             echo " $pub[conference].";
         }
         echo " ".$this->fromToDate($pub['date_start'], null);
+        
+        if (!empty($pub['location'])) {
+            echo ", $pub[location].";
+        } else {
+            echo ".";
+        }
 
         echo " (".$pub['lecture_type']. ")";
         // echo date_format($date,"d.m.Y");

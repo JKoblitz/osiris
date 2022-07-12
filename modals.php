@@ -24,15 +24,4 @@
         </div>
     </div>
 
-<?php } else { ?>
-    <!-- <div class="modal modal-lg" id="add-publication" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content w-400 mw-full">
-                <a href="#" class="btn float-right" role="button" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </a>
-               
-            </div>
-        </div>
-    </div> -->
 <?php } ?>

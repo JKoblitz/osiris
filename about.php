@@ -62,9 +62,10 @@
         </ul>
     </li>
     <li>Alle Datenfelder können über ein Interface zur DB hinzugefügt werden</li>
-    <li>Alle Datenfelder können bearbetet und entfernt werden</li>
+    <li>Alle Datenfelder können bearbeitet und entfernt werden</li>
     <li>Übersichtsseite eines Wissenschaftlers</li>
     <li>Import der DSMZ-Bibliographie</li>
+    <li>Such- und Filterfunktionen für die Übersichtsseiten</li>
     <li>Vermeidung von Datendoppelungen</li>
     <li class="checked">Quartal-Auswahl</li>
     <li>Knopf auf der Wissenschaftlerseite, um Daten zu bestätigen</li>

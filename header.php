@@ -157,19 +157,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <?php if (USER->is_admin() || USER->is_scientist() || USER->is_controlling()) { ?>
+                    <?php if ($userClass->is_admin() || $userClass->is_scientist() || $userClass->is_controlling()) { ?>
 
                         <a href="<?= ROOTPATH ?>/my-publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('my-publication') ?>">
                             <i class="far fa-book-bookmark" aria-hidden="true"></i>
                             <?= lang('My publications', 'Meine Publikationen') ?>
                         </a>
-                        <a href="<?= ROOTPATH ?>/my-review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('my-review') ?>">
-                            <i class="far fa-book-open-cover" aria-hidden="true"></i>
-                            <?= lang('My reviews &amp; editorials', 'Meine Reviews &amp; Editorials') ?>
-                        </a>
-
                         <a href="<?= ROOTPATH ?>/my-poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-poster') ?>">
-                            <i class="far fa-file-invoice" aria-hidden="true"></i>
+                            <i class="far fa-presentation-screen" aria-hidden="true"></i>
                             <?= lang('My posters', 'Meine Poster') ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/my-lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('my-lecture') ?>">
@@ -177,12 +172,17 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('My lectures', 'Meine Vorträge') ?>
                         </a>
 
-                        <a href="<?= ROOTPATH ?>?msg=TODO" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
+                        <a href="<?= ROOTPATH ?>/my-review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('my-review') ?>">
+                            <i class="far fa-book-open-cover" aria-hidden="true"></i>
+                            <?= lang('My reviews &amp; editorials', 'Reviews &amp; Editorials') ?>
+                        </a>
+
+                        <a href="?msg=TODO-not-there-yet" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
                             <i class="far fa-icons" aria-hidden="true"></i>
                             <?= lang('Misc') ?>
                         </a>
 
-                        <a href="<?= ROOTPATH ?>?msg=TODO" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
+                        <a href="?msg=TODO-not-there-yet" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
                             <i class="far fa-people" aria-hidden="true"></i>
                             <?= lang('Teaching &amp; Guests') ?>
                         </a>
@@ -201,7 +201,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                        
                     <?php } ?>
 
-                    <?php if (USER->is_admin() || USER->is_controlling()) { ?>
+                    <?php if ($userClass->is_admin() || $userClass->is_controlling()) { ?>
 
                         <div class="sidebar-title">
                             <?= lang('Controlling') ?>

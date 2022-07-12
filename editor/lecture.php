@@ -5,7 +5,7 @@ include_once BASEPATH . "/php/Lecture.php";
 
 <div class="content">
 
-    <h3 class=""><i class="fa-regular fa-keynote"></i> <?= lang('My lectures', 'Meine Vorträge') ?></h3>
+    <h1 class=""><i class="fa-regular fa-keynote text-signal fa-lg mr-10"></i> <?= lang('My lectures', 'Meine Vorträge') ?></h1>
 
     <div class="box box-primary" id="lecture-form" style="display:none">
         <div class="content">
@@ -30,7 +30,7 @@ include_once BASEPATH . "/php/Lecture.php";
                     <label for="author" class="required"><?= lang('Author(s)', 'Autor(en)') ?></label>
                     <div class="author-list">
                         <div class="author author-dsmz">
-                            <?= USER->name('formal') ?><input type="hidden" name="author[]" value="Koblitz;Julia;1">
+                            <?= $userClass->name('formal') ?><input type="hidden" name="author[]" value="Koblitz;Julia;1">
                             <a onclick="removeAuthor(event, this)">&times;</a>
                         </div>
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">

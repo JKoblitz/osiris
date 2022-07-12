@@ -17,12 +17,10 @@ class Database
     {
 
         $from = date_create($from);
-        if (empty($to)){
+        if (empty($to)) {
             return date_format($from, "d.m.Y");
         }
         $to = date_create($to);
-
-
     }
 
 
@@ -34,11 +32,20 @@ class Database
         return $str . ", $sep " . end($array);
     }
 
+    public static function abbreviateAuthor($last, $first)
+    {
+        $fn = "";
+        foreach (explode(" ", $first) as $name) {
+            $fn .= " " . $name[0] . ".";
+        }
+        return $last . ", " . $fn;
+    }
+
     public function formatAuthors(array $raw_authors)
     {
         $authors = array();
         foreach ($raw_authors as $a) {
-            $author = $a['last_name'] . ", " . $a['first_name'][0] . ".";
+            $author = $this->abbreviateAuthor($a['last_name'], $a['first_name']);
             if ($a['aoi'] == 1) {
                 $author = "<b>$author</b>";
             }

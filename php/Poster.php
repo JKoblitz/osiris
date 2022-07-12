@@ -32,7 +32,12 @@ class Poster extends Database
             echo " $pub[title].";
         }
         if (!empty($pub['conference'])) {
-            echo " $pub[conference].";
+            echo " $pub[conference]";
+        }
+        if (!empty($pub['location'])) {
+            echo ", $pub[location].";
+        } else {
+            echo ".";
         }
         echo " ". $this->fromToDate($pub['date_start'], $pub['date_end']);
         // echo date_format($date,"d.m.Y");
