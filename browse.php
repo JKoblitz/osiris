@@ -51,7 +51,9 @@ switch ($page) {
         $datafields = [
             'journal' => "Journal name",
             'journal_abbr' => 'Abbr.',
-            'issn' => 'ISSN'
+            'issn' => 'ISSN',
+            'publications' => 'Number of publ.',
+            'impact_factor' => 'IF 2021'
         ];
         break;
     case 'scientist':
@@ -135,7 +137,20 @@ if (!empty($search)) {
 //     $select .= ", g.derivative_group_name";
 // }
 
-$stmt = $db->prepare("SELECT * FROM $table");
+if ($page == 'journal') {
+    $sql = "
+    SELECT journal.*, COUNT(*) AS publications, IFNULL(impact_factor, 'unknown') AS impact_factor
+    FROM `journal` 
+    LEFT JOIN publication USING (journal_id) 
+    LEFT JOIN (
+        SELECT journal_id, impact_factor FROM journal_if WHERE `year` = 2021
+    ) AS impact USING (journal_id)
+    GROUP BY journal_id ORDER BY `publications` DESC ";
+} else {
+    $sql = "SELECT * FROM $table";
+}
+
+$stmt = $db->prepare($sql);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -149,7 +164,7 @@ if ($p > $last) {
 }
 $offset = $p * $limit - $limit;
 
-$result = array_slice($result, $offset, min($limit, $count-$offset));
+$result = array_slice($result, $offset, min($limit, $count - $offset));
 
 ?>
 

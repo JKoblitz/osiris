@@ -1,8 +1,7 @@
-
 <h1>Edit <?= ucfirst($page) ?>: #<?= $dataset[$idname] ?></h1>
 
 <p class="text-danger lead">
-    <?=lang('Editing does not work yet!', 'Bearbeiten funktioniert noch nicht!')?>
+    <?= lang('Editing does not work yet!', 'Bearbeiten funktioniert noch nicht!') ?>
 </p>
 
 <div class="p-0" id="meta-form">
@@ -122,7 +121,7 @@
                     </tr>
                 <?php } ?>
                 <tr>
-                    <td colspan="4"><button class="btn"><i class="fas fa-plus"></i> <?=lang('Add author', 'Füge Autor hinzu')?></button></td>
+                    <td colspan="4"><button class="btn"><i class="fas fa-plus"></i> <?= lang('Add author', 'Füge Autor hinzu') ?></button></td>
                 </tr>
             </table>
         <?php } ?>
@@ -130,7 +129,7 @@
 
         <button class="btn btn-primary mt-20" type="submit"><i class="fas fa-check"></i> Submit changes</button>
     </form>
-
+</div>
 
 
     <div class="alert alert-danger mt-20">
