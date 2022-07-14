@@ -1,10 +1,6 @@
 <?php
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return $needle !== '' && strpos($haystack, $needle) !== false;
-    }
-}
+include_once BASEPATH . "/php/_config.php";
+
 $breadcrumb = $breadcrumb ?? [];
 $pagetitle = array('OSIRIS');
 foreach ($breadcrumb as $crumb) {
@@ -36,16 +32,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
-    <!-- <link rel="stylesheet" href="<?= ROOTPATH ?>/css/components/form.css">
-    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/components/input.css">
-    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/components/divider.css"> -->
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
-    <!--
-    Or,
-    Use the following (no variables, supports IE11):
-    <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon.min.css" rel="stylesheet" />
-    Learn more: https://www.gethalfmoon.com/docs/customize/#notes-on-browser-compatibility
-  -->
 </head>
 
 <body>

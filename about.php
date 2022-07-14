@@ -64,12 +64,14 @@
     <li>Alle Datenfelder können über ein Interface zur DB hinzugefügt werden</li>
     <li>Alle Datenfelder können bearbeitet und entfernt werden</li>
     <li>Übersichtsseite eines Wissenschaftlers</li>
-    <li>Import der DSMZ-Bibliographie</li>
+    <li class="checked">Import der DSMZ-Bibliographie</li>
+    <li class="checked">Import der Wissenschaftler und Journale</li>
+    <li class="checked">Import der Impact Faktoren</li>
     <li>Such- und Filterfunktionen für die Übersichtsseiten</li>
     <li>Vermeidung von Datendoppelungen</li>
     <li class="checked">Quartal-Auswahl</li>
     <li>Knopf auf der Wissenschaftlerseite, um Daten zu bestätigen</li>
-    <li>Übersetzung der Seite in zwei Sprachen</li>
+    <li class="checked">Übersetzung der Seite in zwei Sprachen</li>
     <li class="checked">Nutzerrollen zufügen (Admin, Controller, Group leader, Scientist)</li>
     <li>Zugriff auf verschiedene Seiten sind rollenspezifisch</li>
 </ul>
@@ -84,7 +86,7 @@
             <li>Einzelaktivitäten für Forschende</li>
         </ul>
     </li>
-    <li>Service: Impact factor-Abfrage (https://developer.clarivate.com/apis/wos-journal)</li>
+    <li>Service: Impact factor-Abfrage (https://developer.clarivate.com/apis/wos-journal); zurzeit ein manueller Import erforderlich</li>
     <li>Implementation einer API, um anderen Services der DSMZ Abfragen zu erlauben</li>
     <li>LOM-Punktesystem</li>
     <li>Ko-Autoren-Netzwerk (chord diagram)</li>

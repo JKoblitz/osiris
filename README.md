@@ -36,3 +36,19 @@ https://dataguide.nlm.nih.gov/eutilities/utilities.html#esummary
 
 Beispiel:
 https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=35293546&retmode=asn.1
+
+
+
+## Journal impact factors
+-[x] Add Count of publications to journals 
+```sql
+SELECT journal.*, COUNT(*) AS publications, IFNULL(impact_factor, 'unknown') AS impact
+FROM `journal` 
+LEFT JOIN publication USING (journal_id) 
+LEFT JOIN (
+    SELECT journal_id, impact_factor FROM journal_if WHERE `year` = 2021
+) AS impact USING (journal_id)
+GROUP BY journal_id ORDER BY `publications` DESC 
+```
+
+https://www.scimagojr.com/journalrank.php?wos=true&openaccess=true
