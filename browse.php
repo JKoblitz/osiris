@@ -143,11 +143,11 @@ if ($page == 'journal') {
     FROM `journal` 
     LEFT JOIN publication USING (journal_id) 
     LEFT JOIN (
-        SELECT journal_id, impact_factor FROM journal_if WHERE `year` = 2021
+        SELECT journal_id, impact_factor FROM journal_if WHERE `year` = (SELECT max(year) FROM journal_if)
     ) AS impact USING (journal_id)
     GROUP BY journal_id ORDER BY `publications` DESC ";
 } else {
-    $sql = "SELECT * FROM $table";
+    $sql = "SELECT * FROM $table ORDER BY q_id DESC";
 }
 
 $stmt = $db->prepare($sql);

@@ -1,6 +1,5 @@
 <?php
 
-
 include_once 'Database.php';
 
 class Lecture extends Database

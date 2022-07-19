@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label for="author" class="required"><?= lang('Author(s)', 'Autor(en)') ?></label>
                 <div class="author-list">
-                    <div class="author author-dsmz">Koblitz, Julia<input type="hidden" name="author[]" value="Koblitz;Julia;1"><a onclick="removeAuthor(event, this)">&times;</a></div>
+                    <div class="author author-dsmz">Koblitz, Julia<input type="hidden" name="author[]" value="<?=$userClass->last?>;<?=$userClass->first?>;1"><a onclick="removeAuthor(event, this)">&times;</a></div>
                     <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
                 </div>
             </div>

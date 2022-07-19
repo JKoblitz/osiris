@@ -15,12 +15,26 @@ class Database
 
     public function fromToDate($from, $to)
     {
-
-        $from = date_create($from);
-        if (empty($to)) {
-            return date_format($from, "d.m.Y");
+        if (empty($to) || $from==$to) {
+            return $this->format_date($from);
         }
-        $to = date_create($to);
+        // $to = date_create($to);
+        $from = $this->format_date($from);
+        $to = $this->format_date($to);
+
+        $f = explode('.', $from, 3);
+        $t = explode('.', $to, 3);
+
+        $from = "";
+        $from .= $f[0] . ".";
+        if ($f[1] != $t[1]) {
+            $from .= $f[1] . ".";
+        }
+        if ($f[2] != $t[2]) {
+            $from .= $f[2];
+        }
+
+        return $from . '-' . $to;
     }
 
 

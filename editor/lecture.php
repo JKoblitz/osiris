@@ -30,7 +30,7 @@ include_once BASEPATH . "/php/Lecture.php";
                     <label for="author" class="required"><?= lang('Author(s)', 'Autor(en)') ?></label>
                     <div class="author-list">
                         <div class="author author-dsmz">
-                            <?= $userClass->name('formal') ?><input type="hidden" name="author[]" value="Koblitz;Julia;1">
+                            <?= $userClass->name('formal') ?><input type="hidden" name="author[]" value="<?=$userClass->last?>;<?=$userClass->first?>;1">
                             <a onclick="removeAuthor(event, this)">&times;</a>
                         </div>
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
@@ -39,7 +39,7 @@ include_once BASEPATH . "/php/Lecture.php";
                 
                 <div class="form-row row-eq-spacing">
                     <div class="col-sm">
-                        <label class="required" for="date_start"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
+                        <label class="required" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
                         <select name="lecture_type" id="lecture_type" class="form-control">
                             <option value="short">short (15-25 min.)</option>
                             <option value="long">long (> 30 min.)</option>

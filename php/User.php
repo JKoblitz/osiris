@@ -8,6 +8,8 @@ class User extends Database
     public $user = "unknown";
     public $name = "";
     public $dept = "";
+    public $first = "";
+    public $last = "";
     private $info = [
         "is_admin" => 0,
         "is_controlling" => 0,
@@ -15,6 +17,7 @@ class User extends Database
         "is_scientist" => 0,
         "is_active" => 0
     ];
+    
     function __construct($user = null)
     {
         parent::__construct();
@@ -25,6 +28,8 @@ class User extends Database
             );
             $stmt->execute([$this->user]);
             $this->info = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->first = $this->info['first_name'];
+            $this->last = $this->info['last_name'];
             $this->name = $this->info['first_name'] . " " . $this->info['last_name'];
             $this->dept = $this->info['dept'];
         }
@@ -39,8 +44,8 @@ class User extends Database
                 return $this->info['last_name'] . ", " . $this->info['first_name'];
             case 'abbreviated':
                 $fn = "";
-                foreach (explode(" ",$this->info['first_name']) as $name) {
-                    $fn .= " ".$name[0].".";
+                foreach (explode(" ", $this->info['first_name']) as $name) {
+                    $fn .= " " . $name[0] . ".";
                 }
                 return $this->info['last_name'] . "," . $fn;
             default:

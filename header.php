@@ -115,6 +115,58 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <?php } else { ?>
 
                     <div class="sidebar-title">
+                        <?= lang('User', 'Nutzer') ?>
+                    </div>
+
+                    <a href="<?= ROOTPATH ?>/" class="sidebar-link with-icon">
+                        <i class="far fa-user" aria-hidden="true"></i>
+                        <?= $_SESSION["name"] ?? 'User' ?>
+                    </a>
+
+
+
+                    <a href="<?= ROOTPATH ?>/my-publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('my-publication') ?>">
+                        <i class="far fa-book-bookmark" aria-hidden="true"></i>
+                        <?= lang('My publications', 'Meine Publikationen') ?>
+                    </a>
+
+                    <a href="<?= ROOTPATH ?>/my-poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-poster') ?>">
+                        <i class="far fa-presentation-screen" aria-hidden="true"></i>
+                        <?= lang('My posters', 'Meine Poster') ?>
+                    </a>
+
+                    <a href="<?= ROOTPATH ?>/my-lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('my-lecture') ?>">
+                        <i class="far fa-keynote" aria-hidden="true"></i>
+                        <?= lang('My lectures', 'Meine Vorträge') ?>
+                    </a>
+
+                    <a href="<?= ROOTPATH ?>/my-review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('my-review') ?>">
+                        <i class="far fa-book-open-cover" aria-hidden="true"></i>
+                        <?= lang('My reviews &amp; editorials', 'Reviews &amp; Editorials') ?>
+                    </a>
+
+                    <a href="<?= ROOTPATH ?>/my-misc" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('my-misc') ?>">
+                        <i class="far fa-icons" aria-hidden="true"></i>
+                        <?= lang('Misc') ?>
+                    </a>
+
+                    <a href="<?= ROOTPATH ?>/my-teaching" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('my-teaching') ?>">
+                        <i class="far fa-people" aria-hidden="true"></i>
+                        <?= lang('Teaching &amp; Guests') ?>
+                    </a>
+
+
+                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
+                        <i class="far fa-right-from-bracket" aria-hidden="true"></i>
+                        Logout
+                    </a>
+                    <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
+                        <i class="far fa-language" aria-hidden="true"></i>
+                        <?= lang('Deutsch', 'English') ?>
+                    </a>
+
+
+                    <div class="sidebar-title">
                         <?= lang('Content', 'Inhalte') ?>
                     </div>
                     <a href="<?= ROOTPATH ?>/browse/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
@@ -133,60 +185,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a> -->
 
 
-
-                    <div class="sidebar-title">
-                        <?= lang('User', 'Nutzer') ?>
-                    </div>
-
-                    <a href="<?= ROOTPATH ?>/" class="sidebar-link with-icon">
-                        <i class="far fa-user" aria-hidden="true"></i>
-                        <?= $_SESSION["name"] ?? 'User' ?>
-                    </a>
-
-
-                    <?php if ($userClass->is_admin() || $userClass->is_scientist() || $userClass->is_controlling()) { ?>
-
-                        <a href="<?= ROOTPATH ?>/my-publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('my-publication') ?>">
-                            <i class="far fa-book-bookmark" aria-hidden="true"></i>
-                            <?= lang('My publications', 'Meine Publikationen') ?>
-                        </a>
-                        <a href="<?= ROOTPATH ?>/my-poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-poster') ?>">
-                            <i class="far fa-presentation-screen" aria-hidden="true"></i>
-                            <?= lang('My posters', 'Meine Poster') ?>
-                        </a>
-                        <a href="<?= ROOTPATH ?>/my-lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('my-lecture') ?>">
-                            <i class="far fa-keynote" aria-hidden="true"></i>
-                            <?= lang('My lectures', 'Meine Vorträge') ?>
-                        </a>
-
-                        <a href="<?= ROOTPATH ?>/my-review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('my-review') ?>">
-                            <i class="far fa-book-open-cover" aria-hidden="true"></i>
-                            <?= lang('My reviews &amp; editorials', 'Reviews &amp; Editorials') ?>
-                        </a>
-
-                        <a href="?msg=TODO-not-there-yet" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
-                            <i class="far fa-icons" aria-hidden="true"></i>
-                            <?= lang('Misc') ?>
-                        </a>
-
-                        <a href="?msg=TODO-not-there-yet" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('todo') ?>">
-                            <i class="far fa-people" aria-hidden="true"></i>
-                            <?= lang('Teaching &amp; Guests') ?>
-                        </a>
-                       
-
-                        <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
-                            <i class="far fa-right-from-bracket" aria-hidden="true"></i>
-                            Logout
-                        </a>
-                        <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
-                            <i class="far fa-language" aria-hidden="true"></i>
-                            <?= lang('Deutsch', 'English') ?>
-                        </a>
-
-
-                       
-                    <?php } ?>
 
                     <?php if ($userClass->is_admin() || $userClass->is_controlling()) { ?>
 

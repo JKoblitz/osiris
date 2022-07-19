@@ -14,8 +14,6 @@ if (!function_exists('str_contains')) {
 define('ROOTPATH', '/osiris');
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
 
-// $userClass 
-// define('USER', $user);
 
 // Language settings and cookies
 if (!empty($_GET['language'])) {
@@ -60,7 +58,7 @@ function lang($en, $de = null)
 
 include_once BASEPATH . "/php/Route.php";
 
-Route::add('/', function () {
+Route::get('/', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
@@ -79,20 +77,20 @@ Route::add('/', function () {
 });
 
 
-Route::add('/index.php', function () {
+Route::get('/index.php', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/main.php";
     include BASEPATH . "/footer.php";
 });
-Route::add('/about', function () {
+Route::get('/about', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/about.php";
     include BASEPATH . "/footer.php";
 });
 
-Route::add('/license', function () {
+Route::get('/license', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/license.html";
@@ -100,19 +98,7 @@ Route::add('/license', function () {
 });
 
 
-// Route::add('/(my-publication)', function ($page) {
-//     include_once BASEPATH . "/php/_config.php";
-//     $breadcrumb = [
-//         ['name' => 'Publications', 'path' => "/browse/publication"],
-//         ['name' => "Add publication"]
-//     ];
-//     include BASEPATH . "/header.php";
-//     include BASEPATH . "/$page.php";
-//     include BASEPATH . "/footer.php";
-// });
-
-
-Route::add('/(my-review|my-poster|my-lecture|my-publication)', function ($page) {
+Route::get('/(my-publication|my-review|my-poster|my-lecture|my-misc|my-teaching)', function ($page) {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];
     $path = str_replace('my-', '', $page);
@@ -125,7 +111,7 @@ Route::add('/(my-review|my-poster|my-lecture|my-publication)', function ($page) 
     include BASEPATH . "/footer.php";
 });
 
-Route::add('/(my-publication)/add', function ($page) {
+Route::get('/(my-publication)/add', function ($page) {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
@@ -138,7 +124,7 @@ Route::add('/(my-publication)/add', function ($page) {
 });
 
 
-Route::add('/my-publication', function () {
+Route::post('/my-publication', function () {
     include_once BASEPATH . "/php/_config.php";
 
     // add journal
@@ -191,32 +177,10 @@ Route::add('/my-publication', function () {
     addAuthors($_POST['author'], intval($_POST['first_authors'] ?? 1), 'publication', $pub_id);
 
     header("Location: " . ROOTPATH . "/view/publication/$pub_id?msg=added-successfully");
-}, 'post');
+});
 
 
-// Route::add('/(my-activity)', function ($page) {
-//     include_once BASEPATH . "/php/_config.php";
-//     $breadcrumb = [
-//         ['name' => 'Activity', 'path' => "/browse/activity"],
-//         ['name' => "Add activity"]
-//     ];
-//     include BASEPATH . "/header.php";
-//     include BASEPATH . "/$page.php";
-//     include BASEPATH . "/footer.php";
-// });
-
-// Route::add('/(my-poster)', function ($page) {
-//     include_once BASEPATH . "/php/_config.php";
-//     $breadcrumb = [
-//         ['name' => 'Poster', 'path' => "/browse/poster"],
-//         ['name' => "Add poster"]
-//     ];
-//     include BASEPATH . "/header.php";
-//     include BASEPATH . "/$page.php";
-//     include BASEPATH . "/footer.php";
-// });
-
-Route::add('/my-(poster|lecture)', function ($table) {
+Route::post('/my-(poster|lecture)', function ($table) {
     include_once BASEPATH . "/php/_config.php";
 
     // var_dump($_POST);
@@ -254,32 +218,31 @@ Route::add('/my-(poster|lecture)', function ($table) {
             "${year}Q${quarter}"
         ]);
     } elseif ($table == 'lecture') {
-        if (isset($_POST['repetition'])){
+        if (isset($_POST['repetition'])) {
             $stmt = $db->prepare(
                 "SELECT * FROM `lecture` WHERE lecture_id = ?"
             );
             $stmt->execute([$_POST['repetition']]);
             $lect = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (empty($lect)){
+            if (empty($lect)) {
                 header("Location: " . ROOTPATH . "/my-lecture?msg=error");
                 die();
             }
-            
+
             $values = [
                 $lect['title'],
                 $lect['conference'] ?? null,
                 $_POST['date_start'],
                 $lect['location'] ?? null,
-                $lect['lecture_type']. " ".'repetition',
+                $lect['lecture_type'] . " " . 'repetition',
                 "${year}Q${quarter}"
             ];
-            
+
             $stmt = $db->prepare(
                 "SELECT CONCAT(last_name, ';', first_name, ';', aoi) FROM `authors` WHERE lecture_id = ?"
             );
             $stmt->execute([$_POST['repetition']]);
             $authors = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
         } else {
             $values = [
                 $_POST['title'],
@@ -305,10 +268,157 @@ Route::add('/my-(poster|lecture)', function ($table) {
 
     // header("Location: " . ROOTPATH . "/view/$table/$activity_id?msg=added-successfully");
     header("Location: " . ROOTPATH . "/my-$table?msg=added-successfully");
-}, 'post');
+});
 
 
-Route::add('/browse/(publication|activity|scientist|journal|poster)', function ($page) {
+Route::post('/my-misc', function () {
+    include_once BASEPATH . "/php/_config.php";
+    // var_dump($_POST);
+    // calculate time values:
+    $startStr = $_POST['date_start'];
+    $endStr = empty($_POST['date_end'] ?? null) ? $startStr : $_POST['date_end'];
+    $date = strtotime($startStr);
+    $year = date("Y", $date);
+    $month = date("n", $date);
+    $quarter = ceil($month / 3);
+
+    $authors = $_POST['author'] ?? array();
+
+    if (isset($_POST['repetition'])) {
+        $stmt = $db->prepare(
+            "INSERT INTO `misc_dates` 
+            (misc_id, date_start, date_end, q_id) 
+            VALUES (?, ?, ?, ?)"
+        );
+        $stmt->execute([
+            $_POST['repetition'],
+            $startStr,
+            $endStr,
+            "${year}Q${quarter}"
+        ]);
+        header("Location: " . ROOTPATH . "/my-misc?=success");
+        die();
+        // $stmt = $db->prepare(
+        //     "SELECT * FROM `lecture` WHERE lecture_id = ?"
+        // );
+        // $stmt->execute([$_POST['repetition']]);
+        // $lect = $stmt->fetch(PDO::FETCH_ASSOC);
+        // if (empty($lect)) {
+        //     header("Location: " . ROOTPATH . "/my-lecture?msg=error");
+        //     die();
+        // }
+
+    }
+    // TODO:
+    if (isset($_POST['end'])) {
+        $stmt = $db->prepare(
+            "INSERT INTO `misc_dates` 
+            (misc_id, date_start, date_end, q_id) 
+            VALUES (?, ?, ?, ?)"
+        );
+        $stmt->execute([
+            $_POST['end'],
+            null,
+            $endStr,
+            null
+        ]);
+        header("Location: " . ROOTPATH . "/my-misc?=success");
+        die();
+        // $stmt = $db->prepare(
+        //     "SELECT * FROM `lecture` WHERE lecture_id = ?"
+        // );
+        // $stmt->execute([$_POST['repetition']]);
+        // $lect = $stmt->fetch(PDO::FETCH_ASSOC);
+        // if (empty($lect)) {
+        //     header("Location: " . ROOTPATH . "/my-lecture?msg=error");
+        //     die();
+        // }
+
+    }
+    // add misc:
+    $stmt = $db->prepare(
+        "INSERT INTO `misc` 
+            (title, `location`, iteration) 
+            VALUES (?, ?, ?)"
+    );
+    $stmt->execute([
+        $_POST['title'],
+        $_POST['location'] ?? null,
+        $_POST['iteration'] ?? 'once'
+    ]);
+
+    $activity_id = $db->lastInsertId();
+
+    // add authors:
+    addAuthors($authors, intval($_POST['first_authors'] ?? 1), 'misc', $activity_id);
+
+    $stmt = $db->prepare(
+        "INSERT INTO `misc_dates` 
+            (misc_id, date_start, date_end, q_id) 
+            VALUES (?, ?, ?, ?)"
+    );
+    // add dates:
+    if ($_POST['iteration'] == 'once') {
+        $stmt->execute([
+            $activity_id,
+            $startStr,
+            $endStr,
+            "${year}Q${quarter}"
+        ]);
+    } else {
+        $endStr = empty($_POST['date_end'] ?? null) ? null : $_POST['date_end'];
+        $stmt->execute([
+            $activity_id,
+            $startStr,
+            $endStr,
+            null
+        ]);
+
+        // // select all relevant quarters since start of the activity:
+        // $stmt = $db->prepare("SELECT q_id FROM `quarter` WHERE ((year > ?) OR (year = ? AND quarter >= ?)) AND quarter != 0 ORDER BY year, quarter");
+        // $stmt->execute([$year, $year, $quarter]);
+        // $quarters = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // // prepare statement:
+        // $stmt = $db->prepare(
+        //     "INSERT INTO `misc_dates` 
+        //     (misc_id, date_start, date_end, q_id) 
+        //     VALUES (?, ?, ?, ?)"
+        // );
+
+        // $end_date = strtotime($endStr);
+        // $end_year = date("Y", $end_date);
+        // $end_month = date("n", $end_date);
+        // $end_quarter = ceil($end_month / 3);
+
+        // foreach ($quarters as $i => $q_id) {
+        //     // insert quarter for each known quarter since date_start
+        //     $start = $i == 0 ? $startStr : null;
+        //     $Q = explode("Q", $q_id);
+        //     if ($Q[0]==$end_year && $Q[1]==$end_quarter){
+        //         $stmt->execute([
+        //             $activity_id,
+        //             $start,
+        //             $endStr,
+        //             $q_id
+        //         ]);
+        //         break;
+        //     }
+        //     $stmt->execute([
+        //         $activity_id,
+        //         $start,
+        //         null,
+        //         $q_id
+        //     ]);
+        // }
+
+    }
+
+
+    header("Location: " . ROOTPATH . "/my-misc?msg=added-successfully");
+});
+
+Route::get('/browse/(publication|activity|scientist|journal|poster)', function ($page) {
     $idname = $page . '_id';
     $table = $page;
     if ($page == 'scientist') {
@@ -333,7 +443,7 @@ Route::add('/browse/(publication|activity|scientist|journal|poster)', function (
     include BASEPATH . "/footer.php";
 });
 
-Route::add('/(view|edit)/(publication|activity|journal|poster)/(\d+)', function ($mode, $page, $id) {
+Route::get('/(view|edit)/(publication|activity|journal|poster)/(\d+)', function ($mode, $page, $id) {
     include_once BASEPATH . "/php/_config.php";
     $idname = $page . '_id';
 
@@ -355,7 +465,7 @@ Route::add('/(view|edit)/(publication|activity|journal|poster)/(\d+)', function 
     include BASEPATH . "/footer.php";
 });
 
-Route::add('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
+Route::get('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/Publication.php";
     include_once BASEPATH . "/php/Poster.php";
@@ -378,7 +488,7 @@ Route::add('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
     include BASEPATH . "/footer.php";
 });
 
-Route::add('/error/([0-9]*)', function ($error) {
+Route::get('/error/([0-9]*)', function ($error) {
     // header("HTTP/1.0 $error");
     http_response_code($error);
     include BASEPATH . "/header.php";
@@ -388,7 +498,7 @@ Route::add('/error/([0-9]*)', function ($error) {
 
 
 
-Route::add('/user/login', function () {
+Route::get('/user/login', function () {
     include_once BASEPATH . "/php/_config.php";
     $breadcrumb = [
         ['name' => lang('User login', 'Login')]
@@ -406,7 +516,7 @@ Route::add('/user/login', function () {
 }, 'get');
 
 
-Route::add('/user/login', function () {
+Route::post('/user/login', function () {
     include_once BASEPATH . "/php/_config.php";
     $page = "userlogin";
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
@@ -455,24 +565,24 @@ Route::add('/user/login', function () {
         printMsg("Password is required!", "error", "");
     }
     include BASEPATH . "/footer.php";
-}, 'post');
+});
 
 
 
-Route::add('/user/logout', function () {
+Route::get('/user/logout', function () {
     unset($_SESSION["username"]);
     $_SESSION['loggedin'] = false;
     header("Location: " . ROOTPATH . "/");
 }, 'get');
 
-Route::add('/ajax/(.*)', function ($file) {
+Route::post('/ajax/(.*)', function ($file) {
     include BASEPATH . "/php/_config.php";
     if (file_exists(BASEPATH . "/ajax/$file")) {
         include BASEPATH . "/ajax/$file";
     } else {
         echo "Error: 404 File does not exist";
     }
-}, 'post');
+});
 
 
 // Add a 404 not found route

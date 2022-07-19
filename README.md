@@ -52,3 +52,9 @@ GROUP BY journal_id ORDER BY `publications` DESC
 ```
 
 https://www.scimagojr.com/journalrank.php?wos=true&openaccess=true
+
+
+# TODO!
+
+- add addQuarter() function to all implementations to ensure that foreign key does not fail.
+- check if date is in the future!
