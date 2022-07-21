@@ -8,7 +8,8 @@ foreach ($breadcrumb as $crumb) {
 }
 $pagetitle = implode(' | ', array_reverse($pagetitle));
 
-$page = $page ?? '';
+$lasturl = explode("/", $_SERVER['REQUEST_URI']);
+$page = $page ?? end($lasturl);
 $pageactive = function ($p) use ($page, $breadcrumb) {
     if ($page == $p) return "active";
     if (str_contains($page, 'finder')) return '';
@@ -41,9 +42,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <span></span>
     </div>
 
-    <?php
-    include BASEPATH . "/modals.php";
-    ?>
     <!-- Page wrapper start -->
     <div class="page-wrapper">
         <!-- data-sidebar-hidden="hidden" to hide sidebar on start -->
@@ -91,14 +89,24 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             <form id="navbar-search" action="" method="get" class="nav-search">
                 <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text" data-toggle="tooltip" data-title="<?=lang('Select quarter', 'Wähle ein Quartal aus')?>">
+                        <i class="fa-regular fa-calendar-day"></i>
+                        </div>
+                    </div>
+                    <select name="select-year" id="select-year" class="form-control">
+                        <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
+                            <option value="<?=$year?>" <?= SELECTEDYEAR == $year ? 'selected' : '' ?>><?=$year?></option>
+                        <?php } ?>
+                    </select>
                     <select name="select-quarter" id="select-quarter" class="form-control">
-                        <option value="2022Q3" <?= SELECTEDQUARTER == '2022Q3' ? 'selected' : '' ?>>2022-Q3</option>
-                        <option value="2022Q2" <?= SELECTEDQUARTER == '2022Q2' ? 'selected' : '' ?>>2022-Q2</option>
-                        <option value="2022Q1" <?= SELECTEDQUARTER == '2022Q1' ? 'selected' : '' ?>>2022-Q1</option>
-                        <option value="2021Q4" <?= SELECTEDQUARTER == '2021Q4' ? 'selected' : '' ?>>2021-Q4</option>
+                        <option value="1" <?= SELECTEDQUARTER == '1' ? 'selected' : '' ?>>Q1</option>
+                        <option value="2" <?= SELECTEDQUARTER == '2' ? 'selected' : '' ?>>Q2</option>
+                        <option value="3" <?= SELECTEDQUARTER == '3' ? 'selected' : '' ?>>Q3</option>
+                        <option value="4" <?= SELECTEDQUARTER == '4' ? 'selected' : '' ?>>Q4</option>
                     </select>
                     <div class="input-group-append">
-                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-primary"><i class="fas fa-check"></i></button>
                     </div>
                 </div>
             </form>
@@ -204,12 +212,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?php } ?>
 
 
-                    <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon">
+                <?php } ?>
+
+                <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon <?= $pageactive('about') ?>">
                         <i class="far fa-signs-post" aria-hidden="true"></i>
                         <?= lang('About', 'Über OSIRIS') ?>
                     </a>
-                <?php } ?>
 
+
+                    <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
+                        <i class="far fa-newspaper" aria-hidden="true"></i>
+                        <?= lang('News', 'Neuigkeiten') ?>
+                    </a>
 
 
             </div>

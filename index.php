@@ -39,12 +39,25 @@ if (!empty($_GET['select-quarter'])) {
         'samesite' => 'Strict',
     ]);
 }
+if (!empty($_GET['select-year'])) {
+    $_COOKIE['osiris-year'] = $_GET['select-year'];
+    $domain = ($_SERVER['HTTP_HOST'] != 'testserver') ? $_SERVER['HTTP_HOST'] : false;
+    setcookie('osiris-year', $_COOKIE['osiris-year'], [
+        'expires' => time() + 86400,
+        'path' => ROOTPATH . '/',
+        'domain' =>  $domain,
+        'httponly' => false,
+        'samesite' => 'Strict',
+    ]);
+}
 
 $year = date("Y");
 $month = date("n");
 $quarter = ceil($month / 3);
-define('CURRENTQUARTER', "${year}Q$quarter");
+define('CURRENTQUARTER', "$quarter");
+define('CURRENTYEAR', $year);
 define('SELECTEDQUARTER', $_COOKIE['osiris-quarter'] ?? CURRENTQUARTER);
+define('SELECTEDYEAR', $_COOKIE['osiris-year'] ?? CURRENTYEAR);
 
 
 function lang($en, $de = null)
@@ -62,16 +75,16 @@ Route::get('/', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
-        include BASEPATH . "/main.php";
+        include BASEPATH . "/pages/userlogin.php";
     } elseif ($userClass->is_controlling()) {
-        include BASEPATH . "/controlling.php";
+        include BASEPATH . "/pages/controlling.php";
     } elseif ($userClass->is_scientist()) {
         $user = $_SESSION['username'];
         $name = $_SESSION['name'];
         include_once BASEPATH . "/php/Publication.php";
         include_once BASEPATH . "/php/Poster.php";
         include_once BASEPATH . "/php/Lecture.php";
-        include BASEPATH . "/scientist.php";
+        include BASEPATH . "/pages/scientist.php";
     }
     include BASEPATH . "/footer.php";
 });
@@ -80,22 +93,121 @@ Route::get('/', function () {
 Route::get('/index.php', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/main.php";
+    include BASEPATH . "/pages/userlogin.php";
     include BASEPATH . "/footer.php";
 });
 Route::get('/about', function () {
+    
+    $breadcrumb = [
+        ['name' => lang('About OSIRIS', 'Über OSIRIS')]
+    ];
+
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/about.php";
+    include BASEPATH . "/pages/about.php";
+    include BASEPATH . "/footer.php";
+});
+Route::get('/news', function () {
+    
+    $breadcrumb = [
+        ['name' => lang('News', 'Neuigkeiten')]
+    ];
+
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH ."/php/Parsedown.php";
+
+    include BASEPATH . "/header.php";
+
+    $text = file_get_contents(BASEPATH ."/news.md");
+    $parsedown = new Parsedown;
+    echo $parsedown->text($text);
+
     include BASEPATH . "/footer.php";
 });
 
 Route::get('/license', function () {
+    
+    $breadcrumb = [
+        ['name' => lang('License', 'Lizenz')]
+    ];
+
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/license.html";
+    include BASEPATH . "/pages/license.html";
     include BASEPATH . "/footer.php";
 });
+
+Route::get('/user/login', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $breadcrumb = [
+        ['name' => lang('User login', 'Login')]
+    ];
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+        header("Location: " . ROOTPATH . "/?msg=welcome");
+    }
+    include BASEPATH . "/header.php";
+
+    if (isset($_GET['redirect'])) {
+        echo (lang("You need to be logged in to see this page.", "Du musst eingeloggt sein, um diese Seite zu sehen."));
+    }
+    include BASEPATH . "/pages/userlogin.php";
+    include BASEPATH . "/footer.php";
+});
+
+
+Route::post('/user/login', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $page = "userlogin";
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+        header("Location: " . ROOTPATH . "/?msg=ali");
+    }
+    include BASEPATH . "/php/_login.php";
+    include BASEPATH . "/php/_db.php";
+
+    if (isset($_POST['username']) && isset($_POST['password'])) {
+        // TODO: remove before live!
+        if ($_SERVER['SERVER_NAME'] == 'testserver' || $_POST['username'] == 'juk20') {
+            $_SESSION['username'] = "juk20";
+            $_SESSION['loggedin'] = true;
+            $_SESSION['name'] = "Julia Koblitz";
+            if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+                header("Location: " . $_POST['redirect'] . "?msg=welcome");
+                die();
+            }
+            header("Location: " . ROOTPATH . "/?msg=welcome");
+            die();
+        } else {
+            $auth = login($_POST['username'], $_POST['password']);
+            if ($auth["status"] == true) {
+
+                if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+                    header("Location: " . $_POST['redirect'] . "?msg=welcome");
+                    die();
+                }
+                header("Location: " . ROOTPATH . "/?msg=welcome");
+                die();
+            }
+        }
+    }
+    $breadcrumb = [
+        ['name' => lang('User Login', 'Login')]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/userlogin.php";
+    if (isset($auth)) {
+        printMsg($auth["msg"], "error", "");
+    }
+    if (empty($_POST['username'])) {
+        printMsg("Username is required!", "error", "");
+    }
+    if (empty($_POST['password'])) {
+        printMsg("Password is required!", "error", "");
+    }
+    include BASEPATH . "/footer.php";
+});
+
+
+/* LOGIN AREA */
 
 
 Route::get('/(my-publication|my-review|my-poster|my-lecture|my-misc|my-teaching)', function ($page) {
@@ -107,9 +219,9 @@ Route::get('/(my-publication|my-review|my-poster|my-lecture|my-misc|my-teaching)
         ['name' => "My " . $path . "s"]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/editor/$path.php";
+    include BASEPATH . "/pages/editor/$path.php";
     include BASEPATH . "/footer.php";
-});
+}, 'login');
 
 Route::get('/(my-publication)/add', function ($page) {
     include_once BASEPATH . "/php/_config.php";
@@ -119,9 +231,9 @@ Route::get('/(my-publication)/add', function ($page) {
         ['name' => "Add"]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/editor/add-publication.php";
+    include BASEPATH . "/pages/editor/add-publication.php";
     include BASEPATH . "/footer.php";
-});
+}, 'login');
 
 
 Route::post('/my-publication', function () {
@@ -177,7 +289,7 @@ Route::post('/my-publication', function () {
     addAuthors($_POST['author'], intval($_POST['first_authors'] ?? 1), 'publication', $pub_id);
 
     header("Location: " . ROOTPATH . "/view/publication/$pub_id?msg=added-successfully");
-});
+}, 'login');
 
 
 Route::post('/my-(poster|lecture)', function ($table) {
@@ -268,7 +380,7 @@ Route::post('/my-(poster|lecture)', function ($table) {
 
     // header("Location: " . ROOTPATH . "/view/$table/$activity_id?msg=added-successfully");
     header("Location: " . ROOTPATH . "/my-$table?msg=added-successfully");
-});
+}, 'login');
 
 
 Route::post('/my-misc', function () {
@@ -416,7 +528,7 @@ Route::post('/my-misc', function () {
 
 
     header("Location: " . ROOTPATH . "/my-misc?msg=added-successfully");
-});
+}, 'login');
 
 Route::get('/browse/(publication|activity|scientist|journal|poster)', function ($page) {
     $idname = $page . '_id';
@@ -439,9 +551,9 @@ Route::get('/browse/(publication|activity|scientist|journal|poster)', function (
     ];
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/browse.php";
+    include BASEPATH . "/pages/browse.php";
     include BASEPATH . "/footer.php";
-});
+}, 'login');
 
 Route::get('/(view|edit)/(publication|activity|journal|poster)/(\d+)', function ($mode, $page, $id) {
     include_once BASEPATH . "/php/_config.php";
@@ -461,9 +573,9 @@ Route::get('/(view|edit)/(publication|activity|journal|poster)/(\d+)', function 
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/$mode.php";
+    include BASEPATH . "/pages/$mode.php";
     include BASEPATH . "/footer.php";
-});
+}, 'login');
 
 Route::get('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
     include_once BASEPATH . "/php/_config.php";
@@ -484,88 +596,20 @@ Route::get('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/scientist.php";
+    include BASEPATH . "/pages/scientist.php";
     include BASEPATH . "/footer.php";
-});
+}, 'login');
 
 Route::get('/error/([0-9]*)', function ($error) {
     // header("HTTP/1.0 $error");
     http_response_code($error);
     include BASEPATH . "/header.php";
-    include BASEPATH . "/error.php";
+    echo "Error ".$error;
+    // include BASEPATH . "/pages/error.php";
     include BASEPATH . "/footer.php";
 });
 
 
-
-Route::get('/user/login', function () {
-    include_once BASEPATH . "/php/_config.php";
-    $breadcrumb = [
-        ['name' => lang('User login', 'Login')]
-    ];
-    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-        header("Location: " . ROOTPATH . "/?msg=welcome");
-    }
-    include BASEPATH . "/header.php";
-
-    if (isset($_GET['redirect'])) {
-        echo (lang("You need to be logged in to see this page.", "Du musst eingeloggt sein, um diese Seite zu sehen."));
-    }
-    include BASEPATH . "/userlogin.php";
-    include BASEPATH . "/footer.php";
-}, 'get');
-
-
-Route::post('/user/login', function () {
-    include_once BASEPATH . "/php/_config.php";
-    $page = "userlogin";
-    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
-        header("Location: " . ROOTPATH . "/?msg=ali");
-    }
-    include BASEPATH . "/php/_login.php";
-    include BASEPATH . "/php/_db.php";
-
-    if (isset($_POST['username']) && isset($_POST['password'])) {
-        // TODO: remove before live!
-        if ($_SERVER['SERVER_NAME'] == 'testserver' || $_POST['username'] == 'juk20') {
-            $_SESSION['username'] = "juk20";
-            $_SESSION['loggedin'] = true;
-            $_SESSION['name'] = "Julia Koblitz";
-            if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-                header("Location: " . $_POST['redirect'] . "?msg=welcome");
-                die();
-            }
-            header("Location: " . ROOTPATH . "/?msg=welcome");
-            die();
-        } else {
-            $auth = login($_POST['username'], $_POST['password']);
-            if ($auth["status"] == true) {
-
-                if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-                    header("Location: " . $_POST['redirect'] . "?msg=welcome");
-                    die();
-                }
-                header("Location: " . ROOTPATH . "/?msg=welcome");
-                die();
-            }
-        }
-    }
-    $breadcrumb = [
-        ['name' => lang('User Login', 'Login')]
-    ];
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/main.php";
-    if (isset($auth)) {
-        printMsg($auth["msg"], "error", "");
-    }
-    if (empty($_POST['username'])) {
-        printMsg("Username is required!", "error", "");
-    }
-    if (empty($_POST['password'])) {
-        printMsg("Password is required!", "error", "");
-    }
-    include BASEPATH . "/footer.php";
-});
 
 
 
@@ -573,7 +617,7 @@ Route::get('/user/logout', function () {
     unset($_SESSION["username"]);
     $_SESSION['loggedin'] = false;
     header("Location: " . ROOTPATH . "/");
-}, 'get');
+}, 'login');
 
 Route::post('/ajax/(.*)', function ($file) {
     include BASEPATH . "/php/_config.php";
@@ -597,7 +641,7 @@ Route::pathNotFound(function ($path) {
     include BASEPATH . "/header.php";
     // $browser = $_SERVER['HTTP_USER_AGENT'];
     // var_dump($browser);
-    // include BASEPATH . "/error.php";
+    // include BASEPATH . "/pages/error.php";
     echo "Error 404";
     include BASEPATH . "/footer.php";
 });
@@ -610,7 +654,7 @@ Route::methodNotAllowed(function ($path, $method) {
     header('HTTP/1.0 405 Method Not Allowed');
     $error = 405;
     include BASEPATH . "/header.php";
-    // include BASEPATH . "/error.php";
+    // include BASEPATH . "/pages/error.php";
     echo "Error 405";
     include BASEPATH . "/footer.php";
 });

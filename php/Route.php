@@ -100,14 +100,7 @@ class Route
           }
           
           // check if route is only allowed for logged-in users
-          if ($route['visibility'] === 'intern' && EDITOR === false) {
-            $path_match_found = false;
-            break;
-          } elseif ($route['visibility'] === 'login' && EDITOR === false) {
-            // no login possible
-            $path_match_found = false;
-            break;
-          } elseif ($route['visibility'] === 'login' && (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true)) {
+         if ($route['visibility'] === 'login' && (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true)) {
             // redirect to login
             header("Location: " . ROOTPATH . "/user/login?redirect=" . $_SERVER['REQUEST_URI']);
             die();
