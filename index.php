@@ -97,7 +97,7 @@ Route::get('/index.php', function () {
     include BASEPATH . "/footer.php";
 });
 Route::get('/about', function () {
-    
+
     $breadcrumb = [
         ['name' => lang('About OSIRIS', 'Über OSIRIS')]
     ];
@@ -108,17 +108,17 @@ Route::get('/about', function () {
     include BASEPATH . "/footer.php";
 });
 Route::get('/news', function () {
-    
+
     $breadcrumb = [
         ['name' => lang('News', 'Neuigkeiten')]
     ];
 
     include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH ."/php/Parsedown.php";
+    include_once BASEPATH . "/php/Parsedown.php";
 
     include BASEPATH . "/header.php";
 
-    $text = file_get_contents(BASEPATH ."/news.md");
+    $text = file_get_contents(BASEPATH . "/news.md");
     $parsedown = new Parsedown;
     echo $parsedown->text($text);
 
@@ -126,7 +126,7 @@ Route::get('/news', function () {
 });
 
 Route::get('/license', function () {
-    
+
     $breadcrumb = [
         ['name' => lang('License', 'Lizenz')]
     ];
@@ -530,6 +530,61 @@ Route::post('/my-misc', function () {
     header("Location: " . ROOTPATH . "/my-misc?msg=added-successfully");
 }, 'login');
 
+
+
+Route::post('/my-teaching', function () {
+    include_once BASEPATH . "/php/_config.php";
+    // TODO: check if required fields are available
+    $startStr = $_POST['date_start'];
+    $endStr = $_POST['date_end'];
+    $cat = $_POST['category'];
+    $status = $_POST['status'] ?? null;
+    if ($cat == "Doktorand:in" || $cat == "Master-Thesis" || $cat == "Bachelor-Thesis") {
+        if (new DateTime() < new DateTime($endStr)) {
+            $status = 'in progress';
+        }
+    } else {
+        $status = null;
+    }
+
+    $authors = $_POST['author'] ?? array();
+
+    // add misc:
+    $stmt = $db->prepare(
+        "INSERT INTO `teaching` 
+            (title, `category`, `details`, date_start, date_end, `status`, `name`, affiliation, academic_title) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    );
+
+
+    $guests = $_POST['guest'];
+    foreach ($guests['name'] as $i => $name) {
+        if (empty($name)) continue;
+        $affiliation = trim($guests['institution'][$i]);
+        $academic_title = trim($guests['academic_title'][$i]);
+
+        $stmt->execute([
+            $_POST['title'],
+            $cat,
+            empty($_POST['details']) ? null : $_POST['details'],
+            $startStr,
+            $endStr,
+            $status,
+            $name,
+            $affiliation,
+            empty($academic_title) ? null : $academic_title
+        ]);
+
+        $activity_id = $db->lastInsertId();
+
+        // add responsible scientists:
+        addAuthors($authors, 1, 'teaching', $activity_id);
+    }
+
+    header("Location: " . ROOTPATH . "/my-teaching?msg=added-successfully");
+}, 'login');
+
+
 Route::get('/browse/(publication|activity|scientist|journal|poster)', function ($page) {
     $idname = $page . '_id';
     $table = $page;
@@ -604,7 +659,7 @@ Route::get('/error/([0-9]*)', function ($error) {
     // header("HTTP/1.0 $error");
     http_response_code($error);
     include BASEPATH . "/header.php";
-    echo "Error ".$error;
+    echo "Error " . $error;
     // include BASEPATH . "/pages/error.php";
     include BASEPATH . "/footer.php";
 });

@@ -24,7 +24,7 @@ switch ($page) {
         break;
     case 'publication':
         $datafields = [
-            "q_id" => "Quarter",
+            // "q_id" => "Quarter",
             // "title" => "Title",
             // "journal_id" => "Journal-ID",
             // "year" => "Year",
@@ -40,7 +40,7 @@ switch ($page) {
         break;
     case 'poster':
         $datafields = [
-            "q_id" => "Quarter"
+            // "q_id" => "Quarter"
             // 'title' => "Titel",
             // 'conference' => 'Conference',
             // 'location' => 'Location',
@@ -146,9 +146,12 @@ if ($page == 'journal') {
         SELECT journal_id, impact_factor FROM journal_if WHERE `year` = (SELECT max(year) FROM journal_if)
     ) AS impact USING (journal_id)
     GROUP BY journal_id ORDER BY `publications` DESC ";
+} elseif ($page == 'scientist') {
+    $sql = "SELECT * FROM $table ORDER BY last_name ASC";
 } else {
     $sql = "SELECT * FROM $table ORDER BY q_id DESC";
 }
+
 
 $stmt = $db->prepare($sql);
 $stmt->execute();

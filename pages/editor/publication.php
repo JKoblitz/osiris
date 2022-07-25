@@ -33,7 +33,7 @@ $subpage = $_GET['add'] ?? 'view';
             if (empty($activity)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No publications found.', 'Keine Publikationen gefunden.') . "</td></tr>";
             } else foreach ($activity as $act) {
-                $selected = ($act['q_id'] == SELECTEDQUARTER);
+                $selected = ($act['q_id'] == SELECTEDYEAR . "Q" . SELECTEDQUARTER);
             ?>
                 <tr class="<?= !$selected ? 'row-muted' : '' ?>">
                     <td class="quarter">

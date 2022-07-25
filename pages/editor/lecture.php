@@ -91,14 +91,17 @@ include_once BASEPATH . "/php/Lecture.php";
             $stmt = $db->prepare(
                 "SELECT lecture_id, q_id FROM `authors` 
                     INNER JOIN lecture USING (lecture_id) 
-                    WHERE user LIKE ? ORDER BY q_id DESC"
+                    -- LEFT JOIN quarter USING (q_id)
+                    WHERE user LIKE ? 
+                    -- AND quarter.year = ? 
+                    ORDER BY q_id DESC"
             );
             $stmt->execute([$user]);
             $activity = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (empty($activity)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No lectures found.', 'Keine Publikationen gefunden.') . "</td></tr>";
             } else foreach ($activity as $act) {
-                $selected = ($act['q_id'] == SELECTEDQUARTER);
+                $selected = ($act['q_id'] == SELECTEDYEAR . "Q" . SELECTEDQUARTER);
             ?>
                 <tr class="<?= !$selected ? 'row-muted' : '' ?>">
                     <td class="quarter">

@@ -2,7 +2,11 @@
 
 class Database
 {
-    public $db = null;
+    public $id = null;
+    public $data = array();
+    public $authors = array();
+    static $msg = array();
+
     function __construct()
     {
         $this->db = new PDO("mysql:host=localhost;dbname=osiris;charset=utf8mb4", 'juk', 'Zees1ius');
@@ -12,6 +16,15 @@ class Database
         }
     }
 
+    public function printMsg(){
+        if (!empty($this::$msg)){
+            foreach ($this::$msg as $m) {
+                echo "<p class='text-danger'>$m</p>";
+            }
+        } else {
+            // echo "<p class='text-muted'>".lang('No problems found.', 'Keine Probleme gefunden.')."</p>";
+        }
+    }
 
     public function fromToDate($from, $to)
     {

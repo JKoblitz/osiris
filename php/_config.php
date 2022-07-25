@@ -194,3 +194,9 @@ if (!function_exists('str_contains')) {
         return $needle !== '' && strpos($haystack, $needle) !== false;
     }
 }
+
+function dump($element){
+echo '<pre class="code">';
+var_dump($element);
+echo "</pre>";
+}

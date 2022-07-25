@@ -21,7 +21,7 @@
                     ) AS q USING (user) 
                     WHERE is_scientist = 1 ORDER BY last_name"
                 );
-                $stmt->execute([SELECTEDQUARTER]);
+                $stmt->execute([SELECTEDYEAR . "Q" . SELECTEDQUARTER]);
                 $scientists = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 if (empty($scientists)) {
                     echo "<div class='content'>" . lang('No scientists found.', 'Keine Forschenden gefunden.') . "</div>";

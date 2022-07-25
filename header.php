@@ -34,6 +34,13 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
+    <script>
+        const ROOTPATH = "<?=ROOTPATH?>";
+</script>
+<script src="<?=ROOTPATH?>/js/digidive.js"></script>
+<script src="<?=ROOTPATH?>/js/jquery-3.3.1.min.js"></script>
+<script src="<?=ROOTPATH?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
+
 </head>
 
 <body>

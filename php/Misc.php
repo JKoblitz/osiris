@@ -80,14 +80,5 @@ class Misc extends Database
             }
             echo $this->commalist($dates, 'und');
         }
-        // GROUP_CONCAT(
-        //     if(
-        //         date_start != date_end and date_end IS NOT NULL, 
-        //         CONCAT(date_start, ' - ', date_end), 
-        //         date_start
-        //         )
-        //     ) AS duration, 
-        //     MIN(date_start) AS date_start,
-        //     MAX(date_start) AS date_end
     }
 }

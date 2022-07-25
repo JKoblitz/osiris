@@ -23,14 +23,6 @@
 </div>
 <!-- Page wrapper end -->
 
-<!-- Halfmoon JS -->
-<script>
-        const ROOTPATH = "<?=ROOTPATH?>";
-</script>
-<script src="<?=ROOTPATH?>/js/digidive.js"></script>
-<script src="<?=ROOTPATH?>/js/jquery-3.3.1.min.js"></script>
-<!-- <script src="<?=ROOTPATH?>/css/components/form.min.js"></script> -->
-<script src="<?=ROOTPATH?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
 </body>
 
 </html>

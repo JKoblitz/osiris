@@ -6,7 +6,7 @@
 
 
 .table tbody tr.row-muted td {
-    background-color: #f1f1f1;
+    background-color: #f5f5f5;
 }
 
 .sidebar-menu {
@@ -73,3 +73,15 @@
     background-color: var(--primary-color);
     color : white;
 } */
+
+
+.table-aligned tr td:first-child {
+    padding-left: 0;
+}
+.table-aligned tr td:last-child {
+    padding-right: 0;
+}
+
+td.unbreakable {
+    white-space:nowrap;
+}
