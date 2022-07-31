@@ -71,7 +71,10 @@
         <tbody>
             <?php
             $collection = $osiris->publications;
-            $cursor = $collection->find(['authors.user' => $user, 'year' => SELECTEDYEAR]);
+            // $cursor = $collection->find(['authors.user' => $user, 'year' => SELECTEDYEAR]);
+            
+            $options = ['sort' => ["year" => -1, "month"=> -1]];
+            $cursor = $collection->find(['$or'=> [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR], $options);
             // dump($cursor);
             foreach ($cursor as $document) {
                 $q = getQuarter($document['month']);

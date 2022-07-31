@@ -13,7 +13,7 @@ if (!function_exists('str_contains')) {
 
 define('ROOTPATH', '/osiris');
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('AFFILATION', 'DSMZ');
+define('AFFILIATION', 'DSMZ');
 
 // Language settings and cookies
 if (!empty($_GET['language'])) {

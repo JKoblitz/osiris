@@ -293,7 +293,7 @@ function getDOI(doi) {
         dataType: "json",
         url: url,
         success: function (data) {
-            console.log(data);
+            console.log(AFFILIATION);
             var pub = data.message
             console.log(pub);
 
@@ -327,6 +327,8 @@ function getDOI(doi) {
                 //     editors.push(name)
                 // }
             });
+            var issue=null
+            if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
 
             var pubdata = {
                 title: pub.title[0],
@@ -337,7 +339,7 @@ function getDOI(doi) {
                 day: date[2],
                 type: pub.type,
                 journal: pub['container-title'][0],
-                issue: pub['journal-issue'].issue,
+                issue: issue,
                 volume: pub.volume ?? '',
                 pages: pub.page,
                 doi: pub.DOI,
@@ -366,10 +368,10 @@ function fillForm(pub) {
         case 'journal-article':
             togglePubType('article')
             break;
-        case 'magazine article':
+        case 'magazine-article':
             togglePubType('magazine')
             break;
-        case 'book chapter':
+        case 'book-chapter':
             togglePubType('chapter')
             break;
         case 'book':
@@ -440,7 +442,7 @@ function fillForm(pub) {
         })
     }
     if (aff_undef)
-        toastWarning('Not all affiliations could be parsed automatically. Please click on every '+AFFILATION+' author to mark them.')
+        toastWarning('Not all affiliations could be parsed automatically. Please click on every '+AFFILIATION+' author to mark them.')
 
 
     toastSuccess('Bibliographic data were updated.')
@@ -529,7 +531,7 @@ function getPubData(event, form) {
             pub.author.forEach(function (d, i) {
                 var aoi = false
                 d.affiliation.forEach(e => {
-                    if (e.name.includes(AFFILATION)) {
+                    if (e.name.includes(AFFILIATION)) {
                         aoi = true
                     }
                 })
@@ -603,7 +605,8 @@ function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el=null)
     }
     val = lastname.trim() + ';' + firstname.trim() + ';' + val
 
-    author.append('<input type="hidden" name="values[authors][]" value="' + val + '">')
+    var classname = editor? "editors": "authors";
+    author.append('<input type="hidden" name="values['+classname+'][]" value="' + val + '">')
     author.append('<a onclick="removeAuthor(event, this)">&times;</a>')
         author.insertBefore(el)
 }
@@ -621,7 +624,7 @@ function toggleAffiliation(item) {
     $(item).toggleClass('author-aoi')
 }
 
-function addAuthor(event, el) {
+function addAuthor(event, el, editor=false) {
     if (event.keyCode == '13') {
         event.preventDefault();
         const match = (SCIENTISTS.indexOf(el.value) != -1)
@@ -630,7 +633,7 @@ function addAuthor(event, el) {
             toastError('Author name must be formatted like this: Lastname, Firstname')
             return;
         }
-        addAuthorDiv(value[0], value[1], match, false, $(el))
+        addAuthorDiv(value[0], value[1], match, editor, $(el))
 
         $(el).val('')
         return false;
@@ -698,7 +701,8 @@ function togglePubType(type) {
         magazine: "Magazine article",
         book: "Book",
         editor: "Book",
-        chapter: "Book chapter"
+        chapter: "Book chapter",
+        'book-chapter': "Book chapter"
     }
 
     $('#select-btns').find('.btn').removeClass('btn-primary')

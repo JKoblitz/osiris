@@ -37,11 +37,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
-        const AFFILATION = "<?= AFFILATION ?>";
+        const AFFILIATION = "<?= AFFILIATION ?>";
     </script>
     <style>
         :root {
-            --affiliation: "<?= AFFILATION ?>";
+            --affiliation: "<?= AFFILIATION ?>";
         }
     </style>
     <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
@@ -83,7 +83,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <!-- Navbar start -->
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
-                <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
+                <img src="<?= ROOTPATH ?>/img/logo-alpha.svg" alt="OSIRIS">
             </a>
 
             <a href="//www.dsmz.de/" class="navbar-brand ml-auto">

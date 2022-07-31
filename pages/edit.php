@@ -94,7 +94,7 @@
                         <td>Last name</td>
                         <td>First name</td>
                         <td>Position</td>
-                        <td><?=AFFILATION?> Affiliation</td>
+                        <td><?=AFFILIATION?> Affiliation</td>
                     </tr>
                 </thead>
                 <?php foreach ($authors as $i => $author) { ?>

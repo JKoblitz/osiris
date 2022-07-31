@@ -5,44 +5,57 @@ function validateValues($values)
 {
     include_once BASEPATH . "/php/_db.php";
     global $osiris;
-    $first = $values['first_authors'] ?? 1;
+    var_dump($values);
+    $first = max(intval($values['first_authors'] ?? 1), 1);
     unset($values['first_authors']);
+    $last = max(intval($values['last_authors'] ?? 1), 1);
+    unset($values['last_authors']);
 
     foreach ($values as $key => $value) {
-        if ($key == 'authors') {
+        if ($key == 'authors' || $key == "editors") {
             $values[$key] = array();
             foreach ($value as $i => $author) {
                 $author = explode(';', $author, 3);
-                if ($i < $first) {
-                    $pos = 'first';
-                } elseif ($i + 1 == count($value)) {
-                    $pos = 'last';
-                } else {
-                    $pos = 'middle';
-                }
                 $user = getUserFromName($author[0], $author[1]);
-                $values[$key][] = [
-                    'last' => $author[0],
-                    'first' => $author[1],
-                    'aoi' => $author[2],
-                    'position' => $pos,
-                    'user' => $user
-                ];
+                if ($key == "editors"){
+                    $values[$key][] = [
+                        'last' => $author[0],
+                        'first' => $author[1],
+                        'aoi' => $author[2],
+                        'user' => $user
+                    ];
+                } else {
+                    if ($i < $first) {
+                        $pos = 'first';
+                    } elseif ($i + $last >= count($value)) {
+                        $pos = 'last';
+                    } else {
+                        $pos = 'middle';
+                    }
+                    $values[$key][] = [
+                        'last' => $author[0],
+                        'first' => $author[1],
+                        'aoi' => $author[2],
+                        'position' => $pos,
+                        'user' => $user
+                    ];
+                }
+                
             }
         } else if (is_array($value)) {
             $values[$key] = validateValues($value);
-        } else if ($value === '') {
-            $values[$key] = null;
-        } else if ($key == 'start' || $key == 'end' || DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
-            // $values[$key] = mongo_date($value);
-            $values[$key] = valiDate($value);
         } else if ($value === 'true') {
             $values[$key] = true;
         } else if ($value === 'false') {
             $values[$key] = false;
         } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access', 'presenting'])) {
             $values[$key] = boolval($value);
-        } else if (is_int($value)) {
+        } else if ($value === '') {
+            $values[$key] = null;
+        } else if ($key == 'start' || $key == 'end' || DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
+            // $values[$key] = mongo_date($value);
+            $values[$key] = valiDate($value);
+        } else if (is_numeric($value)) {
             $values[$key] = intval($value);
         } else if (is_float($value)) {
             $values[$key] = floatval($value);

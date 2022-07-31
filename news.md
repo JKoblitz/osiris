@@ -5,6 +5,18 @@
 
 # Changelog
 
+## 31.07.22
+- Publikationen können jetzt hinzugefügt werden. Sowohl Journal-Artikel als auch Bücher funktionieren. 
+- Folgendes ist noch zu tun: 
+  - Magazine-Article: funktioniert hinzufügen über eine DOI?
+  - der Pub-Type muss standardisiert werden
+  - Formatierungen für unterschiedliche Pub-Typen (zurzeit nur Journal-Artikel)
+  - Corrections? Wie funktioniert das überhaupt?
+  - Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
+  - Boolean für jeden Autor/Editor: `approved`:
+    - Beim Nutzer, der hinzufügt automatisch true
+    - bei allen anderen wird auf der Startseite ein Hinweis gezeigt: können Approven oder Ablehnen (z.B. wenn nicht Autor der Publikation oder Affiliation nicht DSMZ)
+  - Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
 
 ## 29.07.22
 
