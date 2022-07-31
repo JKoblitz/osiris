@@ -309,7 +309,7 @@ function getDOI(doi) {
             pub.author.forEach((a, i) => {
                 var aoi = false
                 a.affiliation.forEach(e => {
-                    if (e.name.includes("DSMZ")) {
+                    if (e.name.includes(AFFILIATION)) {
                         aoi = true
                     }
                 })
@@ -440,7 +440,7 @@ function fillForm(pub) {
         })
     }
     if (aff_undef)
-        toastWarning('Not all affiliations could be parsed automatically. Please click on every DSMZ author to mark them.')
+        toastWarning('Not all affiliations could be parsed automatically. Please click on every '+AFFILATION+' author to mark them.')
 
 
     toastSuccess('Bibliographic data were updated.')
@@ -527,16 +527,16 @@ function getPubData(event, form) {
             $('.author-list').addClass('is-valid').find('.author').remove()
 
             pub.author.forEach(function (d, i) {
-                var dsmz = false
+                var aoi = false
                 d.affiliation.forEach(e => {
-                    if (e.name.includes("DSMZ")) {
-                        dsmz = true
+                    if (e.name.includes(AFFILATION)) {
+                        aoi = true
                     }
                 })
                 if (d.sequence == "first") {
                     first = i + 1
                 }
-                addAuthorDiv(d.family, d.given, dsmz)
+                addAuthorDiv(d.family, d.given, aoi)
             })
             $('#first-authors').val(first).addClass('is-valid')
 
@@ -583,7 +583,7 @@ function getDate(element) {
 }
 
 
-function addAuthorDiv(lastname, firstname, dsmz = false, editor = false, el=null) {
+function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el=null) {
     if (el== null){
         if (editor) {
             el = $('#add-editor')
@@ -597,9 +597,9 @@ function addAuthorDiv(lastname, firstname, dsmz = false, editor = false, el=null
         })
         .html(lastname + ', ' + firstname);
     var val = 0
-    if (dsmz) {
+    if (aoi) {
         val = 1
-        author.addClass('author-dsmz')
+        author.addClass('author-aoi')
     }
     val = lastname.trim() + ';' + firstname.trim() + ';' + val
 
@@ -610,7 +610,7 @@ function addAuthorDiv(lastname, firstname, dsmz = false, editor = false, el=null
 
 function toggleAffiliation(item) {
     var old = $(item).find('input').val().split(';')
-    if ($(item).hasClass('author-dsmz')) {
+    if ($(item).hasClass('author-aoi')) {
         old[2] = 0
     }
     else {
@@ -618,7 +618,7 @@ function toggleAffiliation(item) {
     }
     console.log(old);
     $(item).find('input').val(old.join(';'))
-    $(item).toggleClass('author-dsmz')
+    $(item).toggleClass('author-aoi')
 }
 
 function addAuthor(event, el) {

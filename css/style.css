@@ -44,13 +44,13 @@
     pointer-events: fill;
 } */
 
-.author.author-dsmz {
+.author.author-aoi {
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
 
-.author.author-dsmz::before {
-    content: 'DSMZ';
+.author.author-aoi::before {
+    content: var(--affiliation);
     font-size: 1.2rem;
     font-weight: 600;
     margin-right: .6rem;

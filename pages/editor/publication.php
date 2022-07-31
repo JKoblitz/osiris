@@ -14,9 +14,10 @@
         </thead>
         <tbody>
             <?php
-            
+
             $collection = $osiris->publications;
-            $cursor = $collection->find(['authors.user' => $user]);
+            $options = ['sort' => ["year" => -1, "month"=> -1]];
+            $cursor = $collection->find(['authors.user' => $user], $options);
             //, 'year' => intval(SELECTEDYEAR)
             if (empty($cursor)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No publications found.', 'Keine Publikationen gefunden.') . "</td></tr>";
@@ -42,6 +43,21 @@
                                         <?= lang(
                                             'I am not author of this publication',
                                             'Ich bin nicht Autor dieser Publikation'
+                                        ) ?>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm text-danger" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-handshake-slash"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-1">
+                                <div class="content">
+                                    <button class="btn text-danger" onclick="todo()">
+                                        <?= lang(
+                                            'I am not affiliated to the '.AFFILATION.' in this publication',
+                                            'Ich bin nicht der '.AFFILATION.' zugehörig in dieser Publikation'
                                         ) ?>
                                     </button>
                                 </div>

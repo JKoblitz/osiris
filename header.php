@@ -36,12 +36,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
     <script>
-        const ROOTPATH = "<?=ROOTPATH?>";
-</script>
-<script src="<?=ROOTPATH?>/js/digidive.js"></script>
-<script src="<?=ROOTPATH?>/js/jquery-3.3.1.min.js"></script>
-<script src="<?=ROOTPATH?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
-<script src="<?=ROOTPATH?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
+        const ROOTPATH = "<?= ROOTPATH ?>";
+        const AFFILATION = "<?= AFFILATION ?>";
+    </script>
+    <style>
+        :root {
+            --affiliation: "<?= AFFILATION ?>";
+        }
+    </style>
+    <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
+    <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
+    <script src="<?= ROOTPATH ?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
+    <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
 
 </head>
 
@@ -58,18 +64,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <!-- Sticky alerts (toasts), empty container -->
         <div class="sticky-alerts"></div>
 
-        
-    <div class="modal" id="the-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </a>
-                <h5 class="modal-title" id="modal-title"></h5>
-               <div id="modal-content"></div>
+
+        <div class="modal" id="the-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h5 class="modal-title" id="modal-title"></h5>
+                    <div id="modal-content"></div>
+                </div>
             </div>
         </div>
-    </div>
 
         <!-- Sidebar overlay -->
         <div class="sidebar-overlay" onclick="digidive.toggleSidebar()"></div>
@@ -112,13 +118,13 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             <form id="navbar-search" action="" method="get" class="nav-search">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <div class="input-group-text" data-toggle="tooltip" data-title="<?=lang('Select quarter', 'Wähle ein Quartal aus')?>">
-                        <i class="fa-regular fa-calendar-day"></i>
+                        <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
+                            <i class="fa-regular fa-calendar-day"></i>
                         </div>
                     </div>
                     <select name="select-year" id="select-year" class="form-control">
                         <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
-                            <option value="<?=$year?>" <?= SELECTEDYEAR == $year ? 'selected' : '' ?>><?=$year?></option>
+                            <option value="<?= $year ?>" <?= SELECTEDYEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
                         <?php } ?>
                     </select>
                     <select name="select-quarter" id="select-quarter" class="form-control">
@@ -237,15 +243,15 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <?php } ?>
 
                 <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon <?= $pageactive('about') ?>">
-                        <i class="far fa-signs-post" aria-hidden="true"></i>
-                        <?= lang('About', 'Über OSIRIS') ?>
-                    </a>
+                    <i class="far fa-signs-post" aria-hidden="true"></i>
+                    <?= lang('About', 'Über OSIRIS') ?>
+                </a>
 
 
-                    <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
-                        <i class="far fa-newspaper" aria-hidden="true"></i>
-                        <?= lang('News', 'Neuigkeiten') ?>
-                    </a>
+                <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
+                    <i class="far fa-newspaper" aria-hidden="true"></i>
+                    <?= lang('News', 'Neuigkeiten') ?>
+                </a>
 
 
             </div>
