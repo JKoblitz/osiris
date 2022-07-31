@@ -3,7 +3,7 @@
 <p class="text-danger lead">
     <?= lang('Editing does not work yet!', 'Bearbeiten funktioniert noch nicht!') ?>
 </p>
-
+ 
 <div class="p-0" id="meta-form">
     <form action="#" class="" id="edit-form">
         <input type="hidden" name="id" value="<?= $id ?>">
@@ -94,7 +94,7 @@
                         <td>Last name</td>
                         <td>First name</td>
                         <td>Position</td>
-                        <td>DSMZ Affiliation</td>
+                        <td><?=AFFILATION?> Affiliation</td>
                     </tr>
                 </thead>
                 <?php foreach ($authors as $i => $author) { ?>
@@ -114,8 +114,8 @@
                         </td>
                         <td>
                             <div class='custom-switch'>
-                                <input data-value='<?= $author['aoi'] ?>' autocomplete='off' type='checkbox' id='switch-dsmz-<?= $i ?>' value='1' name='dsmz[]' <?= ($author['aoi'] == 1 ? 'checked' : '') ?> required>
-                                <label for='switch-dsmz-<?= $i ?>' class='blank'></label>
+                                <input data-value='<?= $author['aoi'] ?>' autocomplete='off' type='checkbox' id='switch-aoi-<?= $i ?>' value='1' name='aoi[]' <?= ($author['aoi'] == 1 ? 'checked' : '') ?> required>
+                                <label for='switch-aoi-<?= $i ?>' class='blank'></label>
                             </div>
                         </td>
                     </tr>
