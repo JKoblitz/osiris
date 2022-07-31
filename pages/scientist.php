@@ -1,3 +1,9 @@
+<?php
+
+// $yearstart = mongo_date(SELECTEDYEAR . "-01-01");
+// $yearend = mongo_date(SELECTEDYEAR . "-12-31");
+
+?>
 
 
 <?php if ($user == $_SESSION['username']) { ?>
@@ -53,53 +59,38 @@
 
 <h3>
     <?php
-    echo lang('Research activities in ', 'Forschungsaktivitäten in '). SELECTEDYEAR;
+    echo lang('Research activities in ', 'Forschungsaktivitäten in ') . SELECTEDYEAR;
     ?>
 </h3>
 
 <div class="box box-primary">
     <div class="content">
-
         <h4 class="title"><i class="far fa-book-bookmark mr-5"></i> <?= lang('Publications', 'Publikationen') ?></h4>
-
-        
     </div>
     <table class="table table-simple">
         <tbody>
             <?php
-            $activity = new Publication;
-
-            $stmt = $db->prepare(
-                "SELECT publication_id, quarter.* FROM `authors` 
-                    INNER JOIN publication USING (publication_id) 
-                    LEFT JOIN quarter USING (q_id)
-                    WHERE user LIKE ? AND quarter.year = ?"
-            );
-            $stmt->execute([$user, SELECTEDYEAR]);
-            $pubs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($pubs)) {
-                echo "<div class='content'>" . lang('No publications found.', 'Keine Publikationen gefunden.') . "</div>";
-            } else foreach ($pubs as $pub) {
-                $selected = ($pub['quarter'] == SELECTEDQUARTER);
+            $collection = $osiris->publications;
+            $cursor = $collection->find(['authors.user' => $user, 'year' => SELECTEDYEAR]);
+            // dump($cursor);
+            foreach ($cursor as $document) {
+                $q = getQuarter($document['month']);
+                $in_quarter = $q == SELECTEDQUARTER;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td class='quarter'>Q$q</td>
+                    <td>" . format_publication($document) . "</td>
+                </tr>";
+            }
             ?>
-                <tr class="<?= !$selected ? 'row-muted' : '' ?>">
-                    <td class="quarter">
-                        Q<?= $pub['quarter'] ?>
-                    </td>
-                    <td>
-                        <?php $activity->print($pub['publication_id']); ?>
-                    </td>
-                </tr>
-            <?php } ?>
         </tbody>
     </table>
 
     <div class="content mt-0">
-        <?php $activity->printMsg(); ?>
         <a href="<?= ROOTPATH ?>/my-publication" class="btn text-primary">
             <i class="far fa-book-bookmark mr-5"></i> <?= lang('My publications', 'Meine Publikationen') ?>
+            
+        <a href="<?= ROOTPATH ?>/my-publication/add" class="btn"><i class="fas fa-plus"></i></a>
         </a>
-
     </div>
 
 </div>
@@ -114,38 +105,43 @@
     <table class="table table-simple">
         <tbody>
             <?php
-            $activity = new Poster;
-            $stmt = $db->prepare(
-                "SELECT poster_id, q_id FROM `authors` 
-                    INNER JOIN poster USING (poster_id) 
-                    LEFT JOIN quarter USING (q_id)
-                    WHERE user LIKE ?  AND quarter.year = ?"
-            );
-            $stmt->execute([$user, SELECTEDYEAR]);
-            $poster = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($poster)) {
-                echo "<div class='content'>" . lang('No posters found.', 'Keine Publikationen gefunden.') . "</div>";
-            } else foreach ($poster as $pub) {
-                $selected = true; //($pub['q_id'] == $quarter);
+            $collection = $osiris->posters;
+            $cursor = $collection->find([
+                'authors.user' => $user,
+                "start.year" => SELECTEDYEAR
+            ]);
+            // dump($cursor);
+            foreach ($cursor as $document) {
+                $q = getQuarter($document['start']);
+                $in_quarter = $q == SELECTEDQUARTER;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td class='quarter'>Q$q</td>
+                    <td>" . format_poster($document) . "</td>
+                </tr>";
+            }
             ?>
-                <tr class="<?= !$selected ? 'row-muted' : '' ?>">
-                    <!-- <td class="quarter">
-                        <?= str_replace('Q', ' Q', $pub['q_id']) ?>
-                    </td> -->
-                    <td>
-                        <?php $activity->print($pub['poster_id']); ?>
-                    </td>
-                </tr>
-            <?php } ?>
         </tbody>
     </table>
 
     <div class="content mt-0">
-        <?php $activity->printMsg(); ?>
         <a href="<?= ROOTPATH ?>/my-poster" class="btn text-danger">
             <i class="far fa-presentation-screen mr-5"></i> <?= lang('My posters', 'Meine Poster') ?>
         </a>
+        <a href="#add-poster" class="btn" role="button"><i class="fas fa-plus"></i></a>
+    </div>
+</div>
+<div class="modal" id="add-poster" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="title"><?= lang('Add poster', 'Poster hinzufügen') ?></h5>
+            <?php
+            include BASEPATH . "/components/form-poster.php"
+            ?>
 
+        </div>
     </div>
 </div>
 
@@ -159,40 +155,45 @@
     <table class="table table-simple">
         <tbody>
             <?php
-            $activity = new Lecture;
-            $stmt = $db->prepare(
-                "SELECT lecture_id, q_id FROM `authors` 
-                    INNER JOIN lecture USING (lecture_id) 
-                    LEFT JOIN quarter USING (q_id)
-                    WHERE user LIKE ? AND quarter.year = ?"
-            );
-            $stmt->execute([$user, SELECTEDYEAR]);
-            $lecture = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($lecture)) {
-                echo "<div class='content'>" . lang('No lectures found.', 'Keine Vorträge gefunden.') . "</div>";
-            } else foreach ($lecture as $pub) {
-                $selected = true; //($pub['q_id'] == $quarter);
+            $collection = $osiris->lectures;
+            $cursor = $collection->find([
+                'authors.user' => $user,
+                "start.year" => SELECTEDYEAR
+            ]);
+            // dump($cursor);
+            foreach ($cursor as $document) {
+                $q = getQuarter($document['start']);
+                $in_quarter = $q == SELECTEDQUARTER;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td class='quarter'>Q$q</td>
+                    <td>" . format_lecture($document) . "</td>
+                </tr>";
+            }
             ?>
-                <tr class="<?= !$selected ? 'row-muted' : '' ?>">
-                    <!-- <td class="quarter">
-                        <?= str_replace('Q', ' Q', $pub['q_id']) ?>
-                    </td> -->
-                    <td>
-                        <?php $activity->print($pub['lecture_id']); ?>
-                    </td>
-                </tr>
-            <?php } ?>
         </tbody>
     </table>
 
     <div class="content mt-0">
-        <?php $activity->printMsg(); ?>
         <a href="<?= ROOTPATH ?>/my-lecture" class="btn text-signal">
             <i class="far fa-keynote mr-5"></i> <?= lang('My lectures', 'Meine Vorträge') ?>
         </a>
-
+        <a href="#add-lecture" class="btn" role="button"><i class="fas fa-plus"></i></a>
     </div>
 </div>
+<div class="modal" id="add-lecture" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="title"><?= lang('Add lecture', 'Vortrag hinzufügen') ?></h5>
+            <?php
+            include BASEPATH . "/components/form-lecture.php"
+            ?>
+        </div>
+    </div>
+</div>
+
 
 <div class="box box-success">
     <div class="content">
@@ -203,37 +204,39 @@
     <table class="table table-simple">
         <tbody>
             <?php
-            $stmt = $db->prepare(
-                "SELECT * FROM `review`
-                    LEFT JOIN journal USING (journal_id)
-                    LEFT JOIN quarter USING (q_id)
-                    WHERE user LIKE ?  AND quarter.year = ? 
-                    ORDER BY `type` DESC"
-            );
-            $stmt->execute([$user, SELECTEDYEAR]);
-            $review = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($review)) {
-                echo "<div class='content'>" . lang('No review found.', 'Keine Reviewer-Aktivität gefunden.') . "</div>";
-            } else foreach ($review as $pub) {
-                $selected = true; //($pub['q_id'] == $quarter);
+            $collection = $osiris->reviews;
+            // first editorials
+            $filter = [
+                'user' => $user,
+                "role" => "Editor",
+                "start.year" => array('$lte' => SELECTEDYEAR),
+                '$or' => array(
+                    ['end.year' => array('$gte' => SELECTEDYEAR)],
+                    ['end' => null]
+                )
+            ];
+            $cursor = $collection->find($filter);
+            foreach ($cursor as $document) {
+                $in_quarter = true;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td>" . format_editorial($document) . "</td>
+                </tr>";
+            }
+
+            // next reviews
+            $filter = [
+                'user' => $user,
+                "role" => "Reviewer",
+                "dates.year" => SELECTEDYEAR
+            ];
+            $cursor = $collection->find($filter);
+            foreach ($cursor as $document) {
+                $in_quarter = true;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td>" . format_review($document) . "</td>
+                </tr>";
+            }
             ?>
-                <tr class="<?= !$selected ? 'row-muted' : '' ?>">
-                    <!-- <td class="quarter">
-                        <?= str_replace('Q', ' Q', $pub['q_id']) ?>
-                    </td> -->
-                    <td>
-                        <b><?php if (isset($userArr)) {
-                                echo Database::abbreviateAuthor($userArr['last_name'], $userArr['first_name']);
-                            } else {
-                                echo $userClass->name('abbreviated');
-                            } ?></b>
-
-
-                        <?= $pub['type'] == 'editor' ? 'Member of the Editorial Board of ' : 'Reviewer for ' ?>
-                        <?= $pub['journal'] ?>
-                    </td>
-                </tr>
-            <?php } ?>
         </tbody>
     </table>
 
@@ -242,11 +245,24 @@
             <i class="far fa-book-open-cover mr-5"></i> <?= lang('My reviews &amp; editorials', 'Meine Reviews &amp; Editorials') ?>
         </a>
 
+        <a href="#add-review" class="btn" role="button"><i class="fas fa-plus"></i></a>
     </div>
-
-
-
 </div>
+<div class="modal" id="add-review" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="title"><?= lang('Add Review/Editorial', 'Review/Editorial hinzufügen') ?></h5>
+            <?php
+            include BASEPATH . "/components/form-review.php"
+            ?>
+
+        </div>
+    </div>
+</div>
+
 <div class="box box-muted">
     <div class="content">
 
@@ -256,38 +272,46 @@
     <table class="table table-simple">
         <tbody>
             <?php
-            include_once BASEPATH . "/php/Teaching.php";
-            $stmt = $db->prepare(
-                "SELECT teaching_id
-                FROM `authors`
-                INNER JOIN teaching USING (teaching_id) 
-                WHERE `user` LIKE ? AND YEAR(date_start) <= ? and YEAR(date_end) >= ?;
-                ORDER BY date_start
-                "
-            );
-            $stmt->execute([$user, SELECTEDYEAR, SELECTEDYEAR]);
-            $teaching = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            if (empty($teaching)) {
-                echo "<div class='content'>" . lang('No teachings found.', 'Keine Publikationen gefunden.') . "</div>";
-            } else foreach ($teaching as $id) {
-
-                $activity = new Teaching($id);
-                $selected = $activity->inSelectedQuarter();
+            $collection = $osiris->teachings;
+            $cursor = $collection->find([
+                'authors.user' => $user,
+                "start.year" => array('$lte' => SELECTEDYEAR),
+                '$or' => array(
+                    ['end.year' => array('$gte' => SELECTEDYEAR)],
+                    ['end' => null]
+                )
+            ]);
+            // dump($cursor);
+            foreach ($cursor as $document) {
+                $in_quarter = true;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td>" . format_teaching($document) . "</td>
+                </tr>";
+            }
             ?>
-                <tr class="<?= !$selected ? 'row-muted' : '' ?>">
-                    <td><?= $activity->print() ?></td>
-                </tr>
-            <?php } ?>
         </tbody>
 
     </table>
 
 
     <div class="content mt-0">
-        <?php $activity->printMsg(); ?>
         <a href="<?= ROOTPATH ?>/my-teaching" class="btn text-muted">
             <i class="far fa-book-open-cover mr-5"></i> <?= lang('My teaching &amp; guests', 'Meine Abschlussarbeiten und Gäste') ?>
         </a>
+        <a href="#add-teaching" class="btn" role="button"><i class="fas fa-plus"></i></a>
+    </div>
+</div>
+<div class="modal" id="add-teaching" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="title"><?= lang('Add teaching &amp; guests', 'Abschlussarbeiten oder Gäste hinzufügen') ?></h5>
+            <?php
+            include BASEPATH . "/components/form-teaching.php"
+            ?>
 
+        </div>
     </div>
 </div>

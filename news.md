@@ -1,4 +1,27 @@
+# Fragen
+
+1. wenn ich ein Poster präsentiere auf einer Konferenz, die vom 30.06. bis zum 01.07. stattfindet, liegt das in Quartal 2 oder 3? Oder anders gefragt: entscheidet das Anfangs- oder das Enddatum über das Quartal?
+
+
 # Changelog
+
+
+## 29.07.22
+
+Ich habe mal wieder alles auf den Kopf gestellt. Die Datenbank zum Beispiel. Dort läuft jetzt MongoDB anstatt MySQL. Warum? Weil das für mehr Flexibilität, schnellere Ladezeiten und geringere Entwicklungszeit führt. Key-Value for the win :)
+
+Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
+- Alle CRUD-Funktionen wurden hinzugefügt, was bedeutet, dass sich jetzt alle dargestellten Aktivitäten erstellen, anzeigen, bearbeiten und löschen lassen. Einzige Ausnahme ist das Hinzufügen/Bearbeiten von Publikationen.
+- Bei vielen Aktivitätstypen gibt es Sonderfunktionen:
+  - Abschlussarbeiten können einfach verlängert werden.
+  - Bereits gehaltenen Vorträgen kann einfach eine Wiederholung hinzugefügt werden
+  - Reviews können weitere Reviewaktivitäten hinzugefügt werden
+  - Die Zeitspanne von Editorials kann angepasst werden
+  - Sonstige Forschungsaktivitäten (Misc) können weitere Termine hinzugefügt werden (wenn einmalig) bzw. die Zeitspanne angepasst werden (wenn annual)
+- Auf der Übersichtsseite eines Wissenschaftlers können neue Aktivitäten über Popups hinzugefügt werden
+- Man kann bei allen Aktivitäten den Nutzer auswählen, sodass z.B. auch das Controlling für andere Nutzer Aktivitäten hinzufügen kann.
+- Die Übersicht der Nutzer ist nun durchsuchbar (Vorname, Nachname, Kürzel) und kann nach Wissenschaftler gefiltert werden.
+- Die Übersicht der Journale ist nun nach Name des Journals und ISSN durchsuchbar.
 
 ## 24.07.22
 

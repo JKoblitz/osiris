@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label for="author" class="required"><?= lang('Author(s)', 'Autor(en)') ?></label>
                 <div class="author-list">
-                    <div class="author author-dsmz">Koblitz, Julia<input type="hidden" name="author[]" value="<?=$userClass->last?>;<?=$userClass->first?>;1"><a onclick="removeAuthor(event, this)">&times;</a></div>
+                    <div class="author author-dsmz"><?=$USER['last_name']?>, <?=$USER['first_name']?><input type="hidden" name="author[]" value="<?=$USER['last_name']?>;<?=$USER['first_name']?>;1"><a onclick="removeAuthor(event, this)">&times;</a></div>
                     <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
                 </div>
             </div>
@@ -85,20 +85,17 @@
 
 <datalist id="scientist-list">
     <?php
-    $stmt = $db->prepare("SELECT CONCAT(last_name, ', ', first_name) FROM `users` ORDER BY last_name ASC");
-    $stmt->execute();
-    $scientist = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $scientist = $osiris->users->find();
     foreach ($scientist as $s) { ?>
-        <option><?= $s ?></option>
+        <option><?= $s['last_name'] ?>, <?= $s['first_name'] ?></option>
     <?php } ?>
 </datalist>
 
+
 <datalist id="journal-list">
     <?php
-    $stmt = $db->prepare("SELECT journal FROM `journal` ORDER BY journal ASC");
-    $stmt->execute();
-    $journals = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    foreach ($journals as $j) { ?>
-        <option><?= $j ?></option>
+    $journal = $osiris->journals->find();
+    foreach ($journal as $j) { ?>
+        <option><?= $j['journal'] ?></option>
     <?php } ?>
 </datalist>

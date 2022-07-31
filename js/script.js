@@ -1,9 +1,11 @@
 
-const SCIENTISTS = Object.values(
-    $('#scientist-list option').map(function (index, item) {
+var SCIENTISTS;
+$(document).ready(function () {
+    var scientists = $('#scientist-list option').map(function (index, item) {
         return item.value
     })
-)
+    SCIENTISTS = Object.values(scientists)
+})
 
 $('input[name=activity]').on('change', function () {
     $('input[name=activity]').removeClass('btn-primary')
@@ -548,31 +550,6 @@ function getPubData(event, form) {
     })
 }
 
-
-function addAuthorDiv(lastname, firstname, dsmz = false, editor = false) {
-    var author = $('<div class="author">')
-        .on('click', function () {
-            toggleAffiliation(this)
-        })
-        .html(lastname + ', ' + firstname);
-    var val = 0
-    if (dsmz) {
-        val = 1
-        author.addClass('author-dsmz')
-    }
-    val = lastname.trim() + ';' + firstname.trim() + ';' + val
-
-    author.append('<input type="hidden" name="author[]" value="' + val + '">')
-    author.append('<a onclick="removeAuthor(event, this)">&times;</a>')
-    if (editor) {
-        author.insertBefore($('#add-editor'))
-
-    } else {
-        author.insertBefore($('#add-author'))
-
-    }
-}
-
 function getPublishingDate(pub) {
     var date = ["", "", ""];
     if (pub['published-print']) {
@@ -605,6 +582,32 @@ function getDate(element) {
     return date
 }
 
+
+function addAuthorDiv(lastname, firstname, dsmz = false, editor = false, el=null) {
+    if (el== null){
+        if (editor) {
+            el = $('#add-editor')
+        } else {
+            el = $('#add-author')
+        }
+    } 
+    var author = $('<div class="author">')
+        .on('click', function () {
+            toggleAffiliation(this)
+        })
+        .html(lastname + ', ' + firstname);
+    var val = 0
+    if (dsmz) {
+        val = 1
+        author.addClass('author-dsmz')
+    }
+    val = lastname.trim() + ';' + firstname.trim() + ';' + val
+
+    author.append('<input type="hidden" name="values[authors][]" value="' + val + '">')
+    author.append('<a onclick="removeAuthor(event, this)">&times;</a>')
+        author.insertBefore(el)
+}
+
 function toggleAffiliation(item) {
     var old = $(item).find('input').val().split(';')
     if ($(item).hasClass('author-dsmz')) {
@@ -627,7 +630,7 @@ function addAuthor(event, el) {
             toastError('Author name must be formatted like this: Lastname, Firstname')
             return;
         }
-        addAuthorDiv(value[0], value[1], match)
+        addAuthorDiv(value[0], value[1], match, false, $(el))
 
         $(el).val('')
         return false;
@@ -713,5 +716,21 @@ function todo() {
         title: '<i class="fa-solid fa-face-shush fa-3x text-signal"></i>',
         alertType: "",
         hasDismissButton: true
+    })
+}
+
+function toggleEditForm(collection, id) {
+    $.ajax({
+        type: "GET",
+        dataType: "html",
+        url: ROOTPATH + '/form/' + collection + '/'+id,
+        success: function (response) {
+            $('#modal-content').html(response)
+            $('#the-modal').addClass('show')
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('#loader').hide()
+        }
     })
 }

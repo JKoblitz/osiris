@@ -1,16 +1,8 @@
-<?php
-include_once BASEPATH . "/php/Publication.php";
-
-$subpage = $_GET['add'] ?? 'view';
-?>
-
-
 <div class="content">
 
-    <h1 class=""><i class="fa-regular fa-book-bookmark text-primary fa-lg mr-10"></i>  <?= lang('My publications', 'Meine Publikationen') ?></h1>
+    <h1 class=""><i class="fa-regular fa-book-bookmark text-primary fa-lg mr-10"></i> <?= lang('My publications', 'Meine Publikationen') ?></h1>
 
-
-<a href="<?=ROOTPATH?>/my-publication/add"><i class="fas fa-plus"></i> <?=lang('Add publication', 'Publikation hinzufügen')?></a>
+    <a href="<?= ROOTPATH ?>/my-publication/add"><i class="fas fa-plus"></i> <?= lang('Add publication', 'Publikation hinzufügen') ?></a>
 
     <table class="table">
         <thead>
@@ -22,25 +14,22 @@ $subpage = $_GET['add'] ?? 'view';
         </thead>
         <tbody>
             <?php
-            $publication = new Publication;
-            $stmt = $db->prepare(
-                "SELECT publication_id, q_id FROM `authors` 
-                    INNER JOIN publication USING (publication_id) 
-                    WHERE user LIKE ? ORDER BY q_id DESC"
-            );
-            $stmt->execute([$user]);
-            $activity = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($activity)) {
+            
+            $collection = $osiris->publications;
+            $cursor = $collection->find(['authors.user' => $user]);
+            //, 'year' => intval(SELECTEDYEAR)
+            if (empty($cursor)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No publications found.', 'Keine Publikationen gefunden.') . "</td></tr>";
-            } else foreach ($activity as $act) {
-                $selected = ($act['q_id'] == SELECTEDYEAR . "Q" . SELECTEDQUARTER);
+            } else foreach ($cursor as $document) {
+                $q = getQuarter($document['month']);
+                $in_quarter = $q == SELECTEDQUARTER;
             ?>
-                <tr class="<?= !$selected ? 'row-muted' : '' ?>">
+                <tr class="<?= !$in_quarter ? 'row-muted' : '' ?>">
                     <td class="quarter">
-                        <?= str_replace('Q', ' Q', $act['q_id']) ?>
+                        <?=$document['year']?>Q<?= $q ?>
                     </td>
                     <td>
-                        <?php $publication->print($act['publication_id']); ?>
+                        <?php echo format_publication($document); ?>
                     </td>
                     <td>
                         <div class="dropdown">
@@ -49,14 +38,12 @@ $subpage = $_GET['add'] ?? 'view';
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-1">
                                 <div class="content">
-
                                     <button class="btn text-danger" onclick="todo()">
                                         <?= lang(
                                             'I am not author of this publication',
-                                            'Ich bin nicht Author dieser Publikation'
+                                            'Ich bin nicht Autor dieser Publikation'
                                         ) ?>
                                     </button>
-
                                 </div>
                             </div>
                         </div>
@@ -73,10 +60,8 @@ $subpage = $_GET['add'] ?? 'view';
 
 <datalist id="scientist-list">
     <?php
-    $stmt = $db->prepare("SELECT CONCAT(last_name, ', ', first_name) FROM `users` ORDER BY last_name ASC");
-    $stmt->execute();
-    $scientist = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $scientist = $osiris->users->find();
     foreach ($scientist as $s) { ?>
-        <option><?= $s ?></option>
+        <option><?= $s['last_name'] ?>, <?= $s['first_name'] ?></option>
     <?php } ?>
 </datalist>

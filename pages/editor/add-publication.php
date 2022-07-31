@@ -25,6 +25,9 @@
         <button onclick="togglePubType('chapter')" class="btn" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
     </div>
 
+    <p class="lead text-danger">
+        Achtung: dieses Formular funktioniert zurzeit nicht (noch nicht auf die neue DB umgestellt)!
+    </p>
 
     <div class="box box-primary" style="display:none" id="publication-form">
         <div class="content">
@@ -61,8 +64,8 @@
                 </div>
 <!-- 
                 <div class="form-group">
-                    <label class="required" for="date_publication"><?= lang('Date of publication (print preferred)', 'Datum der Publikation (bevorzugt Print)') ?></label>
-                    <input type="date" class="form-control" name="date_publication" id="date_publication" required>
+                    <label class="required" for="publication"><?= lang('Date of publication (print preferred)', 'Datum der Publikation (bevorzugt Print)') ?></label>
+                    <input type="date" class="form-control" name="publication" id="date_publication" required>
                 </div> -->
 
                 <div class="form-group">
@@ -149,19 +152,16 @@
 
 <datalist id="journal-list">
     <?php
-    $stmt = $db->prepare("SELECT journal FROM `journal` ORDER BY journal ASC");
-    $stmt->execute();
-    $journals = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    foreach ($journals as $j) { ?>
-        <option><?= $j ?></option>
+    $journal = $osiris->journals->find();
+    foreach ($journal as $j) { ?>
+        <option><?= $j['journal'] ?></option>
     <?php } ?>
 </datalist>
+
 <datalist id="scientist-list">
     <?php
-    $stmt = $db->prepare("SELECT CONCAT(last_name, ', ', first_name) FROM `users` ORDER BY last_name ASC");
-    $stmt->execute();
-    $scientist = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $scientist = $osiris->users->find();
     foreach ($scientist as $s) { ?>
-        <option><?= $s ?></option>
+        <option><?= $s['last'] ?>, <?= $s['first'] ?></option>
     <?php } ?>
 </datalist>

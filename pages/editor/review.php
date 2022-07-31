@@ -1,112 +1,132 @@
 <div class="content">
 
-<h1><i class="fa-regular fa-book-open-cover text-success fa-lg mr-10"></i> <?= lang('My reviews &amp; editorial boards', 'Meine Reviews &amp; Editorial Boards') ?></h1>
+    <h1>
+        <i class="fa-regular fa-book-open-cover text-success fa-lg mr-10"></i>
+        <?= lang('My reviews &amp; editorial boards', 'Meine Reviews &amp; Editorial Boards') ?>
+    </h1>
 
-<table class="table">
+
+    <div class="box box-primary" id="review-form" style="display:none">
+        <div class="content">
+            <?php
+            include BASEPATH . "/components/form-review.php"
+            ?>
+        </div>
+    </div>
+
+
+    <div id="add-btn-row">
+        <button class="btn btn-link" onclick="$('#review-form').slideToggle() "><i class="fas fa-plus"></i> <?= lang('Add activity', 'Füge Aktivität hinzu') ?></button>
+    </div>
+
+    <table class="table">
         <thead>
             <tr>
-                <td><?= lang('Quarter', 'Quartal') ?></td>
+                <!-- <td><?= lang('Quarter', 'Quartal') ?></td> -->
                 <td><?= lang('Activity', 'Aktivität') ?></td>
                 <td><?= lang('Count of reviews', 'Anzahl d. Reviews') ?></td>
             </tr>
         </thead>
-        <tr id="add-btn-row">
-            <td colspan="3">
-                <button class="btn" onclick="$('#add-btn-row').hide();$('#interface-row').show() "><i class="fas fa-plus"></i> <?= lang('Add activity', 'Füge Aktivität hinzu') ?></button>
-            </td>
-        </tr>
-        <tr id="interface-row" style="display:none">
-            <td class="quarter">
-                <?= SELECTEDQUARTER ?>
-                <input type="hidden" name="quarter" value="<?= SELECTEDQUARTER ?>">
-                <input type="hidden" name="user" value="<?= $user ?>">
-                <input type="hidden" name="type" value="review-add">
-            </td>
-            <td>
-                <div class="input-group">
-                    <select class="form-control" id="type-input" name="activity" style="max-width: 15rem;" required>
-                        <option value="review" selected>Reviewer</option>
-                        <option value="editor">Editorial</option>
-                    </select>
-                    <input type="text" class="form-control" placeholder="Journal" id="journal-input" name="journal" list="journal-list" required>
-                </div>
-            </td>
-            <td>
-                <input type="number" name="review_count" id="review_count" value="1" class="form-control w-50 d-inline-block">
-
-                <button class="btn btn-success ml-10" onclick="addRow2db(this)">
-                    <i class="fa-regular fa-check"></i>
-                </button>
-            </td>
-        </tr>
 
         <?php
-        $stmt = $db->prepare(
-            "SELECT * FROM `review`
-        LEFT JOIN journal USING (journal_id)
-        WHERE user LIKE ? ORDER BY q_id DESC, `type` DESC"
-        );
-        $stmt->execute([$user]);
-        $review = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (empty($review)) {
-            echo "<p>" . lang('No reviews or editorials found.', 'Keine Reviews oder Editorials gefunden.') . "</p>";
-        } else foreach ($review as $pub) {
-            $selected = ($pub['q_id'] == SELECTEDQUARTER);
-            $review_id = $pub['review_id'];
+        $cursor = $osiris->reviews->find(['user' => $user]);
+        // dump($cursor);
+        if (empty($cursor)) {
+            echo "<tr class='row-danger'><td colspan='3'>" . lang('No reviews found.', 'Keine Reviews gefunden.') . "</td></tr>";
+        } else foreach ($cursor as $document) {
+            // $q = getQuarter($document['start']['month']);
+            // $in_quarter = $q == SELECTEDQUARTER;
+            $in_quarter = true;
         ?>
-            <tr class="<?= !$selected ? 'row-muted' : '' ?>" id="review<?=$review_id?>">
-                <td class="quarter">
-                    <?= str_replace('Q', ' Q', $pub['q_id']) ?>
-                </td>
+            <tr class="<?= !$in_quarter ? 'row-muted' : '' ?>" id="<?= $document['_id'] ?>">
                 <td>
-                    <?= $pub['type'] == 'editor' ? 'Member of the Editorial Board of ' : 'Reviewer for ' ?>
-                    <?= $pub['journal'] ?>
+                    <?php echo format("review", $document); ?>
+                    <?php if (isset($document['dates'])) { ?>
+                        <a onclick="$(this).next().slideToggle()"><i class="fas fa-asterisk"></i></a>
+                        <div style="display:none;" class="text-muted">
+                            <?php 
+                            $dates = [];
+                            foreach ($document['dates'] as $date) { 
+                                $d = getDateTime($date);
+                                $dates[] = date_format($d, "m/Y");
+                             }
+                             echo commalist($dates, lang('and', 'und'));
+                             ?>
+
+                        </div>
+                    <?php } ?>
+
                 </td>
-                <td>
-                    <?php if ($pub['type'] == 'review') { ?>
-                        <span><?= $pub['review_count'] ?></span>
-                        <?php if ($selected) { ?>
-                            <div class="btn-group ml-10" role="group" aria-label="Basic example">
-                                <button class="btn btn-sm text-success" data-toggle="tooltip" data-title="<?= lang('Add one', 'Füge eins hinzu') ?>" onclick="updateReview('<?=$review_id?>', 1)">
-                                    <i class="fas fa-plus"></i>
+                <td class="unbreakable">
+                <?php if ($document['role'] == 'Reviewer') { ?>
+                            <div class="dropdown">
+                                <button class="btn btn-sm text-primary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa-regular fa-lg fa-calendar-plus"></i>
                                 </button>
-                                <?php if ($pub['review_count'] > 1) { ?>
-                                <button class="btn btn-sm text-danger" data-toggle="tooltip" data-title="<?= lang('Remove one', 'Entferne eins') ?>" onclick="updateReview('<?=$review_id?>', -1)">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <?php } ?>
-                                
+                                <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdown-1">
+                                    <div class="content">
+                                        <form action="<?= ROOTPATH ?>/push-dates/review/<?= $document['_id'] ?>" method="post">
+                                            <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+
+                                            <div class="form-group">
+                                                <label class="required" for="date"><?= lang('Date', 'Datum') ?></label>
+                                                <input type="date" class="form-control" name="values[dates]" id="date" required>
+                                            </div>
+
+                                            <button class="btn"><?= lang('Add review', 'Review hinzufügen') ?></button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
+
+                        <?php } else { ?>
+                            <div class="dropdown">
+                                <button class="btn btn-sm text-primary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa-regular fa-lg fa-calendar-pen"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-center" aria-labelledby="dropdown-1">
+                                    <div class="content">
+                                        <form action="<?= ROOTPATH ?>/push-dates/review/<?= $document['_id'] ?>" method="post">
+                                            <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+
+
+                                            <div class="form-group">
+                                                <label class="required" for="start"><?= lang('Start', 'Anfang') ?></label>
+                                                <input type="date" class="form-control" name="values[start]" id="start" required value="<?= valueFromDateArray($document['start'] ?? '') ?>">
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label for="end"><?= lang('End', 'Ende') ?></label>
+                                                <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($document['end'] ?? '') ?>">
+                                            </div>
+
+                                            <button class="btn"><?= lang('Update', 'Aktualisieren') ?></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                         <?php } ?>
 
-                    <?php } ?>
-                    <?php if (!$selected) { ?>
-                        <button class="btn btn-sm text-success ml-10" data-toggle="tooltip" data-title="<?= lang('Copy one to current quarter', 'Kopiere eins ins aktuelle Quartal') ?>"  onclick="todo()">
-                            <i class="fa-regular fa-calendar-plus"></i>
+                    <div class="dropdown">
+                        <button class="btn btn-sm text-danger" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-regular fa-lg fa-trash-alt"></i>
                         </button>
-
-                    <?php } ?>
-
-                <?php if ($selected) { ?>
-                        <button class="btn btn-sm text-danger ml-20" data-toggle="tooltip" data-title="<?= lang('Remove activity', 'Entferne Aktivität') ?>"  onclick="todo()">
-                            <i class="fa-regular fa-trash-alt"></i>
-                        </button>
-
-                    <?php } ?>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-1">
+                            <div class="content">
+                                <button class="btn text-danger" onclick="_delete('review', '<?= $document['_id'] ?>')">
+                                    <?= lang(
+                                        'Delete entry',
+                                        'Lösche Eintrag'
+                                    ) ?>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         <?php } ?>
-       
+
     </table>
 </div>
-
-
-<datalist id="journal-list">
-    <?php
-    $stmt = $db->prepare("SELECT journal FROM `journal` ORDER BY journal ASC");
-    $stmt->execute();
-    $journals = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    foreach ($journals as $j) { ?>
-        <option><?= $j ?></option>
-    <?php } ?>
-</datalist>

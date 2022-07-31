@@ -1,15 +1,15 @@
 <?php
 
 
-global $db;
-$db = new PDO("mysql:host=localhost;dbname=osiris;charset=utf8mb4", 'juk', 'Zees1ius');
+// global $db;
+// $db = new PDO("mysql:host=localhost;dbname=osiris;charset=utf8mb4", 'juk', 'Zees1ius');
 
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-global $userClass;
-include_once BASEPATH . "/php/User.php";
 // global $userClass;
-$userClass = new User($_SESSION['username'] ?? null);
+// include_once BASEPATH . "/php/User.php";
+// // global $userClass;
+// $userClass = new User($_SESSION['username'] ?? null);
 
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
@@ -39,13 +39,25 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         }
     }
     switch ($msg) {
-        
+
         case 'welcome':
             $header = lang("Welcome,", "Willkommen,") . " " . ($_SESSION["name"] ?? '') . ".";
             $text = lang("You are now logged in.", "Du bist jetzt eingeloggt.");
             $class = "success";
             break;
-       
+
+        case 'add-success':
+            $header = lang("Success", "Erfolg");
+            $text = lang("Data set was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
+            $class = "success";
+            break;
+
+        case 'update-success':
+            $header = lang("Success", "Erfolg");
+            $text = lang("Data set was updated successfully.", "Der Datensatz wurde erfolgreich bearbeitet.");
+            $class = "success";
+            break;
+
         default:
             $text = str_replace("-", " ", $msg);
             break;
@@ -135,7 +147,8 @@ function currentGET(array $exclude = [], array $include = [])
     return $get;
 }
 
-function addJournal($journal){
+function addJournal($journal)
+{
     global $db;
     $journal_id = null;
     if (!empty($journal)) {
@@ -151,7 +164,8 @@ function addJournal($journal){
     return $journal_id;
 }
 
-function addAuthors($authors, $first, $table, $id){
+function addAuthors($authors, $first, $table, $id)
+{
     global $db;
 
     $find = $db->prepare('SELECT `user` FROM users WHERE last_name LIKE ? AND first_name LIKE ?');
@@ -195,8 +209,9 @@ if (!function_exists('str_contains')) {
     }
 }
 
-function dump($element){
-echo '<pre class="code">';
-var_dump($element);
-echo "</pre>";
+function dump($element)
+{
+    echo '<pre class="code">';
+    var_dump($element);
+    echo "</pre>";
 }

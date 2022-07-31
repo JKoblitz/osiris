@@ -1,12 +1,12 @@
 .quarter{
-    width: 9rem;
+    width: 6rem;
     font-family: 'Courier New', Courier, monospace;
     font-weight: 600;
 }
 
 
 .table tbody tr.row-muted td {
-    background-color: #f5f5f5;
+    background-color: white;
 }
 
 .sidebar-menu {

@@ -39,6 +39,10 @@
         content: '\f14a';
         color: var(--success-color);
       }
+      .check-list li.moved::before {
+        content: '\f32b';
+        color: var(--signal-color);
+      }
 </style>
 
 <h2>To-Do and Roadmap</h2>
@@ -54,26 +58,26 @@
             <li class="checked">Poster</li>
             <li class="checked">Vorträge</li>
             <li class="checked">Reviews und Editorials</li>
-            <li>Gäste</li>
-            <li>Doktoranden-Betreuung</li>
-            <li>Drittmittel und Projekte?</li>
-            <li>Habilitationen und Preise?</li>
-            <li>Sonstige Aktivitäten</li>
+            <li class="checked">Gäste</li>
+            <li class="checked">Doktoranden-Betreuung</li>
+            <li class="moved">Drittmittel und Projekte?</li>
+            <li class="moved">Habilitationen und Preise?</li>
+            <li class="checked">Sonstige Aktivitäten</li>
         </ul>
     </li>
-    <li>Alle Datenfelder können über ein Interface zur DB hinzugefügt werden</li>
-    <li>Alle Datenfelder können bearbeitet und entfernt werden</li>
-    <li>Übersichtsseite eines Wissenschaftlers</li>
+    <li class="checked">Alle Datenfelder können über ein Interface zur DB hinzugefügt werden <span class="text-danger">(Außer Publikationen, die folgen demnächst)</span></li>
+    <li class="checked">Alle Datenfelder können bearbeitet und entfernt werden</li>
+    <li class="checked">Übersichtsseite eines Wissenschaftlers</li>
     <li class="checked">Import der DSMZ-Bibliographie</li>
     <li class="checked">Import der Wissenschaftler und Journale</li>
     <li class="checked">Import der Impact Faktoren</li>
-    <li>Such- und Filterfunktionen für die Übersichtsseiten</li>
+    <li class="checked">Such- und Filterfunktionen für die Übersichtsseiten</li>
     <li>Vermeidung von Datendoppelungen</li>
     <li class="checked">Quartal-Auswahl</li>
     <li>Knopf auf der Wissenschaftlerseite, um Daten zu bestätigen</li>
     <li class="checked">Übersetzung der Seite in zwei Sprachen</li>
     <li class="checked">Nutzerrollen zufügen (Admin, Controller, Group leader, Scientist)</li>
-    <li>Zugriff auf verschiedene Seiten sind rollenspezifisch</li>
+    <li>Zugriff auf verschiedene Seiten sind rollenspezifisch @Controlling: wer darf was?</li>
 </ul>
 
 <h3>Erweiterte Funktionen (Auswertung und Analyse)</h3>

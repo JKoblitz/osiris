@@ -1,5 +1,6 @@
 <?php
 include_once BASEPATH . "/php/_config.php";
+include_once BASEPATH . "/php/_db.php";
 
 $breadcrumb = $breadcrumb ?? [];
 $pagetitle = array('OSIRIS');
@@ -40,6 +41,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 <script src="<?=ROOTPATH?>/js/digidive.js"></script>
 <script src="<?=ROOTPATH?>/js/jquery-3.3.1.min.js"></script>
 <script src="<?=ROOTPATH?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
+<script src="<?=ROOTPATH?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
 
 </head>
 
@@ -55,6 +57,19 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
         <!-- Sticky alerts (toasts), empty container -->
         <div class="sticky-alerts"></div>
+
+        
+    <div class="modal" id="the-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+                <h5 class="modal-title" id="modal-title"></h5>
+               <div id="modal-content"></div>
+            </div>
+        </div>
+    </div>
 
         <!-- Sidebar overlay -->
         <div class="sidebar-overlay" onclick="digidive.toggleSidebar()"></div>
@@ -181,7 +196,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <div class="sidebar-title">
+                    <!-- <div class="sidebar-title">
                         <?= lang('Content', 'Inhalte') ?>
                     </div>
                     <a href="<?= ROOTPATH ?>/browse/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
@@ -192,7 +207,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <a href="<?= ROOTPATH ?>/browse/poster" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('poster') ?>">
                         <i class="far fa-screen-users" aria-hidden="true"></i>
                         <?= lang('Posters', 'Poster') ?>
-                    </a>
+                    </a> -->
 
                     <!-- <a href="<?= ROOTPATH ?>/browse/activity" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('activity') ?>">
                         <i class="far fa-calendar-days" aria-hidden="true"></i>
@@ -201,7 +216,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
 
 
-                    <?php if ($userClass->is_admin() || $userClass->is_controlling()) { ?>
+                    <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
 
                         <div class="sidebar-title">
                             <?= lang('Controlling') ?>

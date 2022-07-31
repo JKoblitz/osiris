@@ -54,10 +54,10 @@ if (!empty($_GET['select-year'])) {
 $year = date("Y");
 $month = date("n");
 $quarter = ceil($month / 3);
-define('CURRENTQUARTER', "$quarter");
-define('CURRENTYEAR', $year);
-define('SELECTEDQUARTER', $_COOKIE['osiris-quarter'] ?? CURRENTQUARTER);
-define('SELECTEDYEAR', $_COOKIE['osiris-year'] ?? CURRENTYEAR);
+define('CURRENTQUARTER', intval($quarter));
+define('CURRENTYEAR', intval($year));
+define('SELECTEDQUARTER', intval($_COOKIE['osiris-quarter'] ?? CURRENTQUARTER));
+define('SELECTEDYEAR', intval($_COOKIE['osiris-year'] ?? CURRENTYEAR));
 
 
 function lang($en, $de = null)
@@ -72,19 +72,17 @@ function lang($en, $de = null)
 include_once BASEPATH . "/php/Route.php";
 
 Route::get('/', function () {
-    include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/pages/userlogin.php";
-    } elseif ($userClass->is_controlling()) {
-        include BASEPATH . "/pages/controlling.php";
-    } elseif ($userClass->is_scientist()) {
-        $user = $_SESSION['username'];
-        $name = $_SESSION['name'];
-        include_once BASEPATH . "/php/Publication.php";
-        include_once BASEPATH . "/php/Poster.php";
-        include_once BASEPATH . "/php/Lecture.php";
-        include BASEPATH . "/pages/scientist.php";
+    } else {
+        if ($USER['is_controlling']) {
+            include BASEPATH . "/pages/controlling.php";
+        } elseif ($USER['is_scientist']) {
+            $user = $_SESSION['username'];
+            $name = $_SESSION['name'];
+            include BASEPATH . "/pages/scientist.php";
+        }
     }
     include BASEPATH . "/footer.php";
 });
@@ -212,6 +210,8 @@ Route::post('/user/login', function () {
 
 Route::get('/(my-publication|my-review|my-poster|my-lecture|my-misc|my-teaching)', function ($page) {
     include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
     $user = $_SESSION['username'];
     $path = str_replace('my-', '', $page);
     $breadcrumb = [
@@ -591,59 +591,48 @@ Route::get('/browse/(publication|activity|scientist|journal|poster)', function (
     if ($page == 'scientist') {
         $table = 'users';
         $idname = "user";
-    } elseif ($page == 'publication') {
-
-        include_once BASEPATH . "/php/Publication.php";
-        $activity = new Publication;
-    } elseif ($page == 'poster') {
-
-        include_once BASEPATH . "/php/Poster.php";
-        $activity = new Poster;
     }
 
     $breadcrumb = [
         ['name' => ucfirst($page)]
     ];
     include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/browse.php";
+    include BASEPATH . "/pages/browse/$page.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/(view|edit)/(publication|activity|journal|poster)/(\d+)', function ($mode, $page, $id) {
+
+Route::get('/view/journal/(\d+)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
-    $idname = $page . '_id';
+    include_once BASEPATH . "/php/_db.php";
+    
+    if (is_numeric($id)) {
+        $id = intval($id);
+    } else {
+        $id = new MongoDB\BSON\ObjectId($id);
+    }
 
-    $stmt = $db->prepare("SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, CHARACTER_MAXIMUM_LENGTH FROM information_schema.`COLUMNS` WHERE TABLE_SCHEMA LIKE 'osiris' AND TABLE_NAME LIKE ?");
-    $stmt->execute([$page]);
-    $schemata = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
-
-    $stmt = $db->prepare("SELECT * FROM `$page` WHERE `$idname` = ? LIMIT 1");
-    $stmt->execute([$id]);
-    $dataset = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
-        ['name' => ucfirst($page), 'path' => "/browse/$page"],
-        ['name' => $dataset[$idname]]
+        ['name' => lang('Journals', 'Journale'), 'path' => "/browse/journal"],
+        ['name' => $data['journal']]
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/$mode.php";
+    include BASEPATH . "/pages/view/journal.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
 Route::get('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
     include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/Publication.php";
-    include_once BASEPATH . "/php/Poster.php";
-    include_once BASEPATH . "/php/Lecture.php";
+    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/format.php";
     $idname = "user";
 
-    $stmt = $db->prepare("SELECT * FROM `users` WHERE `user` LIKE ? LIMIT 1");
-    $stmt->execute([$user]);
-    $userArr = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    $name = $userArr['last_name'] . ", " . $userArr['first_name'];
+    $name = $USER['last'] . ", " . $USER['first'];
 
     $breadcrumb = [
         ['name' => ucfirst($page), 'path' => "/browse/$page"],
@@ -665,7 +654,8 @@ Route::get('/error/([0-9]*)', function ($error) {
 });
 
 
-
+include_once BASEPATH . "/api.php";
+include_once BASEPATH . "/mongo.php";
 
 
 Route::get('/user/logout', function () {
@@ -682,7 +672,6 @@ Route::post('/ajax/(.*)', function ($file) {
         echo "Error: 404 File does not exist";
     }
 });
-
 
 // Add a 404 not found route
 Route::pathNotFound(function ($path) {
