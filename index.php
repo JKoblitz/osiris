@@ -259,7 +259,7 @@ Route::get('/browse/(publication|activity|scientist|journal|poster)', function (
 Route::get('/view/journal/(\d+)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    
+
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
@@ -314,6 +314,9 @@ Route::get('/user/logout', function () {
 
 include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";
+
+include_once BASEPATH . "/export.php";
+
 
 
 // Add a 404 not found route

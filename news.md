@@ -6,6 +6,7 @@
 # Changelog
 
 ## 31.07.22
+- Export von Publikationen in Word und BibTex wurde hinzugefügt.
 - Publikationen können jetzt hinzugefügt werden. Sowohl Journal-Artikel als auch Bücher funktionieren. 
 - Folgendes ist noch zu tun: 
   - Magazine-Article: funktioniert hinzufügen über eine DOI?

@@ -3,7 +3,8 @@
     "description": "Open, simple and integrated research information system",
     "type": "project",
     "require": {
-        "mongodb/mongodb": "1.12.0"
+        "mongodb/mongodb": "1.12.0",
+        "phpoffice/phpword": "^0.18.3"
     },
     "license": "MIT",
     "autoload": {

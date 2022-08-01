@@ -13,7 +13,8 @@ $lasturl = explode("/", $_SERVER['REQUEST_URI']);
 $page = $page ?? end($lasturl);
 $pageactive = function ($p) use ($page, $breadcrumb) {
     if ($page == $p) return "active";
-    if (str_contains($page, 'finder')) return '';
+    $uri = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
+    if ((ROOTPATH."/".$p) == $uri) return 'active'; 
     if (count($breadcrumb) > 1 && $breadcrumb[0]['path'] == ("/" . $p)) return "active";
     return "";
 }
@@ -201,7 +202,20 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Deutsch', 'English') ?>
                     </a>
 
+                    <div class="sidebar-title">
+                        Export
+                    </div>
 
+                    <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('export/publications') ?>">
+                        <i class="far fa-books" aria-hidden="true"></i>
+                        Export <?= lang('Publications', 'Publikationen') ?>
+                    </a>
+                    
+                    <a href="<?= ROOTPATH ?>/export/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('export/reports') ?>">
+                        <i class="far fa-file-chart-column" aria-hidden="true"></i>
+                        Export <?= lang('Reports', 'Berichte') ?>
+                    </a>
+                    
                     <!-- <div class="sidebar-title">
                         <?= lang('Content', 'Inhalte') ?>
                     </div>

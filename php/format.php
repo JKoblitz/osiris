@@ -16,7 +16,7 @@ function abbreviateAuthor($last, $first)
     foreach (explode(" ", $first) as $name) {
         $fn .= " " . $name[0] . ".";
     }
-    return $last . ", " . $fn;
+    return $last . "," . $fn;
 }
 
 function authorForm($a)
@@ -27,7 +27,7 @@ function authorForm($a)
         </div>";
 }
 
-function formatAuthors($raw_authors)
+function formatAuthors($raw_authors, $separator = 'and')
 {
     $authors = array();
     foreach ($raw_authors as $a) {
@@ -37,7 +37,7 @@ function formatAuthors($raw_authors)
         }
         $authors[] = $author;
     }
-    return commalist($authors, 'and');
+    return commalist($authors, $separator);
 }
 
 function getDateTime($date)

@@ -29,5 +29,6 @@ sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 composer require  mongodb/mongodb:1.12.0
 
 composer require --ignore-platform-reqs mongodb/mongodb:1.12.0
+composer require --ignore-platform-reqs phpoffice/phpword
 
 mongorestore  dump/

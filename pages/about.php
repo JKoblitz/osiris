@@ -54,7 +54,6 @@
         <ul>
             <li class="checked">Publikationen</li>
             <li class="checked">Bücher und Zeitschriften</li>
-            <li>Corrections?</li>
             <li class="checked">Poster</li>
             <li class="checked">Vorträge</li>
             <li class="checked">Reviews und Editorials</li>
@@ -65,7 +64,7 @@
             <li class="checked">Sonstige Aktivitäten</li>
         </ul>
     </li>
-    <li class="checked">Alle Datenfelder können über ein Interface zur DB hinzugefügt werden <span class="text-danger">(Außer Publikationen, die folgen demnächst)</span></li>
+    <li class="checked">Alle Datenfelder können über ein Interface zur DB hinzugefügt werden</li>
     <li class="checked">Alle Datenfelder können bearbeitet und entfernt werden</li>
     <li class="checked">Übersichtsseite eines Wissenschaftlers</li>
     <li class="checked">Import der DSMZ-Bibliographie</li>
