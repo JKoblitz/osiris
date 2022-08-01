@@ -263,8 +263,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
 
                 <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
-                    <i class="far fa-newspaper" aria-hidden="true"></i>
-                    <?= lang('News', 'Neuigkeiten') ?>
+                    <i class="far fa-message-pen" aria-hidden="true"></i>
+                    <?= lang('Changes &amp; To-dos', 'Änderungen &amp; To-Dos') ?>
                 </a>
 
 

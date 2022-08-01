@@ -50,7 +50,7 @@
 <h3>Grundlegende Funktionen der Applikation</h3>
 
 <ul class="check-list">
-    <li>Alle Datenfelder implementieren (Datenbank und Interface)
+    <li class="checked">Alle Datenfelder implementieren (Datenbank und Interface)
         <ul>
             <li class="checked">Publikationen</li>
             <li class="checked">Bücher und Zeitschriften</li>

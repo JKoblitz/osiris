@@ -1,23 +1,33 @@
-# Fragen
+# Fragen @ Controlling
 
-1. wenn ich ein Poster präsentiere auf einer Konferenz, die vom 30.06. bis zum 01.07. stattfindet, liegt das in Quartal 2 oder 3? Oder anders gefragt: entscheidet das Anfangs- oder das Enddatum über das Quartal?
+1. Wenn ich ein Poster präsentiere auf einer Konferenz, die vom 30.06. bis zum 01.07. stattfindet, liegt das in Quartal 2 oder 3? Oder anders gefragt: entscheidet das Anfangs- oder das Enddatum über das Quartal?
+2. Welche Berichte werden gebraucht? Was kommt dort rein und welche Zeiträume beinhaltet es? Gibt es Vorlagen, an denen ich mich orientieren kann?
+3. Wäre es möglich, eine Alpha-Testphase mit ausgewählten Wissenschaftlern zu machen? Vielleicht mit Frau Fischer abklären?
+4. Nutzerdaten wurden zurzeit nur aus der Telefonliste importiert. Wer wird die Nutzer in OSIRIS in Zukunft pflegen? Wie werden Personaldaten im Moment gepflegt? In SAP? Gibt es dort eine Schnittstelle, die man abgreifen kann oder gibt es ein gängiges Export-Format, das importiert werden kann? Oder sollen die Daten händisch gepflegt werden?
+5. In diesem Zusammenhang: Müssen Datenschutzbeauftragter und Betriebsrat ebenfalls involviert werden, da wir mit Personaldaten arbeiten?
 
+
+# Nächste Schritte
+Ich muss erstmal weiter an den Publikationen arbeiten. In diesem Bereich ist noch einiges zu tun:
+- Publikationen können noch nicht bearbeitet werden
+- Magazine-Article: funktioniert hinzufügen über eine DOI?
+- der Pub-Type muss standardisiert werden
+- Formatierungen für unterschiedliche Pub-Typen hinzufügen (zurzeit nur Journal-Artikel)
+- Corrections? Wie funktioniert das überhaupt? Reichen ein Boolean und eine Checkbox aus?
+- Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
+- Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
+
+Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivitäten hinzufügen:
+- Boolean für jeden Autor/Editor: `approved`:
+- Beim Nutzer, der den Datensatz hinzufügt, ist der Wert automatisch true
+- bei allen anderen wird auf der Startseite ein Hinweis gezeigt: können Approven oder Ablehnen (z.B. wenn nicht Autor der Publikation oder Affiliation nicht DSMZ)
 
 # Changelog
 
 ## 31.07.22
-- Export von Publikationen in Word und BibTex wurde hinzugefügt.
 - Publikationen können jetzt hinzugefügt werden. Sowohl Journal-Artikel als auch Bücher funktionieren. 
-- Folgendes ist noch zu tun: 
-  - Magazine-Article: funktioniert hinzufügen über eine DOI?
-  - der Pub-Type muss standardisiert werden
-  - Formatierungen für unterschiedliche Pub-Typen (zurzeit nur Journal-Artikel)
-  - Corrections? Wie funktioniert das überhaupt?
-  - Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
-  - Boolean für jeden Autor/Editor: `approved`:
-    - Beim Nutzer, der hinzufügt automatisch true
-    - bei allen anderen wird auf der Startseite ein Hinweis gezeigt: können Approven oder Ablehnen (z.B. wenn nicht Autor der Publikation oder Affiliation nicht DSMZ)
-  - Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
+- Auf das Löschen von Publikationen wurde bewusst verzichtet. Vielleicht fügt man die Funktion ein, ermöglicht es aber nur begrenzten User-Gruppen (z.B. Admin und Controlling)
+- Export von Publikationen in Word und BibTex wurde hinzugefügt.
 
 ## 29.07.22
 

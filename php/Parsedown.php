@@ -425,6 +425,7 @@ class Parsedown
             $Element = array(
                 'name' => 'code',
                 'text' => '',
+                // 'attributes' => array('class' => 'hljs')
             );
 
             if (isset($matches[1]))
@@ -443,7 +444,7 @@ class Parsedown
                  */
                 $language = substr($matches[1], 0, strcspn($matches[1], " \t\n\f\r"));
 
-                $class = 'language-'.$language;
+                $class = 'hljs '.$language;
 
                 $Element['attributes'] = array(
                     'class' => $class,
@@ -456,6 +457,7 @@ class Parsedown
                     'name' => 'pre',
                     'handler' => 'element',
                     'text' => $Element,
+                    // 'attributes' => array('class' => 'code')
                 ),
             );
 
@@ -520,13 +522,23 @@ class Parsedown
             }
 
             $text = trim($Line['text'], '# ');
+            $id = str_replace(' ', '-', strtolower($text));
 
             $Block = array(
                 'element' => array(
                     'name' => 'h' . min(6, $level),
                     'text' => $text,
                     'handler' => 'line',
+                    'attributes' => array(
+                        'id' => $id,
+                    ),
                 ),
+            );
+
+            $this->header[] = array(
+                'level' => $level,
+                'id' => $id,
+                'text' => $text
             );
 
             return $Block;
@@ -548,6 +560,7 @@ class Parsedown
                 'element' => array(
                     'name' => $name,
                     'handler' => 'elements',
+                    'attributes' => array('class' => 'list')
                 ),
             );
 
@@ -933,6 +946,9 @@ class Parsedown
                 'element' => array(
                     'name' => 'table',
                     'handler' => 'elements',
+                    'attributes' => array(
+                        'class' => 'table',
+                    ),
                 ),
             );
 
@@ -1149,6 +1165,9 @@ class Parsedown
                 'element' => array(
                     'name' => 'code',
                     'text' => $text,
+                    'attributes' => array(
+                        'class' => 'code',
+                    ),
                 ),
             );
         }
@@ -1690,4 +1709,6 @@ class Parsedown
                    'var', 'span',
                    'wbr', 'time',
     );
+
+    public $header = array();
 }
