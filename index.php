@@ -11,7 +11,12 @@ if (!function_exists('str_contains')) {
 }
 
 
-define('ROOTPATH', '/osiris');
+$sn = $_SERVER['SERVER_NAME'];
+if ($sn == 'testserver' || $sn == 'localhost' || $sn == 'juk20-dev.dsmz.local') {
+    define('ROOTPATH', '/osiris');
+} else {
+    define('ROOTPATH', '');
+}
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
 define('AFFILIATION', 'DSMZ');
 
@@ -214,26 +219,26 @@ Route::post('/user/login', function () {
 /* LOGIN AREA */
 
 
-Route::get('/(my-publication|my-review|my-poster|my-lecture|my-misc|my-teaching)', function ($page) {
+Route::get('/(publication|review|poster|lecture|misc|teaching)', function ($page) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
     $user = $_SESSION['username'];
-    $path = str_replace('my-', '', $page);
+    $path = $page;
     $breadcrumb = [
         // ['name' => 'Reviews', 'path' => "/browse/review"],
-        ['name' => "My " . $path . "s"]
+        ['name' => $path . "s"]
     ];
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/editor/$path.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/(my-publication)/add', function ($page) {
+Route::get('/(publication)/add', function ($page) {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
-        ['name' => 'My Publications', 'path' => "/my-publication"],
+        ['name' => 'Publications', 'path' => "/publication"],
         ['name' => "Add"]
     ];
     include BASEPATH . "/header.php";
@@ -327,6 +332,13 @@ include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";
 
 include_once BASEPATH . "/export.php";
+
+
+
+Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/components/$path.php";
+});
 
 
 

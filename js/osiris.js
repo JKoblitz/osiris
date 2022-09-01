@@ -6,7 +6,7 @@ function _create(collection, data) {
             values: data
         },
         dataType: "html",
-        url: ROOTPATH + '/create/'+collection,
+        url: ROOTPATH + '/create/' + collection,
         success: function (response) {
             toastSuccess(response)
             $('#result').html(response)
@@ -25,9 +25,9 @@ function _update(collection, id, data) {
             values: data
         },
         dataType: "html",
-        url: ROOTPATH + '/update/'+collection+'/' + id,
+        url: ROOTPATH + '/update/' + collection + '/' + id,
         success: function (response) {
-            toastSuccess("Updated "+response.updated+" datasets.")
+            toastSuccess("Updated " + response.updated + " datasets.")
             // $('#result').html(response)
         },
         error: function (response) {
@@ -41,12 +41,12 @@ function _delete(collection, id) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: ROOTPATH + '/delete/'+collection+'/' + id,
+        url: ROOTPATH + '/delete/' + collection + '/' + id,
         success: function (response) {
             console.log(response);
-            toastSuccess("Deleted "+response.deleted+" datasets.")
+            toastSuccess("Deleted " + response.deleted + " datasets.")
             // $('#'+id).remove();
-            $('#'+id).fadeOut();
+            $('#' + id).fadeOut();
         },
         error: function (response) {
             toastError(response.responseText)
@@ -56,7 +56,7 @@ function _delete(collection, id) {
 }
 
 
-function prependRow(trcontent){
+function prependRow(trcontent) {
     var table = $('#activity-table tbody')
     var tr = $('<tr>').css('display', 'none')
     tr.html(trcontent)

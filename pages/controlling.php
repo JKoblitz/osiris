@@ -1,43 +1,64 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<?php
+
+$n_scientists = $osiris->users->count(["is_scientist" => true]);
+$n_approved = $osiris->users->count(["is_scientist" => true, "approved" => SELECTEDYEAR]);
+
+?>
+
+
+
 <h2><?= lang('Welcome', 'Willkommen') ?>, <?= $USER['name'] ?></h2>
 
 <h4 class="text-muted font-weight-normal">Controlling</h4>
 
 
-<div class="box box-primary">
-    <div class="content">
 
-        <h3 class="title"><i class="far fa-books mr-5"></i>
-            <?= lang('Scientist overview (selected quarter)', 'Übersicht der Forschenden (ausgewähltes Quartal)') ?>
-        </h3>
+
+<h4><?= lang('Approved in') . " " . SELECTEDYEAR ?></h4>
+
+<div class="box">
+    <div class="chart w-400 mw-full content">
+
+        <canvas id="approved-chart" ></canvas>
+        <button class="btn mt-20" onclick="loadModal('components/controlling-approved')">
+            <i class="fas fa-search-plus"></i> <?= lang('Show details', 'Zeige Details') ?>
+        </button>
 
     </div>
-    <table class="table table-simple">
-        <tbody>
-            <?php
 
-            $cursor = $osiris->users->find(
-                ['is_scientist' => true],
-                ['sort' => ["last" => 1]]
-            );
-            if (empty($cursor)) {
-                echo "<div class='content'>" . lang('No scientists found.', 'Keine Forschenden gefunden.') . "</div>";
-            } else foreach ($cursor as $s) {
-            ?>
-                <tr>
-                    <td>
-                        <a href="<?= ROOTPATH ?>/view/scientist/<?= $s['_id'] ?>">
-                            <?= $s['last'] ?>, <?= $s['first'] ?>
-                        </a>
-                    </td>
-                    <td>
-                        <?php if ($s['approved'] ?? 0 == 1) { ?>
-                            <i class="fas fa-check text-success"></i>
-                        <?php } else { ?>
-                            <i class="fas fa-xmark text-danger"></i>
-                        <?php } ?>
-                    </td>
-                </tr>
-            <?php } ?>
-        </tbody>
-    </table>
+    <script>
+        const ctx = document.getElementById('approved-chart')
+        const myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Approved', 'Missing'],
+                datasets: [{
+                    label: '# of Scientists',
+                    data: [<?= $n_approved ?>, <?= $n_scientists - $n_approved ?>],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Scientists approvation'
+                    }
+                }
+            }
+        });
+    </script>
 </div>

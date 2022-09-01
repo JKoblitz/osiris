@@ -28,7 +28,7 @@ if (isset($raw['search']) && !empty($raw['search'])) {
 </form>
 
 
-<table class="table">
+<table class="table" id="result-table">
     <thead>
         <th>ID</th>
         <th>Journal name</th>

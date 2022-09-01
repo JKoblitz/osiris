@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table" id="result-table">
     <tr>
         <td>ID</td>
         <td><?= $data['_id'] ?></td>

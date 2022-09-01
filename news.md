@@ -29,6 +29,12 @@ Reports:
 
 # Changelog
 
+## 01.09.22
+Dieses Update bezieht sich ausschließlich auf die Ansicht des Controllings
+- Auf der Startseite wird nun eine Übersicht aller Wissenschaftler gezeigt, die das aktuelle Quartal "approved" haben 
+- Die Inhaltsseiten (Publikationen, Poster, Vorträge, Reviewsm Misc, Teaching) zeigen nun alle Aktivitäten des ausgewählten Jahres
+- Inhaltsseiten sind jetzt filterbar (Achtung! Groß- und Kleinschreibung beachten.)
+
 ## 31.07.22
 - Publikationen können jetzt hinzugefügt werden. Sowohl Journal-Artikel als auch Bücher funktionieren. 
 - Auf das Löschen von Publikationen wurde bewusst verzichtet. Vielleicht fügt man die Funktion ein, ermöglicht es aber nur begrenzten User-Gruppen (z.B. Admin und Controlling)

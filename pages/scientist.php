@@ -92,11 +92,11 @@ $currentuser = $user == $_SESSION['username'];
 
     <div class="content mt-0">
         <?php if ($currentuser) { ?>
-            <a href="<?= ROOTPATH ?>/my-publication" class="btn text-primary">
+            <a href="<?= ROOTPATH ?>/publication" class="btn text-primary">
                 <i class="far fa-book-bookmark mr-5"></i> <?= lang('My publications', 'Meine Publikationen') ?>
             </a>
         <?php } ?>
-        <a href="<?= ROOTPATH ?>/my-publication/add" class="btn"><i class="fas fa-plus"></i></a>
+        <a href="<?= ROOTPATH ?>/publication/add" class="btn"><i class="fas fa-plus"></i></a>
     </div>
 
 </div>
@@ -131,7 +131,7 @@ $currentuser = $user == $_SESSION['username'];
 
     <div class="content mt-0">
         <?php if ($currentuser) { ?>
-            <a href="<?= ROOTPATH ?>/my-poster" class="btn text-danger">
+            <a href="<?= ROOTPATH ?>/poster" class="btn text-danger">
                 <i class="far fa-presentation-screen mr-5"></i> <?= lang('My posters', 'Meine Poster') ?>
             </a>
         <?php } ?>
@@ -183,7 +183,7 @@ $currentuser = $user == $_SESSION['username'];
 
     <div class="content mt-0">
         <?php if ($currentuser) { ?>
-            <a href="<?= ROOTPATH ?>/my-lecture" class="btn text-signal">
+            <a href="<?= ROOTPATH ?>/lecture" class="btn text-signal">
                 <i class="far fa-keynote mr-5"></i> <?= lang('My lectures', 'Meine Vorträge') ?>
             </a>
         <?php } ?>
@@ -252,7 +252,7 @@ $currentuser = $user == $_SESSION['username'];
 
     <div class="content mt-0">
         <?php if ($currentuser) { ?>
-            <a href="<?= ROOTPATH ?>/my-review" class="btn text-success">
+            <a href="<?= ROOTPATH ?>/review" class="btn text-success">
                 <i class="far fa-book-open-cover mr-5"></i> <?= lang('My reviews &amp; editorials', 'Meine Reviews &amp; Editorials') ?>
             </a>
         <?php } ?>
@@ -309,7 +309,7 @@ $currentuser = $user == $_SESSION['username'];
 
     <div class="content mt-0">
         <?php if ($currentuser) { ?>
-            <a href="<?= ROOTPATH ?>/my-misc" class="btn text-muted">
+            <a href="<?= ROOTPATH ?>/misc" class="btn text-muted">
                 <i class="far fa-icons mr-5"></i> <?= lang('My other research activities', 'Meine anderen Forschungsaktivitäten') ?>
             </a>
         <?php } ?>
@@ -364,7 +364,7 @@ $currentuser = $user == $_SESSION['username'];
 
     <div class="content mt-0">
         <?php if ($currentuser) { ?>
-            <a href="<?= ROOTPATH ?>/my-teaching" class="btn text-muted">
+            <a href="<?= ROOTPATH ?>/teaching" class="btn text-muted">
                 <i class="far fa-people mr-5"></i> <?= lang('My teaching &amp; guests', 'Meine Abschlussarbeiten und Gäste') ?>
             </a>
         <?php } ?>

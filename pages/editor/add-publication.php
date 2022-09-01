@@ -15,7 +15,7 @@ if (!empty($form) && isset($form['_id'])) {
     $formaction .= "create/publication";
     $btntext = '<i class="fas fa-plus"></i> ' . lang("Add", "Hinzufügen");
 }
-$url = ROOTPATH . "/my-publication";
+$url = ROOTPATH . "/publication";
 ?>
 
 <div class="content">

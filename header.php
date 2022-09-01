@@ -162,32 +162,32 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
 
 
-                    <a href="<?= ROOTPATH ?>/my-publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('my-publication') ?>">
+                    <a href="<?= ROOTPATH ?>/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
                         <i class="far fa-book-bookmark" aria-hidden="true"></i>
-                        <?= lang('My publications', 'Meine Publikationen') ?>
+                        <?= lang('Publications', 'Publikationen') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/my-poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-poster') ?>">
+                    <a href="<?= ROOTPATH ?>/poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('poster') ?>">
                         <i class="far fa-presentation-screen" aria-hidden="true"></i>
-                        <?= lang('My posters', 'Meine Poster') ?>
+                        <?= lang('Posters', 'Poster') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/my-lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('my-lecture') ?>">
+                    <a href="<?= ROOTPATH ?>/lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('lecture') ?>">
                         <i class="far fa-keynote" aria-hidden="true"></i>
-                        <?= lang('My lectures', 'Meine Vorträge') ?>
+                        <?= lang('Lectures', 'Vorträge') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/my-review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('my-review') ?>">
+                    <a href="<?= ROOTPATH ?>/review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('review') ?>">
                         <i class="far fa-book-open-cover" aria-hidden="true"></i>
-                        <?= lang('My reviews &amp; editorials', 'Reviews &amp; Editorials') ?>
+                        <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/my-misc" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('my-misc') ?>">
+                    <a href="<?= ROOTPATH ?>/misc" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('misc') ?>">
                         <i class="far fa-icons" aria-hidden="true"></i>
                         <?= lang('Misc') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/my-teaching" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('my-teaching') ?>">
+                    <a href="<?= ROOTPATH ?>/teaching" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('teaching') ?>">
                         <i class="far fa-people" aria-hidden="true"></i>
                         <?= lang('Teaching &amp; Guests') ?>
                     </a>

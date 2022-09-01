@@ -5,6 +5,11 @@
         <?= lang('My reviews &amp; editorial boards', 'Meine Reviews &amp; Editorial Boards') ?>
     </h1>
 
+    <div class="form-group with-icon mb-10 mw-full w-350">
+        <input type="search" class="form-control" placeholder="<?= lang('Filter') ?>" oninput="filter_results(this.value)">
+        <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
+    </div>
+
 
     <div class="box box-primary" id="review-form" style="display:none">
         <div class="content">
@@ -19,7 +24,7 @@
         <button class="btn btn-link" onclick="$('#review-form').slideToggle() "><i class="fas fa-plus"></i> <?= lang('Add activity', 'Füge Aktivität hinzu') ?></button>
     </div>
 
-    <table class="table">
+    <table class="table" id="result-table">
         <thead>
             <tr>
                 <!-- <td><?= lang('Quarter', 'Quartal') ?></td> -->
@@ -29,7 +34,20 @@
         </thead>
 
         <?php
-        $cursor = $osiris->reviews->find(['user' => $user]);
+            if ($USER['is_controlling']) {
+                // controlling sees everything from the current year
+                $filter = [
+                    '$or' => array(
+                        ['end.year' => array('$gte' => SELECTEDYEAR)],
+                        ['end' => null],
+                        ['dates.year' => SELECTEDYEAR]
+                    )
+                ];
+            } else {
+                // everybody else sees their own work (all)
+                $filter = ['user' => $user];
+            }
+            $cursor = $osiris->reviews->find($filter);
         // dump($cursor);
         if (empty($cursor)) {
             echo "<tr class='row-danger'><td colspan='3'>" . lang('No reviews found.', 'Keine Reviews gefunden.') . "</td></tr>";

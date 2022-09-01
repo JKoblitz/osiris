@@ -723,18 +723,40 @@ function todo() {
     })
 }
 
-function toggleEditForm(collection, id) {
+function loadModal(path){
     $.ajax({
         type: "GET",
         dataType: "html",
-        url: ROOTPATH + '/form/' + collection + '/'+id,
+        url: ROOTPATH + '/'+ path,
         success: function (response) {
             $('#modal-content').html(response)
             $('#the-modal').addClass('show')
         },
         error: function (response) {
+            console.log(response);
             toastError(response.responseText)
             $('#loader').hide()
         }
     })
+}
+
+function toggleEditForm(collection, id) {
+    loadModal('form/' + collection + '/'+id);
+}
+
+
+function filter_results(input) {
+    var table = $('#result-table')
+    if (table.length == 0) return;
+    var rows = table.find('tbody > tr')
+    if (input.length == 0) {
+        rows.show();
+        return
+    }
+    rows.hide()
+    var data = input.split(" ");
+    $.each(data, function (i, v) {
+        // workaround: ignore button content (unbreakable)
+        rows.find('td:not(.unbreakable)').filter(":contains('" + v + "')").parent().show();
+    });
 }

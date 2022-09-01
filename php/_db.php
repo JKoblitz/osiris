@@ -13,13 +13,7 @@ $user = $user ?? $_SESSION['username'] ?? null;
 $USER = array();
 
 if (!empty($user)) {
-    $USER = $osiris->users->findOne(['_id' => $user ?? $_SESSION['username']]);
-    $USER['name'] = $USER['first']. " ". $USER['last'];
-    $USER['name_formal'] = $USER['last']. ", ".$USER['first'];
-    $USER['first_abbr'] = "";
-    foreach (explode(" ", $USER['first']) as $name) {
-        $USER['first_abbr'] .= " " . $name[0] . ".";
-    }
+    $USER = getUserFromId($user);
     // return $this->info['last_name'] . "," . $fn;
 }
 
@@ -37,4 +31,16 @@ function getUserFromName($last, $first){
     ]);
     if (empty($user)) return null;
     return $user['_id'] ;
+}
+
+function getUserFromId($user){
+    global $osiris;
+    $USER = $osiris->users->findOne(['_id' => $user ?? $_SESSION['username']]);
+    $USER['name'] = $USER['first']. " ". $USER['last'];
+    $USER['name_formal'] = $USER['last']. ", ".$USER['first'];
+    $USER['first_abbr'] = "";
+    foreach (explode(" ", $USER['first']) as $name) {
+        $USER['first_abbr'] .= " " . $name[0] . ".";
+    }
+    return $USER;
 }

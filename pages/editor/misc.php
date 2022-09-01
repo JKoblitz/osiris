@@ -2,6 +2,11 @@
 
     <h1><i class="fa-regular fa-icons text-muted fa-lg mr-10"></i> <?= lang('My other research activities', 'Meine anderen Forschungsaktivitäten') ?></h1>
 
+    <div class="form-group with-icon mb-10 mw-full w-350">
+        <input type="search" class="form-control" placeholder="<?= lang('Filter') ?>" oninput="filter_results(this.value)">
+        <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
+    </div>
+
 
     <div class="box box-primary" id="misc-form" style="display:none">
         <div class="content">
@@ -15,8 +20,8 @@
     <div id="add-btn-row">
         <button class="btn btn-link" onclick="$('#misc-form').slideToggle() "><i class="fas fa-plus"></i> <?= lang('Add activity', 'Füge Aktivität hinzu') ?></button>
     </div>
-    
-    <table class="table" id="activity-table">
+
+    <table class="table" id="result-table">
         <thead>
             <tr>
                 <!-- <td><?= lang('Quarter', 'Quartal') ?></td> -->
@@ -28,7 +33,21 @@
 
 
             <?php
-            $cursor = $osiris->miscs->find(['authors.user' => $user]);
+
+            if ($USER['is_controlling']) {
+                // controlling sees everything from the current year
+                $filter = [
+                    "dates.start.year" => array('$lte' => SELECTEDYEAR),
+                    '$or' => array(
+                        ['dates.end.year' => array('$gte' => SELECTEDYEAR)],
+                        ['dates.end' => null]
+                    )
+                ];
+            } else {
+                // everybody else sees their own work (all)
+                $filter = ['authors.user' => $user];
+            }
+            $cursor = $osiris->miscs->find($filter);
             // dump($cursor);
             if (empty($cursor)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No activities found.', 'Keine Aktivitäten gefunden.') . "</td></tr>";

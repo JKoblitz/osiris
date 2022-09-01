@@ -197,7 +197,7 @@ function format_teaching($doc, $verbose = false)
     $result .= ". ";
     $result .= fromToDate($doc['start'], $doc['end']);
 
-    if (in_array($doc['category'], ["Doktorand:in","Master-Thesis","Bachelor-Thesis"]) && !empty($doc['status'])) {
+    if (in_array($doc['category'], ["Doktorand:in", "Master-Thesis", "Bachelor-Thesis"]) && !empty($doc['status'])) {
 
         if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
             $result .= " (<b class='text-danger'>" . $doc['status'] . "</b>)";
@@ -212,10 +212,10 @@ function format_teaching($doc, $verbose = false)
 
     if ($verbose) {
         if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
-            echo '<p class="text-danger mt-0">'.lang(
+            echo '<p class="text-danger mt-0">' . lang(
                 "Attention: the Thesis of $doc[name] has ended. Please confirm if the work was successfully completed or not or extend the time frame.",
                 "Achtung: die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
-            ).'</p>';
+            ) . '</p>';
         }
     }
 
@@ -330,33 +330,47 @@ function format_misc($doc)
 
 
 
-function format_review($doc, $filterYear=false)
+function format_review($doc, $filterYear = false)
 {
-    $result = lang("Reviewer for ", 'Reviewer für ');
+    $result = "";
+    if (!empty($doc['name'] ?? '')) {
+        $result .= "<b>$doc[name]</b> ";
+    } else {
+        $userdata = getUserFromId($doc['user']);
+        $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";
+    }
+    $result .= lang("Reviewer for ", 'Reviewer für ');
     $result .= '<em>' . $doc['journal'] . '</em>';
     $times = 0;
     $times_current = 0;
     foreach ($doc['dates'] as $date) {
-            $times += 1;
+        $times += 1;
         if ($date['year'] == SELECTEDYEAR) {
             $times_current += 1;
-        } 
+        }
     }
-if ($filterYear) {
-    $result .= " ($times_current " . lang('times', 'mal') . ")";
-} else {
-    $result .= lang(
-        " ($times times, $times_current in ".SELECTEDYEAR.")",
-        " ($times mal, davon $times_current in ".SELECTEDYEAR.")"
-    );
-}
+    if ($filterYear) {
+        $result .= " ($times_current " . lang('times', 'mal') . ")";
+    } else {
+        $result .= lang(
+            " ($times times, $times_current in " . SELECTEDYEAR . ")",
+            " ($times mal, davon $times_current in " . SELECTEDYEAR . ")"
+        );
+    }
     $result .= ".";
     return $result;
 }
 
 function format_editorial($doc)
 {
-    $result = lang("Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
+    $result = "";
+    if (!empty($doc['name'] ?? '')) {
+        $result .= "<b>$doc[name]</b> ";
+    } else {
+        $userdata = getUserFromId($doc['user']);
+        $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";
+    }
+    $result .= lang("Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
     $result .= '<em>' . $doc['journal'] . '</em>';
     if (!empty($doc['start'])) {
         if (!empty($doc['end'])) {

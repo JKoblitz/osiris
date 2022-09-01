@@ -2,6 +2,11 @@
 
     <h1 class=""><i class="fa-regular fa-people text-muted fa-lg mr-10"></i> <?= lang('Teaching &amp; Guests', 'Lehre &amp; Gäste') ?></h1>
 
+    <div class="form-group with-icon mb-10 mw-full w-350">
+        <input type="search" class="form-control" placeholder="<?= lang('Filter') ?>" oninput="filter_results(this.value)">
+        <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
+    </div>
+
     <div class="box box-primary" id="teaching-form" style="display:none">
 
         <?php
@@ -13,7 +18,7 @@
         <i class="fas fa-plus"></i> <?= lang('Add stay', 'Füge Aufenthalt hinzu') ?>
     </button>
 
-    <table class="table">
+    <table class="table" id="result-table">
         <thead>
             <tr>
                 <!-- <td>Zuname, Vorname</td>
@@ -29,15 +34,28 @@
 
 
             <?php
-            $collection = $osiris->teachings;
-            $cursor = $collection->find([
-                'authors.user' => $user,
-                "start.year" => array('$lte' => SELECTEDYEAR),
-                '$or' => array(
-                    ['end.year' => array('$gte' => SELECTEDYEAR)],
-                    ['end' => null]
-                )
-            ]);
+            if ($USER['is_controlling']) {
+                // controlling sees everything from the current year
+                $filter = [
+                    "start.year" => array('$lte' => SELECTEDYEAR),
+                    '$or' => array(
+                        ['end.year' => array('$gte' => SELECTEDYEAR)],
+                        ['end' => null]
+                    )
+                ];
+            } else {
+                // everybody else sees their own work (all)
+                $filter = ['authors.user' => $user];
+            }
+            $cursor = $osiris->teachings->find($filter);
+            // $cursor = $collection->find([
+            //     'authors.user' => $user,
+            //     "start.year" => array('$lte' => SELECTEDYEAR),
+            //     '$or' => array(
+            //         ['end.year' => array('$gte' => SELECTEDYEAR)],
+            //         ['end' => null]
+            //     )
+            // ]);
             // dump($cursor);
             foreach ($cursor as $document) {
                 $q = getQuarter($document['start']['month']);
@@ -113,5 +131,3 @@
     </table>
 
 </div>
-
-

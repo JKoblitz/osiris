@@ -36,7 +36,7 @@ if(isset($raw['scientist']) && !empty($raw['scientist'])){
 </form>
 
 
-<table class="table">
+<table class="table" id="result-table">
     <thead>
         <th>user</th>
         <th><?=lang('Last name', 'Nachname')?></th>
