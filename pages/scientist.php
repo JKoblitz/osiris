@@ -3,10 +3,12 @@
 // $yearstart = mongo_date(SELECTEDYEAR . "-01-01");
 // $yearend = mongo_date(SELECTEDYEAR . "-12-31");
 
+$currentuser = $user == $_SESSION['username'];
+
 ?>
 
 
-<?php if ($user == $_SESSION['username']) { ?>
+<?php if ($currentuser) { ?>
 
 
     <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
@@ -72,9 +74,9 @@
             <?php
             $collection = $osiris->publications;
             // $cursor = $collection->find(['authors.user' => $user, 'year' => SELECTEDYEAR]);
-            
-            $options = ['sort' => ["year" => -1, "month"=> -1]];
-            $cursor = $collection->find(['$or'=> [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR], $options);
+
+            $options = ['sort' => ["year" => -1, "month" => -1]];
+            $cursor = $collection->find(['$or' => [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR], $options);
             // dump($cursor);
             foreach ($cursor as $document) {
                 $q = getQuarter($document['month']);
@@ -89,11 +91,12 @@
     </table>
 
     <div class="content mt-0">
-        <a href="<?= ROOTPATH ?>/my-publication" class="btn text-primary">
-            <i class="far fa-book-bookmark mr-5"></i> <?= lang('My publications', 'Meine Publikationen') ?>
-            
+        <?php if ($currentuser) { ?>
+            <a href="<?= ROOTPATH ?>/my-publication" class="btn text-primary">
+                <i class="far fa-book-bookmark mr-5"></i> <?= lang('My publications', 'Meine Publikationen') ?>
+            </a>
+        <?php } ?>
         <a href="<?= ROOTPATH ?>/my-publication/add" class="btn"><i class="fas fa-plus"></i></a>
-        </a>
     </div>
 
 </div>
@@ -127,9 +130,11 @@
     </table>
 
     <div class="content mt-0">
-        <a href="<?= ROOTPATH ?>/my-poster" class="btn text-danger">
-            <i class="far fa-presentation-screen mr-5"></i> <?= lang('My posters', 'Meine Poster') ?>
-        </a>
+        <?php if ($currentuser) { ?>
+            <a href="<?= ROOTPATH ?>/my-poster" class="btn text-danger">
+                <i class="far fa-presentation-screen mr-5"></i> <?= lang('My posters', 'Meine Poster') ?>
+            </a>
+        <?php } ?>
         <a href="#add-poster" class="btn" role="button"><i class="fas fa-plus"></i></a>
     </div>
 </div>
@@ -177,9 +182,11 @@
     </table>
 
     <div class="content mt-0">
-        <a href="<?= ROOTPATH ?>/my-lecture" class="btn text-signal">
-            <i class="far fa-keynote mr-5"></i> <?= lang('My lectures', 'Meine Vorträge') ?>
-        </a>
+        <?php if ($currentuser) { ?>
+            <a href="<?= ROOTPATH ?>/my-lecture" class="btn text-signal">
+                <i class="far fa-keynote mr-5"></i> <?= lang('My lectures', 'Meine Vorträge') ?>
+            </a>
+        <?php } ?>
         <a href="#add-lecture" class="btn" role="button"><i class="fas fa-plus"></i></a>
     </div>
 </div>
@@ -244,9 +251,11 @@
     </table>
 
     <div class="content mt-0">
-        <a href="<?= ROOTPATH ?>/my-review" class="btn text-success">
-            <i class="far fa-book-open-cover mr-5"></i> <?= lang('My reviews &amp; editorials', 'Meine Reviews &amp; Editorials') ?>
-        </a>
+        <?php if ($currentuser) { ?>
+            <a href="<?= ROOTPATH ?>/my-review" class="btn text-success">
+                <i class="far fa-book-open-cover mr-5"></i> <?= lang('My reviews &amp; editorials', 'Meine Reviews &amp; Editorials') ?>
+            </a>
+        <?php } ?>
 
         <a href="#add-review" class="btn" role="button"><i class="fas fa-plus"></i></a>
     </div>
@@ -266,11 +275,67 @@
     </div>
 </div>
 
+
+
+
 <div class="box box-muted">
     <div class="content">
+        <h4 class="title"><i class="far fa-icons mr-5"></i> <?= lang('Other activities', 'Sonstige Aktivitäten') ?></h4>
+    </div>
+    <table class="table table-simple">
+        <tbody>
+            <?php
+            $collection = $osiris->miscs;
+            $cursor = $collection->find([
+                'authors.user' => $user,
+                "dates.start.year" => array('$lte' => SELECTEDYEAR),
+                '$or' => array(
+                    ['dates.end.year' => array('$gte' => SELECTEDYEAR)],
+                    ['dates.end' => null]
+                )
+            ]);
+            // dump($cursor);
+            foreach ($cursor as $document) {
+                $in_quarter = true;
+                echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
+                    <td>" . format_misc($document) . "</td>
+                </tr>";
+            }
+            ?>
+        </tbody>
 
+    </table>
+
+
+    <div class="content mt-0">
+        <?php if ($currentuser) { ?>
+            <a href="<?= ROOTPATH ?>/my-misc" class="btn text-muted">
+                <i class="far fa-icons mr-5"></i> <?= lang('My other research activities', 'Meine anderen Forschungsaktivitäten') ?>
+            </a>
+        <?php } ?>
+        <a href="#add-misc" class="btn" role="button"><i class="fas fa-plus"></i></a>
+    </div>
+</div>
+<div class="modal" id="add-misc" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="title"><?= lang('Add activity', 'Füge Aktivität hinzu') ?></h5>
+            <?php
+            include BASEPATH . "/components/form-misc.php"
+            ?>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="box box-muted">
+    <div class="content">
         <h4 class="title"><i class="far fa-people mr-5"></i> <?= lang('Teaching &amp; Guests', 'Abschlussarbeiten und Gäste') ?></h4>
-
     </div>
     <table class="table table-simple">
         <tbody>
@@ -298,9 +363,11 @@
 
 
     <div class="content mt-0">
-        <a href="<?= ROOTPATH ?>/my-teaching" class="btn text-muted">
-            <i class="far fa-book-open-cover mr-5"></i> <?= lang('My teaching &amp; guests', 'Meine Abschlussarbeiten und Gäste') ?>
-        </a>
+        <?php if ($currentuser) { ?>
+            <a href="<?= ROOTPATH ?>/my-teaching" class="btn text-muted">
+                <i class="far fa-people mr-5"></i> <?= lang('My teaching &amp; guests', 'Meine Abschlussarbeiten und Gäste') ?>
+            </a>
+        <?php } ?>
         <a href="#add-teaching" class="btn" role="button"><i class="fas fa-plus"></i></a>
     </div>
 </div>

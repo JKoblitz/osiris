@@ -1,3 +1,7 @@
+.fa, .fas, .fa-solid, .far, .fa-regular, .fal, .fa-light, .fat, .fa-thin, .fad, .fa-duotone, .fab, .fa-brands {
+    line-height: inherit;
+}
+
 .quarter{
     width: 6rem;
     font-family: 'Courier New', Courier, monospace;

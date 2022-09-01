@@ -1,6 +1,6 @@
 <div class="content">
 
-    <h1><i class="fa-regular fa-book-open-cover text-success fa-lg mr-10"></i> <?= lang('My other research activities', 'Meine anderen Forschungsaktivitäten') ?></h1>
+    <h1><i class="fa-regular fa-icons text-muted fa-lg mr-10"></i> <?= lang('My other research activities', 'Meine anderen Forschungsaktivitäten') ?></h1>
 
 
     <div class="box box-primary" id="misc-form" style="display:none">
@@ -31,7 +31,7 @@
             $cursor = $osiris->miscs->find(['authors.user' => $user]);
             // dump($cursor);
             if (empty($cursor)) {
-                echo "<tr class='row-danger'><td colspan='3'>" . lang('No lectures found.', 'Keine Vorträge gefunden.') . "</td></tr>";
+                echo "<tr class='row-danger'><td colspan='3'>" . lang('No activities found.', 'Keine Aktivitäten gefunden.') . "</td></tr>";
             } else foreach ($cursor as $document) {
                 // $q = getQuarter($document[]['start']['month']);
                 // $in_quarter = $q == SELECTEDQUARTER;

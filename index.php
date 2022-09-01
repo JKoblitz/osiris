@@ -63,7 +63,8 @@ define('SELECTEDYEAR', intval($_COOKIE['osiris-year'] ?? CURRENTYEAR));
 function lang($en, $de = null)
 {
     if ($de === null) return $en;
-    if (!isset($_COOKIE['osiris-language'])) return $en;
+    // Standard language = DE
+    if (!isset($_COOKIE['osiris-language'])) return $de;
     if ($_COOKIE['osiris-language'] == "en") return $en;
     if ($_COOKIE['osiris-language'] == "de") return $de;
     return $en;
@@ -164,10 +165,15 @@ Route::post('/user/login', function () {
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
         // TODO: remove before live!
-        if ($_SERVER['SERVER_NAME'] == 'testserver' || $_POST['username'] == 'juk20') {
-            $_SESSION['username'] = "juk20";
+        if ($_SERVER['SERVER_NAME'] == 'testserver' || $_POST['username'] == 'test') {
+            if ($_POST['username'] == "test") {
+                $_SESSION['username'] = "juk20";
+                $_SESSION['name'] = "Julia Koblitz";
+            } else {
+                $_SESSION['username'] = $_POST['username'];
+                $_SESSION['name'] = "unknown";
+            }
             $_SESSION['loggedin'] = true;
-            $_SESSION['name'] = "Julia Koblitz";
             if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
                 header("Location: " . $_POST['redirect'] . "?msg=welcome");
                 die();
@@ -311,6 +317,11 @@ Route::get('/user/logout', function () {
     header("Location: " . ROOTPATH . "/");
 }, 'login');
 
+Route::get('/info', function () {
+    include BASEPATH . "/header.php";
+    phpinfo();
+    include BASEPATH . "/footer.php";
+}, 'login');
 
 include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";

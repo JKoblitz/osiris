@@ -53,6 +53,8 @@ Route::post('/export/publications', function () {
 
     if ($_POST['format'] == "word") {
         // Creating the new document...
+        \PhpOffice\PhpWord\Settings::setZipClass(\PhpOffice\PhpWord\Settings::PCLZIP);
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
         $phpWord->setDefaultFontName('Calibri');
@@ -94,7 +96,8 @@ Route::post('/export/publications', function () {
                 $paragraph->addText(" $doc[title].");
             }
             if (!empty($doc['journal'])) {
-                $paragraph->addText(str_replace("&", "&amp;", " $doc[journal]"), ["italic" => true]);
+                //str_replace("&", "&amp;", " $doc[journal]")
+                $paragraph->addText(" ".$doc['journal'], ["italic" => true]);
 
                 if (!empty($doc['volume'])) {
                     $paragraph->addText(" $doc[volume]");
@@ -113,8 +116,8 @@ Route::post('/export/publications', function () {
         }
 
         // // Saving the document as HTML file...
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
-        $objWriter->save('helloWorld.html');
+        // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
+        // $objWriter->save('helloWorld.html');
 
         // Download file
         $file = 'Publications.docx';

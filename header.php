@@ -197,10 +197,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="far fa-right-from-bracket" aria-hidden="true"></i>
                         Logout
                     </a>
-                    <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
-                        <i class="far fa-language" aria-hidden="true"></i>
-                        <?= lang('Deutsch', 'English') ?>
-                    </a>
 
                     <div class="sidebar-title">
                         Export
@@ -267,6 +263,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?= lang('Changes &amp; To-dos', 'Änderungen &amp; To-Dos') ?>
                 </a>
 
+                <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
+                        <i class="far fa-language" aria-hidden="true"></i>
+                        <?= lang('Deutsch', 'English') ?>
+                    </a>
 
             </div>
         </div>

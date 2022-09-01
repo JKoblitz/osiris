@@ -14,13 +14,18 @@ sudo yum install -y mongodb-org
 sudo yum -y update
 
 sudo yum -y install gcc php-pear php-devel
+sudo yum install php-ldap
+# sudo yum -y install php-zip
 
 sudo pecl install mongodb-1.12.0
 
+
 sudo nano /etc/opt/remi/php74/php.ini
     add extension=/usr/lib64/php/modules/mongodb.so   
+    add extension=/usr/lib64/php/modules/zip.so   
 
 sudo systemctl start mongod
+sudo systemctl restart php-fpm.service
 
 > Install composer
 
@@ -32,3 +37,5 @@ composer require --ignore-platform-reqs mongodb/mongodb:1.12.0
 composer require --ignore-platform-reqs phpoffice/phpword
 
 mongorestore  dump/
+
+eepei5sha8Aegh0ap4ie

@@ -22,6 +22,11 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 - Beim Nutzer, der den Datensatz hinzufügt, ist der Wert automatisch true
 - bei allen anderen wird auf der Startseite ein Hinweis gezeigt: können Approven oder Ablehnen (z.B. wenn nicht Autor der Publikation oder Affiliation nicht DSMZ)
 
+Reports:
+- hier werden genau definierte Zeiträume gebraucht (Start und Ende)
+- Support für verschiedene Zitationsstile
+- Für Wissenschaftler: nur eigener Name fett
+
 # Changelog
 
 ## 31.07.22
