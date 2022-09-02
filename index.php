@@ -111,6 +111,24 @@ Route::get('/about', function () {
     include BASEPATH . "/pages/about.php";
     include BASEPATH . "/footer.php";
 });
+
+Route::get('/lom', function () {
+
+    $breadcrumb = [
+        ['name' => lang('LOM', 'LOM')]
+    ];
+
+    include_once BASEPATH . "/php/_config.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/lom.php";
+    include BASEPATH . "/footer.php";
+});
+Route::post('/lom', function () {
+    $json = json_encode($_POST['json'], JSON_PRETTY_PRINT);
+    file_put_contents(BASEPATH . "/matrix.json", $json);
+    header("Location: " . ROOTPATH . "/lom?msg=success");
+});
+
 Route::get('/news', function () {
 
     $breadcrumb = [
@@ -338,6 +356,77 @@ include_once BASEPATH . "/export.php";
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/components/$path.php";
+});
+
+
+Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {
+    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/_lom.php";
+
+    $LOM = new LOM($user, $osiris);
+    $result = array();
+
+    // publications
+    $cursor = $osiris->publications->find([
+        '$or' => [
+            ['authors.user' => $user], ['editors.user' => $user]
+        ],
+        'year' => SELECTEDYEAR
+    ]);
+    foreach ($cursor as $doc) {
+        $result[] = $LOM->publication($doc);
+    }
+
+    // posters
+    $cursor = $osiris->posters->find([
+        'authors.user' => $user,
+        "start.year" => SELECTEDYEAR
+    ]);
+    foreach ($cursor as $doc) {
+        $result[] = $LOM->poster($doc);
+    }
+
+    // lectures
+    $cursor = $osiris->lectures->find([
+        'authors.user' => $user,
+        "start.year" => SELECTEDYEAR
+    ]);
+    foreach ($cursor as $doc) {
+        $result[] = $LOM->lecture($doc);
+    }
+
+    // reviews
+    $cursor = $osiris->reviews->find([
+        'user' => $user,
+        '$or' => array(
+            [
+                "start.year" => array('$lte' => SELECTEDYEAR),
+                '$or' => array(
+                    ['end.year' => array('$gte' => SELECTEDYEAR)],
+                    ['end' => null]
+                )
+            ],
+            ["dates.year" => SELECTEDYEAR]
+        )
+    ]);
+    foreach ($cursor as $doc) {
+        $result[] = $LOM->review($doc);
+    }
+
+    // miscs
+    $cursor = $osiris->miscs->find([
+        'authors.user' => $user,
+        "dates.start.year" => array('$lte' => SELECTEDYEAR),
+        '$or' => array(
+            ['dates.end.year' => array('$gte' => SELECTEDYEAR)],
+            ['dates.end' => null]
+        )
+    ]);
+    foreach ($cursor as $doc) {
+        $result[] = $LOM->misc($doc);
+    }
+
+    echo json_encode(array("LOM" => array_sum(array_column($result, 'lom')), "details" => $result));
 });
 
 

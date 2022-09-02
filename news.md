@@ -29,6 +29,12 @@ Reports:
 
 # Changelog
 
+## 02.09.22
+Ich habe ein ganz simples LOM-System aufgesetzt. 
+- Die Punkte werden in einer von mir definierten Matrix gespeichert, die leicht anzupassen ist. 
+- Über ein LOM-Portal kann das Controlling einfach die Punkte für die einzelnen Bereiche anpassen. Siehe [hier](/lom).
+- Auf der Übersichtsseite eines Wissenschaftlers werden oben die LOM-Punkte aufsummiert. Hinter jeder Aktivität stehen die dafür erhaltenen Punkte. Die Punkte für refereed journals errechnen sich mit dem Impact Factor (falls vorhanden)
+
 ## 01.09.22
 Dieses Update bezieht sich ausschließlich auf die Ansicht des Controllings
 - Auf der Startseite wird nun eine Übersicht aller Wissenschaftler gezeigt, die das aktuelle Quartal "approved" haben 

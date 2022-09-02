@@ -247,10 +247,19 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="far fa-institution" aria-hidden="true"></i>
                             <?= lang('Journals', 'Journale') ?>
                         </a>
+
+                        <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-signal <?= $pageactive('lom') ?>">
+                            <i class="far fa-coin" aria-hidden="true"></i>
+                            <?= lang('LOM') ?>
+                        </a>
                     <?php } ?>
 
 
                 <?php } ?>
+
+                <div class="sidebar-title">
+                    OSIRIS
+                </div>
 
                 <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon <?= $pageactive('about') ?>">
                     <i class="far fa-signs-post" aria-hidden="true"></i>

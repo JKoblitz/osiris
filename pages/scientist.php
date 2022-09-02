@@ -1,16 +1,30 @@
+<style>
+    .lom {
+        font-weight: bold;
+        text-align: right !important;
+    }
+    .lom::before{
+        content: '\f85c';
+        font-family: "Font Awesome 6 Pro";
+        font-weight: 900;
+        color: var(--signal-color);
+        margin-right: .5rem;
+    }
+</style>
+
 <?php
 
-// $yearstart = mongo_date(SELECTEDYEAR . "-01-01");
-// $yearend = mongo_date(SELECTEDYEAR . "-12-31");
-
 $currentuser = $user == $_SESSION['username'];
+$q = SELECTEDYEAR . "Q" . SELECTEDQUARTER;
 
-?>
+include_once BASEPATH . "/php/_lom.php";
+$LOM = new LOM($user, $osiris);
 
+$_lom = 0;
 
-<?php if ($currentuser) {
-    $q = SELECTEDYEAR . "Q" . SELECTEDQUARTER;
+if ($currentuser) {
     $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+
 ?>
 
 
@@ -28,32 +42,21 @@ $currentuser = $user == $_SESSION['username'];
                 </p>
 
                 <?php if ($approved) { ?>
-                    <?=lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.')?>
+                    <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
                 <?php } else { ?>
                     <form action="<?= ROOTPATH ?>/approve" method="post">
-                    <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                    <button class="btn"><?= lang('Approve') ?></button>
-                </form>
+                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                        <button class="btn"><?= lang('Approve') ?></button>
+                    </form>
                 <?php } ?>
-
-                <!-- 
-                <form action="" method="POST">
-                    <div class="form-group">
-                        <label for="username">User name: </label>
-                        <input class="form-control" id="username" type="text" name="username" placeholder="abc21" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password: </label>
-                        <input class="form-control" id="password" type="password" name="password" placeholder="your windows password" required />
-                    </div>
-                    <input class="btn btn-primary" type="submit" name="submit" value="Submit" />
-                </form> -->
             </div>
         </div>
     </div>
 
 
-    <h1><?= lang('Welcome', 'Willkommen') ?>, <?= $name ?></h1>
+    <h1>
+        <?= lang('Welcome', 'Willkommen') ?>, <?= $name ?>
+    </h1>
 
     <p class="row-muted">
         <?= lang(
@@ -61,27 +64,28 @@ $currentuser = $user == $_SESSION['username'];
             'Dies ist deine persönliche Seite. Bitte überprüfe deine letzten Aktivitäten sorgfältig und füge neue hinzu, falls angebracht.'
         ) ?>
     </p>
-<?php if ($approved) { ?>
-    <a href="#" class="btn disabled">
-        <i class="fas fa-check mr-5"></i>
-    <?=lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.')?>
-    </a>
-<?php } else { ?>
-    <a class="btn btn-success" href="#approve">
-    <i class="fas fa-question mr-5"></i>
-        <?= lang('Approve current quarter', 'Bestätige aktuelles Quartal') ?>
-    </a>
-<?php } ?>
+    <?php if ($approved) { ?>
+        <a href="#" class="btn disabled">
+            <i class="fas fa-check mr-5"></i>
+            <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
+        </a>
+    <?php } else { ?>
+        <a class="btn btn-success" href="#approve">
+            <i class="fas fa-question mr-5"></i>
+            <?= lang('Approve current quarter', 'Bestätige aktuelles Quartal') ?>
+        </a>
+    <?php } ?>
 
 
 <?php } else { ?>
     <h1><?= $name ?></h1>
 <?php } ?>
 
-
-<?php
-    dump($matrix);
-?>
+<div class="lead my-20">
+    <?= lang('In ' . SELECTEDYEAR . ' achieved LOM points: ', 'Im Jahr ' . SELECTEDYEAR . ' erreichte LOM-Punkte: ') ?>
+    <i class="fad fa-lg fa-coin text-signal"></i>
+    <b id="lom-points"></b>
+</div>
 
 
 
@@ -99,17 +103,20 @@ $currentuser = $user == $_SESSION['username'];
         <tbody>
             <?php
             $collection = $osiris->publications;
-            // $cursor = $collection->find(['authors.user' => $user, 'year' => SELECTEDYEAR]);
-
             $options = ['sort' => ["year" => -1, "month" => -1]];
             $cursor = $collection->find(['$or' => [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR], $options);
             // dump($cursor);
             foreach ($cursor as $document) {
+                $l = $LOM->publication($document);
+                $_lom += $l['lom'];
+
                 $q = getQuarter($document['month']);
                 $in_quarter = $q == SELECTEDQUARTER;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td class='quarter'>Q$q</td>
                     <td>" . format_publication($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
             ?>
@@ -144,11 +151,15 @@ $currentuser = $user == $_SESSION['username'];
             ]);
             // dump($cursor);
             foreach ($cursor as $document) {
+                $l = $LOM->poster($document);
+                $_lom += $l['lom'];
                 $q = getQuarter($document['start']);
                 $in_quarter = $q == SELECTEDQUARTER;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td class='quarter'>Q$q</td>
                     <td>" . format_poster($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
             ?>
@@ -196,11 +207,15 @@ $currentuser = $user == $_SESSION['username'];
             ]);
             // dump($cursor);
             foreach ($cursor as $document) {
+                $l = $LOM->lecture($document);
+                $_lom += $l['lom'];
                 $q = getQuarter($document['start']);
                 $in_quarter = $q == SELECTEDQUARTER;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td class='quarter'>Q$q</td>
                     <td>" . format_lecture($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
             ?>
@@ -253,9 +268,13 @@ $currentuser = $user == $_SESSION['username'];
             ];
             $cursor = $collection->find($filter);
             foreach ($cursor as $document) {
+                $l = $LOM->review($document);
+                $_lom += $l['lom'];
                 $in_quarter = true;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td>" . format_editorial($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
 
@@ -267,9 +286,13 @@ $currentuser = $user == $_SESSION['username'];
             ];
             $cursor = $collection->find($filter);
             foreach ($cursor as $document) {
+                $l = $LOM->review($document);
+                $_lom += $l['lom'];
                 $in_quarter = true;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td>" . format_review($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
             ?>
@@ -322,9 +345,13 @@ $currentuser = $user == $_SESSION['username'];
             ]);
             // dump($cursor);
             foreach ($cursor as $document) {
+                $l = $LOM->misc($document);
+                $_lom += $l['lom'];
                 $in_quarter = true;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td>" . format_misc($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
             ?>
@@ -377,9 +404,13 @@ $currentuser = $user == $_SESSION['username'];
             ]);
             // dump($cursor);
             foreach ($cursor as $document) {
+                $l = $LOM->teaching($document);
+                $_lom += $l['lom'];
                 $in_quarter = true;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td>" . format_teaching($document) . "</td>
+                    <td class='lom' >$l[lom]</td>
+                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
             }
             ?>
@@ -411,3 +442,8 @@ $currentuser = $user == $_SESSION['username'];
         </div>
     </div>
 </div>
+
+
+<script>
+    $('#lom-points').html('<?= $_lom ?>')
+</script>
