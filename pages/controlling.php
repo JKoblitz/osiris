@@ -2,7 +2,7 @@
 <?php
 
 $n_scientists = $osiris->users->count(["is_scientist" => true]);
-$n_approved = $osiris->users->count(["is_scientist" => true, "approved" => SELECTEDYEAR]);
+$n_approved = $osiris->users->count(["is_scientist" => true, "approved" => SELECTEDYEAR. "Q" . SELECTEDQUARTER]);
 
 ?>
 
@@ -15,7 +15,7 @@ $n_approved = $osiris->users->count(["is_scientist" => true, "approved" => SELEC
 
 
 
-<h4><?= lang('Approved in') . " " . SELECTEDYEAR ?></h4>
+<h4><?= lang('Approved in') . " " . SELECTEDYEAR. "Q" . SELECTEDQUARTER ?></h4>
 
 <div class="box">
     <div class="chart w-400 mw-full content">
@@ -37,12 +37,12 @@ $n_approved = $osiris->users->count(["is_scientist" => true, "approved" => SELEC
                     label: '# of Scientists',
                     data: [<?= $n_approved ?>, <?= $n_scientists - $n_approved ?>],
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(236, 175, 0, 0.2)',
+                        'rgba(182, 31, 41, 0.2)',
                     ],
                     borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)',
+                        'rgba(236, 175, 0, 1)',
+                        'rgba(182, 31, 41, 1)',
                     ],
                     borderWidth: 1
                 }]

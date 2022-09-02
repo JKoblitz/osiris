@@ -386,6 +386,24 @@ Route::post('/add-repetition/lecture/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+Route::post('/approve', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $id = $_SESSION['username'];
+    $q = SELECTEDYEAR. "Q" . SELECTEDQUARTER;
+
+    $updateResult = $osiris->users->updateOne(
+        ['_id' => $id],
+        ['$push' => ["approved" => $q]]
+    );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=approved");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount()
+    ]);
+});
 
 
 Route::get('/form/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {

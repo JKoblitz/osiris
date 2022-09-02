@@ -8,7 +8,10 @@ $currentuser = $user == $_SESSION['username'];
 ?>
 
 
-<?php if ($currentuser) { ?>
+<?php if ($currentuser) {
+    $q = SELECTEDYEAR . "Q" . SELECTEDQUARTER;
+    $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+?>
 
 
     <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
@@ -23,6 +26,16 @@ $currentuser = $user == $_SESSION['username'];
                     Sie werden auf Fehler oder mögliche Probleme hingewiesen und können anschließend bestätigen, dass alles korrekt ist.
                     Dies wird dann als Haken in der Übersicht des Controllings hinzugefügt.
                 </p>
+
+                <?php if ($approved) { ?>
+                    <?=lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.')?>
+                <?php } else { ?>
+                    <form action="<?= ROOTPATH ?>/approve" method="post">
+                    <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                    <button class="btn"><?= lang('Approve') ?></button>
+                </form>
+                <?php } ?>
+
                 <!-- 
                 <form action="" method="POST">
                     <div class="form-group">
@@ -48,16 +61,29 @@ $currentuser = $user == $_SESSION['username'];
             'Dies ist deine persönliche Seite. Bitte überprüfe deine letzten Aktivitäten sorgfältig und füge neue hinzu, falls angebracht.'
         ) ?>
     </p>
-
-    <a class="btn btn-success" href="#approve">
+<?php if ($approved) { ?>
+    <a href="#" class="btn disabled">
         <i class="fas fa-check mr-5"></i>
+    <?=lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.')?>
+    </a>
+<?php } else { ?>
+    <a class="btn btn-success" href="#approve">
+    <i class="fas fa-question mr-5"></i>
         <?= lang('Approve current quarter', 'Bestätige aktuelles Quartal') ?>
     </a>
+<?php } ?>
 
 
 <?php } else { ?>
     <h1><?= $name ?></h1>
 <?php } ?>
+
+
+<?php
+    dump($matrix);
+?>
+
+
 
 <h3>
     <?php

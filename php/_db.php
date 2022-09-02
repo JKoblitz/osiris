@@ -8,6 +8,10 @@ $mongoDB = new MongoDB\Client(
 global $osiris;
 $osiris = $mongoDB->osiris;
 
+global $matrix;
+$matrix_json = file_get_contents(BASEPATH."/matrix.json");
+$matrix = json_decode($matrix_json, true);
+
 global $USER;
 $user = $user ?? $_SESSION['username'] ?? null;
 $USER = array();

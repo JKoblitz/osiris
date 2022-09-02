@@ -1,0 +1,23 @@
+{
+    "publication": {
+        "journal": {
+            "first": 16,
+            "last": 16,
+            "middle": 8
+        }, 
+        "book": {
+            "chapter": 16,
+            "editor": 16
+        }
+    },
+    "lecture": {
+        "short": 8,
+        "long": 16,
+        "repetition": 4
+    },
+    "poster": {
+        "first": 16,
+        "last": 16,
+        "middle": 8
+    }
+}

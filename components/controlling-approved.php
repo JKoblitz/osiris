@@ -9,6 +9,7 @@
     <table class="table table-simple">
         <tbody>
             <?php
+            $q = SELECTEDYEAR. "Q" . SELECTEDQUARTER;
 
             $cursor = $osiris->users->find(
                 ['is_scientist' => true],
@@ -20,7 +21,7 @@
                 // $s = MongoDB\BSON\toJSON($s);
                 // $s = $doc->bsonSerialize();
                 // var_dump($s);
-                $approved = isset($s['approved']) && in_array(SELECTEDYEAR, $s['approved']->bsonSerialize());
+                $approved = isset($s['approved']) && in_array($q, $s['approved']->bsonSerialize());
             ?>
                 <tr class="row-<?=$approved ? 'success':''?>">
                     <td>
