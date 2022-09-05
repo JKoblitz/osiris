@@ -76,11 +76,13 @@ class LOM
 
         $if = 1;
         $impact = $journal['impact']->bsonSerialize();
-        $impact = array_filter($impact, function ($a) use ($prev_year) {
-            return $a['year'] == $prev_year;
-        });
-        if (!empty($impact)) {
-            $if = reset($impact)['impact'];
+        if (is_array($impact)) {
+            $impact = array_filter($impact, function ($a) use ($prev_year) {
+                return $a['year'] == $prev_year;
+            });
+            if (!empty($impact)) {
+                $if = reset($impact)['impact'];
+            }
         }
         $points = $this->matrix['publication']['refereed'][$pos];
         return array(
