@@ -7,7 +7,7 @@
         <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
     </div>
 
-    <div class="box box-primary" id="teaching-form" style="display:none">
+    <div class="box box-primary  add-form" id="teaching-form" style="display:none">
 
         <?php
         include BASEPATH . "/components/form-teaching.php"

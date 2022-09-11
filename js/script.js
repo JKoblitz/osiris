@@ -1,3 +1,4 @@
+// var quill = null 
 
 var SCIENTISTS;
 $(document).ready(function () {
@@ -5,6 +6,43 @@ $(document).ready(function () {
         return item.value
     })
     SCIENTISTS = Object.values(scientists)
+    $('.title-editor').each(function(el){
+        var element = this;
+        var quill = new Quill(element, {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline']
+                ]
+            },
+            formats: ['bold', 'italic', 'underline'],
+            placeholder: '',
+            theme: 'snow' // or 'bubble'
+        });
+        quill.on('text-change', function(delta, oldDelta, source) {
+            var delta = quill.getContents()
+            // console.log(delta);
+            var str = ""
+            delta.ops.forEach(el => {
+                if (el.attributes !== undefined) {
+                    if (el.attributes.bold) str += "<b>";
+                    if (el.attributes.italic) str += "<i>";
+                    if (el.attributes.underline) str += "<u>";
+                }
+                str += el.insert;
+                if (el.attributes !== undefined) {
+                    if (el.attributes.underline) str += "</u>";
+                    if (el.attributes.italic) str += "</i>";
+                    if (el.attributes.bold) str += "</b>";
+                }
+            });
+            // $('.add-form #title').val(str)
+            $(element).next().val(str)
+        });
+    })
+    // if ($('.add-form #title-editor').length !== 0 ){
+        
+    // }
+
 })
 
 $('input[name=activity]').on('change', function () {
@@ -18,7 +56,8 @@ function toastError(msg = "") {
         content: msg,
         title: "Error",
         alertType: "danger",
-        hasDismissButton: true
+        hasDismissButton: true,
+        timeShown: 10000
     })
 }
 function toastSuccess(msg = "") {
@@ -26,7 +65,8 @@ function toastSuccess(msg = "") {
         content: msg,
         title: "Success",
         alertType: "success",
-        hasDismissButton: true
+        hasDismissButton: true,
+        timeShown: 10000
     })
 }
 function toastWarning(msg = "") {
@@ -34,7 +74,8 @@ function toastWarning(msg = "") {
         content: msg,
         title: "Warning",
         alertType: "signal",
-        hasDismissButton: true
+        hasDismissButton: true,
+        timeShown: 10000
     })
 }
 function getCookie(cname) {
@@ -202,12 +243,14 @@ function downloadCSVFile(csv_data) {
 }
 
 function getPublication(id) {
+    $('.loader').addClass('show')
     if (/^(10\.\d{4,5}\/[\S]+[^;,.\s])$/.test(id)) {
         getDOI(id)
     } else if (/^(\d{7,8})$/.test(id)) {
         getPubmed(id)
     } else {
         toastError('This is neither DOI nor Pubmed-ID. Sorry.');
+        $('.loader').removeClass('show')
         return
     }
 }
@@ -223,6 +266,7 @@ function getPubmed(id) {
         type: "GET",
         data: data,
         dataType: "json",
+
         url: url,
         success: function (data) {
             console.log(data);
@@ -276,21 +320,28 @@ function getPubmed(id) {
                 epub: pub.pubstatus == 10,
             }
             fillForm(pubdata)
+            $('.loader').removeClass('show')
         },
         error: function (response) {
             toastError(response.responseText)
-            $('#loader').hide()
+            $('.loader').removeClass('show')
         }
     })
 }
 
 
 function getDOI(doi) {
-    url = "https://api.crossref.org/works/" + doi //+ '&mailto=juk20@dsmz.de'
+    url = "https://api.crossref.org/works/" + doi + '?mailto=juk20@dsmz.de'
     $.ajax({
         type: "GET",
         // data: data,
         dataType: "json",
+        // cors: true ,
+        //   contentType:'application/json',
+        //   secure: true,
+        //   headers: {
+        //     'Access-Control-Allow-Origin': '*',
+        //   },
         url: url,
         success: function (data) {
             console.log(AFFILIATION);
@@ -327,7 +378,7 @@ function getDOI(doi) {
                 //     editors.push(name)
                 // }
             });
-            var issue=null
+            var issue = null
             if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
 
             var pubdata = {
@@ -352,10 +403,11 @@ function getDOI(doi) {
                 epub: pub.issued === undefined,
             }
             fillForm(pubdata)
+            $('.loader').removeClass('show')
         },
         error: function (response) {
             toastError(response.responseText)
-            $('#loader').hide()
+            $('.loader').removeClass('show')
         }
     })
 }
@@ -389,8 +441,13 @@ function fillForm(pub) {
             break;
     }
 
-    if (pub.title !== undefined)
+    if (pub.title !== undefined) {
         $('#title').val(pub.title).addClass('is-valid')
+        if (quill !== null){
+            // quill.setText(pub.title);
+            $('#title-editor .ql-editor').html("<p>"+pub.title+"</p>").addClass('is-valid')
+        }
+    }
     if (pub.first_authors !== undefined)
         $('#first_authors').val(pub.first_authors).addClass('is-valid')
     if (pub.year !== undefined)
@@ -442,7 +499,7 @@ function fillForm(pub) {
         })
     }
     if (aff_undef)
-        toastWarning('Not all affiliations could be parsed automatically. Please click on every '+AFFILIATION+' author to mark them.')
+        toastWarning('Not all affiliations could be parsed automatically. Please click on every ' + AFFILIATION + ' author to mark them.')
 
 
     toastSuccess('Bibliographic data were updated.')
@@ -452,8 +509,6 @@ function fillForm(pub) {
 
 function getPubData(event, form) {
     event.preventDefault();
-    // $('#loader').show()
-    console.log(form);
     if (form !== null) {
         param = $(form).serializeArray()
         param = objectifyForm(param)
@@ -461,95 +516,6 @@ function getPubData(event, form) {
     console.log(param);
 
     getPublication(param.doi)
-
-    return;
-    // TODO: check if doi is valid
-
-    if (param.doi !== null && param.doi !== "") {
-        url = "https://api.crossref.org/works/" + param.doi //+ '&mailto=juk20@dsmz.de'
-    }
-    // data = {}
-    $.ajax({
-        type: "GET",
-        // data: data,
-        dataType: "json",
-        url: url,
-        success: function (data) {
-            $('#loader').hide()
-            console.log(data);
-            var pub = data.message
-
-            switch (pub.type) {
-                case 'journal-article':
-                    togglePubType('article')
-                    break;
-                case 'Magazine article':
-                    togglePubType('magazine')
-                    break;
-                case 'Book chapter':
-                    togglePubType('chapter')
-                    break;
-                case 'Book':
-                    togglePubType('book')
-                    break;
-
-                default:
-                    togglePubType('article')
-                    break;
-            }
-
-            date = ""
-            var date = getPublishingDate(pub)
-
-            $('#publication-form').find('input').val('').removeClass('is-valid')
-            $('#title').val(pub.title[0]).addClass('is-valid')
-            $('#journal').val(pub['container-title'][0]).addClass('is-valid')
-
-            if (pub['journal-issue'] !== undefined && pub['journal-issue'].length !== 0) {
-                $('#issue').val(pub['journal-issue'].issue).addClass('is-valid')
-                console.log(pub['journal-issue']);
-                var date2 = getPublishingDate(pub['journal-issue'])
-                if (date2 !== "") {
-                    date = date2
-                }
-            } else {
-                $('#epub').attr('checked', true).addClass('is-valid')
-            }
-            $('#volume').val(pub.volume).addClass('is-valid')
-            $('#pages').val(pub.page).addClass('is-valid')
-            $('#doi').val(pub.DOI).addClass('is-valid')
-            // $('#pubmed').val()
-            $('#year').val(date[0]).addClass('is-valid')
-            $('#month').val(date[1]).addClass('is-valid')
-            $('#day').val(date[2]).addClass('is-valid')
-            // $('#date_publication').val(date).addClass('is-valid')
-            $('#type').val(pub.type).addClass('is-valid')
-            // $('#book_title').val()
-
-            $('.author-list').addClass('is-valid').find('.author').remove()
-
-            pub.author.forEach(function (d, i) {
-                var aoi = false
-                d.affiliation.forEach(e => {
-                    if (e.name.includes(AFFILIATION)) {
-                        aoi = true
-                    }
-                })
-                if (d.sequence == "first") {
-                    first = i + 1
-                }
-                addAuthorDiv(d.family, d.given, aoi)
-            })
-            $('#first-authors').val(first).addClass('is-valid')
-
-
-            toastSuccess('Bibliographic data were updated.')
-        },
-        error: function (response) {
-            toastError(response.responseText)
-            $('#loader').hide()
-        }
-    })
 }
 
 function getPublishingDate(pub) {
@@ -585,14 +551,14 @@ function getDate(element) {
 }
 
 
-function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el=null) {
-    if (el== null){
+function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el = null) {
+    if (el == null) {
         if (editor) {
             el = $('#add-editor')
         } else {
             el = $('#add-author')
         }
-    } 
+    }
     var author = $('<div class="author">')
         .on('click', function () {
             toggleAffiliation(this)
@@ -605,10 +571,10 @@ function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el=null)
     }
     val = lastname.trim() + ';' + firstname.trim() + ';' + val
 
-    var classname = editor? "editors": "authors";
-    author.append('<input type="hidden" name="values['+classname+'][]" value="' + val + '">')
+    var classname = editor ? "editors" : "authors";
+    author.append('<input type="hidden" name="values[' + classname + '][]" value="' + val + '">')
     author.append('<a onclick="removeAuthor(event, this)">&times;</a>')
-        author.insertBefore(el)
+    author.insertBefore(el)
 }
 
 function toggleAffiliation(item) {
@@ -624,7 +590,7 @@ function toggleAffiliation(item) {
     $(item).toggleClass('author-aoi')
 }
 
-function addAuthor(event, el, editor=false) {
+function addAuthor(event, el, editor = false) {
     if (event.keyCode == '13') {
         event.preventDefault();
         const match = (SCIENTISTS.indexOf(el.value) != -1)
@@ -688,7 +654,7 @@ function addRow2db(el) {
             },
             error: function (response) {
                 toastError(response.responseText)
-                $('#loader').hide()
+                $('.loader').removeClass('show')
             }
         })
     }
@@ -706,7 +672,7 @@ function togglePubType(type) {
     }
 
     $('#select-btns').find('.btn').removeClass('btn-primary')
-    $('#'+type+'-btn').addClass('btn-primary')
+    $('#' + type + '-btn').addClass('btn-primary')
     var form = $('#publication-form')
     $('#type').val(types[type])
     form.find('[data-visible]').hide()
@@ -723,25 +689,59 @@ function todo() {
     })
 }
 
-function loadModal(path){
+function loadModal(path) {
     $.ajax({
         type: "GET",
         dataType: "html",
-        url: ROOTPATH + '/'+ path,
+        url: ROOTPATH + '/' + path,
         success: function (response) {
             $('#modal-content').html(response)
             $('#the-modal').addClass('show')
+
+            
+    if ($('#the-modal .title-editor').length !== 0 ){
+        var quill = new Quill('#the-modal .title-editor', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline']
+                ]
+            },
+            formats: ['bold', 'italic', 'underline'],
+            placeholder: '',
+            theme: 'snow' // or 'bubble'
+        });
+        quill.on('text-change', function(delta, oldDelta, source) {
+            var delta = quill.getContents()
+            console.log(delta);
+            var str = ""
+            delta.ops.forEach(el => {
+                if (el.attributes !== undefined) {
+                    if (el.attributes.bold) str += "<b>";
+                    if (el.attributes.italic) str += "<i>";
+                    if (el.attributes.underline) str += "<u>";
+                }
+                str += el.insert;
+                if (el.attributes !== undefined) {
+                    if (el.attributes.underline) str += "</u>";
+                    if (el.attributes.italic) str += "</i>";
+                    if (el.attributes.bold) str += "</b>";
+                }
+            });
+            $('#the-modal #title').val(str)
+        });
+    }
         },
         error: function (response) {
             console.log(response);
             toastError(response.responseText)
-            $('#loader').hide()
+            $('.loader').removeClass('show')
         }
     })
 }
 
 function toggleEditForm(collection, id) {
-    loadModal('form/' + collection + '/'+id);
+    loadModal('form/' + collection + '/' + id);
+
 }
 
 

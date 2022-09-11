@@ -25,7 +25,9 @@ if (!empty($form) && isset($form['_id'])) {
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
     <div class="form-group">
         <label for="title" class="required"><?= lang('Title', 'Titel') ?></label>
-        <input type="text" class="form-control" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
+        <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
+        <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
+        <!-- <input type="text" class="form-control" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>"> -->
     </div>
 
     <div class="form-group">
@@ -67,7 +69,7 @@ if (!empty($form) && isset($form['_id'])) {
 
 
 
-    <button class="btn btn-primary" type="submit"><?=$btntext?></button>
+    <button class="btn btn-primary" type="submit"><?= $btntext ?></button>
 
 
     <datalist id="scientist-list">

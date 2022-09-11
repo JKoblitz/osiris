@@ -14,7 +14,7 @@ $page = $page ?? end($lasturl);
 $pageactive = function ($p) use ($page, $breadcrumb) {
     if ($page == $p) return "active";
     $uri = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
-    if ((ROOTPATH."/".$p) == $uri) return 'active'; 
+    if ((ROOTPATH . "/" . $p) == $uri) return 'active';
     if (count($breadcrumb) > 1 && $breadcrumb[0]['path'] == ("/" . $p)) return "active";
     return "";
 }
@@ -35,7 +35,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
+
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
         const AFFILIATION = "<?= AFFILIATION ?>";
@@ -44,9 +46,19 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         :root {
             --affiliation: "<?= AFFILIATION ?>";
         }
+
+        .ql-snow.ql-toolbar::after,
+        .ql-snow .ql-toolbar::after {
+            content: '<?= lang('Please check spelling and formatting carefully.', 'Bitte Rechtschreibung und Formatierung sorgsam prüfen.') ?>';
+            display: inline-block;
+            color: var(--muted-color);
+        }
     </style>
     <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
+    <!-- Quill (rich-text editor) -->
+    <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
+
     <script src="<?= ROOTPATH ?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
     <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
 
@@ -54,7 +66,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
 <body>
     <!-- Modals go here -->
-    <div id="loader">
+    <div class="loader">
         <span></span>
     </div>
 
@@ -152,14 +164,30 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <?php } else { ?>
 
                     <div class="sidebar-title">
-                        <?= lang('User', 'Nutzer') ?>
+                        <!-- <?= lang('User', 'Nutzer') ?> -->
+                        <?= $_SESSION["name"] ?? 'User' ?>
                     </div>
 
                     <a href="<?= ROOTPATH ?>/" class="sidebar-link with-icon">
                         <i class="far fa-user" aria-hidden="true"></i>
-                        <?= $_SESSION["name"] ?? 'User' ?>
+                        <?= lang('My activities', 'Meine Aktivitäten') ?>
                     </a>
 
+                    <!-- <a href="<?= ROOTPATH ?>/achievements" class="sidebar-link with-icon">
+                        <i class="far fa-trophy-star" aria-hidden="true"></i>
+                       <?= lang('Achievements', 'Errungenschaften') ?>
+                    </a> -->
+
+
+                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
+                        <i class="far fa-right-from-bracket" aria-hidden="true"></i>
+                        Logout
+                    </a>
+
+
+                    <div class="sidebar-title">
+                        <?= lang('Activities', 'Aktivitäten') ?>
+                    </div>
 
 
                     <a href="<?= ROOTPATH ?>/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
@@ -193,44 +221,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
-                        <i class="far fa-right-from-bracket" aria-hidden="true"></i>
-                        Logout
-                    </a>
-
-                    <div class="sidebar-title">
-                        Export
-                    </div>
-
-                    <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('export/publications') ?>">
-                        <i class="far fa-books" aria-hidden="true"></i>
-                        Export <?= lang('Publications', 'Publikationen') ?>
-                    </a>
-                    
-                    <a href="<?= ROOTPATH ?>/export/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('export/reports') ?>">
-                        <i class="far fa-file-chart-column" aria-hidden="true"></i>
-                        Export <?= lang('Reports', 'Berichte') ?>
-                    </a>
-                    
-                    <!-- <div class="sidebar-title">
-                        <?= lang('Content', 'Inhalte') ?>
-                    </div>
-                    <a href="<?= ROOTPATH ?>/browse/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
-                        <i class="far fa-books" aria-hidden="true"></i>
-                        <?= lang('Publications', 'Publikationen') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/browse/poster" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('poster') ?>">
-                        <i class="far fa-screen-users" aria-hidden="true"></i>
-                        <?= lang('Posters', 'Poster') ?>
-                    </a> -->
-
-                    <!-- <a href="<?= ROOTPATH ?>/browse/activity" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('activity') ?>">
-                        <i class="far fa-calendar-days" aria-hidden="true"></i>
-                        <?= lang('Activities', 'Aktivitäten') ?>
-                    </a> -->
-
-
 
                     <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
 
@@ -252,6 +242,17 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="far fa-coin" aria-hidden="true"></i>
                             <?= lang('LOM') ?>
                         </a>
+
+                        <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('export/publications') ?>">
+                            <i class="far fa-books" aria-hidden="true"></i>
+                            Export <?= lang('Publications', 'Publikationen') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>/export/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('export/reports') ?>">
+                            <i class="far fa-file-chart-column" aria-hidden="true"></i>
+                            Export <?= lang('Reports', 'Berichte') ?>
+                        </a>
+
                     <?php } ?>
 
 
@@ -273,9 +274,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </a>
 
                 <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
-                        <i class="far fa-language" aria-hidden="true"></i>
-                        <?= lang('Deutsch', 'English') ?>
-                    </a>
+                    <i class="far fa-language" aria-hidden="true"></i>
+                    <?= lang('Deutsch', 'English') ?>
+                </a>
 
             </div>
         </div>

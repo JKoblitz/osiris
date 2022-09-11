@@ -12,39 +12,6 @@
 
 <hr>
 
-<style>
-    .check-list, .check-list ul {
-        margin: 0;
-        padding-left: 1.2rem;
-      }
-      
-      .check-list li {
-        position: relative;
-        list-style-type: none;
-        padding-left: 2.5rem;
-        margin-bottom: 0.5rem;
-      }
-      
-      .check-list li:before {
-          content: '\f0c8';
-          font-family: 'Font Awesome 6 Pro';
-          font-weight: 400;
-          display: block;
-          position: absolute;
-          color: var(--muted-color);
-          left: 0;
-          top: 0;
-      }
-      .check-list li.checked::before {
-        content: '\f14a';
-        color: var(--success-color);
-      }
-      .check-list li.moved::before {
-        content: '\f32b';
-        color: var(--signal-color);
-      }
-</style>
-
 <h2>To-Do and Roadmap</h2>
 
 <h3>Grundlegende Funktionen der Applikation</h3>

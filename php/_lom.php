@@ -23,6 +23,43 @@ class LOM
         $this->osiris = $osiris;
     }
 
+    function get_author($doc){
+        $authors = $doc['authors']->bsonSerialize();
+        $author = array_filter($authors, function ($author) {
+            return $author['user'] == $this->user;
+        });
+        
+        if (empty($author)){
+            return array();
+        }
+        return reset($author);
+    }
+    
+function lom($col, $doc)
+{
+    switch ($col) {
+        case 'teaching':
+            return $this->teaching($doc);
+        case 'poster':
+            return $this->poster($doc);
+        case 'lecture':
+            return $this->lecture($doc);
+        case 'publication':
+            return $this->publication($doc);
+        case 'misc':
+            return $this->misc($doc);
+        case 'review':
+            return $this->review($doc);
+        default:
+            return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0",
+                'lom' => 0
+            );
+    }
+}
 
     function publication($doc)
     {
@@ -30,16 +67,24 @@ class LOM
 
         if (isset($doc['correction']) && $doc['correction']) return [];
         $type = "non-refereed";
-        if (strtolower(trim($doc['type'])) == "journal article") {
+        $doctype = strtolower(trim($doc['type']));
+        if ($doctype == "journal article" || $doctype == "journal-article") {
             $type = "refereed";
-        } elseif (strtolower(trim($doc['type'])) == "book") {
+        } elseif ($doctype == "book") {
             $type = "book";
         }
 
-        $authors = $doc['authors']->bsonSerialize();
-        $author = array_filter($authors, function ($author) {
-            return $author['user'] == $this->user;
-        });
+        $author = $this->get_author($doc);
+        $aff = (isset($author['aoi']) && ($author['aoi'] === 0 || $author['aoi'] === false));
+        if (empty($author) || $aff){
+            return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0" . ($aff ? ' (not affiliated)': ''),
+                'lom' => 0
+            );
+        }
 
         if ($type == "book") {
 
@@ -59,7 +104,7 @@ class LOM
             );
         }
 
-        $pos = $author[0]['position'] ?? 'middle';
+        $pos = $author['position'] ?? 'middle';
 
         if ($type == "non-refereed") {
             $points = $this->matrix['publication']['non-refereed'][$pos];
@@ -71,8 +116,9 @@ class LOM
                 'lom' => $points
             );
         }
-
-        $journal = $this->osiris->journals->findOne(['journal' => $doc['journal']]);
+        
+        $j = new \MongoDB\BSON\Regex('^'.trim($doc['journal']), 'i');
+        $journal = $this->osiris->journals->findOne(['journal' => ['$regex' => $j]]);
 
         $if = 1;
         $impact = $journal['impact']->bsonSerialize();
@@ -90,17 +136,24 @@ class LOM
             'id' => $doc['_id'],
             'title' => $doc['title'],
             'points' => "$points * $if (IF)",
-            'lom' => $points * floatval($if)
+            'lom' => round($points * floatval($if))
         );
     }
 
     function poster($doc)
     {
-        $authors = $doc['authors']->bsonSerialize();
-        $author = array_filter($authors, function ($author) {
-            return $author['user'] == $this->user;
-        });
-        $pos = $author[0]['position'] ?? 'middle';
+        $author = $this->get_author($doc);
+        $aff = (isset($author['aoi']) && ($author['aoi'] === 0 || $author['aoi'] === false));
+        if (empty($author) || $aff){
+            return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0" . ($aff ? ' (not affiliated)': ''),
+                'lom' => 0
+            );
+        }
+        $pos = $author['position'] ?? 'middle';
 
         $points = $this->matrix['poster'][$pos];
         return array(
@@ -115,6 +168,17 @@ class LOM
     function lecture($doc)
     {
         // TODO: filter by presenting author only???
+        $author = $this->get_author($doc);
+        $aff = (isset($author['aoi']) && ($author['aoi'] === 0 || $author['aoi'] === false));
+        if (empty($author) || $aff){
+            return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0" . ($aff ? ' (not affiliated)': ''),
+                'lom' => 0
+            );
+        }
         $pos = $doc['lecture_type'] ?? 'short';
         $points = $this->matrix['lecture'][$pos];
         return array(

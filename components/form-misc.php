@@ -26,7 +26,8 @@ if (!empty($form) && isset($form['_id'])) {
 
     <div class="form-group">
         <label for="title" class="required"><?= lang('Title', 'Titel') ?></label>
-        <input type="text" class="form-control" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
+        <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
+        <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
     </div>
 
     <div class="form-group">

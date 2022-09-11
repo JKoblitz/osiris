@@ -8,7 +8,7 @@
     </div>
 
 
-    <div class="box box-primary" id="misc-form" style="display:none">
+    <div class="box box-primary add-form" id="misc-form" style="display:none">
         <div class="content">
 
             <?php

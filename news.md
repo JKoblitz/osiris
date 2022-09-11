@@ -7,27 +7,14 @@
 5. In diesem Zusammenhang: Müssen Datenschutzbeauftragter und Betriebsrat ebenfalls involviert werden, da wir mit Personaldaten arbeiten?
 
 
-# Nächste Schritte
-Ich muss erstmal weiter an den Publikationen arbeiten. In diesem Bereich ist noch einiges zu tun:
-- Publikationen können noch nicht bearbeitet werden
-- Magazine-Article: funktioniert hinzufügen über eine DOI?
-- der Pub-Type muss standardisiert werden
-- Formatierungen für unterschiedliche Pub-Typen hinzufügen (zurzeit nur Journal-Artikel)
-- Corrections? Wie funktioniert das überhaupt? Reichen ein Boolean und eine Checkbox aus?
-- Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
-- Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
-
-Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivitäten hinzufügen:
-- Boolean für jeden Autor/Editor: `approved`:
-- Beim Nutzer, der den Datensatz hinzufügt, ist der Wert automatisch true
-- bei allen anderen wird auf der Startseite ein Hinweis gezeigt: können Approven oder Ablehnen (z.B. wenn nicht Autor der Publikation oder Affiliation nicht DSMZ)
-
-Reports:
-- hier werden genau definierte Zeiträume gebraucht (Start und Ende)
-- Support für verschiedene Zitationsstile
-- Für Wissenschaftler: nur eigener Name fett
-
 # Changelog
+
+## 11.09.22
+- Titel von Aktivitäten können nun formatiert werden. Dabei ist es möglich, fett, kursiv und unterstrichen zu formatieren. Die Formatierungen sind auch bei den Bearbeitungen möglich und können mit exportiert werden. 
+- Bilder der Nutzer werden jetzt von Gravatar importiert
+- Ich habe angefangen, das Confirmation-System einzuführen. Funktioniert soweit ganz gut.
+- Bei den Publikationen funktionieren jetzt die Knöpfe "nicht Autor" und Affiliation.
+- Bei dem LOM-System werden nun keine Punkte vergeben, wenn der Autor als Affiliation nicht die DSMZ hat.
 
 ## 02.09.22
 Ich habe ein ganz simples LOM-System aufgesetzt. 

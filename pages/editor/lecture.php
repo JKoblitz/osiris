@@ -11,7 +11,7 @@
     </div>
 
 
-    <div class="box box-primary" id="lecture-form" style="display:none">
+    <div class="box box-primary add-form" id="lecture-form" style="display:none">
         <div class="content">
             <p class="text-muted">
                 <?= lang(
@@ -135,7 +135,7 @@
             },
             error: function(response) {
                 toastError(response.responseText)
-                $('#loader').hide()
+                 $('.loader').removeClass('show') 
             }
         })
     }

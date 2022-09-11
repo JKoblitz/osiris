@@ -17,12 +17,13 @@ function validateValues($values)
             foreach ($value as $i => $author) {
                 $author = explode(';', $author, 3);
                 $user = getUserFromName($author[0], $author[1]);
-                if ($key == "editors"){
+                if ($key == "editors") {
                     $values[$key][] = [
                         'last' => $author[0],
                         'first' => $author[1],
                         'aoi' => $author[2],
-                        'user' => $user
+                        'user' => $user,
+                        'approved' => $user == $_SESSION['username']
                     ];
                 } else {
                     if ($i < $first) {
@@ -37,10 +38,10 @@ function validateValues($values)
                         'first' => $author[1],
                         'aoi' => $author[2],
                         'position' => $pos,
-                        'user' => $user
+                        'user' => $user,
+                        'approved' => $user == $_SESSION['username']
                     ];
                 }
-                
             }
         } else if (is_array($value)) {
             $values[$key] = validateValues($value);
@@ -169,26 +170,7 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
         echo "no values given";
         die;
     }
-    switch ($col) {
-        case 'lecture':
-            $collection = $osiris->lectures;
-            break;
-        case 'misc':
-            $collection = $osiris->miscs;
-            break;
-        case 'poster':
-            $collection = $osiris->posters;
-            break;
-        case 'publication':
-            $collection = $osiris->publications;
-            break;
-        case 'teaching':
-            $collection = $osiris->teachings;
-            break;
-        default:
-            echo "unsupported collection";
-            die;
-    }
+    $collection = get_collection($col);
 
     $values = validateValues($_POST['values']);
     if (is_numeric($id)) {
@@ -215,29 +197,7 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
 Route::post('/delete/(lecture|misc|poster|publication|teaching|review)/([A-Za-z0-9]*)', function ($col, $id) {
     include_once BASEPATH . "/php/_db.php";
     // select the right collection
-    switch ($col) {
-        case 'lecture':
-            $collection = $osiris->lectures;
-            break;
-        case 'misc':
-            $collection = $osiris->miscs;
-            break;
-        case 'poster':
-            $collection = $osiris->posters;
-            break;
-        case 'publication':
-            $collection = $osiris->publications;
-            break;
-        case 'teaching':
-            $collection = $osiris->teachings;
-            break;
-        case 'review':
-            $collection = $osiris->reviews;
-            break;
-        default:
-            echo "unsupported collection";
-            die;
-    }
+    $collection = get_collection($col);
 
     // prepare id
     if (is_numeric($id)) {
@@ -389,7 +349,7 @@ Route::post('/add-repetition/lecture/([A-Za-z0-9]*)', function ($id) {
 Route::post('/approve', function () {
     include_once BASEPATH . "/php/_db.php";
     $id = $_SESSION['username'];
-    $q = SELECTEDYEAR. "Q" . SELECTEDQUARTER;
+    $q = SELECTEDYEAR . "Q" . SELECTEDQUARTER;
 
     $updateResult = $osiris->users->updateOne(
         ['_id' => $id],
@@ -408,32 +368,69 @@ Route::post('/approve', function () {
 
 Route::get('/form/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {
     include_once BASEPATH . "/php/_db.php";
-    switch ($col) {
-        case 'lecture':
-            $collection = $osiris->lectures;
-            break;
-        case 'misc':
-            $collection = $osiris->miscs;
-            break;
-        case 'poster':
-            $collection = $osiris->posters;
-            break;
-        case 'publication':
-            $collection = $osiris->publications;
-            break;
-        case 'teaching':
-            $collection = $osiris->teachings;
-            break;
-        default:
-            echo "unsupported collection";
-            die;
-    }
+    
+    $collection = get_collection($col);
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
         $id = new MongoDB\BSON\ObjectId($id);
     }
-    $url = ROOTPATH . "/my-$col";
+    $url = ROOTPATH . "/$col";
     $form = $collection->findOne(['_id' => $id]);
     include BASEPATH . "/components/form-$col.php";
+});
+
+
+
+Route::post('/approve/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {
+    include_once BASEPATH . "/php/_db.php";
+
+    $collection = get_collection($col);
+    // prepare id
+    if (is_numeric($id)) {
+        $id = intval($id);
+    } else {
+        $id = new MongoDB\BSON\ObjectId($id);
+    }
+    $approval = intval($_POST['approval'] ?? 0);
+    $filter = ['_id' => $id, "authors.user" => $_SESSION['username']];
+
+    switch ($approval) {
+        case 1:
+            # Yes, this is me and I was affiliated to the AFFILIATION
+            $updateResult = $collection->updateOne(
+                $filter,
+                ['$set' => ["authors.$.approved" => true, 'authors.$.aoi' => true]]
+            );
+            break;
+        case 2:
+            # Yes, but I was not affiliated to the AFFILIATION
+            $updateResult = $collection->updateOne(
+                $filter,
+                ['$set' => ["authors.$.approved" => true, 'authors.$.aoi' => false]]
+            );
+            break;
+        case 3:
+            # No, this is not me
+            $updateResult = $collection->updateOne(
+                $filter,
+                ['$set' => ["authors.$.user" => null, 'authors.$.aoi' => false]]
+            );
+            break;
+        default:
+            # code...
+            break;
+    }
+
+
+
+    $updateCount = $updateResult->getModifiedCount();
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateCount
+    ]);
 });

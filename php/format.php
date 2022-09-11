@@ -110,6 +110,12 @@ function getQuarter($time)
     if (empty($time)) {
         return 0;
     }
+    if (isset($time['start'])){
+        $time = $time['start'];
+    }
+    if (isset($time['dates']) && !empty($time['dates'])){
+        $time = reset($time['dates']);
+    }
     if (isset($time['month'])) {
         return ceil($time['month'] / 3);
     }
@@ -117,7 +123,7 @@ function getQuarter($time)
         return ceil($time / 3);
     }
     $date = getDateTime($time);
-    $month = date("n", $date);
+    $month = date_format($date, 'n');
     return ceil($month / 3);
 }
 
@@ -273,6 +279,8 @@ function format_publication($doc)
     if (!empty($doc['title'])) {
         $result .= " $doc[title].";
     }
+    // TODO:
+    // if ($doc['type'] == 'book-chapter')
     if (!empty($doc['journal'])) {
         $result .= " <em>$doc[journal]</em>";
 

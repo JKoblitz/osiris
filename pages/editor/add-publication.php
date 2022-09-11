@@ -42,22 +42,22 @@ $url = ROOTPATH . "/publication";
         <button onclick="togglePubType('chapter')" class="btn" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
     </div>
 
-    <div class="box box-primary" style="display:none" id="publication-form">
+    <div class="box box-primary add-form" style="display:none" id="publication-form">
         <div class="content">
             <form action="<?= $formaction ?>" method="post">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
-
+               
                 <div class="form-group">
                     <label for="title" class="required"><?= lang('Title', 'Titel') ?></label>
-                    <input type="text" class="form-control" name="values[title]" id="title" required>
+
+                    <div class="form-group title-editor"></div>
+                    <input type="text" class="form-control hidden" name="values[title]" id="title" required>
                 </div>
 
                 <div class="form-group" data-visible="article,magazine,book,chapter">
                     <div class="float-right">
                         <?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?>
                         <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
-                        <!-- </div>
-                    <div class="float-right"> -->
                         <?= lang('last authors:', 'Letztautoren:') ?>
                         <input type="number" name="values[last_authors]" id="last-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
                     </div>

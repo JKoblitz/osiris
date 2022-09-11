@@ -93,7 +93,9 @@ Route::post('/export/publications', function () {
                 $paragraph->addText(" ($doc[year])");
             }
             if (!empty($doc['title'])) {
-                $paragraph->addText(" $doc[title].");
+                // $paragraph->addText(" $doc[title].");
+                //preserve formtting of title:
+                \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, " $doc[title].");
             }
             if (!empty($doc['journal'])) {
                 //str_replace("&", "&amp;", " $doc[journal]")

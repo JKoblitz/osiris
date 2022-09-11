@@ -8,7 +8,7 @@
         <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
     </div>
 
-    <div class="box box-danger" id="poster-form" style="display:none">
+    <div class="box box-danger  add-form" id="poster-form" style="display:none">
         <div class="content">
            <?php
             include BASEPATH . "/components/form-poster.php"

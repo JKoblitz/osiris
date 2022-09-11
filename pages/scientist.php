@@ -3,7 +3,8 @@
         font-weight: bold;
         text-align: right !important;
     }
-    .lom::before{
+
+    .lom::before {
         content: '\f85c';
         font-family: "Font Awesome 6 Pro";
         font-weight: 900;
@@ -23,35 +24,11 @@ $LOM = new LOM($user, $osiris);
 $_lom = 0;
 
 if ($currentuser) {
-    $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
 
+    $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+    $approval_needed = array();
 ?>
 
-
-    <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content w-400 mw-full">
-                <a href="#" class="btn float-right" role="button" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </a>
-                <h5 class="modal-title"><?= lang('Approve', 'Bestätigen') ?></h5>
-                <p>
-                    Hier sollen Wissenschaftler die Möglichkeit bekommen, das aktuelle Quartal noch einmal zu reviewen.
-                    Sie werden auf Fehler oder mögliche Probleme hingewiesen und können anschließend bestätigen, dass alles korrekt ist.
-                    Dies wird dann als Haken in der Übersicht des Controllings hinzugefügt.
-                </p>
-
-                <?php if ($approved) { ?>
-                    <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
-                <?php } else { ?>
-                    <form action="<?= ROOTPATH ?>/approve" method="post">
-                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                        <button class="btn"><?= lang('Approve') ?></button>
-                    </form>
-                <?php } ?>
-            </div>
-        </div>
-    </div>
 
 
     <h1>
@@ -104,17 +81,48 @@ if ($currentuser) {
             <?php
             $collection = $osiris->publications;
             $options = ['sort' => ["year" => -1, "month" => -1]];
-            $cursor = $collection->find(['$or' => [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR], $options);
+            $cursor = $collection->find(
+                ['$or' => [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR], $options);
             // dump($cursor);
             foreach ($cursor as $document) {
                 $l = $LOM->publication($document);
                 $_lom += $l['lom'];
 
+                $a = is_approved($document, $user);
+                if (!$a) {
+                    $approval_needed[] = array(
+                        'type' => 'publication',
+                        'id' => $document['_id'],
+                        'title' => $document['title']
+                    );
+                }
+
                 $q = getQuarter($document['month']);
                 $in_quarter = $q == SELECTEDQUARTER;
                 echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "'>
                     <td class='quarter'>Q$q</td>
-                    <td>" . format_publication($document) . "</td>
+                    <td>";
+                echo format_publication($document);
+                if (!$a) { ?>
+                    <div class='alert alert-danger'>
+                        <?= lang('Are you an author of this activity?', 'Bist du Autor dieser Aktivität?') ?>
+                        <br>
+                        <button class="btn btn-sm">
+                            <i class="fas fa-check"></i>
+                            <?=lang('Yes, this is me.', 'Ja, das bin ich.')?>
+                        </button>
+                        <button class="btn btn-sm">
+                            <i class="fas fa-handshake-slash"></i>
+                            <?=lang('Yes, but I was not affiliated to the '.AFFILIATION, 'Ja, aber meine Affiliation ist nicht die '.AFFILIATION)?>
+                        </button>
+                        <button class="btn btn-sm">
+                            <i class="fas fa-xmark"></i>
+                            <?=lang('No, this is not me.', 'Nein, das bin ich nicht.')?>
+                        </button>
+                    </div>
+
+                <?php }
+                echo "</td>
                     <td class='lom' >$l[lom]</td>
                     <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
@@ -442,6 +450,42 @@ if ($currentuser) {
         </div>
     </div>
 </div>
+
+
+<?php if ($currentuser) { ?>
+
+
+    <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content w-400 mw-full">
+                <a href="#" class="btn float-right" role="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+                <h5 class="modal-title"><?= lang('Approve', 'Bestätigen') ?></h5>
+
+                <?php
+                dump($approval_needed);
+                ?>
+
+
+                <!-- <p>
+                    Hier sollen Wissenschaftler die Möglichkeit bekommen, das aktuelle Quartal noch einmal zu reviewen.
+                    Sie werden auf Fehler oder mögliche Probleme hingewiesen und können anschließend bestätigen, dass alles korrekt ist.
+                    Dies wird dann als Haken in der Übersicht des Controllings hinzugefügt.
+                </p> -->
+
+                <?php if ($approved) { ?>
+                    <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
+                <?php } else { ?>
+                    <form action="<?= ROOTPATH ?>/approve" method="post">
+                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                        <button class="btn"><?= lang('Approve') ?></button>
+                    </form>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+<?php } ?>
 
 
 <script>

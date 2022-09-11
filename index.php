@@ -87,7 +87,7 @@ Route::get('/', function () {
         } elseif ($USER['is_scientist']) {
             $user = $_SESSION['username'];
             $name = $_SESSION['name'];
-            include BASEPATH . "/pages/scientist.php";
+            include BASEPATH . "/pages/scientist2.php";
         }
     }
     include BASEPATH . "/footer.php";
@@ -129,6 +129,19 @@ Route::post('/lom', function () {
     header("Location: " . ROOTPATH . "/lom?msg=success");
 });
 
+
+Route::get('/achievements', function () {
+
+    $breadcrumb = [
+        ['name' => lang('Achievements', 'Errungenschaften')]
+    ];
+
+    include_once BASEPATH . "/php/_config.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/achievements.php";
+    include BASEPATH . "/footer.php";
+});
+
 Route::get('/news', function () {
 
     $breadcrumb = [
@@ -140,9 +153,22 @@ Route::get('/news', function () {
 
     include BASEPATH . "/header.php";
 
+    echo "<div class='row'>";
+    echo "<div class='col-lg-6'>
+    <div class='content'>";
     $text = file_get_contents(BASEPATH . "/news.md");
     $parsedown = new Parsedown;
     echo $parsedown->text($text);
+    echo '</div>';
+    echo '</div>';
+    echo "<div class='col-lg-6'>
+    <div class='content'>";
+    $text = file_get_contents(BASEPATH . "/todo.md");
+    $parsedown = new Parsedown;
+    echo $parsedown->text($text);
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
 
     include BASEPATH . "/footer.php";
 });

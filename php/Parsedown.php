@@ -552,15 +552,21 @@ class Parsedown
     {
         list($name, $pattern) = $Line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]+[.]');
 
-        if (preg_match('/^('.$pattern.'[ ]+)(.*)/', $Line['text'], $matches))
+        if (preg_match('/^('.$pattern.'(?:\[[xX ]\])?[ ]+)(.*)/', $Line['text'], $matches))
         {
+            
+            $cls = "list";
+            if (str_contains($matches[1], "[ ]") || str_contains($matches[1], "[x]")){
+                $cls = "check-list";
+            }
+            
             $Block = array(
                 'indent' => $Line['indent'],
                 'pattern' => $pattern,
                 'element' => array(
                     'name' => $name,
                     'handler' => 'elements',
-                    'attributes' => array('class' => 'list')
+                    'attributes' => array('class' => $cls)
                 ),
             );
 
@@ -573,6 +579,12 @@ class Parsedown
                     $Block['element']['attributes'] = array('start' => $listStart);
                 }
             }
+            
+            
+            $cls = "";
+            if (str_contains($matches[1], "[x]")){
+                $cls = "checked";
+            }
 
             $Block['li'] = array(
                 'name' => 'li',
@@ -580,6 +592,7 @@ class Parsedown
                 'text' => array(
                     $matches[2],
                 ),
+                'attributes' => array('class' => $cls)
             );
 
             $Block['element']['text'] []= & $Block['li'];
@@ -590,7 +603,7 @@ class Parsedown
 
     protected function blockListContinue($Line, array $Block)
     {
-        if ($Block['indent'] === $Line['indent'] and preg_match('/^'.$Block['pattern'].'(?:[ ]+(.*)|$)/', $Line['text'], $matches))
+        if ($Block['indent'] === $Line['indent'] and preg_match('/^'.$Block['pattern'].'(\[[xX ]\])?(?:[ ]+(.*)|$)/', $Line['text'], $matches))
         {
             if (isset($Block['interrupted']))
             {
@@ -603,7 +616,12 @@ class Parsedown
 
             unset($Block['li']);
 
-            $text = isset($matches[1]) ? $matches[1] : '';
+            $cls = "";
+            if (str_contains($matches[1], "[x]")){
+                $cls = "checked";
+            }
+
+            $text = isset($matches[2]) ? $matches[2] : '';
 
             $Block['li'] = array(
                 'name' => 'li',
@@ -611,6 +629,7 @@ class Parsedown
                 'text' => array(
                     $text,
                 ),
+                'attributes' => array('class' => $cls)
             );
 
             $Block['element']['text'] []= & $Block['li'];
