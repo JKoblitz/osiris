@@ -61,10 +61,19 @@ $url = ROOTPATH . "/publication";
                         <?= lang('last authors:', 'Letztautoren:') ?>
                         <input type="number" name="values[last_authors]" id="last-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
                     </div>
-                    <label for="author" class="required"><?= lang('Author(s) (in correct order)', 'Autor(en) (in korrekter Reihenfolge)') ?></label>
+                    <label for="author" class="required"><?= lang('Author(s) (in correct order, format: Last name, First name)', 'Autor(en) (in korrekter Reihenfolge, Format: Nachname, Vorname)') ?></label>
                     <div class="author-list">
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
                     </div>
+                </div>
+
+                <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">
+                    <h5 class="title">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <?=lang('Attention: No '.AFFILIATION." authors added.", 'Achtung: Keine '.AFFILIATION.'-Autoren angegeben.')?>
+                    </h5>
+                    <?=lang('Please click on every '.AFFILIATION. ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.', 
+                    'Bitte klicken Sie auf jeden '.AFFILIATION. '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.')?>
                 </div>
 
                 <div class="form-row row-eq-spacing">

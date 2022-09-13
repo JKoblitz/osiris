@@ -23,7 +23,7 @@ function authorForm($a)
 {
     return "<div class='author author-aoi'>
         $a[last], $a[first]<input type='hidden' name='values[authors][]' value='$a[last];$a[first];1'>
-        <a onclick='removeAuthor(event, this)'>&times;</a>
+        <a onclick='removeAuthor(event, this);'>&times;</a>
         </div>";
 }
 

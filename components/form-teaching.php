@@ -45,15 +45,15 @@ if (!empty($form) && isset($form['_id'])) {
 
     <div class="content">
         <h6><?= lang('Enter details about the stay:', 'Füge Details über den Aufenthalt hinzu:') ?></h6>
-        <div class="form-row row-eq-spacing">
-            <div class="col-sm-6">
-                <label for="title" class="required">
+        <div class="form-group">
+        <label for="title" class="required">
                     Titel des Programms/der Arbeit bzw. Grund des Aufenthalts
                 </label>
                 <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
                 <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
 
-            </div>
+        </div>
+        <div class="form-row row-eq-spacing">
             <div class="col-sm">
                 <label for="category" class="required"><?= lang('Category', 'Kategorie') ?></label>
                 <select name="values[category]" id="category" class="form-control" required onchange="endQuestion()">
@@ -103,15 +103,29 @@ if (!empty($form) && isset($form['_id'])) {
                 </div>
             </div>
         </div>
-
-        <label for="author" class="required"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></label>
+<div class="form-group">
+    
+<label for="author" class="required"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></label>
         <div class="author-list">
             <?= $authors ?>
             <input type="text" placeholder="Add responsible person ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
         </div>
+</div>
+        
+    <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">
+        <h5 class="title">
+            <i class="fas fa-exclamation-circle"></i>
+            <?= lang('Attention: No ' . AFFILIATION . " scientists added.", 'Achtung: Keine ' . AFFILIATION . '-Wissenschaftler:innen angegeben.') ?>
+        </h5>
+        <?= lang(
+            'Please click on every ' . AFFILIATION . ' scientist in the list above, to mark them as affiliated. Only affiliated scientists will receive points and are shown in reports.',
+            'Bitte klicken Sie auf jeden ' . AFFILIATION . '-Wissenschaftler:in in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Wissenschaftler:innen erhalten Punkte und werden in Berichten berücksichtigt.'
+        ) ?>
+    </div>
 
 
-        <button class="btn btn-primary mt-20" type="submit"><i class="fas fa-plus"></i> <?= lang('Add stay', 'Füge Aufenthalt hinzu') ?></button>
+
+        <button class="btn btn-primary" type="submit"><i class="fas fa-plus"></i> <?= lang('Add stay', 'Füge Aufenthalt hinzu') ?></button>
 
     </div>
 

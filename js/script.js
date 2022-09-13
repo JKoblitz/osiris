@@ -6,7 +6,7 @@ $(document).ready(function () {
         return item.value
     })
     SCIENTISTS = Object.values(scientists)
-    $('.title-editor').each(function(el){
+    $('.title-editor').each(function (el) {
         var element = this;
         var quill = new Quill(element, {
             modules: {
@@ -18,7 +18,7 @@ $(document).ready(function () {
             placeholder: '',
             theme: 'snow' // or 'bubble'
         });
-        quill.on('text-change', function(delta, oldDelta, source) {
+        quill.on('text-change', function (delta, oldDelta, source) {
             var delta = quill.getContents()
             // console.log(delta);
             var str = ""
@@ -40,7 +40,7 @@ $(document).ready(function () {
         });
     })
     // if ($('.add-form #title-editor').length !== 0 ){
-        
+
     // }
 
 })
@@ -372,11 +372,7 @@ function getDOI(doi) {
                     given: a.given,
                     affiliation: aoi
                 }
-                // if (a.authtype == "Author") {
                 authors.push(name)
-                // } else if (a.authtype == "Editor") {
-                //     editors.push(name)
-                // }
             });
             var issue = null
             if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
@@ -415,6 +411,7 @@ function getDOI(doi) {
 function fillForm(pub) {
     console.log(pub);
     $('#publication-form').find('input').val('').removeClass('is-valid')
+    // $('.affiliation-warning').show()
 
     switch (pub.type.toLowerCase()) {
         case 'journal-article':
@@ -443,10 +440,8 @@ function fillForm(pub) {
 
     if (pub.title !== undefined) {
         $('#title').val(pub.title).addClass('is-valid')
-        if (quill !== null){
-            // quill.setText(pub.title);
-            $('#title-editor .ql-editor').html("<p>"+pub.title+"</p>").addClass('is-valid')
-        }
+        // quill.setText(pub.title);
+        $('.title-editor .ql-editor').html("<p>" + pub.title + "</p>").addClass('is-valid')
     }
     if (pub.first_authors !== undefined)
         $('#first_authors').val(pub.first_authors).addClass('is-valid')
@@ -491,6 +486,9 @@ function fillForm(pub) {
         if (d.affiliation === undefined) {
             aff_undef = true
         }
+        // if (d.affiliation){
+        //     $('.affiliation-warning').hide()
+        // }
         addAuthorDiv(d.family, d.given, d.affiliation ?? false)
     })
     if (pub.editors !== undefined) {
@@ -501,6 +499,7 @@ function fillForm(pub) {
     if (aff_undef)
         toastWarning('Not all affiliations could be parsed automatically. Please click on every ' + AFFILIATION + ' author to mark them.')
 
+    affiliationCheck();
 
     toastSuccess('Bibliographic data were updated.')
 
@@ -513,7 +512,7 @@ function getPubData(event, form) {
         param = $(form).serializeArray()
         param = objectifyForm(param)
     }
-    console.log(param);
+    // console.log(param);
 
     getPublication(param.doi)
 }
@@ -544,12 +543,25 @@ function getDate(element) {
     if (element[2]) date[2] = element[2] //+= "-" + ("0" + element[2]).slice(-2)
     //else date += "-01"
 
-    console.log(date);
+    // console.log(date);
     // if (element[1]) date = ("0" + element[1]).slice(-2) + "." + date
     // if (element[2]) date = ("0" + element[2]).slice(-2) + "." + date
     return date
 }
 
+function affiliationCheck(){
+    $('.affiliation-warning').show()
+    $('form').each(function(){
+        var form = $(this)
+        form.find('.author input').each(function(){
+            var value = $(this).val().split(';')
+            if (value[2] == 1){
+                form.find('.affiliation-warning').hide()
+                return false;
+            }
+        })
+    })
+}
 
 function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el = null) {
     if (el == null) {
@@ -581,13 +593,13 @@ function toggleAffiliation(item) {
     var old = $(item).find('input').val().split(';')
     if ($(item).hasClass('author-aoi')) {
         old[2] = 0
-    }
-    else {
+    } else {
         old[2] = 1
     }
     console.log(old);
     $(item).find('input').val(old.join(';'))
     $(item).toggleClass('author-aoi')
+    affiliationCheck();
 }
 
 function addAuthor(event, el, editor = false) {
@@ -602,16 +614,14 @@ function addAuthor(event, el, editor = false) {
         addAuthorDiv(value[0], value[1], match, editor, $(el))
 
         $(el).val('')
+        affiliationCheck();
         return false;
     }
 }
 function removeAuthor(event, el) {
     event.preventDefault();
     $(el).parent().remove()
-}
-
-function updateReview(id, value) {
-    todo()
+    affiliationCheck();
 }
 
 function addRow2db(el) {
@@ -698,38 +708,38 @@ function loadModal(path) {
             $('#modal-content').html(response)
             $('#the-modal').addClass('show')
 
-            
-    if ($('#the-modal .title-editor').length !== 0 ){
-        var quill = new Quill('#the-modal .title-editor', {
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline']
-                ]
-            },
-            formats: ['bold', 'italic', 'underline'],
-            placeholder: '',
-            theme: 'snow' // or 'bubble'
-        });
-        quill.on('text-change', function(delta, oldDelta, source) {
-            var delta = quill.getContents()
-            console.log(delta);
-            var str = ""
-            delta.ops.forEach(el => {
-                if (el.attributes !== undefined) {
-                    if (el.attributes.bold) str += "<b>";
-                    if (el.attributes.italic) str += "<i>";
-                    if (el.attributes.underline) str += "<u>";
-                }
-                str += el.insert;
-                if (el.attributes !== undefined) {
-                    if (el.attributes.underline) str += "</u>";
-                    if (el.attributes.italic) str += "</i>";
-                    if (el.attributes.bold) str += "</b>";
-                }
-            });
-            $('#the-modal #title').val(str)
-        });
-    }
+
+            if ($('#the-modal .title-editor').length !== 0) {
+                var quill = new Quill('#the-modal .title-editor', {
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline']
+                        ]
+                    },
+                    formats: ['bold', 'italic', 'underline'],
+                    placeholder: '',
+                    theme: 'snow' // or 'bubble'
+                });
+                quill.on('text-change', function (delta, oldDelta, source) {
+                    var delta = quill.getContents()
+                    console.log(delta);
+                    var str = ""
+                    delta.ops.forEach(el => {
+                        if (el.attributes !== undefined) {
+                            if (el.attributes.bold) str += "<b>";
+                            if (el.attributes.italic) str += "<i>";
+                            if (el.attributes.underline) str += "<u>";
+                        }
+                        str += el.insert;
+                        if (el.attributes !== undefined) {
+                            if (el.attributes.underline) str += "</u>";
+                            if (el.attributes.italic) str += "</i>";
+                            if (el.attributes.bold) str += "</b>";
+                        }
+                    });
+                    $('#the-modal #title').val(str)
+                });
+            }
         },
         error: function (response) {
             console.log(response);

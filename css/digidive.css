@@ -1931,7 +1931,7 @@ Boxes, tiles, and title bar
 
 .box { width: 100%; margin: 20px 0; border: 1px solid #afafaf; -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15); -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15); box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15); background-color: white; padding: 0; border-radius: 2pt; }
 
-.box .title { font-size: 2rem; font-weight: 500; margin-top: 0; }
+.box>.title, .box > .content >.title { font-size: 2rem; font-weight: 500; margin-top: 0; }
 
 .box > .header { background-color: #dfdfdf; margin: 0; border-bottom: 1px solid #afafaf; border-top-left-radius: 2pt; border-top-right-radius: 2pt; }
 
