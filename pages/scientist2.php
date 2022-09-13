@@ -40,6 +40,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
         <p class="lead">
             <i class="fad fa-lg fa-coin text-signal"></i>
             <b id="lom-points"></b>
+            Credits
         </p>
     </div>
 </div>
@@ -67,7 +68,7 @@ if ($currentuser) {
     <?php } else { ?>
         <a class="btn btn-success" href="#approve">
             <i class="fas fa-question mr-5"></i>
-            <?= lang('Approve current quarter', 'Bestätige aktuelles Quartal') ?>
+            <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
         </a>
     <?php } ?>
 
@@ -210,6 +211,8 @@ foreach ($queries as $col => $val) {
                     if ($val['show-quarter']) echo "<td class='quarter'>Q$q</td>";
                     echo "<td>";
                     echo format($col, $document);
+
+                    // show error messages, warnings and todos
                     if (!$a) { ?>
                         <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
                             <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
@@ -227,10 +230,11 @@ foreach ($queries as $col => $val) {
                                 <?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>
                             </button>
                         </div>
-
                 <?php }
-                    echo "</td>
-                    <td class='lom' >$l[lom]</td>
+
+                    echo "</td>";
+                    // lom points
+                    echo "<td class='lom' >$l[lom]</td>
                     <!-- data-toggle='tooltip' data-title='$l[points]'-->
                 </tr>";
                 }
@@ -241,7 +245,7 @@ foreach ($queries as $col => $val) {
         <div class="content mt-0">
             <?php if ($currentuser) { ?>
                 <a href="<?= ROOTPATH ?>/<?= $col ?>" class="btn text-<?= $val['color'] ?>">
-                    <i class="far fa-book-bookmark mr-5"></i> <?= lang('My publications', 'Meine Publikationen') ?>
+                    <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?=$val['title']?>
                 </a>
             <?php } ?>
 
@@ -286,26 +290,27 @@ foreach ($queries as $col => $val) {
                 <a href="#" class="btn float-right" role="button" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </a>
-                <h5 class="modal-title"><?= lang('Approve', 'Bestätigen') ?></h5>
+                <h5 class="modal-title"><?= lang('Approve', 'Freigeben') ?></h5>
 
                 <?php
-                dump($approval_needed);
-                ?>
-
-                <!-- <p>
-                    Hier sollen Wissenschaftler die Möglichkeit bekommen, das aktuelle Quartal noch einmal zu reviewen.
-                    Sie werden auf Fehler oder mögliche Probleme hingewiesen und können anschließend bestätigen, dass alles korrekt ist.
-                    Dies wird dann als Haken in der Übersicht des Controllings hinzugefügt.
-                </p> -->
-
-                <?php if ($approved) { ?>
-                    <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
-                <?php } else { ?>
+                if ($approved) {
+                    echo "<p>". lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.'). "</p>";
+                } else if (!empty($approval_needed)) {
+                    echo "<p>". lang("The following activities need your confirmation before you can approve the current quarter. Please scroll through your feed and confirm/reject your activities.",
+                    "Die folgenden Aktivitäten müssen von Ihnen bestätigt werden, bevor Sie das laufende Quartal freigeben können. Bitte scrollen Sie durch Ihren Feed und bestätigen/ablehnen Sie Ihre Aktivitäten.") . "</p>";
+                   echo "<ul class='list'>";
+                   foreach ($approval_needed as $item) {
+                    $type = ucfirst($item['type']);
+                        echo "<li><b>$type</b>: $item[title]</li>";
+                }
+                   echo "</ul>";
+                } else { ?>
                     <form action="<?= ROOTPATH ?>/approve" method="post">
                         <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                        <button class="btn"><?= lang('Approve') ?></button>
+                        <button class="btn"><?= lang('Approve', 'Freigeben') ?></button>
                     </form>
                 <?php } ?>
+                    
             </div>
         </div>
     </div>
