@@ -9,6 +9,10 @@
 ### OpenCitations
 Es gibt eine offene API von OpenCitations, mit der man Publikations-Metadaten herunterladen kann: [Link](https://opencitations.net/index/api/v1/metadata/10.1093/nar/gkab961).
 
+### DataCite
+Mit DataCite kann man auch andere Aktivitäten finden, z.B. Zenodo-Archive (https://api.datacite.org/dois/10.5281/zenodo.3742817)
+
+
 ### Google-Scholar API
 Es gibt eine Google-Scholar API, die alle Daten aus Google Scholar abfragt: [Link](https://serpapi.com/google-scholar-author-api).
 
@@ -30,7 +34,7 @@ https://api.crossref.org/works?query.affiliation=DSMZ&filter=from-pub-date:2021
 
 
 ### Pubmed
-Essumary kann auch JSON zurückgeben!
+Esummary kann auch JSON zurückgeben!
 
 https://dataguide.nlm.nih.gov/eutilities/utilities.html#esummary
 

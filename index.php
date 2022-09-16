@@ -60,6 +60,7 @@ $year = date("Y");
 $month = date("n");
 $quarter = ceil($month / 3);
 define('CURRENTQUARTER', intval($quarter));
+define('CURRENTMONTH', intval($month));
 define('CURRENTYEAR', intval($year));
 define('SELECTEDQUARTER', intval($_COOKIE['osiris-quarter'] ?? CURRENTQUARTER));
 define('SELECTEDYEAR', intval($_COOKIE['osiris-year'] ?? CURRENTYEAR));
@@ -149,27 +150,10 @@ Route::get('/news', function () {
     ];
 
     include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/Parsedown.php";
+    include_once BASEPATH . "/php/MyParsedown.php";
 
     include BASEPATH . "/header.php";
-
-    echo "<div class='row'>";
-    echo "<div class='col-lg-6'>
-    <div class='content'>";
-    $text = file_get_contents(BASEPATH . "/news.md");
-    $parsedown = new Parsedown;
-    echo $parsedown->text($text);
-    echo '</div>';
-    echo '</div>';
-    echo "<div class='col-lg-6'>
-    <div class='content'>";
-    $text = file_get_contents(BASEPATH . "/todo.md");
-    $parsedown = new Parsedown;
-    echo $parsedown->text($text);
-    echo '</div>';
-    echo '</div>';
-    echo '</div>';
-
+    include BASEPATH . "/pages/news.php";
     include BASEPATH . "/footer.php";
 });
 

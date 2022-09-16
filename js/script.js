@@ -410,7 +410,7 @@ function getDOI(doi) {
 
 function fillForm(pub) {
     console.log(pub);
-    $('#publication-form').find('input').val('').removeClass('is-valid')
+    $('#publication-form').find('input:not(.hidden)').val('').removeClass('is-valid')
     // $('.affiliation-warning').show()
 
     switch (pub.type.toLowerCase()) {
@@ -452,7 +452,8 @@ function fillForm(pub) {
     if (pub.day !== undefined)
         $('#day').val(pub.day).addClass('is-valid')
     if (pub.type !== undefined)
-        $('#type').val(pub.type).addClass('is-valid')
+        $('#type').addClass('is-valid')
+        //.val(pub.type)
     if (pub.journal !== undefined)
         $('#journal').val(pub.journal).addClass('is-valid')
     if (pub.issue !== undefined)

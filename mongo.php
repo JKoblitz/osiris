@@ -1,6 +1,7 @@
 <?php
 
 // include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/_config.php";
 function validateValues($values)
 {
     include_once BASEPATH . "/php/_db.php";
@@ -60,6 +61,8 @@ function validateValues($values)
             $values[$key] = intval($value);
         } else if (is_float($value)) {
             $values[$key] = floatval($value);
+        } else if (is_string($value)){
+            $values[$key] = trim($value);
         }
     }
     return $values;
@@ -95,6 +98,8 @@ Route::post('/create/(lecture|misc|poster|publication|teaching|review)', functio
         echo "no values given";
         die;
     }
+    // dump($_POST);
+    // die();
     switch ($col) {
         case 'lecture':
             $collection = $osiris->lectures;
@@ -110,7 +115,7 @@ Route::post('/create/(lecture|misc|poster|publication|teaching|review)', functio
             break;
         case 'publication':
             $collection = $osiris->publications;
-            $required = [];
+            $required = ['title', 'year', 'month'];
             break;
         case 'teaching':
             $collection = $osiris->teachings;

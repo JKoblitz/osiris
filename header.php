@@ -262,15 +262,15 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     OSIRIS
                 </div>
 
-                <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon <?= $pageactive('about') ?>">
+                <!-- <a href="<?= ROOTPATH ?>/about" class="sidebar-link with-icon <?= $pageactive('about') ?>">
                     <i class="far fa-signs-post" aria-hidden="true"></i>
                     <?= lang('About', 'Über OSIRIS') ?>
-                </a>
+                </a> -->
 
 
                 <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
                     <i class="far fa-message-pen" aria-hidden="true"></i>
-                    <?= lang('Changes &amp; To-dos', 'Änderungen &amp; To-Dos') ?>
+                    <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
 
                 <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">

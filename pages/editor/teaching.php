@@ -48,16 +48,9 @@
                 $filter = ['authors.user' => $user];
             }
             $cursor = $osiris->teachings->find($filter);
-            // $cursor = $collection->find([
-            //     'authors.user' => $user,
-            //     "start.year" => array('$lte' => SELECTEDYEAR),
-            //     '$or' => array(
-            //         ['end.year' => array('$gte' => SELECTEDYEAR)],
-            //         ['end' => null]
-            //     )
-            // ]);
-            // dump($cursor);
+            
             foreach ($cursor as $document) {
+                $id = $document['_id'];
                 $q = getQuarter($document['start']['month']);
                 $in_quarter = $q == SELECTEDQUARTER;
             ?>
@@ -66,10 +59,47 @@
                         <?= $document['start']['year'] ?>Q<?= $q ?>
                     </td>
                     <td>
-                        <?php echo format_teaching($document, true); ?>
+                        <?php echo format_teaching($document); ?>
+                        <?php
+                             if ($document['status'] == 'in progress' && new DateTime() > getDateTime($document['end'])) {
+                                ?>
+                                    <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
+                                        <?= lang(
+                                            "<b>Attention</b>: the Thesis of $document[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
+                                            "<b>Achtung</b>: die Abschlussarbeit von $document[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
+                                        )  ?>
+                                        <form action="update/teaching/<?= $id ?>" method="post" class="form-inline mt-5">
+                                            <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+    
+                                            <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
+                                            <input type="date" class="form-control w-200" name="values[end]" id="date_end" value="<?= valueFromDateArray($document['end'] ?? '') ?>" required>
+                                            <div>
+                                                <div class="custom-radio d-inline">
+                                                    <input type="radio" name="values[status]" id="status-in-progress-<?= $id ?>" value="in progress" checked="checked">
+                                                    <label for="status-in-progress-<?= $id ?>"><?= lang('In progress', 'In Arbeit') ?></label>
+                                                </div>
+    
+                                                <div class="custom-radio d-inline">
+                                                    <input type="radio" name="values[status]" id="status-completed-<?= $id ?>" value="completed">
+                                                    <label for="status-completed-<?= $id ?>"><?= lang('Completed', 'Abgeschlossen') ?></label>
+                                                </div>
+    
+                                                <div class="custom-radio mr-10 d-inline">
+                                                    <input type="radio" name="values[status]" id="status-aborted-<?= $id ?>" value="aborted">
+                                                    <label for="status-aborted-<?= $id ?>"><?= lang('Aborted', 'Abgebrochen') ?></label>
+                                                </div>
+                                            </div>
+                                            <button class="btn" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>
+                                        </form>
+                                    </div>
+                    <?php
+    
+                                }
+                        ?>
+                        
                     </td>
                     <td class="unbreakable">
-                        <div class="dropdown">
+                        <!-- <div class="dropdown">
                             <button class="btn btn-sm text-primary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa-regular fa-lg fa-calendar-pen"></i>
                             </button>
@@ -100,7 +130,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
 
                         <button class="btn btn-sm text-success" onclick="toggleEditForm('teaching', '<?= $document['_id'] ?>')">

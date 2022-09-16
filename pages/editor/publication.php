@@ -35,6 +35,7 @@
         <thead>
             <tr>
                 <td><?= lang('Quarter', 'Quartal') ?></td>
+                <td><?=lang('Type', 'Typ')?></td>
                 <td><?= lang('Publication', 'Publikation') ?></td>
                 <td></td>
             </tr>
@@ -63,6 +64,12 @@
                 <tr class="<?= !$in_quarter ? 'row-muted' : '' ?>" id="<?= $id ?>">
                     <td class="quarter">
                         <?= $document['year'] ?>Q<?= $q ?>
+                    </td>
+                    <td class="text-center">
+                        <?php
+                            echo publication_icon($document['type']);
+                        ?>
+                        
                     </td>
                     <td>
                         <?php echo format_publication($document); ?>

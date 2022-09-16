@@ -1,12 +1,3 @@
-# Fragen @ Controlling
-
-1. Wenn ich ein Poster präsentiere auf einer Konferenz, die vom 30.06. bis zum 01.07. stattfindet, liegt das in Quartal 2 oder 3? Oder anders gefragt: entscheidet das Anfangs- oder das Enddatum über das Quartal?
-2. Welche Berichte werden gebraucht? Was kommt dort rein und welche Zeiträume beinhaltet es? Gibt es Vorlagen, an denen ich mich orientieren kann?
-3. Wäre es möglich, eine Alpha-Testphase mit ausgewählten Wissenschaftlern zu machen? Vielleicht mit Frau Fischer abklären?
-4. Nutzerdaten wurden zurzeit nur aus der Telefonliste importiert. Wer wird die Nutzer in OSIRIS in Zukunft pflegen? Wie werden Personaldaten im Moment gepflegt? In SAP? Gibt es dort eine Schnittstelle, die man abgreifen kann oder gibt es ein gängiges Export-Format, das importiert werden kann? Oder sollen die Daten händisch gepflegt werden?
-5. In diesem Zusammenhang: Müssen Datenschutzbeauftragter und Betriebsrat ebenfalls involviert werden, da wir mit Personaldaten arbeiten?
-
-
 # Changelog
 
 ## 11.09.22
@@ -15,12 +6,13 @@
 - Ich habe angefangen, das Confirmation-System einzuführen. Funktioniert soweit ganz gut.
 - Bei den Publikationen funktionieren jetzt die Knöpfe "nicht Autor" und Affiliation.
 - Bei dem LOM-System werden nun keine Punkte vergeben, wenn der Autor als Affiliation nicht die DSMZ hat.
+- Wenn bei dem Hinzufügen einer Aktivität keiner der Autoren der DSMZ zugehörig ist, wird eine Warnmeldung gezeigt.
 
 ## 02.09.22
-Ich habe ein ganz simples LOM-System aufgesetzt. 
+Ich habe ein ganz simples Punkte-System aufgesetzt. 
 - Die Punkte werden in einer von mir definierten Matrix gespeichert, die leicht anzupassen ist. 
-- Über ein LOM-Portal kann das Controlling einfach die Punkte für die einzelnen Bereiche anpassen. Siehe [hier](/lom).
-- Auf der Übersichtsseite eines Wissenschaftlers werden oben die LOM-Punkte aufsummiert. Hinter jeder Aktivität stehen die dafür erhaltenen Punkte. Die Punkte für refereed journals errechnen sich mit dem Impact Factor (falls vorhanden)
+- Über ein Punkte-Portal kann das Controlling einfach die Punkte für die einzelnen Bereiche anpassen. Siehe [hier](lom).
+- Auf der Übersichtsseite eines Wissenschaftlers werden oben die Punkte aufsummiert. Hinter jeder Aktivität stehen die dafür erhaltenen Punkte. Die Punkte für refereed journals errechnen sich mit dem Impact Factor (falls vorhanden)
 
 ## 01.09.22
 Dieses Update bezieht sich ausschließlich auf die Ansicht des Controllings
@@ -61,3 +53,14 @@ Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
   - Der verantw. Wissenschaftler bekommt einen Hinweis, wenn die Zeit eines Gast/Student/Doktorand abgelaufen ist und kann das Ende bestätigen oder verschieben
   - Abschlussarbeiten können auch abgebrochen werden
 - Auf der Übersichtsseite werden jetzt erste Fehlermeldungen angezeigt.
+
+
+# Fragen @ Controlling
+
+1. Wenn ich ein Poster präsentiere auf einer Konferenz, die vom 30.06. bis zum 01.07. stattfindet, liegt das in Quartal 2 oder 3? Oder anders gefragt: entscheidet das Anfangs- oder das Enddatum über das Quartal?
+   - **Antwort**: Das Startdatum zählt.
+2. Welche Berichte werden gebraucht? Was kommt dort rein und welche Zeiträume beinhaltet es? Gibt es Vorlagen, an denen ich mich orientieren kann?
+   - **Antwort**: Bericht-Templates wurden zur Verfügung gestellt. Genaue Zeiträume müssen definierbar sein. 
+3. Wäre es möglich, eine Alpha-Testphase mit ausgewählten Wissenschaftlern zu machen? Vielleicht mit Frau Fischer abklären?
+4. Nutzerdaten wurden zurzeit nur aus der Telefonliste importiert. Wer wird die Nutzer in OSIRIS in Zukunft pflegen? Wie werden Personaldaten im Moment gepflegt? In SAP? Gibt es dort eine Schnittstelle, die man abgreifen kann oder gibt es ein gängiges Export-Format, das importiert werden kann? Oder sollen die Daten händisch gepflegt werden?
+5. In diesem Zusammenhang: Müssen Datenschutzbeauftragter und Betriebsrat ebenfalls involviert werden, da wir mit Personaldaten arbeiten?

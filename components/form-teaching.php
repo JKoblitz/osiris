@@ -58,14 +58,14 @@ if (!empty($form) && isset($form['_id'])) {
                 <label for="category" class="required"><?= lang('Category', 'Kategorie') ?></label>
                 <select name="values[category]" id="category" class="form-control" required onchange="endQuestion()">
                     <option disabled>--- <?= lang('Thesis', 'Abschlussarbeiten') ?> ---</option>
-                    <option <?= $form['category'] ?? '' == 'Doktorand:in' ? 'selected' : '' ?>>Doktorand:in</option>
-                    <option <?= $form['category'] ?? '' == 'Master-Thesis' ? 'selected' : '' ?>>Master-Thesis</option>
-                    <option <?= $form['category'] ?? '' == 'Bachelor-Thesis' ? 'selected' : '' ?>>Bachelor-Thesis</option>
+                    <option <?= ($form['category'] ?? '') == 'Doktorand:in' ? 'selected' : '' ?>>Doktorand:in</option>
+                    <option <?= ($form['category'] ?? '') == 'Master-Thesis' ? 'selected' : '' ?>>Master-Thesis</option>
+                    <option <?= ($form['category'] ?? '') == 'Bachelor-Thesis' ? 'selected' : '' ?>>Bachelor-Thesis</option>
                     <option disabled>--- <?= lang('Guests', 'Gäste') ?> ---</option>
-                    <option <?= $form['category'] ?? '' == 'Gastwissenschaftler:in' ? 'selected' : '' ?>>Gastwissenschaftler:in</option>
-                    <option <?= $form['category'] ?? '' == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium</option>
-                    <option <?= $form['category'] ?? '' == 'Vorlesung und Laborpraktikum' ? 'selected' : '' ?>>Vorlesung und Laborpraktikum</option>
-                    <option <?= $form['category'] ?? '' == 'Schülerpraktikum' ? 'selected' : '' ?>>Schülerpraktikum</option>
+                    <option <?= ($form['category'] ?? '') == 'Gastwissenschaftler:in' ? 'selected' : '' ?>>Gastwissenschaftler:in</option>
+                    <option <?= ($form['category'] ?? '') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium</option>
+                    <option <?= ($form['category'] ?? '') == 'Vorlesung und Laborpraktikum' ? 'selected' : '' ?>>Vorlesung und Laborpraktikum</option>
+                    <option <?= ($form['category'] ?? '') == 'Schülerpraktikum' ? 'selected' : '' ?>>Schülerpraktikum</option>
                 </select>
             </div>
             <div class="col-sm">
@@ -87,7 +87,7 @@ if (!empty($form) && isset($form['_id'])) {
 
                 <div id="end-question" style="display: none;">
                     <div class="custom-radio d-none">
-                        <input type="radio" name="values[status]" id="status-in-progress" value="in-progress" checked="checked" value="<?= $form['status'] ?? '' ?>">
+                        <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="<?= $form['status'] ?? '' ?>">
                         <label for="status-in-progress"><?= lang('Completed', 'Abgeschlossen') ?></label>
                     </div>
 
@@ -142,6 +142,7 @@ if (!empty($form) && isset($form['_id'])) {
 <script>
     function endQuestion() {
         const date = $('#date_end').val()
+        console.log(date);
         if (date.length === 0) {
             $('#end-question').hide()
             return;

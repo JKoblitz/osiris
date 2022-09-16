@@ -110,10 +110,10 @@ function getQuarter($time)
     if (empty($time)) {
         return 0;
     }
-    if (isset($time['start'])){
+    if (isset($time['start'])) {
         $time = $time['start'];
     }
-    if (isset($time['dates']) && !empty($time['dates'])){
+    if (isset($time['dates']) && !empty($time['dates'])) {
         $time = reset($time['dates']);
     }
     if (isset($time['month'])) {
@@ -167,6 +167,40 @@ function format_month($month)
     return $array[$month];
 }
 
+function publication_icon($type)
+{
+    $type = strtolower(trim($type));
+    switch ($type) {
+        case 'journal article':
+        case 'journal-article':
+            return "<span data-toggle='tooltip' data-title='Journal article'>
+            <i class='far fa-lg text-primary fa-file-lines'></i>
+            </span>";
+
+        case 'magazine article':
+        case 'magazine':
+            return "<span data-toggle='tooltip' data-title='Magazine article'>
+            <i class='far fa-lg text-primary fa-newspaper'></i>
+            </span>";
+        case 'book-chapter':
+        case 'book chapter':
+            return "<span data-toggle='tooltip' data-title='Book chapter'>
+            <i class='far fa-lg text-primary fa-book'></i>
+            </span>";
+            // case 'book-editor':
+            //     return "<span data-toggle='tooltip' data-title='Book'>
+            // <i class='far fa-lg text-primary fa-memo'></i>
+            // </span>";
+        case 'book':
+            return "<span data-toggle='tooltip' data-title='Book'>
+            <i class='far fa-lg text-primary fa-book-bookmark'></i>
+            </span>";
+        default:
+            # code...
+            return '';
+    }
+}
+
 // format functions
 function format($col, $doc)
 {
@@ -206,12 +240,12 @@ function format_teaching($doc, $verbose = false)
     if (in_array($doc['category'], ["Doktorand:in", "Master-Thesis", "Bachelor-Thesis"]) && !empty($doc['status'])) {
 
         if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
-            $result .= " (<b class='text-danger'>" . $doc['status'] . "</b>)";
+            $result .= " (<b class='text-danger'>" . $doc['status'] . "</b>),";
         } else {
-            $result .= " (" . $doc['status'] . ")";
+            $result .= " (" . $doc['status'] . "),";
         }
     } else {
-        $result .= "";
+        $result .= ",";
     }
 
     $result .= " betreut von " . formatAuthors($doc['authors']);
@@ -281,22 +315,45 @@ function format_publication($doc)
     }
     // TODO:
     // if ($doc['type'] == 'book-chapter')
-    if (!empty($doc['journal'])) {
-        $result .= " <em>$doc[journal]</em>";
+    switch (strtolower(trim($doc['type']))) {
+        case 'journal article':
+        case 'journal-article':
+            if (!empty($doc['journal'])) {
+                $result .= " <em>$doc[journal]</em>";
 
-        if (!empty($doc['volume'])) {
-            $result .= " $doc[volume]";
-        }
-        if (!empty($doc['pages'])) {
-            $result .= ":$doc[pages].";
-        }
+                if (!empty($doc['volume'])) {
+                    $result .= " $doc[volume]";
+                }
+                if (!empty($doc['pages'])) {
+                    $result .= ":$doc[pages].";
+                }
+            }
+            if (!empty($doc['doi'])) {
+                $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
+            }
+            if (!empty($doc['epub'])) {
+                $result .= " <span class='text-danger'>[Epub ahead of print]</span>";
+            }
+            break;
+
+        case 'magazine article':
+        case 'magazine':
+            if (!empty($doc['magazine'])) {
+                $result .= " <em>$doc[magazine]</em>.";
+            }
+            if (!empty($doc['link'])) {
+                $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
+            }
+            break;
+        case 'book-chapter':
+            break;
+        case 'book':
+            break;
+        default:
+            # code...
+            break;
     }
-    if (!empty($doc['doi'])) {
-        $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
-    }
-    if (!empty($doc['epub'])) {
-        $result .= " <span class='text-danger'>[Epub ahead of print]</span>";
-    }
+
     return $result;
 }
 

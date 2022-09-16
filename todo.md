@@ -12,7 +12,7 @@
 -[x] Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
 -[ ] Knöpfe funktionieren nicht bei Editorenschaften: diese vielleicht generell extra aufführen?
 -[ ] Es sollen Publikationen als PDF hinterlegt werden: dafür soll beim Hinzufügen ein Upload möglich sein und auf der Übersichtsseite ein Link zum PDF
--[ ] Warnmeldung wenn keine Autoren mit DSMZ-Affiliation angezeigt werden.
+-[x] Warnmeldung wenn keine Autoren mit DSMZ-Affiliation angezeigt werden.
 
 ## Confirmation:
 Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivitäten hinzufügen:
@@ -21,8 +21,8 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 -[x] bei allen anderen wird auf der Startseite ein Hinweis gezeigt: können Approven oder Ablehnen (z.B. wenn nicht Autor der Publikation oder Affiliation nicht DSMZ)
 
 ## Approve:
--[ ] Beim Akzeptieren des Quartals sollten Fehlermeldungen angezeigt werden
--[ ] Außerdem: neue, noch unbestätigte Confirmations
+-[x] Beim Akzeptieren des Quartals sollten Fehlermeldungen angezeigt werden
+-[x] Außerdem: neue, noch unbestätigte Confirmations
 -[ ] Nur bereits vergangene Quartale können bestätigt werden
 -[ ] Das Controlling kann eine Abfrage starten, woraufhin Mails an die Wissenschaftler geschickt werden
 

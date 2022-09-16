@@ -35,7 +35,7 @@ $url = ROOTPATH . "/publication";
 
 
     <div class="my-20" id="select-btns">
-        <button onclick="togglePubType('article')" class="btn" id="article-btn"><i class="fa-regular fa-memo"></i> <?= lang('Journal article (refereed)') ?></button>
+        <button onclick="togglePubType('article')" class="btn" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article (refereed)') ?></button>
         <button onclick="togglePubType('magazine')" class="btn" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article (non-refereed)') ?></button>
         <button onclick="togglePubType('book')" class="btn" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
         <button onclick="togglePubType('editor')" class="btn" id="editor-btn"><i class="fa-regular fa-pen-nib"></i> <?= lang('Book editor', 'Bucheditor') ?></button>
@@ -101,10 +101,22 @@ $url = ROOTPATH . "/publication";
                     <input type="text" class="form-control disabled" name="values[type]" id="type">
                 </div>
 
-                <div class="form-group" data-visible="article,magazine">
+                <div class="form-group" data-visible="article">
                     <label for="journal">Journal</label>
                     <input type="text" class="form-control" name="values[journal]" id="journal" list="journal-list">
                 </div>
+        
+                <div class="form-row row-eq-spacing" data-visible="magazine">
+                    <div class="col-sm">
+                    <label for="magazine">Magazine</label>
+                    <input type="text" class="form-control" name="values[magazine]" id="magazine">
+                    </div>
+                    <div class="col-sm">
+                        <label for="link">Link</label>
+                        <input type="text" class="form-control" name="values[link]" id="link">
+                    </div>
+                </div>
+        
                 <div class="form-row row-eq-spacing" data-visible="article,book,editor,chapter">
                     <div class="col-sm" data-visible="article">
                         <label for="issue">Issue</label>
@@ -163,7 +175,7 @@ $url = ROOTPATH . "/publication";
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group"  data-visible="article">
                     <div class="custom-checkbox">
                         <input type="checkbox" id="epub" value="1" name="values[epub]">
                         <label for="epub">Epub ahead of print</label>

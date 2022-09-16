@@ -213,24 +213,68 @@ foreach ($queries as $col => $val) {
                     echo format($col, $document);
 
                     // show error messages, warnings and todos
-                    if (!$a) { ?>
-                        <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
-                            <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
-                            <!-- <br> -->
-                            <button class="btn btn-sm text-success ml-20" onclick="_approve('<?= $col ?>', '<?= $id ?>', 1)">
-                                <i class="fas fa-check"></i>
-                                <?= lang('Yes, this is me and I was affiliated to the' . AFFILIATION, 'Ja, das bin ich und ich war der ' . AFFILIATION . ' angehörig') ?>
-                            </button>
-                            <button class="btn btn-sm text-danger" onclick="_approve('<?= $col ?>', '<?= $id ?>', 2)">
-                                <i class="fas fa-handshake-slash"></i>
-                                <?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>
-                            </button>
-                            <button class="btn btn-sm text-danger" onclick="_approve('<?= $col ?>', '<?= $id ?>', 3)">
-                                <i class="fas fa-xmark"></i>
-                                <?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>
-                            </button>
-                        </div>
-                <?php }
+                    if ($currentuser) {
+                        if (!$a) { ?>
+                            <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
+                                <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
+                                <!-- <br> -->
+                                <button class="btn btn-sm text-success ml-20" onclick="_approve('<?= $col ?>', '<?= $id ?>', 1)">
+                                    <i class="fas fa-check"></i>
+                                    <?= lang('Yes, this is me and I was affiliated to the' . AFFILIATION, 'Ja, das bin ich und ich war der ' . AFFILIATION . ' angehörig') ?>
+                                </button>
+                                <button class="btn btn-sm text-danger" onclick="_approve('<?= $col ?>', '<?= $id ?>', 2)">
+                                    <i class="fas fa-handshake-slash"></i>
+                                    <?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>
+                                </button>
+                                <button class="btn btn-sm text-danger" onclick="_approve('<?= $col ?>', '<?= $id ?>', 3)">
+                                    <i class="fas fa-xmark"></i>
+                                    <?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>
+                                </button>
+                            </div>
+                            <?php }
+                        if ($col == "teaching") {
+                            if ($document['status'] == 'in progress' && new DateTime() > getDateTime($document['end'])) {
+
+                                $approval_needed[] = array(
+                                    'type' => 'teaching',
+                                    'id' => $document['_id'],
+                                    'title' => $document['title']
+                                );
+                            ?>
+                                <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
+                                    <?= lang(
+                                        "<b>Attention</b>: the Thesis of $document[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
+                                        "<b>Achtung</b>: die Abschlussarbeit von $document[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
+                                    )  ?>
+                                    <form action="update/teaching/<?= $id ?>" method="post" class="form-inline mt-5">
+                                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+
+                                        <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
+                                        <input type="date" class="form-control w-200" name="values[end]" id="date_end" value="<?= valueFromDateArray($document['end'] ?? '') ?>" required>
+                                        <div>
+                                            <div class="custom-radio d-inline">
+                                                <input type="radio" name="values[status]" id="status-in-progress-<?= $id ?>" value="in progress" checked="checked">
+                                                <label for="status-in-progress-<?= $id ?>"><?= lang('In progress', 'In Arbeit') ?></label>
+                                            </div>
+
+                                            <div class="custom-radio d-inline">
+                                                <input type="radio" name="values[status]" id="status-completed-<?= $id ?>" value="completed">
+                                                <label for="status-completed-<?= $id ?>"><?= lang('Completed', 'Abgeschlossen') ?></label>
+                                            </div>
+
+                                            <div class="custom-radio mr-10 d-inline">
+                                                <input type="radio" name="values[status]" id="status-aborted-<?= $id ?>" value="aborted">
+                                                <label for="status-aborted-<?= $id ?>"><?= lang('Aborted', 'Abgebrochen') ?></label>
+                                            </div>
+                                        </div>
+                                        <button class="btn" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>
+                                    </form>
+                                </div>
+                <?php
+
+                            }
+                        }
+                    }
 
                     echo "</td>";
                     // lom points
@@ -245,21 +289,21 @@ foreach ($queries as $col => $val) {
         <div class="content mt-0">
             <?php if ($currentuser) { ?>
                 <a href="<?= ROOTPATH ?>/<?= $col ?>" class="btn text-<?= $val['color'] ?>">
-                    <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?=$val['title']?>
+                    <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $val['title'] ?>
                 </a>
             <?php } ?>
 
-            <?php if ($col == "publication") { 
-                $link = ROOTPATH."/publication/add";
-             } else {
+            <?php if ($col == "publication") {
+                $link = ROOTPATH . "/publication/add";
+            } else {
                 $link = "#add-$col";
-             }?>
-            
+            } ?>
+
             <a href="<?= $link ?>" class="btn"><i class="fas fa-plus"></i></a>
         </div>
 
     </div>
-    <div class="modal" id="add-<?=$col?>" tabindex="-1" role="dialog">
+    <div class="modal" id="add-<?= $col ?>" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <a data-dismiss="modal" class="close" role="button" aria-label="Close">
@@ -294,23 +338,25 @@ foreach ($queries as $col => $val) {
 
                 <?php
                 if ($approved) {
-                    echo "<p>". lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.'). "</p>";
+                    echo "<p>" . lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') . "</p>";
                 } else if (!empty($approval_needed)) {
-                    echo "<p>". lang("The following activities need your confirmation before you can approve the current quarter. Please scroll through your feed and confirm/reject your activities.",
-                    "Die folgenden Aktivitäten müssen von Ihnen bestätigt werden, bevor Sie das laufende Quartal freigeben können. Bitte scrollen Sie durch Ihren Feed und bestätigen/ablehnen Sie Ihre Aktivitäten.") . "</p>";
-                   echo "<ul class='list'>";
-                   foreach ($approval_needed as $item) {
-                    $type = ucfirst($item['type']);
+                    echo "<p>" . lang(
+                        "The following activities need your confirmation before you can approve the current quarter. Please scroll through your feed and confirm/reject your activities.",
+                        "Die folgenden Aktivitäten müssen von Ihnen bestätigt werden, bevor Sie das laufende Quartal freigeben können. Bitte scrollen Sie durch Ihren Feed und bestätigen/ablehnen Sie Ihre Aktivitäten."
+                    ) . "</p>";
+                    echo "<ul class='list'>";
+                    foreach ($approval_needed as $item) {
+                        $type = ucfirst($item['type']);
                         echo "<li><b>$type</b>: $item[title]</li>";
-                }
-                   echo "</ul>";
+                    }
+                    echo "</ul>";
                 } else { ?>
                     <form action="<?= ROOTPATH ?>/approve" method="post">
                         <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                         <button class="btn"><?= lang('Approve', 'Freigeben') ?></button>
                     </form>
                 <?php } ?>
-                    
+
             </div>
         </div>
     </div>
@@ -318,6 +364,4 @@ foreach ($queries as $col => $val) {
 
 <script>
     $('#lom-points').html('<?= round($_lom) ?>');
-
-
 </script>
