@@ -95,11 +95,59 @@ function getUser($name)
         if ($bind) {
             $res = array();
 
-            $fields = "(|(cn=*$name*))";
+            $fields = "(|(samaccountname=*$name*))";
 
             $search = ldap_search($connect, $base_dn, $fields);
             $result = ldap_get_entries($connect, $search);
+            return $result;
+            $ldap_username = $result[0]['samaccountname'][0];
+            $ldap_last_name = $result[0]['cn'][0];
 
+
+            foreach ($result as $entry) {
+                $res[$entry['samaccountname'][0]] = $entry['cn'][0];
+            }
+            ldap_close($connect);
+            return $res;
+        } else {
+            // Login fehlgeschlagen / Benutzer nicht vorhanden
+            return "Login fehlgeschlagen / Benutzer nicht vorhanden";
+        }
+    } else {
+        return "Verbindung zum Server fehlgeschlagen.";
+    }
+}
+
+
+function getUsers()
+{
+    $ldap_address = "ldap://172.18.240.3";
+    $ldap_port = 389;
+
+    $base_dn = 'CN=bacmedia,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $password = 'TheH4mmer4ndThunder#?!'; // entsprechendes password
+    $dn = "bacmedia@dsmz.local";
+
+    $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+
+    if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
+        // Verbindung erfolgreich
+        ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
+        // define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
+
+        // Authentifizierung des Benutzers
+        // if ($bind = ldap_bind( $connect, $ldaprdn, $ldappass)) { // service account
+        $bind = ldap_bind($connect, $dn, $password);
+
+        if ($bind) {
+            $res = array();
+
+            $fields = "(|(samaccountname=*))";
+
+            $search = ldap_search($connect, $base_dn, $fields);
+            $result = ldap_get_entries($connect, $search);
+            return $result;
             $ldap_username = $result[0]['samaccountname'][0];
             $ldap_last_name = $result[0]['cn'][0];
 

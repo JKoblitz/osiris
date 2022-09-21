@@ -83,9 +83,9 @@ function hiddenFieldsFromGet($exclude = array())
     foreach ($_GET as $name => $value) {
         if (in_array($name, $exclude) || $name == 'msg') continue;
         if (is_array($value)) {
-            foreach ($value as $v) {
+            foreach ($value as $k => $v) {
                 // if (empty($v)) continue;
-                echo '<input type="hidden" name="' . $name . '[]" value="' . $v . '">';
+                echo '<input type="hidden" name="' . $name . '['.$k.']" value="' . $v . '">';
             }
         } elseif (!empty($value)) {
             echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
@@ -209,9 +209,27 @@ if (!function_exists('str_contains')) {
     }
 }
 
-function dump($element)
+function dump($element, $as_json = false)
 {
     echo '<pre class="code">';
-    var_dump($element);
+    if ($as_json && is_array($element)) {
+        $element = array_merge($element);
+        echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if (!empty(json_last_error())) {
+            var_dump(json_last_error_msg()) . PHP_EOL;
+            var_export($element);
+        }
+    } else {
+        var_dump($element);
+    }
     echo "</pre>";
+}
+
+function bool_icon($bool)
+{
+    if ($bool) {
+        return '<i class="fas fa-check text-success"></i>';
+    } else {
+        return '<i class="fas fa-xmark text-danger"></i>';
+    }
 }

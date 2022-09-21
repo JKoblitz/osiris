@@ -12,8 +12,12 @@ if (isset($raw['search']) && !empty($raw['search'])) {
     );
 }
 
-if(isset($raw['scientist']) && !empty($raw['scientist'])){
+if (isset($raw['scientist']) && !empty($raw['scientist'])) {
     $filter['is_scientist'] = true;
+}
+
+if (isset($raw['dept']) && !empty($raw['dept'])) {
+    $filter['dept'] = $raw['dept'];
 }
 
 ?>
@@ -25,24 +29,42 @@ if(isset($raw['scientist']) && !empty($raw['scientist'])){
     ?>
     <div class="input-group d-inline-flex w-600 mw-full" id="search">
         <input type="search" class="form-control" placeholder="<?= lang('Search by name or user', 'Suche nach Namen oder Nutzerküzel') ?>" name="filter[search]" value="<?= $raw['search'] ?? '' ?>">
+        <select name="filter[dept]" id="dept-search" class="form-control">
+            <option value=""><?=lang('All departments', 'Alle Abteilungen')?></option>
+            <?php
+            $depts = [
+                "BI & DB", "IT", "Services", "MIG", "Verwaltung", "MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD", "Presse und Kommunikation"
+            ];
+            sort($depts);
+            $dept_filter = $raw['dept'] ?? '';
+            foreach ($depts as $dept) {
+                echo "<option ".($dept_filter == $dept ? 'selected': '').">$dept</option>";
+            }
+            ?>
+        </select>
         <div class="input-group-append">
             <button class="btn" type="submit"><i class="fas fa-search"></i></button>
         </div>
     </div>
-  <div class="custom-checkbox d-inline-block">
-    <input type="checkbox" id="scientist-1" value="1" name="filter[scientist]" <?=isset($raw['scientist'])? 'checked': ''?>>
-    <label for="scientist-1"><?=lang('Only scientists', 'Nur Wissenschaftler')?></label>
-  </div>
+
+
+    <div class="custom-checkbox d-inline-block">
+        <input type="checkbox" id="scientist-1" value="1" name="filter[scientist]" <?= isset($raw['scientist']) ? 'checked' : '' ?>>
+        <label for="scientist-1"><?= lang('Only scientists', 'Nur Wissenschaftler') ?></label>
+    </div>
 </form>
 
 
 <table class="table" id="result-table">
     <thead>
         <th>user</th>
-        <th><?=lang('Last name', 'Nachname')?></th>
-        <th><?=lang('First name', 'Vorname')?></th>
-        <th><?=lang('Dept', 'Abteilung')?></th>
-        <th><?=lang('Scientist', 'Wissenschaftler:in')?></th>
+        <th><?= lang('Last name', 'Nachname') ?></th>
+        <th><?= lang('First name', 'Vorname') ?></th>
+        <th><?= lang('Dept', 'Abteilung') ?></th>
+        <th><?= lang('Details') ?></th>
+        <th><?= lang('Unit', 'Einheit') ?></th>
+        <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
+        <th><?= lang('Active', 'Aktiv') ?></th>
     </thead>
     <tbody>
 
@@ -58,16 +80,38 @@ if(isset($raw['scientist']) && !empty($raw['scientist'])){
         }
         $offset = $p * $limit - $limit;
 
+
+        // $depts = array_column($result, 'department');
+        // $depts = array_unique($depts);
+        // dump($depts, true);
+        // $a = array();
+        // foreach ($result as $doc) {
+        //     if (!preg_match('/^[a-z]{3}[0-9]{0,2}$/', $doc['_id'])){
+        //         $a[] = $doc['_id'];
+        //     }
+        // }
+        // dump($a, true);
+
         $result = array_slice($result, $offset, min($limit, $count - $offset));
 
         foreach ($result as $document) {
         ?>
             <tr>
                 <td><a href="<?= ROOTPATH ?>/view/scientist/<?= $document['_id'] ?>"><?= $document['_id'] ?></a></td>
-                <td><?= $document['academic_title']?? '' ?> <?= $document['last'] ?></td>
+                <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
                 <td><?= $document['first'] ?></td>
-                <td><?= $document['dept'] ?></td>
-                <td><?= $document['is_scientist'] ? '<i class="fas fa-check text-success"></i>': '' ?></td>
+                <td>
+                    <?php if ($document['is_leader']) { ?>
+                        <strong><?= $document['dept'] ?></strong>
+                    <?php } else { ?>
+                        <?= $document['dept'] ?>
+                    <?php } ?>
+
+                </td>
+                <td><?= $document['department'] ?></td>
+                <td><?= $document['unit'] ?></td>
+                <td><?= bool_icon($document['is_scientist']) ?></td>
+                <td><?= bool_icon($document['is_active']) ?></td>
             </tr>
         <?php
         }
