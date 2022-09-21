@@ -152,3 +152,6 @@ color: var(--signal-color);
     box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
 }
 
+strong {
+    font-weight: 900;
+}

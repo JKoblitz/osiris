@@ -1,5 +1,8 @@
 # Changelog
 
+## 21.09.22
+- Eine Schnittstelle wurde eingeführt, über die Nutzer aus LDAP bezogen werden können. Die Nutzer wurden aktualisiert und in Abteilungen unterteilt
+
 ## 11.09.22
 - Titel von Aktivitäten können nun formatiert werden. Dabei ist es möglich, fett, kursiv und unterstrichen zu formatieren. Die Formatierungen sind auch bei den Bearbeitungen möglich und können mit exportiert werden. 
 - Bilder der Nutzer werden jetzt von Gravatar importiert
