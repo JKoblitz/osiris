@@ -7,7 +7,7 @@ function commalist($array, $sep = "and")
     if (empty($array)) return "";
     if (count($array) < 3) return implode(" $sep ", $array);
     $str = implode(", ", array_slice($array, 0, -1));
-    return $str . ", $sep " . end($array);
+    return $str . " $sep " . end($array);
 }
 
 function abbreviateAuthor($last, $first)
@@ -101,6 +101,16 @@ function fromToDate($from, $to)
     }
 
     return $from . '-' . $to;
+}
+
+function getYear($doc){
+    if (isset($doc['year'])) return $doc['year'];
+    if (isset($doc['start'])) return $doc['start']['year'];
+    if (isset($doc['dates'])) {
+        if (isset($doc['dates'][0]['start'])) return $doc['dates'][0]['start']['year'];
+        if (isset($doc['dates']['start'])) return $doc['dates']['start']['year'];
+        // return $doc['start']['year'];
+    }
 }
 
 function getQuarter($time)
@@ -197,6 +207,42 @@ function publication_icon($type)
             </span>";
         default:
             # code...
+            return '';
+    }
+}
+
+function activity_icon($doc)
+{
+    $type = strtolower(trim($doc['type']??''));
+    switch ($type) {
+        case 'publication':
+            return publication_icon($doc['pubtype'] ??'');
+
+        case 'poster':
+            return "<span data-toggle='tooltip' data-title='Poster'>
+                <i class='far fa-lg text-danger fa-presentation-screen'></i>
+                </span>";
+        case 'lecture':
+            return "<span data-toggle='tooltip' data-title='Lecture'>
+                <i class='far fa-lg text-signal fa-keynote'></i>
+                </span>";
+        case 'review':
+            return "<span data-toggle='tooltip' data-title='Review'>
+                <i class='far fa-lg text-success fa-book-open-cover'></i>
+                </span>";
+        case 'misc':
+            return "<span data-toggle='tooltip' data-title='Misc'>
+                <i class='far fa-lg text-muted fa-icons'></i>
+                </span>";
+        case 'teaching':
+            return "<span data-toggle='tooltip' data-title='Teaching'>
+                    <i class='far fa-lg text-muted fa-people'></i>
+                    </span>";
+        case 'software':
+            return "<span data-toggle='tooltip' data-title='Software'>
+                <i class='far fa-lg text-muted fa-desktop'></i>
+                </span>";
+        default:
             return '';
     }
 }
@@ -310,6 +356,9 @@ function format_publication($doc)
     if (!empty($doc['year'])) {
         $result .= " ($doc[year])";
     }
+    if (!empty($doc['correction'])) {
+        $result .= " <span class='text-danger'>Correction to:</span>";
+    }
     if (!empty($doc['title'])) {
         $result .= " $doc[title].";
     }
@@ -327,12 +376,6 @@ function format_publication($doc)
                 if (!empty($doc['pages'])) {
                     $result .= ":$doc[pages].";
                 }
-            }
-            if (!empty($doc['doi'])) {
-                $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
-            }
-            if (!empty($doc['epub'])) {
-                $result .= " <span class='text-danger'>[Epub ahead of print]</span>";
             }
             break;
 
@@ -353,7 +396,15 @@ function format_publication($doc)
             # code...
             break;
     }
-
+    if (!empty($doc['doi'])) {
+        $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
+    }
+    if (!empty($doc['epub'])) {
+        $result .= " <span class='text-danger'>[Epub ahead of print]</span>";
+    }
+    if (!empty($doc['open_access'])) {
+        $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
+    }
     return $result;
 }
 

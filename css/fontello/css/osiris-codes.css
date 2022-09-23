@@ -1,0 +1,18 @@
+
+.icon-bacterium-plus:before { content: '\e800'; } /* '' */
+.icon-cellline:before { content: '\e801'; } /* '' */
+.icon-chebi:before { content: '\e802'; } /* '' */
+.icon-medium-edit:before { content: '\e803'; } /* '' */
+.icon-dsmz:before { content: '\e804'; } /* '' */
+.icon-chebi-bold:before { content: '\e807'; } /* '' */
+.icon-fungi:before { content: '\e809'; } /* '' */
+.icon-medium-bacterium:before { content: '\e80b'; } /* '' */
+.icon-medium-check:before { content: '\e80c'; } /* '' */
+.icon-medium-compound:before { content: '\e80d'; } /* '' */
+.icon-molecule:before { content: '\e80e'; } /* '' */
+.icon-oxygen:before { content: '\e80f'; } /* '' */
+.icon-phage:before { content: '\e810'; } /* '' */
+.icon-yeast:before { content: '\e813'; } /* '' */
+.icon-flask-plus:before { content: '\e814'; } /* '' */
+.icon-cell:before { content: '\e815'; } /* '' */
+.icon-open-access:before { content: '\e816'; } /* '' */
