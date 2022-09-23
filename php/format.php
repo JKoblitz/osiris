@@ -27,13 +27,19 @@ function authorForm($a)
         </div>";
 }
 
-function formatAuthors($raw_authors, $separator = 'and')
+function formatAuthors($raw_authors, $separator = 'and', $first=1, $last=1)
 {
     $authors = array();
     foreach ($raw_authors as $a) {
         $author = abbreviateAuthor($a['last'], $a['first']);
         if (($a['aoi'] ?? 1) == 1) {
             $author = "<b>$author</b>";
+        }
+        if ($first > 1 && $a['position'] == 'first'){
+            $author .= "<sup>#</sup>";
+        }
+        if ($last > 1 && $a['position'] == 'last'){
+            $author .= "<sup>*</sup>";
         }
         $authors[] = $author;
     }
@@ -103,7 +109,8 @@ function fromToDate($from, $to)
     return $from . '-' . $to;
 }
 
-function getYear($doc){
+function getYear($doc)
+{
     if (isset($doc['year'])) return $doc['year'];
     if (isset($doc['start'])) return $doc['start']['year'];
     if (isset($doc['dates'])) {
@@ -213,10 +220,10 @@ function publication_icon($type)
 
 function activity_icon($doc)
 {
-    $type = strtolower(trim($doc['type']??''));
+    $type = strtolower(trim($doc['type'] ?? ''));
     switch ($type) {
         case 'publication':
-            return publication_icon($doc['pubtype'] ??'');
+            return publication_icon($doc['pubtype'] ?? '');
 
         case 'poster':
             return "<span data-toggle='tooltip' data-title='Poster'>
@@ -352,7 +359,15 @@ function format_lecture($doc)
 
 function format_publication($doc)
 {
-    $result = formatAuthors($doc['authors']);
+    
+    if (!is_array($doc['authors'])) {
+        $doc['authors'] = $doc['authors']->bsonSerialize();
+    }
+    $pos = array_count_values(array_column($doc['authors'], 'position'));
+    $first = $pos['first'] ?? 1;
+    $last = $pos['last'] ?? 1;
+    
+    $result = formatAuthors($doc['authors'], 'and', $first, $last);
     if (!empty($doc['year'])) {
         $result .= " ($doc[year])";
     }
@@ -405,6 +420,15 @@ function format_publication($doc)
     if (!empty($doc['open_access'])) {
         $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
     }
+
+    if ($first > 1 || $last > 1) $result .= "<br>";
+    if ($first > 1){
+        $result .= "<span class='text-muted'><sup>#</sup> Shared first authors</span>";
+    }
+    if ($last > 1){
+        $result .= "<span class='text-muted'><sup>*</sup> Shared last authors</span>";
+    }
+
     return $result;
 }
 
