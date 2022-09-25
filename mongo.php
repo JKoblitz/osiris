@@ -5,8 +5,6 @@ include_once BASEPATH . "/php/_config.php";
 function validateValues($values)
 {
     include_once BASEPATH . "/php/_db.php";
-    global $osiris;
-    var_dump($values);
     $first = max(intval($values['first_authors'] ?? 1), 1);
     unset($values['first_authors']);
     $last = max(intval($values['last_authors'] ?? 1), 1);
@@ -44,6 +42,17 @@ function validateValues($values)
                     ];
                 }
             }
+        } else if ($key == 'user') {
+            $user = getUserFromId($value);
+            $values["authors"] = [
+                [
+                    'last' => $user['last'],
+                    'first' => $user['first'],
+                    'aoi' => true,
+                    'user' => $value,
+                    'approved' => $value == $_SESSION['username']
+                ]
+            ];
         } else if (is_array($value)) {
             $values[$key] = validateValues($value);
         } else if ($value === 'true') {
@@ -98,7 +107,7 @@ Route::get('/mongo', function () {
 });
 
 
-Route::post('/create/(lecture|misc|poster|publication|teaching|review)', function ($col) {
+Route::post('/create', function () {
     include_once BASEPATH . "/php/_db.php";
     if (!isset($_POST['values'])) {
         echo "no values given";
@@ -106,63 +115,72 @@ Route::post('/create/(lecture|misc|poster|publication|teaching|review)', functio
     }
     // dump($_POST);
     // die();
+    $collection = $osiris->activities;
+    $required = [];
+    $col = $_POST['values']['type'];
     switch ($col) {
         case 'lecture':
-            $collection = $osiris->lectures;
-            $required = [];
             break;
         case 'misc':
-            $collection = $osiris->miscs;
-            $required = [];
             break;
         case 'poster':
-            $collection = $osiris->posters;
-            $required = [];
             break;
         case 'publication':
-            $collection = $osiris->publications;
             $required = ['title', 'year', 'month'];
             break;
         case 'teaching':
-            $collection = $osiris->teachings;
             $required = ['title', 'category', 'name', 'affiliation', 'start', 'end'];
             break;
         case 'review':
-            $collection = $osiris->reviews;
             $required = ['role', 'user'];
             break;
         default:
-            echo "unsupported collection";
-            die;
+            // echo "unsupported collection";
+            break;
     }
+
+
     $values = validateValues($_POST['values']);
+
+    if (isset($values['doi']) && !empty($values['doi'])){
+        $doi_exist = $collection->findOne(['doi'=>$values['doi']]);
+        if (!empty($doi_exist)){
+            header("Location: ".ROOTPATH."/activities/view/$doi_exist[_id]?msg=DOI+already+exists");
+            die;
+        }
+    }
+    if (isset($values['pubmed']) && !empty($values['pubmed'])){
+        $pubmed_exist = $collection->findOne(['pubmed'=>$values['pubmed']]);
+        if (!empty($pubmed_exist)){
+            header("Location: ".ROOTPATH."/activities/view/$pubmed_exist[_id]?msg=Pubmed-ID+already+exists");
+            die;
+        }
+    }
+
+
+    if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
+        // dump($_FILES, true);
+        $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
+
+        $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
+    }
     foreach ($required as $req) {
         if (!isset($values[$req]) || empty($values[$req])) {
             echo "$req is required";
             die;
         }
     }
-    // echo json_encode($values);
+
+    // dump($values, true);
     // die();
 
     $insertOneResult  = $collection->insertOne($values);
-
     $id = $insertOneResult->getInsertedId();
 
-    // if (isset($values['authors'])) {
-    //     // add entry to all assigned users
-    //     $users = array_values(array_filter(array_column($values['authors'], 'user')));
-    //     if (!empty($users)) {
-    //         $usercoll = $osiris->users;
-    //         $usercoll->updateMany(
-    //             ["_id" => ['$in' => $users]],
-    //             ['$push' => [$col . "s" => $id]]
-    //         );
-    //     }
-    // }
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-        header("Location: " . $_POST['redirect'] . "?msg=add-success");
+        $red = str_replace("*", $id, $_POST['redirect']);
+        header("Location: " . $red . "?msg=add-success");
         die();
     }
     include_once BASEPATH . "/php/format.php";

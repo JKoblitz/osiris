@@ -13,9 +13,9 @@ if (!empty($form) && isset($form['_id'])) {
     $btntext = '<i class="fas fa-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
-    $formaction .= "activities/new";
+    $formaction .= "create";
     $btntext = '<i class="fas fa-plus"></i> ' . lang("Add", "Hinzufügen");
-    $url = ROOTPATH . "/activities/new";
+    $url = ROOTPATH . "/activities/view/*";
 }
 ?>
 
@@ -58,13 +58,13 @@ if (!empty($form) && isset($form['_id'])) {
 
     <div class="box box-primary add-form" style="display:none" id="publication-form">
         <div class="content">
-            <form action="<?= $formaction ?>" method="post">
+            <form action="<?= $formaction ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
 
                 <div class="form-row row-eq-spacing">
                     <div class="col-sm">
                         <label for="type"><?= lang('Type of activity', 'Art der Aktivität') ?>:</label>
-                        <input type="text" class="form-control disabled" name="values[type]" id="type" placeholder="Type" readonly name="values[type]">
+                        <input type="text" class="form-control disabled" name="values[type]" id="type" placeholder="Type" readonly>
                     </div>
                     <div class="col-sm" data-visible="article,magazine,book,editor,chapter">
                         <label for="pubtype" class="required"><?= lang('Type of publication', 'Art der Publikation') ?>:</label>
@@ -379,6 +379,21 @@ if (!empty($form) && isset($form['_id'])) {
                         </small>
                     </div>
                 </div>
+
+                <?php if (!empty($form) && isset($form['file']) && !empty($form['file'])) { ?>
+                    <p>
+                        <?=lang('The following file is appended to this entry:', 'Die folgende Datei ist diesem Eintrag angehängt:')?>
+                    <b><?=$form['file']?></b>
+                    <?=lang('Uploading a new file will overwrite the existing one.', 'Eine Neue hochzuladen wird sie überschreiben.')?>
+                    </p>
+
+                <?php } ?>
+                
+                <div class="custom-file">
+                    <input type="file" id="file-input-1" name="file" accept=".pdf" data-default-value="<?=lang("No file chosen", "Keine Datei ausgewählt")?>">
+                    <label for="file-input-1"><?=lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)')?></label>
+                </div>
+
                 <button class="btn btn-primary" type="submit"><?= $btntext ?></button>
 
             </form>

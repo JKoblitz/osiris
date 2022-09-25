@@ -45,7 +45,7 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 -[ ] Vielleicht wäre ein Rechtevergabesystem sinnvoll?
 
 
--[ ] Dashboard mit Statistiken und wichtigen Links
+-[x] Dashboard mit Statistiken und wichtigen Links
 <!-- -[ ] Berechne Lom für jeden Autor und schreibe es in die Tabelle???? -->
 -[ ] Schreibe Impact Factor in die Pub-Tabelle
 -[ ] Warnung wenn if nicht bekannt
