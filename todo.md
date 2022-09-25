@@ -8,7 +8,7 @@
 -[x] der Pub-Type muss standardisiert werden
 -[ ] Formatierungen für unterschiedliche Pub-Typen hinzufügen (zurzeit nur Journal-Artikel)
 -[x] Corrections? Wie funktioniert das überhaupt? Reichen ein Boolean und eine Checkbox aus?
--[ ] Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
+-[x] Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
 -[x] Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
 -[x] Knöpfe funktionieren nicht bei Editorenschaften: diese vielleicht generell extra aufführen?
 -[ ] Es sollen Publikationen als PDF hinterlegt werden: dafür soll beim Hinzufügen ein Upload möglich sein und auf der Übersichtsseite ein Link zum PDF

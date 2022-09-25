@@ -296,6 +296,27 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+Route::get('/activities/view/([a-zA-Z0-9]*)/file', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $activity = $osiris->activities->findOne(['_id' => $id]);
+
+    if (empty($activity)) {
+        echo "Activity not found!";
+    } else if (!isset($activity['file']) || empty($activity['file'])) {
+        echo "No file found.";
+    } else {
+        header('Content-type: application/pdf');
+        // header('Content-Disposition: attachment; filename="my.pdf"');
+        echo $activity['file']->serialize();
+    }
+}, 'login');
+
+
 Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
@@ -322,9 +343,9 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
 Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    
+
     if (empty($user)) $user = $_SESSION['username'];
-    GLOBAL $author_highlight;
+    global $author_highlight;
     $author_highlight = $user;
     include_once BASEPATH . "/php/format.php";
 
