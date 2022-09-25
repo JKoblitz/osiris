@@ -9,7 +9,11 @@
     <table class="table table-simple">
         <tbody>
             <?php
-            $q = SELECTEDYEAR. "Q" . SELECTEDQUARTER;
+            if (isset($_GET['q']) && isset($_GET['y'])){
+                $q = $_GET['y']. "Q" . $_GET['q'];
+            } else {
+                $q = SELECTEDYEAR. "Q" . SELECTEDQUARTER;
+            }
 
             $cursor = $osiris->users->find(
                 ['is_scientist' => true],
@@ -25,16 +29,12 @@
             ?>
                 <tr class="row-<?=$approved ? 'success':''?>">
                     <td>
-                        <a href="<?= ROOTPATH ?>/view/scientist/<?= $s['_id'] ?>">
+                        <a href="<?= ROOTPATH ?>/scientist/<?= $s['_id'] ?>">
                             <?= $s['last'] ?>, <?= $s['first'] ?>
                         </a>
                     </td>
                     <td>
-                        <?php if ($approved) { ?>
-                            <i class="fas fa-lg fa-check text-success"></i>
-                        <?php } else { ?>
-                            <i class="fas fa-lg fa-xmark text-danger"></i>
-                        <?php } ?>
+                        <?=bool_icon($approved)?>
                     </td>
                 </tr>
             <?php } ?>
