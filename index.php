@@ -101,12 +101,14 @@ Route::get('/about', function () {
 });
 
 Route::get('/issues', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $user = $_SESSION['username'];
 
     $breadcrumb = [
         ['name' => lang('Issues', 'Warnungen')]
     ];
 
-    include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/issues.php";
     include BASEPATH . "/footer.php";
@@ -320,8 +322,11 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
 Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/format.php";
+    
     if (empty($user)) $user = $_SESSION['username'];
+    GLOBAL $author_highlight;
+    $author_highlight = $user;
+    include_once BASEPATH . "/php/format.php";
 
     $scientist = getUserFromId($user);
     $name = $scientist['displayname'];

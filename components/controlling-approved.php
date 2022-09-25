@@ -6,7 +6,7 @@
         </h3>
 
     </div>
-    <table class="table table-simple">
+    <table class="table table-simple table-sm">
         <tbody>
             <?php
             if (isset($_GET['q']) && isset($_GET['y'])){

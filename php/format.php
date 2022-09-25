@@ -29,10 +29,13 @@ function authorForm($a)
 
 function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
 {
+    global $author_highlight;
     $authors = array();
     foreach ($raw_authors as $a) {
         $author = abbreviateAuthor($a['last'], $a['first']);
-        if (($a['aoi'] ?? 1) == 1) {
+        if ((!isset($author_highlight) || empty($author_highlight)) && ($a['aoi'] ?? 1) == 1) {
+            $author = "<b>$author</b>";
+        } else if ($a['user'] == $author_highlight) {
             $author = "<b>$author</b>";
         }
         if ($first > 1 && $a['position'] == 'first') {
@@ -486,13 +489,13 @@ function format_review($doc, $filterYear = false)
     if (!empty($doc['name'] ?? '')) {
         $result .= "<b>$doc[name]</b>";
     } elseif (!empty($doc['authors'] ?? '')) {
-        $result.=formatAuthors($doc['authors']);
+        $result .= formatAuthors($doc['authors']);
     } else {
         $userdata = getUserFromId($doc['user']);
         $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
     }
-    
-    $result .= " ".lang("Reviewer for ", 'Reviewer für ');
+
+    $result .= " " . lang("Reviewer for ", 'Reviewer für ');
     $result .= '<em>' . $doc['journal'] . '</em>';
     $times = 0;
     $times_current = 0;
@@ -520,7 +523,7 @@ function format_editorial($doc)
     if (!empty($doc['name'] ?? '')) {
         $result .= "<b>$doc[name]</b> ";
     } elseif (!empty($doc['authors'] ?? '')) {
-        $result.=formatAuthors($doc['authors']);
+        $result .= formatAuthors($doc['authors']);
     } else {
         $userdata = getUserFromId($doc['user']);
         $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";

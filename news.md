@@ -1,5 +1,8 @@
 # Changelog
 
+## 24.09.22
+- Dashboard hinzugefügt: Das Dashboard ist die neue Startseite. Sie wurde sowohl für Wissenschaftler als auch für das Controlling verbessert und zeigt jetzt eine Übersicht über die Aktivitäten (beim Wissenschaftler nur über eigene). 
+
 ## 23.09.22
 - Die verschiedenen Aktivitäten wurden alle in einer Tabelle zusammengefasst, die übersichtlicher gestaltet ist
 - Die Aktivitäten lassen sich nach Art der Aktivität und Datum filtern und durchsuchen

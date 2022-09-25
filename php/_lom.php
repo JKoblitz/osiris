@@ -67,10 +67,10 @@ function lom($col, $doc)
 
         if (isset($doc['correction']) && $doc['correction']) return [];
         $type = "non-refereed";
-        $doctype = strtolower(trim($doc['type']));
-        if ($doctype == "journal article" || $doctype == "journal-article") {
+        $pubtype = strtolower(trim($doc['pubtype']));
+        if ($pubtype == "article" || $pubtype == "journal-article" || $pubtype == 'journal article') {
             $type = "refereed";
-        } elseif ($doctype == "book") {
+        } elseif ($pubtype == "book") {
             $type = "book";
         }
 
