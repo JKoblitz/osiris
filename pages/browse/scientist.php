@@ -97,7 +97,7 @@ if (isset($raw['dept']) && !empty($raw['dept'])) {
         foreach ($result as $document) {
         ?>
             <tr>
-                <td><a href="<?= ROOTPATH ?>/view/scientist/<?= $document['_id'] ?>"><?= $document['_id'] ?></a></td>
+                <td><a href="<?= ROOTPATH ?>/scientist/<?= $document['_id'] ?>"><?= $document['_id'] ?></a></td>
                 <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
                 <td><?= $document['first'] ?></td>
                 <td>

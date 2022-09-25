@@ -152,6 +152,44 @@ color: var(--signal-color);
     box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
 }
 
-strong {
+strong { 
     font-weight: 900;
+}
+
+
+.text-purple {
+    color: var(--color-cold-purple) !important;
+}
+.text-orange {
+    color: var(--color-warm-orange) !important;
+}
+.text-blue {
+    color: var(--color-cold-lightblue) !important;
+}
+.btn.btn-select {
+    height: auto;
+}
+
+.btn.btn-select:not(.disabled):not(:disabled).active {
+    background-color: white;
+}
+
+.btn.btn-select i {
+    display: block;
+    font-size: 2.5rem;
+    margin-top: .5rem;
+}
+
+
+.lom {
+    font-weight: bold;
+    text-align: right !important;
+}
+
+.lom::before {
+    content: '\f85c';
+    font-family: "Font Awesome 6 Pro";
+    font-weight: 900;
+    color: var(--signal-color);
+    margin-right: .5rem;
 }

@@ -1,7 +1,7 @@
 <?php
 
 // include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/_config.php";
+include_once BASEPATH . "/php/_config.php";
 function validateValues($values)
 {
     include_once BASEPATH . "/php/_db.php";
@@ -57,11 +57,17 @@ function validateValues($values)
         } else if ($key == 'start' || $key == 'end' || DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
             // $values[$key] = mongo_date($value);
             $values[$key] = valiDate($value);
+            if (!isset($values['year']) && isset($values[$key]['year'])) {
+                $values['year'] = $values[$key]['year'];
+            }
+            if (!isset($values['month']) && isset($values[$key]['month'])) {
+                $values['month'] = $values[$key]['month'];
+            }
         } else if (is_numeric($value)) {
             $values[$key] = intval($value);
         } else if (is_float($value)) {
             $values[$key] = floatval($value);
-        } else if (is_string($value)){
+        } else if (is_string($value)) {
             $values[$key] = trim($value);
         }
     }
@@ -175,7 +181,7 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
         echo "no values given";
         die;
     }
-    $collection = get_collection($col);
+    // $collection = get_collection($col);
 
     $values = validateValues($_POST['values']);
     if (is_numeric($id)) {
@@ -183,7 +189,7 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
     } else {
         $id = new MongoDB\BSON\ObjectId($id);
     }
-    $updateResult = $collection->updateOne(
+    $updateResult = $osiris->activities->updateOne(
         ['_id' => $id],
         ['$set' => $values]
     );
@@ -199,10 +205,10 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
 });
 
 
-Route::post('/delete/(lecture|misc|poster|publication|teaching|review)/([A-Za-z0-9]*)', function ($col, $id) {
+Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     // select the right collection
-    $collection = get_collection($col);
+    // $collection = get_collection($col);
 
     // prepare id
     if (is_numeric($id)) {
@@ -211,7 +217,7 @@ Route::post('/delete/(lecture|misc|poster|publication|teaching|review)/([A-Za-z0
         $id = new MongoDB\BSON\ObjectId($id);
     }
 
-    $updateResult = $collection->deleteOne(
+    $updateResult = $osiris->activities->deleteOne(
         ['_id' => $id]
     );
 
@@ -373,7 +379,7 @@ Route::post('/approve', function () {
 
 Route::get('/form/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {
     include_once BASEPATH . "/php/_db.php";
-    
+
     $collection = get_collection($col);
     if (is_numeric($id)) {
         $id = intval($id);

@@ -219,6 +219,13 @@ function dump($element, $as_json = false)
             var_dump(json_last_error_msg()) . PHP_EOL;
             var_export($element);
         }
+    } else if ($as_json ) {
+        $element = $element->bsonSerialize();
+        echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if (!empty(json_last_error())) {
+            var_dump(json_last_error_msg()) . PHP_EOL;
+            var_export($element);
+        }
     } else {
         var_dump($element);
     }

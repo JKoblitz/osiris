@@ -1,5 +1,5 @@
 
-function _create(collection, data) {
+function _create(data) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
@@ -7,7 +7,7 @@ function _create(collection, data) {
             values: data
         },
         dataType: "html",
-        url: ROOTPATH + '/create/' + collection,
+        url: ROOTPATH + '/create',
         success: function (response) {
             $('.loader').removeClass('show')
 
@@ -21,7 +21,7 @@ function _create(collection, data) {
     })
 }
 
-function _update(collection, id, data) {
+function _update(id, data) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
@@ -29,7 +29,7 @@ function _update(collection, id, data) {
             values: data
         },
         dataType: "html",
-        url: ROOTPATH + '/update/' + collection + '/' + id,
+        url: ROOTPATH + '/update/' + id,
         success: function (response) {
             $('.loader').removeClass('show')
 
@@ -44,7 +44,7 @@ function _update(collection, id, data) {
 }
 
 
-function _approve(collection, id, approval) {
+function _approve(id, approval) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
@@ -52,19 +52,19 @@ function _approve(collection, id, approval) {
             approval: approval
         },
         dataType: "html",
-        url: ROOTPATH + '/approve/' + collection + '/' + id,
+        url: ROOTPATH + '/approve/' + id,
         success: function (response) {
             $('.loader').removeClass('show')
 
             if (approval == 1) {
-                $('#approve-' + collection + '-' + id).remove()
+                $('#approve-'+ id).remove()
                 toastSuccess('Approved')
             }
             if (approval == 2) {
                 location.reload()
             }
             if (approval == 3) {
-                $('#tr-' + collection + '-' + id).remove()
+                $('#tr-' + id).remove()
                 toastSuccess('Removed activity')
             }
             // toastSuccess("Updated " + response.updated + " datasets.")
@@ -77,12 +77,12 @@ function _approve(collection, id, approval) {
     })
 }
 
-function _delete(collection, id) {
+function _delete(id) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: ROOTPATH + '/delete/' + collection + '/' + id,
+        url: ROOTPATH + '/delete/' + id,
         success: function (response) {
             $('.loader').removeClass('show')
 

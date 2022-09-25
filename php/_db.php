@@ -13,11 +13,11 @@ $osiris = $mongoDB->osiris;
 // $matrix = json_decode($matrix_json, true);
 
 global $USER;
-$user = $user ?? $_SESSION['username'] ?? null;
+// $user = $_SESSION['username'] ?? null;
 $USER = array();
 
-if (!empty($user)) {
-    $USER = getUserFromId($user);
+if (!empty($_SESSION['username'])) {
+    $USER = getUserFromId($_SESSION['username']);
     // return $this->info['last_name'] . "," . $fn;
 }
 

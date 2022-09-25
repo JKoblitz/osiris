@@ -3,16 +3,19 @@
 -[x] Generell alle Titel: Formatierungen über Knöpfe bearbeiten
 
 ## Publikationen:
--[ ] Publikationen können noch nicht bearbeitet werden
--[ ] Magazine-Article: funktioniert hinzufügen über eine DOI?
--[ ] der Pub-Type muss standardisiert werden
+-[x] Publikationen können noch nicht bearbeitet werden
+-[x] Magazine-Article: funktioniert hinzufügen über eine DOI?
+-[x] der Pub-Type muss standardisiert werden
 -[ ] Formatierungen für unterschiedliche Pub-Typen hinzufügen (zurzeit nur Journal-Artikel)
--[ ] Corrections? Wie funktioniert das überhaupt? Reichen ein Boolean und eine Checkbox aus?
+-[x] Corrections? Wie funktioniert das überhaupt? Reichen ein Boolean und eine Checkbox aus?
 -[ ] Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
 -[x] Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
--[ ] Knöpfe funktionieren nicht bei Editorenschaften: diese vielleicht generell extra aufführen?
+-[x] Knöpfe funktionieren nicht bei Editorenschaften: diese vielleicht generell extra aufführen?
 -[ ] Es sollen Publikationen als PDF hinterlegt werden: dafür soll beim Hinzufügen ein Upload möglich sein und auf der Übersichtsseite ein Link zum PDF
 -[x] Warnmeldung wenn keine Autoren mit DSMZ-Affiliation angezeigt werden.
+-[x] Eine weitere Kategorie sind Preprints. Diese sollten ebenfalls hinzufügbar sein.
+-[ ] beim Hinzufügen von Publikationen sollte angezeigt werden, zu welcher Abteilung die Publikation zugeordnet wird. Dies sollte auch als Datenfeld in die Datenbank geschrieben werden. Die Zugehörigkeit sollte nachträglich bearbeitet werden können.
+-[ ] Import: Nutzer können Daten aus bspw. BibTeX importieren
 
 ## Confirmation:
 Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivitäten hinzufügen:
@@ -39,5 +42,12 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 ## Nutzermanagement:
 -[ ] Neue Nutzer müssen angelegt werden können
 -[ ] Vorhandene Nutzer sollten bearbeitet werden können (z.B. Abteilungen zuordnen, Namen ändern usw.; die Frage ist hier, wie viel wir über LDAP lösen können...)
+-[ ] Vielleicht wäre ein Rechtevergabesystem sinnvoll?
+
+
+-[ ] Dashboard mit Statistiken und wichtigen Links
+<!-- -[ ] Berechne Lom für jeden Autor und schreibe es in die Tabelle???? -->
+-[ ] Schreibe Impact Factor in die Pub-Tabelle
+-[ ] Warnung wenn if nicht bekannt
 <!-- 
 <div class="csl-entry">Feynman, R. (2000). Probability Theory. In <i>Reliability, Maintenance and Logistic Support</i> (pp. 13–49). Springer US. https://doi.org/10.1007/978-1-4615-4655-9_2</div> -->

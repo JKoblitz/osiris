@@ -1,17 +1,3 @@
-<style>
-    .lom {
-        font-weight: bold;
-        text-align: right !important;
-    }
-
-    .lom::before {
-        content: '\f85c';
-        font-family: "Font Awesome 6 Pro";
-        font-weight: 900;
-        color: var(--signal-color);
-        margin-right: .5rem;
-    }
-</style>
 
 <?php
 
@@ -171,7 +157,8 @@ $queries = array(
 );
 
 foreach ($queries as $col => $val) {
-    $collection = get_collection($col);
+    // $collection = get_collection($col);
+    $collection = $osiris->activities;
 
 ?>
 
@@ -183,7 +170,9 @@ foreach ($queries as $col => $val) {
         <table class="table table-simple">
             <tbody>
                 <?php
-                $cursor = $collection->find($val['filter'], $val['options']);
+                $filter = $val['filter'];
+                $filter['type'] = $col; 
+                $cursor = $collection->find($filter, $val['options']);
                 // dump($cursor);
                 foreach ($cursor as $document) {
                     $id = $document['_id'];
@@ -294,16 +283,16 @@ foreach ($queries as $col => $val) {
             <?php } ?>
 
             <?php if ($col == "publication") {
-                $link = ROOTPATH . "/publication/add";
-            } else {
-                $link = "#add-$col";
+                $link = ROOTPATH . "/activities/new?type=".$col;
+            // } else {
+            //     $link = "#add-$col";
             } ?>
 
             <a href="<?= $link ?>" class="btn"><i class="fas fa-plus"></i></a>
         </div>
 
     </div>
-    <div class="modal" id="add-<?= $col ?>" tabindex="-1" role="dialog">
+    <!-- <div class="modal" id="add-<?= $col ?>" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <a data-dismiss="modal" class="close" role="button" aria-label="Close">
@@ -311,12 +300,12 @@ foreach ($queries as $col => $val) {
                 </a>
                 <h5 class="title"><?= lang('Add activity:', 'Aktivität hinzufügen:') ?> <?= $val['title'] ?></h5>
                 <?php
-                include BASEPATH . "/components/form-$col.php"
+                // include BASEPATH . "/components/form-$col.php"
                 ?>
 
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 <?php }

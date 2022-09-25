@@ -27,7 +27,7 @@ function authorForm($a)
         </div>";
 }
 
-function formatAuthors($raw_authors, $separator = 'and', $first=1, $last=1)
+function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
 {
     $authors = array();
     foreach ($raw_authors as $a) {
@@ -35,10 +35,10 @@ function formatAuthors($raw_authors, $separator = 'and', $first=1, $last=1)
         if (($a['aoi'] ?? 1) == 1) {
             $author = "<b>$author</b>";
         }
-        if ($first > 1 && $a['position'] == 'first'){
+        if ($first > 1 && $a['position'] == 'first') {
             $author .= "<sup>#</sup>";
         }
-        if ($last > 1 && $a['position'] == 'last'){
+        if ($last > 1 && $a['position'] == 'last') {
             $author .= "<sup>*</sup>";
         }
         $authors[] = $author;
@@ -190,6 +190,7 @@ function publication_icon($type)
     switch ($type) {
         case 'journal article':
         case 'journal-article':
+        case 'article':
             return "<span data-toggle='tooltip' data-title='Journal article'>
             <i class='far fa-lg text-primary fa-file-lines'></i>
             </span>";
@@ -201,6 +202,7 @@ function publication_icon($type)
             </span>";
         case 'book-chapter':
         case 'book chapter':
+        case 'chapter':
             return "<span data-toggle='tooltip' data-title='Book chapter'>
             <i class='far fa-lg text-primary fa-book'></i>
             </span>";
@@ -359,15 +361,23 @@ function format_lecture($doc)
 
 function format_publication($doc)
 {
-    
+    $result = "";
+
     if (!is_array($doc['authors'])) {
         $doc['authors'] = $doc['authors']->bsonSerialize();
     }
-    $pos = array_count_values(array_column($doc['authors'], 'position'));
-    $first = $pos['first'] ?? 1;
-    $last = $pos['last'] ?? 1;
-    
-    $result = formatAuthors($doc['authors'], 'and', $first, $last);
+
+    if (!empty($doc['authors']) && is_array($doc['authors'])) {
+
+        $pos = array_count_values(array_column($doc['authors'], 'position'));
+        $first = $pos['first'] ?? 1;
+        $last = $pos['last'] ?? 1;
+        $result .= formatAuthors($doc['authors'], 'and', $first, $last);
+    } else {
+        $first = 1;
+        $last = 1;
+    }
+
     if (!empty($doc['year'])) {
         $result .= " ($doc[year])";
     }
@@ -422,10 +432,10 @@ function format_publication($doc)
     }
 
     if ($first > 1 || $last > 1) $result .= "<br>";
-    if ($first > 1){
+    if ($first > 1) {
         $result .= "<span class='text-muted'><sup>#</sup> Shared first authors</span>";
     }
-    if ($last > 1){
+    if ($last > 1) {
         $result .= "<span class='text-muted'><sup>*</sup> Shared last authors</span>";
     }
 
@@ -474,12 +484,15 @@ function format_review($doc, $filterYear = false)
 {
     $result = "";
     if (!empty($doc['name'] ?? '')) {
-        $result .= "<b>$doc[name]</b> ";
+        $result .= "<b>$doc[name]</b>";
+    } elseif (!empty($doc['authors'] ?? '')) {
+        $result.=formatAuthors($doc['authors']);
     } else {
         $userdata = getUserFromId($doc['user']);
-        $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";
+        $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
     }
-    $result .= lang("Reviewer for ", 'Reviewer für ');
+    
+    $result .= " ".lang("Reviewer for ", 'Reviewer für ');
     $result .= '<em>' . $doc['journal'] . '</em>';
     $times = 0;
     $times_current = 0;
@@ -506,6 +519,8 @@ function format_editorial($doc)
     $result = "";
     if (!empty($doc['name'] ?? '')) {
         $result .= "<b>$doc[name]</b> ";
+    } elseif (!empty($doc['authors'] ?? '')) {
+        $result.=formatAuthors($doc['authors']);
     } else {
         $userdata = getUserFromId($doc['user']);
         $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";

@@ -1,5 +1,14 @@
 # Changelog
 
+## 23.09.22
+- Die verschiedenen Aktivitäten wurden alle in einer Tabelle zusammengefasst, die übersichtlicher gestaltet ist
+- Die Aktivitäten lassen sich nach Art der Aktivität und Datum filtern und durchsuchen
+- Die Aktivitäten lassen sich anschauen (über die Lupe) und bearbeiten (über den Stift). Bitte beachten, dass die Ansicht sehr rudimentär ist (die Rohdaten werden gezeigt) und noch verbessert wird.
+- Die Aktivitäten lassen sich jetzt alle über ein gemeinsames Formular hinzufügen
+- Die Aktivitäten lassen sich bearbeiten und löschen
+- Geteilte Autorenschaften werden dargestellt
+- Für Open-Access-Publikationen wurde ein Icon hinzugefügt
+
 ## 21.09.22
 - Eine Schnittstelle wurde eingeführt, über die Nutzer aus LDAP bezogen werden können. Die Nutzer wurden aktualisiert und in Abteilungen unterteilt
 
@@ -67,3 +76,4 @@ Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
 3. Wäre es möglich, eine Alpha-Testphase mit ausgewählten Wissenschaftlern zu machen? Vielleicht mit Frau Fischer abklären?
 4. Nutzerdaten wurden zurzeit nur aus der Telefonliste importiert. Wer wird die Nutzer in OSIRIS in Zukunft pflegen? Wie werden Personaldaten im Moment gepflegt? In SAP? Gibt es dort eine Schnittstelle, die man abgreifen kann oder gibt es ein gängiges Export-Format, das importiert werden kann? Oder sollen die Daten händisch gepflegt werden?
 5. In diesem Zusammenhang: Müssen Datenschutzbeauftragter und Betriebsrat ebenfalls involviert werden, da wir mit Personaldaten arbeiten?
+6. Wir müssen anscheinend noch über die Autor-"Anmerkungen" sprechen. Im Moment können nur Geteilte Autorenschaften eingefügt werden und die werden standardisiert dargestellt. [Beispiel](activities/view/632da4672199cd3df8dbc166)

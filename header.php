@@ -15,7 +15,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     if ($page == $p) return "active";
     $uri = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
     if ((ROOTPATH . "/" . $p) == $uri) return 'active';
-    if (count($breadcrumb) > 1 && $breadcrumb[0]['path'] == ("/" . $p)) return "active";
+    // return "";
+    // if ( count($breadcrumb) > 1 && $breadcrumb[0]['path'] == ("/" . $p)) return "active";
     return "";
 }
 ?>
@@ -34,6 +35,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
     <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
@@ -153,7 +155,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </form>
 
         </nav>
-
+ 
         <!-- Sidebar start -->
         <div class="sidebar">
             <div class="sidebar-menu">
@@ -165,13 +167,29 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <div class="sidebar-title">
                         <!-- <?= lang('User', 'Nutzer') ?> -->
-                        <?= $_SESSION["name"] ?? 'User' ?>
+                        <?= $USER["displayname"] ?? 'User' ?>
                     </div>
 
-                    <a href="<?= ROOTPATH ?>/" class="sidebar-link with-icon">
-                        <i class="far fa-user" aria-hidden="true"></i>
-                        <?= lang('My activities', 'Meine Aktivitäten') ?>
+                    <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('') ?>">
+                        <i class="far fa-home" aria-hidden="true"></i>
+                        <?= lang('Home') ?>
                     </a>
+
+                    <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('scientist') ?>">
+                        <i class="far fa-calendar" aria-hidden="true"></i>
+                        <?= lang('My year', 'Mein Jahr') ?>
+                    </a>
+
+
+                    <a href="<?= ROOTPATH ?>/activities" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('activities') ?>">
+                        <i class="far fa-book-bookmark" aria-hidden="true"></i>
+                        <?= lang('All activities', 'Alle Aktivitäten') ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/activities/new" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('activities/new') ?>">
+                        <i class="far fa-plus" aria-hidden="true"></i>
+                        <?= lang('Add activity', 'Aktivität hinzuf.') ?>
+                    </a>
+
 
                     <!-- <a href="<?= ROOTPATH ?>/achievements" class="sidebar-link with-icon">
                         <i class="far fa-trophy-star" aria-hidden="true"></i>
@@ -184,7 +202,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         Logout
                     </a>
 
-
+<!-- 
                     <div class="sidebar-title">
                         <?= lang('Activities', 'Aktivitäten') ?>
                     </div>
@@ -218,7 +236,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <a href="<?= ROOTPATH ?>/teaching" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('teaching') ?>">
                         <i class="far fa-people" aria-hidden="true"></i>
                         <?= lang('Teaching &amp; Guests') ?>
-                    </a>
+                    </a> -->
 
 
 

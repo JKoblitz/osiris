@@ -437,6 +437,8 @@ function fillForm(pub) {
             togglePubType('article')
             break;
     }
+    $('#type').addClass('is-valid')
+    $('#pubtype').addClass('is-valid')
 
     if (pub.title !== undefined) {
         $('#title').val(pub.title).addClass('is-valid')
@@ -451,9 +453,7 @@ function fillForm(pub) {
         $('#month').val(pub.month).addClass('is-valid')
     if (pub.day !== undefined)
         $('#day').val(pub.day).addClass('is-valid')
-    if (pub.type !== undefined)
-        $('#type').addClass('is-valid')
-        //.val(pub.type)
+    //.val(pub.type)
     if (pub.journal !== undefined)
         $('#journal').val(pub.journal).addClass('is-valid')
     if (pub.issue !== undefined)
@@ -550,13 +550,13 @@ function getDate(element) {
     return date
 }
 
-function affiliationCheck(){
+function affiliationCheck() {
     $('.affiliation-warning').show()
-    $('form').each(function(){
+    $('form').each(function () {
         var form = $(this)
-        form.find('.author input').each(function(){
+        form.find('.author input').each(function () {
             var value = $(this).val().split(';')
-            if (value[2] == 1){
+            if (value[2] == 1) {
                 form.find('.affiliation-warning').hide()
                 return false;
             }
@@ -673,21 +673,27 @@ function addRow2db(el) {
 
 
 function togglePubType(type) {
+    type = type.trim().toLowerCase().replace(' ', '-')
     var types = {
-        article: "Journal article",
-        magazine: "Magazine article",
-        book: "Book",
-        editor: "Book",
-        chapter: "Book chapter",
-        'book-chapter': "Book chapter"
+        "journal-article": "article",
+        "magazine-article": "magazine",
+        "book-chapter": "chapter",
     }
-
-    $('#select-btns').find('.btn').removeClass('btn-primary')
-    $('#' + type + '-btn').addClass('btn-primary')
+    type = types[type] ?? type;
+    console.log(type);
+    var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others']
+    $('#select-btns').find('.btn').removeClass('active')
+    $('#' + type + '-btn').addClass('active')
+    $('#type').val(type)
     var form = $('#publication-form')
-    $('#type').val(types[type])
+    if (publications.includes(type)) {
+        $('#pubtype option[value="' + type + '"]').prop("selected", true);
+        $('#type').val('publication')
+    }
     form.find('[data-visible]').hide()
+        .find('input,select').attr('disabled', true)
     form.find('[data-visible*=' + type + ']').show()
+        .find('input,select').attr('disabled', false)
     form.slideDown()
 }
 
@@ -700,10 +706,11 @@ function todo() {
     })
 }
 
-function loadModal(path) {
+function loadModal(path, data = {}) {
     $.ajax({
         type: "GET",
         dataType: "html",
+        data: data,
         url: ROOTPATH + '/' + path,
         success: function (response) {
             $('#modal-content').html(response)
@@ -771,3 +778,4 @@ function filter_results(input) {
         rows.find('td:not(.unbreakable)').filter(":contains('" + v + "')").parent().show();
     });
 }
+

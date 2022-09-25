@@ -83,24 +83,11 @@ Route::get('/', function () {
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/pages/userlogin.php";
     } else {
-        if ($USER['is_controlling']) {
-            include BASEPATH . "/pages/controlling.php";
-        } elseif ($USER['is_scientist']) {
-            $user = $_SESSION['username'];
-            $name = $_SESSION['name'];
-            include BASEPATH . "/pages/scientist2.php";
-        }
+        include BASEPATH . "/pages/dashboard.php";
     }
     include BASEPATH . "/footer.php";
 });
 
-
-Route::get('/index.php', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/userlogin.php";
-    include BASEPATH . "/footer.php";
-});
 Route::get('/about', function () {
 
     $breadcrumb = [
@@ -110,6 +97,18 @@ Route::get('/about', function () {
     include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/about.php";
+    include BASEPATH . "/footer.php";
+});
+
+Route::get('/issues', function () {
+
+    $breadcrumb = [
+        ['name' => lang('Issues', 'Warnungen')]
+    ];
+
+    include_once BASEPATH . "/php/_config.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/issues.php";
     include BASEPATH . "/footer.php";
 });
 
@@ -246,8 +245,7 @@ Route::post('/user/login', function () {
 
 /* LOGIN AREA */
 
-
-Route::get('/(publication|review|poster|lecture|misc|teaching)', function ($page) {
+Route::get('/(activities)', function ($page) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -255,26 +253,88 @@ Route::get('/(publication|review|poster|lecture|misc|teaching)', function ($page
     $path = $page;
     $breadcrumb = [
         // ['name' => 'Reviews', 'path' => "/browse/review"],
-        ['name' => $path . "s"]
+        ['name' => lang("All activities", "Alle aktivitäten")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/editor/$path.php";
+    include BASEPATH . "/pages/all-activities.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/(publication)/add', function ($page) {
+Route::get('/activities/new', function () {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
-        ['name' => 'Publications', 'path' => "/publication"],
-        ['name' => "Add"]
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Add new", "Neu hinzufügen")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/editor/add-publication.php";
+    include BASEPATH . "/pages/add-activity.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $user = $_SESSION['username'];
+
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $activity = $osiris->activities->findOne(['_id' => $id]);
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("#" . $id)]
+    ];
+    include BASEPATH . "/header.php";
+    if (empty($activity)) {
+        echo "Activity not found!";
+    } else {
+        include BASEPATH . "/pages/activity.php";
+    }
+    // include BASEPATH . "/pages/add-activity.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Add new", "Neu hinzufügen")]
+    ];
+
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $form = $osiris->activities->findOne(['_id' => $id]);
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("#" . $id)]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/add-activity.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 
+
+Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/format.php";
+    if (empty($user)) $user = $_SESSION['username'];
+
+    $scientist = getUserFromId($user);
+    $name = $scientist['displayname'];
+
+    $breadcrumb = [
+        ['name' => ucfirst($page), 'path' => "/browse/$page"],
+        ['name' => $name]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/scientist.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
 
 Route::get('/browse/(publication|activity|scientist|journal|poster)', function ($page) {
     $idname = $page . '_id';
@@ -317,23 +377,6 @@ Route::get('/view/journal/(\d+)', function ($id) {
 }, 'login');
 
 
-Route::get('/(view)/(scientist)/([a-z0-9]+)', function ($mode, $page, $user) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/format.php";
-    $idname = "user";
-
-    $name = $USER['last'] . ", " . $USER['first'];
-
-    $breadcrumb = [
-        ['name' => ucfirst($page), 'path' => "/browse/$page"],
-        ['name' => $name]
-    ];
-
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/scientist.php";
-    include BASEPATH . "/footer.php";
-}, 'login');
 
 Route::get('/error/([0-9]*)', function ($error) {
     // header("HTTP/1.0 $error");
@@ -369,6 +412,20 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include BASEPATH . "/components/$path.php";
 });
 
+
+
+Route::get('/test', function () {
+    include_once BASEPATH . "/php/_db.php";
+    //     $oauth = new Oauth;
+    // $oauth->setClientId("APP-95XBTUDO2RMSE7LZ")
+    //       ->setScope('/authenticate')
+    //       ->setState($state)
+    //       ->showLogin()
+    //       ->setRedirectUri($redirectUri);
+
+    // Create and follow the authorization URL
+    // header("Location: " . $oauth->getAuthorizationUrl());
+});
 
 Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_db.php";
