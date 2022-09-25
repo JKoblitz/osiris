@@ -11,7 +11,7 @@
 -[x] Vermeidung von Datendoppelung: Suche nach DOI/PM-ID
 -[x] Knöpfe funktionieren noch nicht: nicht Autor und nicht Affiliation.
 -[x] Knöpfe funktionieren nicht bei Editorenschaften: diese vielleicht generell extra aufführen?
--[ ] Es sollen Publikationen als PDF hinterlegt werden: dafür soll beim Hinzufügen ein Upload möglich sein und auf der Übersichtsseite ein Link zum PDF
+-[x] Es sollen Publikationen als PDF hinterlegt werden: dafür soll beim Hinzufügen ein Upload möglich sein und auf der Übersichtsseite ein Link zum PDF
 -[x] Warnmeldung wenn keine Autoren mit DSMZ-Affiliation angezeigt werden.
 -[x] Eine weitere Kategorie sind Preprints. Diese sollten ebenfalls hinzufügbar sein.
 -[ ] beim Hinzufügen von Publikationen sollte angezeigt werden, zu welcher Abteilung die Publikation zugeordnet wird. Dies sollte auch als Datenfeld in die Datenbank geschrieben werden. Die Zugehörigkeit sollte nachträglich bearbeitet werden können.

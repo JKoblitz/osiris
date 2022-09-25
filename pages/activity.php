@@ -1,14 +1,68 @@
+<table class="table">
 
+    <tbody>
 
+        <?php
+        $activity = json_decode(json_encode($activity->getArrayCopy()), true);
 
+        foreach ($activity as $key => $value) {
+            echo "<tr>";
+            if ($key == '_id') {
+                echo "<td>$key</td>";
+                echo "<td>$id</td>";
+            } else if ($key == 'file') {
+                echo "<td>$key</td>";
+                echo '<td><a href="' . ROOTPATH . '/activities/view/' . $id . '/file" class="btn">Download file</a></td>';
+            } else if (is_array($value)) {
+                if (isset($value[0])) {
+                    echo "<td>$key</td>
+                    <td>
+                    <table class='table table-simple'>";
+                    echo "<tr>";
+                    foreach ($value[0] ?? [] as $head => $tr) {
+                        echo "<th>$head</th>";
+                    }
+                    echo "</tr>";
+                    foreach ($value as $k => $tr) {
+                        echo "<tr>";
+                        foreach ($tr as $td) {
+                            echo "<td>$td</td>";
+                        }
+                        echo "</tr>";
+                    }
+                    echo "</table></td>";
+                } else {
+                    foreach ($value as $k => $v) {
+                        echo "<tr>";
+                        echo "<td>$key > $k</td>";
+                        if (is_bool($v)) {
+                            echo "<td>".bool_icon($v)."</td>";
+                        } else {
+                            echo "<td>$v</td>";
+                        }
+                        echo "</tr>";
+                    }
+                }
+            } else if (is_bool($value)) {
+                echo "<td>$key</td>";
+                echo "<td>".bool_icon($value)."</td>";
+            } else {
+                echo "<td>$key</td>";
+                echo "<td>$value</td>";
+            }
+            echo "</tr>";
+        } ?>
+
+    </tbody>
+
+</table>
 
 <?php if (isset($activity['file']) && !empty($activity['file'])) { ?>
-    <a href="<?=ROOTPATH?>/activities/view/<?=$id?>/file" class="btn">Download file</a>
-<?php 
-unset($activity['file']);
-} ?>
+
 <?php
-dump($activity, true);
+    unset($activity['file']);
+}
+
 ?>
 
 

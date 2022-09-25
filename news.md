@@ -1,5 +1,9 @@
 # Changelog
 
+## 25.09.22
+- Die Übersichtsseite für Aktivitäten wurde verbessert (trotzdem noch im Alpha-Status).
+- Man kann nun PDF-Dokumente an Aktivitäten anhängen. Diese können auf der Übersichtsseite heruntergeladen werden.  
+
 ## 24.09.22
 - Dashboard hinzugefügt: Das Dashboard ist die neue Startseite. Sie wurde sowohl für Wissenschaftler als auch für das Controlling verbessert und zeigt jetzt eine Übersicht über die Aktivitäten (beim Wissenschaftler nur über eigene). 
 
