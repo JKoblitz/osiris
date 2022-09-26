@@ -40,13 +40,17 @@ Route::post('/export/publications', function () {
     require_once BASEPATH . '/php/_db.php';
 
     // select data
-    $collection = $osiris->publications;
+    $collection = $osiris->activities;
     $options = ['sort' => ["year" => 1, "month" => 1]];
+
     $filter = [];
-    if ($_POST['filter']['user'] && !empty($_POST['filter']['user'])) {
+    if (isset($_POST['filter']['type']) && !empty($_POST['filter']['type'])){
+        $filter['type'] = trim($_POST['filter']['type']);
+    }
+    if (isset($_POST['filter']['user']) && !empty($_POST['filter']['user'])) {
         $filter['$or'] = [['authors.user' => $_POST['filter']['user']], ['editors.user' => $_POST['filter']['user']]];
     }
-    if ($_POST['filter']['year'] && !empty($_POST['filter']['year'])) {
+    if (isset($_POST['filter']['year']) && !empty($_POST['filter']['year'])) {
         $filter['year'] = intval($_POST['filter']['year']);
     }
     $cursor = $collection->find($filter, $options);

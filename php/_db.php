@@ -72,6 +72,28 @@ function is_approved($document, $user)
     return getUserAuthor($authors, $user)['approved'] ?? false;
 }
 
+function has_issues($doc, $user=null){
+    if ($user === null) $user = $_SESSION['username'];
+    $issues = array();
+
+    if (!is_approved($doc, $user)) $issues[] = "approval";
+
+    $epub = ($doc['epub'] ?? false);
+    // $doc['epub-delay'] = "2022-08-01";
+    if ($epub && isset($doc['epub-delay'])) {
+        $startTimeStamp = strtotime($doc['epub-delay']);
+        $endTimeStamp = strtotime(date('Y-m-d'));
+        $timeDiff = abs($endTimeStamp - $startTimeStamp);
+        $numberDays = intval($timeDiff / 86400);  // 86400 seconds in one day
+        if ($numberDays < 30) {
+            $epub = false;
+        }
+    }
+    if ($epub) $issues[] = "epub";
+    if ($doc['type'] == "teaching" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "teaching";
+
+    return $issues;
+}
 
 function get_collection($col)
 {

@@ -63,6 +63,9 @@ function validateValues($values)
             $values[$key] = boolval($value);
         } else if ($value === '') {
             $values[$key] = null;
+        } else if ($key === 'epub-delay') {
+            // will be converted otherwise
+            $values[$key] = $value;
         } else if ($key == 'start' || $key == 'end' || DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
             // $values[$key] = mongo_date($value);
             $values[$key] = valiDate($value);
@@ -193,18 +196,16 @@ Route::post('/create', function () {
 });
 
 
-Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {
+Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     if (!isset($_POST['values'])) {
         echo "no values given";
         die;
     }
-    // $collection = get_collection($col);
-
+    $collection = $osiris->activities;
     $values = validateValues($_POST['values']);
 
     if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-        // dump($_FILES, true);
         $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
 
         $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
@@ -215,7 +216,7 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
     } else {
         $id = new MongoDB\BSON\ObjectId($id);
     }
-    $updateResult = $osiris->activities->updateOne(
+    $updateResult = $collection->updateOne(
         ['_id' => $id],
         ['$set' => $values]
     );
@@ -258,24 +259,24 @@ Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
-Route::post('/update/delay-epub/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
+// Route::post('/update/delay-epub/([A-Za-z0-9]*)', function ($id) {
+//     include_once BASEPATH . "/php/_db.php";
 
-    $id = new MongoDB\BSON\ObjectId($id);
-    $updateResult = $osiris->activities->updateOne(
-        ['_id' => $id],
-        ['$set' => ["epub-delay" => date('Y-m-d')]]
-    );
+//     $id = new MongoDB\BSON\ObjectId($id);
+//     $updateResult = $osiris->activities->updateOne(
+//         ['_id' => $id],
+//         ['$set' => ["epub-delay" => date('Y-m-d')]]
+//     );
 
-    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-        header("Location: " . $_POST['redirect'] . "?msg=Epub+delayed");
-        die();
-    }
-    echo json_encode([
-        'updated' => $updateResult->getModifiedCount(),
-        'result' => $collection->findOne(['_id' => $id])
-    ]);
-});
+//     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+//         header("Location: " . $_POST['redirect'] . "?msg=Epub+delayed");
+//         die();
+//     }
+//     echo json_encode([
+//         'updated' => $updateResult->getModifiedCount(),
+//         'result' => $collection->findOne(['_id' => $id])
+//     ]);
+// });
 
 Route::post('/push-dates/misc/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";

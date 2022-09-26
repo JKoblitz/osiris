@@ -9,7 +9,7 @@ foreach ($preset as $a) {
 
 $formaction = ROOTPATH . "/";
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "update/$form[type]/" . $form['_id'];
+    $formaction .= "update/" . $form['_id'];
     $btntext = '<i class="fas fa-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {

@@ -6,18 +6,25 @@ $(document).ready(function () {
         return item.value
     })
     SCIENTISTS = Object.values(scientists)
+
+    // var Module = Quill.import('core/module');
+    // class CustomModule extends Module {}
+    // Quill.register('modules/symbol', CustomModule);
+
     $('.title-editor').each(function (el) {
         var element = this;
+
         var quill = new Quill(element, {
             modules: {
                 toolbar: [
                     ['bold', 'italic', 'underline']
                 ]
             },
-            formats: ['bold', 'italic', 'underline'],
+            formats: ['bold', 'italic', 'underline', 'symbol'],
             placeholder: '',
             theme: 'snow' // or 'bubble'
         });
+      
         quill.on('text-change', function (delta, oldDelta, source) {
             var delta = quill.getContents()
             // console.log(delta);
@@ -38,6 +45,25 @@ $(document).ready(function () {
             // $('.add-form #title').val(str)
             $(element).next().val(str)
         });
+
+        // add additional symbol toolbar for greek letters
+        var additional = $('<span class="ql-formats">')
+        var symbols = ['α', 'β', 'π', 'Δ']
+        symbols.forEach(symbol => {
+            var btn = $('<button type="button" class="ql-symbol">')
+            btn.html(symbol)
+            btn.on('click', function () {
+                // $('.symbols').click(function(){
+                quill.focus();
+                var symbol = $(this).html();
+                var caretPosition = quill.getSelection(true);
+                quill.insertText(caretPosition, symbol);
+                // });
+            })
+            additional.append(btn)
+        });
+
+        $('.ql-toolbar').append(additional)
     })
     // if ($('.add-form #title-editor').length !== 0 ){
 

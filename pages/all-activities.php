@@ -2,6 +2,12 @@
     <input type="search" class="form-control" placeholder="<?= lang('Filter') ?>" oninput="filter_results(this.value)">
     <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
 </div> -->
+<?php
+
+$user = $_SESSION['username'];
+// $author_highlight = $user;
+?>
+
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
 
@@ -16,6 +22,11 @@
     <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select text-muted" id="teaching-btn"><i class="fa-regular fa-people"></i><?= lang('Teaching &amp; Guests') ?></button>
     <button onclick="filterDataTable(1, 'software')" class="btn btn-select text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i><?= lang('Software') ?></button>
 </div>
+
+<button onclick="filterUserTable('<?= $user ?? $_SESSION['username'] ?>')" class="btn mb-5" id="user-btn">
+    <i class="fa-regular fa-user"></i>
+    <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
+</button>
 
 
 <div class="input-group mb-10 w-400 mw-full">
@@ -49,18 +60,19 @@
         <tbody>
             <?php
             // $options = ['sort' => ["year" => -1, "month" => -1]];
-            if ($USER['is_controlling'] || $USER['is_admin']) {
-                // controlling sees everything from the current year
-                $filter = [];
-            } else {
-                // everybody else sees their own work (all)
-                $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
-            }
+            // if ($USER['is_controlling'] || $USER['is_admin']) {
+            //     // controlling sees everything from the current year
+            // } else {
+            //     // everybody else sees their own work (all)
+            //     $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
+            // }
+            $filter = [];
             $cursor = $osiris->activities->find($filter);
             //, 'year' => intval(SELECTEDYEAR)
             if (empty($cursor)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No activities found.', 'Keine Publikationen gefunden.') . "</td></tr>";
             } else foreach ($cursor as $document) {
+
                 $id = $document['_id'];
                 $q = getQuarter($document);
                 $y = getYear($document);
@@ -96,6 +108,24 @@
                         <?php if ($quarter != $endQuarter) {
                             echo "-" . $endQuarter;
                         } ?>
+
+
+                        <span class="hidden">
+                            <?php
+
+                            $authors = $document['authors']->bsonSerialize();
+                            if (is_array($authors)) {
+                                $author = array_filter($authors, function ($author) use ($user) {
+                                    return $author['user'] == $user;
+                                });
+
+                                if (!empty($author)) {
+                                    echo $user;
+                                }
+                            }
+                            ?>
+
+                        </span>
 
                     </td>
                     <td class="text-center ">
@@ -167,6 +197,18 @@
         }
     }
 
+    function filterUserTable(item) {
+        if ($('#user-btn').hasClass('active')) {
+            $('#user-btn').removeClass('active')
+            dataTable.columns(0).search("", true, false, true).draw();
+
+        } else {
+            $('#user-btn').addClass('active')
+            dataTable.columns(0).search(item, true, false, true).draw();
+
+        }
+    }
+
     function filtertime(reset = false) {
         if (reset) {
             $("#from-month").val("")
@@ -176,9 +218,6 @@
             dataTable.columns(0).search("", true, false, true).draw();
             return
         }
-
-
-
 
         var today = new Date();
         var fromMonth = $("#from-month").val()

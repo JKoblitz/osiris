@@ -151,26 +151,14 @@ $issues = array(
 );
 
 foreach ($cursor as $doc) {
-    $approval = !is_approved($doc, $user);
-    $epub = ($doc['epub'] ?? false);
-    // $doc['epub-delay'] = "2022-08-01";
-    if ($epub && isset($doc['epub-delay'])) {
-        $startTimeStamp = strtotime($doc['epub-delay']);
-        $endTimeStamp = strtotime(date('Y-m-d'));
-        $timeDiff = abs($endTimeStamp - $startTimeStamp);
-        $numberDays = intval($timeDiff / 86400);  // 86400 seconds in one day
-        if ($numberDays < 30) {
-            $epub = false;
-        }
-    }
-    $teaching = ($doc['type'] == "teaching" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end']));
-    if ($approval) {
+    $has_issues = has_issues($doc);
+    if (in_array("approval", $has_issues)) {
         $issues['approval'][] = $doc;
     }
-    if ($epub) {
+    if (in_array("epub", $has_issues)) {
         $issues['epub'][] = $doc;
     }
-    if ($teaching) {
+    if (in_array("teaching", $has_issues)) {
         $issues['teaching'][] = $doc;
     }
 } ?>
@@ -186,7 +174,6 @@ if (array_sum($a) === 0) {
     ) . "</p>";
 }
 ?>
-
 
 
 <?php if (!empty($issues['approval'])) { ?>
@@ -207,6 +194,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
+                <td><?=activity_icon($doc);?></td>
                 <td>
                     <?= format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -214,7 +202,7 @@ if (array_sum($a) === 0) {
                         <br>
                         <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)">
                             <i class="fas fa-check"></i>
-                            <?= lang('Yes, this is me and I was affiliated to the' . AFFILIATION, 'Ja, das bin ich und ich war der ' . AFFILIATION . ' angehörig') ?>
+                            <?= lang('Yes, and I was affiliated to the' . AFFILIATION, 'Ja, und ich war der ' . AFFILIATION . ' angehörig') ?>
                         </button>
                         <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 2)">
                             <i class="fas fa-handshake-slash"></i>
@@ -224,7 +212,10 @@ if (array_sum($a) === 0) {
                             <i class="fas fa-xmark"></i>
                             <?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>
                         </button>
-
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
+                        <i class="fas fa-edit"></i>
+                            <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
+                        </a>
                     </div>
                 </td>
             </tr>
@@ -250,6 +241,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
+            <td><?=activity_icon($doc);?></td>
                 <td>
                     <?= format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -258,8 +250,9 @@ if (array_sum($a) === 0) {
                             'Diese Aktivität ist markiert als <q>Epub ahead of print</q>. Ist sie noch nicht offiziell publiziert?'
                         ) ?>
                         <br>
-                        <form action="<?= ROOTPATH ?>/update/delay-epub/<?= $id ?>" method="post" class="d-inline mt-5">
+                        <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                            <input type="hidden" name="values[epub-delay]" value="<?=date('Y-m-d')?>" class="hidden">
                             <button class="btn btn-sm">
                                 <i class="fas fa-check"></i>
                                 <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag erneut in einem Monat).') ?>
@@ -304,6 +297,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
+            <td><?=activity_icon($doc);?></td>
                 <td>
                     <?= format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">

@@ -190,6 +190,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Add activity', 'Aktivität hinzuf.') ?>
                     </a>
 
+                    
+                    <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('export/publications') ?>">
+                        <i class="far fa-download" aria-hidden="true"></i>
+                        Download
+                    </a>
 
                     <!-- <a href="<?= ROOTPATH ?>/achievements" class="sidebar-link with-icon">
                         <i class="far fa-trophy-star" aria-hidden="true"></i>

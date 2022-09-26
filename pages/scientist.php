@@ -1,4 +1,3 @@
-
 <?php
 
 $currentuser = $user == $_SESSION['username'];
@@ -171,25 +170,16 @@ foreach ($queries as $col => $val) {
             <tbody>
                 <?php
                 $filter = $val['filter'];
-                $filter['type'] = $col; 
+                $filter['type'] = $col;
                 $cursor = $collection->find($filter, $val['options']);
                 // dump($cursor);
-                foreach ($cursor as $document) {
-                    $id = $document['_id'];
-                    $l = $LOM->lom($col, $document);
+                foreach ($cursor as $doc) {
+                    $id = $doc['_id'];
+                    $l = $LOM->lom($col, $doc);
                     $_lom += $l['lom'];
 
-                    $a = is_approved($document, $user);
-                    if (!$a) {
-                        $approval_needed[] = array(
-                            'type' => $col,
-                            'id' => $document['_id'],
-                            'title' => $document['title']
-                        );
-                    }
-
                     if ($val["show-quarter"]) {
-                        $q = getQuarter($document);
+                        $q = getQuarter($doc);
                         $in_quarter = $q == SELECTEDQUARTER;
                     } else {
                         $in_quarter = true;
@@ -199,75 +189,29 @@ foreach ($queries as $col => $val) {
                     echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$col-$id'>";
                     if ($val['show-quarter']) echo "<td class='quarter'>Q$q</td>";
                     echo "<td>";
-                    echo format($col, $document);
+                    echo format($col, $doc);
 
                     // show error messages, warnings and todos
-                    if ($currentuser) {
-                        if (!$a) { ?>
-                            <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
-                                <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
-                                <!-- <br> -->
-                                <button class="btn btn-sm text-success ml-20" onclick="_approve('<?= $col ?>', '<?= $id ?>', 1)">
-                                    <i class="fas fa-check"></i>
-                                    <?= lang('Yes, this is me and I was affiliated to the' . AFFILIATION, 'Ja, das bin ich und ich war der ' . AFFILIATION . ' angehörig') ?>
-                                </button>
-                                <button class="btn btn-sm text-danger" onclick="_approve('<?= $col ?>', '<?= $id ?>', 2)">
-                                    <i class="fas fa-handshake-slash"></i>
-                                    <?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>
-                                </button>
-                                <button class="btn btn-sm text-danger" onclick="_approve('<?= $col ?>', '<?= $id ?>', 3)">
-                                    <i class="fas fa-xmark"></i>
-                                    <?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>
-                                </button>
-                            </div>
-                            <?php }
-                        if ($col == "teaching") {
-                            if ($document['status'] == 'in progress' && new DateTime() > getDateTime($document['end'])) {
-
-                                $approval_needed[] = array(
-                                    'type' => 'teaching',
-                                    'id' => $document['_id'],
-                                    'title' => $document['title']
-                                );
-                            ?>
-                                <div class='alert alert-signal' id="approve-<?= $col ?>-<?= $id ?>">
-                                    <?= lang(
-                                        "<b>Attention</b>: the Thesis of $document[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
-                                        "<b>Achtung</b>: die Abschlussarbeit von $document[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
-                                    )  ?>
-                                    <form action="update/teaching/<?= $id ?>" method="post" class="form-inline mt-5">
-                                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-
-                                        <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
-                                        <input type="date" class="form-control w-200" name="values[end]" id="date_end" value="<?= valueFromDateArray($document['end'] ?? '') ?>" required>
-                                        <div>
-                                            <div class="custom-radio d-inline">
-                                                <input type="radio" name="values[status]" id="status-in-progress-<?= $id ?>" value="in progress" checked="checked">
-                                                <label for="status-in-progress-<?= $id ?>"><?= lang('In progress', 'In Arbeit') ?></label>
-                                            </div>
-
-                                            <div class="custom-radio d-inline">
-                                                <input type="radio" name="values[status]" id="status-completed-<?= $id ?>" value="completed">
-                                                <label for="status-completed-<?= $id ?>"><?= lang('Completed', 'Abgeschlossen') ?></label>
-                                            </div>
-
-                                            <div class="custom-radio mr-10 d-inline">
-                                                <input type="radio" name="values[status]" id="status-aborted-<?= $id ?>" value="aborted">
-                                                <label for="status-aborted-<?= $id ?>"><?= lang('Aborted', 'Abgebrochen') ?></label>
-                                            </div>
-                                        </div>
-                                        <button class="btn" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>
-                                    </form>
-                                </div>
-                <?php
-
-                            }
-                        }
-                    } ?>
+                    $has_issues = has_issues($doc);
+                    if ($currentuser && !empty($has_issues)) {
+                        $approval_needed[] = array(
+                            'type' => $col,
+                            'id' => $doc['_id'],
+                            'title' => $doc['title']
+                        );
+                ?>
+                <br>
+                    <b class="text-danger">
+                        <?=lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.')?>
+                        <a href="<?=ROOTPATH?>/issues" class="link">Review</a>
+                    </b>
+                    <?php
+                    }
+                    ?>
 
                     </td>
                     <td class="unbreakable">
-                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $document['type'] ?>', '<?= $id ?>')">
+                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </button> -->
                         <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
@@ -277,10 +221,10 @@ foreach ($queries as $col => $val) {
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </a>
                     </td>
-                    <td class='lom' ><?=$l["lom"]?></td>
-                    <!-- data-toggle='tooltip' data-title='$l[points]'-->
-                </tr>
-               <?php } ?>
+                    <td class='lom'><span data-toggle='tooltip' data-title='<?=$l['points']?>'><?= $l["lom"] ?></span></td>
+                    <!---->
+                    </tr>
+                <?php } ?>
             </tbody>
         </table>
 
@@ -294,7 +238,7 @@ foreach ($queries as $col => $val) {
             <?php if ($col == "publication") {
                 $link = ROOTPATH . "/activities/new?type=article";
             } else {
-                $link = ROOTPATH . "/activities/new?type=".$col;
+                $link = ROOTPATH . "/activities/new?type=" . $col;
             } ?>
 
             <a href="<?= $link ?>" class="btn"><i class="fas fa-plus"></i></a>
@@ -324,8 +268,8 @@ foreach ($queries as $col => $val) {
                     echo "<p>" . lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') . "</p>";
                 } else if (!empty($approval_needed)) {
                     echo "<p>" . lang(
-                        "The following activities need your confirmation before you can approve the current quarter. Please scroll through your feed and confirm/reject your activities.",
-                        "Die folgenden Aktivitäten müssen von Ihnen bestätigt werden, bevor Sie das laufende Quartal freigeben können. Bitte scrollen Sie durch Ihren Feed und bestätigen/ablehnen Sie Ihre Aktivitäten."
+                        "The following activities have unresolved warnings. Please <a href='".ROOTPATH."/issues' class='link'>review all issues</a> before approving the current quarter.",
+                        "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='".ROOTPATH."/issues' class='link'>klären sie alle Probleme</a> bevor sie das aktuelle Quartal freigeben können."
                     ) . "</p>";
                     echo "<ul class='list'>";
                     foreach ($approval_needed as $item) {
