@@ -3,6 +3,10 @@
 ## 25.09.22
 - Die Übersichtsseite für Aktivitäten wurde verbessert (trotzdem noch im Alpha-Status).
 - Man kann nun PDF-Dokumente an Aktivitäten anhängen. Diese können auf der Übersichtsseite heruntergeladen werden.  
+- Eine Übersichtsseite mit allen gefundenen Problemen ermöglicht Wissenschaftlern ihre Aktivitäten zu bereinigen. Folgende "Probleme" gibt es:
+  - Eine Autorenschaft wurde noch nicht bestätigt
+  - Eine Publikation ist noch als Epub hinterlegt
+  - Eine Abschlussarbeit ist noch "in Progress", aber das Abschlussdatum liegt in der Vergangenheit
 
 ## 24.09.22
 - Dashboard hinzugefügt: Das Dashboard ist die neue Startseite. Sie wurde sowohl für Wissenschaftler als auch für das Controlling verbessert und zeigt jetzt eine Übersicht über die Aktivitäten (beim Wissenschaftler nur über eigene). 

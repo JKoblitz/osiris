@@ -55,6 +55,11 @@ function _approve(id, approval) {
         url: ROOTPATH + '/approve/' + id,
         success: function (response) {
             $('.loader').removeClass('show')
+            var loc = location.pathname.split('/')
+            if (loc[loc.length-1] == "issues"){
+                $('#tr-' + id).remove()
+                return;
+            };
 
             if (approval == 1) {
                 $('#approve-'+ id).remove()

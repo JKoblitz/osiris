@@ -142,17 +142,17 @@ Route::post('/create', function () {
 
     $values = validateValues($_POST['values']);
 
-    if (isset($values['doi']) && !empty($values['doi'])){
-        $doi_exist = $collection->findOne(['doi'=>$values['doi']]);
-        if (!empty($doi_exist)){
-            header("Location: ".ROOTPATH."/activities/view/$doi_exist[_id]?msg=DOI+already+exists");
+    if (isset($values['doi']) && !empty($values['doi'])) {
+        $doi_exist = $collection->findOne(['doi' => $values['doi']]);
+        if (!empty($doi_exist)) {
+            header("Location: " . ROOTPATH . "/activities/view/$doi_exist[_id]?msg=DOI+already+exists");
             die;
         }
     }
-    if (isset($values['pubmed']) && !empty($values['pubmed'])){
-        $pubmed_exist = $collection->findOne(['pubmed'=>$values['pubmed']]);
-        if (!empty($pubmed_exist)){
-            header("Location: ".ROOTPATH."/activities/view/$pubmed_exist[_id]?msg=Pubmed-ID+already+exists");
+    if (isset($values['pubmed']) && !empty($values['pubmed'])) {
+        $pubmed_exist = $collection->findOne(['pubmed' => $values['pubmed']]);
+        if (!empty($pubmed_exist)) {
+            header("Location: " . ROOTPATH . "/activities/view/$pubmed_exist[_id]?msg=Pubmed-ID+already+exists");
             die;
         }
     }
@@ -202,6 +202,14 @@ Route::post('/update/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)',
     // $collection = get_collection($col);
 
     $values = validateValues($_POST['values']);
+
+    if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
+        // dump($_FILES, true);
+        $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
+
+        $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
+    }
+
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
@@ -250,6 +258,24 @@ Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+Route::post('/update/delay-epub/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_db.php";
+
+    $id = new MongoDB\BSON\ObjectId($id);
+    $updateResult = $osiris->activities->updateOne(
+        ['_id' => $id],
+        ['$set' => ["epub-delay" => date('Y-m-d')]]
+    );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=Epub+delayed");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount(),
+        'result' => $collection->findOne(['_id' => $id])
+    ]);
+});
 
 Route::post('/push-dates/misc/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
@@ -411,10 +437,10 @@ Route::get('/form/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', fu
 
 
 
-Route::post('/approve/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {
+Route::post('/approve/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
 
-    $collection = get_collection($col);
+    $collection = $osiris->activities;
     // prepare id
     if (is_numeric($id)) {
         $id = intval($id);

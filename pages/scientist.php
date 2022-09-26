@@ -263,15 +263,24 @@ foreach ($queries as $col => $val) {
 
                             }
                         }
-                    }
+                    } ?>
 
-                    echo "</td>";
-                    // lom points
-                    echo "<td class='lom' >$l[lom]</td>
+                    </td>
+                    <td class="unbreakable">
+                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $document['type'] ?>', '<?= $id ?>')">
+                            <i class="fa-regular fa-lg fa-edit"></i>
+                        </button> -->
+                        <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                            <i class="fa-regular fa-lg fa-search"></i>
+                        </a>
+                        <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
+                            <i class="fa-regular fa-lg fa-edit"></i>
+                        </a>
+                    </td>
+                    <td class='lom' ><?=$l["lom"]?></td>
                     <!-- data-toggle='tooltip' data-title='$l[points]'-->
-                </tr>";
-                }
-                ?>
+                </tr>
+               <?php } ?>
             </tbody>
         </table>
 

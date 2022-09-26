@@ -49,5 +49,6 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 <!-- -[ ] Berechne Lom für jeden Autor und schreibe es in die Tabelle???? -->
 -[ ] Schreibe Impact Factor in die Pub-Tabelle
 -[ ] Warnung wenn if nicht bekannt
+-[ ] Files: Error wenn Datei größer als 15 MB!
 <!-- 
 <div class="csl-entry">Feynman, R. (2000). Probability Theory. In <i>Reliability, Maintenance and Logistic Support</i> (pp. 13–49). Springer US. https://doi.org/10.1007/978-1-4615-4655-9_2</div> -->

@@ -58,6 +58,34 @@ if (!empty($form) && isset($form['_id'])) {
 
     <div class="box box-primary add-form" style="display:none" id="publication-form">
         <div class="content">
+
+            <?php if (!empty($form) && isset($_GET['epub'])) { ?>
+                <div class="alert alert-signal mb-20">
+                    <div class="title">
+                        <?= lang('Please review this entry and mark it as "Not Epub".', 'Bitte überprüfe diesen Eintrag und markiere ihn als "nicht Epub".') ?>
+                    </div>
+                    <p>
+                        <?= lang(
+                            'Review carefully all data, especially the publication date, which has to be the <b>date of the issued publication</b> (not online publication)!',
+                            'Überprüfe alle Daten sorgfältig, für den Fall, dass sich Änderungen ergeben haben. Besonders das Publikationsdatum muss überprüft und auf das <b>tatsächliche Datum der Publikation (nicht online)</b> gesetzt werden.'
+                        ) ?>
+                    </p>
+                    <?php if (isset($form['doi']) && !empty($form['doi'])) { ?>
+                        <p class="mb-0">
+                            <a class="link" href="http://doi.org/<?= $form['doi'] ?>" target="_blank" rel="noopener noreferrer">
+                                <?= lang(
+                                    'Have a look at the publishers page of your publication for reference.',
+                                    'Als Referenz kannst du hier die Seite des Publishers zu deiner Publikation sehen.'
+                                ) ?>
+                            </a>
+                        </p>
+                    <?php } ?>
+
+                </div>
+
+            <?php } ?>
+
+
             <form action="<?= $formaction ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
 
@@ -302,8 +330,8 @@ if (!empty($form) && isset($form['_id'])) {
                 </div>
 
                 <div class="form-group" data-visible="article">
-                    <div class="custom-checkbox">
-                        <input type="checkbox" id="epub" value="1" name="values[epub]" <?= ($form['epub'] ?? false) ? 'checked' : '' ?>>
+                    <div class="custom-checkbox <?= isset($_GET['epub']) ? 'text-danger' : '' ?>">
+                        <input type="checkbox" id="epub" value="1" name="values[epub]" <?= (!isset($_GET['epub']) && ($form['epub'] ?? false)) ? 'checked' : '' ?>>
                         <label for="epub">Epub ahead of print</label>
                     </div>
                 </div>
@@ -351,7 +379,6 @@ if (!empty($form) && isset($form['_id'])) {
                     <div class="reviewer-role" style="display: none;">
                         <label class="required" for="date">
                             <?= lang('Review date', 'Review-Datum') ?>
-
                         </label>
                         <input type="date" class="form-control date" name="values[dates][]" id="date">
                         <small class="text-muted">
@@ -382,16 +409,16 @@ if (!empty($form) && isset($form['_id'])) {
 
                 <?php if (!empty($form) && isset($form['file']) && !empty($form['file'])) { ?>
                     <p>
-                        <?=lang('The following file is appended to this entry:', 'Die folgende Datei ist diesem Eintrag angehängt:')?>
-                    <b><?=$form['file']?></b>
-                    <?=lang('Uploading a new file will overwrite the existing one.', 'Eine Neue hochzuladen wird sie überschreiben.')?>
+                        <?= lang('The following file is appended to this entry:', 'Die folgende Datei ist diesem Eintrag angehängt:') ?>
+                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>/file" class="btn"><?= lang('FILE', 'DATEI') ?></a>
+                        <?= lang('Uploading a new file will overwrite the existing one.', 'Wenn du eine neue Datei hochlädst, wird sie überschrieben.') ?>
                     </p>
 
                 <?php } ?>
-                
+
                 <div class="custom-file">
-                    <input type="file" id="file-input-1" name="file" accept=".pdf" data-default-value="<?=lang("No file chosen", "Keine Datei ausgewählt")?>">
-                    <label for="file-input-1"><?=lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)')?></label>
+                    <input type="file" id="file-input-1" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                    <label for="file-input-1"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div>
 
                 <button class="btn btn-primary" type="submit"><?= $btntext ?></button>
