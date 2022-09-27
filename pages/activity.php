@@ -7,15 +7,20 @@
 
         foreach ($activity as $key => $value) {
             echo "<tr>";
+
             if ($key == '_id') {
                 echo "<td>$key</td>";
                 echo "<td>$id</td>";
             } else if ($key == 'file') {
                 echo "<td>$key</td>";
-                echo '<td><a href="' . ROOTPATH . '/activities/view/' . $id . '/file" class="btn">Download file</a></td>';
+                echo '<td><a href="' . ROOTPATH . '/activities/view/' . $id . '/file" class="btn">'.lang("Download file", "Datei herunterladen").'</a></td>';
             } else if (is_array($value)) {
                 if (isset($value[0])) {
-                    echo "<td>$key</td>
+                    echo "<td>$key ";
+                    if ($key == "authors"){
+                        echo '<br><a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">'.lang("Edit", "Bearbeiten").'</a>';
+                    }
+                    echo "</td>
                     <td>
                     <table class='table table-simple'>";
                     echo "<tr>";

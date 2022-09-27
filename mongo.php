@@ -259,6 +259,23 @@ Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_db.php";
+    // prepare id
+    if (!isset($_POST['authors']) || empty($_POST['authors'])) {
+        echo "Error: Author list cannot be empty.";
+        die();
+    }
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $osiris->activities->updateOne(
+        ['_id' => $id],
+        ['$set' => ["authors" => $_POST['authors']]]
+    );
+
+    header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
+});
+
 // Route::post('/update/delay-epub/([A-Za-z0-9]*)', function ($id) {
 //     include_once BASEPATH . "/php/_db.php";
 

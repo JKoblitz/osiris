@@ -1,5 +1,7 @@
 # Changelog
 
+
+
 ## 25.09.22
 - Die Übersichtsseite für Aktivitäten wurde verbessert (trotzdem noch im Alpha-Status).
 - Man kann nun PDF-Dokumente an Aktivitäten anhängen. Diese können auf der Übersichtsseite heruntergeladen werden.  
@@ -7,6 +9,7 @@
   - Eine Autorenschaft wurde noch nicht bestätigt
   - Eine Publikation ist noch als Epub hinterlegt
   - Eine Abschlussarbeit ist noch "in Progress", aber das Abschlussdatum liegt in der Vergangenheit
+- Im Titel-Editor können jetzt auch ein paar Sonderzeichen hinzugefügt werden.
 
 ## 24.09.22
 - Dashboard hinzugefügt: Das Dashboard ist die neue Startseite. Sie wurde sowohl für Wissenschaftler als auch für das Controlling verbessert und zeigt jetzt eine Übersicht über die Aktivitäten (beim Wissenschaftler nur über eigene). 

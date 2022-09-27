@@ -18,6 +18,7 @@ if (!empty($form) && isset($form['_id'])) {
     $url = ROOTPATH . "/activities/view/*";
 }
 ?>
+<script src="<?=ROOTPATH?>/js/jquery-ui.min.js"></script>
 
 <div class="content">
     <?php if (empty($form)) { ?>
@@ -147,6 +148,9 @@ if (!empty($form) && isset($form['_id'])) {
                         <?= $authors ?>
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
                     </div>
+                    <small class="text-muted">
+                        <?=lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.')?>
+                    </small>
                 </div>
 
                 <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">

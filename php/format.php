@@ -33,8 +33,9 @@ function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
     $authors = array();
     foreach ($raw_authors as $a) {
         $author = abbreviateAuthor($a['last'], $a['first']);
-        if ((!isset($author_highlight) || empty($author_highlight)) && ($a['aoi'] ?? 1) == 1) {
-            $author = "<b>$author</b>";
+        // dump(($a['aoi'] ?? 0) == 1);
+        if ((!isset($author_highlight) || empty($author_highlight))) {
+            if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
         } else if ($a['user'] == $author_highlight) {
             $author = "<b>$author</b>";
         }

@@ -7,9 +7,14 @@ $(document).ready(function () {
     })
     SCIENTISTS = Object.values(scientists)
 
-    // var Module = Quill.import('core/module');
-    // class CustomModule extends Module {}
-    // Quill.register('modules/symbol', CustomModule);
+    var authordiv = $('.author-list')
+    if (authordiv.length > 0){
+        
+        authordiv.sortable({
+        // handle: ".author",
+        // change: function( event, ui ) {}
+    });
+    }
 
     $('.title-editor').each(function (el) {
         var element = this;

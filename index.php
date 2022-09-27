@@ -320,21 +320,39 @@ Route::get('/activities/view/([a-zA-Z0-9]*)/file', function ($id) {
 Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    $user = $_SESSION['username'];
-    $breadcrumb = [
-        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => lang("Add new", "Neu hinzufügen")]
-    ];
 
+    $user = $_SESSION['username'];
     $id = new MongoDB\BSON\ObjectId($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
+
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => lang("#" . $id)]
+        ['name' => lang("Edit", "Bearbeiten")]
     ];
+
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/add-activity.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/activities/edit/([a-zA-Z0-9]*)/authors', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+     $user = $_SESSION['username'];
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $form = $osiris->activities->findOne(['_id' => $id]);
+
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Edit", "Bearbeiten"), 'path' => "/activities/edit/$id"],
+        ['name' => lang("Authors", "Autoren")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/author-editor.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
