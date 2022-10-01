@@ -7,6 +7,12 @@ foreach ($preset as $a) {
     $authors .= authorForm($a);
 }
 
+$preset_editors = $form['editors'] ?? array();
+$editors = "";
+foreach ($preset_editors as $a) {
+    $editors .= authorForm($a, true);
+}
+
 $formaction = ROOTPATH . "/";
 if (!empty($form) && isset($form['_id'])) {
     $formaction .= "update/" . $form['_id'];
@@ -28,7 +34,7 @@ if (!empty($form) && isset($form['_id'])) {
             <div class="form-group">
                 <label for="doi"><?= lang('Search publication by DOI or Pubmed-ID', 'Suche Publikation über die DOI oder Pubmed-ID') ?>:</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="10.1093/nar/gkab961">
+                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
                     </div>
@@ -290,6 +296,33 @@ if (!empty($form) && isset($form['_id'])) {
                     </div>
                 </div>
 
+
+                <div class="form-row row-eq-spacing" data-visible="book,editor,chapter">
+                    <div class="col-sm" data-visible="chapter">
+                        <label for="book" class="required">Book title</label>
+                        <input type="text" class="form-control" name="values[book]" value="<?= $form['book'] ?? '' ?>" id="book" required>
+                    </div>
+                    <div class="col-sm">
+                        <label for="edition">Edition</label>
+                        <input type="number" class="form-control" name="values[edition]" value="<?= $form['edition'] ?? '' ?>" id="edition">
+                    </div>
+                    <div class="col-sm">
+                        <label for="publisher">Publisher</label>
+                        <input type="text" class="form-control" name="values[publisher]" value="<?= $form['publisher'] ?? '' ?>" id="publisher">
+                    </div>
+                    <div class="col-sm">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" name="values[city]" value="<?= $form['city'] ?? '' ?>" id="city">
+                    </div>
+                </div>
+                <div class="form-group" data-visible="editor,chapter">
+                    <label for="editor" class="required"><?= lang('Editor(s) (in correct order)', 'Editor(en) (in korrekter Reihenfolge)') ?></label>
+                    <div class="author-list">
+                        <?=$editors?>
+                        <input type="text" placeholder="Add editor ..." onkeypress="addAuthor(event, this, true);" id="add-editor" list="scientist-list">
+                    </div>
+                </div>
+
                 <div class="form-row row-eq-spacing" data-visible="article,book,editor,chapter">
                     <div class="col-sm">
                         <label for="doi">DOI</label>
@@ -299,33 +332,12 @@ if (!empty($form) && isset($form['_id'])) {
                         <label for="pubmed">Pubmed</label>
                         <input type="number" class="form-control" name="values[pubmed]" value="<?= $form['pubmed'] ?? '' ?>" id="pubmed">
                     </div>
-                </div>
-
-                <div class="form-row row-eq-spacing" data-visible="book,editor,chapter">
-                    <div class="col-sm" data-visible="chapter">
-                        <label for="book">Book title</label>
-                        <input type="text" class="form-control" name="values[book]" value="<?= $form['book'] ?? '' ?>" id="book">
-                    </div>
                     <div class="col-sm">
-                        <label for="edition">Edition</label>
-                        <input type="text" class="form-control" name="values[edition]" value="<?= $form['edition'] ?? '' ?>" id="edition">
-                    </div>
-                    <div class="col-sm">
-                        <label for="publisher">Publisher</label>
-                        <input type="number" class="form-control" name="values[publisher]" value="<?= $form['publisher'] ?? '' ?>" id="publisher">
-                    </div>
-                    <div class="col-sm">
-                        <label for="city">City</label>
-                        <input type="number" class="form-control" name="values[city]" value="<?= $form['city'] ?? '' ?>" id="city">
+                        <label for="isbn">ISBN</label>
+                        <input type="text" class="form-control" name="values[isbn]" value="<?= $form['isbn'] ?? '' ?>" id="pubmed">
                     </div>
                 </div>
-                <div class="form-group" data-visible="editor,chapter">
-                    <label for="editor" class="required"><?= lang('Editor(s) (in correct order)', 'Editor(en) (in korrekter Reihenfolge)') ?></label>
-                    <div class="author-list">
-                        <input type="text" placeholder="Add editor ..." onkeypress="addAuthor(event, this, true);" id="add-editor" list="scientist-list">
-                    </div>
-                </div>
-
+                
                 <div class="form-group" data-visible="article,book,chapter,editor">
                     <div class="custom-checkbox">
                         <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= ($form['open_access'] ?? false) ? 'checked' : '' ?>>
@@ -420,7 +432,7 @@ if (!empty($form) && isset($form['_id'])) {
 
                 <?php } ?>
 
-                <div class="custom-file">
+                <div class="custom-file mb-20">
                     <input type="file" id="file-input-1" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                     <label for="file-input-1"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div>

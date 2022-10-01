@@ -8,14 +8,15 @@
 
             <p>
                 <?= lang(
-                    'OSIRIS is my attempt to create a light-weight and open-source research information system; made-to-measure the needs of the DSMZ members. Thereby, usability is my key concern.', 
-                    'OSIRIS ist mein Ansatz, ein leichtgewichtiges Open-Source Forschungsinformationssystem zu schaffen; maßgeschneidert auf die Bedürfnisse der DSMZ. Dabei ist die Nutzerfreundlichkeit der Seite mein größtes Anliegen.') ?>
+                    'OSIRIS is my attempt to create a light-weight and open-source research information system; made-to-measure the needs of the DSMZ members. Thereby, usability is my key concern.',
+                    'OSIRIS ist mein Ansatz, ein leichtgewichtiges Open-Source Forschungsinformationssystem zu schaffen; maßgeschneidert auf die Bedürfnisse der DSMZ. Dabei ist die Nutzerfreundlichkeit der Seite mein größtes Anliegen.'
+                ) ?>
             </p>
 
             <hr>
-                <?php
-                    include BASEPATH."/pages/roadmap.php";
-                ?>
+            <?php
+            include BASEPATH . "/pages/roadmap.php";
+            ?>
             <hr>
             <?php
             $text = file_get_contents(BASEPATH . "/todo.md");
@@ -41,4 +42,16 @@
             </div>
         </nav>
     </div>
+</div>
+
+<div class="container">
+    <blockquote>
+        <p>
+
+            A user interface is like a joke. If you have to explain it, it’s not that good”.
+        </p>
+        <em>
+            — Martin Leblanc</em>
+    </blockquote>
+
 </div>

@@ -170,12 +170,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= $USER["displayname"] ?? 'User' ?>
                     </div>
 
-                    <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('') ?>">
-                        <i class="far fa-home" aria-hidden="true"></i>
-                        <?= lang('Home') ?>
+                    <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
+                        <i class="far fa-chart-column" aria-hidden="true"></i>
+                        <?= lang('Dashboard') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('scientist') ?>">
+                    <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('scientist') ?>">
                         <i class="far fa-calendar" aria-hidden="true"></i>
                         <?= lang('My year', 'Mein Jahr') ?>
                     </a>

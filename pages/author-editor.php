@@ -9,7 +9,11 @@
 
     <h1>
         <i class="fad fa-users"></i>
-        <?= lang('Author editor', 'Autoren-Editor') ?>
+        <?php if ($role == 'authors') { ?>
+        <?= lang('Edit authors', 'Bearbeite die Autoren') ?>
+        <?php } else { ?>
+        <?= lang('Edit editors', 'Bearbeite die Editoren') ?>
+        <?php } ?>
     </h1>
     <form action="<?= ROOTPATH ?>/update-authors/<?= $id ?>" method="post">
 
@@ -26,7 +30,7 @@
                 </tr>
             </thead>
             <tbody id="authors">
-                <?php foreach ($form['authors'] as $i => $author) { ?>
+                <?php foreach ($form[$role] as $i => $author) { ?>
                     <tr>
                         <td>
                             <i class="fas fa-grip-dots-vertical text-muted handle"></i>

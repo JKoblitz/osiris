@@ -276,6 +276,19 @@ Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
     header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
 });
 
+Route::post('/approve-all', function () {
+    include_once BASEPATH . "/php/_db.php";
+    // prepare id
+    $user = $_POST['user'] ?? $_SESSION['username'];
+
+    $osiris->activities->updateMany(
+        ['authors.user' => $user],
+        ['$set' => ["authors.$.approved" => true]]
+    );
+
+    header("Location: " . ROOTPATH . "/issues?msg=update-success");
+});
+
 // Route::post('/update/delay-epub/([A-Za-z0-9]*)', function ($id) {
 //     include_once BASEPATH . "/php/_db.php";
 

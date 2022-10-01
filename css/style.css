@@ -193,3 +193,7 @@ strong {
     color: var(--signal-color);
     margin-right: .5rem;
 }
+
+.loader {
+    position: fixed;
+}

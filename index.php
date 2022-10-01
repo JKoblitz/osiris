@@ -337,19 +337,23 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
 }, 'login');
 
 
-Route::get('/activities/edit/([a-zA-Z0-9]*)/authors', function ($id) {
+Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $role) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-     $user = $_SESSION['username'];
+    $user = $_SESSION['username'];
     $id = new MongoDB\BSON\ObjectId($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
 
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => lang("Edit", "Bearbeiten"), 'path' => "/activities/edit/$id"],
-        ['name' => lang("Authors", "Autoren")]
+        ['name' => lang("Edit", "Bearbeiten"), 'path' => "/activities/edit/$id"]
     ];
+    if ($role == "authors") {
+        $breadcrumb[] = ['name' => lang("Authors", "Autoren")];
+    } else {
+        $breadcrumb[] = ['name' => lang("Editors", "Editoren")];
+    }
 
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/author-editor.php";
@@ -421,6 +425,14 @@ Route::get('/view/journal/(\d+)', function ($id) {
 }, 'login');
 
 
+Route::get('/docs/([\w-]+)', function ($doc) {
+    // header("HTTP/1.0 $error");
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/docs/$doc.html";
+    // include BASEPATH . "/pages/error.php";
+    include BASEPATH . "/footer.php";
+});
+
 
 Route::get('/error/([0-9]*)', function ($error) {
     // header("HTTP/1.0 $error");
@@ -460,6 +472,10 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
 
 Route::get('/test', function () {
     include_once BASEPATH . "/php/_db.php";
+
+    $doc = $osiris->activities->findOne(['doi' => 'article']);
+    include_once BASEPATH . "/test.php";
+    dump($doc);
     //     $oauth = new Oauth;
     // $oauth->setClientId("APP-95XBTUDO2RMSE7LZ")
     //       ->setScope('/authenticate')

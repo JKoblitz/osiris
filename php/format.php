@@ -10,19 +10,22 @@ function commalist($array, $sep = "and")
     return $str . " $sep " . end($array);
 }
 
-function abbreviateAuthor($last, $first)
+function abbreviateAuthor($last, $first, $reverse = true)
 {
     $fn = "";
     foreach (explode(" ", $first) as $name) {
         $fn .= " " . $name[0] . ".";
     }
-    return $last . "," . $fn;
+    if ($reverse) return $last . "," . $fn;
+    return $fn . " ". $last;
 }
 
-function authorForm($a)
+function authorForm($a, $is_editor = false)
 {
-    return "<div class='author author-aoi'>
-        $a[last], $a[first]<input type='hidden' name='values[authors][]' value='$a[last];$a[first];1'>
+    $name = $is_editor ? 'editors' : 'authors';
+    $aoi = $a['aoi'] ?? 1;
+    return "<div class='author " . ($aoi == 1 ? 'author-aoi' : '') . "'>
+        $a[last], $a[first]<input type='hidden' name='values[$name][]' value='$a[last];$a[first];$aoi'>
         <a onclick='removeAuthor(event, this);'>&times;</a>
         </div>";
 }
@@ -49,6 +52,30 @@ function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
     }
     return commalist($authors, $separator);
 }
+
+function formatEditors($raw_editors, $separator = 'and', $first = 1, $last = 1)
+{
+    global $author_highlight;
+    $editors = array();
+    foreach ($raw_editors as $a) {
+        $editor = abbreviateAuthor($a['last'], $a['first'], false);
+        // dump(($a['aoi'] ?? 0) == 1);
+        if ((!isset($author_highlight) || empty($author_highlight))) {
+            if (($a['aoi'] ?? 0) == 1) $editor = "<b>$editor</b>";
+        } else if ($a['user'] == $author_highlight) {
+            $editor = "<b>$editor</b>";
+        }
+        if ($first > 1 && $a['position'] == 'first') {
+            $editor .= "<sup>#</sup>";
+        }
+        if ($last > 1 && $a['position'] == 'last') {
+            $editor .= "<sup>*</sup>";
+        }
+        $editors[] = $editor;
+    }
+    return commalist($editors, $separator);
+}
+
 
 function getDateTime($date)
 {
@@ -392,10 +419,11 @@ function format_publication($doc)
         $result .= " $doc[title].";
     }
     // TODO:
-    // if ($doc['type'] == 'book-chapter')
-    switch (strtolower(trim($doc['type']))) {
+
+    switch (strtolower(trim($doc['pubtype']))) {
         case 'journal article':
         case 'journal-article':
+        case 'article':
             if (!empty($doc['journal'])) {
                 $result .= " <em>$doc[journal]</em>";
 
@@ -418,9 +446,36 @@ function format_publication($doc)
             }
             break;
         case 'book-chapter':
+        case 'chapter':
+            if (!empty($doc['book'])) {
+                // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
+                // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
+                // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
+                $result .= " In:";
+                if (!empty($doc['editors'])) {
+                    $result .= formatAuthors($doc['editors'], 'and');
+                };    
+                $result .= " $doc[book]";
+            }
+            if (!empty($doc['edition'])) {
+                $ed = $doc['edition'];
+                if ($ed == 1) $ed .= "st";
+                elseif ($ed == 1) $ed .= "nd";
+                else $ed .= "th";
+                $result .= ", $doc[edition]. Edition ";
+            }
+            
+            if (!empty($doc['city'])) {
+                $result .= " $doc[city]:";
+            }
+            if (!empty($doc['publisher'])) {
+                $result .= ", $doc[publisher]";
+            }
+            
+            $result .= ".";
             break;
         case 'book':
-            break;
+
         default:
             # code...
             break;

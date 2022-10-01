@@ -187,6 +187,27 @@ if (array_sum($a) === 0) {
         <a href="#why-approval" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
+    <div class="dropdown">
+        <button class="btn mb-10 text-success" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-check"></i>
+            <?= lang('Approve all', 'Alle bestätigen') ?>
+        </button>
+        <div class="dropdown-menu w-300" aria-labelledby="dropdown-1">
+            <div class="content">
+                <form action="<?= ROOTPATH ?>/approve-all" method="post">
+                    <input type="hidden" name="user" value="<?= $user ?>">
+                    <?= lang(
+                        'I confirm that I am the author of the following publications and that my affiliation has always been the ' . AFFILIATION . '.',
+                        'Ich bestätige, dass ich der Autor der folgenden Publikationen bin und meine Affiliation dabei immer die ' . AFFILIATION . ' war.'
+                    ) ?>
+                    <button class="btn btn-block btn-success" type="submit"><?= lang('Approve all', 'Alle bestätigen') ?></button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
     <table class="table">
         <?php
         foreach ($issues['approval'] as $doc) {
@@ -194,7 +215,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-                <td><?=activity_icon($doc);?></td>
+                <td><?= activity_icon($doc); ?></td>
                 <td>
                     <?= format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -213,7 +234,7 @@ if (array_sum($a) === 0) {
                             <?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>
                         </button>
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
-                        <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit"></i>
                             <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
                         </a>
                     </div>
@@ -241,7 +262,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-            <td><?=activity_icon($doc);?></td>
+                <td><?= activity_icon($doc); ?></td>
                 <td>
                     <?= format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -252,7 +273,7 @@ if (array_sum($a) === 0) {
                         <br>
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                            <input type="hidden" name="values[epub-delay]" value="<?=date('Y-m-d')?>" class="hidden">
+                            <input type="hidden" name="values[epub-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn btn-sm">
                                 <i class="fas fa-check"></i>
                                 <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag erneut in einem Monat).') ?>
@@ -297,7 +318,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-            <td><?=activity_icon($doc);?></td>
+                <td><?= activity_icon($doc); ?></td>
                 <td>
                     <?= format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
