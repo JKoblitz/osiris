@@ -65,7 +65,20 @@ function lom($col, $doc)
     {
         $prev_year = SELECTEDYEAR - 1;
 
-        if (isset($doc['correction']) && $doc['correction']) return [];
+        if (isset($doc['correction']) && $doc['correction']) return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0 (correction)",
+                'lom' => 0
+            );
+        if (isset($doc['epub']) && $doc['epub']) return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0 (epub)",
+                'lom' => 0
+            );
         $type = "non-refereed";
         $pubtype = strtolower(trim($doc['pubtype']));
         if ($pubtype == "article" || $pubtype == "journal-article" || $pubtype == 'journal article') {
