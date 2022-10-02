@@ -218,19 +218,19 @@ function lom($col, $doc)
             );
         } else {
             $pos = "review";
-            $dates = $doc['dates']->bsonSerialize();
-            $dates = array_filter($dates, function ($date) {
-                return $date['year'] == SELECTEDYEAR;
-            });
-            $dates = count($dates);
+            // $dates = $doc['dates']->bsonSerialize();
+            // $dates = array_filter($dates, function ($date) {
+            //     return $date['year'] == SELECTEDYEAR;
+            // });
+            // $dates = count($dates);
             $points = $this->matrix[$pos];
 
             return array(
                 'type' => "$pos",
                 'id' => $doc['_id'],
                 'title' => $doc['journal'],
-                'points' => "$points * $dates (count)",
-                'lom' => $points * $dates
+                'points' => "$points",
+                'lom' => $points
             );
         }
     }

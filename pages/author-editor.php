@@ -42,11 +42,15 @@
                             <input name="authors[<?= $i ?>][first]" type="text" class="form-control" value="<?= $author['first'] ?>">
                         </td>
                         <td>
+                            <?php if (isset($author['position'])) { ?>
                             <select name="authors[<?= $i ?>][position]" class="form-control">
                                 <option value="first" <?= ($author['position'] == 'first' ? 'selected' : '') ?>>first</option>
                                 <option value="middle" <?= ($author['position'] == 'middle' ? 'selected' : '') ?>>middle</option>
                                 <option value="last" <?= ($author['position'] == 'last' ? 'selected' : '') ?>>last</option>
                             </select>
+                            <?php } else { ?>
+                                NA
+                            <?php } ?>
                         </td>
                         <td>
                             <div class="custom-checkbox">

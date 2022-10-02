@@ -24,14 +24,14 @@ if (!empty($form) && isset($form['_id'])) {
     $url = ROOTPATH . "/activities/view/*";
 }
 ?>
-<script src="<?=ROOTPATH?>/js/jquery-ui.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 
 <div class="content">
     <?php if (empty($form)) { ?>
 
         <button class="btn btn-tour float-right" id="tour">
             <i class="far fa-message-question mr-10"></i>
-            <?=lang('How does this work?', 'Wie funktioniert das?')?>
+            <?= lang('How does this work?', 'Wie funktioniert das?') ?>
         </button>
         <!-- Create new activity -->
         <h3 class=""><?= lang('Add activity', 'Füge Aktivität hinzu') ?></h3>
@@ -160,7 +160,7 @@ if (!empty($form) && isset($form['_id'])) {
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
                     </div>
                     <small class="text-muted">
-                        <?=lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.')?>
+                        <?= lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.') ?>
                     </small>
                 </div>
 
@@ -323,7 +323,7 @@ if (!empty($form) && isset($form['_id'])) {
                 <div class="form-group" data-visible="editor,chapter">
                     <label for="editor" class="required"><?= lang('Editor(s) (in correct order)', 'Editor(en) (in korrekter Reihenfolge)') ?></label>
                     <div class="author-list">
-                        <?=$editors?>
+                        <?= $editors ?>
                         <input type="text" placeholder="Add editor ..." onkeypress="addAuthor(event, this, true);" id="add-editor" list="scientist-list">
                     </div>
                 </div>
@@ -342,7 +342,7 @@ if (!empty($form) && isset($form['_id'])) {
                         <input type="text" class="form-control" name="values[isbn]" value="<?= $form['isbn'] ?? '' ?>" id="pubmed">
                     </div>
                 </div>
-                
+
                 <div class="form-group" data-visible="article,book,chapter,editor">
                     <div class="custom-checkbox" id="open_access-div">
                         <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= ($form['open_access'] ?? false) ? 'checked' : '' ?>>
@@ -372,15 +372,16 @@ if (!empty($form) && isset($form['_id'])) {
                             </label>
                             <select class="form-control" id="role-input" name="values[role]" required autocomplete="off" onchange="reviewUIupdate(this)">
                                 <option value="Reviewer" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
-                                <option value="Reviewer">Reviewer</option>
-                                <option value="Editor">Editorial</option>
+                                <option value="Reviewer" <?= ($form['role'] ?? '') == 'Reviewer' ? 'selected' : '' ?>>Reviewer</option>
+                                <option value="Editor" <?= ($form['role'] ?? '') == 'Editor' ? 'selected' : '' ?>>Editorial</option>
                             </select>
+
                         </div>
                         <div class="col-sm">
                             <label class="required" for="journal-input">
                                 <?= lang('Journal') ?>
                             </label>
-                            <input type="text" class="form-control" placeholder="Journal" id="journal-input" name="values[journal]" list="journal-list" required>
+                            <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= $form['journal'] ?? '' ?>" name="values[journal]" list="journal-list" required>
 
                         </div>
                         <div class="col-sm-3">
@@ -401,9 +402,9 @@ if (!empty($form) && isset($form['_id'])) {
                         <label class="required" for="date">
                             <?= lang('Review date', 'Review-Datum') ?>
                         </label>
-                        <input type="date" class="form-control date" name="values[dates][]" id="date">
+                        <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray($form['start'] ?? '') ?>">
                         <small class="text-muted">
-                            <?= lang('More dates can be added later; only month and year are considered', 'Mehr Daten können später hinzugef. werden; nur Monat und Jahr sind relevant') ?>
+                            <?= lang('Only month and year are considered', 'Nur Monat und Jahr sind relevant') ?>
                         </small>
                     </div>
 
@@ -413,13 +414,13 @@ if (!empty($form) && isset($form['_id'])) {
                                 <label class="required" for="start">
                                     <?= lang('Beginning of editorial activity', 'Anfang der Editor-Tätigkeit') ?>
                                 </label>
-                                <input type="date" class="form-control start" name="values[start]" id="start">
+                                <input type="date" class="form-control start" name="values[start]" id="start" value="<?= valueFromDateArray($form['start'] ?? '') ?>">
                             </div>
                             <div class="col-sm">
                                 <label class="" for="end">
                                     <?= lang('End', 'Ende') ?>
                                 </label>
-                                <input type="date" class="form-control" name="values[end]" id="end">
+                                <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
                             </div>
                         </div>
                         <small class="text-muted">
@@ -437,7 +438,7 @@ if (!empty($form) && isset($form['_id'])) {
 
                 <?php } ?>
 
-                <div class="custom-file mb-20" id="file-input-div">
+                <div class="custom-file mb-20" id="file-input-div" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc">
                     <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                     <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div>
@@ -489,7 +490,7 @@ if (!empty($form) && isset($form['_id'])) {
     }
 
     function reviewUIupdate(el) {
-        var form = $(this).closest('form')
+        var form = $(el).closest('form')
         if (el.value == "Reviewer") {
             $('.editor-role').slideUp()
             $('.editor-role').find('input.start').attr('required', false).attr('disabled', true)
@@ -507,11 +508,16 @@ if (!empty($form) && isset($form['_id'])) {
 <?php if (!empty($form)) { ?>
     <script>
         togglePubType('<?= $form['type'] == 'publication' ? $form['pubtype'] : $form['type'] ?>');
+
+        <?php if (isset($form['role'])) { ?>
+            reviewUIupdate(document.getElementById('role-input'));
+        <?php } ?>
     </script>
+
 <?php } elseif (isset($_GET['type'])) { ?>
     <script>
         togglePubType('<?= $_GET['type'] ?>');
     </script>
 <?php } ?>
 
-<script src="<?=ROOTPATH?>/js/tour/add-activity.js"></script>
+<script src="<?= ROOTPATH ?>/js/tour/add-activity.js"></script>

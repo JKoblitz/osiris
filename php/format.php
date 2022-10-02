@@ -512,21 +512,22 @@ function format_misc($doc)
 
     if ($doc['iteration'] == "annual") {
 
-        $dates = $doc['dates'][0];
-        $start = format_date($dates['start']);
-        if (empty($dates['end'])) {
+        // $dates = $doc['dates'][0];
+        $start = format_date($doc['start']);
+        if (empty($doc['end'])) {
             $end = lang('today', "heute");
         } else {
-            $end = format_date($dates['end']);
+            $end = format_date($doc['end']);
         }
         $result .= lang("from $start to $end", "von $start bis $end");
     } else {
 
-        $dbdates = $doc['dates'];
-        foreach ($dbdates as $d) {
-            $dates[] = fromToDate($d['start'], $d['end']);
-        }
-        $result .= commalist($dates, lang('and', 'und'));
+        // $dbdates = $doc['dates'];
+        // foreach ($dbdates as $d) {
+        //     $dates[] = fromToDate($d['start'], $d['end']);
+        // }
+        // $result .= commalist($dates, lang('and', 'und'));
+        $result .= fromToDate($doc['start'], $doc['end']);
     }
 
     if (!empty($doc['location'])) {
@@ -552,23 +553,24 @@ function format_review($doc, $filterYear = false)
     }
 
     $result .= " " . lang("Reviewer for ", 'Reviewer für ');
-    $result .= '<em>' . $doc['journal'] . '</em>';
-    $times = 0;
-    $times_current = 0;
-    foreach ($doc['dates'] as $date) {
-        $times += 1;
-        if ($date['year'] == SELECTEDYEAR) {
-            $times_current += 1;
-        }
-    }
-    if ($filterYear) {
-        $result .= " ($times_current " . lang('times', 'mal') . ")";
-    } else {
-        $result .= lang(
-            " ($times times, $times_current in " . SELECTEDYEAR . ")",
-            " ($times mal, davon $times_current in " . SELECTEDYEAR . ")"
-        );
-    }
+    $result .= '<em>' . $doc['journal'] . '</em>. ';
+    $result .= format_month($doc['month']). " ". $doc['year'];
+    // $times = 0;
+    // $times_current = 0;
+    // foreach ($doc['dates'] as $date) {
+    //     $times += 1;
+    //     if ($date['year'] == SELECTEDYEAR) {
+    //         $times_current += 1;
+    //     }
+    // }
+    // if ($filterYear) {
+    //     $result .= " ($times_current " . lang('times', 'mal') . ")";
+    // } else {
+    //     $result .= lang(
+    //         " ($times times, $times_current in " . SELECTEDYEAR . ")",
+    //         " ($times mal, davon $times_current in " . SELECTEDYEAR . ")"
+    //     );
+    // }
     $result .= ".";
     return $result;
 }
