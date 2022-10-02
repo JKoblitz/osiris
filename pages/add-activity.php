@@ -28,9 +28,14 @@ if (!empty($form) && isset($form['_id'])) {
 
 <div class="content">
     <?php if (empty($form)) { ?>
+
+        <button class="btn btn-tour float-right" id="tour">
+            <i class="far fa-message-question mr-10"></i>
+            <?=lang('How does this work?', 'Wie funktioniert das?')?>
+        </button>
         <!-- Create new activity -->
         <h3 class=""><?= lang('Add activity', 'Füge Aktivität hinzu') ?></h3>
-        <form method="get" onsubmit="getPubData(event, this)">
+        <form method="get" onsubmit="getPubData(event, this)" id="search-doi">
             <div class="form-group">
                 <label for="doi"><?= lang('Search publication by DOI or Pubmed-ID', 'Suche Publikation über die DOI oder Pubmed-ID') ?>:</label>
                 <div class="input-group">
@@ -139,7 +144,7 @@ if (!empty($form) && isset($form['_id'])) {
                 </div>
 
                 <div class="form-group" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc,teaching">
-                    <div class="float-right" data-visible="article">
+                    <div class="float-right" data-visible="article" id="author-numbers">
                         <?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?>
                         <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
                         <?= lang('last authors:', 'Letztautoren:') ?>
@@ -339,20 +344,20 @@ if (!empty($form) && isset($form['_id'])) {
                 </div>
                 
                 <div class="form-group" data-visible="article,book,chapter,editor">
-                    <div class="custom-checkbox">
+                    <div class="custom-checkbox" id="open_access-div">
                         <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= ($form['open_access'] ?? false) ? 'checked' : '' ?>>
                         <label for="open_access">Open access</label>
                     </div>
                 </div>
 
                 <div class="form-group" data-visible="article">
-                    <div class="custom-checkbox <?= isset($_GET['epub']) ? 'text-danger' : '' ?>">
+                    <div class="custom-checkbox <?= isset($_GET['epub']) ? 'text-danger' : '' ?>" id="epub-div">
                         <input type="checkbox" id="epub" value="1" name="values[epub]" <?= (!isset($_GET['epub']) && ($form['epub'] ?? false)) ? 'checked' : '' ?>>
                         <label for="epub">Epub ahead of print</label>
                     </div>
                 </div>
                 <div class="form-group" data-visible="article">
-                    <div class="custom-checkbox">
+                    <div class="custom-checkbox" id="correction-div">
                         <input type="checkbox" id="correction" value="1" name="values[correction]" <?= ($form['correction'] ?? false) ? 'checked' : '' ?>>
                         <label for="correction"><?= lang('Correction') ?></label>
                     </div>
@@ -432,12 +437,12 @@ if (!empty($form) && isset($form['_id'])) {
 
                 <?php } ?>
 
-                <div class="custom-file mb-20">
-                    <input type="file" id="file-input-1" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
-                    <label for="file-input-1"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
+                <div class="custom-file mb-20" id="file-input-div">
+                    <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                    <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div>
 
-                <button class="btn btn-primary" type="submit"><?= $btntext ?></button>
+                <button class="btn btn-primary" type="submit" id="submit-btn"><?= $btntext ?></button>
 
             </form>
         </div>
@@ -508,3 +513,5 @@ if (!empty($form) && isset($form['_id'])) {
         togglePubType('<?= $_GET['type'] ?>');
     </script>
 <?php } ?>
+
+<script src="<?=ROOTPATH?>/js/tour/add-activity.js"></script>

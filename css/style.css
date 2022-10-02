@@ -180,6 +180,13 @@ strong {
     margin-top: .5rem;
 }
 
+.btn.btn-tour {
+    background-color: white;
+    color: var(--success-color);
+    border-color: var(--success-color);
+    border-left-width: 5px;
+}
+
 
 .lom {
     font-weight: bold;

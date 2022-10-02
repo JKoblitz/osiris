@@ -56,10 +56,15 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             color: var(--muted-color);
         }
     </style>
+    
+<link rel="stylesheet" href="<?=ROOTPATH?>/css/shepherd.css"/>
     <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
     <!-- Quill (rich-text editor) -->
     <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="shepherd.js/dist/css/shepherd.css"/> -->
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/js/shepherd.min.js"></script>
 
     <script src="<?= ROOTPATH ?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
     <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>

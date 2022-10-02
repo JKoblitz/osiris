@@ -128,12 +128,12 @@ function getCookie(cname) {
     return "";
 }
 function lang(en, de = null) {
-    var language = getCookie('mediadive-language');
+    var language = getCookie('osiris-language');
     if (de === null) return en;
-    if (language === undefined) return en;
+    if (language === undefined) return de;
     if (language == "en") return en;
     if (language == "de") return de;
-    return en;
+    return de;
 }
 
 function objectifyForm(formArray) {
