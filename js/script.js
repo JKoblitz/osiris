@@ -724,7 +724,9 @@ function togglePubType(type) {
     form.find('[data-visible]').hide()
         .find('input,select').attr('disabled', true)
     form.find('[data-visible*=' + type + ']').show()
+        .find(':not([data-visible]),[data-visible*=' + type + ']')
         .find('input,select').attr('disabled', false)
+    form.find('[data-visible*=' + type + '] > input, [data-visible*=' + type + '] > select').attr('disabled', false)
     form.slideDown()
 }
 

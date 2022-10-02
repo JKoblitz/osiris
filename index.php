@@ -325,10 +325,32 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     $id = new MongoDB\BSON\ObjectId($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
+    $copy = false;
 
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
         ['name' => lang("Edit", "Bearbeiten")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/add-activity.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/activities/copy/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    $user = $_SESSION['username'];
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $form = $osiris->activities->findOne(['_id' => $id]);
+    $copy = true;
+
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Copy", "Kopieren")]
     ];
 
     include BASEPATH . "/header.php";

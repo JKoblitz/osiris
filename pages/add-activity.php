@@ -1,6 +1,7 @@
 <?php
 
 $form = $form ?? array();
+$copy = $copy ?? false;
 $preset = $form['authors'] ?? array($USER);
 $authors = "";
 foreach ($preset as $a) {
@@ -14,7 +15,7 @@ foreach ($preset_editors as $a) {
 }
 
 $formaction = ROOTPATH . "/";
-if (!empty($form) && isset($form['_id'])) {
+if (!empty($form) && isset($form['_id']) && !$copy) {
     $formaction .= "update/" . $form['_id'];
     $btntext = '<i class="fas fa-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
@@ -47,6 +48,8 @@ if (!empty($form) && isset($form['_id'])) {
             </div>
         </form>
 
+        <?php } elseif ($copy) { ?>
+        <h3 class=""><?= lang('Copy activity', 'Kopiere Aktivität') ?></h3>
     <?php } else { ?>
         <!-- Edit existing activity -->
         <h3 class=""><?= lang('Edit activity', 'Bearbeite Aktivität') ?> <span class="text-signal">#<?= $id ?></span></h3>
@@ -216,6 +219,7 @@ if (!empty($form) && isset($form['_id'])) {
                         <select name="values[lecture_type]" id="lecture_type" class="form-control">
                             <option value="short" <?= $form['lecture_type'] ?? '' == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
                             <option value="long" <?= $form['lecture_type'] ?? '' == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
+                            <option value="repetition" <?= $form['lecture_type'] ?? '' == 'repetition' || $copy ? 'selected' : '' ?>>repetition</option>
                         </select>
                     </div>
                     <div class="col-sm">
@@ -225,7 +229,7 @@ if (!empty($form) && isset($form['_id'])) {
                     <div class="col-sm" data-visible="poster,misc,teaching">
                         <label for="end"><?= lang('End (leave empty if event was only one day)', 'Ende (leer lassen falls nur ein Tag)') ?></label>
                         <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
-                        <div id="end-question" style="display: none;">
+                        <div id="end-question" style="display: none;" data-visible="teaching">
                             <div class="custom-radio d-none">
                                 <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="<?= $form['status'] ?? '' ?>">
                                 <label for="status-in-progress"><?= lang('Completed', 'Abgeschlossen') ?></label>
@@ -429,7 +433,7 @@ if (!empty($form) && isset($form['_id'])) {
                     </div>
                 </div>
 
-                <?php if (!empty($form) && isset($form['file']) && !empty($form['file'])) { ?>
+                <?php if (!empty($form) && isset($form['file']) && !empty($form['file']) && !$copy) { ?>
                     <p>
                         <?= lang('The following file is appended to this entry:', 'Die folgende Datei ist diesem Eintrag angehängt:') ?>
                         <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>/file" class="btn"><?= lang('FILE', 'DATEI') ?></a>

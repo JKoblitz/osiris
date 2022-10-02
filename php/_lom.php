@@ -197,7 +197,7 @@ function lom($col, $doc)
         return array(
             'type' => "lecture>$pos",
             'id' => $doc['_id'],
-            'title' => $doc['title'],
+            'title' => $doc['title'] ?? '',
             'points' => "$points",
             'lom' => $points
         );
