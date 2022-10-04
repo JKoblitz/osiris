@@ -36,15 +36,39 @@ Route::get('/export/reports', function () {
 }, 'login');
 
 
+function getTypeTitle($type)
+{
+    $types = [
+        'teaching' => 'Lehre und Gäste',
+        'poster' => 'Poster',
+        'lecture' => 'Vorträge',
+        'publication' => 'Publikationen',
+        'misc' => 'Weitere Aktivitäten',
+        'review' => 'Reviews &amp; Editorial Boards'
+    ];
+    return $types[$type] ?? '';
+}
+
+
 Route::post('/export/publications', function () {
     require_once BASEPATH . '/php/_db.php';
+    require_once BASEPATH . '/php/format.php';
+    $Format = new Format($_SESSION['username'], 'word');
 
+    $order = array(
+        'publication',
+        'lecture',
+        'poster',
+        'review',
+        'misc',
+        'teaching',
+    );
     // select data
     $collection = $osiris->activities;
-    $options = ['sort' => ["year" => 1, "month" => 1]];
+    $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
 
     $filter = [];
-    if (isset($_POST['filter']['type']) && !empty($_POST['filter']['type'])){
+    if (isset($_POST['filter']['type']) && !empty($_POST['filter']['type'])) {
         $filter['type'] = trim($_POST['filter']['type']);
     }
     if (isset($_POST['filter']['user']) && !empty($_POST['filter']['user'])) {
@@ -54,6 +78,8 @@ Route::post('/export/publications', function () {
         $filter['year'] = intval($_POST['filter']['year']);
     }
     $cursor = $collection->find($filter, $options);
+
+    $headers = [];
 
     if ($_POST['format'] == "word") {
         // Creating the new document...
@@ -70,60 +96,68 @@ Route::post('/export/publications', function () {
 
         // Adding an empty Section to the document...
         $section = $phpWord->addSection();
-        $section->addTitle("Publikationen", 1);
 
-        // echo json_encode($filter);
-        // die;
-        //, 'year' => intval(SELECTEDYEAR)
+        // sort the elements
+        $cursor = $cursor->toArray();
+        usort($cursor, function ($a, $b) use ($order) {
+            $pos_a = array_search($a['type'], $order);
+            $pos_b = array_search($b['type'], $order);
+            return $pos_a - $pos_b;
+        });
+
         foreach ($cursor as $doc) {
+            if (!in_array($doc['type'], $headers)) {
+                $headers[] = $doc['type'];
+                $section->addTitle(getTypeTitle($doc['type']), 1);
+            }
             $paragraph = $section->addTextRun();
 
-            foreach ($doc['authors'] as $i => $a) {
-                $author = abbreviateAuthor($a['last'], $a['first']);
-                if (($a['aoi'] ?? 1) == 1) {
-                    $author = $paragraph->addText($author, ['bold' => true]);
-                } else {
-                    $author = $paragraph->addText($author);
-                }
-                if ($i == count($doc['authors']) - 2) {
-                    $paragraph->addText(" and ");
-                } elseif ($i < count($doc['authors']) - 1) {
-                    $paragraph->addText(", ");
-                }
-            }
+            $line = $Format->format($doc['type'], $doc);
+            
+            \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
 
-            // $result = formatAuthors($doc['authors']);
-            if (!empty($doc['year'])) {
-                $paragraph->addText(" ($doc[year])");
-            }
-            if (!empty($doc['title'])) {
-                // $paragraph->addText(" $doc[title].");
-                //preserve formtting of title:
-                \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, " $doc[title].");
-            }
-            if (!empty($doc['journal'])) {
-                //str_replace("&", "&amp;", " $doc[journal]")
-                $paragraph->addText(" ".$doc['journal'], ["italic" => true]);
+            // foreach ($doc['authors'] as $i => $a) {
+            //     $author = abbreviateAuthor($a['last'], $a['first']);
+            //     if (($a['aoi'] ?? 1) == 1) {
+            //         $author = $paragraph->addText($author, ['bold' => true]);
+            //     } else {
+            //         $author = $paragraph->addText($author);
+            //     }
+            //     if ($i == count($doc['authors']) - 2) {
+            //         $paragraph->addText(" and ");
+            //     } elseif ($i < count($doc['authors']) - 1) {
+            //         $paragraph->addText(", ");
+            //     }
+            // }
 
-                if (!empty($doc['volume'])) {
-                    $paragraph->addText(" $doc[volume]");
-                }
-                if (!empty($doc['pages'])) {
-                    $paragraph->addText(":$doc[pages].");
-                }
-            }
-            if (!empty($doc['doi'])) {
-                // $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
-            }
-            if (!empty($doc['epub'])) {
-                $paragraph->addText(" [Epub ahead of print]", ["color" => "#B61F29"]);
-            }
+            // // $result = formatAuthors($doc['authors']);
+            // if (!empty($doc['year'])) {
+            //     $paragraph->addText(" ($doc[year])");
+            // }
+            // if (!empty($doc['title'])) {
+            //     // $paragraph->addText(" $doc[title].");
+            //     //preserve formtting of title:
+            //     \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, " $doc[title].");
+            // }
+            // if (!empty($doc['journal'])) {
+            //     //str_replace("&", "&amp;", " $doc[journal]")
+            //     $paragraph->addText(" " . $doc['journal'], ["italic" => true]);
+
+            //     if (!empty($doc['volume'])) {
+            //         $paragraph->addText(" $doc[volume]");
+            //     }
+            //     if (!empty($doc['pages'])) {
+            //         $paragraph->addText(":$doc[pages].");
+            //     }
+            // }
+            // if (!empty($doc['doi'])) {
+            //     // $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
+            // }
+            // if (!empty($doc['epub'])) {
+            //     $paragraph->addText(" [Epub ahead of print]", ["color" => "#B61F29"]);
+            // }
             // $section->addText($result);
         }
-
-        // // Saving the document as HTML file...
-        // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
-        // $objWriter->save('helloWorld.html');
 
         // Download file
         $file = 'Publications.docx';
@@ -135,30 +169,30 @@ Route::post('/export/publications', function () {
         header('Expires: 0');
         $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $xmlWriter->save("php://output");
+
         // Saving the document as OOXML file...
         // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         // $objWriter->save('helloWorld.docx');
+        // // Saving the document as HTML file...
+        // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
+        // $objWriter->save('helloWorld.html');
 
-        // // Saving the document as ODF file...
-        // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'ODText');
-        // $objWriter->save('helloWorld.odt');
 
-        // include 'helloWorld.html';
 
-        /* Note: we skip RTF, because it's not XML-based and requires a different example. */
-        /* Note: we skip PDF, because "HTML-to-PDF" approach is used to create PDF documents. */
     } else if ($_POST['format'] == "bibtex") {
         header("Content-Type: text/plain; charset=utf-8");
 
         $bibentries = [
             'journal-article' => "article",
+            'article' => "article",
             'Journal Article' => "article",
             'book' => "book",
-            'book-chapter' => "inbook"
+            'chapter' => "inbook",
+            "misc" => "misc"
         ];
         foreach ($cursor as $doc) {
 
-            echo '@' . ($bibentries[trim($doc['type'])] ?? 'misc') . '{' . $doc['_id'] . ',' . PHP_EOL;
+            echo '@' . ($bibentries[trim($doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $doc['_id'] . ',' . PHP_EOL;
 
             if (isset($doc['title']) and ($doc['title'] != '')) echo '  Title = {' . $doc['title'] . '},' . PHP_EOL;
             if (isset($doc['authors']) and ($doc['authors'] != '')) echo '  Author = {' . formatAuthors($doc['authors'], ', ') . '},' . PHP_EOL;
@@ -171,7 +205,7 @@ Route::post('/export/publications', function () {
             if (isset($doc['doi']) and ($doc['doi'] != '')) echo '  Doi = {' . $doc['doi'] . '},' . PHP_EOL;
             if (isset($doc['isbn']) and ($doc['isbn'] != '')) echo '  Isbn = {' . $doc['isbn'] . '},' . PHP_EOL;
             if (isset($doc['publisher']) and ($doc['publisher'] != '')) echo '  Publisher = {' . $doc['publisher'] . '},' . PHP_EOL;
-            if (isset($doc['booktitle']) and ($doc['booktitle'] != '')) echo '  Booktitle = {' . $doc['booktitle'] . '},' . PHP_EOL;
+            if (isset($doc['book']) and ($doc['book'] != '')) echo '  Booktitle = {' . $doc['book'] . '},' . PHP_EOL;
             if (isset($doc['chapter']) and ($doc['chapter'] != '')) echo '  Chapter = {' . $doc['chapter'] . '},' . PHP_EOL;
             if (isset($doc['abstract']) and ($doc['abstract'] != '')) echo '  Abstract = {' . $doc['abstract'] . '},' . PHP_EOL;
             if (isset($doc['keywords']) and ($doc['keywords'] != '')) {

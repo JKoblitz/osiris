@@ -318,7 +318,11 @@ class Format
 
     function format_teaching($doc, $verbose = false)
     {
-        $result = $doc['academic_title'] . ' ' . $doc['name'] . ', ' . $doc['affiliation'] . '. ';
+        $result = "";
+        if (!empty($doc['academic_title'])) {
+            $result .= $doc['academic_title'] . ' ';
+        }
+        $result .= $doc['name'] . ', ' . $doc['affiliation'] . '. ';
         $result .=  $doc['title'] . '; ' . $doc['category'];
 
         if (!empty($doc['details'])) {
@@ -498,7 +502,7 @@ class Format
                 $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
             }
         }
-        if ($first > 1 || $last > 1) $result .= "<br>";
+        if ($first > 1 || $last > 1) $result .= "<br />";
         if ($first > 1) {
             $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
         }
@@ -587,14 +591,14 @@ class Format
     {
         $result = "";
         if (!empty($doc['name'] ?? '')) {
-            $result .= "<b>$doc[name]</b> ";
+            $result .= "<b>$doc[name]</b>";
         } elseif (!empty($doc['authors'] ?? '')) {
             $result .= $this->formatAuthors($doc['authors']);
         } else {
             $userdata = getUserFromId($doc['user']);
-            $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";
+            $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
         }
-        $result .= lang("Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
+        $result .= lang(" Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
         $result .= '<em>' . $doc['journal'] . '</em>';
         if (!empty($doc['start'])) {
             if (!empty($doc['end'])) {
