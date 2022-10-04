@@ -5,6 +5,7 @@
 <?php
 
 $user = $_SESSION['username'];
+$Format = new Format();
 // $author_highlight = $user;
 ?>
 
@@ -137,7 +138,7 @@ $user = $_SESSION['username'];
                         </span>
                     </td>
                     <td>
-                        <?php echo format($document['type'], $document); ?>
+                        <?php echo $Format->format($document['type'], $document); ?>
                     </td>
                     <td class="unbreakable">
                         <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $document['type'] ?>', '<?= $id ?>')">

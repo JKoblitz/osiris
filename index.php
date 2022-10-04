@@ -389,9 +389,8 @@ Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
     include_once BASEPATH . "/php/_db.php";
 
     if (empty($user)) $user = $_SESSION['username'];
-    global $author_highlight;
-    $author_highlight = $user;
-    include_once BASEPATH . "/php/format.php";
+    include_once BASEPATH . "/php/format.php";    
+    $Format = new Format($user);
 
     $scientist = getUserFromId($user);
     $name = $scientist['displayname'];

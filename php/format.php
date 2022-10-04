@@ -17,7 +17,7 @@ function abbreviateAuthor($last, $first, $reverse = true)
         $fn .= " " . $name[0] . ".";
     }
     if ($reverse) return $last . "," . $fn;
-    return $fn . " ". $last;
+    return $fn . " " . $last;
 }
 
 function authorForm($a, $is_editor = false)
@@ -28,52 +28,6 @@ function authorForm($a, $is_editor = false)
         $a[last], $a[first]<input type='hidden' name='values[$name][]' value='$a[last];$a[first];$aoi'>
         <a onclick='removeAuthor(event, this);'>&times;</a>
         </div>";
-}
-
-function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
-{
-    global $author_highlight;
-    $authors = array();
-    foreach ($raw_authors as $a) {
-        $author = abbreviateAuthor($a['last'], $a['first']);
-        // dump(($a['aoi'] ?? 0) == 1);
-        if ((!isset($author_highlight) || empty($author_highlight))) {
-            if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
-        } else if ($a['user'] == $author_highlight) {
-            $author = "<b>$author</b>";
-        }
-        if ($first > 1 && $a['position'] == 'first') {
-            $author .= "<sup>#</sup>";
-        }
-        if ($last > 1 && $a['position'] == 'last') {
-            $author .= "<sup>*</sup>";
-        }
-        $authors[] = $author;
-    }
-    return commalist($authors, $separator);
-}
-
-function formatEditors($raw_editors, $separator = 'and', $first = 1, $last = 1)
-{
-    global $author_highlight;
-    $editors = array();
-    foreach ($raw_editors as $a) {
-        $editor = abbreviateAuthor($a['last'], $a['first'], false);
-        // dump(($a['aoi'] ?? 0) == 1);
-        if ((!isset($author_highlight) || empty($author_highlight))) {
-            if (($a['aoi'] ?? 0) == 1) $editor = "<b>$editor</b>";
-        } else if ($a['user'] == $author_highlight) {
-            $editor = "<b>$editor</b>";
-        }
-        if ($first > 1 && $a['position'] == 'first') {
-            $editor .= "<sup>#</sup>";
-        }
-        if ($last > 1 && $a['position'] == 'last') {
-            $editor .= "<sup>*</sup>";
-        }
-        $editors[] = $editor;
-    }
-    return commalist($editors, $separator);
 }
 
 
@@ -288,317 +242,372 @@ function activity_icon($doc)
 }
 
 // format functions
-function format($col, $doc)
+
+class Format
 {
-    switch ($col) {
-        case 'teaching':
-            return format_teaching($doc);
-        case 'poster':
-            return format_poster($doc);
-        case 'lecture':
-            return format_lecture($doc);
-        case 'publication':
-            return format_publication($doc);
-        case 'misc':
-            return format_misc($doc);
-        case 'review':
-            if ($doc['role'] == 'Reviewer') {
-                return format_review($doc);
-            } else {
-                return format_editorial($doc);
-            }
-        default:
-            return "";
-    }
-}
+    private $useronly = false;
+    private $usecase = "web";
 
-function format_teaching($doc, $verbose = false)
-{
-    $result = $doc['academic_title'] . ' ' . $doc['name'] . ', ' . $doc['affiliation'] . '. ';
-    $result .=  $doc['title'] . '; ' . $doc['category'];
-
-    if (!empty($doc['details'])) {
-        $result .= " (" . $doc["details"] . ")";
-    }
-    $result .= ". ";
-    $result .= fromToDate($doc['start'], $doc['end']);
-
-    if (in_array($doc['category'], ["Doktorand:in", "Master-Thesis", "Bachelor-Thesis"]) && !empty($doc['status'])) {
-
-        if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
-            $result .= " (<b class='text-danger'>" . $doc['status'] . "</b>),";
-        } else {
-            $result .= " (" . $doc['status'] . "),";
-        }
-    } else {
-        $result .= ",";
+    function __construct($useronly = false, $usecase = 'web')
+    {
+        $this->useronly = $useronly;
+        $this->usecase = $usecase;
     }
 
-    $result .= " betreut von " . formatAuthors($doc['authors']);
-
-    if ($verbose) {
-        if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
-            echo '<p class="text-danger mt-0">' . lang(
-                "Attention: the Thesis of $doc[name] has ended. Please confirm if the work was successfully completed or not or extend the time frame.",
-                "Achtung: die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
-            ) . '</p>';
-        }
-    }
-
-    return $result;
-}
-
-function format_poster($doc)
-{
-    $result = formatAuthors($doc['authors']);
-    if (!empty($doc['title'])) {
-        $result .= " $doc[title].";
-    }
-    if (!empty($doc['conference'])) {
-        $result .= " $doc[conference]";
-    }
-    if (!empty($doc['location'])) {
-        $result .= ", $doc[location].";
-    } else {
-        $result .= ".";
-    }
-    $result .= " " . fromToDate($doc['start'], $doc['end'] ?? null);
-    return $result;
-}
-
-function format_lecture($doc)
-{
-    $result = formatAuthors($doc['authors']);
-    if (!empty($doc['year'])) {
-        $result .= " ($doc[year])";
-    }
-    if (!empty($doc['title'])) {
-        $result .= " $doc[title].";
-    }
-    if (!empty($doc['conference'])) {
-        $result .= " $doc[conference].";
-    }
-    $result .= " " . fromToDate($doc['start'], null);
-
-    if (!empty($doc['location'])) {
-        $result .= ", $doc[location].";
-    } else {
-        $result .= ".";
-    }
-
-    $result .= " (" . $doc['lecture_type'] . ")";
-    return $result;
-}
-
-function format_publication($doc)
-{
-    $result = "";
-
-    if (!is_array($doc['authors'])) {
-        $doc['authors'] = $doc['authors']->bsonSerialize();
-    }
-
-    if (!empty($doc['authors']) && is_array($doc['authors'])) {
-
-        $pos = array_count_values(array_column($doc['authors'], 'position'));
-        $first = $pos['first'] ?? 1;
-        $last = $pos['last'] ?? 1;
-        $result .= formatAuthors($doc['authors'], 'and', $first, $last);
-    } else {
-        $first = 1;
-        $last = 1;
-    }
-
-    if (!empty($doc['year'])) {
-        $result .= " ($doc[year])";
-    }
-    if (!empty($doc['correction'])) {
-        $result .= " <span class='text-danger'>Correction to:</span>";
-    }
-    if (!empty($doc['title'])) {
-        $result .= " $doc[title].";
-    }
-    // TODO:
-
-    switch (strtolower(trim($doc['pubtype']))) {
-        case 'journal article':
-        case 'journal-article':
-        case 'article':
-            if (!empty($doc['journal'])) {
-                $result .= " <em>$doc[journal]</em>";
-
-                if (!empty($doc['volume'])) {
-                    $result .= " $doc[volume]";
+    function format($col, $doc)
+    {
+        switch ($col) {
+            case 'teaching':
+                return $this->format_teaching($doc);
+            case 'poster':
+                return $this->format_poster($doc);
+            case 'lecture':
+                return $this->format_lecture($doc);
+            case 'publication':
+                return $this->format_publication($doc);
+            case 'misc':
+                return $this->format_misc($doc);
+            case 'review':
+                if ($doc['role'] == 'Reviewer') {
+                    return $this->format_review($doc);
+                } else {
+                    return $this->format_editorial($doc);
                 }
-                if (!empty($doc['pages'])) {
-                    $result .= ":$doc[pages].";
-                }
-            }
-            break;
-
-        case 'magazine article':
-        case 'magazine':
-            if (!empty($doc['magazine'])) {
-                $result .= " <em>$doc[magazine]</em>.";
-            }
-            if (!empty($doc['link'])) {
-                $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
-            }
-            break;
-        case 'book-chapter':
-        case 'chapter':
-            if (!empty($doc['book'])) {
-                // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
-                // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
-                // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
-                $result .= " In:";
-                if (!empty($doc['editors'])) {
-                    $result .= formatAuthors($doc['editors'], 'and');
-                };    
-                $result .= " $doc[book]";
-            }
-            if (!empty($doc['edition'])) {
-                $ed = $doc['edition'];
-                if ($ed == 1) $ed .= "st";
-                elseif ($ed == 1) $ed .= "nd";
-                else $ed .= "th";
-                $result .= ", $doc[edition]. Edition ";
-            }
-            
-            if (!empty($doc['city'])) {
-                $result .= " $doc[city]:";
-            }
-            if (!empty($doc['publisher'])) {
-                $result .= ", $doc[publisher]";
-            }
-            
-            $result .= ".";
-            break;
-        case 'book':
-
-        default:
-            # code...
-            break;
-    }
-    if (!empty($doc['doi'])) {
-        $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
-    }
-    if (!empty($doc['epub'])) {
-        $result .= " <span class='text-danger'>[Epub ahead of print]</span>";
-    }
-    if (!empty($doc['open_access'])) {
-        $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
-    }
-
-    if ($first > 1 || $last > 1) $result .= "<br>";
-    if ($first > 1) {
-        $result .= "<span class='text-muted'><sup>#</sup> Shared first authors</span>";
-    }
-    if ($last > 1) {
-        $result .= "<span class='text-muted'><sup>*</sup> Shared last authors</span>";
-    }
-
-    return $result;
-}
-
-
-function format_misc($doc)
-{
-    $result = formatAuthors($doc['authors']);
-
-    if (!empty($doc['title'])) {
-        $result .= " $doc[title], ";
-    }
-
-    if ($doc['iteration'] == "annual") {
-
-        // $dates = $doc['dates'][0];
-        $start = format_date($doc['start']);
-        if (empty($doc['end'])) {
-            $end = lang('today', "heute");
-        } else {
-            $end = format_date($doc['end']);
+            default:
+                return "";
         }
-        $result .= lang("from $start to $end", "von $start bis $end");
-    } else {
+    }
 
-        // $dbdates = $doc['dates'];
-        // foreach ($dbdates as $d) {
-        //     $dates[] = fromToDate($d['start'], $d['end']);
-        // }
-        // $result .= commalist($dates, lang('and', 'und'));
+
+    function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
+    {
+        $authors = array();
+        foreach ($raw_authors as $a) {
+            $author = abbreviateAuthor($a['last'], $a['first']);
+            if (!$this->useronly) {
+                if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
+            } else if ($a['user'] == $this->useronly) {
+                $author = "<b>$author</b>";
+            }
+            if ($first > 1 && $a['position'] == 'first') {
+                $author .= "<sup>#</sup>";
+            }
+            if ($last > 1 && $a['position'] == 'last') {
+                $author .= "<sup>*</sup>";
+            }
+            $authors[] = $author;
+        }
+        return commalist($authors, $separator);
+    }
+
+    function formatEditors($raw_editors, $separator = 'and')
+    {
+        $editors = array();
+        foreach ($raw_editors as $a) {
+            $editor = abbreviateAuthor($a['last'], $a['first'], false);
+            if (!$this->useronly) {
+                if (($a['aoi'] ?? 0) == 1) $editor = "<b>$editor</b>";
+            } else if ($a['user'] ?? '' == $this->useronly) {
+                $editor = "<b>$editor</b>";
+            }
+            $editors[] = $editor;
+        }
+        return commalist($editors, $separator);
+    }
+
+
+    function format_teaching($doc, $verbose = false)
+    {
+        $result = $doc['academic_title'] . ' ' . $doc['name'] . ', ' . $doc['affiliation'] . '. ';
+        $result .=  $doc['title'] . '; ' . $doc['category'];
+
+        if (!empty($doc['details'])) {
+            $result .= " (" . $doc["details"] . ")";
+        }
+        $result .= ". ";
         $result .= fromToDate($doc['start'], $doc['end']);
-    }
 
-    if (!empty($doc['location'])) {
-        $result .= ", $doc[location].";
-    } else {
-        $result .= ".";
-    }
-    return $result;
-}
+        if (in_array($doc['category'], ["Doktorand:in", "Master-Thesis", "Bachelor-Thesis"]) && !empty($doc['status'])) {
 
-
-
-function format_review($doc, $filterYear = false)
-{
-    $result = "";
-    if (!empty($doc['name'] ?? '')) {
-        $result .= "<b>$doc[name]</b>";
-    } elseif (!empty($doc['authors'] ?? '')) {
-        $result .= formatAuthors($doc['authors']);
-    } else {
-        $userdata = getUserFromId($doc['user']);
-        $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
-    }
-
-    $result .= " " . lang("Reviewer for ", 'Reviewer für ');
-    $result .= '<em>' . $doc['journal'] . '</em>. ';
-    $result .= format_month($doc['month']). " ". $doc['year'];
-    // $times = 0;
-    // $times_current = 0;
-    // foreach ($doc['dates'] as $date) {
-    //     $times += 1;
-    //     if ($date['year'] == SELECTEDYEAR) {
-    //         $times_current += 1;
-    //     }
-    // }
-    // if ($filterYear) {
-    //     $result .= " ($times_current " . lang('times', 'mal') . ")";
-    // } else {
-    //     $result .= lang(
-    //         " ($times times, $times_current in " . SELECTEDYEAR . ")",
-    //         " ($times mal, davon $times_current in " . SELECTEDYEAR . ")"
-    //     );
-    // }
-    $result .= ".";
-    return $result;
-}
-
-function format_editorial($doc)
-{
-    $result = "";
-    if (!empty($doc['name'] ?? '')) {
-        $result .= "<b>$doc[name]</b> ";
-    } elseif (!empty($doc['authors'] ?? '')) {
-        $result .= formatAuthors($doc['authors']);
-    } else {
-        $userdata = getUserFromId($doc['user']);
-        $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";
-    }
-    $result .= lang("Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
-    $result .= '<em>' . $doc['journal'] . '</em>';
-    if (!empty($doc['start'])) {
-        if (!empty($doc['end'])) {
-            $result .= lang(", from ", ", von ");
-            $result .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
-            $result .= lang(" until ", " bis ");
-            $result .= format_month($doc['end']['month']) . ' ' . $doc['end']['year'];
+            if ($this->usecase == 'web' && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
+                $result .= " (<b style='color:#B61F29;'>" . $doc['status'] . "</b>),";
+            } else {
+                $result .= " (" . $doc['status'] . "),";
+            }
         } else {
-            $result .= lang(", since ", ", seit ");
-            $result .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
+            $result .= ",";
         }
+
+        $result .= " betreut von " . $this->formatAuthors($doc['authors']);
+
+        // if ($verbose) {
+        //     if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
+        //         echo '<p class="text-danger mt-0">' . lang(
+        //             "Attention: the Thesis of $doc[name] has ended. Please confirm if the work was successfully completed or not or extend the time frame.",
+        //             "Achtung: die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
+        //         ) . '</p>';
+        //     }
+        // }
+
+        return $result;
     }
-    $result .= ".";
-    return $result;
+
+    function format_poster($doc)
+    {
+        $result = $this->formatAuthors($doc['authors']);
+        if (!empty($doc['title'])) {
+            $result .= " $doc[title].";
+        }
+        if (!empty($doc['conference'])) {
+            $result .= " $doc[conference]";
+        }
+        if (!empty($doc['location'])) {
+            $result .= ", $doc[location].";
+        } else {
+            $result .= ".";
+        }
+        $result .= " " . fromToDate($doc['start'], $doc['end'] ?? null);
+        return $result;
+    }
+
+    function format_lecture($doc)
+    {
+        $result = $this->formatAuthors($doc['authors']);
+        if (!empty($doc['year'])) {
+            $result .= " ($doc[year])";
+        }
+        if (!empty($doc['title'])) {
+            $result .= " $doc[title].";
+        }
+        if (!empty($doc['conference'])) {
+            $result .= " $doc[conference].";
+        }
+        $result .= " " . fromToDate($doc['start'], null);
+
+        if (!empty($doc['location'])) {
+            $result .= ", $doc[location].";
+        } else {
+            $result .= ".";
+        }
+
+        $result .= " (" . $doc['lecture_type'] . ")";
+        return $result;
+    }
+
+    function format_publication($doc)
+    {
+        $result = "";
+
+        if (!is_array($doc['authors'])) {
+            $doc['authors'] = $doc['authors']->bsonSerialize();
+        }
+
+        if (!empty($doc['authors']) && is_array($doc['authors'])) {
+
+            $pos = array_count_values(array_column($doc['authors'], 'position'));
+            $first = $pos['first'] ?? 1;
+            $last = $pos['last'] ?? 1;
+            $result .= $this->formatAuthors($doc['authors'], 'and', $first, $last);
+        } else {
+            $first = 1;
+            $last = 1;
+        }
+
+        if (!empty($doc['year'])) {
+            $result .= " ($doc[year])";
+        }
+        if (!empty($doc['correction'])) {
+            $result .= " <span style='color:#B61F29;'>Correction to:</span>";
+        }
+        if (!empty($doc['title'])) {
+            $result .= " $doc[title].";
+        }
+        // TODO:
+
+        switch (strtolower(trim($doc['pubtype']))) {
+            case 'journal article':
+            case 'journal-article':
+            case 'article':
+                if (!empty($doc['journal'])) {
+                    $result .= " <em>$doc[journal]</em>";
+
+                    if (!empty($doc['volume'])) {
+                        $result .= " $doc[volume]";
+                    }
+                    if (!empty($doc['pages'])) {
+                        $result .= ":$doc[pages].";
+                    }
+                }
+                break;
+
+            case 'magazine article':
+            case 'magazine':
+                if (!empty($doc['magazine'])) {
+                    $result .= " <em>$doc[magazine]</em>.";
+                }
+                if (!empty($doc['link'])) {
+                    $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
+                }
+                break;
+            case 'book-chapter':
+            case 'chapter':
+                if (!empty($doc['book'])) {
+                    // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
+                    // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
+                    // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
+                    $result .= " In:";
+                    if (!empty($doc['editors'])) {
+                        $result .= $this->formatAuthors($doc['editors'], 'and');
+                    };
+                    $result .= " $doc[book]";
+                }
+                if (!empty($doc['edition'])) {
+                    $ed = $doc['edition'];
+                    if ($ed == 1) $ed .= "st";
+                    elseif ($ed == 1) $ed .= "nd";
+                    else $ed .= "th";
+                    $result .= ", $doc[edition]. Edition ";
+                }
+
+                if (!empty($doc['city'])) {
+                    $result .= " $doc[city]:";
+                }
+                if (!empty($doc['publisher'])) {
+                    $result .= ", $doc[publisher]";
+                }
+
+                $result .= ".";
+                break;
+            case 'book':
+
+            default:
+                # code...
+                break;
+        }
+        if ($this->usecase == 'web') {
+            if (!empty($doc['doi'])) {
+                $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
+            }
+        }
+        if (!empty($doc['epub'])) {
+            $result .= " <span style='color:#B61F29;'>[Epub ahead of print]</span>";
+        }
+
+        if ($this->usecase == 'web') {
+            if (!empty($doc['open_access'])) {
+                $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
+            }
+        }
+        if ($first > 1 || $last > 1) $result .= "<br>";
+        if ($first > 1) {
+            $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
+        }
+        if ($last > 1) {
+            $result .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
+        }
+
+        return $result;
+    }
+
+
+    function format_misc($doc)
+    {
+        $result = $this->formatAuthors($doc['authors']);
+
+        if (!empty($doc['title'])) {
+            $result .= " $doc[title], ";
+        }
+
+        if ($doc['iteration'] == "annual") {
+
+            // $dates = $doc['dates'][0];
+            $start = format_date($doc['start']);
+            if (empty($doc['end'])) {
+                $end = lang('today', "heute");
+            } else {
+                $end = format_date($doc['end']);
+            }
+            $result .= lang("from $start to $end", "von $start bis $end");
+        } else {
+
+            // $dbdates = $doc['dates'];
+            // foreach ($dbdates as $d) {
+            //     $dates[] = fromToDate($d['start'], $d['end']);
+            // }
+            // $result .= commalist($dates, lang('and', 'und'));
+            $result .= fromToDate($doc['start'], $doc['end']);
+        }
+
+        if (!empty($doc['location'])) {
+            $result .= ", $doc[location].";
+        } else {
+            $result .= ".";
+        }
+        return $result;
+    }
+
+
+
+    function format_review($doc, $filterYear = false)
+    {
+        $result = "";
+        if (!empty($doc['name'] ?? '')) {
+            $result .= "<b>$doc[name]</b>";
+        } elseif (!empty($doc['authors'] ?? '')) {
+            $result .= $this->formatAuthors($doc['authors']);
+        } else {
+            $userdata = getUserFromId($doc['user']);
+            $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
+        }
+
+        $result .= " " . lang("Reviewer for ", 'Reviewer für ');
+        $result .= '<em>' . $doc['journal'] . '</em>. ';
+        $result .= format_month($doc['month']) . " " . $doc['year'];
+        // $times = 0;
+        // $times_current = 0;
+        // foreach ($doc['dates'] as $date) {
+        //     $times += 1;
+        //     if ($date['year'] == SELECTEDYEAR) {
+        //         $times_current += 1;
+        //     }
+        // }
+        // if ($filterYear) {
+        //     $result .= " ($times_current " . lang('times', 'mal') . ")";
+        // } else {
+        //     $result .= lang(
+        //         " ($times times, $times_current in " . SELECTEDYEAR . ")",
+        //         " ($times mal, davon $times_current in " . SELECTEDYEAR . ")"
+        //     );
+        // }
+        $result .= ".";
+        return $result;
+    }
+
+    function format_editorial($doc)
+    {
+        $result = "";
+        if (!empty($doc['name'] ?? '')) {
+            $result .= "<b>$doc[name]</b> ";
+        } elseif (!empty($doc['authors'] ?? '')) {
+            $result .= $this->formatAuthors($doc['authors']);
+        } else {
+            $userdata = getUserFromId($doc['user']);
+            $result .= "<b>$userdata[last], $userdata[first_abbr]</b> ";
+        }
+        $result .= lang("Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
+        $result .= '<em>' . $doc['journal'] . '</em>';
+        if (!empty($doc['start'])) {
+            if (!empty($doc['end'])) {
+                $result .= lang(", from ", ", von ");
+                $result .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
+                $result .= lang(" until ", " bis ");
+                $result .= format_month($doc['end']['month']) . ' ' . $doc['end']['year'];
+            } else {
+                $result .= lang(", since ", ", seit ");
+                $result .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
+            }
+        }
+        $result .= ".";
+        return $result;
+    }
 }

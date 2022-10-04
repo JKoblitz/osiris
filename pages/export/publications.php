@@ -10,8 +10,8 @@
             <div class="form-group">
                 <label for="filter-type"><?= lang('Filter by type', 'Filter nach Art der Aktivität') ?></label>
                 <select name="filter[type]" id="filter-type" class="form-control">
-                    <option value="" disabled><?= lang('All type of activities', 'Alle Arten von Aktivitäten') ?></option>
-                    <option value="publication" selected><?= lang('Only publications', 'Nur Publikationen') ?></option>
+                    <option value=""><?= lang('All type of activities', 'Alle Arten von Aktivitäten') ?></option>
+                    <option value="publication"><?= lang('Only publications', 'Nur Publikationen') ?></option>
                 </select>
             </div>
 

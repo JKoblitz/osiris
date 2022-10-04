@@ -1,7 +1,12 @@
+<?php
+    
+    $Format = new Format();
+?>
+
 <h2><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h2>
 
 <p>
-    <?= format($activity['type'], $activity) ?>
+    <?= $Format->format($activity['type'], $activity) ?>
 </p>
 
 <div class="alert alert-signal mt-20">

@@ -199,7 +199,7 @@ foreach ($queries as $col => $val) {
                     echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$col-$id'>";
                     if ($val['show-quarter']) echo "<td class='quarter'>Q$q</td>";
                     echo "<td>";
-                    echo format($col, $document);
+                    echo $Format->format($col, $document);
 
                     // show error messages, warnings and todos
                     if ($currentuser) {
