@@ -33,7 +33,7 @@ if (isset($raw['dept']) && !empty($raw['dept'])) {
             <option value=""><?=lang('All departments', 'Alle Abteilungen')?></option>
             <?php
             $depts = [
-                "BI & DB", "IT", "Services", "MIG", "Verwaltung", "MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD", "Presse und Kommunikation"
+                "BIDB", "IT", "Services", "MIG", "Verwaltung", "MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD", "Presse und Kommunikation"
             ];
             sort($depts);
             $dept_filter = $raw['dept'] ?? '';

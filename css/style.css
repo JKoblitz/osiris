@@ -152,6 +152,13 @@ color: var(--signal-color);
     box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
 }
 
+.ql-snow.ql-toolbar::after,
+.ql-snow .ql-toolbar::after {
+    content: '<?= lang('Please check spelling and formatting carefully.', 'Bitte Rechtschreibung und Formatierung sorgsam prüfen.') ?>';
+    display: inline-block;
+    color: var(--muted-color);
+}
+
 strong { 
     font-weight: 900;
 }

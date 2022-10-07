@@ -56,7 +56,7 @@ if (isset($raw['search']) && !empty($raw['search'])) {
             <tr>
                 <td><a href="<?= ROOTPATH ?>/view/journal/<?= $document['_id'] ?>"><?= $document['_id'] ?></a></td>
                 <td><?= $document['journal'] ?></td>
-                <td><?= $document['journal_abbr'] ?></td>
+                <td><?= $document['abbr'] ?></td>
                 <td><?= implode(', ', $document['issn']->bsonSerialize()) ?></td>
             </tr>
         <?php

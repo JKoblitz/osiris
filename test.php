@@ -15,7 +15,7 @@ if (!empty($doc['authors']) && is_array($doc['authors'])) {
     $pos = array_count_values(array_column($doc['authors'], 'position'));
     $first = $pos['first'] ?? 1;
     $last = $pos['last'] ?? 1;
-    $authors = formatAuthors($doc['authors'], 'and', $first, $last);
+    $authors = $this->formatAuthors($doc['authors'], 'and', $first, $last);
 }
 
 
@@ -77,7 +77,7 @@ switch ($type) {
             // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
             $result .= " In:";
             if (!empty($doc['editors'])) {
-                $result .= formatEditors($doc['editors'], 'and'). " (eds).";
+                $result .= $this->formatEditors($doc['editors'], 'and'). " (eds).";
             };
             $result .= " <em>$doc[book]</em>";
         }
@@ -107,27 +107,64 @@ switch ($type) {
         }
         break;
     case 'book':
+        $result .= $authors;
+        if (!empty($doc['year'])) {
+            $result .= " ($doc[year])";
+        }
+        if (!empty($doc['title'])) {
+            $result .= " <em>$doc[title]</em>.";
+        }
+        if (!empty($doc['edition']) || !empty($doc['pages'])) {
+            $ep = array();
+            if (!empty($doc['edition'])) {
+                $ed = $doc['edition'];
+                if ($ed == 1) $ed .= "st";
+                elseif ($ed == 1) $ed .= "nd";
+                else $ed .= "th";
+                $ep[] = $ed . " ed.";
+            }
 
+            if (!empty($doc['pages'])) {
+                $ep[] = "pp. $doc[pages]";
+            }
+
+            $result .= " (" . implode(', ', $ep) . ")";
+        }
+        $result .= ".";
+
+        if (!empty($doc['city'])) {
+            $result .= " $doc[city]:";
+        }
+        if (!empty($doc['publisher'])) {
+            $result .= " $doc[publisher].";
+        }
+        break;
     default:
         # code...
         break;
 }
-if (!empty($doc['doi'])) {
-    $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
+
+if ($this->usecase == 'web') {
+    if (!empty($doc['doi'])) {
+        $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
+    }
 }
 if (!empty($doc['epub'])) {
-    $result .= " <span class='text-danger'>[Epub ahead of print]</span>";
+    $result .= " <span style='color:#B61F29;'>[Epub ahead of print]</span>";
 }
-if (!empty($doc['open_access'])) {
-    $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
+
+if ($this->usecase == 'web') {
+    if (!empty($doc['open_access'])) {
+        $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
+    }
 }
 
 if ($first > 1 || $last > 1) $result .= "<br>";
 if ($first > 1) {
-    $result .= "<span class='text-muted'><sup>#</sup> Shared first authors</span>";
+    $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
 }
 if ($last > 1) {
-    $result .= "<span class='text-muted'><sup>*</sup> Shared last authors</span>";
+    $result .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
 }
 
 echo $result;

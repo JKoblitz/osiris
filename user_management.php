@@ -1,9 +1,10 @@
 <?php 
 
+
 function get_dept($unit){
     $translate = [
-        "Bioinformatik und Datenbanken" => "BI",
-        "Bioinformatik" => "BI",
+        "Bioinformatik und Datenbanken" => "BIDB",
+        "Bioinformatik" => "BIDB",
         "IT Systemadministrator" => "IT",
         "Mios" => "MIOS",
         "Mutz" => "MuTZ",
@@ -11,7 +12,7 @@ function get_dept($unit){
         "Verwaltung - Administrative Geschäftsführung" => "Verwaltung",
         "Moed" => "MÖD",
         "MOED" => "MÖD",
-        "AG-Sproer" => "BI",
+        "AG-Sproer" => "BIDB",
         "MIOS-AG Pester" => "MIOS",
         "BUG Phagen" => "BUG",
         "BUG Pilze" => "BUG",
@@ -34,11 +35,11 @@ function get_dept($unit){
         "PLV" => "PFVI",
         "Compliance " => "Verwaltung",
         "Qualitätsmanagement" => "Verwaltung",
-        "Bi & DB" => "BI & DB"
+        "Bi & DB" => "BIDB"
         // "SeM" => "BI"
     ];
     $allowed = [
-        "BI & DB", "IT", "Services", "MIG", "Verwaltung", "MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD", "Presse und Kommunikation"
+        "BIDB", "IT", "Services", "MIG", "Verwaltung", "MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD", "Presse und Kommunikation"
     ];
     // $depts = array();
     
@@ -50,9 +51,21 @@ function get_dept($unit){
     return $dept;
 }
 
+Route::get('/update-users-temp', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $osiris->users->updateMany(
+        ['dept' => 'BI & DB'],
+        ['$set' => ["dept" => 'BIDB']]
+    );
+    $osiris->activities->updateMany(
+        ['doctype' => 'article'],
+        ['$set' => ["pubtype" => 'article']]
+    );
+    echo 'done';
+});
+
 Route::get('/userman', function () {
     include_once BASEPATH . "/php/_login.php";
-    include_once BASEPATH . "/php/_db.php";
     $collection = $osiris->users;
     $collection->deleteMany(array());
     $data = getUsers();

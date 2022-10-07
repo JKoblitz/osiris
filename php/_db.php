@@ -51,6 +51,15 @@ function getUserFromId($user)
     return $USER;
 }
 
+function getTitleLastname($user){
+    $u = getUserFromId($user);
+    if (empty($u)) return "!!$user!!";
+    $n = "";
+    if (!empty($u['academic_title'])) $n = $u['academic_title']." ";
+    $n .= $u['last'];
+    return $n;
+}
+
 function getUserAuthor($authors, $user)
 {
     if (!is_array($authors)) {
@@ -64,15 +73,51 @@ function getUserAuthor($authors, $user)
     return reset($author);
 }
 
+
+function get_impact($journal_name, $year)
+{
+    global $osiris;
+    if (empty($journal_name)) return null;
+    $j = new \MongoDB\BSON\Regex('^' . trim($journal_name), 'i');
+    $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+    if (empty($journal)) return null;
+    // $journal = $journal->toArray();
+
+    $if = null;
+    $impact = $journal['impact']->bsonSerialize();
+    $last = end($impact)['impact'] ?? null;
+    if (is_array($impact)) {
+        $impact = array_filter($impact, function ($a) use ($year) {
+            return $a['year'] == $year;
+        });
+        if (empty($impact)) {
+            $impact = $last;
+        } else  {
+            $if = reset($impact)['impact'];
+        }
+    }
+    return $if;
+}
+
 function is_approved($document, $user)
 {
     if (!isset($document['authors'])) return true;
     $authors = $document['authors'];
-    if (isset($document['editors'])) $authors = array_merge($authors->bsonSerialize(), $document['editors']->bsonSerialize());
+    if (isset($document['editors'])) {
+        $editors = $document['editors'];
+        if (!is_array($authors)){
+            $authors = $authors->bsonSerialize();
+        }
+        if (!is_array($editors)){
+            $editors = $editors->bsonSerialize();
+        }
+        $authors = array_merge($authors, $editors);
+    }
     return getUserAuthor($authors, $user)['approved'] ?? false;
 }
 
-function has_issues($doc, $user=null){
+function has_issues($doc, $user = null)
+{
     if ($user === null) $user = $_SESSION['username'];
     $issues = array();
 

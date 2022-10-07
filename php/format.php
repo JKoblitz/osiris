@@ -24,7 +24,7 @@ function authorForm($a, $is_editor = false)
 {
     $name = $is_editor ? 'editors' : 'authors';
     $aoi = $a['aoi'] ?? 1;
-    return "<div class='author " . ($aoi == 1 ? 'author-aoi' : '') . "'>
+    return "<div class='author " . ($aoi == 1 ? 'author-aoi' : '') . "' onclick='toggleAffiliation(this);'>
         $a[last], $a[first]<input type='hidden' name='values[$name][]' value='$a[last];$a[first];$aoi'>
         <a onclick='removeAuthor(event, this);'>&times;</a>
         </div>";
@@ -112,14 +112,14 @@ function getQuarter($time)
     if (empty($time)) {
         return 0;
     }
+    if (isset($time['month'])) {
+        return ceil($time['month'] / 3);
+    }
     if (isset($time['start'])) {
         $time = $time['start'];
     }
     if (isset($time['dates']) && !empty($time['dates'])) {
         $time = reset($time['dates']);
-    }
-    if (isset($time['month'])) {
-        return ceil($time['month'] / 3);
     }
     if (is_int($time)) {
         return ceil($time / 3);
@@ -130,6 +130,25 @@ function getQuarter($time)
 }
 
 function inSelectedQuarter($start, $end = null)
+{
+    // check if time period in selected quarter
+    if (empty($end)) {
+        $end = $start;
+    }
+    $qstart = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER - 2) . '-1 00:00:00');
+    $qend = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER) . '-' . (SELECTEDQUARTER == 1 || SELECTEDQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+
+    $start = new DateTime($start);
+    $end = new DateTime($end);
+    if ($start <= $qstart && $qstart <= $end) {
+        return true;
+    } elseif ($qstart <= $start && $start <= $qend) {
+        return true;
+    }
+    return false;
+}
+
+function inTimeSpan($start, $end = null)
 {
     // check if time period in selected quarter
     if (empty($end)) {
@@ -400,54 +419,65 @@ class Format
 
     function format_publication($doc)
     {
-        $result = "";
 
-        if (!is_array($doc['authors'])) {
+        $result = "";
+        $type = strtolower(trim($doc['pubtype']));
+        // $style = "apa6";
+
+        // prepare authors
+        $authors = "";
+        $first = 1;
+        $last = 1;
+        if (!empty($doc['authors']) && !is_array($doc['authors'])) {
             $doc['authors'] = $doc['authors']->bsonSerialize();
         }
-
         if (!empty($doc['authors']) && is_array($doc['authors'])) {
-
             $pos = array_count_values(array_column($doc['authors'], 'position'));
             $first = $pos['first'] ?? 1;
             $last = $pos['last'] ?? 1;
-            $result .= $this->formatAuthors($doc['authors'], 'and', $first, $last);
-        } else {
-            $first = 1;
-            $last = 1;
+            $authors = $this->formatAuthors($doc['authors'], 'and', $first, $last);
         }
 
-        if (!empty($doc['year'])) {
-            $result .= " ($doc[year])";
-        }
-        if (!empty($doc['correction'])) {
-            $result .= " <span style='color:#B61F29;'>Correction to:</span>";
-        }
-        if (!empty($doc['title'])) {
-            $result .= " $doc[title].";
-        }
-        // TODO:
 
-        switch (strtolower(trim($doc['pubtype']))) {
+
+        switch ($type) {
             case 'journal article':
             case 'journal-article':
             case 'article':
+                $result .= $authors;
+                if (!empty($doc['year'])) {
+                    $result .= " ($doc[year])";
+                }
+                if (!empty($doc['correction'])) {
+                    $result .= " <span style='color:#B61F29;'>Correction to:</span>";
+                }
+                if (!empty($doc['title'])) {
+                    $result .= " $doc[title].";
+                }
                 if (!empty($doc['journal'])) {
-                    $result .= " <em>$doc[journal]</em>";
+                    $result .= " <i>$doc[journal]</i>";
 
                     if (!empty($doc['volume'])) {
                         $result .= " $doc[volume]";
                     }
                     if (!empty($doc['pages'])) {
-                        $result .= ":$doc[pages].";
+                        $result .= ": $doc[pages]";
                     }
+                    $result .= ".";
                 }
                 break;
 
             case 'magazine article':
             case 'magazine':
+                $result .= $authors;
+                if (!empty($doc['year'])) {
+                    $result .= " ($doc[year])";
+                }
+                if (!empty($doc['title'])) {
+                    $result .= " $doc[title].";
+                }
                 if (!empty($doc['magazine'])) {
-                    $result .= " <em>$doc[magazine]</em>.";
+                    $result .= " <i>$doc[magazine]</i>.";
                 }
                 if (!empty($doc['link'])) {
                     $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
@@ -455,39 +485,86 @@ class Format
                 break;
             case 'book-chapter':
             case 'chapter':
+                $result .= $authors;
+                if (!empty($doc['year'])) {
+                    $result .= " ($doc[year])";
+                }
+                if (!empty($doc['title'])) {
+                    $result .= " $doc[title].";
+                }
                 if (!empty($doc['book'])) {
                     // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
                     // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
                     // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
                     $result .= " In:";
                     if (!empty($doc['editors'])) {
-                        $result .= $this->formatAuthors($doc['editors'], 'and');
+                        $result .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
                     };
-                    $result .= " $doc[book]";
+                    $result .= " <i>$doc[book]</i>";
                 }
-                if (!empty($doc['edition'])) {
-                    $ed = $doc['edition'];
-                    if ($ed == 1) $ed .= "st";
-                    elseif ($ed == 1) $ed .= "nd";
-                    else $ed .= "th";
-                    $result .= ", $doc[edition]. Edition ";
+                if (!empty($doc['edition']) || !empty($doc['pages'])) {
+                    $ep = array();
+                    if (!empty($doc['edition'])) {
+                        $ed = $doc['edition'];
+                        if ($ed == 1) $ed .= "st";
+                        elseif ($ed == 1) $ed .= "nd";
+                        else $ed .= "th";
+                        $ep[] = $ed . " ed.";
+                    }
+
+                    if (!empty($doc['pages'])) {
+                        $ep[] = "pp. $doc[pages]";
+                    }
+
+                    $result .= " (" . implode(', ', $ep) . ")";
                 }
+                $result .= ".";
 
                 if (!empty($doc['city'])) {
                     $result .= " $doc[city]:";
                 }
                 if (!empty($doc['publisher'])) {
-                    $result .= ", $doc[publisher]";
+                    $result .= " $doc[publisher].";
                 }
-
-                $result .= ".";
                 break;
             case 'book':
+                $result .= $authors;
+                if (!empty($doc['year'])) {
+                    $result .= " ($doc[year])";
+                }
+                if (!empty($doc['title'])) {
+                    $result .= " <i>$doc[title]</i>.";
+                }
+                if (!empty($doc['edition']) || !empty($doc['pages'])) {
+                    $ep = array();
+                    if (!empty($doc['edition'])) {
+                        $ed = $doc['edition'];
+                        if ($ed == 1) $ed .= "st";
+                        elseif ($ed == 1) $ed .= "nd";
+                        else $ed .= "th";
+                        $ep[] = $ed . " ed.";
+                    }
 
+                    if (!empty($doc['pages'])) {
+                        $ep[] = "pp. $doc[pages]";
+                    }
+
+                    $result .= " (" . implode(', ', $ep) . ")";
+                }
+                $result .= ".";
+
+                if (!empty($doc['city'])) {
+                    $result .= " $doc[city]:";
+                }
+                if (!empty($doc['publisher'])) {
+                    $result .= " $doc[publisher].";
+                }
+                break;
             default:
                 # code...
                 break;
         }
+
         if ($this->usecase == 'web') {
             if (!empty($doc['doi'])) {
                 $result .= " DOI: <a target='_blank' href='http://dx.doi.org/$doc[doi]'>http://dx.doi.org/$doc[doi]</a>";
@@ -502,7 +579,8 @@ class Format
                 $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
             }
         }
-        if ($first > 1 || $last > 1) $result .= "<br />";
+
+        if ($first > 1 || $last > 1) $result .= "<br>";
         if ($first > 1) {
             $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
         }
@@ -565,7 +643,7 @@ class Format
         }
 
         $result .= " " . lang("Reviewer for ", 'Reviewer für ');
-        $result .= '<em>' . $doc['journal'] . '</em>. ';
+        $result .= '<i>' . $doc['journal'] . '</i>. ';
         $result .= format_month($doc['month']) . " " . $doc['year'];
         // $times = 0;
         // $times_current = 0;
@@ -598,8 +676,13 @@ class Format
             $userdata = getUserFromId($doc['user']);
             $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
         }
-        $result .= lang(" Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
-        $result .= '<em>' . $doc['journal'] . '</em>';
+        $result .= lang(" Member of the Editorial board of ", ' Mitglied des Editorial Board von ');
+        $result .= '<i>' . $doc['journal'] . '</i>';
+        
+        if (!empty($doc['editor_type'])) {
+            $result .= " ($doc[editor_type])";
+        }
+
         if (!empty($doc['start'])) {
             if (!empty($doc['end'])) {
                 $result .= lang(", from ", ", von ");

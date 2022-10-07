@@ -152,11 +152,11 @@ function addJournal($journal)
     global $db;
     $journal_id = null;
     if (!empty($journal)) {
-        $stmt = $db->prepare("SELECT journal_id FROM `journal` WHERE journal LIKE ? OR journal_abbr LIKE ?");
+        $stmt = $db->prepare("SELECT journal_id FROM `journal` WHERE journal LIKE ? OR abbr LIKE ?");
         $stmt->execute([$journal, $journal]);
         $journal_id = $stmt->fetch(PDO::FETCH_COLUMN);
         if (empty($journal_id)) {
-            $stmt = $db->prepare("INSERT INTO `journal` (journal, journal_abbr) VALUES (?,?)");
+            $stmt = $db->prepare("INSERT INTO `journal` (journal, abbr) VALUES (?,?)");
             $stmt->execute([$journal, $journal]);
             $journal_id = $db->lastInsertId();
         }

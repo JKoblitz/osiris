@@ -10,13 +10,13 @@
                     <label class="required" for="start">
                         <?= lang('Beginning of report', 'Anfang des Reports') ?>
                     </label>
-                    <input type="date" class="form-control" name="start" id="start" value="" required>
+                    <input type="date" class="form-control" name="start" id="start" value="<?=SELECTEDYEAR?>-01-01" required>
                 </div>
                 <div class="col-sm">
                     <label class="required" for="end">
                         <?= lang('End of report', 'Ende des Reports') ?>
                     </label>
-                    <input type="date" class="form-control" name="end" id="end" value="" required>
+                    <input type="date" class="form-control" name="end" id="end" value="<?=SELECTEDYEAR?>-06-30" required>
                 </div>
             </div>
 

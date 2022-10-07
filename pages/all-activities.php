@@ -113,7 +113,7 @@ $Format = new Format();
 
                         <span class="hidden">
                             <?php
-
+                            $useractivity = false;
                             $authors = $document['authors']->bsonSerialize();
                             if (is_array($authors)) {
                                 $author = array_filter($authors, function ($author) use ($user) {
@@ -122,6 +122,7 @@ $Format = new Format();
 
                                 if (!empty($author)) {
                                     echo $user;
+                                    $useractivity = true;
                                 }
                             }
                             ?>
@@ -144,12 +145,15 @@ $Format = new Format();
                         <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $document['type'] ?>', '<?= $id ?>')">
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </button> -->
-                        <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="fa-regular fa-lg fa-search"></i>
+                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                            <i class="fa-regular fa-search"></i>
                         </a>
-                        <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                            <i class="fa-regular fa-lg fa-edit"></i>
-                        </a>
+                        <?php if ($useractivity) { ?>
+                            <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
+                                <i class="fa-regular fa-edit"></i>
+                            </a>
+                        <?php } ?>
+
                     </td>
                 </tr>
             <?php } ?>

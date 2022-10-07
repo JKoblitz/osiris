@@ -424,15 +424,11 @@ Route::get('/browse/(publication|activity|scientist|journal|poster)', function (
 }, 'login');
 
 
-Route::get('/view/journal/(\d+)', function ($id) {
+Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = new MongoDB\BSON\ObjectId($id);
-    }
+    $id = new MongoDB\BSON\ObjectId($id);
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [

@@ -34,6 +34,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
+    <style>
+        :root {
+            --affiliation: "<?= AFFILIATION ?>";
+        }
+    </style>
+
     <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
@@ -44,20 +50,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         const ROOTPATH = "<?= ROOTPATH ?>";
         const AFFILIATION = "<?= AFFILIATION ?>";
     </script>
-    <style>
-        :root {
-            --affiliation: "<?= AFFILIATION ?>";
-        }
 
-        .ql-snow.ql-toolbar::after,
-        .ql-snow .ql-toolbar::after {
-            content: '<?= lang('Please check spelling and formatting carefully.', 'Bitte Rechtschreibung und Formatierung sorgsam prüfen.') ?>';
-            display: inline-block;
-            color: var(--muted-color);
-        }
-    </style>
-    
-<link rel="stylesheet" href="<?=ROOTPATH?>/css/shepherd.css"/>
+    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/shepherd.css" />
     <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
     <!-- Quill (rich-text editor) -->
@@ -160,7 +154,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </form>
 
         </nav>
- 
+
         <!-- Sidebar start -->
         <div class="sidebar">
             <div class="sidebar-menu">
@@ -195,11 +189,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Add activity', 'Aktivität hinzuf.') ?>
                     </a>
 
-                    
+
                     <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('export/publications') ?>">
                         <i class="far fa-download" aria-hidden="true"></i>
                         Download
                     </a>
+
 
                     <!-- <a href="<?= ROOTPATH ?>/achievements" class="sidebar-link with-icon">
                         <i class="far fa-trophy-star" aria-hidden="true"></i>
@@ -211,8 +206,22 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="far fa-right-from-bracket" aria-hidden="true"></i>
                         Logout
                     </a>
+                    <div class="sidebar-title">
+                        <?= lang('Others', 'Weiteres') ?>
+                    </div>
 
-<!-- 
+                    <a href="<?= ROOTPATH ?>/browse/scientist" class="sidebar-link with-icon <?= $pageactive('scientist') ?>">
+                        <i class="far fa-user-graduate" aria-hidden="true"></i>
+                        <?= lang('Users', 'Nutzer:innen') ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/browse/journal" class="sidebar-link with-icon <?= $pageactive('journal') ?>">
+                        <i class="far fa-institution" aria-hidden="true"></i>
+                        <?= lang('Journals', 'Journale') ?>
+                    </a>
+
+
+                    <!-- 
+
                     <div class="sidebar-title">
                         <?= lang('Activities', 'Aktivitäten') ?>
                     </div>
@@ -256,24 +265,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Controlling') ?>
                         </div>
 
-                        <a href="<?= ROOTPATH ?>/browse/scientist" class="sidebar-link with-icon <?= $pageactive('scientist') ?>">
-                            <i class="far fa-user-graduate" aria-hidden="true"></i>
-                            <?= lang('Scientists', 'Wissenschaftler:innen') ?>
-                        </a>
-
-                        <a href="<?= ROOTPATH ?>/browse/journal" class="sidebar-link with-icon <?= $pageactive('journal') ?>">
-                            <i class="far fa-institution" aria-hidden="true"></i>
-                            <?= lang('Journals', 'Journale') ?>
-                        </a>
 
                         <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-signal <?= $pageactive('lom') ?>">
                             <i class="far fa-coin" aria-hidden="true"></i>
-                            <?= lang('LOM') ?>
-                        </a>
-
-                        <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('export/publications') ?>">
-                            <i class="far fa-books" aria-hidden="true"></i>
-                            Export <?= lang('Publications', 'Publikationen') ?>
+                            <?= lang('Points', 'Punkte') ?>
                         </a>
 
                         <a href="<?= ROOTPATH ?>/export/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('export/reports') ?>">

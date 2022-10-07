@@ -200,30 +200,33 @@ foreach ($queries as $col => $val) {
                             'title' => $doc['title']
                         );
                 ?>
-                <br>
-                    <b class="text-danger">
-                        <?=lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.')?>
-                        <a href="<?=ROOTPATH?>/issues" class="link">Review</a>
-                    </b>
+                        <br>
+                        <b class="text-danger">
+                            <?= lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.') ?>
+                            <a href="<?= ROOTPATH ?>/issues" class="link">Review</a>
+                        </b>
                     <?php
                     }
                     ?>
 
                     </td>
-                    <td class="unbreakable">
-                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
+
+                    <?php if ($currentuser) { ?>
+                        <td class="unbreakable">
+                            <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </button> -->
-                        <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="fa-regular fa-lg fa-search"></i>
-                        </a>
-                        <a class="btn btn-sm text-success" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                            <i class="fa-regular fa-lg fa-edit"></i>
-                        </a>
-                    </td>
-                    <td class='lom'><span data-toggle='tooltip' data-title='<?=$l['points']?>'><?= $l["lom"] ?></span></td>
-                    <!---->
-                    </tr>
+                            <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                <i class="fa-regular fa-search"></i>
+                            </a>
+                            <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
+                                <i class="fa-regular fa-edit"></i>
+                            </a>
+                        </td>
+                    <?php } ?>
+                        <td class='lom'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
+                        <!---->
+                        </tr>
                 <?php } ?>
             </tbody>
         </table>
@@ -233,15 +236,16 @@ foreach ($queries as $col => $val) {
                 <a href="<?= ROOTPATH ?>/<?= $col ?>" class="btn text-<?= $val['color'] ?>">
                     <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $val['title'] ?>
                 </a>
+                <?php if ($col == "publication") {
+                    $link = ROOTPATH . "/activities/new?type=article";
+                } else {
+                    $link = ROOTPATH . "/activities/new?type=" . $col;
+                } ?>
+
+                <a href="<?= $link ?>" class="btn"><i class="fas fa-plus"></i></a>
+
             <?php } ?>
 
-            <?php if ($col == "publication") {
-                $link = ROOTPATH . "/activities/new?type=article";
-            } else {
-                $link = ROOTPATH . "/activities/new?type=" . $col;
-            } ?>
-
-            <a href="<?= $link ?>" class="btn"><i class="fas fa-plus"></i></a>
         </div>
 
     </div>
@@ -268,8 +272,8 @@ foreach ($queries as $col => $val) {
                     echo "<p>" . lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') . "</p>";
                 } else if (!empty($approval_needed)) {
                     echo "<p>" . lang(
-                        "The following activities have unresolved warnings. Please <a href='".ROOTPATH."/issues' class='link'>review all issues</a> before approving the current quarter.",
-                        "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='".ROOTPATH."/issues' class='link'>klären sie alle Probleme</a> bevor sie das aktuelle Quartal freigeben können."
+                        "The following activities have unresolved warnings. Please <a href='" . ROOTPATH . "/issues' class='link'>review all issues</a> before approving the current quarter.",
+                        "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='" . ROOTPATH . "/issues' class='link'>klären sie alle Probleme</a> bevor sie das aktuelle Quartal freigeben können."
                     ) . "</p>";
                     echo "<ul class='list'>";
                     foreach ($approval_needed as $item) {

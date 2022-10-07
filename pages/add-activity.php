@@ -24,6 +24,8 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
     $btntext = '<i class="fas fa-plus"></i> ' . lang("Add", "Hinzufügen");
     $url = ROOTPATH . "/activities/view/*";
 }
+
+$dept = $form['dept'] ?? $USER['dept'] ?? '';
 ?>
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 
@@ -48,7 +50,7 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
             </div>
         </form>
 
-        <?php } elseif ($copy) { ?>
+    <?php } elseif ($copy) { ?>
         <h3 class=""><?= lang('Copy activity', 'Kopiere Aktivität') ?></h3>
     <?php } else { ?>
         <!-- Edit existing activity -->
@@ -147,20 +149,36 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
                 </div>
 
                 <div class="form-group" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc,teaching">
-                    <div class="float-right" data-visible="article" id="author-numbers">
-                        <?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?>
-                        <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
-                        <?= lang('last authors:', 'Letztautoren:') ?>
-                        <input type="number" name="values[last_authors]" id="last-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
-                    </div>
                     <label for="author" class="required">
                         <span data-visible="teaching"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
                         <span data-visible="article,magazine,book,editor,chapter,lecture,poster,misc"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
                     </label>
+
+                    <div class="float-right" data-visible="article" id="author-numbers">
+                        <label for="first-authors"><?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?></label>
+                        <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                        <label for="last-authors"><?= lang('last authors:', 'Letztautoren:') ?></label>
+                        <input type="number" name="values[last_authors]" id="last-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                    </div>
                     <div class="author-list">
                         <?= $authors ?>
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
+                    </div>
+                    <div class="float-right" id="department">
+                        <label for="dept"><?= lang('Dept:', 'Abteilung:') ?></label>
+                        <select name="values[dept]" id="dept" class="form-control form-control-sm w-150 d-inline-block">
+                            <option value="">Abteilungsübergreifend</option>
+                            <option value="BIDB" <?=$dept=='BIDB' ? 'selected' : ''?>>BIDB</option>
+                            <option value="BUG" <?=$dept=='BUG' ? 'selected' : ''?>>BUG</option>
+                            <option value="MIG" <?=$dept=='MIG' ? 'selected' : ''?>>MIG</option>
+                            <option value="MIOS" <?=$dept=='MIOS' ? 'selected' : ''?>>MIOS</option>
+                            <option value="MuTZ" <?=$dept=='MuTZ' ? 'selected' : ''?>>MuTZ</option>
+                            <option value="MÖD" <?=$dept=='MÖD' ? 'selected' : ''?>>MÖD</option>
+                            <option value="PFVI" <?=$dept=='PFVI' ? 'selected' : ''?>>PFVI</option>
+                            <option value="NFG" <?=$dept=='NFG' ? 'selected' : ''?>>NFG</option>
+                            <option value="Services" <?=$dept=='Services' ? 'selected' : ''?>>Services</option>
+                        </select>
                     </div>
                     <small class="text-muted">
                         <?= lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.') ?>
@@ -418,7 +436,7 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
                                 <label class="required" for="start">
                                     <?= lang('Beginning of editorial activity', 'Anfang der Editor-Tätigkeit') ?>
                                 </label>
-                                <input type="date" class="form-control start" name="values[start]" id="start" value="<?= valueFromDateArray($form['start'] ?? '') ?>">
+                                <input type="date" class="form-control start" name="values[start]" id="start" value="<?= valueFromDateArray($form['start'] ?? '') ?>" required>
                             </div>
                             <div class="col-sm">
                                 <label class="" for="end">
@@ -426,10 +444,13 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
                                 </label>
                                 <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
                             </div>
+                            <div class="col-sm">
+                                <label for="editor_type">
+                                    <?= lang('Details', 'Details') ?>
+                                </label>
+                                <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= $form['editor_type']??'' ?>" placeholder="Guest Editor for Research Topic 'XY'">
+                            </div>
                         </div>
-                        <small class="text-muted">
-                            <?= lang('Only month and year are considered', 'Nur Monat und Jahr werden gezeigt') ?>
-                        </small>
                     </div>
                 </div>
 

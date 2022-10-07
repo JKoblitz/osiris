@@ -9,7 +9,7 @@
     </tr>
     <tr>
         <td><?= lang('Abbreviated', 'Abgekürzt') ?></td>
-        <td><?= $data['journal_abbr'] ?></td>
+        <td><?= $data['abbr'] ?></td>
     </tr>
     <tr>
         <td>Publisher</td>
