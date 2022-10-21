@@ -12,23 +12,33 @@ $Format = new Format();
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
 
-<a class="" href="<?= ROOTPATH ?>/activities/new"><i class="fas fa-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
+<a class="btn btn-primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="fas fa-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
-<div class="mb-5" id="select-btns">
-    <button onclick="filterDataTable(1, 'publication')" class="btn btn-select text-primary" id="publication-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Publication', "Publikationen") ?></button>
-    <button onclick="filterDataTable(1, 'poster')" class="btn btn-select text-danger" id="poster-btn"><i class="fa-regular fa-presentation-screen"></i><?= lang('Posters', 'Poster') ?></button>
-    <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i><?= lang('Lectures', 'Vorträge') ?></button>
-    <button onclick="filterDataTable(1, 'review')" class="btn btn-select text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
-    <button onclick="filterDataTable(1, 'misc')" class="btn btn-select text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i><?= lang('Misc') ?></button>
-    <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select text-muted" id="teaching-btn"><i class="fa-regular fa-people"></i><?= lang('Teaching &amp; Guests') ?></button>
-    <button onclick="filterDataTable(1, 'software')" class="btn btn-select text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i><?= lang('Software') ?></button>
+
+<?php if ($page == 'activities' && $USER['is_scientist']) { ?>
+    <h1 class='m-0'><?= lang("All activities", "Alle Aktivitäten") ?></h1>
+    <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
+        <i class="fa-regular fa-user"></i>
+        <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
+    </a>
+<?php } elseif ($page == 'my-activities') { ?>
+    <h1 class='m-0'><?= lang("My activities", "Meine Aktivitäten") ?></h1>
+    <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
+        <i class="fa-regular fa-user"></i>
+        <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
+    </a>
+<?php } ?>
+<br>
+
+<div class="mb-5 btn-group" id="select-btns">
+    <button onclick="filterDataTable(1, 'publication')" class="btn btn-select- text-primary" id="publication-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Publication', "Publikationen") ?></button>
+    <button onclick="filterDataTable(1, 'poster')" class="btn btn-select- text-danger" id="poster-btn"><i class="fa-regular fa-presentation-screen"></i> <?= lang('Posters', 'Poster') ?></button>
+    <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i> <?= lang('Lectures', 'Vorträge') ?></button>
+    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
+    <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i> <?= lang('Misc') ?></button>
+    <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select- text-muted" id="teaching-btn"><i class="fa-regular fa-people"></i> <?= lang('Teaching &amp; Guests') ?></button>
+    <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i> <?= lang('Software') ?></button>
 </div>
-
-<button onclick="filterUserTable('<?= $user ?? $_SESSION['username'] ?>')" class="btn mb-5" id="user-btn">
-    <i class="fa-regular fa-user"></i>
-    <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
-</button>
-
 
 <div class="input-group mb-10 w-400 mw-full">
     <div class="input-group-prepend">
@@ -61,13 +71,11 @@ $Format = new Format();
         <tbody>
             <?php
             // $options = ['sort' => ["year" => -1, "month" => -1]];
-            // if ($USER['is_controlling'] || $USER['is_admin']) {
-            //     // controlling sees everything from the current year
-            // } else {
-            //     // everybody else sees their own work (all)
-            //     $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
-            // }
             $filter = [];
+            if ($page == "my-activities") {
+                // only own work
+                $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
+            }
             $cursor = $osiris->activities->find($filter);
             //, 'year' => intval(SELECTEDYEAR)
             if (empty($cursor)) {
@@ -109,26 +117,6 @@ $Format = new Format();
                         <?php if ($quarter != $endQuarter) {
                             echo "-" . $endQuarter;
                         } ?>
-
-
-                        <span class="hidden">
-                            <?php
-                            $useractivity = false;
-                            $authors = $document['authors']->bsonSerialize();
-                            if (is_array($authors)) {
-                                $author = array_filter($authors, function ($author) use ($user) {
-                                    return $author['user'] == $user;
-                                });
-
-                                if (!empty($author)) {
-                                    echo $user;
-                                    $useractivity = true;
-                                }
-                            }
-                            ?>
-
-                        </span>
-
                     </td>
                     <td class="text-center ">
                         <?php
@@ -148,7 +136,26 @@ $Format = new Format();
                         <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
                             <i class="fa-regular fa-search"></i>
                         </a>
-                        <?php if ($useractivity) { ?>
+                        <?php
+                        $useractivity = false;
+                        $auth = [];
+                        if (isset($document['authors']) && !empty($document['authors'])) {
+                            foreach ($document['authors'] as $a) {
+                                if ($a['user'] == $user) {
+                                    $useractivity = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (isset($document['editors']) && !empty($document['editors'])) {
+                            foreach ($document['editors'] as $a) {
+                                if ($a['user'] == $user) {
+                                    $useractivity = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if ($useractivity) { ?>
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
                                 <i class="fa-regular fa-edit"></i>
                             </a>
@@ -187,6 +194,10 @@ $Format = new Format();
                 [1, 'asc']
             ]
         });
+
+        <?php if (isset($_GET['type'])) { ?>
+            filterDataTable(1, '<?= $_GET['type'] ?>');
+        <?php } ?>
     });
 
     function filterDataTable(col, item) {

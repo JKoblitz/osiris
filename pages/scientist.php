@@ -232,17 +232,14 @@ foreach ($queries as $col => $val) {
         </table>
 
         <div class="content mt-0">
-            <?php if ($currentuser) { ?>
-                <a href="<?= ROOTPATH ?>/<?= $col ?>" class="btn text-<?= $val['color'] ?>">
+            <?php if ($currentuser) {
+                $t = $col;
+                if ($col == "publication") $t="article"; 
+                ?>
+                <a href="<?= ROOTPATH ?>/my-activities?type=<?=$col?>" class="btn text-<?= $val['color'] ?>">
                     <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $val['title'] ?>
                 </a>
-                <?php if ($col == "publication") {
-                    $link = ROOTPATH . "/activities/new?type=article";
-                } else {
-                    $link = ROOTPATH . "/activities/new?type=" . $col;
-                } ?>
-
-                <a href="<?= $link ?>" class="btn"><i class="fas fa-plus"></i></a>
+                <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="fas fa-plus"></i></a>
 
             <?php } ?>
 

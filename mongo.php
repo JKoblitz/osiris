@@ -59,7 +59,7 @@ function validateValues($values)
             $values[$key] = true;
         } else if ($value === 'false') {
             $values[$key] = false;
-        } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access', 'presenting'])) {
+        } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access', 'presenting', 'is_scientist', 'is_active', 'is_controlling', 'is_leader'])) {
             $values[$key] = boolval($value);
         } else if ($value === '') {
             $values[$key] = null;
@@ -216,6 +216,39 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     } else {
         $id = new MongoDB\BSON\ObjectId($id);
     }
+    $updateResult = $collection->updateOne(
+        ['_id' => $id],
+        ['$set' => $values]
+    );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount(),
+        'result' => $collection->findOne(['_id' => $id])
+    ]);
+});
+
+
+Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_db.php";
+    if (!isset($_POST['values'])) {
+        echo "no values given";
+        die;
+    }
+    
+    $values = $_POST['values'];
+    
+    if (!isset($values['is_controlling'])) $values['is_controlling'] = 0;
+    if (!isset($values['is_scientist'])) $values['is_scientist'] = 0;
+    if (!isset($values['is_leader'])) $values['is_leader'] = 0;
+    if (!isset($values['is_active'])) $values['is_active'] = 0;
+   
+    $collection = $osiris->users;
+    $values = validateValues($values);
+
     $updateResult = $collection->updateOne(
         ['_id' => $id],
         ['$set' => $values]

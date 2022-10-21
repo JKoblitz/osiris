@@ -1,5 +1,13 @@
 # Changelog
 
+## 07.10.22
+- Nutzer können jetzt bearbeitet werden
+
+## 03.10.22
+Der erste Report wurde eingeführt (Research report)
+- Die Zeitspanne kann genau angepasst werden
+- Der Export richtet sich ungefähr nach dem bisherigen Report, Header, Footer und Tabellen müssen manuell angepasst werden
+
 
 
 ## 25.09.22

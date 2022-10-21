@@ -184,6 +184,15 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="far fa-book-bookmark" aria-hidden="true"></i>
                         <?= lang('All activities', 'Alle Aktivitäten') ?>
                     </a>
+                    <?php if ($USER['is_scientist']) { ?>
+
+                        <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('myactivities') ?>">
+                            <i class="far fa-book-user" aria-hidden="true"></i>
+                            <?= lang('My activities', 'Meine Aktivitäten') ?>
+                        </a>
+                    <?php } ?>
+
+
                     <a href="<?= ROOTPATH ?>/activities/new" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('activities/new') ?>">
                         <i class="far fa-plus" aria-hidden="true"></i>
                         <?= lang('Add activity', 'Aktivität hinzuf.') ?>

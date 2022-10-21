@@ -64,7 +64,7 @@ if (isset($raw['dept']) && !empty($raw['dept'])) {
         <th><?= lang('Details') ?></th>
         <th><?= lang('Unit', 'Einheit') ?></th>
         <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
-        <th><?= lang('Active', 'Aktiv') ?></th>
+        <th></th>
     </thead>
     <tbody>
 
@@ -111,7 +111,12 @@ if (isset($raw['dept']) && !empty($raw['dept'])) {
                 <td><?= $document['department'] ?></td>
                 <td><?= $document['unit'] ?></td>
                 <td><?= bool_icon($document['is_scientist']) ?></td>
-                <td><?= bool_icon($document['is_active']) ?></td>
+                <!-- <td><?= bool_icon($document['is_active']) ?></td> -->
+                <td>
+                    <a href="<?=ROOTPATH?>/edit/user/<?=$document['_id']?>" class="btn btn-link">
+                <i class="fas fa-edit"></i>
+                </a>
+                </td>
             </tr>
         <?php
         }

@@ -247,16 +247,22 @@ Route::post('/user/login', function () {
 
 /* LOGIN AREA */
 
-Route::get('/(activities)', function ($page) {
+Route::get('/(activities|my-activities)', function ($page) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
     $user = $_SESSION['username'];
     $path = $page;
-    $breadcrumb = [
-        // ['name' => 'Reviews', 'path' => "/browse/review"],
-        ['name' => lang("All activities", "Alle aktivitäten")]
-    ];
+    if ($page == 'activities') {
+        $breadcrumb = [
+            ['name' => lang("All activities", "Alle Aktivitäten")]
+        ];
+    } else {
+        $breadcrumb = [
+            ['name' => lang("My activities", "Meine Aktivitäten")]
+        ];
+    }
+    
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/all-activities.php";
     include BASEPATH . "/footer.php";
@@ -438,6 +444,45 @@ Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
 
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/view/journal.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/edit/journal/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $data = $osiris->journals->findOne(['_id' => $id]);
+    $breadcrumb = [
+        ['name' => lang('Journals', 'Journale'), 'path' => "/browse/journal"],
+        ['name' => $data['journal'], 'path' => "/view/journal/$id"],
+        ['name' => lang("Edit", "Bearbeiten")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/editor/journal.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+
+Route::get('/edit/user/([a-z0-9]+)', function ($user) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    // $id = new MongoDB\BSON\ObjectId($id);
+
+    $data = getUserFromId($user);
+    $breadcrumb = [
+        ['name' => lang('User', 'Nutzer:innen'), 'path' => "/browse/scientist"],
+        ['name' => $data['name'], 'path' => "/scientist/$user"],
+        ['name' => lang("Edit", "Bearbeiten")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/editor/user.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
