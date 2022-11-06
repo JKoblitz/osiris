@@ -27,36 +27,13 @@
     $cursor = $osiris->activities->find($filter, $options);
 
     foreach ($cursor as $doc) {
-        if (!isset($doc['type']) || !isset($doc['year'])) continue;
         $type = $doc['type'];
         $year = strval($doc['year']);
 
-        // check if there are any issues
-        $approval = !is_approved($doc, $user);
-        $epub = ($doc['epub'] ?? false);
-        // $doc['epub-delay'] = "2022-09-01";
-        if ($epub && isset($doc['epub-delay'])) {
-            $startTimeStamp = strtotime($doc['epub-delay']);
-            $endTimeStamp = strtotime(date('Y-m-d'));
-            $timeDiff = abs($endTimeStamp - $startTimeStamp);
-            $numberDays = intval($timeDiff / 86400);  // 86400 seconds in one day
-            if ($numberDays < 30){
-                $epub = false;
-            }
-        }
-        $teaching = ($type == "teaching" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end']));
-        
-        // if (
-        //     !is_approved($doc, $user) ||
-        //     ($doc['epub'] ?? false) ||
-        //     ($type == "teaching" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($document['end']))
-        // ) {
-        //     $issue = true;
-        // }
         if (!isset($stats[$type])) $stats[$type] = [];
         if (!isset($stats[$type][$year])) $stats[$type][$year] = ["x" => $year, "good" => 0, "bad" => 0];
 
-        if ($approval || $epub || $teaching) $stats[$type][$year]['bad'] += 1;
+        if (has_issues($doc)) $stats[$type][$year]['bad'] += 1;
         else $stats[$type][$year]['good'] += 1;
     }
 

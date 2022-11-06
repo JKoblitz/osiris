@@ -1,6 +1,7 @@
 <?php
-    
-    $Format = new Format($user);
+
+$Format = new Format($user);
+
 ?>
 
 
@@ -154,6 +155,7 @@ $issues = array(
     "approval" => [],
     "epub" => [],
     "teaching" => [],
+    "openend" => []
 );
 
 foreach ($cursor as $doc) {
@@ -167,7 +169,11 @@ foreach ($cursor as $doc) {
     if (in_array("teaching", $has_issues)) {
         $issues['teaching'][] = $doc;
     }
-} ?>
+    if (in_array("openend", $has_issues)) {
+        $issues['openend'][] = $doc;
+    }
+}
+?>
 
 <?php
 $a = array_map(function ($a) {
@@ -221,7 +227,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-                <td><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -268,7 +274,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-                <td><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -324,7 +330,7 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-                <td><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format($doc['type'], $doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
@@ -358,6 +364,54 @@ if (array_sum($a) === 0) {
                         </form>
                     </div>
                 </td>
+            </tr>
+        <?php } ?>
+    </table>
+<?php } ?>
+
+
+
+<?php if (!empty($issues['openend'])) { ?>
+    <h2 class="mb-0">
+        <?= lang(
+            'Do you still work on the following activities?',
+            'Arbeitest du noch immer an den folgenden Aktivitäten?'
+        ) ?>
+    </h2>
+    <!-- <p class="mt-0">
+        <a href="#why-openend" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+    </p> -->
+
+    <table class="table">
+        <?php
+        foreach ($issues['openend'] as $doc) {
+            $id = $doc['_id'];
+            $type = $doc['type'];
+        ?>
+            <tr id="tr-<?= $id ?>">
+            <tr id="tr-<?= $id ?>">
+                <td class="w-50"><?= activity_icon($doc); ?></td>
+                <td>
+                    <?= $Format->format($doc['type'], $doc); ?>
+                    <div class='alert alert-signal' id="approve-<?= $id ?>">
+
+                        <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
+                            <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                            <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
+                            <button class="btn btn-sm text-success">
+                                <i class="fas fa-check"></i>
+                                <?= lang('Yes (ask again later)', 'Ja (frag später nochmal)') ?>
+                            </button>
+                        </form>
+
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-danger">
+                        <i class="fas fa-xmark"></i>
+                            <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
             </tr>
         <?php } ?>
     </table>
