@@ -61,7 +61,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <button onclick="togglePubType('article')" class="btn btn-select text-primary" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article') ?></button>
         <button onclick="togglePubType('magazine')" class="btn btn-select text-primary" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article') ?></button>
         <!-- <button onclick="togglePubType('book')" class="btn btn-select text-primary" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button> -->
-        <button onclick="togglePubType('editor')" class="btn btn-select text-primary" id="editor-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
+        <button onclick="togglePubType('book')" class="btn btn-select text-primary" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
         <button onclick="togglePubType('chapter')" class="btn btn-select text-primary" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
 
         <button onclick="togglePubType('poster')" class="btn btn-select text-danger" id="poster-btn"><i class="fa-regular fa-presentation-screen"></i><?= lang('Posters', 'Poster') ?></button>
@@ -165,7 +165,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         <?= $authors ?>
                         <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
                     </div>
-                    <div class="float-right" id="department">
+                    <!-- <div class="float-right" id="department">
                         <label for="dept"><?= lang('Dept:', 'Abteilung:') ?></label>
                         <select name="values[dept]" id="dept" class="form-control form-control-sm w-150 d-inline-block">
                             <option value="">Abteilungsübergreifend</option>
@@ -179,7 +179,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                             <option value="NFG" <?=$dept=='NFG' ? 'selected' : ''?>>NFG</option>
                             <option value="Services" <?=$dept=='Services' ? 'selected' : ''?>>Services</option>
                         </select>
-                    </div>
+                    </div> -->
                     <small class="text-muted">
                         <?= lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.') ?>
                     </small>

@@ -709,6 +709,7 @@ function togglePubType(type) {
         "journal-article": "article",
         "magazine-article": "magazine",
         "book-chapter": "chapter",
+        "publication": 'article'
     }
     type = types[type] ?? type;
     console.log(type);
