@@ -110,6 +110,14 @@ Route::get('/mongo', function () {
 });
 
 
+
+// Route::get('/testing', function () {
+//     include_once BASEPATH . "/php/_db.php";
+
+// addUserActivity();
+// });
+
+
 Route::post('/create', function () {
     include_once BASEPATH . "/php/_db.php";
     if (!isset($_POST['values'])) {
@@ -180,6 +188,7 @@ Route::post('/create', function () {
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
+    addUserActivity('create');
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         $red = str_replace("*", $id, $_POST['redirect']);
@@ -191,7 +200,7 @@ Route::post('/create', function () {
     echo json_encode([
         'inserted' => $insertOneResult->getInsertedCount(),
         'id' => $id,
-        'result' => format($col, $result)
+        // 'result' => format($col, $result)
     ]);
 });
 
@@ -221,6 +230,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['$set' => $values]
     );
 
+    addUserActivity('update');
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");
         die();
@@ -283,6 +293,7 @@ Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
 
     $deletedCount = $updateResult->getDeletedCount();
 
+    // addUserActivity('delete');
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=deleted-" . $deletedCount);
         die();

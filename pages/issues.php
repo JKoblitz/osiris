@@ -25,21 +25,21 @@ $Format = new Format($user);
                     that you were also <b>affiliated with the ' . AFFILIATION . '</b>. 
                     ', '
                     Manchmal fügen andere Wissenschaftler:innen oder Mitglieder des Institutes wissenschaftliche Aktivitäten hinzu,
-                    an denen du ebenfalls beteiligt warst. Das System versucht, diese automatisch zuzuordenn, weshalb sie hier 
+                    an denen du ebenfalls beteiligt warst. Das System versucht, diese automatisch zuzuordnen, weshalb sie hier 
                     in dieser Liste auftauchen. Allerdings kann dabei sehr viel schief gehen. Für die Berichterstattung ist es z.B. 
                     nicht nur wichtig, dass die bibliographischen Daten korrekt sind, die Nutzer müssen auch korrekt zugeordnet sein. 
-                    Deshalb ist es wichtig, <b>ob du das überhaupt bist</b> oder vielleicht jemand mit einem ähnlichen Namen, 
+                    Deshalb ist es wichtig, <b>ob du das überhaupt bist</b> (oder vielleicht jemand mit einem ähnlichen Namen), 
                     dass <b>dein Name korrekt geschrieben</b> ist und du außerdem <b>der ' . AFFILIATION . ' zugehörig</b> bist. 
                 ') ?>
             </p>
             <p>
                 <?= lang('
-                    <b>But I have already confirmed this activity once.</b><br>
+                    <q><b>But I have already confirmed this activity once.</b></q><br>
                     That might be. 
                     Because as soon as an activity is edited, even if it is only that a document was deposited or a spelling mistake in the title was corrected, the confirmation of all authors is reset. 
                     This is to avoid that already confirmed activities are edited without your knowledge. 
                     ', '
-                    <b>Ich habe diese Aktivität doch aber schon einmal bestätigt.</b><br>
+                    <q><b>Ich habe diese Aktivität doch aber schon einmal bestätigt.</b></q><br>
                     Das kann sehr gut sein. 
                     Denn sobald eine Aktivität bearbeitet wird, und sei es nur, dass ein Dokument hinterlegt oder ein Rechtschreibfehler im Titel korrigiert wurde, wird die Bestätigung aller Autoren zurückgesetzt. 
                     Dadurch soll vermieden werden, dass ohne dein Wissen bereits bestätigte Aktivitäten bearbeitet werden. 
@@ -209,8 +209,8 @@ if (array_sum($a) === 0) {
                 <form action="<?= ROOTPATH ?>/approve-all" method="post">
                     <input type="hidden" name="user" value="<?= $user ?>">
                     <?= lang(
-                        'I confirm that I am the author of the following publications and that my affiliation has always been the ' . AFFILIATION . '.',
-                        'Ich bestätige, dass ich der Autor der folgenden Publikationen bin und meine Affiliation dabei immer die ' . AFFILIATION . ' war.'
+                        'I confirm that I am the author of <b>all</b> of the following publications and that my affiliation has always been the ' . AFFILIATION . '.',
+                        'Ich bestätige, dass ich Autor:in <b>aller</b> folgenden Publikationen bin und meine Affiliation dabei immer die ' . AFFILIATION . ' war.'
                     ) ?>
                     <button class="btn btn-block btn-success" type="submit"><?= lang('Approve all', 'Alle bestätigen') ?></button>
                 </form>

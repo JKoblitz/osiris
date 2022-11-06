@@ -1,5 +1,10 @@
 # Changelog
 
+## 06.11.22
+- Man kann sich nun ein Koautoren-Netzwerk anzeigen lassen. Dort sind alle DSMZ-Wissenschaftler dargestellt, mit denen man zusammen publiziert hat. Die Verknüpfungen sind dabei nach Abteilung gefärbt.
+- Achievements wurden hinzugefügt (im Moment noch low level, sprich nur für erstellte/bearbeitete Datensätze)
+
+
 ## 31.10.22
 - Journale wurden um alle NLM Journale ergänzt
 - Falls vorhanden wurde der Impact Factor hinzugefügt

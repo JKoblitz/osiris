@@ -16,24 +16,82 @@ $size = 100;
 $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
 ?>
 
+
+
+<div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content w-400 mw-full">
+            <a href="#" class="btn float-right" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h2 class="modal-title">
+                <i class="fad fa-lg fa-coin text-signal"></i>
+                Coins
+            </h2>
+
+            <h5>
+                <?= lang('What are coins?', 'Was sind Coins?') ?>
+            </h5>
+            <p class="">
+                <?= lang(
+                    "To put it simply, coins are a currency that currently doesn\'t earn you anything and doesn\'t really interest anyone. Unless you like to collect, then you\'re welcome.",
+                    'Um es kurz zu sagen, Coins sind eine Währung, die dir im Moment überhaupt nichts bringt und auch eigentlich niemanden interessiert. Außer du sammelst gern, dann gern geschehen.'
+                ) ?>
+            </p>
+
+            <h5>
+                <?= lang('How do I get them?', 'Wie bekomme ich sie?') ?>
+            </h5>
+
+            <p>
+                <?= lang(
+                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the DSMZ). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
+                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der DSMZ warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
+                ) ?>
+            </p>
+
+        </div>
+    </div>
+</div>
+
+
 <div class="row align-items-center">
     <div class="col flex-grow-0">
         <img src="<?= $gravatar ?>" alt="">
     </div>
     <div class="col ml-20">
-        <h1><?= $name ?></h1>
-        <p class="lead">
+        <h1 class="mb-0"><?= $name ?></h1>
+        <p class="lead mt-0">
             <i class="fad fa-lg fa-coin text-signal"></i>
             <b id="lom-points"></b>
-            Credits
+            Coins
+            <a href='#coins' class="text-muted">
+                <i class="far fa-question-circle text-muted"></i>
+            </a>
+
+            <?php if (isset($scientist['achievements'])) {
+                $achievements = $scientist['achievements']->bsonSerialize();
+                $achievement = end($achievements);
+            ?>
+                <br>
+
+                <i class="fad fa-lg fa-trophy text-signal"></i>
+                <span class="">
+                    <?= achievementText($achievement['title']) ?>
+                    <small class="text-muted">am <?= $achievement['achieved'] ?></small>
+                </span>
+            <?php
+            } ?>
+
         </p>
     </div>
     <div class="col text-right">
-    <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="fas fa-chart-network"></i>
-    <?= lang('View coauthor network', 'Zeige Ko-Autoren-Netzwerk') ?>
-</a>
+        <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="fas fa-chart-network"></i>
+            <?= lang('View coauthor network', 'Zeige Ko-Autoren-Netzwerk') ?>
+        </a>
     </div>
 </div>
+
 
 
 
@@ -73,9 +131,9 @@ if ($currentuser) {
             <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
         </a>
     <?php } ?>
-    <span data-toggle="tooltip" data-title=" <?=lang('The quarter can be selected in the menu at the top-right corner.', 'Das Quartal kann im Menü oben rechts ausgewählt werden.')?>">
-<i class="far fa-question-circle text-muted"></i>
-</span>
+    <span data-toggle="tooltip" data-title=" <?= lang('The quarter can be selected in the menu at the top-right corner.', 'Das Quartal kann im Menü oben rechts ausgewählt werden.') ?>">
+        <i class="far fa-question-circle text-muted"></i>
+    </span>
 
 <?php
 } ?>
@@ -92,9 +150,9 @@ if ($currentuser) {
     <?php
     echo lang('Research activities in ', 'Forschungsaktivitäten in ') . SELECTEDYEAR;
     ?>
-    <span data-toggle="tooltip" data-title=" <?=lang('The year can be selected in the menu at the top-right corner.', 'Das Jahr kann im Menü oben rechts ausgewählt werden.')?>">
-<i class="far fa-question-circle text-muted"></i>
-</span>
+    <span data-toggle="tooltip" data-title=" <?= lang('The year can be selected in the menu at the top-right corner.', 'Das Jahr kann im Menü oben rechts ausgewählt werden.') ?>">
+        <i class="far fa-question-circle text-muted"></i>
+    </span>
 </h3>
 
 <?php

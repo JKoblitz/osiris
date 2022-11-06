@@ -172,3 +172,71 @@ function get_collection($col)
             return;
     }
 }
+
+
+function addUserActivity($activity = 'create')
+{
+    global $osiris;
+    $update = ['$set' => ['activity' => [$activity => [date("Y-m-d")]]]];
+    $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
+    dump($u, true);
+    if (!isset($u['activity'][$activity])) {
+        $osiris->users->updateOne(
+            ['_id' => $_SESSION['username']],
+            [
+                '$set' => ['activity' => [$activity => [date("Y-m-d")]]],
+                '$push' => ['achievements' => ['title' => "first-$activity", 'achieved' => date("d.m.Y")]]
+            ]
+        );
+        return;
+    }
+    if (count($u['activity'][$activity]) === 9) {
+        $update['$push'] = ['achievements' => ['title' => "10-$activity", 'achieved' => date("d.m.Y")]];
+    }
+    if (count($u['activity'][$activity]) === 49) {
+        $update['$push'] = ['achievements' => ['title' => "50-$activity", 'achieved' => date("d.m.Y")]];
+    }
+
+    $osiris->users->updateOne(
+        ['_id' => $_SESSION['username']],
+        $update
+    );
+}
+
+
+function achievementText($title)
+{
+    switch ($title) {
+        case 'first-create':
+            return lang("You created your first activity", "Du hast deine erste Aktivität eingetragen");
+            break;
+
+        case 'first-edit':
+            return lang("You updated an activity for the first time", "Du hast zum ersten Mal eine Aktivität bearbeitet");
+            break;
+
+        case '10-create':
+            return lang("You created 10 activities", "Du hast bereits 10 Aktivität eingetragen");
+            break;
+
+        case '10-edit':
+            return lang("You updated 10 activities", "Du hast bereits 10 Mal eine Aktivität bearbeitet");
+            break;
+
+        case '50-create':
+            return lang("You created 50 activities", "Du hast bereits 50 Aktivität eingetragen");
+            break;
+
+        case '50-edit':
+            return lang("You updated 50 activities", "Du hast bereits 50 Mal eine Aktivität bearbeitet");
+            break;
+
+        case 'first-delete':
+            return lang("You deleted an activity for the first time", "Du hast zum ersten Mal eine Aktivität gelöscht");
+            break;
+
+        default:
+            # code...
+            break;
+    }
+}
