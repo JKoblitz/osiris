@@ -28,7 +28,15 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
             Credits
         </p>
     </div>
+    <div class="col text-right">
+    <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="fas fa-chart-network"></i>
+    <?= lang('View coauthor network', 'Zeige Ko-Autoren-Netzwerk') ?>
+</a>
+    </div>
 </div>
+
+
+
 
 
 <?php
@@ -36,16 +44,25 @@ if ($currentuser) {
 
     $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
     $approval_needed = array();
+
+    $q_end = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER) . '-' . (SELECTEDQUARTER == 1 || SELECTEDQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+    $quarter_in_past = new DateTime() > $q_end;
+
 ?>
-
-
     <p class="row-muted">
         <?= lang(
             'This is your personal page. Please review your recent research activities carefully and add new activities.',
             'Dies ist deine persönliche Seite. Bitte überprüfe deine letzten Aktivitäten sorgfältig und füge neue hinzu, falls angebracht.'
         ) ?>
     </p>
-    <?php if ($approved) { ?>
+    <?php if (!$quarter_in_past) { ?>
+        <a href="#" class="btn disabled">
+            <i class="fas fa-check mr-5"></i>
+            <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
+        </a>
+    <?php
+
+    } elseif ($approved) { ?>
         <a href="#" class="btn disabled">
             <i class="fas fa-check mr-5"></i>
             <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
@@ -56,8 +73,12 @@ if ($currentuser) {
             <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
         </a>
     <?php } ?>
+    <span data-toggle="tooltip" data-title=" <?=lang('The quarter can be selected in the menu at the top-right corner.', 'Das Quartal kann im Menü oben rechts ausgewählt werden.')?>">
+<i class="far fa-question-circle text-muted"></i>
+</span>
 
-<?php } ?>
+<?php
+} ?>
 <!-- 
 <div class="lead my-20">
     <?= lang('In ' . SELECTEDYEAR . ' achieved LOM points: ', 'Im Jahr ' . SELECTEDYEAR . ' erreichte LOM-Punkte: ') ?>
@@ -71,6 +92,9 @@ if ($currentuser) {
     <?php
     echo lang('Research activities in ', 'Forschungsaktivitäten in ') . SELECTEDYEAR;
     ?>
+    <span data-toggle="tooltip" data-title=" <?=lang('The year can be selected in the menu at the top-right corner.', 'Das Jahr kann im Menü oben rechts ausgewählt werden.')?>">
+<i class="far fa-question-circle text-muted"></i>
+</span>
 </h3>
 
 <?php
@@ -126,10 +150,10 @@ $queries = array(
     "misc" => [
         "filter" => [
             'authors.user' => $user,
-            "dates.start.year" => array('$lte' => SELECTEDYEAR),
+            "start.year" => array('$lte' => SELECTEDYEAR),
             '$or' => array(
-                ['dates.end.year' => array('$gte' => SELECTEDYEAR)],
-                ['dates.end' => null]
+                ['end.year' => array('$gte' => SELECTEDYEAR)],
+                ['end' => null]
             )
         ],
         "options" => array(),
@@ -207,15 +231,17 @@ foreach ($queries as $col => $val) {
                         </b>
                     <?php
                     }
+                    // if($doc['type'] == 'misc') {
+                    //     dump($doc, true);
+                    // dump(is_null($doc['end']??''));
+                    // }
+
                     ?>
 
                     </td>
 
                     <?php if ($currentuser) { ?>
-                        <td class="unbreakable">
-                            <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
-                            <i class="fa-regular fa-lg fa-edit"></i>
-                        </button> -->
+                        <td class="unbreakable w-50">
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
                                 <i class="fa-regular fa-search"></i>
                             </a>
@@ -224,9 +250,8 @@ foreach ($queries as $col => $val) {
                             </a>
                         </td>
                     <?php } ?>
-                        <td class='lom'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
-                        <!---->
-                        </tr>
+                    <td class='lom w-50'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
+                    </tr>
                 <?php } ?>
             </tbody>
         </table>
@@ -234,9 +259,9 @@ foreach ($queries as $col => $val) {
         <div class="content mt-0">
             <?php if ($currentuser) {
                 $t = $col;
-                if ($col == "publication") $t="article"; 
-                ?>
-                <a href="<?= ROOTPATH ?>/my-activities?type=<?=$col?>" class="btn text-<?= $val['color'] ?>">
+                if ($col == "publication") $t = "article";
+            ?>
+                <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $val['color'] ?>">
                     <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $val['title'] ?>
                 </a>
                 <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="fas fa-plus"></i></a>

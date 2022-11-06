@@ -1,5 +1,12 @@
 # Changelog
 
+## 31.10.22
+- Journale wurden um alle NLM Journale ergänzt
+- Falls vorhanden wurde der Impact Factor hinzugefügt
+- Der Journal- und Nutzerbrowser wurde optimiert und ist nun komplett durchsuch- und sortierbar
+- Quartale können nicht mehr bestätigt werden, wenn sie noch nicht zu Ende sind
+- Es wird nun am Ende eines Quartals auf weitere mgl. Probleme hingewiesen (z.B. noch laufende Aktivitäten ohne Enddatum)
+
 ## 07.10.22
 - Nutzer können jetzt bearbeitet werden
 

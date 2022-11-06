@@ -4,8 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2cd98fb4d52d95248353be97f887af32",
+    "content-hash": "eb3802e5fa5a9a47c2203e1d7d8634b5",
     "packages": [
+        {
+            "name": "citation-style-language/locales",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/citation-style-language/locales.git",
+                "reference": "master"
+            },
+            "type": "library"
+        },
+        {
+            "name": "citation-style-language/styles",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/citation-style-language/styles.git",
+                "reference": "master"
+            },
+            "type": "library"
+        },
         {
             "name": "jean85/pretty-package-versions",
             "version": "2.0.5",
@@ -67,32 +87,32 @@
         },
         {
             "name": "laminas/laminas-escaper",
-            "version": "2.10.0",
+            "version": "2.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-escaper.git",
-                "reference": "58af67282db37d24e584a837a94ee55b9c7552be"
+                "reference": "ee7a4c37bf3d0e8c03635d5bddb5bb3184ead490"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/58af67282db37d24e584a837a94ee55b9c7552be",
-                "reference": "58af67282db37d24e584a837a94ee55b9c7552be",
+                "url": "https://api.github.com/repos/laminas/laminas-escaper/zipball/ee7a4c37bf3d0e8c03635d5bddb5bb3184ead490",
+                "reference": "ee7a4c37bf3d0e8c03635d5bddb5bb3184ead490",
                 "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
                 "ext-mbstring": "*",
-                "php": "^7.4 || ~8.0.0 || ~8.1.0"
+                "php": "^7.4 || ~8.0.0 || ~8.1.0 || ~8.2.0"
             },
             "conflict": {
                 "zendframework/zend-escaper": "*"
             },
             "require-dev": {
                 "infection/infection": "^0.26.6",
-                "laminas/laminas-coding-standard": "~2.3.0",
+                "laminas/laminas-coding-standard": "~2.4.0",
                 "maglnet/composer-require-checker": "^3.8.0",
                 "phpunit/phpunit": "^9.5.18",
-                "psalm/plugin-phpunit": "^0.16.1",
+                "psalm/plugin-phpunit": "^0.17.0",
                 "vimeo/psalm": "^4.22.0"
             },
             "type": "library",
@@ -125,7 +145,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-03-08T20:15:36+00:00"
+            "time": "2022-10-10T10:11:09+00:00"
         },
         {
             "name": "mongodb/mongodb",
@@ -195,6 +215,69 @@
                 "source": "https://github.com/mongodb/mongo-php-library/tree/1.12.0"
             },
             "time": "2022-03-23T20:18:39+00:00"
+        },
+        {
+            "name": "myclabs/php-enum",
+            "version": "1.8.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myclabs/php-enum.git",
+                "reference": "a867478eae49c9f59ece437ae7f9506bfaa27483"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/a867478eae49c9f59ece437ae7f9506bfaa27483",
+                "reference": "a867478eae49c9f59ece437ae7f9506bfaa27483",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "1.*",
+                "vimeo/psalm": "^4.6.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MyCLabs\\Enum\\": "src/"
+                },
+                "classmap": [
+                    "stubs/Stringable.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP Enum contributors",
+                    "homepage": "https://github.com/myclabs/php-enum/graphs/contributors"
+                }
+            ],
+            "description": "PHP Enum implementation",
+            "homepage": "http://github.com/myclabs/php-enum",
+            "keywords": [
+                "enum"
+            ],
+            "support": {
+                "issues": "https://github.com/myclabs/php-enum/issues",
+                "source": "https://github.com/myclabs/php-enum/tree/1.8.4"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/myclabs/php-enum",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-08-04T09:53:51+00:00"
         },
         {
             "name": "phpoffice/phpword",
@@ -309,6 +392,129 @@
             "time": "2022-02-17T15:40:03+00:00"
         },
         {
+            "name": "seboettg/citeproc-php",
+            "version": "v2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seboettg/citeproc-php.git",
+                "reference": "3fbaaaca2ea061fd4c51e7880e835d6a669e6fee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seboettg/citeproc-php/zipball/3fbaaaca2ea061fd4c51e7880e835d6a669e6fee",
+                "reference": "3fbaaaca2ea061fd4c51e7880e835d6a669e6fee",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "myclabs/php-enum": "^1.8",
+                "php": ">=7.3",
+                "seboettg/collection": ">=v3.1.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^1",
+                "phpmd/phpmd": "^2.8",
+                "phpunit/phpunit": "^8.5",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "suggest": {
+                "symfony/polyfill-mbstring": "^1.10"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Seboettg\\CiteProc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Böttger",
+                    "email": "seboettg@gmail.com",
+                    "homepage": "https://sebastianboettger.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Full-featured CSL processor (https://citationstyles.org)",
+            "support": {
+                "issues": "https://github.com/seboettg/citeproc-php/issues",
+                "source": "https://github.com/seboettg/citeproc-php/tree/v2.5.1"
+            },
+            "time": "2022-08-05T20:11:50+00:00"
+        },
+        {
+            "name": "seboettg/collection",
+            "version": "v3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/seboettg/Collection.git",
+                "reference": "6f753aef75923965173dcb11696e5dece0533f45"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/seboettg/Collection/zipball/6f753aef75923965173dcb11696e5dece0533f45",
+                "reference": "6f753aef75923965173dcb11696e5dece0533f45",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^1",
+                "phpunit/phpunit": "8.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/ArrayList/Functions.php"
+                ],
+                "psr-4": {
+                    "Seboettg\\Collection\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Böttger",
+                    "email": "seboettg@gmail.com"
+                }
+            ],
+            "description": "Collection is a set of useful PHP wrapper classes for arrays, similar to Java Collection. Contains ArrayList, Stack, Queue.",
+            "keywords": [
+                "OOP",
+                "array",
+                "arraylist",
+                "basic-data-structures",
+                "collections",
+                "comparable",
+                "comparable-interface",
+                "comparator",
+                "datastructures",
+                "filter",
+                "map",
+                "queue",
+                "sort",
+                "stack"
+            ],
+            "support": {
+                "issues": "https://github.com/seboettg/Collection/issues",
+                "source": "https://github.com/seboettg/Collection/tree/v3.1.0"
+            },
+            "time": "2022-07-09T19:47:27+00:00"
+        },
+        {
             "name": "symfony/polyfill-php80",
             "version": "v1.26.0",
             "source": {
@@ -395,7 +601,10 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "citation-style-language/locales": 20,
+        "citation-style-language/styles": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
