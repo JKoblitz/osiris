@@ -44,6 +44,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
+
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
 
     <script>
@@ -169,6 +171,13 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= $USER["displayname"] ?? 'User' ?>
                     </div>
 
+                    <div class="cta">
+                        <a href="<?= ROOTPATH ?>/activities/new" class="btn btn-osiris test-<?= $pageactive('activities/new') ?>">
+                            <i class="far fa-plus" aria-hidden="true"></i>
+                            <?= lang('Add activity', 'Aktivität hinzuf.') ?>
+                        </a>
+                    </div>
+
                     <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
                         <i class="far fa-chart-column" aria-hidden="true"></i>
                         <?= lang('Dashboard') ?>
@@ -186,23 +195,20 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
                     <?php if ($USER['is_scientist']) { ?>
 
-                        <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('myactivities') ?>">
+                        <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-activities') ?>">
                             <i class="far fa-book-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
                         </a>
+
+                        <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('visualize') ?>">
+                        <i class="far fa-chart-network" aria-hidden="true"></i>
+                        <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
+                    </a>
                     <?php } ?>
 
 
-                    <a href="<?= ROOTPATH ?>/activities/new" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('activities/new') ?>">
-                        <i class="far fa-plus" aria-hidden="true"></i>
-                        <?= lang('Add activity', 'Aktivität hinzuf.') ?>
-                    </a>
 
 
-                    <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('export/publications') ?>">
-                        <i class="far fa-download" aria-hidden="true"></i>
-                        Download
-                    </a>
 
 
                     <!-- <a href="<?= ROOTPATH ?>/achievements" class="sidebar-link with-icon">
@@ -211,15 +217,32 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a> -->
 
 
-                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon">
+                    <!--                     
+                    <div class="sidebar-title">
+                        <?= lang('Tools') ?>
+                    </div> -->
+
+                    <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('export/publications') ?>">
+                        <i class="far fa-download" aria-hidden="true"></i>
+                        Download
+                    </a>
+
+
+                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon mt-10">
                         <i class="far fa-right-from-bracket" aria-hidden="true"></i>
                         Logout
                     </a>
+
+
+                    
+
+
+
                     <div class="sidebar-title">
                         <?= lang('Others', 'Weiteres') ?>
                     </div>
 
-                    <a href="<?= ROOTPATH ?>/browse/scientist" class="sidebar-link with-icon <?= $pageactive('scientist') ?>">
+                    <a href="<?= ROOTPATH ?>/browse/users" class="sidebar-link with-icon <?= $pageactive('users') ?>">
                         <i class="far fa-user-graduate" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
@@ -230,7 +253,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
 
                     <!-- 
-
                     <div class="sidebar-title">
                         <?= lang('Activities', 'Aktivitäten') ?>
                     </div>
