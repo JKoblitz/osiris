@@ -209,6 +209,14 @@ if (!function_exists('str_contains')) {
     }
 }
 
+function endOfCurrentQuarter($as_string=false){
+    $q = CURRENTYEAR . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59';
+    if ($as_string){
+        return $q;
+    }
+    return new DateTime($q);
+}
+
 function dump($element, $as_json = false)
 {
     echo '<pre class="code">';

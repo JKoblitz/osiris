@@ -51,11 +51,12 @@ function getUserFromId($user)
     return $USER;
 }
 
-function getTitleLastname($user){
+function getTitleLastname($user)
+{
     $u = getUserFromId($user);
     if (empty($u)) return "!!$user!!";
     $n = "";
-    if (!empty($u['academic_title'])) $n = $u['academic_title']." ";
+    if (!empty($u['academic_title'])) $n = $u['academic_title'] . " ";
     $n .= $u['last'];
     return $n;
 }
@@ -73,6 +74,23 @@ function getUserAuthor($authors, $user)
     return reset($author);
 }
 
+function impact_from_year($journal, $year = CURRENTYEAR)
+{
+    $if = null;
+    $impact = $journal['impact']->bsonSerialize();
+    $last = end($impact)['impact'] ?? null;
+    if (is_array($impact)) {
+        $impact = array_filter($impact, function ($a) use ($year) {
+            return $a['year'] == $year;
+        });
+        if (empty($impact)) {
+            $impact = $last;
+        } else {
+            $if = reset($impact)['impact'];
+        }
+    }
+    return $if;
+}
 
 function get_impact($journal_name, $year)
 {
@@ -83,20 +101,7 @@ function get_impact($journal_name, $year)
     if (empty($journal)) return null;
     // $journal = $journal->toArray();
 
-    $if = null;
-    $impact = $journal['impact']->bsonSerialize();
-    $last = end($impact)['impact'] ?? null;
-    if (is_array($impact)) {
-        $impact = array_filter($impact, function ($a) use ($year) {
-            return $a['year'] == $year;
-        });
-        if (empty($impact)) {
-            $impact = $last;
-        } else  {
-            $if = reset($impact)['impact'];
-        }
-    }
-    return $if;
+    return impact_from_year($journal, $year);
 }
 
 function is_approved($document, $user)
@@ -105,10 +110,10 @@ function is_approved($document, $user)
     $authors = $document['authors'];
     if (isset($document['editors'])) {
         $editors = $document['editors'];
-        if (!is_array($authors)){
+        if (!is_array($authors)) {
             $authors = $authors->bsonSerialize();
         }
-        if (!is_array($editors)){
+        if (!is_array($editors)) {
             $editors = $editors->bsonSerialize();
         }
         $authors = array_merge($authors, $editors);
@@ -126,16 +131,22 @@ function has_issues($doc, $user = null)
     $epub = ($doc['epub'] ?? false);
     // $doc['epub-delay'] = "2022-08-01";
     if ($epub && isset($doc['epub-delay'])) {
-        $startTimeStamp = strtotime($doc['epub-delay']);
-        $endTimeStamp = strtotime(date('Y-m-d'));
-        $timeDiff = abs($endTimeStamp - $startTimeStamp);
-        $numberDays = intval($timeDiff / 86400);  // 86400 seconds in one day
-        if ($numberDays < 30) {
+        if (new DateTime() < new DateTime($doc['epub-delay'])) {
             $epub = false;
         }
     }
     if ($epub) $issues[] = "epub";
     if ($doc['type'] == "teaching" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "teaching";
+
+    if ($doc['type'] == 'misc' && is_null($doc['end'])) {
+        if (isset($doc['end-delay'])) {
+            if (new DateTime() > new DateTime($doc['end-delay'])) {
+                $issues[] = "openend";
+            }
+        } else {
+            $issues[] = "openend";
+        }
+    }
 
     return $issues;
 }

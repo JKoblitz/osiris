@@ -411,14 +411,8 @@ Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/browse/(publication|activity|scientist|journal|poster)', function ($page) {
-    $idname = $page . '_id';
-    $table = $page;
-    if ($page == 'scientist') {
-        $table = 'users';
-        $idname = "user";
-    }
-
+Route::get('/browse/(publication|activity|users|journal|poster)', function ($page) {
+    // if ($page == 'users') 
     $breadcrumb = [
         ['name' => ucfirst($page)]
     ];
@@ -429,6 +423,36 @@ Route::get('/browse/(publication|activity|scientist|journal|poster)', function (
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+Route::get('/visualize', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/visualize.php";
+    include BASEPATH . "/footer.php";
+});
+
+Route::get('/test/journals', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $journals = $osiris->journals->find()->toArray();
+$result = ['data'=>[]];
+// $i = 0;
+    foreach ($journals as $doc) {
+        // if ($i++ > 100) break;
+        $result['data'][] = [
+            'id' =>strval($doc['_id']),
+            'name' =>$doc['journal'],
+            'abbr'=> $doc['abbr'],
+            'issn'=>implode(', ', $doc['issn']->bsonSerialize()),
+            'if'=>impact_from_year($doc,intval(SELECTEDYEAR)-1) ?? ''
+        ];
+    }
+    
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    echo json_encode($result);
+});
 
 Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
@@ -476,7 +500,7 @@ Route::get('/edit/user/([a-z0-9]+)', function ($user) {
 
     $data = getUserFromId($user);
     $breadcrumb = [
-        ['name' => lang('User', 'Nutzer:innen'), 'path' => "/browse/scientist"],
+        ['name' => lang('User', 'Nutzer:innen'), 'path' => "/browse/users"],
         ['name' => $data['name'], 'path' => "/scientist/$user"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
@@ -533,20 +557,161 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
 
 
 Route::get('/test', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH."/vendor/autoload.php";
 
-    $doc = $osiris->activities->findOne(['doi' => 'article']);
-    include_once BASEPATH . "/test.php";
-    dump($doc);
-    //     $oauth = new Oauth;
-    // $oauth->setClientId("APP-95XBTUDO2RMSE7LZ")
-    //       ->setScope('/authenticate')
-    //       ->setState($state)
-    //       ->showLogin()
-    //       ->setRedirectUri($redirectUri);
+try {
+    $dataString = file_get_contents("data.json");
+    $style = Seboettg\CiteProc\StyleSheet::loadStyleSheet("ieee");
+    $citeProc = new Seboettg\CiteProc\CiteProc($style, "en-US");
+    $data = json_decode($dataString);
+    $bibliography = $citeProc->render($data, "bibliography");
+    $cssStyles = $citeProc->renderCssStyles();
+} catch (Exception $e) {
+    echo $e->getMessage();
+    die;
+}
 
-    // Create and follow the authorization URL
-    // header("Location: " . $oauth->getAuthorizationUrl());
+?>
+<html>
+<head>
+    <title>CSL Test</title>
+    <style type="text/css" rel="stylesheet">
+
+        article {
+            min-width: 300px;
+            max-width: 600px;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        h3 {
+            border-bottom: 1px solid #000;
+        }
+
+        .csl-entry {
+            margin: 0.5em 0;
+        }
+
+        <?php echo "\n".$cssStyles; ?>
+    </style>
+</head>
+<body>
+<article>
+    <h1>Chapter I – Use CiteProc for Citations and Bibliographies</h1>
+<h2>Lorem Ipsum</h2>
+<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+    magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
+    gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
+    elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
+    eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+    dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+    labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+    Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet
+    <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-4"}]')); ?>.</p>
+
+<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat
+    nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue
+    duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+    nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+    <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-2"}]')); ?>.</p>
+
+<p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
+    consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore
+    eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+    delenit augue duis dolore te feugait nulla facilisi.</p>
+
+<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim
+    assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+    dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
+    lobortis nisl ut aliquip ex ea commodo consequat <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-1"}]')); ?>.</p>
+
+<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat
+    nulla facilisis <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-3"}]')); ?>.</p>
+
+<p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+    ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+    invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et
+    ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet
+    <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-3"},{"id":"ITEM-4"}]')); ?>.</p>
+
+<h3>Literature</h3>
+<?php echo $bibliography; ?>
+
+
+
+<h1>Chapter II – Enrich Citations and Bibliographies with additional Markup.</h1>
+
+<?php
+$dataString = file_get_contents("data.json");
+$style = Seboettg\CiteProc\StyleSheet::loadStyleSheet("ieee");
+$citeProc = new Seboettg\CiteProc\CiteProc($style, "en-US", [
+    "bibliography" => [
+        "author" => function ($authorItem, $renderedText) {
+            if (isset($authorItem->id)) {
+                return '<a href="https://example.org/author/'.$authorItem->id.'">'.$renderedText.'</a>';
+            }
+            return $renderedText;
+        },
+        "title" => function ($cslItem, $renderedText) {
+            return '<a href="https://example.org/publication/'.$cslItem->id.'">'.$renderedText.'</a>';
+        },
+        "csl-entry" => function ($cslItem, $renderedText) {
+            return '<a id="'.$cslItem->id.'" href="#'.$cslItem->id.'"></a>'.$renderedText;
+        }
+    ],
+    "citation" => [
+        "citation-number" => function ($cslItem, $renderedText) {
+            return '<a href="#'.$cslItem->id.'">'.$renderedText.'</a>';
+        }
+    ]
+]);
+$data = json_decode($dataString);
+$bibliography = $citeProc->render($data, "bibliography");
+$cssStyles = $citeProc->renderCssStyles();
+?>
+    <h2>Lorem Ipsum</h2>
+    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+        magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
+        gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing
+        elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero
+        eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+        dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet
+        <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-4"}]')); ?>.</p>
+
+    <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat
+        nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue
+        duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+        nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat
+        <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-2"}]')); ?>.</p>
+
+    <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
+        consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore
+        eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+        delenit augue duis dolore te feugait nulla facilisi.</p>
+
+    <p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim
+        assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+        dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
+        lobortis nisl ut aliquip ex ea commodo consequat <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-1"}]')); ?>.</p>
+
+    <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat
+        nulla facilisis <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-3"}]')); ?>.</p>
+
+    <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+        ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et
+        ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet
+        <?php echo $citeProc->render($data, "citation", json_decode('[{"id":"ITEM-3"},{"id":"ITEM-4"}]')); ?>.</p>
+
+    <h3>Literature</h3>
+    <?php echo $bibliography; ?>
+</article>
+
+</body>
+</html>
+<?php
 });
 
 Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {

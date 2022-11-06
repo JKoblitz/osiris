@@ -63,9 +63,9 @@ function validateValues($values)
             $values[$key] = boolval($value);
         } else if ($value === '') {
             $values[$key] = null;
-        } else if ($key === 'epub-delay') {
+        } else if ($key === 'epub-delay' || $key === 'end-delay') {
             // will be converted otherwise
-            $values[$key] = $value;
+            $values[$key] = endOfCurrentQuarter(true);
         } else if ($key == 'start' || $key == 'end' || DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
             // $values[$key] = mongo_date($value);
             $values[$key] = valiDate($value);

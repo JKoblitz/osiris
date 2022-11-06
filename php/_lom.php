@@ -134,6 +134,7 @@ function lom($col, $doc)
         $journal = $this->osiris->journals->findOne(['journal' => ['$regex' => $j]]);
 
         $if = 1;
+        if (!empty($journal)){
         $impact = $journal['impact']->bsonSerialize();
         if (is_array($impact)) {
             $impact = array_filter($impact, function ($a) use ($prev_year) {
@@ -142,7 +143,7 @@ function lom($col, $doc)
             if (!empty($impact)) {
                 $if = reset($impact)['impact'];
             }
-        }
+        }}
         $points = $this->matrix['publication']['refereed'][$pos];
         return array(
             'type' => "publication>refereed>$pos",

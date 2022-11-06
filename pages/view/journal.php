@@ -1,3 +1,6 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+
 <table class="table" id="result-table">
     <tr>
         <td>ID</td>
@@ -22,163 +25,65 @@
 </table>
 <?php
 $impacts = $data['impact'];
+$years = array_column((array) $impacts, 'year');
+// dump($impacts);
 ?>
 
-<h4><?= lang('Impact factors', 'Impact-Faktoren') ?></h4>
 
 <div class="box">
-    <script type="application/json" id="vega-schema">
-        {
-            "$schema": "https://vega.github.io/schema/vega/v5.json",
-            "description": "A basic bar chart example, with value labels shown upon mouse hover.",
-            "width": 600,
-            "height": 200,
-            "padding": 5,
-            "data": [{
-                "name": "table",
-                "values": <?= json_encode($impacts) ?>
-            }],
-
-            "signals": [{
-                "name": "tooltip",
-                "value": {},
-                "on": [{
-                        "events": "rect:mouseover",
-                        "update": "datum"
-                    },
-                    {
-                        "events": "rect:mouseout",
-                        "update": "{}"
-                    }
-                ]
-            }],
-
-            "scales": [{
-                    "name": "xscale",
-                    "type": "band",
-                    "domain": {
-                        "data": "table",
-                        "field": "year"
-                    },
-                    "range": "width",
-                    "padding": 0.05,
-                    "round": true
-                },
-                {
-                    "name": "yscale",
-                    "domain": {
-                        "data": "table",
-                        "field": "impact"
-                    },
-                    "nice": true,
-                    "range": "height"
-                }
-            ],
-            "axes": [{
-                    "orient": "bottom",
-                    "scale": "xscale"
-                },
-                {
-                    "orient": "left",
-                    "scale": "yscale"
-                }
-            ],
-
-            "marks": [{
-                    "type": "rect",
-                    "from": {
-                        "data": "table"
-                    },
-                    "encode": {
-                        "enter": {
-                            "x": {
-                                "scale": "xscale",
-                                "field": "year"
-                            },
-                            "width": {
-                                "scale": "xscale",
-                                "band": 1
-                            },
-                            "y": {
-                                "scale": "yscale",
-                                "field": "impact"
-                            },
-                            "y2": {
-                                "scale": "yscale",
-                                "value": 0
-                            }
-                        },
-                        "update": {
-                            "fill": {
-                                "value": "#eca001"
-                            }
-                        },
-                        "hover": {
-                            "fill": {
-                                "value": "#b61f29"
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "text",
-                    "encode": {
-                        "enter": {
-                            "align": {
-                                "value": "center"
-                            },
-                            "baseline": {
-                                "value": "bottom"
-                            },
-                            "fill": {
-                                "value": "#333"
-                            }
-                        },
-                        "update": {
-                            "x": {
-                                "scale": "xscale",
-                                "signal": "tooltip.year",
-                                "band": 0.5
-                            },
-                            "y": {
-                                "scale": "yscale",
-                                "signal": "tooltip.impact",
-                                "offset": -2
-                            },
-                            "text": {
-                                "signal": "tooltip.impact"
-                            },
-                            "fillOpacity": [{
-                                    "test": "datum === tooltip",
-                                    "value": 0
-                                },
-                                {
-                                    "value": 1
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
-        }
-    </script>
-    <div id="view" class="content">
+    <div class="chart content">
+        <h5 class="title "><?= lang('Impact factors', 'Impact-Faktoren') ?></h5>
+        <canvas id="chart-if" style="max-height: 400px;"></canvas>
     </div>
-
-
-
-    <script src="https://vega.github.io/vega/vega.min.js"></script>
-    <script>
-        function render(spec) {
-            view = new vega.View(vega.parse(spec), {
-                renderer: 'svg', // renderer (canvas or svg)
-                container: '#view', // parent DOM container
-                hover: true // enable hover processing
-            });
-            return view.runAsync();
-        }
-        var js = JSON.parse(document.getElementById('vega-schema').innerHTML);
-        console.log(js);
-        render(js);
-    </script>
 </div>
+
+<script>
+    var barChartConfig = {
+        type: 'bar',
+        data: [],
+        options: {
+            plugins: {
+                title: {
+                    display: false,
+                    text: 'Chart'
+                },
+                legend: {
+                    display: false,
+                }
+            },
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            }
+        },
+
+    };
+    var ctx = document.getElementById('chart-if')
+    var data = Object.assign({}, barChartConfig)
+    var raw_data = Object.values(<?= json_encode($impacts) ?>);
+    console.log(raw_data);
+    data.data = {
+        labels: <?= json_encode($years) ?>,
+        datasets: [{
+                label: 'Impact factor',
+                data: raw_data,
+                parsing: {
+                    yAxisKey: 'impact',
+                    xAxisKey: 'year'
+                },
+                backgroundColor: 'rgba(236, 175, 0, 0.7)',
+                borderColor: 'rgba(236, 175, 0, 1)',
+                borderWidth: 3
+            },
+        ],
+    }
+
+
+    console.log(data);
+    var myChart = new Chart(ctx, data);
+</script>

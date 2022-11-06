@@ -5,7 +5,11 @@
 <?php
 
 $user = $_SESSION['username'];
-$Format = new Format();
+$useronly = false;
+if ($page=='my-activities'){
+    $useronly=$user;
+}
+$Format = new Format($useronly);
 // $author_highlight = $user;
 ?>
 
@@ -169,7 +173,7 @@ $Format = new Format();
     </table>
 </div>
 
-<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="<?=ROOTPATH?>/js/jquery.dataTables.min.js"></script>
 <!-- <script src="<?= ROOTPATH ?>/js/gridjs.js"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script> -->
 
