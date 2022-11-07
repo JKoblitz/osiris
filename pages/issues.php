@@ -102,7 +102,7 @@ $Format = new Format($user);
     </div>
 </div>
 
-<div class="modal" id="why-teaching" tabindex="-1" role="dialog">
+<div class="modal" id="why-students" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <a href="#/" class="close" role="button" aria-label="Close">
@@ -154,7 +154,7 @@ $cursor = $collection->find($filter);
 $issues = array(
     "approval" => [],
     "epub" => [],
-    "teaching" => [],
+    "students" => [],
     "openend" => []
 );
 
@@ -166,8 +166,8 @@ foreach ($cursor as $doc) {
     if (in_array("epub", $has_issues)) {
         $issues['epub'][] = $doc;
     }
-    if (in_array("teaching", $has_issues)) {
-        $issues['teaching'][] = $doc;
+    if (in_array("students", $has_issues)) {
+        $issues['students'][] = $doc;
     }
     if (in_array("openend", $has_issues)) {
         $issues['openend'][] = $doc;
@@ -312,7 +312,7 @@ if (array_sum($a) === 0) {
     </table>
 <?php } ?>
 
-<?php if (!empty($issues['teaching'])) { ?>
+<?php if (!empty($issues['students'])) { ?>
     <h2 class="mb-0">
         <?= lang(
             'Please review the following theses:',
@@ -320,12 +320,12 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="#why-teaching" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="#why-students" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">
         <?php
-        foreach ($issues['teaching'] as $doc) {
+        foreach ($issues['students'] as $doc) {
             $id = $doc['_id'];
             $type = $doc['type'];
         ?>

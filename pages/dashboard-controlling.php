@@ -93,7 +93,7 @@ $stats = array(
     "lecture" => [],
     "review" => [],
     "misc" => [],
-    "teaching" => []
+    "students" => []
 );
 
 $user = $_SESSION['username'];

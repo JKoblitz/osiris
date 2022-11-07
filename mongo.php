@@ -111,11 +111,49 @@ Route::get('/mongo', function () {
 
 
 
-// Route::get('/testing', function () {
-//     include_once BASEPATH . "/php/_db.php";
+Route::get('/test/(users|activities|journals)/([a-zA-Z0-9]*)', function ($col, $id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    if ($col == 'users') {
+        $collection = $osiris->users;
+    } elseif ($col == 'journals') {
+        $collection = $osiris->journals;
+    } else{
+        $collection = $osiris->activities;
+    }
+    
+    if (is_numeric($id)) {
+        $id = intval($id);
+    } else if ($col != 'users') {
+        $id = new MongoDB\BSON\ObjectId($id);
+    }
 
+    $data = $collection->findone(['_id'=> $id]);
+    dump($data, true);
+    
+    // $updateResult = $osiris->activities->updateMany(
+    //     ['type' => 'teaching'],
+    //     ['$set' => ['type'=>'students']]
+    // );
 // addUserActivity();
-// });
+});
+Route::get('/testing', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    
+    
+    // $updateResult = $osiris->activities->updateMany(
+    //     ['type' => 'teaching'],
+    //     ['$set' => ['type'=>'students']]
+    // );
+addUserActivity();
+
+$collection = $osiris->users;
+
+$data = $collection->findone(['_id'=> $id]);
+dump($data, true);
+
+});
 
 
 Route::post('/create', function () {
@@ -139,7 +177,7 @@ Route::post('/create', function () {
         case 'publication':
             $required = ['title', 'year', 'month'];
             break;
-        case 'teaching':
+        case 'students':
             $required = ['title', 'category', 'name', 'affiliation', 'start', 'end'];
             break;
         case 'review':
@@ -496,7 +534,7 @@ Route::post('/approve', function () {
 });
 
 
-Route::get('/form/(lecture|misc|poster|publication|teaching)/([A-Za-z0-9]*)', function ($col, $id) {
+Route::get('/form/(lecture|misc|poster|publication|students)/([A-Za-z0-9]*)', function ($col, $id) {
     include_once BASEPATH . "/php/_db.php";
 
     $collection = get_collection($col);

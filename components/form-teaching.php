@@ -12,10 +12,10 @@ foreach ($preset as $a) {
 
 $formaction = ROOTPATH . "/";
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "update/teaching/" . $form['_id'];
+    $formaction .= "update/students/" . $form['_id'];
     $btntext = '<i class="fas fa-check"></i> ' . lang("Update", "Aktualisieren");
 } else {
-    $formaction .= "create/teaching";
+    $formaction .= "create/students";
     $btntext = '<i class="fas fa-plus"></i> ' . lang("Add", "Hinzufügen");
 }
 ?>

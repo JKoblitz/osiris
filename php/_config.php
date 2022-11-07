@@ -248,3 +248,95 @@ function bool_icon($bool)
         return '<i class="fas fa-xmark text-danger"></i>';
     }
 }
+
+
+function type2title($type){
+    switch ($type) {
+        case 'publication':
+            return lang('Publications', 'Publikationen');
+        case 'poster':
+            return lang('Poster');
+        case 'lecture':
+            return lang('Lectures', 'Vorträge');
+        case 'review':
+            return lang('Reviews &amp; Editorial boards');
+        case 'misc':
+            return lang('Other activities', 'Sonstige Aktivitäten');
+        case 'students':
+            return lang('Students &amp; Guests', 'Studierende &amp; Gäste');
+        default:
+            return $type;
+    }
+}
+
+
+function deptInfo($dept){
+    switch ($dept) {
+        case "MIOS": 
+            return [
+                "color"=>'#d31e25',
+                'name' => 'Microorganisms'
+            ];
+        case "BIDB": 
+            return [
+                "color"=>'#5db5b7',
+                'name' => 'Bioinformatik &amp; Datenbanken'
+            ];
+        case "MIG": 
+            return [
+                "color"=>'#d1c02b',
+                'name' => 'Mikrobielle Genomforschung'
+            ];
+        case "BUG": 
+            return [
+                "color"=>'#8a3f64',
+                'name' => 'Bioökonomie und Gesundheitsforschung'
+            ];
+        case "MuTZ": 
+            return [
+                "color"=>'#31407b',
+                'name' => 'Menschliche &amp; Tierische Zellkulturen'
+            ];
+        case "PFVI": 
+            return [
+                "color"=>'#369e4b',
+                'name' => 'Pflanzenviren'
+            ];
+        case "MÖD": 
+            return [
+                "color"=>'#d7a32e',
+                'name' => 'Mikrobielle Ökologie'
+            ];
+        case "Services": 
+            return [
+                "color"=>'#4f2e39',
+                'name' => 'Services'
+            ];
+        case "Patente": 
+            return [
+                "color"=>'#b2b2b2',
+                'name' => 'Patente'
+            ];
+        case "IT": 
+            return [
+                "color"=>'#5F272A',
+                'name' => 'IT'
+            ];
+        case "Verwaltung": 
+            return [
+                "color"=>'#5F272A',
+                'name' => 'Verwaltung'
+            ];
+        case "PuK": 
+            return [
+                "color"=>'#5F272A',
+                'name' => 'Presse und Kommunikation'
+            ];
+        default:
+        return [
+            "color"=>'#cccccc',
+            'name' => $dept
+
+        ];
+    }
+}

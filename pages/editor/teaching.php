@@ -1,20 +1,20 @@
 <div class="content">
 
-    <h1 class=""><i class="fa-regular fa-people text-muted fa-lg mr-10"></i> <?= lang('Teaching &amp; Guests', 'Lehre &amp; Gäste') ?></h1>
+    <h1 class=""><i class="fa-regular fa-people text-muted fa-lg mr-10"></i> <?= lang('Students &amp; Guests', 'Lehre &amp; Gäste') ?></h1>
 
     <div class="form-group with-icon mb-10 mw-full w-350">
         <input type="search" class="form-control" placeholder="<?= lang('Filter') ?>" oninput="filter_results(this.value)">
         <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
     </div>
 
-    <div class="box box-primary  add-form" id="teaching-form" style="display:none">
+    <div class="box box-primary  add-form" id="students-form" style="display:none">
 
         <?php
-        include BASEPATH . "/components/form-teaching.php"
+        include BASEPATH . "/components/form-students.php"
         ?>
     </div>
 
-    <button class="btn btn-link" onclick="$('#add-btn-row').hide();$('#teaching-form').slideDown() " id="add-btn-row">
+    <button class="btn btn-link" onclick="$('#add-btn-row').hide();$('#students-form').slideDown() " id="add-btn-row">
         <i class="fas fa-plus"></i> <?= lang('Add stay', 'Füge Aufenthalt hinzu') ?>
     </button>
 
@@ -47,7 +47,7 @@
                 // everybody else sees their own work (all)
                 $filter = ['authors.user' => $user];
             }
-            $cursor = $osiris->teachings->find($filter);
+            $cursor = $osiris->studentss->find($filter);
             
             foreach ($cursor as $document) {
                 $id = $document['_id'];
@@ -59,7 +59,7 @@
                         <?= $document['start']['year'] ?>Q<?= $q ?>
                     </td>
                     <td>
-                        <?php echo format_teaching($document); ?>
+                        <?php echo format_students($document); ?>
                         <?php
                              if ($document['status'] == 'in progress' && new DateTime() > getDateTime($document['end'])) {
                                 ?>
@@ -68,7 +68,7 @@
                                             "<b>Attention</b>: the Thesis of $document[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
                                             "<b>Achtung</b>: die Abschlussarbeit von $document[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
                                         )  ?>
-                                        <form action="update/teaching/<?= $id ?>" method="post" class="form-inline mt-5">
+                                        <form action="update/students/<?= $id ?>" method="post" class="form-inline mt-5">
                                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
     
                                             <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
@@ -133,7 +133,7 @@
                         </div> -->
 
 
-                        <button class="btn btn-sm text-success" onclick="toggleEditForm('teaching', '<?= $document['_id'] ?>')">
+                        <button class="btn btn-sm text-success" onclick="toggleEditForm('students', '<?= $document['_id'] ?>')">
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </button>
 
@@ -143,7 +143,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-1">
                                 <div class="content">
-                                    <button class="btn text-danger" onclick="_delete('teaching', '<?= $document['_id'] ?>')">
+                                    <button class="btn text-danger" onclick="_delete('students', '<?= $document['_id'] ?>')">
                                         <?= lang(
                                             'Delete entry',
                                             'Lösche Eintrag'

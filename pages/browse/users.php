@@ -17,7 +17,11 @@
         <th><?= lang('Details') ?></th>
         <th><?= lang('Comment', 'Kommentar') ?></th>
         <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
+                    <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
         <th></th>
+        <?php
+        }
+        ?>
     </thead>
     <tbody>
 
@@ -26,7 +30,7 @@
 
         foreach ($result as $document) {
         ?>
-            <tr>
+            <tr class="row-<?= $document['dept'] ?>">
                 <td><a href="<?= ROOTPATH ?>/scientist/<?= $document['_id'] ?>"><?= $document['_id'] ?></a></td>
                 <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
                 <td><?= $document['first'] ?></td>
@@ -45,11 +49,15 @@
                     <?= bool_icon($document['is_scientist']) ?>
                 </td>
                 <!-- <td><?= bool_icon($document['is_active']) ?></td> -->
+                    <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                 <td>
                     <a href="<?= ROOTPATH ?>/edit/user/<?= $document['_id'] ?>" class="btn btn-link">
                         <i class="fas fa-edit"></i>
                     </a>
                 </td>
+        <?php
+        }
+        ?>
             </tr>
         <?php
         }

@@ -9,9 +9,9 @@ $LOM = new LOM($user, $osiris);
 $_lom = 0;
 
 // gravatar
-$email = $user . "@dsmz.de";
+$email = $scientist['mail'] ;#. "@dsmz.de";
 $default = ROOTPATH . "/img/person.jpg";
-$size = 100;
+$size = 140;
 
 $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
 ?>
@@ -57,10 +57,27 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
 
 <div class="row align-items-center">
     <div class="col flex-grow-0">
+        <div class="position-relative">
         <img src="<?= $gravatar ?>" alt="">
+        
+        <?php if ($currentuser) { ?>
+        <a class="position-absolute bottom-0 right-0 m-5 mb-10 border-0 badge badge-pill" href="https://de.gravatar.com/" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-edit "></i>
+        </a>
+        <?php } ?>
+
+        </div>
+
     </div>
     <div class="col ml-20">
         <h1 class="mb-0"><?= $name ?></h1>
+        
+        <h3 class="m-0 text-<?=$scientist['dept']?>">
+            <?php
+                echo deptInfo($scientist['dept'])['name'];
+            ?>
+            
+        </h3>
         <p class="lead mt-0">
             <i class="fad fa-lg fa-coin text-signal"></i>
             <b id="lom-points"></b>
@@ -89,6 +106,14 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
         <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="fas fa-chart-network"></i>
             <?= lang('View coauthor network', 'Zeige Ko-Autoren-Netzwerk') ?>
         </a>
+
+
+        <?php if ($currentuser) { ?>
+            <br>
+            <a class="btn mt-5" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="fas fa-user-pen"></i>
+                <?= lang('Edit user profile', 'Bearbeite Profil') ?>
+            </a>
+        <?php } ?>
     </div>
 </div>
 
@@ -220,7 +245,7 @@ $queries = array(
         "color" => "none",
         "show-quarter" => false
     ],
-    "teaching" => [
+    "students" => [
         "filter" => [
             'authors.user' => $user,
             "start.year" => array('$lte' => SELECTEDYEAR),
@@ -230,7 +255,7 @@ $queries = array(
             )
         ],
         "options" => array(),
-        "title" => lang('Teaching &amp; Guests', 'Abschlussarbeiten und Gäste'),
+        "title" => lang('Students &amp; Guests', 'Studierende &amp; Gäste'),
         "icon" => 'people',
         "color" => "none",
         "show-quarter" => false

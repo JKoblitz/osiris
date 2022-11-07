@@ -159,7 +159,7 @@ td.unbreakable {
 
 .ql-snow.ql-toolbar::after,
 .ql-snow .ql-toolbar::after {
-    content: '<?= lang('Please check spelling and formatting carefully.', 'Bitte Rechtschreibung und Formatierung sorgsam prüfen.') ?>';
+    content: 'Bitte Rechtschreibung und Formatierung sorgsam prüfen.';
     display: inline-block;
     color: var(--muted-color);
 }
@@ -284,3 +284,30 @@ strong {
     z-index: 2;
     border-radius: 3.2rem;
 }
+
+
+.row-MIOS { border-left: 3px solid #d31e25; }
+.row-BIDB { border-left: 3px solid #5db5b7; }
+.row-MIG { border-left: 3px solid #d1c02b; }
+.row-BUG { border-left: 3px solid #8a3f64; }
+.row-MuTZ { border-left: 3px solid #31407b; }
+.row-PFVI { border-left: 3px solid #369e4b; }
+.row-MÖD { border-left: 3px solid #d7a32e; }
+.row-Services { border-left: 3px solid #4f2e39; }
+.row-Patente { border-left: 3px solid #b2b2b2; }
+.row-IT { border-left: 3px solid #5F272A; }
+.row-Verwaltung { border-left: 3px solid #5F272A; }
+.row-PuK { border-left: 3px solid #5F272A; }
+
+.text-MIOS { color: #d31e25; }
+.text-BIDB { color: #5db5b7; }
+.text-MIG { color: #d1c02b; }
+.text-BUG { color: #8a3f64; }
+.text-MuTZ { color: #31407b; }
+.text-PFVI { color: #369e4b; }
+.text-MÖD { color: #d7a32e; }
+.text-Services { color: #4f2e39; }
+.text-Patente { color: #b2b2b2; }
+.text-IT { color: #5F272A; }
+.text-Verwaltung { color: #5F272A; }
+.text-PuK { color: #5F272A; }

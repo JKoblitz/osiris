@@ -38,8 +38,8 @@ class LOM
 function lom($col, $doc)
 {
     switch ($col) {
-        case 'teaching':
-            return $this->teaching($doc);
+        case 'students':
+            return $this->students($doc);
         case 'poster':
             return $this->poster($doc);
         case 'lecture':
@@ -149,7 +149,7 @@ function lom($col, $doc)
             'type' => "publication>refereed>$pos",
             'id' => $doc['_id'],
             'title' => $doc['title'],
-            'points' => "$points * $if (IF)",
+            'points' => "$points ($pos) * $if (IF)",
             'lom' => round($points * floatval($if))
         );
     }
@@ -250,10 +250,10 @@ function lom($col, $doc)
         );
     }
 
-    function teaching($doc)
+    function students($doc)
     {
         return  array(
-            'type' => "teaching",
+            'type' => "students",
             'id' => $doc['_id'],
             'title' => $doc['title'],
             'points' => "TODO",
@@ -261,6 +261,6 @@ function lom($col, $doc)
         );
     }
 
-    // TODO: teaching
+    // TODO: students
 
 }

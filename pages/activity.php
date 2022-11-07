@@ -28,7 +28,7 @@
     } ?>
 
 
-    <?php if (in_array($activity['type'], ['poster', 'lecture', 'review', 'misc', 'teaching'])) {
+    <?php if (in_array($activity['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
         echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn btn-signal">
         <i class="fas fa-copy"></i>
         ' . lang("Add a copy", "Eine Kopie anlegen") .

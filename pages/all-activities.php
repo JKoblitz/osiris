@@ -40,7 +40,7 @@ $Format = new Format($useronly);
     <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i> <?= lang('Lectures', 'Vorträge') ?></button>
     <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
     <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i> <?= lang('Misc') ?></button>
-    <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select- text-muted" id="teaching-btn"><i class="fa-regular fa-people"></i> <?= lang('Teaching &amp; Guests') ?></button>
+    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-muted" id="students-btn"><i class="fa-regular fa-people"></i> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
     <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i> <?= lang('Software') ?></button>
 </div>
 

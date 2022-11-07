@@ -39,7 +39,7 @@ Route::get('/export/reports', function () {
 function getTypeTitle($type)
 {
     $types = [
-        'teaching' => 'Lehre und Gäste',
+        'students' => 'Lehre und Gäste',
         'poster' => 'Poster',
         'lecture' => 'Vorträge',
         'publication' => 'Publikationen',
@@ -61,7 +61,7 @@ Route::post('/export/publications', function () {
         'poster',
         'review',
         'misc',
-        'teaching',
+        'students',
     );
     // select data
     $collection = $osiris->activities;
@@ -265,7 +265,7 @@ Route::post('/export/reports', function () {
         'poster' => [],
         'review' => [],
         'misc' => [],
-        'teaching' => []
+        'students' => []
     ];
 
     $depts = [

@@ -21,7 +21,7 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
     $formaction .= "create";
-    $btntext = '<i class="fas fa-plus"></i> ' . lang("Add", "Hinzufügen");
+    $btntext = '<i class="fas fa-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/activities/view/*";
 }
 
@@ -68,7 +68,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <button onclick="togglePubType('lecture')" class="btn btn-select text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i><?= lang('Lectures', 'Vorträge') ?></button>
         <button onclick="togglePubType('review')" class="btn btn-select text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
         <button onclick="togglePubType('misc')" class="btn btn-select text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i><?= lang('Misc') ?></button>
-        <button onclick="togglePubType('teaching')" class="btn btn-select text-muted" id="teaching-btn"><i class="fa-regular fa-people"></i><?= lang('Teaching &amp; Guests') ?></button>
+        <button onclick="togglePubType('students')" class="btn btn-select text-muted" id="students-btn"><i class="fa-regular fa-people"></i><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
         <button onclick="todo('software')" class="btn btn-select text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i><?= lang('Software') ?></button>
 
     </div>
@@ -126,14 +126,14 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 </div>
 
 
-                <div class="form-group" data-visible="article,magazine,book,chapter,editor,lecture,poster,misc,teaching">
+                <div class="form-group" data-visible="article,magazine,book,chapter,editor,lecture,poster,misc,students">
                     <label for="title" class="required"><?= lang('Title', 'Titel') ?></label>
 
                     <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
                     <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="teaching">
+                <div class="form-row row-eq-spacing" data-visible="students">
                     <div class="col-sm-5">
                         <label for="guest-name" class="required"><?= lang('Name of the guest/student (last name, given name)', 'Name des Gastes/Studierenden (Nachname, Vorname)') ?></label>
                         <input type="text" class="form-control" name="values[name]" id="guest-name" required value="<?= $form['name'] ?? '' ?>">
@@ -148,9 +148,9 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 </div>
 
-                <div class="form-group" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc,teaching">
+                <div class="form-group" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc,students">
                     <label for="author" class="required">
-                        <span data-visible="teaching"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
+                        <span data-visible="students"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
                         <span data-visible="article,magazine,book,editor,chapter,lecture,poster,misc"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
                     </label>
@@ -210,10 +210,10 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= $form['day'] ?? '' ?>">
                     </div>
                 </div>
-                <div class="form-row row-eq-spacing" data-visible="teaching">
+                <div class="form-row row-eq-spacing" data-visible="students">
                     <div class="col-sm">
                         <label for="category" class="required"><?= lang('Category', 'Kategorie') ?></label>
-                        <select name="values[category]" id="category" class="form-control" required onchange="teachingEndQuestion()">
+                        <select name="values[category]" id="category" class="form-control" required onchange="studentsEndQuestion()">
                             <option disabled>--- <?= lang('Thesis', 'Abschlussarbeiten') ?> ---</option>
                             <option <?= ($form['category'] ?? '') == 'Doktorand:in' ? 'selected' : '' ?>>Doktorand:in</option>
                             <option <?= ($form['category'] ?? '') == 'Master-Thesis' ? 'selected' : '' ?>>Master-Thesis</option>
@@ -231,7 +231,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc,teaching">
+                <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc,students">
                     <div class="col-sm" data-visible="lecture">
                         <label class="required" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
                         <select name="values[lecture_type]" id="lecture_type" class="form-control">
@@ -241,25 +241,29 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         </select>
                     </div>
                     <div class="col-sm">
-                        <label class="required" for="start"><?= lang('Date', 'Datum') ?></label>
+                        <label class="required" for="date_start"><?= lang('Date', 'Datum') ?></label>
                         <input type="date" class="form-control" name="values[start]" id="date_start" required value="<?= valueFromDateArray($form['start'] ?? '') ?>">
                     </div>
-                    <div class="col-sm" data-visible="poster,misc,teaching">
-                        <label for="end"><?= lang('End (leave empty if event was only one day)', 'Ende (leer lassen falls nur ein Tag)') ?></label>
-                        <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
-                        <div id="end-question" style="display: none;" data-visible="teaching">
+                    <div class="col-sm" data-visible="poster,misc">
+                        <label for="date_end"><?= lang('End (leave empty if event was only one day)', 'Ende (leer lassen falls nur ein Tag)') ?></label>
+                        <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
+                    </div>
+                    <div class="col-sm" data-visible="students">
+                        <label for="students_end" class="required"><?= lang('End', 'Ende') ?></label>
+                        <input type="date" class="form-control" name="values[end]" id="students_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>" required onchange="studentsEndQuestion()">
+                        <div id="end-question" style="display: none;">
                             <div class="custom-radio d-none">
-                                <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="<?= $form['status'] ?? '' ?>">
+                                <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="1">
                                 <label for="status-in-progress"><?= lang('Completed', 'Abgeschlossen') ?></label>
                             </div>
 
                             <div class="custom-radio d-inline-block">
-                                <input type="radio" name="values[status]" id="status-completed" value="completed" value="<?= $form['status'] ?? '' ?>">
+                                <input type="radio" name="values[status]" id="status-completed" value="completed" value="1">
                                 <label for="status-completed"><?= lang('Completed', 'Abgeschlossen') ?></label>
                             </div>
 
                             <div class="custom-radio d-inline-block">
-                                <input type="radio" name="values[status]" id="status-aborted" value="aborted" value="<?= $form['status'] ?? '' ?>">
+                                <input type="radio" name="values[status]" id="status-aborted" value="aborted" value="1">
                                 <label for="status-aborted"><?= lang('Aborted', 'Abgebrochen') ?></label>
                             </div>
                         </div>
@@ -495,8 +499,8 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 
 <script>
-    function teachingEndQuestion() {
-        const date = $('#date_end').val()
+    function studentsEndQuestion() {
+        const date = $('#students_end').val()
         console.log(date);
         if (date.length === 0) {
             $('#end-question').hide()

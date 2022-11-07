@@ -136,9 +136,9 @@ function has_issues($doc, $user = null)
         }
     }
     if ($epub) $issues[] = "epub";
-    if ($doc['type'] == "teaching" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "teaching";
+    if ($doc['type'] == "students" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
 
-    if ($doc['type'] == 'misc' && is_null($doc['end'])) {
+    if (($doc['type'] == 'misc' || ($doc['type'] == 'review' && $doc['role']=='Editor')) && is_null($doc['end'])) {
         if (isset($doc['end-delay'])) {
             if (new DateTime() > new DateTime($doc['end-delay'])) {
                 $issues[] = "openend";
@@ -163,8 +163,8 @@ function get_collection($col)
             return $osiris->posters;
         case 'publication':
             return $osiris->publications;
-        case 'teaching':
-            return $osiris->teachings;
+        case 'students':
+            return $osiris->studentss;
         case 'review':
             return $osiris->reviews;
         default:
@@ -177,23 +177,28 @@ function get_collection($col)
 function addUserActivity($activity = 'create')
 {
     global $osiris;
-    $update = ['$set' => ['activity' => [$activity => [date("Y-m-d")]]]];
+    $update = ['$push' => ['activity' => ['type'=>$activity, 'date'=> [date("Y-m-d")]]]];
     $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
-    dump($u, true);
-    if (!isset($u['activity'][$activity])) {
-        $osiris->users->updateOne(
-            ['_id' => $_SESSION['username']],
-            [
-                '$set' => ['activity' => [$activity => [date("Y-m-d")]]],
-                '$push' => ['achievements' => ['title' => "first-$activity", 'achieved' => date("d.m.Y")]]
-            ]
-        );
-        return;
+    $uact = array_filter($u['activity'], function ($a) use ($activity) {
+        return $a['type'] == $activity;
+    });
+    // dump($u, true);
+    // $uact = array_column($u['activity']->bson_serialize(), $activity);
+    if (empty($uact)) {
+        $update['$push'] = ['achievements' => ['title' => "first-$activity", 'achieved' => date("d.m.Y")]];
+        // $osiris->users->updateOne(
+        //     ['_id' => $_SESSION['username']],
+        //     [
+        //         '$push' => ['activity' => [$activity => [date("Y-m-d")]]],
+        //         '$push' => ['achievements' => ['title' => "first-$activity", 'achieved' => date("d.m.Y")]]
+        //     ]
+        // );
+        // return;
     }
-    if (count($u['activity'][$activity]) === 9) {
+    elseif (count($u['activity'][$activity]) === 9) {
         $update['$push'] = ['achievements' => ['title' => "10-$activity", 'achieved' => date("d.m.Y")]];
     }
-    if (count($u['activity'][$activity]) === 49) {
+    elseif (count($u['activity'][$activity]) === 49) {
         $update['$push'] = ['achievements' => ['title' => "50-$activity", 'achieved' => date("d.m.Y")]];
     }
 
@@ -236,7 +241,7 @@ function achievementText($title)
             break;
 
         default:
-            # code...
+            return "";
             break;
     }
 }

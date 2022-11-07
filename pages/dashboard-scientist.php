@@ -1,4 +1,13 @@
 
+<div class="content">
+    <div class="alert">
+        <div class="title">Systemnachricht</div>
+        <p>
+            Die bereits eingepflegten Publikationen stammen aus EndNote und enthalten aus irgendeinem Grund keine Umlaute o.ä. An einer Lösung arbeite ich zurzeit noch.
+        </p>
+    </div>
+</div>
+
     <div class="content">
         <h2><?= lang('Welcome', 'Willkommen') ?>, <?= $USER['name'] ?></h2>
 
@@ -18,7 +27,7 @@
         "lecture" => [],
         "review" => [],
         "misc" => [],
-        "teaching" => []
+        "students" => []
     );
 
     $user = $_SESSION['username'];
@@ -27,8 +36,11 @@
     $cursor = $osiris->activities->find($filter, $options);
 
     foreach ($cursor as $doc) {
+        if ($doc['year'] < 2017) continue;
         $type = $doc['type'];
+        
         $year = strval($doc['year']);
+
 
         if (!isset($stats[$type])) $stats[$type] = [];
         if (!isset($stats[$type][$year])) $stats[$type][$year] = ["x" => $year, "good" => 0, "bad" => 0];
@@ -53,7 +65,7 @@
 
                 <div class="box">
                     <div class="chart content">
-                        <h5 class="title text-center"><?= ucfirst($type) ?></h5>
+                        <h5 class="title text-center"><?= type2title($type) ?></h5>
                         <canvas id="chart-<?= $type ?>"></canvas>
 
                         <div class="mt-5 text-right">

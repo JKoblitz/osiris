@@ -247,8 +247,8 @@ function activity_icon($doc)
             return "<span data-toggle='tooltip' data-title='Misc'>
                 <i class='far fa-lg text-muted fa-icons'></i>
                 </span>";
-        case 'teaching':
-            return "<span data-toggle='tooltip' data-title='Teaching'>
+        case 'students':
+            return "<span data-toggle='tooltip' data-title='Students & Guests'>
                     <i class='far fa-lg text-muted fa-people'></i>
                     </span>";
         case 'software':
@@ -278,8 +278,8 @@ class Format
     function format($col, $doc)
     {
         switch ($col) {
-            case 'teaching':
-                return $this->format_teaching($doc);
+            case 'students':
+                return $this->format_students($doc);
             case 'poster':
                 return $this->format_poster($doc);
             case 'lecture':
@@ -337,7 +337,7 @@ class Format
     }
 
 
-    function format_teaching($doc, $verbose = false)
+    function format_students($doc, $verbose = false)
     {
         $result = "";
         if (!empty($doc['academic_title'])) {

@@ -1,9 +1,5 @@
 # OSIRIS
 
-![](https://www.kerndatensatz-forschung.de/version1/technisches_datenmodell/v_1_2/EntityRelationshipModell/KDSF.png)
-
-[Hier](https://www.kerndatensatz-forschung.de/version1/technisches_datenmodell/v_1_2/ER-Modell.html) findet sich ein ganz gut nutzbares Datenmodell.
-
 ## Nutzbare APIs
 
 ### OpenCitations
@@ -57,8 +53,3 @@ GROUP BY journal_id ORDER BY `publications` DESC
 
 https://www.scimagojr.com/journalrank.php?wos=true&openaccess=true
 
-
-# TODO!
-
-- add addQuarter() function to all implementations to ensure that foreign key does not fail.
-- check if date is in the future!
