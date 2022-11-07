@@ -64,7 +64,7 @@ Ich habe ein ganz simples Punkte-System aufgesetzt.
 ## 01.09.22
 Dieses Update bezieht sich ausschließlich auf die Ansicht des Controllings
 - Auf der Startseite wird nun eine Übersicht aller Wissenschaftler gezeigt, die das aktuelle Quartal "approved" haben 
-- Die Inhaltsseiten (Publikationen, Poster, Vorträge, Reviewsm Misc, Teaching) zeigen nun alle Aktivitäten des ausgewählten Jahres
+- Die Inhaltsseiten (Publikationen, Poster, Vorträge, Reviewsm Misc, Students) zeigen nun alle Aktivitäten des ausgewählten Jahres
 - Inhaltsseiten sind jetzt filterbar (Achtung! Groß- und Kleinschreibung beachten.)
 
 ## 31.07.22
@@ -94,7 +94,7 @@ Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
 - Dieses Changelog wurde hinzugefügt, um den Überblick über die Entwicklung zu behalten
 - Neues Auswahlmenü zur Navigation hinzugefügt: jetzt können Jahr und Quartal präziser ausgewählt werden.
 - Auf der Übersichtsseite werden jetzt alle Aktivitäten des aktuell gewählten **Jahres** gezeigt. Aktivitäten, die nicht im ausgewählten **Quartal** stattfanden werden ausgegraut
-- Es wurden mit Teaching & Guests Doktoranden, Studenten und Gäste hinzugefügt.
+- Es wurden mit Students & Guests Doktoranden, Studenten und Gäste hinzugefügt.
   - Es gibt ein Interface, um neue Datensätze hinzuzufügen
   - Verantwortliche Wissenschaftler haben in diesem Jahr gelaufene Betreuungen in ihrer Übersicht.
   - Der verantw. Wissenschaftler bekommt einen Hinweis, wenn die Zeit eines Gast/Student/Doktorand abgelaufen ist und kann das Ende bestätigen oder verschieben

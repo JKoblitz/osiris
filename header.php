@@ -99,7 +99,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <!-- Navbar start -->
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
-                <img src="<?= ROOTPATH ?>/img/logo-alpha.svg" alt="OSIRIS">
+                <img src="<?= ROOTPATH ?>/img/logo-beta.svg" alt="OSIRIS">
             </a>
 
             <a href="//www.dsmz.de/" class="navbar-brand ml-auto">
@@ -283,9 +283,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Misc') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/teaching" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('teaching') ?>">
+                    <a href="<?= ROOTPATH ?>/students" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('students') ?>">
                         <i class="far fa-people" aria-hidden="true"></i>
-                        <?= lang('Teaching &amp; Guests') ?>
+                        <?= lang('Students &amp; Guests') ?>
                     </a> -->
 
 
@@ -325,6 +325,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
                     <i class="far fa-message-pen" aria-hidden="true"></i>
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
+                </a>
+                
+                <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon <?= $pageactive('news') ?>">
+                    <i class="far fa-comments" aria-hidden="true"></i>
+                    <?= lang('Feedback') ?>
                 </a>
 
                 <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
