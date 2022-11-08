@@ -131,7 +131,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-            <form id="navbar-search" action="" method="get" class="nav-search">
+
+            <!-- <form id="navbar-search" action="" method="get" class="nav-search">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
@@ -153,7 +154,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <button class="btn btn-primary"><i class="fas fa-check"></i></button>
                     </div>
                 </div>
-            </form>
+            </form> -->
 
         </nav>
 
@@ -178,10 +179,17 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         </a>
                     </div>
 
-                    <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
-                        <i class="far fa-chart-column" aria-hidden="true"></i>
-                        <?= lang('Dashboard') ?>
-                    </a>
+                    <?php if ($USER['is_controlling']) { ?>
+                        <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
+                            <i class="far fa-chart-column" aria-hidden="true"></i>
+                            <?= lang('Dashboard') ?>
+                        </a>
+                    <?php } else { ?>
+                        <a href="<?= ROOTPATH ?>/profile/<?=$_SESSION['username']?>" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
+                            <i class="far fa-user-graduate" aria-hidden="true"></i>
+                            <?= $USER["displayname"] ?? 'User' ?>
+                        </a>
+                    <?php } ?>
 
                     <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('scientist') ?>">
                         <i class="far fa-calendar" aria-hidden="true"></i>
@@ -201,9 +209,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         </a>
 
                         <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('visualize') ?>">
-                        <i class="far fa-chart-network" aria-hidden="true"></i>
-                        <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
-                    </a>
+                            <i class="far fa-chart-network" aria-hidden="true"></i>
+                            <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
+                        </a>
                     <?php } ?>
 
 
@@ -234,7 +242,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    
+
 
 
 
@@ -326,7 +334,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <i class="far fa-message-pen" aria-hidden="true"></i>
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
-                
+
                 <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon <?= $pageactive('news') ?>">
                     <i class="far fa-comments" aria-hidden="true"></i>
                     <?= lang('Feedback') ?>

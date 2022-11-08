@@ -6,7 +6,7 @@
 <h2><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h2>
 
 <p>
-    <?= $Format->format($activity['type'], $activity) ?>
+    <?= $Format->format($activity) ?>
 </p>
 
 <div class="alert alert-signal mt-20">

@@ -38,11 +38,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         </button>
         <!-- Create new activity -->
         <h3 class=""><?= lang('Add activity', 'Füge Aktivität hinzu') ?></h3>
-        <form method="get" onsubmit="getPubData(event, this)" id="search-doi">
+        <form method="get" onsubmit="getPubData(event, this)">
             <div class="form-group">
                 <label for="doi"><?= lang('Search publication by DOI or Pubmed-ID', 'Suche Publikation über die DOI oder Pubmed-ID') ?>:</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="">
+                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
                     </div>
@@ -68,7 +68,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <button onclick="togglePubType('lecture')" class="btn btn-select text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i><?= lang('Lectures', 'Vorträge') ?></button>
         <button onclick="togglePubType('review')" class="btn btn-select text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
         <button onclick="togglePubType('misc')" class="btn btn-select text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i><?= lang('Misc') ?></button>
-        <button onclick="togglePubType('students')" class="btn btn-select text-muted" id="students-btn"><i class="fa-regular fa-people"></i><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
+        <button onclick="togglePubType('students')" class="btn btn-select text-dark" id="students-btn"><i class="fa-regular fa-people"></i><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
         <button onclick="todo('software')" class="btn btn-select text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i><?= lang('Software') ?></button>
 
     </div>
@@ -200,14 +200,17 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm">
                         <label for="year" class="required">Year</label>
                         <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" required value="<?= $form['year'] ?? '' ?>">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="month" class="required">Month</label>
                         <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" required value="<?= $form['month'] ?? '' ?>">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="day">Day</label>
                         <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= $form['day'] ?? '' ?>">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
                 <div class="form-row row-eq-spacing" data-visible="students">
@@ -299,6 +302,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="form-group" data-visible="article">
                     <label for="journal">Journal</label>
                     <input type="text" class="form-control" name="values[journal]" value="<?= $form['journal'] ?? '' ?>" id="journal" list="journal-list">
+                    <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                 </div>
 
                 <div class="form-row row-eq-spacing" data-visible="magazine">
@@ -316,14 +320,17 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm" data-visible="article">
                         <label for="issue">Issue</label>
                         <input type="text" class="form-control" name="values[issue]" value="<?= $form['issue'] ?? '' ?>" id="issue">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="volume">Volume</label>
                         <input type="text" class="form-control" name="values[volume]" value="<?= $form['volume'] ?? '' ?>" id="volume">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="pages">Pages</label>
                         <input type="text" class="form-control" name="values[pages]" value="<?= $form['pages'] ?? '' ?>" id="pages">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
 
@@ -332,18 +339,22 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm" data-visible="chapter">
                         <label for="book" class="required">Book title</label>
                         <input type="text" class="form-control" name="values[book]" value="<?= $form['book'] ?? '' ?>" id="book" required>
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="edition">Edition</label>
                         <input type="number" class="form-control" name="values[edition]" value="<?= $form['edition'] ?? '' ?>" id="edition">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="publisher">Publisher</label>
                         <input type="text" class="form-control" name="values[publisher]" value="<?= $form['publisher'] ?? '' ?>" id="publisher">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="city">City</label>
                         <input type="text" class="form-control" name="values[city]" value="<?= $form['city'] ?? '' ?>" id="city">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
                 <div class="form-group" data-visible="editor,chapter">
@@ -356,12 +367,28 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
                 <div class="form-row row-eq-spacing" data-visible="article,book,editor,chapter">
                     <div class="col-sm">
-                        <label for="doi">DOI</label>
-                        <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
+                            <label for="doi">DOI</label>
+                        <?php if (empty($form)) { ?>
+                            <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
+                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                        <?php } else { ?>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
+                                <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                                <div class="input-group-append" data-toggle="tooltip" data-title="<?=lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI')?>">
+                                    <button class="btn" type="button" onclick="getPubData(event, this)"><i class="fas fa-rotate"></i></button>
+                                    <span class="sr-only">
+                                        <?=lang('Retreive updated information via DOI', 'Aktualisiere die bibliographischen Daten via DOI')?>
+                                    </span>
+                                </div>
+                            </div>
+                         <?php } ?>
+                       
                     </div>
                     <div class="col-sm">
                         <label for="pubmed">Pubmed</label>
                         <input type="number" class="form-control" name="values[pubmed]" value="<?= $form['pubmed'] ?? '' ?>" id="pubmed">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="isbn">ISBN</label>
@@ -408,6 +435,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                                 <?= lang('Journal') ?>
                             </label>
                             <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= $form['journal'] ?? '' ?>" name="values[journal]" list="journal-list" required>
+                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
 
                         </div>
                         <div class="col-sm-3">
@@ -499,6 +527,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 
 <script>
+    UPDATE = false;
     function studentsEndQuestion() {
         const date = $('#students_end').val()
         console.log(date);
@@ -536,11 +565,35 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 <?php if (!empty($form)) { ?>
     <script>
+        UPDATE = true
         togglePubType('<?= $form['type'] == 'publication' ? $form['pubtype'] : $form['type'] ?>');
 
         <?php if (isset($form['role'])) { ?>
             reviewUIupdate(document.getElementById('role-input'));
         <?php } ?>
+
+        
+        $('input').each(function (el){
+            el =  $(this)
+            if (!isEmpty(el.val()))
+                el.attr("data-value", el.val())
+        })
+        
+
+$('[data-value]').on("update blur", function () {
+    var el = $(this)
+    var old = el.attr("data-value").trim()
+    var name = el.attr('name')
+    if (old !== undefined) {
+        if (old != el.val().trim() && !el.hasClass("is-valid")) {
+            el.addClass("is-valid")
+            el.next().removeClass('hidden')
+        } else if (old == el.val().trim() && el.hasClass("is-valid")) {
+            el.removeClass("is-valid")
+            el.next().addClass('hidden')
+        }
+    }
+})
     </script>
 
 <?php } elseif (isset($_GET['type'])) { ?>

@@ -21,7 +21,7 @@
 
     <?php
 
-    $stats = array(
+    $detailstats = array(
         "publication" => [],
         "poster" => [],
         "lecture" => [],
@@ -36,27 +36,28 @@
     $cursor = $osiris->activities->find($filter, $options);
 
     foreach ($cursor as $doc) {
+        if (!isset($doc['type']) || !isset($doc['year'])) continue;
         if ($doc['year'] < 2017) continue;
         $type = $doc['type'];
         
         $year = strval($doc['year']);
 
 
-        if (!isset($stats[$type])) $stats[$type] = [];
-        if (!isset($stats[$type][$year])) $stats[$type][$year] = ["x" => $year, "good" => 0, "bad" => 0];
+        if (!isset($detailstats[$type])) $detailstats[$type] = [];
+        if (!isset($detailstats[$type][$year])) $detailstats[$type][$year] = ["x" => $year, "good" => 0, "bad" => 0];
 
-        if (has_issues($doc)) $stats[$type][$year]['bad'] += 1;
-        else $stats[$type][$year]['good'] += 1;
+        if (has_issues($doc)) $detailstats[$type][$year]['bad'] += 1;
+        else $detailstats[$type][$year]['good'] += 1;
     }
 
 
     ?>
     <div class="row row-eq-spacing mb-0">
 
-        <?php foreach ($stats as $type => $vals) {
+        <?php foreach ($detailstats as $type => $vals) {
 
             $years = [];
-            for ($i = 2017; $i < CURRENTYEAR; $i++) {
+            for ($i = 2017; $i <= CURRENTYEAR; $i++) {
                 $years[] = strval($i);
             }
             $has_issues = array_sum(array_column($vals, 'bad')) != 0;

@@ -2,7 +2,7 @@
 
 ## Aus Beta-Feedback
 -[ ] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt
-
+-[ ] Ein detailliertes Profil (vielleicht auch mit einem BarChart über ALLE Aktivitäten?)
 
 ## Publikationen:
 -[x] Publikationen können noch nicht bearbeitet werden

@@ -12,7 +12,7 @@
             if (isset($_GET['q']) && isset($_GET['y'])){
                 $q = $_GET['y']. "Q" . $_GET['q'];
             } else {
-                $q = SELECTEDYEAR. "Q" . SELECTEDQUARTER;
+                $q = CURRENTYEAR. "Q" . CURRENTQUARTER;
             }
 
             $cursor = $osiris->users->find(

@@ -129,33 +129,14 @@ function getQuarter($time)
     return ceil($month / 3);
 }
 
-function inSelectedQuarter($start, $end = null)
+function inSelectedQuarter($start, $end = null, $qarter=CURRENTQUARTER, $year=CURRENTYEAR)
 {
     // check if time period in selected quarter
     if (empty($end)) {
         $end = $start;
     }
-    $qstart = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER - 2) . '-1 00:00:00');
-    $qend = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER) . '-' . (SELECTEDQUARTER == 1 || SELECTEDQUARTER == 4 ? 31 : 30) . ' 23:59:59');
-
-    $start = new DateTime($start);
-    $end = new DateTime($end);
-    if ($start <= $qstart && $qstart <= $end) {
-        return true;
-    } elseif ($qstart <= $start && $start <= $qend) {
-        return true;
-    }
-    return false;
-}
-
-function inTimeSpan($start, $end = null)
-{
-    // check if time period in selected quarter
-    if (empty($end)) {
-        $end = $start;
-    }
-    $qstart = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER - 2) . '-1 00:00:00');
-    $qend = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER) . '-' . (SELECTEDQUARTER == 1 || SELECTEDQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+    $qstart = new DateTime($year . '-' . (3 * $qarter - 2) . '-1 00:00:00');
+    $qend = new DateTime($year . '-' . (3 * $qarter) . '-' . ($qarter == 1 || $qarter == 4 ? 31 : 30) . ' 23:59:59');
 
     $start = new DateTime($start);
     $end = new DateTime($end);
@@ -249,7 +230,7 @@ function activity_icon($doc)
                 </span>";
         case 'students':
             return "<span data-toggle='tooltip' data-title='Students & Guests'>
-                    <i class='far fa-lg text-muted fa-people'></i>
+                    <i class='far fa-lg text-dark fa-people'></i>
                     </span>";
         case 'software':
             return "<span data-toggle='tooltip' data-title='Software'>
@@ -275,9 +256,9 @@ class Format
         $this->usecase = $usecase;
     }
 
-    function format($col, $doc)
+    function format($doc)
     {
-        switch ($col) {
+        switch ($doc['type']??'') {
             case 'students':
                 return $this->format_students($doc);
             case 'poster':

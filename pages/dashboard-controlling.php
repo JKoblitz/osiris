@@ -12,8 +12,8 @@
 <div class="row row-eq-spacing mb-0">
 
 <?php
-$q = intval(SELECTEDQUARTER);
-$y = intval(SELECTEDYEAR);
+$q = intval(CURRENTQUARTER);
+$y = intval(CURRENTYEAR);
 $quarters = ["${y}Q$q" => ['year' => $y, 'quarter' => $q]];
 
 for ($i = 0; $i < 3; $i++) {
@@ -103,6 +103,7 @@ $cursor = $osiris->activities->find($filter, $options);
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
+    if ($doc['year'] < 2017) continue;
     $type = $doc['type'];
     $year = strval($doc['year']);
     $issue = false;
@@ -115,7 +116,7 @@ foreach ($cursor as $doc) {
 foreach ($stats as $type => $vals) {
 
     $years = [];
-    for ($i = 2017; $i < CURRENTYEAR; $i++) {
+    for ($i = 2017; $i <= CURRENTYEAR; $i++) {
         $years[] = strval($i);
     }
 ?>
@@ -123,7 +124,7 @@ foreach ($stats as $type => $vals) {
 
         <div class="box">
             <div class="chart content">
-                <h5 class="title text-center"><?= ucfirst($type) ?></h5>
+                <h5 class="title text-center"><?= type2title($type) ?></h5>
                 <canvas id="chart-<?= $type ?>"></canvas>
 
                 <div class="mt-5 text-right">

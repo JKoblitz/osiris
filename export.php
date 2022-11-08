@@ -111,7 +111,7 @@ Route::post('/export/publications', function () {
                 $section->addTitle(getTypeTitle($doc['type']), 1);
             }
             $paragraph = $section->addTextRun();
-            $line = $Format->format($doc['type'], $doc);
+            $line = $Format->format($doc);
             \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
         }
 
@@ -495,7 +495,7 @@ Route::post('/export/reports', function () {
                                 $table->addRow();
                                 // in twip (1mm = 56,6928 twip)
                                 $cell = $table->addCell(9000);
-                                $line = $Format->format($doc['type'], $doc);
+                                $line = $Format->format($doc);
                                 // echo $line;
                                 // dump([$doc['dept'], $D]);
                                 $line = clean_comment_export($line);
@@ -511,7 +511,7 @@ Route::post('/export/reports', function () {
                                 $cell->addText($if, $styleTextBold, $styleParagraphCenter);
                             } else {
                                 $paragraph = $section->addTextRun();
-                                $line = $Format->format($doc['type'], $doc);
+                                $line = $Format->format($doc);
                                 // $line = clean_comment_export($line);
                                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
                             }
@@ -569,7 +569,7 @@ Route::post('/export/reports', function () {
             $section->addTitle($title, 2);
             foreach ($result[$type] as $i => $doc) {
                 $paragraph = $section->addTextRun();
-                $line = $Format->format($doc['type'], $doc);
+                $line = $Format->format($doc);
                 // $line = clean_comment_export($line);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
             }

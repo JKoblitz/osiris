@@ -59,8 +59,10 @@ function validateValues($values)
             $values[$key] = true;
         } else if ($value === 'false') {
             $values[$key] = false;
-        } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access', 'presenting', 'is_scientist', 'is_active', 'is_controlling', 'is_leader'])) {
-            $values[$key] = boolval($value);
+        } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access'])) {
+            // dump($value);
+            // $values[$key] = boolval($value);
+            $values[$key] = true;
         } else if ($value === '') {
             $values[$key] = null;
         } else if ($key === 'epub-delay' || $key === 'end-delay') {
@@ -83,6 +85,17 @@ function validateValues($values)
             $values[$key] = trim($value);
         }
     }
+
+    if (isset($values['journal'])){
+        // it is an article
+        // since non-checked boxes are not shown in the posted data,
+        // it is necessary to get false values
+        if (!isset($values['epub'])) $values['epub'] = false;
+        if (!isset($values['open_access'])) $values['open_access'] = false;
+        if (!isset($values['correction'])) $values['correction'] = false;
+    }
+    // dump($values, true);
+    // die();
     return $values;
 }
 
@@ -131,27 +144,37 @@ Route::get('/test/(users|activities|journals)/([a-zA-Z0-9]*)', function ($col, $
     $data = $collection->findone(['_id'=> $id]);
     dump($data, true);
     
-    // $updateResult = $osiris->activities->updateMany(
-    //     ['type' => 'teaching'],
-    //     ['$set' => ['type'=>'students']]
-    // );
-// addUserActivity();
 });
+
 Route::get('/testing', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    
+
+    $names = [
+        ['Nubel', 'Nübel', 'uln14'],
+        ['Ozturk', 'Öztürk', 'bas18'],
+        ['Goker', 'Göker', 'mgo08'],
+        ['Sproer', 'Spröer', 'ckc'],
+        ['Pauker', 'Päuker', 'opa'],
+    ];
+
+    foreach ($names as $n ) {
+        # code...
+        $updateResult = $osiris->activities->updateMany(
+            ['authors.last' => $n[0]],
+            ['$set' => ['authors.$.last'=>$n[1], 'authors.$.user'=>$n[2]]]
+        );
+        echo $n[0]. " ". $updateResult->getModifiedCount()."<br>";
+    }
     
     // $updateResult = $osiris->activities->updateMany(
-    //     ['type' => 'teaching'],
-    //     ['$set' => ['type'=>'students']]
+    //     ['authors.last' => 'Ozturk'],
+    //     ['$set' => ['authors.$.last'=>'Öztürk', 'authors.$.user'=>'bas18']]
     // );
-addUserActivity();
-
-$collection = $osiris->users;
-
-$data = $collection->findone(['_id'=> $id]);
-dump($data, true);
+// addUserActivity();
+// $collection = $osiris->users;
+// $data = $collection->findone(['_id'=> $_SESSION['username']]);
+// dump($data, true);
 
 });
 
@@ -191,6 +214,10 @@ Route::post('/create', function () {
 
     $values = validateValues($_POST['values']);
 
+    // add information on creating process
+    $values['created'] = date('Y-m-d');
+    $values['created_by'] = $_SESSION['username'];
+
     if (isset($values['doi']) && !empty($values['doi'])) {
         $doi_exist = $collection->findOne(['doi' => $values['doi']]);
         if (!empty($doi_exist)) {
@@ -208,7 +235,6 @@ Route::post('/create', function () {
 
 
     if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-        // dump($_FILES, true);
         $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
 
         $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
@@ -257,6 +283,10 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
 
         $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
     }
+    
+    // add information on updating process
+    $values['updated'] = date('Y-m-d');
+    $values['updated_by'] = $_SESSION['username'];
 
     if (is_numeric($id)) {
         $id = intval($id);
@@ -289,13 +319,19 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
     
     $values = $_POST['values'];
     
-    if (!isset($values['is_controlling'])) $values['is_controlling'] = 0;
-    if (!isset($values['is_scientist'])) $values['is_scientist'] = 0;
-    if (!isset($values['is_leader'])) $values['is_leader'] = 0;
-    if (!isset($values['is_active'])) $values['is_active'] = 0;
    
     $collection = $osiris->users;
     $values = validateValues($values);
+
+    if (!isset($values['is_controlling'])) $values['is_controlling'] = false;
+    if (!isset($values['is_scientist'])) $values['is_scientist'] = false;
+    if (!isset($values['is_leader'])) $values['is_leader'] = false;
+    if (!isset($values['is_active'])) $values['is_active'] = false;
+
+    // add information on updating process
+    $values['updated'] = date('Y-m-d');
+    $values['updated_by'] = $_SESSION['username'];
+
 
     $updateResult = $collection->updateOne(
         ['_id' => $id],
@@ -517,7 +553,11 @@ Route::post('/add-repetition/lecture/([A-Za-z0-9]*)', function ($id) {
 Route::post('/approve', function () {
     include_once BASEPATH . "/php/_db.php";
     $id = $_SESSION['username'];
-    $q = SELECTEDYEAR . "Q" . SELECTEDQUARTER;
+    if (!isset($_POST['quarter'])){
+        echo "Quarter was not defined";
+        die();
+    }
+    $q = $_POST['quarter'];//SELECTEDYEAR . "Q" . SELECTEDQUARTER;
 
     $updateResult = $osiris->users->updateOne(
         ['_id' => $id],

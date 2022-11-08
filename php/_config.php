@@ -249,24 +249,76 @@ function bool_icon($bool)
     }
 }
 
-
-function type2title($type){
+function typeInfo($type){
     switch ($type) {
         case 'publication':
-            return lang('Publications', 'Publikationen');
+            return [
+                'name'=>lang('Publications', 'Publikationen'),
+                'color' => "#006EB7"
+                // 'color' => 'var(--primary-color)'
+        ];
         case 'poster':
-            return lang('Poster');
+            return [
+                'name'=>lang('Poster'),
+                'color' => "#B61F29"
+                // 'color' => 'var(--danger-color)'
+        ];
         case 'lecture':
-            return lang('Lectures', 'Vorträge');
+            return [
+                'name'=>lang('Lectures', 'Vorträge'),
+                'color' => "#ECAF00"
+                // 'color' => 'var(--signal-color)'
+        ];
         case 'review':
-            return lang('Reviews &amp; Editorial boards');
+            return [
+                'name'=>lang('Reviews & Editorial boards'),
+                'color' => "#1FA138"
+                // 'color' => 'var(--success-color)'
+        ];
         case 'misc':
-            return lang('Other activities', 'Sonstige Aktivitäten');
+            return [
+                'name'=>lang('Other activities', 'Sonstige Aktivitäten'),
+                'color' => "#b3b3b3"
+                // 'color' => 'var(--muted-color)'
+        ];
         case 'students':
-            return lang('Students &amp; Guests', 'Studierende &amp; Gäste');
+            return [
+                'name'=>lang('Students & Guests', 'Studierende & Gäste'),
+                'color' => "#575756"
+                // 'color' => 'var(--dark-color)'
+        ];
         default:
-            return $type;
+            return [
+                'name'=> $type,
+                'color' => '#cccccc'
+        ];
     }
+}
+function adjustBrightness($hex, $steps) {
+    // Steps should be between -255 and 255. Negative = darker, positive = lighter
+    $steps = max(-255, min(255, $steps));
+
+    // Normalize into a six character long hex string
+    $hex = str_replace('#', '', $hex);
+    if (strlen($hex) == 3) {
+        $hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+    }
+
+    // Split into three parts: R, G and B
+    $color_parts = str_split($hex, 2);
+    $return = '#';
+
+    foreach ($color_parts as $color) {
+        $color   = hexdec($color); // Convert to decimal
+        $color   = max(0,min(255,$color + $steps)); // Adjust color
+        $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+    }
+
+    return $return;
+}
+
+function type2title($type){
+    return typeInfo($type)['name'];
 }
 
 

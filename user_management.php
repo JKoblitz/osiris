@@ -137,13 +137,38 @@ Route::get('/userman', function () {
 });
 
 Route::get('/userman/([A-Za-z0-9\-]*)', function ($username) {
-    include_once BASEPATH . "/php/_login.php";
-    $data = getUser($username);
-    // $user = array();
-    
-    foreach ($data as $id => $value) {
-        if (empty($value) || !is_array($value)) continue;
-            dump($value, true);
-        
+    include_once BASEPATH . "/php/_db.php";
+    $USER = getUserFromId($username);
+
+    if (empty($USER)){
+        require_once BASEPATH . '/php/_login.php';
+        $USER = updateUser($username);
+        $osiris->users->insertOne(
+           $USER
+        );
+    } else {
+        echo "user exists";
     }
+    dump($USER, true);
+
+    // $activities = $osiris->activities->find(
+    //     [
+    //         'authors.last' => $USER['last'],
+    //         'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
+    //     ]
+    // );
+    $osiris->activities->updateMany(
+        [
+            'authors.last' => $USER['last'],
+            'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
+        ],
+        ['$set' => ["authors.$.user" => $username]]
+    );
+    // echo "test";
+    // dump($activities);
+
+    // foreach ($activities as $key) {
+       
+    // }
+
 });

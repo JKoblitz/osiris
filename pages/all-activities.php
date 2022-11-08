@@ -4,10 +4,10 @@
 </div> -->
 <?php
 
-$user = $_SESSION['username'];
+$user = $user ?? $_SESSION['username'];
 $useronly = false;
-if ($page=='my-activities'){
-    $useronly=$user;
+if ($page == 'my-activities') {
+    $useronly = $user;
 }
 $Format = new Format($useronly);
 // $author_highlight = $user;
@@ -25,6 +25,13 @@ $Format = new Format($useronly);
         <i class="fa-regular fa-user"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
+<?php
+} elseif (isset($_GET['user'])) { ?>
+    <h1 class='m-0'><?= lang("Activities of $user", "Aktivitäten von $user") ?></h1>
+    <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
+        <i class="fa-regular fa-user"></i>
+        <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
+    </a>
 <?php } elseif ($page == 'my-activities') { ?>
     <h1 class='m-0'><?= lang("My activities", "Meine Aktivitäten") ?></h1>
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
@@ -40,7 +47,7 @@ $Format = new Format($useronly);
     <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i> <?= lang('Lectures', 'Vorträge') ?></button>
     <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
     <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i> <?= lang('Misc') ?></button>
-    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-muted" id="students-btn"><i class="fa-regular fa-people"></i> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
+    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-dark" id="students-btn"><i class="fa-regular fa-people"></i> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
     <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i> <?= lang('Software') ?></button>
 </div>
 
@@ -131,7 +138,7 @@ $Format = new Format($useronly);
                         </span>
                     </td>
                     <td>
-                        <?php echo $Format->format($document['type'], $document); ?>
+                        <?php echo $Format->format($document); ?>
                     </td>
                     <td class="unbreakable">
                         <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $document['type'] ?>', '<?= $id ?>')">
@@ -173,7 +180,7 @@ $Format = new Format($useronly);
     </table>
 </div>
 
-<script src="<?=ROOTPATH?>/js/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
 <!-- <script src="<?= ROOTPATH ?>/js/gridjs.js"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script> -->
 

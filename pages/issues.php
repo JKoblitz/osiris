@@ -229,7 +229,7 @@ if (array_sum($a) === 0) {
             <tr id="tr-<?= $id ?>">
                 <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc['type'], $doc); ?>
+                    <?= $Format->format($doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
                         <br>
@@ -276,7 +276,7 @@ if (array_sum($a) === 0) {
             <tr id="tr-<?= $id ?>">
                 <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc['type'], $doc); ?>
+                    <?= $Format->format($doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <?= lang(
                             'This publication is marked as <q>Epub ahead of print</q>. Is it still not officially published?',
@@ -288,7 +288,7 @@ if (array_sum($a) === 0) {
                             <input type="hidden" name="values[epub-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn btn-sm">
                                 <i class="fas fa-check"></i>
-                                <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag erneut in einem Monat).') ?>
+                                <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag später noch mal).') ?>
                             </button>
                         </form>
 
@@ -332,7 +332,7 @@ if (array_sum($a) === 0) {
             <tr id="tr-<?= $id ?>">
                 <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc['type'], $doc); ?>
+                    <?= $Format->format($doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <?= lang(
                             "The Thesis of $doc[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
@@ -392,7 +392,7 @@ if (array_sum($a) === 0) {
             <tr id="tr-<?= $id ?>">
                 <td class="w-50"><?= activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc['type'], $doc); ?>
+                    <?= $Format->format($doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
 
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">

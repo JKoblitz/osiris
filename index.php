@@ -79,13 +79,17 @@ function lang($en, $de = null)
 include_once BASEPATH . "/php/Route.php";
 
 Route::get('/', function () {
-    include BASEPATH . "/header.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
+        include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
-    } else {
+        include BASEPATH . "/footer.php";
+    } elseif ($USER['is_controlling']) {    
+        include BASEPATH . "/header.php";
         include BASEPATH . "/pages/dashboard.php";
+        include BASEPATH . "/footer.php";
+    } else {
+        header("Location: " . ROOTPATH . "/profile/".$_SESSION['username']);
     }
-    include BASEPATH . "/footer.php";
 });
 
 Route::get('/about', function () {
@@ -257,6 +261,11 @@ Route::get('/(activities|my-activities)', function ($page) {
         $breadcrumb = [
             ['name' => lang("All activities", "Alle Aktivitäten")]
         ];
+    } elseif (isset($_GET['user'])) {
+        $user = $_GET['user'];
+        $breadcrumb = [
+            ['name' => lang("Activities of $user", "Aktivitäten von $user")]
+        ];
     } else {
         $breadcrumb = [
             ['name' => lang("My activities", "Meine Aktivitäten")]
@@ -390,7 +399,8 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
 
 
 
-Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
+
+Route::get('/(profile)/?([a-z0-9]*)', function ($page, $user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -404,6 +414,28 @@ Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/browse/users"],
         ['name' => $name]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/profile.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    if (empty($user)) $user = $_SESSION['username'];
+    include_once BASEPATH . "/php/format.php";    
+    $Format = new Format($user);
+
+    $scientist = getUserFromId($user);
+    $name = $scientist['displayname'];
+
+    $breadcrumb = [
+        // ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/browse/users"],
+        ['name' => lang("Year of $name", "Jahr von $name")]
     ];
 
     include BASEPATH . "/header.php";

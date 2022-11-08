@@ -1,7 +1,11 @@
 <?php
 
 $currentuser = $user == $_SESSION['username'];
-$q = SELECTEDYEAR . "Q" . SELECTEDQUARTER;
+
+$YEAR = intval($_GET['year'] ?? CURRENTYEAR);
+$QUARTER = intval($_GET['quarter'] ?? CURRENTQUARTER);
+
+$q = $YEAR . "Q" . $QUARTER;
 
 include_once BASEPATH . "/php/_lom.php";
 $LOM = new LOM($user, $osiris);
@@ -15,8 +19,6 @@ $size = 140;
 
 $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
 ?>
-
-
 
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -54,7 +56,8 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
     </div>
 </div>
 
-
+<div class="content">
+    
 <div class="row align-items-center">
     <div class="col flex-grow-0">
         <div class="position-relative">
@@ -81,7 +84,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
         <p class="lead mt-0">
             <i class="fad fa-lg fa-coin text-signal"></i>
             <b id="lom-points"></b>
-            Coins
+            Coins in <?=$YEAR?>
             <a href='#coins' class="text-muted">
                 <i class="far fa-question-circle text-muted"></i>
             </a>
@@ -103,9 +106,13 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
         </p>
     </div>
     <div class="col text-right">
-        <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="fas fa-chart-network"></i>
-            <?= lang('View coauthor network', 'Zeige Ko-Autoren-Netzwerk') ?>
-        </a>
+            <a class="btn" href="<?= ROOTPATH ?>/profile/<?= $user ?>"><i class="far fa-user-graduate"></i>
+                <?= lang('Profile of ', 'Profil von ') . $name ?>
+            </a><br>
+
+            <a class="btn mt-5" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
+                <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
+            </a>
 
 
         <?php if ($currentuser) { ?>
@@ -122,22 +129,56 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
 
 
 
+<h1>
+    <?php
+    echo lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR;
+    ?>
+</h1>
+
+<form id="" action="" method="get" class="w-400 mw-full">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
+                <i class="fa-regular fa-calendar-day"></i>
+            </div>
+        </div>
+        <select name="year" id="year" class="form-control">
+            <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
+                <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
+            <?php } ?>
+        </select>
+        <select name="quarter" id="quarter" class="form-control">
+            <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
+            <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
+            <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
+            <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
+        </select>
+        <div class="input-group-append">
+            <button class="btn btn-primary"><i class="fas fa-check"></i></button>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted font-size-12 mt-0">
+    <?=lang('The ', 'Das gesamte Jahr ist hier gezeigt. Aktivitäten außerhalb des gewählten Quartals sind ausgegraut.')?>
+</p>
+
 <?php
 if ($currentuser) {
 
     $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
     $approval_needed = array();
 
-    $q_end = new DateTime(SELECTEDYEAR . '-' . (3 * SELECTEDQUARTER) . '-' . (SELECTEDQUARTER == 1 || SELECTEDQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+    $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
     $quarter_in_past = new DateTime() > $q_end;
 
 ?>
-    <p class="row-muted">
+    <!-- <p class="row-muted">
         <?= lang(
             'This is your personal page. Please review your recent research activities carefully and add new activities.',
             'Dies ist deine persönliche Seite. Bitte überprüfe deine letzten Aktivitäten sorgfältig und füge neue hinzu, falls angebracht.'
         ) ?>
-    </p>
+    </p> -->
     <?php if (!$quarter_in_past) { ?>
         <a href="#" class="btn disabled">
             <i class="fas fa-check mr-5"></i>
@@ -156,35 +197,16 @@ if ($currentuser) {
             <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
         </a>
     <?php } ?>
-    <span data-toggle="tooltip" data-title=" <?= lang('The quarter can be selected in the menu at the top-right corner.', 'Das Quartal kann im Menü oben rechts ausgewählt werden.') ?>">
-        <i class="far fa-question-circle text-muted"></i>
-    </span>
 
 <?php
 } ?>
-<!-- 
-<div class="lead my-20">
-    <?= lang('In ' . SELECTEDYEAR . ' achieved LOM points: ', 'Im Jahr ' . SELECTEDYEAR . ' erreichte LOM-Punkte: ') ?>
-    <i class="fad fa-lg fa-coin text-signal"></i>
-    <b id="lom-points"></b>
-</div> -->
 
-
-
-<h3>
-    <?php
-    echo lang('Research activities in ', 'Forschungsaktivitäten in ') . SELECTEDYEAR;
-    ?>
-    <span data-toggle="tooltip" data-title=" <?= lang('The year can be selected in the menu at the top-right corner.', 'Das Jahr kann im Menü oben rechts ausgewählt werden.') ?>">
-        <i class="far fa-question-circle text-muted"></i>
-    </span>
-</h3>
 
 <?php
 
 $queries = array(
     "publication" => [
-        "filter" => ['$or' => [['authors.user' => $user], ['editors.user' => $user]], 'year' => SELECTEDYEAR],
+        "filter" => ['$or' => [['authors.user' => $user], ['editors.user' => $user]], 'year' => $YEAR],
         "options" => ['sort' => ["year" => -1, "month" => -1]],
         "title" => lang('Publications', 'Publikationen'),
         "icon" => 'book-bookmark',
@@ -194,7 +216,7 @@ $queries = array(
     "poster" => [
         "filter" => [
             'authors.user' => $user,
-            "start.year" => SELECTEDYEAR
+            "start.year" => $YEAR
         ],
         "options" => array(),
         "title" => lang('Poster'),
@@ -205,7 +227,7 @@ $queries = array(
     "lecture" => [
         "filter" =>  [
             'authors.user' => $user,
-            "start.year" => SELECTEDYEAR
+            "start.year" => $YEAR
         ],
         "options" => array(),
         "title" => lang('Lectures', 'Vorträge'),
@@ -217,11 +239,11 @@ $queries = array(
         "filter" => [
             'user' => $user,
             // "role" => "Editor",
-            // "start.year" => array('$lte' => SELECTEDYEAR),
+            // "start.year" => array('$lte' => $YEAR),
             '$or' => array(
-                ['end.year' => array('$gte' => SELECTEDYEAR)],
+                ['end.year' => array('$gte' => $YEAR)],
                 ['end' => null],
-                ['dates.year' => SELECTEDYEAR]
+                ['dates.year' => $YEAR]
             )
         ],
         "options" => array(),
@@ -233,9 +255,9 @@ $queries = array(
     "misc" => [
         "filter" => [
             'authors.user' => $user,
-            "start.year" => array('$lte' => SELECTEDYEAR),
+            "start.year" => array('$lte' => $YEAR),
             '$or' => array(
-                ['end.year' => array('$gte' => SELECTEDYEAR)],
+                ['end.year' => array('$gte' => $YEAR)],
                 ['end' => null]
             )
         ],
@@ -248,9 +270,9 @@ $queries = array(
     "students" => [
         "filter" => [
             'authors.user' => $user,
-            "start.year" => array('$lte' => SELECTEDYEAR),
+            "start.year" => array('$lte' => $YEAR),
             '$or' => array(
-                ['end.year' => array('$gte' => SELECTEDYEAR)],
+                ['end.year' => array('$gte' => $YEAR)],
                 ['end' => null]
             )
         ],
@@ -269,7 +291,7 @@ foreach ($queries as $col => $val) {
 ?>
 
 
-    <div class="box box-<?= $val['color'] ?>">
+    <div class="box box-<?= $val['color'] ?>" id="<?=$col?>">
         <div class="content">
             <h4 class="title text-<?= $val['color'] ?>"><i class="far fa-<?= $val['icon'] ?> mr-5"></i> <?= $val['title'] ?></h4>
         </div>
@@ -282,12 +304,12 @@ foreach ($queries as $col => $val) {
                 // dump($cursor);
                 foreach ($cursor as $doc) {
                     $id = $doc['_id'];
-                    $l = $LOM->lom($col, $doc);
+                    $l = $LOM->lom($doc);
                     $_lom += $l['lom'];
 
                     if ($val["show-quarter"]) {
                         $q = getQuarter($doc);
-                        $in_quarter = $q == SELECTEDQUARTER;
+                        $in_quarter = $q == $QUARTER;
                     } else {
                         $in_quarter = true;
                     }
@@ -296,7 +318,7 @@ foreach ($queries as $col => $val) {
                     echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$col-$id'>";
                     if ($val['show-quarter']) echo "<td class='quarter'>Q$q</td>";
                     echo "<td>";
-                    echo $Format->format($col, $doc);
+                    echo $Format->format($doc);
 
                     // show error messages, warnings and todos
                     $has_issues = has_issues($doc);
@@ -304,7 +326,7 @@ foreach ($queries as $col => $val) {
                         $approval_needed[] = array(
                             'type' => $col,
                             'id' => $doc['_id'],
-                            'title' => $doc['title']
+                            'title' => $doc['title'] ?? $doc['journal'] ?? ''
                         );
                 ?>
                         <br>
@@ -355,8 +377,7 @@ foreach ($queries as $col => $val) {
 
     </div>
 
-<?php }
-?>
+<?php } ?>
 
 
 
@@ -389,6 +410,7 @@ foreach ($queries as $col => $val) {
                 } else { ?>
                     <form action="<?= ROOTPATH ?>/approve" method="post">
                         <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                        <input type="hidden" name="quarter" class="hidden" value="<?=$YEAR . "Q" . $QUARTER?>">
                         <button class="btn"><?= lang('Approve', 'Freigeben') ?></button>
                     </form>
                 <?php } ?>
@@ -398,6 +420,7 @@ foreach ($queries as $col => $val) {
     </div>
 <?php } ?>
 
+</div>
 <script>
     $('#lom-points').html('<?= round($_lom) ?>');
 </script>

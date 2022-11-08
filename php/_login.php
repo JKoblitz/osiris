@@ -280,3 +280,40 @@ function relevantGroup($groups){
 //        return "Verbindung zum Server fehlgeschlagen.";
 //     }
 // }
+
+
+function updateUser($username){
+    $keys = [
+        "_id" => "samaccountname",
+        "username" => "samaccountname",
+        "first" => "givenname",
+        "last" => "sn",
+        "displayname" => "displayname",
+        "formalname" => "cn",
+        "department" => "department",
+        "unit" => "description",
+        "telephone" => "telephonenumber",
+        "mail" => "mail"
+    ];
+    $value = getUser($username)[0];
+    // dump($value);
+    $user = array();
+    foreach ($keys as $key => $name) {
+        // dump($value, true);
+        $user[$key] = $value[$name][0] ?? null;
+    }
+    // if (empty($user['last']) || str_contains($user['unit'], "Allgemeiner Account")) return array();
+    $user['_id'] = strtolower(trim($user['_id']));
+    $user['is_admin'] = $user['username'] == 'juk20';
+    $user['dept'] = get_dept($user['unit']);
+    $user['academic_title'] = null;
+    $user['orcid'] = null;
+    $user['is_controlling'] = $user['department'] == "Controller";
+    $user['is_scientist'] = in_array($user['dept'], [
+        "BI & DB", "Services", "MIG","MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD"
+    ]);
+    $user['is_leader'] = str_contains($user['unit'], "leitung");
+    $user['is_active'] = !str_contains($user['unit'], "verlassen");
+    return $user;
+        // $collection->insertOne($user);
+}

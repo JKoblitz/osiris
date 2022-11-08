@@ -35,9 +35,9 @@ class LOM
         return reset($author);
     }
     
-function lom($col, $doc)
+function lom($doc)
 {
-    switch ($col) {
+    switch ($doc['type']??'') {
         case 'students':
             return $this->students($doc);
         case 'poster':
@@ -63,7 +63,7 @@ function lom($col, $doc)
 
     function publication($doc)
     {
-        $prev_year = SELECTEDYEAR - 1;
+        $prev_year = ($doc['year']??CURRENTYEAR) - 1;
 
         if (isset($doc['correction']) && $doc['correction']) return array(
                 'type' => "",
@@ -174,7 +174,7 @@ function lom($col, $doc)
             'type' => "poster>$pos",
             'id' => $doc['_id'],
             'title' => $doc['title'],
-            'points' => "$points",
+            'points' => "$points ($pos)",
             'lom' => $points
         );
     }
@@ -199,7 +199,7 @@ function lom($col, $doc)
             'type' => "lecture>$pos",
             'id' => $doc['_id'],
             'title' => $doc['title'] ?? '',
-            'points' => "$points",
+            'points' => "$points ($pos)",
             'lom' => $points
         );
     }
@@ -214,23 +214,18 @@ function lom($col, $doc)
                 'type' => "$pos",
                 'id' => $doc['_id'],
                 'title' => $doc['journal'],
-                'points' => "$points",
+                'points' => "$points (Editorial)",
                 'lom' => $points
             );
         } else {
             $pos = "review";
-            // $dates = $doc['dates']->bsonSerialize();
-            // $dates = array_filter($dates, function ($date) {
-            //     return $date['year'] == SELECTEDYEAR;
-            // });
-            // $dates = count($dates);
             $points = $this->matrix[$pos];
 
             return array(
                 'type' => "$pos",
                 'id' => $doc['_id'],
                 'title' => $doc['journal'],
-                'points' => "$points",
+                'points' => "$points (Review)",
                 'lom' => $points
             );
         }
@@ -245,7 +240,7 @@ function lom($col, $doc)
             'type' => "misc>$pos",
             'id' => $doc['_id'],
             'title' => $doc['title'],
-            'points' => "$points",
+            'points' => "$points ($pos)",
             'lom' => $points
         );
     }
@@ -256,7 +251,7 @@ function lom($col, $doc)
             'type' => "students",
             'id' => $doc['_id'],
             'title' => $doc['title'],
-            'points' => "TODO",
+            'points' => "0 (not implemented yet",
             'lom' => 0
         );
     }

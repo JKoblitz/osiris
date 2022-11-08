@@ -8,16 +8,20 @@ $mongoDB = new MongoDB\Client(
 global $osiris;
 $osiris = $mongoDB->osiris;
 
-// global $matrix;
-// $matrix_json = file_get_contents(BASEPATH."/matrix.json");
-// $matrix = json_decode($matrix_json, true);
-
 global $USER;
 // $user = $_SESSION['username'] ?? null;
 $USER = array();
 
 if (!empty($_SESSION['username'])) {
     $USER = getUserFromId($_SESSION['username']);
+
+    if (empty($USER)){
+        require_once BASEPATH . '/php/_login.php';
+        $USER = updateUser($username);
+        $osiris->users->insertOne(
+           $USER
+        );
+    }
     // return $this->info['last_name'] . "," . $fn;
 }
 
@@ -42,6 +46,7 @@ function getUserFromId($user)
 {
     global $osiris;
     $USER = $osiris->users->findOne(['_id' => $user ?? $_SESSION['username']]);
+    if (empty($USER)) return array();
     $USER['name'] = $USER['first'] . " " . $USER['last'];
     $USER['name_formal'] = $USER['last'] . ", " . $USER['first'];
     $USER['first_abbr'] = "";
@@ -138,7 +143,7 @@ function has_issues($doc, $user = null)
     if ($epub) $issues[] = "epub";
     if ($doc['type'] == "students" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
 
-    if (($doc['type'] == 'misc' || ($doc['type'] == 'review' && $doc['role']=='Editor')) && is_null($doc['end'])) {
+    if (($doc['type'] == 'misc' || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
         if (isset($doc['end-delay'])) {
             if (new DateTime() > new DateTime($doc['end-delay'])) {
                 $issues[] = "openend";
@@ -177,30 +182,32 @@ function get_collection($col)
 function addUserActivity($activity = 'create')
 {
     global $osiris;
-    $update = ['$push' => ['activity' => ['type'=>$activity, 'date'=> [date("Y-m-d")]]]];
+    $update = ['$push' => ['activity' => ['type' => $activity, 'date' => date("Y-m-d")]]];
     $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
-    $uact = array_filter($u['activity'], function ($a) use ($activity) {
-        return $a['type'] == $activity;
-    });
-    // dump($u, true);
-    // $uact = array_column($u['activity']->bson_serialize(), $activity);
+    $act = $u['activity'] ?? array();
+
+    $uact = 0;
+    foreach ($act as $a) {
+        if (!isset($a['type'])) {
+            $osiris->users->updateOne(
+                ['_id' => $_SESSION['username']],
+                ['$set' => ['activity' => [], 'achievements' => []]]
+            );
+            break;
+        }
+        if (($a['type'] ?? '') == $activity) {
+            $uact++;
+        }
+    }
+    
     if (empty($uact)) {
-        $update['$push'] = ['achievements' => ['title' => "first-$activity", 'achieved' => date("d.m.Y")]];
-        // $osiris->users->updateOne(
-        //     ['_id' => $_SESSION['username']],
-        //     [
-        //         '$push' => ['activity' => [$activity => [date("Y-m-d")]]],
-        //         '$push' => ['achievements' => ['title' => "first-$activity", 'achieved' => date("d.m.Y")]]
-        //     ]
-        // );
-        // return;
+        $update['$push']['achievements'] = ['title' => "first-$activity", 'achieved' => date("d.m.Y")];
+    } elseif ($uact === 9) {
+        $update['$push']['achievements'] = ['title' => "10-$activity", 'achieved' => date("d.m.Y")];
+    } elseif ($uact === 49) {
+        $update['$push']['achievements'] = ['title' => "50-$activity", 'achieved' => date("d.m.Y")];
     }
-    elseif (count($u['activity'][$activity]) === 9) {
-        $update['$push'] = ['achievements' => ['title' => "10-$activity", 'achieved' => date("d.m.Y")]];
-    }
-    elseif (count($u['activity'][$activity]) === 49) {
-        $update['$push'] = ['achievements' => ['title' => "50-$activity", 'achieved' => date("d.m.Y")]];
-    }
+    // dump($update, true);
 
     $osiris->users->updateOne(
         ['_id' => $_SESSION['username']],
@@ -216,7 +223,7 @@ function achievementText($title)
             return lang("You created your first activity", "Du hast deine erste Aktivität eingetragen");
             break;
 
-        case 'first-edit':
+        case 'first-update':
             return lang("You updated an activity for the first time", "Du hast zum ersten Mal eine Aktivität bearbeitet");
             break;
 
@@ -224,7 +231,7 @@ function achievementText($title)
             return lang("You created 10 activities", "Du hast bereits 10 Aktivität eingetragen");
             break;
 
-        case '10-edit':
+        case '10-update':
             return lang("You updated 10 activities", "Du hast bereits 10 Mal eine Aktivität bearbeitet");
             break;
 
@@ -232,7 +239,7 @@ function achievementText($title)
             return lang("You created 50 activities", "Du hast bereits 50 Aktivität eingetragen");
             break;
 
-        case '50-edit':
+        case '50-update':
             return lang("You updated 50 activities", "Du hast bereits 50 Mal eine Aktivität bearbeitet");
             break;
 

@@ -8,12 +8,12 @@ $(document).ready(function () {
     SCIENTISTS = Object.values(scientists)
 
     var authordiv = $('.author-list')
-    if (authordiv.length > 0){
-        
+    if (authordiv.length > 0) {
+
         authordiv.sortable({
-        // handle: ".author",
-        // change: function( event, ui ) {}
-    });
+            // handle: ".author",
+            // change: function( event, ui ) {}
+        });
     }
 
     $('.title-editor').each(function (el) {
@@ -29,7 +29,7 @@ $(document).ready(function () {
             placeholder: '',
             theme: 'snow' // or 'bubble'
         });
-      
+
         quill.on('text-change', function (delta, oldDelta, source) {
             var delta = quill.getContents()
             // console.log(delta);
@@ -145,6 +145,17 @@ function objectifyForm(formArray) {
     return returnArray;
 }
 
+function isEmpty(value) {
+    switch (typeof(value)) {
+      case "string": return (value.length === 0);
+      case "number":
+      case "boolean": return false;
+      case "undefined": return true;
+      case "object": return !value ? true : false; // handling for null.
+      default: return !value ? true : false
+    }
+  }
+
 function resetInput(el) {
     $(el).addClass('hidden')
     var el = $(el).prev()
@@ -153,21 +164,6 @@ function resetInput(el) {
     el.removeClass("is-valid")
 }
 
-
-$('[data-value]').on("update blur", function () {
-    var el = $(this)
-    var old = el.attr("data-value").trim()
-    var name = el.attr('name')
-    if (old !== undefined) {
-        if (old != el.val().trim() && !el.hasClass("is-valid")) {
-            el.addClass("is-valid")
-            el.next().removeClass('hidden')
-        } else if (old == el.val().trim() && el.hasClass("is-valid")) {
-            el.removeClass("is-valid")
-            el.next().addClass('hidden')
-        }
-    }
-})
 
 
 $('#edit-form').on('submit', function (event) {
@@ -441,7 +437,12 @@ function getDOI(doi) {
 
 function fillForm(pub) {
     console.log(pub);
-    $('#publication-form').find('input:not(.hidden)').val('').removeClass('is-valid')
+
+    if (UPDATE) {
+        $('#publication-form').find('input:not(.hidden)').removeClass('is-valid')
+    } else {
+        $('#publication-form').find('input:not(.hidden)').val('').removeClass('is-valid')
+    }
     // $('.affiliation-warning').show()
 
     switch (pub.type.toLowerCase()) {
@@ -476,38 +477,28 @@ function fillForm(pub) {
         // quill.setText(pub.title);
         $('.title-editor .ql-editor').html("<p>" + pub.title + "</p>").addClass('is-valid')
     }
-    if (pub.first_authors !== undefined)
-        $('#first_authors').val(pub.first_authors).addClass('is-valid')
-    if (pub.year !== undefined)
-        $('#year').val(pub.year).addClass('is-valid')
-    if (pub.month !== undefined)
-        $('#month').val(pub.month).addClass('is-valid')
-    if (pub.day !== undefined)
-        $('#day').val(pub.day).addClass('is-valid')
-    //.val(pub.type)
-    if (pub.journal !== undefined)
-        $('#journal').val(pub.journal).addClass('is-valid')
-    if (pub.issue !== undefined)
-        $('#issue').val(pub.issue).addClass('is-valid')
-    if (pub.volume !== undefined)
-        $('#volume').val(pub.volume).addClass('is-valid')
-    if (pub.pages !== undefined)
-        $('#pages').val(pub.pages).addClass('is-valid')
-    if (pub.doi !== undefined)
-        $('#doi').val(pub.doi).addClass('is-valid')
-    if (pub.pubmed !== undefined)
-        $('#pubmed').val(pub.pubmed).addClass('is-valid')
-    if (pub.book !== undefined)
-        $('#book').val(pub.book).addClass('is-valid')
-    if (pub.edition !== undefined)
-        $('#edition').val(pub.edition).addClass('is-valid')
-    if (pub.publisher !== undefined)
-        $('#publisher').val(pub.publisher).addClass('is-valid')
-    if (pub.city !== undefined)
-        $('#city').val(pub.city).addClass('is-valid')
-    // if (pub.open_access !== undefined)
-    //     $('#open_access').val(pub.open_access).addClass('is-valid')
-    if (pub.epub !== undefined)
+
+    var elements = ['first_authors',
+        'year',
+        'month',
+        'day',
+        'journal',
+        'issue',
+        'volume',
+        'pages',
+        'doi',
+        'pubmed',
+        'book',
+        'edition',
+        'publisher',
+        'city']
+
+    elements.forEach(element => {
+        if (pub[element] !== undefined && !UPDATE || !isEmpty(pub[element]))
+            $('#' + element).val(pub[element]).addClass('is-valid')
+    });
+
+    if (pub.epub !== undefined && (!UPDATE || !pub.epub || !pub.epub.length))
         $('#epub').attr('checked', pub.epub).addClass('is-valid')
 
 
@@ -540,13 +531,16 @@ function fillForm(pub) {
 
 function getPubData(event, form) {
     event.preventDefault();
-    if (form !== null) {
-        param = $(form).serializeArray()
-        param = objectifyForm(param)
+    // if (form !== null) {
+    //     param = $(form).serializeArray()
+    //     param = objectifyForm(param)
+    // }
+    if ($('#search-doi').length !== 0) {
+        var doi = $('#search-doi').val()
+    } else {
+        var doi = $('#doi').val()
     }
-    // console.log(param);
-
-    getPublication(param.doi)
+    getPublication(doi)
 }
 
 function getPublishingDate(pub) {
