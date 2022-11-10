@@ -156,6 +156,7 @@ Route::get('/testing', function () {
         ['Goker', 'Göker', 'mgo08'],
         ['Sproer', 'Spröer', 'ckc'],
         ['Pauker', 'Päuker', 'opa'],
+        ['Steenpass', 'Steenpaß', 'las20'],
     ];
 
     foreach ($names as $n ) {
@@ -166,6 +167,18 @@ Route::get('/testing', function () {
         );
         echo $n[0]. " ". $updateResult->getModifiedCount()."<br>";
     }
+
+    $updateResult = $osiris->users->updateMany(
+        ['unit' => new MongoDB\BSON\Regex('bis.*')],
+        ['$set' => ['is_active'=>false]]
+    );
+    echo "All ". $updateResult->getModifiedCount()."<br>";
+
+    $updateResult = $osiris->users->updateMany(
+        ['unit' => new MongoDB\BSON\Regex('Abmeldung')],
+        ['$set' => ['is_active'=>false]]
+    );
+    echo "All ". $updateResult->getModifiedCount()."<br>";
     
     // $updateResult = $osiris->activities->updateMany(
     //     ['authors.last' => 'Ozturk'],

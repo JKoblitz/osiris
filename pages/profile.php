@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="<?=ROOTPATH?>/js/chart.min.js"></script>
 <style>
     .box.h-full {
         height: calc(100% - 4rem) !important;
@@ -233,25 +233,7 @@ foreach ($cursor as $doc) {
         <div class="box h-full">
             <table class="table table-simple">
                 <tbody>
-                    <!-- <?php foreach ($scientist as $key => $val) {
-                                if (!is_string($val) && !is_bool($val)) continue;
-                                if (in_array($key, ['_id', 'formalname', 'displayname', 'is_admin', 'name', 'name_formal'])) continue;
-                            ?>
-                        
-                    <tr>
-                        <td><?= ucfirst($key) ?></td>
-                        <td>
-                            <?php if ($key == 'orcid') { ?>
-                                <a href="http://orcid.org/<?= $val ?>" target="_blank" rel="noopener noreferrer"><?= $val ?></a>
-                                <?php } elseif (is_bool($val)) {
-                                    echo bool_icon($val);
-                                } else { ?>
-                            <?= $val ?>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <?php } ?> -->
-
+                  
                     <tr>
                         <td><?= lang('Last name', 'Nachname') ?></td>
                         <td><?= $scientist['last'] ?? '' ?></td>
@@ -458,8 +440,8 @@ foreach ($cursor as $doc) {
         <?php } ?>
 
 
-    </div>
-<?php } ?> -->
+    </div> -->
+<?php } ?>
 
 
 

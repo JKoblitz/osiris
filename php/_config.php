@@ -85,7 +85,7 @@ function hiddenFieldsFromGet($exclude = array())
         if (is_array($value)) {
             foreach ($value as $k => $v) {
                 // if (empty($v)) continue;
-                echo '<input type="hidden" name="' . $name . '['.$k.']" value="' . $v . '">';
+                echo '<input type="hidden" name="' . $name . '[' . $k . ']" value="' . $v . '">';
             }
         } elseif (!empty($value)) {
             echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
@@ -209,9 +209,10 @@ if (!function_exists('str_contains')) {
     }
 }
 
-function endOfCurrentQuarter($as_string=false){
+function endOfCurrentQuarter($as_string = false)
+{
     $q = CURRENTYEAR . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59';
-    if ($as_string){
+    if ($as_string) {
         return $q;
     }
     return new DateTime($q);
@@ -227,7 +228,7 @@ function dump($element, $as_json = false)
             var_dump(json_last_error_msg()) . PHP_EOL;
             var_export($element);
         }
-    } else if ($as_json ) {
+    } else if ($as_json) {
         $element = $element->bsonSerialize();
         echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         if (!empty(json_last_error())) {
@@ -249,59 +250,61 @@ function bool_icon($bool)
     }
 }
 
-function typeInfo($type){
+function typeInfo($type)
+{
     switch ($type) {
         case 'publication':
             return [
-                'name'=>lang('Publications', 'Publikationen'),
+                'name' => lang('Publications', 'Publikationen'),
                 'color' => "#006EB7"
                 // 'color' => 'var(--primary-color)'
-        ];
+            ];
         case 'poster':
             return [
-                'name'=>lang('Poster'),
+                'name' => lang('Poster'),
                 'color' => "#B61F29"
                 // 'color' => 'var(--danger-color)'
-        ];
+            ];
         case 'lecture':
             return [
-                'name'=>lang('Lectures', 'Vorträge'),
+                'name' => lang('Lectures', 'Vorträge'),
                 'color' => "#ECAF00"
                 // 'color' => 'var(--signal-color)'
-        ];
+            ];
         case 'review':
             return [
-                'name'=>lang('Reviews & Editorial boards'),
+                'name' => lang('Reviews & Editorial boards'),
                 'color' => "#1FA138"
                 // 'color' => 'var(--success-color)'
-        ];
+            ];
         case 'misc':
             return [
-                'name'=>lang('Other activities', 'Sonstige Aktivitäten'),
+                'name' => lang('Other activities', 'Sonstige Aktivitäten'),
                 'color' => "#b3b3b3"
                 // 'color' => 'var(--muted-color)'
-        ];
+            ];
         case 'students':
             return [
-                'name'=>lang('Students & Guests', 'Studierende & Gäste'),
+                'name' => lang('Students & Guests', 'Studierende & Gäste'),
                 'color' => "#575756"
                 // 'color' => 'var(--dark-color)'
-        ];
+            ];
         default:
             return [
-                'name'=> $type,
+                'name' => $type,
                 'color' => '#cccccc'
-        ];
+            ];
     }
 }
-function adjustBrightness($hex, $steps) {
+function adjustBrightness($hex, $steps)
+{
     // Steps should be between -255 and 255. Negative = darker, positive = lighter
     $steps = max(-255, min(255, $steps));
 
     // Normalize into a six character long hex string
     $hex = str_replace('#', '', $hex);
     if (strlen($hex) == 3) {
-        $hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+        $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
     }
 
     // Split into three parts: R, G and B
@@ -310,85 +313,78 @@ function adjustBrightness($hex, $steps) {
 
     foreach ($color_parts as $color) {
         $color   = hexdec($color); // Convert to decimal
-        $color   = max(0,min(255,$color + $steps)); // Adjust color
+        $color   = max(0, min(255, $color + $steps)); // Adjust color
         $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
     }
 
     return $return;
 }
 
-function type2title($type){
+function type2title($type)
+{
     return typeInfo($type)['name'];
 }
 
 
-function deptInfo($dept){
-    switch ($dept) {
-        case "MIOS": 
-            return [
-                "color"=>'#d31e25',
-                'name' => 'Microorganisms'
-            ];
-        case "BIDB": 
-            return [
-                "color"=>'#5db5b7',
-                'name' => 'Bioinformatik &amp; Datenbanken'
-            ];
-        case "MIG": 
-            return [
-                "color"=>'#d1c02b',
-                'name' => 'Mikrobielle Genomforschung'
-            ];
-        case "BUG": 
-            return [
-                "color"=>'#8a3f64',
-                'name' => 'Bioökonomie und Gesundheitsforschung'
-            ];
-        case "MuTZ": 
-            return [
-                "color"=>'#31407b',
-                'name' => 'Menschliche &amp; Tierische Zellkulturen'
-            ];
-        case "PFVI": 
-            return [
-                "color"=>'#369e4b',
-                'name' => 'Pflanzenviren'
-            ];
-        case "MÖD": 
-            return [
-                "color"=>'#d7a32e',
-                'name' => 'Mikrobielle Ökologie'
-            ];
-        case "Services": 
-            return [
-                "color"=>'#4f2e39',
-                'name' => 'Services'
-            ];
-        case "Patente": 
-            return [
-                "color"=>'#b2b2b2',
-                'name' => 'Patente'
-            ];
-        case "IT": 
-            return [
-                "color"=>'#5F272A',
-                'name' => 'IT'
-            ];
-        case "Verwaltung": 
-            return [
-                "color"=>'#5F272A',
-                'name' => 'Verwaltung'
-            ];
-        case "PuK": 
-            return [
-                "color"=>'#5F272A',
-                'name' => 'Presse und Kommunikation'
-            ];
-        default:
-        return [
-            "color"=>'#cccccc',
-            'name' => $dept
-
-        ];
-    }
+function deptInfo($dept=null)
+{
+    $depts =  [
+        "MIOS" => [
+            "color" => '#d31e25',
+            'name' => 'Mikroorganismen'
+        ],
+        "BIDB" => [
+            "color" => '#5db5b7',
+            'name' => 'Bioinformatik & Datenbanken'
+        ],
+        "MIG" => [
+            "color" => '#d1c02b',
+            'name' => 'Mikrobielle Genomforschung'
+        ],
+        "BUG" => [
+            "color" => '#8a3f64',
+            'name' => 'Bioökonomie und Gesundheitsforschung'
+        ],
+        "MuTZ" => [
+            "color" => '#31407b',
+            'name' => 'Menschliche & Tierische Zellkulturen'
+        ],
+        "PFVI" => [
+            "color" => '#369e4b',
+            'name' => 'Pflanzenviren'
+        ],
+        "MÖD" => [
+            "color" => '#d7a32e',
+            'name' => 'Mikrobielle Ökologie'
+        ],
+        "Services" => [
+            "color" => '#4f2e39',
+            'name' => 'Services'
+        ],
+        "NFG" => [
+            "color" => '#5F272A',
+            'name' => 'Nachwuchsforschungsgruppen'
+        ],
+        "Patente" => [
+            "color" => '#5F272A',
+            'name' => 'Patente'
+        ],
+        "IT" => [
+            "color" => '#afafaf',
+            'name' => 'IT'
+        ],
+        "Verwaltung" => [
+            "color" => '#afafaf',
+            'name' => 'Verwaltung'
+        ],
+        "PuK" => [
+            "color" => '#afafaf',
+            'name' => 'Presse und Kommunikation'
+        ]
+    ];
+    if ($dept === null ) return $depts;
+    return $depts[$dept] ?? [
+        "color" => '#cccccc',
+        'name' => $dept
+    ];
 }

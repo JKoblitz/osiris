@@ -533,7 +533,7 @@ Route::get('/edit/user/([a-z0-9]+)', function ($user) {
     $data = getUserFromId($user);
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/browse/users"],
-        ['name' => $data['name'], 'path' => "/scientist/$user"],
+        ['name' => $data['name'], 'path' => "/profile/$user"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
 

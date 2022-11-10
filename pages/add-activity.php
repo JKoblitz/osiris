@@ -126,7 +126,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 </div>
 
 
-                <div class="form-group" data-visible="article,magazine,book,chapter,editor,lecture,poster,misc,students">
+                <div class="form-group lang-<?=lang('en', 'de')?>" data-visible="article,magazine,book,chapter,editor,lecture,poster,misc,students">
                     <label for="title" class="required"><?= lang('Title', 'Titel') ?></label>
 
                     <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
@@ -229,7 +229,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         </select>
                     </div>
                     <div class="col-sm">
-                        <label for="details">Details (Stipendium, etc.)</label>
+                        <label for="details"><?=lang('Details (scholarship, etc.)', 'Details (Stipendium, etc.)')?></label>
                         <input type="text" class="form-control" name="values[details]" id="details" value="<?= $form['details'] ?? '' ?>">
                     </div>
                 </div>

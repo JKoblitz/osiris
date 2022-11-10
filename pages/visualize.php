@@ -31,7 +31,8 @@ $selectedUser = $osiris->users->findone(['_id' => $scientist]);
     <?= $selectedUser['displayname'] ?>
 </a>
 
-<div id="chord" class=""></div>
+<div id="chord" class="d-flex"></div>
+<svg id="legend" height=300 width=450></svg>
 <div id="chord-info-div" class="tile h-auto" style="display: none;"></div>
 
 <small class="text-muted">
@@ -76,7 +77,7 @@ foreach ($activities as $doc) {
             $name = $labels[$id]['name'];
             $labels[$id]['count']++;
         } else {
-            $name = $osiris->users->findone(['username' => $aut['user']]);
+            $name = $osiris->users->findone(['_id' => $aut['user']]);
             if (empty($name)) continue;
 
             $labels[$id] = [
@@ -113,24 +114,12 @@ foreach ($combinations as $c) {
     $matrix[$b][$a] += 1;
 }
 
+
 ?>
 <!-- https://github.com/vivo-project/VIVO/blob/1dd2851e45f1fc10ecb9cadeab4d0db8eb83ca00/webapp/src/main/webapp/templates/freemarker/visualization/personlevel/coAuthorPersonLevelD3.ftl -->
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="<?=ROOTPATH?>/js/d3.v4.min.js"></script>
 <script>
-    const DEPTS = {
-        "MIOS": '#d31e25',
-        "BIDB": '#5db5b7',
-        "MIG": '#d1c02b',
-        "BUG": '#8a3f64',
-        "MuTZ": '#31407b',
-        "PFVI": '#369e4b',
-        "MÖD": '#d7a32e',
-        "Services": '#4f2e39',
-        "Patente": '#b2b2b2',
-        "IT": '#5F272A',
-        "Verwaltung": '#5F272A',
-        "PuK": '#5F272A'
-    }
+    const DEPTS = JSON.parse('<?=json_encode(deptInfo())?>');
 
     var matrix = '<?= json_encode($matrix) ?>'
     matrix = JSON.parse(matrix);
@@ -152,29 +141,33 @@ foreach ($combinations as $c) {
     var padding = 175;
     var inner_radius = Math.min(width, height) * 0.37;
     var outer_radius = Math.min(width, height) * 0.39;
-    var fill = d3.scaleOrdinal()
-        .domain(d3.range(20))
-        .range(["#000000", "#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78",
-            "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd",
-            "#c5b0d5", "#8c564b", "#c49c94", "#e377c2", "#f7b6d2",
-            "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf"
-        ]);
+    // var fill = d3.scaleOrdinal()
+    //     .domain(d3.range(20))
+    //     .range(["#000000", "#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78",
+    //         "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd",
+    //         "#c5b0d5", "#8c564b", "#c49c94", "#e377c2", "#f7b6d2",
+    //         "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf"
+    //     ]);
     // #9edae5
-    var svg = d3.select('#chord').append('svg')
+    var SVG = d3.select('#chord').append('svg')
         .attr('width', width + padding)
         .attr('height', height + padding)
-        .append('g').attr('transform', 'translate(' + (width + padding) / 2 + ',' + (height + padding) / 2 + ')')
+    var svg = SVG.append('g').attr('transform', 'translate(' + (width + padding) / 2 + ',' + (height + padding) / 2 + ')')
         .datum(chord(matrix));
     svg.append('g').selectAll('path').data(function(chords) {
             return chords.groups;
         }).enter()
         .append('path').style('fill', function(val) {
-            // return fill(val.index);
-            return DEPTS[users[val.index]['dept']] ?? '#ccc'
+            var d = DEPTS[users[val.index]['dept']]
+            if (d===undefined) return '#ccc'
+            return d['color'] 
+            // return DEPTS[users[val.index]['dept']]['color'] ?? '#ccc'
         })
         .style('stroke', function(val) {
-            // return fill(val.index);
-            return DEPTS[users[val.index]['dept']] ?? '#ccc'
+            var d = DEPTS[users[val.index]['dept']]
+            if (d===undefined) return '#ccc'
+            return d['color'] 
+            // return DEPTS[users[val.index]['dept']]['color'] ?? '#ccc'
         })
         .attr('d', d3.arc().innerRadius(inner_radius).outerRadius(outer_radius))
         .on('click', chord_click())
@@ -209,7 +202,9 @@ foreach ($combinations as $c) {
         })
         .enter().append('path')
         .style('fill', function(d) {
-            return DEPTS[users[d.target.index]['dept']] ?? '#ccc'
+            var d = DEPTS[users[d.target.index]['dept']]
+            if (d===undefined) return '#ccc'
+            return d['color'] 
             // return fill(d.target.index);
         })
         .attr('d', d3.ribbon().radius(inner_radius))
@@ -293,4 +288,84 @@ foreach ($combinations as $c) {
             }
         };
     }
+
+    // var SVG = d3.select("#legend")
+    var depts_in_use = [];
+    for (var i = 0; i < users.length; i++) {
+        var d = users[i]['dept']
+
+        if (d && DEPTS[d]!==undefined && !depts_in_use.includes(d))
+            depts_in_use.push(d);
+    }
+
+    var legend = d3.select('#chord')
+    // .append('div').attr('class', 'box w-auto')
+    .append('div').attr('class', 'content')
+
+    legend.append('div')
+    .style('font-weight', 'bold')
+    .attr('class', 'mb-5')
+    .text('<?=lang("Departments","Abteilungen")?>')
+
+    depts_in_use.forEach(d => {
+        var row = legend.append('div')
+        .attr('class', 'd-flex mb-5 text-'+d)
+
+        row.append('div')
+        .style('background-color',DEPTS[d]['color'])
+        .style("width", "2rem")
+        .style("height", "2rem")
+        .style("display", "inline-block")
+        .style("margin-right", "1rem")
+        row.append('span').text(DEPTS[d]['name'])
+    });
+    
+
+    // var size = 20
+    // var SVG = d3.select('#chord').append('svg')
+    //     .attr('width', 300)
+    //     .attr('height', 300)
+        
+    // SVG.append('text')
+    // .attr('x', 0)
+    // .attr('y', 30)
+    // .style('font-weight', 'bold')
+    // .text('<?=lang("Departments","Abteilungen")?>')
+
+
+    // var legend = SVG.append('g')
+    //     .attr('id', 'legends')
+    //     // .attr('transform','translate('+(width+padding/2)+' 10)')
+    //     .selectAll("mydots")
+    //     .data(depts_in_use)
+    //     .enter()
+    //     .append('g')
+
+    // legend
+    //     .append("rect")
+    //     .attr("x", 0)
+    //     .attr("y", function(d, i) {
+    //         return 40 + i * (size + 5)
+    //     }) // 30 is where the first dot appears. 25 is the distance between dots
+    //     .attr("width", size)
+    //     .attr("height", size)
+    //     .style("fill", function(d) {
+    //         return DEPTS[d]['color']
+    //     })
+
+    // // Add one dot in the legend for each name.
+    // legend //.selectAll("mylabels")
+    //     .append("text")
+    //     .attr("x", 10 + size * 1.2)
+    //     .attr("y", function(d, i) {
+    //         return 40 + i * (size + 5) + (size / 1.3)
+    //     }) // 100 is where the first dot appears. 25 is the distance between dots
+    //     .style("fill", function(d) {
+    //         return DEPTS[d]['color']
+    //     })
+    //     .text(function(d) {
+    //         return DEPTS[d]['name']
+    //     })
+    //     .attr("text-anchor", "left")
+    //     .style("alignment-baseline", "middle")
 </script>

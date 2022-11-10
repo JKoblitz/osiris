@@ -164,6 +164,11 @@ td.unbreakable {
     color: var(--muted-color);
 }
 
+.lang-en .ql-snow.ql-toolbar::after,
+.lang-en .ql-snow .ql-toolbar::after {
+    content: 'Please check spelling and formatting carefully.';
+}
+
 strong {
     font-weight: 900;
 }

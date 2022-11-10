@@ -26,7 +26,7 @@
     <tbody>
 
         <?php
-        $result = $osiris->users->find()->toArray();
+        $result = $osiris->users->find(['is_active'=>true])->toArray();
 
         foreach ($result as $document) {
         ?>

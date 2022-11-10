@@ -160,7 +160,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
 </form>
 
 <p class="text-muted font-size-12 mt-0">
-    <?=lang('The ', 'Das gesamte Jahr ist hier gezeigt. Aktivitäten außerhalb des gewählten Quartals sind ausgegraut.')?>
+    <?=lang('The entire year is shown here. Activities outside the selected quarter are grayed out. ', 'Das gesamte Jahr ist hier gezeigt. Aktivitäten außerhalb des gewählten Quartals sind ausgegraut.')?>
 </p>
 
 <?php
