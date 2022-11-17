@@ -710,6 +710,8 @@ function togglePubType(type) {
         'guest-scientist': 'guests',
         'lecture-internship': 'guests',
         'student-internship': 'guests',
+        'reviewer': 'review',
+        'editor': 'editorial'
     }
     if (type == "others") return;
     type = types[type] ?? type;
