@@ -60,7 +60,7 @@ function format_date($date)
 function valueFromDateArray($date)
 {
     // this function is used to generate a input:date-like string from arrays
-    if (empty($date)) return '';
+    if (empty($date) || !isset($date['year'])) return '';
     $d = new DateTime();
     $d->setDate(
         $date['year'],

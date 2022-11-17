@@ -354,6 +354,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     $user = $_SESSION['username'];
     $id = new MongoDB\BSON\ObjectId($id);
 
+    global $form;
     $form = $osiris->activities->findOne(['_id' => $id]);
     $copy = false;
 

@@ -1,7 +1,5 @@
 <?php
 
-// TODO: News aktualisieren
-
 $form = $form ?? array();
 $copy = $copy ?? false;
 $preset = $form['authors'] ?? array($USER);
@@ -28,6 +26,16 @@ if (!empty($form) && isset($form['_id']) && !$copy) {
 }
 
 $dept = $form['dept'] ?? $USER['dept'] ?? '';
+
+function val($index, $default = '')
+{
+    $val = $GLOBALS['form'][$index] ?? $default;
+    if (is_string($val)) {
+        return htmlspecialchars($val);
+    }
+    return $val;
+}
+
 ?>
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 
@@ -98,6 +106,17 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             </div>
         </form>
 
+        <div class="my-20 select-btns" id="select-btns">
+            <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="publication-btn"><?= activity_icon('publication', false) ?><?= lang('Publication', 'Publikation') ?></button>
+            <button onclick="togglePubType('poster')" class="btn btn-select text-poster" id="poster-btn"><?= activity_icon('poster', false) ?><?= lang('Posters', 'Poster') ?></button>
+            <button onclick="togglePubType('lecture')" class="btn btn-select text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?><?= lang('Lectures', 'Vorträge') ?></button>
+            <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
+            <button onclick="togglePubType('teaching')" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></button>
+            <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-btn"><?= activity_icon('students', false) ?><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
+            <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software') ?></button>
+            <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Misc') ?></button>
+        </div>
+
     <?php } elseif ($copy) { ?>
         <h3 class=""><?= lang('Copy activity', 'Kopiere Aktivität') ?></h3>
     <?php } else { ?>
@@ -105,16 +124,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <h3 class=""><?= lang('Edit activity', 'Bearbeite Aktivität') ?> <span class="text-signal">#<?= $id ?></span></h3>
     <?php } ?>
 
-    <div class="my-20 select-btns" id="select-btns">
-        <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="publication-btn"><?= activity_icon('publication', false) ?><?= lang('Publication', 'Publikation') ?></button>
-        <button onclick="togglePubType('poster')" class="btn btn-select text-poster" id="poster-btn"><?= activity_icon('poster', false) ?><?= lang('Posters', 'Poster') ?></button>
-        <button onclick="togglePubType('lecture')" class="btn btn-select text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?><?= lang('Lectures', 'Vorträge') ?></button>
-        <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
-        <button onclick="togglePubType('teaching')" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></button>
-        <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-btn"><?= activity_icon('students', false) ?><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
-        <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software') ?></button>
-        <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Misc') ?></button>
-    </div>
+
 
     <div class="box box-primary add-form" style="display:none" id="publication-form">
         <div class="content">
@@ -254,20 +264,20 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
                 </p>
                 <p data-visible="students">
-                    <span class="element-" data-element="<?= lang('Name of the student', 'Name des Studierenden') ?>">Halama, Philipp</span>, 
-                    <span class="element-" data-element="<?= lang('Affiliation of the student', 'Einrichtung des Studierenden') ?>">TU Braunschweig</span>. 
-                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">Genomic Sphingomonas</span>; 
-                    <span class="element-cat" data-element="<?= lang('Category', 'Kategorie') ?>">Master-Thesis</span>. 
-                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">01.12.2021-30.09.2022</span> 
-                    (<span class="element-" data-element="<?= lang('Status') ?>">in progress</span>), 
+                    <span class="element-" data-element="<?= lang('Name of the student', 'Name des Studierenden') ?>">Halama, Philipp</span>,
+                    <span class="element-" data-element="<?= lang('Affiliation of the student', 'Einrichtung des Studierenden') ?>">TU Braunschweig</span>.
+                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">Genomic Sphingomonas</span>;
+                    <span class="element-cat" data-element="<?= lang('Category', 'Kategorie') ?>">Master-Thesis</span>.
+                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">01.12.2021-30.09.2022</span>
+                    (<span class="element-" data-element="<?= lang('Status') ?>">in progress</span>),
                     betreut von <span class="element-author" data-element="<?= lang('Responsible scientist', 'Verantwortliche Person') ?>">Bunk, B.</span>
                 </p>
                 <p data-visible="guests">
-                    <span class="element-" data-element="<?= lang('Name of the guest', 'Name des Gastes') ?>">Herrera, Fabio</span>, 
-                    <span class="element-" data-element="<?= lang('Affiliation of the guest', 'Einrichtung des Gastes') ?>">Universidad de los Andes, Kolumbien</span>. 
-                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">BMBF-Projekt: Workshop AVAnce</span>; 
-                    <span class="element-cat" data-element="<?= lang('Category', 'Kategorie') ?>">Gastwissenschaftler:in</span>. 
-                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">15.-22.07.2022</span>, 
+                    <span class="element-" data-element="<?= lang('Name of the guest', 'Name des Gastes') ?>">Herrera, Fabio</span>,
+                    <span class="element-" data-element="<?= lang('Affiliation of the guest', 'Einrichtung des Gastes') ?>">Universidad de los Andes, Kolumbien</span>.
+                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">BMBF-Projekt: Workshop AVAnce</span>;
+                    <span class="element-cat" data-element="<?= lang('Category', 'Kategorie') ?>">Gastwissenschaftler:in</span>.
+                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">15.-22.07.2022</span>,
                     betreut von <span class="element-author" data-element="<?= lang('Responsible scientist', 'Verantwortliche Person') ?>">Overmann, J.</span>
                 </p>
                 <p data-visible="software">
@@ -338,8 +348,8 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         <span data-visible="misc-once,misc-annual,students,guests,teaching"><?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?></span>
                     </label>
 
-                    <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
-                    <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
+                    <div class="form-group title-editor"><?= val('title') ?></div>
+                    <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= val('title') ?>">
                 </div>
 
 
@@ -401,36 +411,36 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                             <span data-visible="students"><?= lang('student', 'Studierenden') ?></span>
                             <?= lang('(last name, given name)', '(Nachname, Vorname)') ?>
                         </label>
-                        <input type="text" class="form-control" name="values[name]" id="guest-name" required value="<?= $form['name'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[name]" id="guest-name" required value="<?= val('name') ?>">
                     </div>
                     <div class="col">
                         <label for="guest-affiliation" class="required element-other"><?= lang('Affiliation (Name, City, Country)', 'Einrichtung (Name, Ort, Land)') ?></label>
-                        <input type="text" class="form-control" name="values[affiliation]" id="guest-affiliation" required value="<?= $form['affiliation'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[affiliation]" id="guest-affiliation" required value="<?= val('affiliation') ?>">
                     </div>
                     <div class="col-sm-2" data-visible="students,guests">
                         <label for="guest-academic_title"><?= lang('Academ. title', 'Akadem. Titel') ?></label>
-                        <input type="text" class="form-control" name="values[academic_title]" id="guest-academic_title" value="<?= $form['academic_title'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[academic_title]" id="guest-academic_title" value="<?= val('academic_title') ?>">
                     </div>
                     <div class="col-sm-5" data-visible="teaching">
                         <label for="teaching-sws" class="required"><?= lang('SWS (Semesterwochenstunden)') ?></label>
-                        <input type="number" step="0.1" class="form-control" name="values[sws]" id="teaching-sws" value="<?= $form['sws'] ?? '' ?>" required>
+                        <input type="number" step="0.1" class="form-control" name="values[sws]" id="teaching-sws" value="<?= val('sws') ?>" required>
                     </div>
                 </div>
 
                 <div class="form-row row-eq-spacing " data-visible="article,preprint,magazine,book,chapter">
                     <div class="col-sm">
                         <label for="year" class="required element-time">Year</label>
-                        <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" required value="<?= $form['year'] ?? '' ?>">
+                        <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" required value="<?= val('year') ?>">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="month" class="required ">Month</label>
-                        <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" required value="<?= $form['month'] ?? '' ?>">
+                        <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" required value="<?= val('month') ?>">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="day" class="">Day</label>
-                        <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= $form['day'] ?? '' ?>">
+                        <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= val('day') ?>">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
@@ -438,23 +448,23 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm" data-visible="guests">
                         <label for="category-guest" class="required element-cat"><?= lang('Category', 'Kategorie') ?></label>
                         <select name="values[category]" id="category-guest" class="form-control" required>
-                            <option value="guest scientist" <?= ($form['category'] ?? '') == 'guest scientist' ? 'selected' : '' ?>><?= lang('Guest Scientist', 'Gastwissenschaftler:in') ?></option>
-                            <!-- <option value="mandatory internship" <?= ($form['category'] ?? '') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium')?></option> -->
-                            <option value="lecture internship" <?= ($form['category'] ?? '') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Vorlesung und Laborpraktikum') ?></option>
-                            <option value="student internship" <?= ($form['category'] ?? '') == 'student internship' ? 'selected' : '' ?>><?= lang('Student Internship', 'Schülerpraktikum') ?></option>
+                            <option value="guest scientist" <?= val('category') == 'guest scientist' ? 'selected' : '' ?>><?= lang('Guest Scientist', 'Gastwissenschaftler:in') ?></option>
+                            <!-- <option value="mandatory internship" <?= val('category') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium')?></option> -->
+                            <option value="lecture internship" <?= val('category') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Vorlesung und Laborpraktikum') ?></option>
+                            <option value="student internship" <?= val('category') == 'student internship' ? 'selected' : '' ?>><?= lang('Student Internship', 'Schülerpraktikum') ?></option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="students">
                         <label for="category-students" class="required element-cat"><?= lang('Category', 'Kategorie') ?></label>
                         <select name="values[category]" id="category-students" class="form-control" required>
-                            <option value="doctoral thesis" <?= ($form['category'] ?? '') == 'doctoral thesis' ? 'selected' : '' ?>><?= lang('Doctoral Thesis', 'Doktorand:in') ?></option>
-                            <option value="master thesis" <?= ($form['category'] ?? '') == 'master thesis' ? 'selected' : '' ?>><?= lang('Master Thesis', 'Master-Thesis') ?></option>
-                            <option value="bachelor thesis" <?= ($form['category'] ?? '') == 'bachelor thesis' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelor-Thesis') ?></option>
+                            <option value="doctoral thesis" <?= val('category') == 'doctoral thesis' ? 'selected' : '' ?>><?= lang('Doctoral Thesis', 'Doktorand:in') ?></option>
+                            <option value="master thesis" <?= val('category') == 'master thesis' ? 'selected' : '' ?>><?= lang('Master Thesis', 'Master-Thesis') ?></option>
+                            <option value="bachelor thesis" <?= val('category') == 'bachelor thesis' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelor-Thesis') ?></option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="students">
                         <label for="details"><?= lang('Details (scholarship, etc.)', 'Details (Stipendium, etc.)') ?></label>
-                        <input type="text" class="form-control" name="values[details]" id="details" value="<?= $form['details'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[details]" id="details" value="<?= val('details') ?>">
                     </div>
                 </div>
 
@@ -462,22 +472,22 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm" data-visible="lecture">
                         <label class="required element-cat" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
                         <select name="values[lecture_type]" id="lecture_type" class="form-control" autocomplete="off">
-                            <option value="short" <?= ($form['lecture_type'] ?? '') == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
-                            <option value="long" <?= ($form['lecture_type'] ?? '') == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
-                            <option value="repetition" <?= (($form['lecture_type'] ?? '') == 'repetition' || $copy) ? 'selected' : '' ?>>repetition</option>
+                            <option value="short" <?= val('lecture_type') == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
+                            <option value="long" <?= val('lecture_type') == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
+                            <option value="repetition" <?= val('lecture_type' == 'repetition' || $copy) ? 'selected' : '' ?>>repetition</option>
                         </select>
                     </div>
 
                     <div class="col-sm" data-visible="lecture">
                         <label class="" for="lecture_type"><?= lang('Invited lecture') ?></label>
                         <select name="values[invited_lecture]" id="invited_lecture" class="form-control" autocomplete="off">
-                            <option value="0" <?= $form['invited_lecture'] ?? false ? '' : 'selected' ?>><?= lang('No', 'Nein') ?></option>
-                            <option value="1" <?= $form['invited_lecture'] ?? false ? 'selected' : '' ?>><?= lang('Yes', 'Ja') ?></option>
+                            <option value="0" <?= val('invited_lecture', false) ? '' : 'selected' ?>><?= lang('No', 'Nein') ?></option>
+                            <option value="1" <?= val('invited_lecture', false) ? 'selected' : '' ?>><?= lang('Yes', 'Ja') ?></option>
                         </select>
                     </div>
                     <div class="col-sm">
                         <label class="required element-time" for="date_start"><?= lang('Date', 'Datum') ?></label>
-                        <input type="date" class="form-control" name="values[start]" id="date_start" required value="<?= valueFromDateArray($form['start'] ?? '') ?>">
+                        <input type="date" class="form-control" name="values[start]" id="date_start" required value="<?= valueFromDateArray(val('start')) ?>">
                     </div>
                     <div class="col-sm" data-visible="poster,misc-once,misc-annual">
                         <label for="date_end" class="element-time">
@@ -489,11 +499,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                                 <?= lang('(leave empty if activity in progress)', '(leer lassen solange die Aktivität im Gange ist)') ?>
                             </span>
                         </label>
-                        <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
+                        <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray(val('end')) ?>">
                     </div>
                     <div class="col-sm" data-visible="students,guests,teaching">
                         <label for="students_end" class="required element-time"><?= lang('End', 'Ende') ?></label>
-                        <input type="date" class="form-control" name="values[end]" id="students_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>" required>
+                        <input type="date" class="form-control" name="values[end]" id="students_end" value="<?= valueFromDateArray(val('end')) ?>" required>
                         <div id="end-question" data-visible="students">
                             <div class="custom-radio d-inline-block">
                                 <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="1">
@@ -515,11 +525,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm" data-visible="software">
                         <label class="element-cat" for="software_type"><?= lang('Type of software', 'Art der Software') ?></label>
                         <select name="values[software_type]" id="software_type" class="form-control">
-                            <option value="" <?= empty($form['software_type'] ?? '') ? 'selected' : '' ?>>Not specified</option>
-                            <option value="software" <?= ($form['software_type'] ?? '') == 'software' ? 'selected' : '' ?>>Computer Software</option>
-                            <option value="database" <?= ($form['software_type'] ?? '') == 'database' ? 'selected' : '' ?>>Database</option>
-                            <option value="dataset" <?= ($form['software_type'] ?? '') == 'dataset' ? 'selected' : '' ?>>Dataset</option>
-                            <option value="webtool" <?= ($form['software_type'] ?? '') == 'webtool' ? 'selected' : '' ?>>Website</option>
+                            <option value="" <?= empty(val('software_type')) ? 'selected' : '' ?>>Not specified</option>
+                            <option value="software" <?= val('software_type') == 'software' ? 'selected' : '' ?>>Computer Software</option>
+                            <option value="database" <?= val('software_type') == 'database' ? 'selected' : '' ?>>Database</option>
+                            <option value="dataset" <?= val('software_type') == 'dataset' ? 'selected' : '' ?>>Dataset</option>
+                            <option value="webtool" <?= val('software_type') == 'webtool' ? 'selected' : '' ?>>Website</option>
                         </select>
                     </div>
                 </div>
@@ -528,22 +538,22 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="form-row row-eq-spacing" data-visible="software">
                     <div class="col-sm-">
                         <label class="element-other" for="software_venue"><?= lang('Publication venue, e.g. GitHub, Zenodo ...', 'Ort der Veröffentlichung, z.B. GitHub, Zenodo ...') ?></label>
-                        <input type="text" class="form-control" name="values[software_venue]" id="software_venue" value="<?= $form['software_venue'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[software_venue]" id="software_venue" value="<?= val('software_venue') ?>">
                     </div>
 
                     <div class="col-sm">
                         <label class="element-link" for="software_link"><?= lang('Complete link to the software/database', 'Kompletter Link zur Software/Datenbank') ?></label>
-                        <input type="text" class="form-control" name="values[link]" id="software_link" value="<?= $form['link'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[link]" id="software_link" value="<?= val('link') ?>">
                     </div>
 
                     <div class="col-sm">
                         <label for="software_doi" class="element-link">DOI</label>
-                        <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="software_doi" placeholder="10.5281/zenodo.3742817">
+                        <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="software_doi" placeholder="10.5281/zenodo.3742817">
                     </div>
 
                     <div class="col-sm-2">
                         <label class="element-other" for="software_version"><?= lang('Version') ?></label>
-                        <input type="text" class="form-control" name="values[version]" id="software_version" value="<?= $form['version'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[version]" id="software_version" value="<?= val('version') ?>">
                     </div>
 
                 </div>
@@ -552,18 +562,18 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc-once,misc-annual">
                     <div class="col-sm" data-visible="misc-once,misc-annual">
                         <label class="required" for="iteration"><?= lang('Iteration', 'Häufigkeit') ?></label>
-                        <select name="values[iteration]" id="iteration" class="form-control" value="<?= $form['iteration'] ?? '' ?>" onchange="togglePubType('misc-'+this.value)">
+                        <select name="values[iteration]" id="iteration" class="form-control" value="<?= val('iteration') ?>" onchange="togglePubType('misc-'+this.value)">
                             <option value="once">once</option>
                             <option value="annual">annual</option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="lecture,poster">
                         <label for="conference" class="element-other"><?= lang('Conference', 'Konferenz') ?></label>
-                        <input type="text" class="form-control" name="values[conference]" id="conference" placeholder="VAAM 2022" value="<?= $form['conference'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[conference]" id="conference" placeholder="VAAM 2022" value="<?= val('conference') ?>">
                     </div>
                     <div class="col-sm">
                         <label for="location" class="element-other"><?= lang('Location', 'Ort') ?></label>
-                        <input type="text" class="form-control" name="values[location]" id="location" placeholder="online" value="<?= $form['location'] ?? '' ?>">
+                        <input type="text" class="form-control" name="values[location]" id="location" placeholder="online" value="<?= val('location') ?>">
                     </div>
                 </div>
 
@@ -575,35 +585,35 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
                 <div class="form-group" data-visible="article,preprint">
                     <label for="journal" class="element-cat required">Journal</label>
-                    <input type="text" class="form-control" name="values[journal]" value="<?= $form['journal'] ?? '' ?>" id="journal" list="journal-list" required>
+                    <input type="text" class="form-control" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required>
                     <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                 </div>
 
                 <div class="form-row row-eq-spacing" data-visible="magazine">
                     <div class="col-sm">
                         <label for="magazine" class="element-cat">Magazine</label>
-                        <input type="text" class="form-control" name="values[magazine]" value="<?= $form['magazine'] ?? '' ?>" id="magazine">
+                        <input type="text" class="form-control" name="values[magazine]" value="<?= val('magazine') ?>" id="magazine">
                     </div>
                     <div class="col-sm">
                         <label for="link" class="element-link">Link</label>
-                        <input type="text" class="form-control" name="values[link]" value="<?= $form['link'] ?? '' ?>" id="link">
+                        <input type="text" class="form-control" name="values[link]" value="<?= val('link') ?>" id="link">
                     </div>
                 </div>
 
                 <div class="form-row row-eq-spacing" data-visible="article,book,chapter">
                     <div class="col-sm" data-visible="article">
                         <label for="issue" class="element-other">Issue</label>
-                        <input type="text" class="form-control" name="values[issue]" value="<?= $form['issue'] ?? '' ?>" id="issue">
+                        <input type="text" class="form-control" name="values[issue]" value="<?= val('issue') ?>" id="issue">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="volume" class="element-other">Volume</label>
-                        <input type="text" class="form-control" name="values[volume]" value="<?= $form['volume'] ?? '' ?>" id="volume">
+                        <input type="text" class="form-control" name="values[volume]" value="<?= val('volume') ?>" id="volume">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="pages" class="element-other">Pages</label>
-                        <input type="text" class="form-control" name="values[pages]" value="<?= $form['pages'] ?? '' ?>" id="pages">
+                        <input type="text" class="form-control" name="values[pages]" value="<?= val('pages') ?>" id="pages">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
@@ -612,22 +622,22 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="form-row row-eq-spacing" data-visible="book,chapter">
                     <div class="col-sm" data-visible="chapter">
                         <label for="book" class="required element-cat"><?= lang('Book title', 'Buchtitel') ?></label>
-                        <input type="text" class="form-control" name="values[book]" value="<?= $form['book'] ?? '' ?>" id="book" required>
+                        <input type="text" class="form-control" name="values[book]" value="<?= val('book') ?>" id="book" required>
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="edition" class="element-other">Edition</label>
-                        <input type="number" class="form-control" name="values[edition]" value="<?= $form['edition'] ?? '' ?>" id="edition">
+                        <input type="number" class="form-control" name="values[edition]" value="<?= val('edition') ?>" id="edition">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="publisher" class="element-other"><?= lang('Publisher', 'Verlag') ?></label>
-                        <input type="text" class="form-control" name="values[publisher]" value="<?= $form['publisher'] ?? '' ?>" id="publisher">
+                        <input type="text" class="form-control" name="values[publisher]" value="<?= val('publisher') ?>" id="publisher">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="city" class="element-other"><?= lang('Location', 'Ort') ?></label>
-                        <input type="text" class="form-control" name="values[city]" value="<?= $form['city'] ?? '' ?>" id="city">
+                        <input type="text" class="form-control" name="values[city]" value="<?= val('city') ?>" id="city">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
@@ -643,11 +653,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="col-sm">
                         <label for="doi" class="element-link">DOI</label>
                         <?php if (empty($form)) { ?>
-                            <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
+                            <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="doi">
                             <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                         <?php } else { ?>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
+                                <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="doi">
                                 <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                                 <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI') ?>">
                                     <button class="btn" type="button" onclick="getPubData(event, this)"><i class="fas fa-rotate"></i></button>
@@ -661,31 +671,31 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                     <div class="col-sm">
                         <label for="pubmed">Pubmed</label>
-                        <input type="number" class="form-control" name="values[pubmed]" value="<?= $form['pubmed'] ?? '' ?>" id="pubmed">
+                        <input type="number" class="form-control" name="values[pubmed]" value="<?= val('pubmed') ?>" id="pubmed">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="isbn">ISBN</label>
-                        <input type="text" class="form-control" name="values[isbn]" value="<?= $form['isbn'] ?? '' ?>" id="pubmed">
+                        <input type="text" class="form-control" name="values[isbn]" value="<?= val('isbn') ?>" id="pubmed">
                     </div>
                 </div>
 
                 <div class="form-group" data-visible="article,preprint,book,chapter">
                     <div class="custom-checkbox" id="open_access-div">
-                        <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= ($form['open_access'] ?? false) ? 'checked' : '' ?>>
+                        <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= val('open_access', false) ? 'checked' : '' ?>>
                         <label for="open_access">Open access</label>
                     </div>
                 </div>
 
                 <div class="form-group" data-visible="article">
                     <div class="custom-checkbox <?= isset($_GET['epub']) ? 'text-danger' : '' ?>" id="epub-div">
-                        <input type="checkbox" id="epub" value="1" name="values[epub]" <?= (!isset($_GET['epub']) && ($form['epub'] ?? false)) ? 'checked' : '' ?>>
+                        <input type="checkbox" id="epub" value="1" name="values[epub]" <?= (!isset($_GET['epub']) && val('epub', false)) ? 'checked' : '' ?>>
                         <label for="epub">Epub ahead of print</label>
                     </div>
                 </div>
                 <div class="form-group" data-visible="article">
                     <div class="custom-checkbox" id="correction-div">
-                        <input type="checkbox" id="correction" value="1" name="values[correction]" <?= ($form['correction'] ?? false) ? 'checked' : '' ?>>
+                        <input type="checkbox" id="correction" value="1" name="values[correction]" <?= val('correction', false) ? 'checked' : '' ?>>
                         <label for="correction"><?= lang('Correction') ?></label>
                     </div>
                 </div>
@@ -699,10 +709,10 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                             </label>
                             <select class="form-control" id="role-input" name="values[role]" required autocomplete="off" onchange="togglePubType(this.value)">
                                 <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
-                                <option value="review" <?= strtolower($form['role'] ?? '') == 'review' ? 'selected' : '' ?>>Reviewer</option>
-                                <option value="editorial" <?= strtolower($form['role'] ?? '') == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
-                                <option value="grant-rev" <?= strtolower($form['role'] ?? '') == 'grant-rev' ? 'selected' : '' ?>>Grant proposal</option>
-                                <option value="thesis-rev" <?= strtolower($form['role'] ?? '') == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
+                                <option value="review" <?= strtolower(val('role')) == 'review' ? 'selected' : '' ?>>Reviewer</option>
+                                <option value="editorial" <?= strtolower(val('role')) == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
+                                <option value="grant-rev" <?= strtolower(val('role')) == 'grant-rev' ? 'selected' : '' ?>>Grant proposal</option>
+                                <option value="thesis-rev" <?= strtolower(val('role')) == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
                             </select>
 
                         </div>
@@ -710,13 +720,13 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                             <label class="required element-title" for="journal-input">
                                 <?= lang('Journal') ?>
                             </label>
-                            <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= $form['journal'] ?? '' ?>" name="values[journal]" list="journal-list" required>
+                            <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= val('journal') ?>" name="values[journal]" list="journal-list" required>
                         </div>
                         <div class="col-sm" data-visible="grant-rev,thesis-rev">
                             <label class="required element-title" for="title-input">
                                 <?= lang('Title/Description/Details', 'Titel/Beschreibung/Details') ?>
                             </label>
-                            <input type="text" class="form-control" id="title-input" value="<?= $form['title'] ?? '' ?>" name="values[title]" required>
+                            <input type="text" class="form-control" id="title-input" value="<?= val('title') ?>" name="values[title]" required>
                         </div>
                         <div class="col-sm-3">
                             <label class="required element-author" for="username">
@@ -726,7 +736,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                                 <?php
                                 $userlist = $osiris->users->find();
                                 foreach ($userlist as $j) { ?>
-                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == $user ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -736,7 +746,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         <label class="required element-time" for="date">
                             <?= lang('Date', 'Datum') ?>
                         </label>
-                        <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray($form['start'] ?? '') ?>">
+                        <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray(val('start')) ?>">
                         <small class="text-muted">
                             <?= lang('Only month and year are considered', 'Nur Monat und Jahr sind relevant') ?>
                         </small>
@@ -748,19 +758,19 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                                 <label class="required element-time" for="start">
                                     <?= lang('Beginning of editorial activity', 'Anfang der Editor-Tätigkeit') ?>
                                 </label>
-                                <input type="date" class="form-control start" name="values[start]" id="start" value="<?= valueFromDateArray($form['start'] ?? '') ?>" required>
+                                <input type="date" class="form-control start" name="values[start]" id="start" value="<?= valueFromDateArray(val('start')) ?>" required>
                             </div>
                             <div class="col-sm">
                                 <label class=" element-time" for="end">
                                     <?= lang('End', 'Ende') ?>
                                 </label>
-                                <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
+                                <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray(val('end')) ?>">
                             </div>
                             <div class="col-sm">
                                 <label for="editor_type" class="element-cat">
                                     <?= lang('Details', 'Details') ?>
                                 </label>
-                                <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= $form['editor_type'] ?? '' ?>" placeholder="Guest Editor for Research Topic 'XY'">
+                                <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= val('editor_type') ?>" placeholder="Guest Editor for Research Topic 'XY'">
                             </div>
                         </div>
                     </div>
