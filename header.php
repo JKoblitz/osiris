@@ -132,6 +132,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </ul>
 
 
+            <!-- <a href="<?= ROOTPATH ?>/activities/new" class="btn w-250 btn-primary font-weight-bold test-<?= $pageactive('activities/new') ?>">
+                            <i class="far fa-plus" aria-hidden="true"></i>
+                            <?= lang('Add activity', 'Aktivität hinzuf.') ?>
+                        </a> -->
             <!-- <form id="navbar-search" action="" method="get" class="nav-search">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -185,34 +189,34 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Dashboard') ?>
                         </a>
                     <?php } else { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?=$_SESSION['username']?>" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
+                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('') ?>">
                             <i class="far fa-user-graduate" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
+                        <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('scientist') ?>">
+                            <i class="far fa-calendar" aria-hidden="true"></i>
+                            <?= lang('My year', 'Mein Jahr') ?>
+                        </a>
                     <?php } ?>
 
-                    <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('scientist') ?>">
-                        <i class="far fa-calendar" aria-hidden="true"></i>
-                        <?= lang('My year', 'Mein Jahr') ?>
-                    </a>
 
 
                     <a href="<?= ROOTPATH ?>/activities" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('activities') ?>">
                         <i class="far fa-book-bookmark" aria-hidden="true"></i>
                         <?= lang('All activities', 'Alle Aktivitäten') ?>
                     </a>
-                    <?php if ($USER['is_scientist']) { ?>
 
+                    <?php if ($USER['is_scientist']) { ?>
                         <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('my-activities') ?>">
                             <i class="far fa-book-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
                         </a>
 
-                        <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('visualize') ?>">
-                            <i class="far fa-chart-network" aria-hidden="true"></i>
-                            <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
-                        </a>
                     <?php } ?>
+                    <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('visualize') ?>">
+                        <i class="far fa-chart-network" aria-hidden="true"></i>
+                        <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
+                    </a>
 
 
 
@@ -260,42 +264,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <!-- 
-                    <div class="sidebar-title">
-                        <?= lang('Activities', 'Aktivitäten') ?>
-                    </div>
-
-
-                    <a href="<?= ROOTPATH ?>/publication" class="sidebar-link sidebar-link-primary with-icon <?= $pageactive('publication') ?>">
-                        <i class="far fa-book-bookmark" aria-hidden="true"></i>
-                        <?= lang('Publications', 'Publikationen') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/poster" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('poster') ?>">
-                        <i class="far fa-presentation-screen" aria-hidden="true"></i>
-                        <?= lang('Posters', 'Poster') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/lecture" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('lecture') ?>">
-                        <i class="far fa-keynote" aria-hidden="true"></i>
-                        <?= lang('Lectures', 'Vorträge') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/review" class="sidebar-link sidebar-link-success with-icon <?= $pageactive('review') ?>">
-                        <i class="far fa-book-open-cover" aria-hidden="true"></i>
-                        <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/misc" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('misc') ?>">
-                        <i class="far fa-icons" aria-hidden="true"></i>
-                        <?= lang('Misc') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/students" class="sidebar-link sidebar-link-muted with-icon <?= $pageactive('students') ?>">
-                        <i class="far fa-people" aria-hidden="true"></i>
-                        <?= lang('Students &amp; Guests') ?>
-                    </a> -->
-
 
 
                     <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
@@ -335,7 +303,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
 
-                <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon <?= $pageactive('news') ?>">
+                <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon">
                     <i class="far fa-comments" aria-hidden="true"></i>
                     <?= lang('Feedback') ?>
                 </a>

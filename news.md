@@ -1,10 +1,27 @@
 # Changelog
 
+## 17.11.22
+Ich habe sehr viel User-Feedback aus der Beta-Phase eingearbeitet, u.a. folgendes:
+
+- Neue Aktivitäten wurden hinzugefügt:
+  - Software
+  - Lehre (Vorlesungen und Praktika)
+  - Reviews von Grant Proposals und Abschlussarbeiten
+
+- Das Hinzufügen von Aktivitäten wurde verbessert:
+  - Die Aktivitäten Publikation, Reviews, Misc und Studierende haben jetzt Unterkategorien, die ausgewählt werden können, nachdem eine Kategorie ausgewählt wurde. Dadurch sollten viele offene Fragen geklärt werden, da die Datenfelder nun etwas flexibler reagieren.
+  - Beispiele wurden hinzugefügt. Wenn man nun auf Beispiele klickt, werden ausgewählte Aktivitäten oberhalb des Formulars angezeigt. Dabei sind Datenfelder farblich gekennzeichnet und beim Hovern wird der Name des Datenfelds angezeigt. Die Datenfelder im Formular sind in der gleichen Farbe gekennzeichnet.
+  - Eine Hilfe-Funktion erklärt nun, wie der Autoreneditor funktioniert.
+  - Lectures: Es kann jetzt angegeben werden, ob es sich um eine *Invited lecture* handelt
+
+## 15.11.22
+- Das Controlling-Dashboard wurde komplett überarbeitet. Neue Metriken werden in verbesserten Graphen dargestellt.
+
 ## 07.11.22
 - Ich habe auf Anfrage eine Nutzerprofilseite hinzugefügt. Die Seite "Mein Jahr", auf die bisher von der Nutzertabelle verwiesen wurde, hat offenbar zu einiger Verwirrung geführt. "Mein Jahr" soll ausschließlich der Übersicht des aktuellen Jahrs/Quartals dienen und die bekannten Excel-Listen ablösen.
 - Das neue Profil wurde mit Metriken und Graphen ausgestattet. Außerdem findet sich hier eine kurze Übersicht über die neuesten Aktivitäten sowie ein paar Nutzerinfos.
 - Da das Quartal-Auswahlfeld (vorher zu finden oben rechts im Header) nur noch auf der Seite "mein Jahr" verwendet wurde, wurde es dorthin verschoben, um Verwirrung zu vermeiden.
-- Ich überlege gerade noch, das Dashboard durch die Profilseite abzulösen
+- Das Dashboard wurde durch das neue Profil abgelöst
 
 ## 06.11.22
 - Man kann sich nun ein Koautoren-Netzwerk anzeigen lassen. Dort sind alle DSMZ-Wissenschaftler dargestellt, mit denen man zusammen publiziert hat. Die Verknüpfungen sind dabei nach Abteilung gefärbt.
@@ -107,7 +124,7 @@ Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
   - Abschlussarbeiten können auch abgebrochen werden
 - Auf der Übersichtsseite werden jetzt erste Fehlermeldungen angezeigt.
 
-
+<!-- 
 # Fragen @ Controlling
 
 1. Wenn ich ein Poster präsentiere auf einer Konferenz, die vom 30.06. bis zum 01.07. stattfindet, liegt das in Quartal 2 oder 3? Oder anders gefragt: entscheidet das Anfangs- oder das Enddatum über das Quartal?
@@ -117,4 +134,4 @@ Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
 3. Wäre es möglich, eine Alpha-Testphase mit ausgewählten Wissenschaftlern zu machen? Vielleicht mit Frau Fischer abklären?
 4. Nutzerdaten wurden zurzeit nur aus der Telefonliste importiert. Wer wird die Nutzer in OSIRIS in Zukunft pflegen? Wie werden Personaldaten im Moment gepflegt? In SAP? Gibt es dort eine Schnittstelle, die man abgreifen kann oder gibt es ein gängiges Export-Format, das importiert werden kann? Oder sollen die Daten händisch gepflegt werden?
 5. In diesem Zusammenhang: Müssen Datenschutzbeauftragter und Betriebsrat ebenfalls involviert werden, da wir mit Personaldaten arbeiten?
-6. Wir müssen anscheinend noch über die Autor-"Anmerkungen" sprechen. Im Moment können nur Geteilte Autorenschaften eingefügt werden und die werden standardisiert dargestellt. [Beispiel](activities/view/632da4672199cd3df8dbc166)
+6. Wir müssen anscheinend noch über die Autor-"Anmerkungen" sprechen. Im Moment können nur Geteilte Autorenschaften eingefügt werden und die werden standardisiert dargestellt. [Beispiel](activities/view/632da4672199cd3df8dbc166) -->

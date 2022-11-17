@@ -13,6 +13,14 @@
                 ) ?>
             </p>
 
+            <blockquote class="mb-20">
+        <p>
+            A user interface is like a joke. If you have to explain it, it’s not that good”.
+        </p>
+        <em>
+            — Martin Leblanc</em>
+    </blockquote>
+
             <hr>
             <?php
             include BASEPATH . "/pages/roadmap.php";
@@ -38,20 +46,8 @@
                 <a href="#roadmap">Roadmap</a>
                 <a href="#to-do-liste">To-Do-Liste</a>
                 <a href="#changelog">Changelog</a>
-                <a href="#fragen-at-controlling">Fragen @ Controlling</a>
+                <!-- <a href="#fragen-at-controlling">Fragen @ Controlling</a> -->
             </div>
         </nav>
     </div>
-</div>
-
-<div class="container">
-    <blockquote>
-        <p>
-
-            A user interface is like a joke. If you have to explain it, it’s not that good”.
-        </p>
-        <em>
-            — Martin Leblanc</em>
-    </blockquote>
-
 </div>

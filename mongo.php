@@ -59,6 +59,8 @@ function validateValues($values)
             $values[$key] = true;
         } else if ($value === 'false') {
             $values[$key] = false;
+        } else if ($key == 'invited_lecture') {
+            $values[$key] = boolval($value);
         } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access'])) {
             // dump($value);
             // $values[$key] = boolval($value);
@@ -78,21 +80,28 @@ function validateValues($values)
                 $values['month'] = $values[$key]['month'];
             }
         } else if (is_numeric($value)) {
-            $values[$key] = intval($value);
-        } else if (is_float($value)) {
-            $values[$key] = floatval($value);
+            if (is_float($value + 0)) {
+                $values[$key] = floatval($value);
+            } else {
+                $values[$key] = intval($value);
+            }
         } else if (is_string($value)) {
             $values[$key] = trim($value);
         }
     }
 
-    if (isset($values['journal'])){
+    if (isset($values['journal']) && !isset($values['role'])) {
         // it is an article
         // since non-checked boxes are not shown in the posted data,
         // it is necessary to get false values
         if (!isset($values['epub'])) $values['epub'] = false;
         if (!isset($values['open_access'])) $values['open_access'] = false;
         if (!isset($values['correction'])) $values['correction'] = false;
+    }
+
+    if (isset($values['year']) && ($values['year']<1900 || $values['year']>(CURRENTYEAR??2055)+5)){
+        echo "The year $values[year] is not valid!";
+        die();
     }
     // dump($values, true);
     // die();
@@ -131,19 +140,18 @@ Route::get('/test/(users|activities|journals)/([a-zA-Z0-9]*)', function ($col, $
         $collection = $osiris->users;
     } elseif ($col == 'journals') {
         $collection = $osiris->journals;
-    } else{
+    } else {
         $collection = $osiris->activities;
     }
-    
+
     if (is_numeric($id)) {
         $id = intval($id);
     } else if ($col != 'users') {
         $id = new MongoDB\BSON\ObjectId($id);
     }
 
-    $data = $collection->findone(['_id'=> $id]);
+    $data = $collection->findone(['_id' => $id]);
     dump($data, true);
-    
 });
 
 Route::get('/testing', function () {
@@ -157,37 +165,72 @@ Route::get('/testing', function () {
         ['Sproer', 'Spröer', 'ckc'],
         ['Pauker', 'Päuker', 'opa'],
         ['Steenpass', 'Steenpaß', 'las20'],
+        ['Carbasse', 'Sardà Carbasse', 'joc18'],
     ];
 
-    foreach ($names as $n ) {
+    foreach ($names as $n) {
         # code...
         $updateResult = $osiris->activities->updateMany(
             ['authors.last' => $n[0]],
-            ['$set' => ['authors.$.last'=>$n[1], 'authors.$.user'=>$n[2]]]
+            ['$set' => ['authors.$.last' => $n[1], 'authors.$.user' => $n[2]]]
         );
-        echo $n[0]. " ". $updateResult->getModifiedCount()."<br>";
+        echo $n[0] . " " . $updateResult->getModifiedCount() . "<br>";
     }
 
-    $updateResult = $osiris->users->updateMany(
-        ['unit' => new MongoDB\BSON\Regex('bis.*')],
-        ['$set' => ['is_active'=>false]]
-    );
-    echo "All ". $updateResult->getModifiedCount()."<br>";
+    // $updateResult = $osiris->users->updateMany(
+    //     ['unit' => new MongoDB\BSON\Regex('bis.*')],
+    //     ['$set' => ['is_active'=>false]]
+    // );
+    // echo "All ". $updateResult->getModifiedCount()."<br>";
+
+    // $updateResult = $osiris->users->updateMany(
+    //     ['unit' => new MongoDB\BSON\Regex('Abmeldung')],
+    //     ['$set' => ['is_active'=>false]]
+    // );
+    // echo "All ". $updateResult->getModifiedCount()."<br>";
 
     $updateResult = $osiris->users->updateMany(
-        ['unit' => new MongoDB\BSON\Regex('Abmeldung')],
-        ['$set' => ['is_active'=>false]]
+        ['is_controlling' => 1],
+        ['$set' => ['is_controlling' => true]]
     );
-    echo "All ". $updateResult->getModifiedCount()."<br>";
-    
+    $updateResult = $osiris->users->updateMany(
+        ['is_scientist' => 1],
+        ['$set' => ['is_scientist' => true]]
+    );
+    $updateResult = $osiris->users->updateMany(
+        ['is_leader' => 1],
+        ['$set' => ['is_leader' => true]]
+    );
+    $updateResult = $osiris->users->updateMany(
+        ['is_active' => 1],
+        ['$set' => ['is_active' => true]]
+    );
+    $updateResult = $osiris->users->updateMany(
+        ['is_controlling' => 0],
+        ['$set' => ['is_controlling' => false]]
+    );
+    $updateResult = $osiris->users->updateMany(
+        ['is_scientist' => 0],
+        ['$set' => ['is_scientist' => false]]
+    );
+    $updateResult = $osiris->users->updateMany(
+        ['is_leader' => 0],
+        ['$set' => ['is_leader' => false]]
+    );
+    $updateResult = $osiris->users->updateMany(
+        ['is_active' => 0],
+        ['$set' => ['is_active' => false]]
+    );
+    // echo "All " . $updateResult->getModifiedCount() . "<br>";
+
     // $updateResult = $osiris->activities->updateMany(
     //     ['authors.last' => 'Ozturk'],
     //     ['$set' => ['authors.$.last'=>'Öztürk', 'authors.$.user'=>'bas18']]
     // );
-// addUserActivity();
-// $collection = $osiris->users;
-// $data = $collection->findone(['_id'=> $_SESSION['username']]);
-// dump($data, true);
+    // addUserActivity();
+    // $collection = $osiris->users;
+    // $data = $collection->findone(['_id'=> $_SESSION['username']]);
+    // dump($data, true);
 
 });
 
@@ -296,7 +339,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
 
         $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
     }
-    
+
     // add information on updating process
     $values['updated'] = date('Y-m-d');
     $values['updated_by'] = $_SESSION['username'];
@@ -329,17 +372,29 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
         echo "no values given";
         die;
     }
-    
+
     $values = $_POST['values'];
-    
-   
+
+
     $collection = $osiris->users;
     $values = validateValues($values);
 
-    if (!isset($values['is_controlling'])) $values['is_controlling'] = false;
-    if (!isset($values['is_scientist'])) $values['is_scientist'] = false;
-    if (!isset($values['is_leader'])) $values['is_leader'] = false;
-    if (!isset($values['is_active'])) $values['is_active'] = false;
+    $values['is_controlling'] = boolval($values['is_controlling'] ?? false);
+    $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
+    $values['is_leader'] = boolval($values['is_leader'] ?? false);
+    $values['is_active'] = boolval($values['is_active'] ?? false);
+    // if (!isset($values['is_controlling'])) $values['is_controlling'] = false;
+    // if (!isset($values['is_scientist'])) $values['is_scientist'] = false;
+    // if (!isset($values['is_leader'])) $values['is_leader'] = false;
+    // if (!isset($values['is_active'])) $values['is_active'] = false;
+
+    if (isset($values['last']) && isset($values['first']))
+        $values['displayname'] = "$values[first] $values[last]";
+    $values['formalname'] = "$values[last], $values[first]";
+    $values['first_abbr'] = "";
+    foreach (explode(" ", $values['first']) as $name) {
+        $values['first_abbr'] .= " " . $name[0] . ".";
+    }
 
     // add information on updating process
     $values['updated'] = date('Y-m-d');
@@ -566,11 +621,11 @@ Route::post('/add-repetition/lecture/([A-Za-z0-9]*)', function ($id) {
 Route::post('/approve', function () {
     include_once BASEPATH . "/php/_db.php";
     $id = $_SESSION['username'];
-    if (!isset($_POST['quarter'])){
+    if (!isset($_POST['quarter'])) {
         echo "Quarter was not defined";
         die();
     }
-    $q = $_POST['quarter'];//SELECTEDYEAR . "Q" . SELECTEDQUARTER;
+    $q = $_POST['quarter']; //SELECTEDYEAR . "Q" . SELECTEDQUARTER;
 
     $updateResult = $osiris->users->updateOne(
         ['_id' => $id],

@@ -79,6 +79,7 @@ function lang($en, $de = null)
 include_once BASEPATH . "/php/Route.php";
 
 Route::get('/', function () {
+    include_once BASEPATH . "/php/_db.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
@@ -159,6 +160,20 @@ Route::get('/news', function () {
 
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/news.php";
+    include BASEPATH . "/footer.php";
+});
+
+Route::get('/docs', function () {
+
+    $breadcrumb = [
+        ['name' => lang('Documentation', 'Dokumentation')]
+    ];
+
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/MyParsedown.php";
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/docs.php";
     include BASEPATH . "/footer.php";
 });
 

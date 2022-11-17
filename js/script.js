@@ -146,15 +146,15 @@ function objectifyForm(formArray) {
 }
 
 function isEmpty(value) {
-    switch (typeof(value)) {
-      case "string": return (value.length === 0);
-      case "number":
-      case "boolean": return false;
-      case "undefined": return true;
-      case "object": return !value ? true : false; // handling for null.
-      default: return !value ? true : false
+    switch (typeof (value)) {
+        case "string": return (value.length === 0);
+        case "number":
+        case "boolean": return false;
+        case "undefined": return true;
+        case "object": return !value ? true : false; // handling for null.
+        default: return !value ? true : false
     }
-  }
+}
 
 function resetInput(el) {
     $(el).addClass('hidden')
@@ -703,24 +703,63 @@ function togglePubType(type) {
         "journal-article": "article",
         "magazine-article": "magazine",
         "book-chapter": "chapter",
-        "publication": 'article'
+        "publication": 'article',
+        'doctoral-thesis': 'students',
+        'master-thesis': 'students',
+        'bachelor-thesis': 'students',
+        'guest-scientist': 'guests',
+        'lecture-internship': 'guests',
+        'student-internship': 'guests',
     }
+    if (type == "others") return;
     type = types[type] ?? type;
     console.log(type);
-    var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others']
-    $('#select-btns').find('.btn').removeClass('active')
+    $('.select-btns').find('.btn').removeClass('active')
     $('#' + type + '-btn').addClass('active')
     $('#type').val(type)
     var form = $('#publication-form')
+
+    var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others', 'thesis']
     if (publications.includes(type)) {
         $('#pubtype option[value="' + type + '"]').prop("selected", true);
         $('#type').val('publication')
     }
-    form.find('[data-visible]').hide()
+    var reviews = ["review", "editorial", "grant-rev", "thesis-rev"]
+    if (reviews.includes(type)) {
+        $('#role-input option[value="' + type + '"]').prop("selected", true);
+        $('#type').val('review')
+    }
+
+    var miscs = ["misc", "misc-once", "misc-annual"]
+    if (miscs.includes(type)) {
+        var misc = type == "misc-annual" ? 'annual' : 'once'
+        $('#iteration option[value="' + misc + '"]').prop("selected", true);
+        $('#type').val('misc')
+    }
+
+    var students = ["students", "guests"]
+    if (students.includes(type)) {
+        $('#type').val('students')
+    }
+
+    var els = form.find('[data-visible]').hide()
         .find('input,select').attr('disabled', true)
+
+    els.each(function () {
+        var el = $(this)
+        var vis = el.closest('[data-visible]').attr('data-visible')
+        if (vis.includes(type)) {
+            // console.log(el.attr('name'), vis, el);
+            el.attr('disabled', false)
+        }
+    })
+
     form.find('[data-visible*=' + type + ']').show()
-        .find(':not([data-visible]),[data-visible*=' + type + ']')
-        .find('input,select').attr('disabled', false)
+    //     .find(':not([data-visible]),[data-visible*=' + type + ']')
+    //     .find('input,select').attr('disabled', false)
+
+
+
     form.find('[data-visible*=' + type + '] > input, [data-visible*=' + type + '] > select').attr('disabled', false)
     form.slideDown()
 }

@@ -42,13 +42,14 @@ $Format = new Format($useronly);
 <br>
 
 <div class="mb-5 btn-group" id="select-btns">
-    <button onclick="filterDataTable(1, 'publication')" class="btn btn-select- text-primary" id="publication-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Publication', "Publikationen") ?></button>
-    <button onclick="filterDataTable(1, 'poster')" class="btn btn-select- text-danger" id="poster-btn"><i class="fa-regular fa-presentation-screen"></i> <?= lang('Posters', 'Poster') ?></button>
-    <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i> <?= lang('Lectures', 'Vorträge') ?></button>
-    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
-    <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i> <?= lang('Misc') ?></button>
-    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-dark" id="students-btn"><i class="fa-regular fa-people"></i> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
-    <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i> <?= lang('Software') ?></button>
+    <button onclick="filterDataTable(1, 'publication')" class="btn btn-select- text-publication" id="publication-btn"><?= activity_icon('publication', false) ?> <?= lang('Publication', "Publikationen") ?></button>
+    <button onclick="filterDataTable(1, 'poster')" class="btn btn-select- text-poster" id="poster-btn"><?= activity_icon('poster', false) ?> <?= lang('Posters', 'Poster') ?></button>
+    <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?> <?= lang('Lectures', 'Vorträge') ?></button>
+    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
+    <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select- text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?> <?= lang('Teaching', 'Lehre') ?></button>
+    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-students" id="students-btn"><?= activity_icon('students', false) ?> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
+    <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-software" id="software-btn"><?= activity_icon('software', false) ?> <?= lang('Software') ?></button>
+    <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-misc" id="misc-btn"><?= activity_icon('misc', false) ?> <?= lang('Misc') ?></button>
 </div>
 
 <div class="input-group mb-10 w-400 mw-full">
@@ -170,6 +171,12 @@ $Format = new Format($useronly);
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
                                 <i class="fa-regular fa-edit"></i>
                             </a>
+                        <?php } ?>
+                        <?php if ($page == 'my-activities') { ?>
+                            <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline">
+                                <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/my-activities" ?>">
+                                <button type="submit" class="btn btn-link btn-square text-danger"><i class="fa-regular fa-trash-alt"></i></button>
+                            </form>
                         <?php } ?>
 
                     </td>

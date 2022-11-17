@@ -556,7 +556,7 @@ class Parsedown
     {
         list($name, $pattern) = $Line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]+[.]');
 
-        if (preg_match('/^('.$pattern.'(?:\[[xX ]\])?[ ]+)(.*)/', $Line['text'], $matches))
+        if (preg_match('/^('.$pattern.'(?:\s\[[xX ]\])?[ ]+)(.*)/', $Line['text'], $matches))
         {
             
             $cls = "list";
@@ -607,7 +607,7 @@ class Parsedown
 
     protected function blockListContinue($Line, array $Block)
     {
-        if ($Block['indent'] === $Line['indent'] and preg_match('/^'.$Block['pattern'].'(\[[xX ]\])?(?:[ ]+(.*)|$)/', $Line['text'], $matches))
+        if ($Block['indent'] === $Line['indent'] and preg_match('/^'.$Block['pattern'].'(\s\[[xX ]\])?(?:[ ]+(.*)|$)/', $Line['text'], $matches))
         {
             if (isset($Block['interrupted']))
             {

@@ -1,4 +1,4 @@
-<script src="<?=ROOTPATH?>/js/chart.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <style>
     .box.h-full {
         height: calc(100% - 4rem) !important;
@@ -105,9 +105,13 @@ foreach ($cursor as $doc) {
         if (has_issues($doc)) {
             // $detailstats[$type][$year]['bad'] += 1;
             $issues++;
-        } 
+        }
         // else $detailstats[$type][$year]['good'] += 1;
     }
+}
+
+if (isset($_GET['verbose'])) {
+    dump($scientist, true);
 }
 
 ?>
@@ -203,28 +207,62 @@ foreach ($cursor as $doc) {
                 <?= lang('The year of ', 'Das Jahr von ') . $name ?>
             </a><br>
 
-            <a class="btn mt-5" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
+            <a class="btn text-signal bg-white mt-5" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
                 <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
             </a>
 
-
-            <?php if ($currentuser) { ?>
-                <br>
-                <a class="btn mt-5" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="far fa-user-pen"></i>
-                    <?= lang('Edit user profile', 'Bearbeite Profil') ?>
-                </a>
-            <?php } ?>
         </div>
     </div>
 
-    <?php if ($currentuser && $issues !== 0) { ?>
-        <p class="text-danger">
-            <?=lang("You have $issues unresolved issues with your activities. Please <a href='".ROOTPATH."/issues'>review them</a>.",
-            "Du hast $issues ungelöste Probleme mit deinen Aktivitäten. Bitte <a href='".ROOTPATH."/issues'>überprüfe sie</a>.")?>
-        </p>
-        
+    <?php if ($currentuser) { ?>
+
+
+        <div class="box row-<?= $scientist['dept'] ?>" style="border-left-width:5px">
+            <div class="content">
+
+                <p class="lead">
+                    <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
+                </p>
+                <?php if ($issues !== 0) { ?>
+                    <p>
+                        <a class="link text-danger" href='<?= ROOTPATH ?>/issues'>
+                            <?= lang(
+                                "You have $issues unresolved " . ($issues == 1 ? 'issue' : 'issues') . " with your activities.",
+                                "Du hast $issues " . ($issues == 1 ? 'ungelöstes Problem' : 'ungelöste Probleme') . " mit deinen Aktivitäten."
+                            ) ?>
+                        </a>
+                    </p>
+                <?php } ?>
+
+                <div class="">
+                    <a class="btn" href="<?= ROOTPATH ?>/activities/new"><i class="far fa-plus text-signal"></i>
+                        <?= lang('Add activity', 'Aktivität hinzufügen') ?>
+                    </a>
+
+                    <a class="btn" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="far fa-user-pen text-primary"></i>
+                        <?= lang('Edit user profile', 'Bearbeite Profil') ?>
+                    </a>
+
+                    <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>"><i class="far fa-calendar text-success"></i>
+                        <?= lang('My Year', 'Mein Jahr') ?>
+                    </a>
+                    <!-- 
+                <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network text-signal"></i>
+                    <?= lang('My coauthor network', 'Mein Koautoren-Netzwerk') ?>
+                </a> -->
+                <a href="<?= ROOTPATH ?>/my-activities" class="btn">
+                    <i class="far fa-book-bookmark text-danger"></i> <?= lang('My activities', 'Meine Aktivitäten ') ?>
+                </a>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
     <?php } ?>
-    
+
 
 </div>
 
@@ -233,7 +271,7 @@ foreach ($cursor as $doc) {
         <div class="box h-full">
             <table class="table table-simple">
                 <tbody>
-                  
+
                     <tr>
                         <td><?= lang('Last name', 'Nachname') ?></td>
                         <td><?= $scientist['last'] ?? '' ?></td>
@@ -266,7 +304,7 @@ foreach ($cursor as $doc) {
                         <td><?= lang('Department', 'Abteilung') ?></td>
                         <td><?= deptInfo($scientist['dept'])['name'] ?></td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td><?= lang('Achievements', 'Erfolge') ?></td>
                         <td>
                             <?php
@@ -277,7 +315,7 @@ foreach ($cursor as $doc) {
                             }
                             ?>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td><?= lang('Scientist', 'Wissenschaftler:in') ?></td>
                         <td><?= bool_icon($scientist['is_scientist'] ?? false) ?></td>
@@ -333,116 +371,6 @@ foreach ($cursor as $doc) {
         </div>
     </div>
 </div>
-
-
-<?php if ($currentuser) { ?>
-
-    <script>
-        var barChartConfig = {
-            type: 'bar',
-            data: [],
-            options: {
-                plugins: {
-                    title: {
-                        display: false,
-                        text: 'Chart'
-                    },
-                    legend: {
-                        display: false,
-                    }
-                },
-                responsive: true,
-                scales: {
-                    x: {
-                        stacked: true,
-                    },
-                    y: {
-                        stacked: true,
-                        ticks: {
-                            // Include a dollar sign in the ticks
-                            callback: function(value, index, ticks) {
-                                // only show full numbers
-                                if (Number.isInteger(value)) {
-                                    return value
-                                }
-                                return "";
-                            }
-                        }
-                    }
-                }
-            }
-
-        };
-    </script>
-    <!-- <div class="row row-eq-spacing my-0">
-
-        <?php 
-        foreach ($detailstats as $type => $vals) {
-
-            $years = [];
-            for ($i = 2017; $i <= CURRENTYEAR; $i++) {
-                $years[] = strval($i);
-            }
-            $has_issues = array_sum(array_column($vals, 'bad')) != 0;
-        ?>
-            <div class="col-lg-4 col-md-4">
-
-                <div class="box h-full">
-                    <div class="chart content">
-                        <h5 class="title text-center font-size-16"><?= type2title($type) ?></h5>
-                        <canvas id="chart-<?= $type ?>"></canvas>
-
-                        <div class="mt-5 text-right">
-                            <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn btn-sm">
-                                <i class="fas fa-plus"></i>
-                                <?= lang('Add new', 'Neu anlegen') ?>
-                            </a>
-                            <?php if ($has_issues) { ?>
-                                <a href="<?= ROOTPATH ?>/issues" class="btn btn-sm btn-danger"><?= lang('Resolve issues', 'Zeige Probleme') ?></a>
-                            <?php } ?>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-
-            <script>
-                var ctx = document.getElementById('chart-<?= $type ?>')
-                var data = Object.assign({}, barChartConfig)
-                var raw_data = Object.values(<?= json_encode($vals) ?>);
-                data.data = {
-                    labels: <?= json_encode($years) ?>,
-                    datasets: [{
-                            label: 'Activities',
-                            data: raw_data,
-                            parsing: {
-                                yAxisKey: 'good'
-                            },
-                            backgroundColor: 'rgba(236, 175, 0, 1)',
-                        },
-                        <?php if ($has_issues) { ?> {
-                                label: 'Activities with issues',
-                                data: raw_data,
-                                parsing: {
-                                    yAxisKey: 'bad'
-                                },
-                                backgroundColor: 'rgba(182, 31, 41, 1)',
-                            }
-                        <?php } ?>
-                    ]
-                }
-
-
-                console.log(data);
-                var myChart = new Chart(ctx, data);
-            </script>
-        <?php } ?>
-
-
-    </div> -->
-<?php } ?>
-
 
 
 <div class="row row-eq-spacing my-0">

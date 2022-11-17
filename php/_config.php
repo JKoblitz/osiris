@@ -49,6 +49,7 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'add-success':
             $header = lang("Success", "Erfolg");
             $text = lang("Data set was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
+            $text .= '<br/><a class="btn mt-10" href="'.ROOTPATH.'/activities/new">'.lang('Add another activity', 'Weitere Aktivität hinzufügen').'</a>';
             $class = "success";
             break;
 

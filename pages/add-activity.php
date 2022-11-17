@@ -1,5 +1,7 @@
 <?php
 
+// TODO: News aktualisieren
+
 $form = $form ?? array();
 $copy = $copy ?? false;
 $preset = $form['authors'] ?? array($USER);
@@ -29,6 +31,52 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 ?>
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 
+
+<div class="modal" id="author-help" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">
+                <?= lang('How to edit the author list', 'Wie bearbeite ich die Autorenliste') ?>?
+            </h5>
+            <?php if (lang("en", "de") == "en") { ?>
+                <p>
+                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. DSMZ authors are suggested in a list. An author from the list will be automatically assigned to DSMZ.
+                </p>
+
+                <p>
+                    To <b>remove an author</b>, you have to click on the X after his name.
+                </p>
+                <p>
+                    To <b>change the author order</b>, you can take an author and drag and drop it to the desired position.
+                </p>
+                <p>
+                    To <b>mark an author as belonging to the DSMZ</b>, you can simply click on it. The name will then be highlighted in blue and the word DSMZ will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are DSMZ employees but were not at the time of the activity, they must not be marked as a DSMZ author!
+                </p>
+            <?php } else { ?>
+                <p>
+                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
+                </p>
+
+                <p>
+                    Um einen <b>Autor zu entfernen</b>, musst du auf das X hinter seinem Namen klicken.
+                </p>
+                <p>
+                    Um die <b>Autorenreihenfolge zu ändern</b>, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
+                </p>
+                <p>
+                    Um einen <b>Autor zur DSMZ zugehörig zu markieren</b>, kannst du ihn einfach anklicken. Der Name wird dann blau markiert und das Wort DSMZ taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der DSMZ sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als DSMZ-Autor markiert werden!
+                </p>
+
+                <p>
+                    Verschrieben? Ein Autor wird nicht korrekt einem Nutzer zugeordnet? Nachdem du den Datensatz hinzugefügt hast, kannst du die Autorenliste <b>im Detail noch einmal bearbeiten</b>.</p>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
 <div class="content">
     <?php if (empty($form)) { ?>
 
@@ -42,7 +90,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             <div class="form-group">
                 <label for="doi"><?= lang('Search publication by DOI or Pubmed-ID', 'Suche Publikation über die DOI oder Pubmed-ID') ?>:</label>
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi">
+                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
                     </div>
@@ -57,24 +105,20 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <h3 class=""><?= lang('Edit activity', 'Bearbeite Aktivität') ?> <span class="text-signal">#<?= $id ?></span></h3>
     <?php } ?>
 
-    <div class="my-20" id="select-btns">
-        <button onclick="togglePubType('article')" class="btn btn-select text-primary" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article') ?></button>
-        <button onclick="togglePubType('magazine')" class="btn btn-select text-primary" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article') ?></button>
-        <!-- <button onclick="togglePubType('book')" class="btn btn-select text-primary" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button> -->
-        <button onclick="togglePubType('book')" class="btn btn-select text-primary" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
-        <button onclick="togglePubType('chapter')" class="btn btn-select text-primary" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
-
-        <button onclick="togglePubType('poster')" class="btn btn-select text-danger" id="poster-btn"><i class="fa-regular fa-presentation-screen"></i><?= lang('Posters', 'Poster') ?></button>
-        <button onclick="togglePubType('lecture')" class="btn btn-select text-signal" id="lecture-btn"><i class="fa-regular fa-keynote"></i><?= lang('Lectures', 'Vorträge') ?></button>
-        <button onclick="togglePubType('review')" class="btn btn-select text-success" id="review-btn"><i class="fa-regular fa-book-open-cover"></i><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
-        <button onclick="togglePubType('misc')" class="btn btn-select text-muted" id="misc-btn"><i class="fa-regular fa-icons"></i><?= lang('Misc') ?></button>
-        <button onclick="togglePubType('students')" class="btn btn-select text-dark" id="students-btn"><i class="fa-regular fa-people"></i><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
-        <button onclick="todo('software')" class="btn btn-select text-muted disabled" id="software-btn"><i class="fa-regular fa-desktop"></i><?= lang('Software') ?></button>
-
+    <div class="my-20 select-btns" id="select-btns">
+        <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="publication-btn"><?= activity_icon('publication', false) ?><?= lang('Publication', 'Publikation') ?></button>
+        <button onclick="togglePubType('poster')" class="btn btn-select text-poster" id="poster-btn"><?= activity_icon('poster', false) ?><?= lang('Posters', 'Poster') ?></button>
+        <button onclick="togglePubType('lecture')" class="btn btn-select text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?><?= lang('Lectures', 'Vorträge') ?></button>
+        <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
+        <button onclick="togglePubType('teaching')" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></button>
+        <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-btn"><?= activity_icon('students', false) ?><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
+        <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software') ?></button>
+        <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Misc') ?></button>
     </div>
 
     <div class="box box-primary add-form" style="display:none" id="publication-form">
         <div class="content">
+            <button class="btn btn-osiris btn-sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
 
             <?php if (!empty($form) && isset($_GET['epub'])) { ?>
                 <div class="alert alert-signal mb-20">
@@ -102,18 +146,180 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
             <?php } ?>
 
+            <div class="mb-20 select-btns" data-visible="article,preprint,magazine,book,chapter">
+                <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article') ?></button>
+                <button onclick="togglePubType('magazine')" class="btn btn-select text-publication" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article') ?></button>
+                <!-- <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button> -->
+                <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
+                <button onclick="togglePubType('chapter')" class="btn btn-select text-publication" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
+                <button onclick="togglePubType('preprint')" class="btn btn-select text-publication" id="preprint-btn"><i class="fa-regular fa-file"></i> <?= lang('Preprint') ?></button>
+                <!-- <button onclick="togglePubType('thesis')" class="btn btn-select text-publication" id="thesis-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Thesis') ?></button> -->
+
+            </div>
+
+            <div class="mb-20 select-btns" data-visible="review,editorial,grant-rev,thesis-rev">
+                <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Paper review') ?></button>
+                <button onclick="togglePubType('editorial')" class="btn btn-select text-review" id="editorial-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Editorial board') ?></button>
+                <button onclick="togglePubType('grant-rev')" class="btn btn-select text-review" id="grant-rev-btn"><i class="fa-regular fa-file-chart-pie"></i> <?= lang('Grant proposal') ?></button>
+                <button onclick="togglePubType('thesis-rev')" class="btn btn-select text-review" id="thesis-rev-btn"><i class="fa-regular fa-graduation-cap"></i> <?= lang('Thesis review') ?></button>
+            </div>
+
+            <div class="mb-20 select-btns" data-visible="misc-once,misc-annual">
+                <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-once-btn"><i class="fa-regular fa-calendar-day"></i> <?= lang('Once', 'Einmalig') ?></button>
+                <button onclick="togglePubType('misc-annual')" class="btn btn-select text-misc" id="misc-annual-btn"><i class="fa-regular fa-repeat"></i> <?= lang('Frequently', 'Stetig') ?></button>
+            </div>
+
+            <div class="mb-20 select-btns" data-visible="students,guests">
+                <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-once-btn"><i class="fa-regular fa-user-graduate"></i> <?= lang('Theses', 'Abschlussarbeiten') ?></button>
+                <button onclick="togglePubType('guests')" class="btn btn-select text-students" id="students-annual-btn"><i class="fa-regular fa-user-tie"></i> <?= lang('Guests & interns', 'Gäste & Praktika') ?></button>
+            </div>
+
+            <div id="examples" class="mb-20">
+                <b><?= lang('Example', 'Beispiel') ?></b>:
+
+                <p data-visible="article">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Spring, S., Rohde, M., Bunk, B., Spröer, C., Will, S. E. and Neumann-Schaal, M. </span>
+                    (<span class="element-time" data-element="<?= lang('Year', 'Jahr') ?>">2022</span>)
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">New insights into the energy metabolism and taxonomy of Deferribacteres revealed by the characterization of a new isolate from a hypersaline microbial mat</span>.
+                    <span class="element-cat" data-element="<?= lang('Journal') ?>">Environmental microbiology </span>
+                    <span data-element="<?= lang('Issue, Volume, Pages') ?>">24(5):2543-2575</span>.
+                    DOI: http://dx.doi.org/<span class="element-link" data-element="<?= lang('DOI') ?>">10.1111/1462-2920.15999</span>
+                </p>
+                <p data-visible="magazine">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Wolf, J., Öztürk, B., Koblitz, J. and Neumann-Schaal, M.</span>
+                    (<span class="element-time" data-element="<?= lang('Year', 'Jahr') ?>">2021</span>)
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">Systembiologischer Fokus auf Nachhaltigkeit - Wie uns interdisziplinäre Forschung beim Verständnis hilft</span>.
+                    <span class="element-cat" data-element="<?= lang('Magazine') ?>">GIT Labor-Fachzeitschrift</span>.
+                    <span class="element-link" data-element="<?= lang('Link') ?>">https://analyticalscience.wiley.com/do/10.1002/was.000600102/full/</span>
+                </p>
+                <p data-visible="book">
+                    TODO
+                </p>
+                <p data-visible="chapter">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Overmann, J.</span>
+                    (<span class="element-time" data-element="<?= lang('Year', 'Jahr') ?>">2022</span>)
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">Mikrobielle Vielfalt, Evolution und Systematik</span>.
+                    In: <span class="element-author" data-element="<?= lang('Editor(s)', 'Editor(en)') ?>">G. Fuchs, H. G. Schlegel and M. Bramkamp</span> (eds)
+                    <span class="element-cat" data-element="<?= lang('Book title', 'Buchtitel') ?>">Allgemeine Mikrobiologie</span>.
+                    (<span data-element="<?= lang('Edition') ?>">11</span>th ed.,
+                    pp. <span data-element="<?= lang('Pages') ?>">602-674</span>).
+                    <span data-element="<?= lang('Location', 'Ort') ?>">Stuttgart</span>
+                    <span data-element="<?= lang('Publisher', 'Verlag') ?>">Georg Thieme Verlag</span>.
+                </p>
+
+                <p data-visible="preprint">
+                    TODO
+                </p>
+                <p data-visible="thesis">
+                    TODO
+                </p>
+                <p data-visible="poster">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Lissin, A., Podstawka, A., Reimer, L. C., Koblitz, J., Bunk, B. and Overmann, J. </span>
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">"Who is who?" A central database for resolving microbial strain identifiers</span>.
+                    <span class="element-" data-element="<?= lang('Conference', 'Konferenz') ?>">GCB 2022</span>,
+                    <span class="element-" data-element="<?= lang('Location', 'Ort') ?>">Halle (Saale)</span>.
+                    <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">06.-08.09.2022</span>.
+                </p>
+                <p data-visible="lecture">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Koblitz, J., Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R., Pester, M., Reimer, L. C. and Overmann, J.</span>
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">MediaDive: the expert-curated cultivation media database</span>.
+                    <span class="element-" data-element="<?= lang('Conference', 'Konferenz') ?>">ECCO 2022</span>,
+                    <span class="element-" data-element="<?= lang('Location', 'Ort') ?>">Braunschweig</span>.
+                    <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">28.09.2022</span>.
+                    (<span class="element-cat" data-element="<?= lang('Type of lecture', 'Art des Vortrages') ?>">short</span>)
+                </p>
+                <p data-visible="misc-annual">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Steenpaß, L.</span>
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">Mitglied im Advisory Board der Core Facility der Medizinischen Universität Graz</span>,
+                    von <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">01.08.2021</span> bis heute.
+                </p>
+                <p data-visible="misc-once">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Overmann, J.</span>
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">Teilnahme an der Podiumsdiskussion zum Thema Digitale Sequenzinformation auf der Jahrestagung der VAAM</span>,
+                    <span class="element-time" data-element="<?= lang('Start Date', 'Startdatum') ?>">21.02.2022</span>,
+                    <span class="element-" data-element="<?= lang('Location', 'Ort') ?>">virtuell<span>.
+                </p>
+                <p data-visible="misc-once">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Riedel, T.</span>
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">Organisation des CD-biOmics Workshop</span>,
+                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">13.-19.03.2022</span>,
+                    <span class="element-" data-element="<?= lang('Location', 'Ort') ?>">Leibniz Institut DSMZ, Braunschweig<span>.
+                </p>
+                <p data-visible="teaching">
+                    <span class="element-author" data-element="<?= lang('Responsible scientist', 'Verantwortliche Person') ?>">Neumann-Schaal, M.</span>
+                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">MI01: Grundlagen der Mikrobiologie</span>,
+                    <span class="element-cat" data-element="<?= lang('Type of lecture', 'Art des Vortrages') ?>">TU Braunschweig</span>
+                    (<span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">01.10.2022 - 31.03.2023</span>).
+
+
+                </p>
+                <p data-visible="students">
+                    <span class="element-" data-element="<?= lang('Name of the student', 'Name des Studierenden') ?>">Halama, Philipp</span>, 
+                    <span class="element-" data-element="<?= lang('Affiliation of the student', 'Einrichtung des Studierenden') ?>">TU Braunschweig</span>. 
+                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">Genomic Sphingomonas</span>; 
+                    <span class="element-cat" data-element="<?= lang('Category', 'Kategorie') ?>">Master-Thesis</span>. 
+                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">01.12.2021-30.09.2022</span> 
+                    (<span class="element-" data-element="<?= lang('Status') ?>">in progress</span>), 
+                    betreut von <span class="element-author" data-element="<?= lang('Responsible scientist', 'Verantwortliche Person') ?>">Bunk, B.</span>
+                </p>
+                <p data-visible="guests">
+                    <span class="element-" data-element="<?= lang('Name of the guest', 'Name des Gastes') ?>">Herrera, Fabio</span>, 
+                    <span class="element-" data-element="<?= lang('Affiliation of the guest', 'Einrichtung des Gastes') ?>">Universidad de los Andes, Kolumbien</span>. 
+                    <span class="element-title" data-element="<?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?>">BMBF-Projekt: Workshop AVAnce</span>; 
+                    <span class="element-cat" data-element="<?= lang('Category', 'Kategorie') ?>">Gastwissenschaftler:in</span>. 
+                    <span class="element-time" data-element="<?= lang('Start and end date', 'Start- und Endatum') ?>">15.-22.07.2022</span>, 
+                    betreut von <span class="element-author" data-element="<?= lang('Responsible scientist', 'Verantwortliche Person') ?>">Overmann, J.</span>
+                </p>
+                <p data-visible="software">
+                    <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Koblitz, J.</span>
+                    (<span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">2020</span>)
+                    <span class="element-title" data-element="<?= lang('Title', 'Titel') ?>">MetaboMAPS: Pathway Sharing and Multi-omics Data Visualization in Metabolic Context</span>
+                    (Version <span class="element-" data-element="<?= lang('Version') ?>">1.1</span>)
+                    [<span class="element-" data-element="<?= lang('Type of software', 'Art der Software') ?>">Computer software</span>].
+                    <span class="element-" data-element="<?= lang('Publication venue', 'Ort der Veröffentlichung') ?>">Zenodo</span>.
+                    DOI: https://doi.org/<span class="element-link" data-element="<?= lang('DOI') ?>">10.5281/zenodo.3742817</span>
+                </p>
+                <p data-visible="review">
+                    <span class="element-author" data-element="<?= lang('Scientist', 'Wissenschaftler:in') ?>">Pester, M.</span>
+                    Reviewer for
+                    <span class="element-title" data-element="Journal ">Frontiers in Microbiology</span>.
+                    <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">October 2021</span>.
+                </p>
+                <p data-visible="editorial">
+                    <span class="element-author" data-element="<?= lang('Scientist', 'Wissenschaftler:in') ?>">Thiel, V.</span>
+                    Mitglied des Editorial Board von <span class="element-title" data-element="Journal ">Microganisms</span>
+                    (<span class="element-cat" data-element="<?= lang('Details', 'Details') ?> ">Guest Editor for Special Issue 'Phototrophic Bacteria 2.0'</span>),
+                    von <span class="element-time" data-element="<?= lang('Start date', 'Startdatum') ?>">Juli 2022</span> bis <span class="element-time" data-element="<?= lang('End date', 'Enddatum') ?>">März 2023</span>.
+                </p>
+                <p data-visible="grant-rev">
+                    <span class="element-author" data-element="<?= lang('Scientist', 'Wissenschaftler:in') ?>">Sikorski, J.</span>
+                    Reviewer of Grant Proposals:
+                    <span class="element-title" data-element="Title/ Description/ Details">National Science Foundation USA</span>.
+                    <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">October 2021</span>.
+                </p>
+
+                <p data-visible="thesis-rev">
+                    <span class="element-author" data-element="<?= lang('Scientist', 'Wissenschaftler:in') ?>">Mast, Y.</span>
+                    Reviewer for Doctoral Thesis:
+                    <span class="element-title" data-element="Title/ Description/ Details ">Ira Handayani, Eberhard Karls, Universität Tübingen</span>.
+                    <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">October 2021</span>.
+                </p>
+
+
+            </div>
+
 
             <form action="<?= $formaction ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
+                <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
 
-                <div class="form-row row-eq-spacing">
-                    <div class="col-sm">
+                <div class="form-row row-eq-spacing" data-visible="article,preprint,magazine,book,chapter">
+                    <!-- <div class="col-sm">
                         <label for="type"><?= lang('Type of activity', 'Art der Aktivität') ?>:</label>
-                        <input type="text" class="form-control disabled" name="values[type]" id="type" placeholder="Type" readonly>
-                    </div>
-                    <div class="col-sm" data-visible="article,magazine,book,editor,chapter">
+                    </div> -->
+                    <div class="col-sm">
                         <label for="pubtype" class="required"><?= lang('Type of publication', 'Art der Publikation') ?>:</label>
-                        <select class="form-control" name="values[pubtype]" id="pubtype">
+                        <select class="form-control" name="values[pubtype]" id="pubtype" onchange="togglePubType(this.value)">
                             <option value="article">Journal article (refereed)</option>
                             <option value="book"><?= lang('Book', 'Buch') ?></option>
                             <option value="chapter"><?= lang('Book chapter', 'Buchkapitel') ?></option>
@@ -126,36 +332,26 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 </div>
 
 
-                <div class="form-group lang-<?=lang('en', 'de')?>" data-visible="article,magazine,book,chapter,editor,lecture,poster,misc,students">
-                    <label for="title" class="required"><?= lang('Title', 'Titel') ?></label>
+                <div class="form-group lang-<?= lang('en', 'de') ?>" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
+                    <label for="title" class="required element-title">
+                        <span data-visible="article,preprint,magazine,book,chapter,lecture,poster,software"><?= lang('Title', 'Titel') ?></span>
+                        <span data-visible="misc-once,misc-annual,students,guests,teaching"><?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?></span>
+                    </label>
 
                     <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
                     <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= $form['title'] ?? '' ?>">
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="students">
-                    <div class="col-sm-5">
-                        <label for="guest-name" class="required"><?= lang('Name of the guest/student (last name, given name)', 'Name des Gastes/Studierenden (Nachname, Vorname)') ?></label>
-                        <input type="text" class="form-control" name="values[name]" id="guest-name" required value="<?= $form['name'] ?? '' ?>">
-                    </div>
-                    <div class="col-sm-5">
-                        <label for="guest-affiliation" class="required"><?= lang('Affiliation (Name, City, Country)', 'Einrichtung (Name, Ort, Land)') ?></label>
-                        <input type="text" class="form-control" name="values[affiliation]" id="guest-affiliation" required value="<?= $form['affiliation'] ?? '' ?>">
-                    </div>
-                    <div class="col-sm-2">
-                        <label for="guest-academic_title"><?= lang('Academ. title', 'Akadem. Titel') ?></label>
-                        <input type="text" class="form-control" name="values[academic_title]" id="guest-academic_title" value="<?= $form['academic_title'] ?? '' ?>">
-                    </div>
-                </div>
 
-                <div class="form-group" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc,students">
-                    <label for="author" class="required">
-                        <span data-visible="students"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
-                        <span data-visible="article,magazine,book,editor,chapter,lecture,poster,misc"><?= lang('Author(s)', 'Autor(en)') ?></span>
+                <div class="form-group" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
+                    <label for="author" class="element-author">
+                        <span data-visible="students,guests,teaching"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
+                        <span data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual,software"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
+                        <a class="" href="#author-help"><i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
                     </label>
 
-                    <div class="float-right" data-visible="article" id="author-numbers">
+                    <div class="float-right" data-visible="article,preprint" id="author-numbers">
                         <label for="first-authors"><?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?></label>
                         <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
                         <label for="last-authors"><?= lang('last authors:', 'Letztautoren:') ?></label>
@@ -169,15 +365,15 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         <label for="dept"><?= lang('Dept:', 'Abteilung:') ?></label>
                         <select name="values[dept]" id="dept" class="form-control form-control-sm w-150 d-inline-block">
                             <option value="">Abteilungsübergreifend</option>
-                            <option value="BIDB" <?=$dept=='BIDB' ? 'selected' : ''?>>BIDB</option>
-                            <option value="BUG" <?=$dept=='BUG' ? 'selected' : ''?>>BUG</option>
-                            <option value="MIG" <?=$dept=='MIG' ? 'selected' : ''?>>MIG</option>
-                            <option value="MIOS" <?=$dept=='MIOS' ? 'selected' : ''?>>MIOS</option>
-                            <option value="MuTZ" <?=$dept=='MuTZ' ? 'selected' : ''?>>MuTZ</option>
-                            <option value="MÖD" <?=$dept=='MÖD' ? 'selected' : ''?>>MÖD</option>
-                            <option value="PFVI" <?=$dept=='PFVI' ? 'selected' : ''?>>PFVI</option>
-                            <option value="NFG" <?=$dept=='NFG' ? 'selected' : ''?>>NFG</option>
-                            <option value="Services" <?=$dept=='Services' ? 'selected' : ''?>>Services</option>
+                            <option value="BIDB" <?= $dept == 'BIDB' ? 'selected' : '' ?>>BIDB</option>
+                            <option value="BUG" <?= $dept == 'BUG' ? 'selected' : '' ?>>BUG</option>
+                            <option value="MIG" <?= $dept == 'MIG' ? 'selected' : '' ?>>MIG</option>
+                            <option value="MIOS" <?= $dept == 'MIOS' ? 'selected' : '' ?>>MIOS</option>
+                            <option value="MuTZ" <?= $dept == 'MuTZ' ? 'selected' : '' ?>>MuTZ</option>
+                            <option value="MÖD" <?= $dept == 'MÖD' ? 'selected' : '' ?>>MÖD</option>
+                            <option value="PFVI" <?= $dept == 'PFVI' ? 'selected' : '' ?>>PFVI</option>
+                            <option value="NFG" <?= $dept == 'NFG' ? 'selected' : '' ?>>NFG</option>
+                            <option value="Services" <?= $dept == 'Services' ? 'selected' : '' ?>>Services</option>
                         </select>
                     </div> -->
                     <small class="text-muted">
@@ -196,68 +392,112 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     ) ?>
                 </div>
 
-                <div class="form-row row-eq-spacing " data-visible="article,magazine,book,chapter">
+
+                <div class="form-row row-eq-spacing" data-visible="students,guests,teaching">
+                    <div class="col" data-visible="students,guests">
+                        <label for="guest-name" class="required element-other">
+                            <?= lang('Name of the', 'Name des') ?>
+                            <span data-visible="guests"><?= lang('guest', 'Gastes') ?></span>
+                            <span data-visible="students"><?= lang('student', 'Studierenden') ?></span>
+                            <?= lang('(last name, given name)', '(Nachname, Vorname)') ?>
+                        </label>
+                        <input type="text" class="form-control" name="values[name]" id="guest-name" required value="<?= $form['name'] ?? '' ?>">
+                    </div>
+                    <div class="col">
+                        <label for="guest-affiliation" class="required element-other"><?= lang('Affiliation (Name, City, Country)', 'Einrichtung (Name, Ort, Land)') ?></label>
+                        <input type="text" class="form-control" name="values[affiliation]" id="guest-affiliation" required value="<?= $form['affiliation'] ?? '' ?>">
+                    </div>
+                    <div class="col-sm-2" data-visible="students,guests">
+                        <label for="guest-academic_title"><?= lang('Academ. title', 'Akadem. Titel') ?></label>
+                        <input type="text" class="form-control" name="values[academic_title]" id="guest-academic_title" value="<?= $form['academic_title'] ?? '' ?>">
+                    </div>
+                    <div class="col-sm-5" data-visible="teaching">
+                        <label for="teaching-sws" class="required"><?= lang('SWS (Semesterwochenstunden)') ?></label>
+                        <input type="number" step="0.1" class="form-control" name="values[sws]" id="teaching-sws" value="<?= $form['sws'] ?? '' ?>" required>
+                    </div>
+                </div>
+
+                <div class="form-row row-eq-spacing " data-visible="article,preprint,magazine,book,chapter">
                     <div class="col-sm">
-                        <label for="year" class="required">Year</label>
+                        <label for="year" class="required element-time">Year</label>
                         <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" required value="<?= $form['year'] ?? '' ?>">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="month" class="required">Month</label>
+                        <label for="month" class="required ">Month</label>
                         <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" required value="<?= $form['month'] ?? '' ?>">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="day">Day</label>
+                        <label for="day" class="">Day</label>
                         <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= $form['day'] ?? '' ?>">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
-                <div class="form-row row-eq-spacing" data-visible="students">
-                    <div class="col-sm">
-                        <label for="category" class="required"><?= lang('Category', 'Kategorie') ?></label>
-                        <select name="values[category]" id="category" class="form-control" required onchange="studentsEndQuestion()">
-                            <option disabled>--- <?= lang('Thesis', 'Abschlussarbeiten') ?> ---</option>
-                            <option <?= ($form['category'] ?? '') == 'Doktorand:in' ? 'selected' : '' ?>>Doktorand:in</option>
-                            <option <?= ($form['category'] ?? '') == 'Master-Thesis' ? 'selected' : '' ?>>Master-Thesis</option>
-                            <option <?= ($form['category'] ?? '') == 'Bachelor-Thesis' ? 'selected' : '' ?>>Bachelor-Thesis</option>
-                            <option disabled>--- <?= lang('Guests', 'Gäste') ?> ---</option>
-                            <option <?= ($form['category'] ?? '') == 'Gastwissenschaftler:in' ? 'selected' : '' ?>>Gastwissenschaftler:in</option>
-                            <option <?= ($form['category'] ?? '') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium</option>
-                            <option <?= ($form['category'] ?? '') == 'Vorlesung und Laborpraktikum' ? 'selected' : '' ?>>Vorlesung und Laborpraktikum</option>
-                            <option <?= ($form['category'] ?? '') == 'Schülerpraktikum' ? 'selected' : '' ?>>Schülerpraktikum</option>
+                <div class="form-row row-eq-spacing" data-visible="students,guests">
+                    <div class="col-sm" data-visible="guests">
+                        <label for="category-guest" class="required element-cat"><?= lang('Category', 'Kategorie') ?></label>
+                        <select name="values[category]" id="category-guest" class="form-control" required>
+                            <option value="guest scientist" <?= ($form['category'] ?? '') == 'guest scientist' ? 'selected' : '' ?>><?= lang('Guest Scientist', 'Gastwissenschaftler:in') ?></option>
+                            <!-- <option value="mandatory internship" <?= ($form['category'] ?? '') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium')?></option> -->
+                            <option value="lecture internship" <?= ($form['category'] ?? '') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Vorlesung und Laborpraktikum') ?></option>
+                            <option value="student internship" <?= ($form['category'] ?? '') == 'student internship' ? 'selected' : '' ?>><?= lang('Student Internship', 'Schülerpraktikum') ?></option>
                         </select>
                     </div>
-                    <div class="col-sm">
-                        <label for="details"><?=lang('Details (scholarship, etc.)', 'Details (Stipendium, etc.)')?></label>
+                    <div class="col-sm" data-visible="students">
+                        <label for="category-students" class="required element-cat"><?= lang('Category', 'Kategorie') ?></label>
+                        <select name="values[category]" id="category-students" class="form-control" required>
+                            <option value="doctoral thesis" <?= ($form['category'] ?? '') == 'doctoral thesis' ? 'selected' : '' ?>><?= lang('Doctoral Thesis', 'Doktorand:in') ?></option>
+                            <option value="master thesis" <?= ($form['category'] ?? '') == 'master thesis' ? 'selected' : '' ?>><?= lang('Master Thesis', 'Master-Thesis') ?></option>
+                            <option value="bachelor thesis" <?= ($form['category'] ?? '') == 'bachelor thesis' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelor-Thesis') ?></option>
+                        </select>
+                    </div>
+                    <div class="col-sm" data-visible="students">
+                        <label for="details"><?= lang('Details (scholarship, etc.)', 'Details (Stipendium, etc.)') ?></label>
                         <input type="text" class="form-control" name="values[details]" id="details" value="<?= $form['details'] ?? '' ?>">
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc,students">
+                <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
                     <div class="col-sm" data-visible="lecture">
-                        <label class="required" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
-                        <select name="values[lecture_type]" id="lecture_type" class="form-control">
-                            <option value="short" <?= $form['lecture_type'] ?? '' == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
-                            <option value="long" <?= $form['lecture_type'] ?? '' == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
-                            <option value="repetition" <?= $form['lecture_type'] ?? '' == 'repetition' || $copy ? 'selected' : '' ?>>repetition</option>
+                        <label class="required element-cat" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
+                        <select name="values[lecture_type]" id="lecture_type" class="form-control" autocomplete="off">
+                            <option value="short" <?= ($form['lecture_type'] ?? '') == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
+                            <option value="long" <?= ($form['lecture_type'] ?? '') == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
+                            <option value="repetition" <?= (($form['lecture_type'] ?? '') == 'repetition' || $copy) ? 'selected' : '' ?>>repetition</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm" data-visible="lecture">
+                        <label class="" for="lecture_type"><?= lang('Invited lecture') ?></label>
+                        <select name="values[invited_lecture]" id="invited_lecture" class="form-control" autocomplete="off">
+                            <option value="0" <?= $form['invited_lecture'] ?? false ? '' : 'selected' ?>><?= lang('No', 'Nein') ?></option>
+                            <option value="1" <?= $form['invited_lecture'] ?? false ? 'selected' : '' ?>><?= lang('Yes', 'Ja') ?></option>
                         </select>
                     </div>
                     <div class="col-sm">
-                        <label class="required" for="date_start"><?= lang('Date', 'Datum') ?></label>
+                        <label class="required element-time" for="date_start"><?= lang('Date', 'Datum') ?></label>
                         <input type="date" class="form-control" name="values[start]" id="date_start" required value="<?= valueFromDateArray($form['start'] ?? '') ?>">
                     </div>
-                    <div class="col-sm" data-visible="poster,misc">
-                        <label for="date_end"><?= lang('End (leave empty if event was only one day)', 'Ende (leer lassen falls nur ein Tag)') ?></label>
+                    <div class="col-sm" data-visible="poster,misc-once,misc-annual">
+                        <label for="date_end" class="element-time">
+                            <?= lang('End', 'Ende') ?>
+                            <span data-visible="poster,misc-once">
+                                <?= lang('(leave empty if event was only one day)', '(leer lassen falls nur ein Tag)') ?>
+                            </span>
+                            <span data-visible="misc-annual">
+                                <?= lang('(leave empty if activity in progress)', '(leer lassen solange die Aktivität im Gange ist)') ?>
+                            </span>
+                        </label>
                         <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
                     </div>
-                    <div class="col-sm" data-visible="students">
-                        <label for="students_end" class="required"><?= lang('End', 'Ende') ?></label>
-                        <input type="date" class="form-control" name="values[end]" id="students_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>" required onchange="studentsEndQuestion()">
-                        <div id="end-question" style="display: none;">
-                            <div class="custom-radio d-none">
+                    <div class="col-sm" data-visible="students,guests,teaching">
+                        <label for="students_end" class="required element-time"><?= lang('End', 'Ende') ?></label>
+                        <input type="date" class="form-control" name="values[end]" id="students_end" value="<?= valueFromDateArray($form['end'] ?? '') ?>" required>
+                        <div id="end-question" data-visible="students">
+                            <div class="custom-radio d-inline-block">
                                 <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="1">
-                                <label for="status-in-progress"><?= lang('Completed', 'Abgeschlossen') ?></label>
+                                <label for="status-in-progress"><?= lang('In progress', 'In Progress') ?></label>
                             </div>
 
                             <div class="custom-radio d-inline-block">
@@ -271,24 +511,58 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-sm" data-visible="software">
+                        <label class="element-cat" for="software_type"><?= lang('Type of software', 'Art der Software') ?></label>
+                        <select name="values[software_type]" id="software_type" class="form-control">
+                            <option value="" <?= empty($form['software_type'] ?? '') ? 'selected' : '' ?>>Not specified</option>
+                            <option value="software" <?= ($form['software_type'] ?? '') == 'software' ? 'selected' : '' ?>>Computer Software</option>
+                            <option value="database" <?= ($form['software_type'] ?? '') == 'database' ? 'selected' : '' ?>>Database</option>
+                            <option value="dataset" <?= ($form['software_type'] ?? '') == 'dataset' ? 'selected' : '' ?>>Dataset</option>
+                            <option value="webtool" <?= ($form['software_type'] ?? '') == 'webtool' ? 'selected' : '' ?>>Website</option>
+                        </select>
+                    </div>
                 </div>
 
 
+                <div class="form-row row-eq-spacing" data-visible="software">
+                    <div class="col-sm-">
+                        <label class="element-other" for="software_venue"><?= lang('Publication venue, e.g. GitHub, Zenodo ...', 'Ort der Veröffentlichung, z.B. GitHub, Zenodo ...') ?></label>
+                        <input type="text" class="form-control" name="values[software_venue]" id="software_venue" value="<?= $form['software_venue'] ?? '' ?>">
+                    </div>
 
-                <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc">
-                    <div class="col-sm" data-visible="misc">
+                    <div class="col-sm">
+                        <label class="element-link" for="software_link"><?= lang('Complete link to the software/database', 'Kompletter Link zur Software/Datenbank') ?></label>
+                        <input type="text" class="form-control" name="values[link]" id="software_link" value="<?= $form['link'] ?? '' ?>">
+                    </div>
+
+                    <div class="col-sm">
+                        <label for="software_doi" class="element-link">DOI</label>
+                        <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="software_doi" placeholder="10.5281/zenodo.3742817">
+                    </div>
+
+                    <div class="col-sm-2">
+                        <label class="element-other" for="software_version"><?= lang('Version') ?></label>
+                        <input type="text" class="form-control" name="values[version]" id="software_version" value="<?= $form['version'] ?? '' ?>">
+                    </div>
+
+                </div>
+
+
+                <div class="form-row row-eq-spacing" data-visible="lecture,poster,misc-once,misc-annual">
+                    <div class="col-sm" data-visible="misc-once,misc-annual">
                         <label class="required" for="iteration"><?= lang('Iteration', 'Häufigkeit') ?></label>
-                        <select name="values[iteration]" id="iteration" class="form-control" value="<?= $form['iteration'] ?? '' ?>">
+                        <select name="values[iteration]" id="iteration" class="form-control" value="<?= $form['iteration'] ?? '' ?>" onchange="togglePubType('misc-'+this.value)">
                             <option value="once">once</option>
                             <option value="annual">annual</option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="lecture,poster">
-                        <label for="conference"><?= lang('Conference', 'Konferenz') ?></label>
+                        <label for="conference" class="element-other"><?= lang('Conference', 'Konferenz') ?></label>
                         <input type="text" class="form-control" name="values[conference]" id="conference" placeholder="VAAM 2022" value="<?= $form['conference'] ?? '' ?>">
                     </div>
                     <div class="col-sm">
-                        <label for="location"><?= lang('Location', 'Ort') ?></label>
+                        <label for="location" class="element-other"><?= lang('Location', 'Ort') ?></label>
                         <input type="text" class="form-control" name="values[location]" id="location" placeholder="online" value="<?= $form['location'] ?? '' ?>">
                     </div>
                 </div>
@@ -299,75 +573,75 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <input type="date" class="form-control" name="values[publication]" id="date_publication" required>
                 </div> -->
 
-                <div class="form-group" data-visible="article">
-                    <label for="journal">Journal</label>
-                    <input type="text" class="form-control" name="values[journal]" value="<?= $form['journal'] ?? '' ?>" id="journal" list="journal-list">
+                <div class="form-group" data-visible="article,preprint">
+                    <label for="journal" class="element-cat required">Journal</label>
+                    <input type="text" class="form-control" name="values[journal]" value="<?= $form['journal'] ?? '' ?>" id="journal" list="journal-list" required>
                     <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                 </div>
 
                 <div class="form-row row-eq-spacing" data-visible="magazine">
                     <div class="col-sm">
-                        <label for="magazine">Magazine</label>
+                        <label for="magazine" class="element-cat">Magazine</label>
                         <input type="text" class="form-control" name="values[magazine]" value="<?= $form['magazine'] ?? '' ?>" id="magazine">
                     </div>
                     <div class="col-sm">
-                        <label for="link">Link</label>
+                        <label for="link" class="element-link">Link</label>
                         <input type="text" class="form-control" name="values[link]" value="<?= $form['link'] ?? '' ?>" id="link">
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="article,book,editor,chapter">
+                <div class="form-row row-eq-spacing" data-visible="article,book,chapter">
                     <div class="col-sm" data-visible="article">
-                        <label for="issue">Issue</label>
+                        <label for="issue" class="element-other">Issue</label>
                         <input type="text" class="form-control" name="values[issue]" value="<?= $form['issue'] ?? '' ?>" id="issue">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="volume">Volume</label>
+                        <label for="volume" class="element-other">Volume</label>
                         <input type="text" class="form-control" name="values[volume]" value="<?= $form['volume'] ?? '' ?>" id="volume">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="pages">Pages</label>
+                        <label for="pages" class="element-other">Pages</label>
                         <input type="text" class="form-control" name="values[pages]" value="<?= $form['pages'] ?? '' ?>" id="pages">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
 
 
-                <div class="form-row row-eq-spacing" data-visible="book,editor,chapter">
+                <div class="form-row row-eq-spacing" data-visible="book,chapter">
                     <div class="col-sm" data-visible="chapter">
-                        <label for="book" class="required">Book title</label>
+                        <label for="book" class="required element-cat"><?= lang('Book title', 'Buchtitel') ?></label>
                         <input type="text" class="form-control" name="values[book]" value="<?= $form['book'] ?? '' ?>" id="book" required>
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="edition">Edition</label>
+                        <label for="edition" class="element-other">Edition</label>
                         <input type="number" class="form-control" name="values[edition]" value="<?= $form['edition'] ?? '' ?>" id="edition">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="publisher">Publisher</label>
+                        <label for="publisher" class="element-other"><?= lang('Publisher', 'Verlag') ?></label>
                         <input type="text" class="form-control" name="values[publisher]" value="<?= $form['publisher'] ?? '' ?>" id="publisher">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="city">City</label>
+                        <label for="city" class="element-other"><?= lang('Location', 'Ort') ?></label>
                         <input type="text" class="form-control" name="values[city]" value="<?= $form['city'] ?? '' ?>" id="city">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
-                <div class="form-group" data-visible="editor,chapter">
-                    <label for="editor" class="required"><?= lang('Editor(s) (in correct order)', 'Editor(en) (in korrekter Reihenfolge)') ?></label>
+                <div class="form-group" data-visible="chapter">
+                    <label for="editor" class="required element-author"><?= lang('Editor(s) (in correct order)', 'Editor(en) (in korrekter Reihenfolge)') ?></label>
                     <div class="author-list">
                         <?= $editors ?>
                         <input type="text" placeholder="Add editor ..." onkeypress="addAuthor(event, this, true);" id="add-editor" list="scientist-list">
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="article,book,editor,chapter">
+                <div class="form-row row-eq-spacing" data-visible="article,preprint,book,chapter">
                     <div class="col-sm">
-                            <label for="doi">DOI</label>
+                        <label for="doi" class="element-link">DOI</label>
                         <?php if (empty($form)) { ?>
                             <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
                             <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
@@ -375,15 +649,15 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                             <div class="input-group">
                                 <input type="text" class="form-control" name="values[doi]" value="<?= $form['doi'] ?? '' ?>" id="doi">
                                 <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
-                                <div class="input-group-append" data-toggle="tooltip" data-title="<?=lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI')?>">
+                                <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI') ?>">
                                     <button class="btn" type="button" onclick="getPubData(event, this)"><i class="fas fa-rotate"></i></button>
                                     <span class="sr-only">
-                                        <?=lang('Retreive updated information via DOI', 'Aktualisiere die bibliographischen Daten via DOI')?>
+                                        <?= lang('Retreive updated information via DOI', 'Aktualisiere die bibliographischen Daten via DOI') ?>
                                     </span>
                                 </div>
                             </div>
-                         <?php } ?>
-                       
+                        <?php } ?>
+
                     </div>
                     <div class="col-sm">
                         <label for="pubmed">Pubmed</label>
@@ -396,7 +670,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 </div>
 
-                <div class="form-group" data-visible="article,book,chapter,editor">
+                <div class="form-group" data-visible="article,preprint,book,chapter">
                     <div class="custom-checkbox" id="open_access-div">
                         <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= ($form['open_access'] ?? false) ? 'checked' : '' ?>>
                         <label for="open_access">Open access</label>
@@ -416,30 +690,36 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 </div>
 
-                <div class="" data-visible="review">
+                <div class="" data-visible="review,editorial,grant-rev,thesis-rev">
 
                     <div class="form-row row-eq-spacing-sm">
                         <div class="col-sm-3">
                             <label class="required" for="role-input">
                                 <?= lang('Role', 'Rolle') ?>
                             </label>
-                            <select class="form-control" id="role-input" name="values[role]" required autocomplete="off" onchange="reviewUIupdate(this)">
-                                <option value="Reviewer" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
-                                <option value="Reviewer" <?= ($form['role'] ?? '') == 'Reviewer' ? 'selected' : '' ?>>Reviewer</option>
-                                <option value="Editor" <?= ($form['role'] ?? '') == 'Editor' ? 'selected' : '' ?>>Editorial</option>
+                            <select class="form-control" id="role-input" name="values[role]" required autocomplete="off" onchange="togglePubType(this.value)">
+                                <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
+                                <option value="review" <?= strtolower($form['role'] ?? '') == 'review' ? 'selected' : '' ?>>Reviewer</option>
+                                <option value="editorial" <?= strtolower($form['role'] ?? '') == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
+                                <option value="grant-rev" <?= strtolower($form['role'] ?? '') == 'grant-rev' ? 'selected' : '' ?>>Grant proposal</option>
+                                <option value="thesis-rev" <?= strtolower($form['role'] ?? '') == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
                             </select>
 
                         </div>
-                        <div class="col-sm">
-                            <label class="required" for="journal-input">
+                        <div class="col-sm" data-visible="review,editorial">
+                            <label class="required element-title" for="journal-input">
                                 <?= lang('Journal') ?>
                             </label>
                             <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= $form['journal'] ?? '' ?>" name="values[journal]" list="journal-list" required>
-                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
-
+                        </div>
+                        <div class="col-sm" data-visible="grant-rev,thesis-rev">
+                            <label class="required element-title" for="title-input">
+                                <?= lang('Title/Description/Details', 'Titel/Beschreibung/Details') ?>
+                            </label>
+                            <input type="text" class="form-control" id="title-input" value="<?= $form['title'] ?? '' ?>" name="values[title]" required>
                         </div>
                         <div class="col-sm-3">
-                            <label class="required" for="username">
+                            <label class="required element-author" for="username">
                                 <?= lang('Scientist', 'Wissenschaftler:in') ?>
                             </label>
                             <select class="form-control" id="username" name="values[user]" required autocomplete="off">
@@ -452,9 +732,9 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         </div>
                     </div>
 
-                    <div class="reviewer-role" style="display: none;">
-                        <label class="required" for="date">
-                            <?= lang('Review date', 'Review-Datum') ?>
+                    <div class="reviewer-role" data-visible="review,grant-rev,thesis-rev">
+                        <label class="required element-time" for="date">
+                            <?= lang('Date', 'Datum') ?>
                         </label>
                         <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray($form['start'] ?? '') ?>">
                         <small class="text-muted">
@@ -462,25 +742,25 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         </small>
                     </div>
 
-                    <div class="editor-role" style="display: none;">
+                    <div class="editor-role" data-visible="editorial">
                         <div class="form-row row-eq-spacing-sm">
                             <div class="col-sm">
-                                <label class="required" for="start">
+                                <label class="required element-time" for="start">
                                     <?= lang('Beginning of editorial activity', 'Anfang der Editor-Tätigkeit') ?>
                                 </label>
                                 <input type="date" class="form-control start" name="values[start]" id="start" value="<?= valueFromDateArray($form['start'] ?? '') ?>" required>
                             </div>
                             <div class="col-sm">
-                                <label class="" for="end">
+                                <label class=" element-time" for="end">
                                     <?= lang('End', 'Ende') ?>
                                 </label>
                                 <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray($form['end'] ?? '') ?>">
                             </div>
                             <div class="col-sm">
-                                <label for="editor_type">
+                                <label for="editor_type" class="element-cat">
                                     <?= lang('Details', 'Details') ?>
                                 </label>
-                                <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= $form['editor_type']??'' ?>" placeholder="Guest Editor for Research Topic 'XY'">
+                                <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= $form['editor_type'] ?? '' ?>" placeholder="Guest Editor for Research Topic 'XY'">
                             </div>
                         </div>
                     </div>
@@ -495,7 +775,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
                 <?php } ?>
 
-                <div class="custom-file mb-20" id="file-input-div" data-visible="article,magazine,book,editor,chapter,lecture,poster,misc">
+                <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                     <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                     <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div>
@@ -528,72 +808,42 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 <script>
     UPDATE = false;
-    function studentsEndQuestion() {
-        const date = $('#students_end').val()
-        console.log(date);
-        if (date.length === 0) {
-            $('#end-question').hide()
-            return;
-        }
-        const selecteddate = new Date(date);
-        const today = new Date();
-        var thesis = $('#category').val()
-        thesis = thesis.includes('Thesis') || thesis == "Doktorand:in"
-        if (selecteddate.setHours(0, 0, 0, 0) <= today.setHours(0, 0, 0, 0) && thesis) {
-            // date is in the past
-            $('#end-question').show()
-        } else {
-            $('#end-question').hide()
-        }
-    }
-
-    function reviewUIupdate(el) {
-        var form = $(el).closest('form')
-        if (el.value == "Reviewer") {
-            $('.editor-role').slideUp()
-            $('.editor-role').find('input.start').attr('required', false).attr('disabled', true)
-            $('.reviewer-role').slideDown()
-            $('.reviewer-role').find('input.date').attr('required', true).attr('disabled', false)
-        } else {
-            $('.editor-role').slideDown()
-            $('.editor-role').find('input.start').attr('required', true).attr('disabled', false)
-            $('.reviewer-role').slideUp()
-            $('.reviewer-role').find('input.date').attr('required', false).attr('disabled', true)
-        }
-    }
 </script>
 
-<?php if (!empty($form)) { ?>
+<?php if (!empty($form)) {
+
+    $t = $form['type'];
+    if ($t == 'publication') $t = $form['pubtype'];
+    if ($t == 'students') $t = $form['category'] ?? 'doctoral thesis';
+    if ($t == 'review') $t = $form['role'] ?? 'review';
+    // dump($t);
+?>
     <script>
         UPDATE = true
-        togglePubType('<?= $form['type'] == 'publication' ? $form['pubtype'] : $form['type'] ?>');
+        togglePubType('<?= $t ?>');
 
-        <?php if (isset($form['role'])) { ?>
-            reviewUIupdate(document.getElementById('role-input'));
-        <?php } ?>
 
-        
-        $('input').each(function (el){
-            el =  $(this)
+        $('input').each(function(el) {
+            el = $(this)
             if (!isEmpty(el.val()))
                 el.attr("data-value", el.val())
         })
-        
 
-$('[data-value]').on("update blur", function () {
-    var el = $(this)
-    var old = el.attr("data-value").trim()
-    var name = el.attr('name')
-    if (old !== undefined) {
-        if (old != el.val().trim() && !el.hasClass("is-valid")) {
-            el.addClass("is-valid")
-            el.next().removeClass('hidden')
-        } else if (old == el.val().trim() && el.hasClass("is-valid")) {
-            el.removeClass("is-valid")
-            el.next().addClass('hidden')
-        }
-    }
-})
+
+        $('[data-value]').on("update blur", function() {
+            var el = $(this)
+            var old = el.attr("data-value").trim()
+            var name = el.attr('name')
+            if (old !== undefined) {
+                if (old != el.val().trim() && !el.hasClass("is-valid")) {
+                    el.addClass("is-valid")
+                    el.next().removeClass('hidden')
+                } else if (old == el.val().trim() && el.hasClass("is-valid")) {
+                    el.removeClass("is-valid")
+                    el.next().addClass('hidden')
+                }
+            }
+        })
     </script>
 
 <?php } elseif (isset($_GET['type'])) { ?>

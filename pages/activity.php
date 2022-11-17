@@ -57,6 +57,7 @@
 
 </div>
 
+
 <h2>Details</h2>
 <table class="table">
 

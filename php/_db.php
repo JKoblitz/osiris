@@ -48,7 +48,7 @@ function getUserFromId($user)
     $USER = $osiris->users->findOne(['_id' => $user ?? $_SESSION['username']]);
     if (empty($USER)) return array();
     $USER['name'] = $USER['first'] . " " . $USER['last'];
-    $USER['name_formal'] = $USER['last'] . ", " . $USER['first'];
+    // $USER['name_formal'] = $USER['last'] . ", " . $USER['first'];
     $USER['first_abbr'] = "";
     foreach (explode(" ", $USER['first']) as $name) {
         $USER['first_abbr'] .= " " . $name[0] . ".";

@@ -2,6 +2,10 @@
     line-height: inherit;
 }
 
+blockquote {
+    font-style: inherit;
+}
+
 .quarter {
     width: 6rem;
     font-family: 'Courier New', Courier, monospace;
@@ -291,28 +295,284 @@ strong {
 }
 
 
-.row-MIOS { border-left: 3px solid #d31e25; }
-.row-BIDB { border-left: 3px solid #5db5b7; }
-.row-MIG { border-left: 3px solid #d1c02b; }
-.row-BUG { border-left: 3px solid #8a3f64; }
-.row-MuTZ { border-left: 3px solid #31407b; }
-.row-PFVI { border-left: 3px solid #369e4b; }
-.row-MÖD { border-left: 3px solid #d7a32e; }
-.row-Services { border-left: 3px solid #4f2e39; }
-.row-Patente { border-left: 3px solid #b2b2b2; }
-.row-IT { border-left: 3px solid #5F272A; }
-.row-Verwaltung { border-left: 3px solid #5F272A; }
-.row-PuK { border-left: 3px solid #5F272A; }
+.row-MIOS {
+    border-left: 3px solid #d31e25;
+}
 
-.text-MIOS { color: #d31e25; }
-.text-BIDB { color: #5db5b7; }
-.text-MIG { color: #d1c02b; }
-.text-BUG { color: #8a3f64; }
-.text-MuTZ { color: #31407b; }
-.text-PFVI { color: #369e4b; }
-.text-MÖD { color: #d7a32e; }
-.text-Services { color: #4f2e39; }
-.text-Patente { color: #b2b2b2; }
-.text-IT { color: #5F272A; }
-.text-Verwaltung { color: #5F272A; }
-.text-PuK { color: #5F272A; }
+.row-BIDB {
+    border-left: 3px solid #5db5b7;
+}
+
+.row-MIG {
+    border-left: 3px solid #d1c02b;
+}
+
+.row-BUG {
+    border-left: 3px solid #8a3f64;
+}
+
+.row-MuTZ {
+    border-left: 3px solid #31407b;
+}
+
+.row-PFVI {
+    border-left: 3px solid #369e4b;
+}
+
+.row-MÖD {
+    border-left: 3px solid #d7a32e;
+}
+
+.row-Services {
+    border-left: 3px solid #4f2e39;
+}
+
+.row-Patente {
+    border-left: 3px solid #b2b2b2;
+}
+
+.row-IT {
+    border-left: 3px solid #5F272A;
+}
+
+.row-Verwaltung {
+    border-left: 3px solid #5F272A;
+}
+
+.row-PuK {
+    border-left: 3px solid #5F272A;
+}
+
+.text-MIOS {
+    color: #d31e25;
+}
+
+.text-BIDB {
+    color: #5db5b7;
+}
+
+.text-MIG {
+    color: #d1c02b;
+}
+
+.text-BUG {
+    color: #8a3f64;
+}
+
+.text-MuTZ {
+    color: #31407b;
+}
+
+.text-PFVI {
+    color: #369e4b;
+}
+
+.text-MÖD {
+    color: #d7a32e;
+}
+
+.text-Services {
+    color: #4f2e39;
+}
+
+.text-Patente {
+    color: #b2b2b2;
+}
+
+.text-IT {
+    color: #5F272A;
+}
+
+.text-Verwaltung {
+    color: #5F272A;
+}
+
+.text-PuK {
+    color: #5F272A;
+}
+
+
+
+
+[data-element] {
+    cursor: help;    
+    display: inline;
+    position: relative;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    padding: 0.2rem 0.8rem;
+    color: #464646;
+    background-color: #ddd;
+    border: none;
+    border-radius: 2pt;
+}
+
+/* Tooltip arrow */
+[data-element]::before {
+    content: " ";
+    width: 1rem;
+    height: 1rem;
+    background-color: #464646;
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 90;
+}
+
+/* Tooltip content */
+[data-element]::after {
+    content: attr(data-element);
+    white-space: normal;
+    max-width: 12rem;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    padding: 0.5rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    background-color: #464646;
+    border-radius: 2pt;
+    text-align: center;
+    position: absolute;
+    visibility: hidden;
+    z-index: 90;
+}
+
+/* Tooltip top */
+[data-element]:not([data-placement])::before {
+    left: 50%;
+    top: -0.5rem;
+    transform: translate(-50%, -100%) rotate(45deg);
+}
+
+[data-element]:not([data-placement])::after {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Show tooltips (on all screens) */
+/* Arrow */
+[data-element]:hover::before, [data-element]:focus::before {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+}
+
+/* Content */
+[data-element]:hover::after, [data-element]:focus::after {
+    visibility: visible;
+    -webkit-transition: color 0s, background-color 0s;
+    transition: color 0s, background-color 0s;
+}
+
+[data-element]:not([data-target-breakpoint]):not([data-placement]):hover::after, [data-element]:not([data-target-breakpoint])[data-placement="top"]:hover::after, [data-element]:not([data-target-breakpoint]):not([data-placement]):focus::after, [data-element]:not([data-target-breakpoint])[data-placement="top"]:focus::after {
+    top: -1rem;
+    transform: translate(-50%, -100%);
+}
+
+.element-author[data-element] {
+    background-color: var(--danger-color-very-light);
+}
+
+.element-title[data-element] {
+    background-color: var(--primary-color-very-light);
+}
+
+.element-time[data-element] {
+    background-color: var(--signal-color-very-light);
+}
+.element-cat[data-element] {
+    background-color: var(--success-color-very-light);
+}
+.element-link[data-element] {
+    background-color: #fcddf8;
+}
+
+label.element-author,
+label.element-title,
+label.element-time,
+label.element-cat,
+label.element-link,
+label.element-other{
+    position: relative;
+    z-index: 2;
+}
+label.element-author::before,
+label.element-title::before,
+label.element-time::before,
+label.element-cat::before,
+label.element-link::before,
+label.element-other::before{
+    content: '';
+    width: 100%;
+    height: .5rem;
+    z-index: -1;
+    position: absolute;
+    bottom: 0;
+    visibility: hidden;
+}
+
+label.element-author::before {
+    background-color: var(--danger-color-very-light);
+}
+
+label.element-title::before {
+    background-color: var(--primary-color-very-light);
+}
+
+label.element-time::before {
+    background-color: var(--signal-color-very-light);
+}
+label.element-cat::before {
+    background-color: var(--success-color-very-light);
+}
+label.element-link::before {
+    background-color: #fcddf8;
+}
+
+label.element-other::before {
+    background-color: #ddd;
+}
+
+
+.text-publication {
+    color: var(--primary-color);
+}
+.text-poster {
+    color: var(--danger-color);
+}
+.text-lecture {
+    color: var(--signal-color);
+}
+.text-review {
+    color: var(--success-color);
+}
+.text-misc {
+    color: var(--muted-color);
+}
+.text-teaching {
+    color: var(--dark-color);
+}
+.text-students {
+    color: var(--color-warm-darkred);
+}
+.text-software {
+    color: var(--color-cold-purple);
+}
+
+
+.show-examples label.element-author::before,
+.show-examples label.element-title::before,
+.show-examples label.element-time::before,
+.show-examples label.element-cat::before,
+.show-examples label.element-link::before,
+.show-examples label.element-other::before{
+    visibility: visible;
+}
+
+#publication-form #examples{
+    display: none;
+}
+ #publication-form.show-examples #examples{
+    display: block;
+}

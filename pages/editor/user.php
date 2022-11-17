@@ -2,6 +2,10 @@
     <i class="fad fa-user-graduate"></i>
     <?= $data['name'] ?>
 </h1>
+<!-- 
+<?php
+    dump($data, true);
+?> -->
 
 
 <form action="<?= ROOTPATH ?>/update-user/<?= $data['_id'] ?>" method="post">

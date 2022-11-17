@@ -15,19 +15,19 @@
             "Alle essenziellen Wissenschaftler-Funktionen sind verfügbar: Anlegen und Bearbeiten der Datensätze, sowie grundlegende Kontrollmechanismen und Darstellungen.",
             "Die grundlegenden Aktivitätstypen sind implementiert: Publikationen, Poster, Vorträge, Reviews, Sonstiges und Gastbetreuung. Alle vorhanden Knöpfe funktionieren erwartungsgemäß.",
             "Eine Plattform zum Nutzermanagement wird hinzugefügt. Fehlende Nutzer sowie die Abteilungszuordnung müssen für nachfolgende Schritte nachgetragen werden.",
-            "Eine detailierte Anleitung wird eingeführt, um die Nutzbarkeit des Systems zu verbessern.",
             "Start der ersten Testphase mit freiwilligen Wissenschaftler:innen. Ziel ist es, Feedback der Nutzerseite zu erhalten und fehlende Funktionen nachzurüsten. "
         ],
         "11": [
             "Ein Koautoren-Netzwerk dient der Visualisierung von Zusammenarbeit. Alle DSMZ-Autoren werden verknüpft und nach Abteilung gefärbt.",
             "Das Controlling hat jetzt die volle Kontrolle über die Datenbank. Anzeigen und Bearbeiten der Datensätze funktioniert auch für das Controlling reibungslos und wichtige Metriken werden zentral aufbereitet und dargestellt.",
             "Journale und Metriken (z.B. Impact Factor) können bearbeitet werden. Ein automatischer Upload von Impact Factoren wird eingeführt.",
-            "Reports können automatisch aus dem System generiert werden."
+            "Reports können automatisch aus dem System generiert werden.",
+            "Eine detailierte Anleitung wird eingeführt, um die Nutzbarkeit des Systems zu verbessern."
         ],
         "12": [
             "Feedback aus der Beta-Testphase wird eingearbeitet. Letzter Schliff vor der ersten Inbetriebnahme des Systems.",
             "Tutorials werden um Videos und Gifs erweitert, um die Nutzbarkeit weiter zu verbessern.",
-            "Ein Interface zur ORCID ermöglicht den automatischen Import von Aktivitäten der Wissenschaftler, die einen ORCID-Account pflegen. Alternativ wird ein Google-Scholar-Import angeboten."
+            "Ein Interface zur ORCID ermöglicht den automatischen Import von Aktivitäten der Wissenschaftler, die einen ORCID-Account pflegen."
         ]
     },
     "2023": {
