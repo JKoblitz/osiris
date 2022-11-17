@@ -11,7 +11,15 @@ function validateValues($values)
     unset($values['last_authors']);
 
     foreach ($values as $key => $value) {
-        if ($key == 'authors' || $key == "editors") {
+        if ($key == 'doi') {
+            if (!str_contains($value, '10.')) $value = null;
+            elseif (!str_starts_with($value, '10.')){
+                $value = explode('10.',$value,2);
+                $values[$key] = "10.".$value[1];
+            }
+            // dump($value);
+            // die;
+        } else if ($key == 'authors' || $key == "editors") {
             $values[$key] = array();
             foreach ($value as $i => $author) {
                 $author = explode(';', $author, 3);
