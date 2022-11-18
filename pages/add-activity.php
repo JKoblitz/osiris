@@ -61,7 +61,7 @@ function val($index, $default = '')
                     To <b>change the author order</b>, you can take an author and drag and drop it to the desired position.
                 </p>
                 <p>
-                    To <b>mark an author as belonging to the DSMZ</b>, you can simply click on it. The name will then be highlighted in blue and the word DSMZ will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are DSMZ employees but were not at the time of the activity, they must not be marked as a DSMZ author!
+                    To <b>mark an author as belonging to the DSMZ</b>, you can simply double click on it. The name will then be highlighted in blue and the word DSMZ will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are DSMZ employees but were not at the time of the activity, they must not be marked as a DSMZ author!
                 </p>
             <?php } else { ?>
                 <p>
@@ -75,7 +75,7 @@ function val($index, $default = '')
                     Um die <b>Autorenreihenfolge zu ändern</b>, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
                 </p>
                 <p>
-                    Um einen <b>Autor zur DSMZ zugehörig zu markieren</b>, kannst du ihn einfach anklicken. Der Name wird dann blau markiert und das Wort DSMZ taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der DSMZ sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als DSMZ-Autor markiert werden!
+                    Um einen <b>Autor zur DSMZ zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort DSMZ taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der DSMZ sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als DSMZ-Autor markiert werden!
                 </p>
 
                 <p>
@@ -399,8 +399,8 @@ function val($index, $default = '')
                         <?= lang('Attention: No ' . AFFILIATION . " authors added.", 'Achtung: Keine ' . AFFILIATION . '-Autoren angegeben.') ?>
                     </h5>
                     <?= lang(
-                        'Please click on every ' . AFFILIATION . ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.',
-                        'Bitte klicken Sie auf jeden ' . AFFILIATION . '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.'
+                        'Please double click on every ' . AFFILIATION . ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.',
+                        'Bitte doppelklicken Sie auf jeden ' . AFFILIATION . '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.'
                     ) ?>
                 </div>
 
@@ -586,10 +586,18 @@ function val($index, $default = '')
                     <input type="date" class="form-control" name="values[publication]" id="date_publication" required>
                 </div> -->
 
-                <div class="form-group" data-visible="article,preprint">
-                    <label for="journal" class="element-cat required">Journal</label>
-                    <input type="text" class="form-control" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required>
-                    <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                <div class="form-row row-eq-spacing" data-visible="article,preprint">
+                    <div class="col-sm">
+                        <label for="journal" class="element-cat required">Journal</label>
+                        <input type="text" class="form-control" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required>
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                    </div>
+
+                    <div class="col-sm">
+                        <label for="issn" class="element-cat">ISSN (<?= lang('space-seperated', 'getrennt durch Leerzeichen') ?></label>
+                        <input type="text" class="form-control" name="values[issn]" value="<?= val('issn') ?>" id="issn">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                    </div>
                 </div>
 
                 <div class="form-row row-eq-spacing" data-visible="magazine">
@@ -685,7 +693,7 @@ function val($index, $default = '')
                         <input type="text" class="form-control" name="values[isbn]" value="<?= val('isbn') ?>" id="pubmed">
                     </div>
                     <div class="col-sm" data-visible="others">
-                        <label for="doc_type"><?=lang('Document type', 'Dokumententyp')?></label>
+                        <label for="doc_type"><?= lang('Document type', 'Dokumententyp') ?></label>
                         <input type="text" class="form-control" name="values[doc_type]" value="<?= val('doc_type') ?>" id="doctype" placeholder="Report">
                     </div>
                 </div>

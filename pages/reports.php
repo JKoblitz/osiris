@@ -3,7 +3,7 @@
 
         <h5><?= lang('Export reports', 'Exportiere Berichte') ?></h5>
 
-        <form action="<?= ROOTPATH ?>/export/reports" method="post">
+        <form action="<?= ROOTPATH ?>/reports" method="post">
 
             <div class="form-row row-eq-spacing-sm">
                 <div class="col-sm">

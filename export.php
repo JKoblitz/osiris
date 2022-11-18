@@ -1,83 +1,161 @@
 <?php
-Route::get('/export/?', function () {
+// Route::get('/export/?', function () {
+//     include_once BASEPATH . "/php/_config.php";
+//     $breadcrumb = [
+//         ['name' => lang("Export")]
+//     ];
+
+//     include BASEPATH . "/header.php";
+//     echo "TODO";
+//     include BASEPATH . "/footer.php";
+// }, 'login');
+
+Route::get('/download', function () {
     include_once BASEPATH . "/php/_config.php";
     $breadcrumb = [
-        ['name' => lang("Export")]
+        // ['name' => 'Export', 'path' => "/export"], 
+        ['name' => lang("Download")]
     ];
 
     include BASEPATH . "/header.php";
-    echo "TODO";
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-Route::get('/export/publications', function () {
-    include_once BASEPATH . "/php/_config.php";
-    $breadcrumb = [
-        ['name' => 'Export', 'path' => "/export"],
-        ['name' => lang("Publications", "Publikationen")]
-    ];
-
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/export/publications.php";
+    include BASEPATH . "/pages/download.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 
-Route::get('/export/reports', function () {
+Route::get('/reports', function () {
     include_once BASEPATH . "/php/_config.php";
     $breadcrumb = [
-        ['name' => 'Export', 'path' => "/export"],
+        // ['name' => 'Export', 'path' => "/export"],
         ['name' => lang("Reports", "Berichte")]
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/export/reports.php";
+    include BASEPATH . "/pages/reports.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 
-function getTypeTitle($type)
-{
-    $types = [
-        'students' => 'Lehre und Gäste',
-        'poster' => 'Poster',
-        'lecture' => 'Vorträge',
-        'publication' => 'Publikationen',
-        'misc' => 'Weitere Aktivitäten',
-        'review' => 'Reviews &amp; Editorial Boards'
-    ];
-    return $types[$type] ?? '';
-}
+// function getTypeTitle($type)
+// {
+//     $types = [
+//         'students' => 'Lehre und Gäste',
+//         'poster' => 'Poster',
+//         'lecture' => 'Vorträge',
+//         'publication' => 'Publikationen',
+//         'misc' => 'Weitere Aktivitäten',
+//         'review' => 'Reviews &amp; Editorial Boards'
+//     ];
+//     return $types[$type] ?? '';
+// }
 
 
-Route::post('/export/publications', function () {
+Route::post('/download', function () {
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/format.php';
-    $Format = new Format($_SESSION['username'], 'word');
+
+    $params = $_POST['filter'];
+    $timefilter = false;
+    $filename = "osiris";
+
+    $highlight = false;
+    if (isset($params['highlight']) && !empty($params['highlight'])) {
+        if ($params['highlight'] == 'user') {
+            $highlight = $_SESSION['username'];
+        } elseif ($params['highlight'] == 'aoi') {
+            $highlight = true;
+        }
+    }
+    $Format = new Format($highlight, 'word');
 
     $order = array(
         'publication',
         'lecture',
         'poster',
         'review',
-        'misc',
+        'teaching',
         'students',
+        'software',
+        'misc',
     );
     // select data
     $collection = $osiris->activities;
     $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
 
+    // dump($params, true);
     $filter = [];
-    if (isset($_POST['filter']['type']) && !empty($_POST['filter']['type'])) {
-        $filter['type'] = trim($_POST['filter']['type']);
+    if (isset($params['type']) && !empty($params['type'])) {
+        $filter['type'] = trim($params['type']);
+        $filename .= "_".trim($params['type']);
     }
-    if (isset($_POST['filter']['user']) && !empty($_POST['filter']['user'])) {
-        $filter['$or'] = [['authors.user' => $_POST['filter']['user']], ['editors.user' => $_POST['filter']['user']]];
+    if (isset($params['user']) && !empty($params['user'])) {
+        $filter['$or'] = [['authors.user' => $params['user']], ['editors.user' => $params['user']]];
+        $filename .= "_".trim($params['user']);
     }
-    if (isset($_POST['filter']['year']) && !empty($_POST['filter']['year'])) {
-        $filter['year'] = intval($_POST['filter']['year']);
+    if (isset($params['dept']) && !empty($params['dept'])) {
+
+        $users = [];
+        $cursor = $osiris->users->find(['dept' => $params['dept']], ['projection' => ['username' => 1]]);
+
+        foreach ($cursor as $u) {
+            if (empty($u['username'] ?? '')) continue;
+            $users[] = $u['username'];
+        }
+        $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
+        $filename .= "_".trim($params['dept']);
     }
+
+    // if (isset($params['year']) && !empty($params['year'])) {
+    //     $filter['year'] = intval($params['year']);
+    // }
+
+    if (isset($params['time']) && !empty($params['time'])) {
+        $timefilter = true;
+        $startyear = $params['time']['from']['year'];
+        $endyear = $params['time']['to']['year'];
+        $startmonth = $params['time']['from']['month'];
+        $endmonth = $params['time']['to']['month'];
+
+        if (!empty($startyear) && !empty($endyear)) {
+            // this is for the monthly filter below.
+            // if we want to see the whole year, we must not filter
+            if (($startmonth == 1 && $endmonth == 12) || (empty($startmonth) && empty($endmonth))) $timefilter = false;
+
+            // create year range from start to end
+            $years = [];
+            for ($i = $startyear; $i <= $endyear; $i++) {
+                $years[] = intval($i);
+            }
+
+            $filter['$or'] =   array(
+                [
+                    "start.year" => array('$lte' => intval($startyear)),
+                    '$or' => array(
+                        ['end.year' => array('$gte' => intval($endyear))],
+                        ['end' => null]
+                    )
+                ],
+                ['year' => ['$in' => $years]]
+            );
+        $filename .= "_".implode("-",$years);
+        }
+    }
+
     $cursor = $collection->find($filter, $options);
+
+    // dump($filter, true);
+
+    // foreach ($cursor as $doc) {
+    //     // fallback
+    //     // filtering by month is to much effort, so we just do not show activities out
+    //     if ($timefilter && $startyear == $doc['year'] && $startmonth < $doc['month']) continue;
+    //     if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
+    //     echo $Format->format($doc) . "<br><br>";
+    // }
+    // die;
+
+
+
 
     $headers = [];
 
@@ -106,9 +184,12 @@ Route::post('/export/publications', function () {
         });
 
         foreach ($cursor as $doc) {
+            // filtering by month is to much effort, so we just do not show activities out
+            if ($timefilter && $startyear == $doc['year'] && $startmonth < $doc['month']) continue;
+            if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
             if (!in_array($doc['type'], $headers)) {
                 $headers[] = $doc['type'];
-                $section->addTitle(getTypeTitle($doc['type']), 1);
+                $section->addTitle(typeInfo($doc['type'])['name'], 1);
             }
             $paragraph = $section->addTextRun();
             $line = $Format->format($doc);
@@ -116,7 +197,7 @@ Route::post('/export/publications', function () {
         }
 
         // Download file
-        $file = 'Publications.docx';
+        $file = $filename.'.docx';
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="' . $file . '"');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
@@ -135,6 +216,9 @@ Route::post('/export/publications', function () {
 
     } else if ($_POST['format'] == "bibtex") {
         header("Content-Type: text/plain; charset=utf-8");
+        header('Content-Disposition: attachment; filename="' . $filename . '.bib"');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
 
         $bibentries = [
             'journal-article' => "article",
@@ -144,13 +228,27 @@ Route::post('/export/publications', function () {
             'chapter' => "inbook",
             "misc" => "misc"
         ];
+        $ids = [];
         foreach ($cursor as $doc) {
+            // filtering by month is to much effort, so we just do not show activities out
+            if ($timefilter && $startyear == $doc['year'] && $startmonth < $doc['month']) continue;
+            if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
 
-            echo '@' . ($bibentries[trim($doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $doc['_id'] . ',' . PHP_EOL;
+            // generate a unique ID 
+            $id = $doc['authors'][0]['last'] . $doc['year'];
+            $oid = $id;
+            $i = 'a';
+            while (in_array($id, $ids)) {
+                // append letter if not unique
+                $id = $oid . $i++;
+            }
+            $ids[] = $id;
+
+            echo '@' . ($bibentries[trim($doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $id . ',' . PHP_EOL;
 
             if (isset($doc['title']) and ($doc['title'] != '')) echo '  Title = {' . $doc['title'] . '},' . PHP_EOL;
-            if (isset($doc['authors']) and ($doc['authors'] != '')) echo '  Author = {' . formatAuthors($doc['authors'], ', ') . '},' . PHP_EOL;
-            if (isset($doc['editor']) and ($doc['editor'] != '')) echo '  Editor = {' . $doc['editor'] . '},' . PHP_EOL;
+            if (isset($doc['authors']) and ($doc['authors'] != '')) echo '  Author = {' . $Format->formatAuthors($doc['authors'], ', ') . '},' . PHP_EOL;
+            if (isset($doc['editors']) and ($doc['editor'] != '')) echo '  Editor = {' . $Format->formatEditors($doc['editors'], ', ') . '},' . PHP_EOL;
             if (isset($doc['journal']) and ($doc['journal'] != '')) echo '  Journal = {' . $doc['journal'] . '},' . PHP_EOL;
             if (isset($doc['year']) and ($doc['year'] != '')) echo '  Year = {' . $doc['year'] . '},' . PHP_EOL;
             if (isset($doc['number']) and ($doc['number'] != '')) echo '  Number = {' . $doc['number'] . '},' . PHP_EOL;
@@ -160,7 +258,7 @@ Route::post('/export/publications', function () {
             if (isset($doc['isbn']) and ($doc['isbn'] != '')) echo '  Isbn = {' . $doc['isbn'] . '},' . PHP_EOL;
             if (isset($doc['publisher']) and ($doc['publisher'] != '')) echo '  Publisher = {' . $doc['publisher'] . '},' . PHP_EOL;
             if (isset($doc['book']) and ($doc['book'] != '')) echo '  Booktitle = {' . $doc['book'] . '},' . PHP_EOL;
-            if (isset($doc['chapter']) and ($doc['chapter'] != '')) echo '  Chapter = {' . $doc['chapter'] . '},' . PHP_EOL;
+            // if (isset($doc['chapter']) and ($doc['chapter'] != '')) echo '  Chapter = {' . $doc['chapter'] . '},' . PHP_EOL;
             if (isset($doc['abstract']) and ($doc['abstract'] != '')) echo '  Abstract = {' . $doc['abstract'] . '},' . PHP_EOL;
             if (isset($doc['keywords']) and ($doc['keywords'] != '')) {
                 echo '  Keywords = {';
@@ -235,7 +333,7 @@ function clean_comment_export($subject, $front_addition_text = '')
     return $subject;
 }
 
-Route::post('/export/reports', function () {
+Route::post('/reports', function () {
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/format.php';
     $Format = new Format(false, 'word');
@@ -416,11 +514,11 @@ Route::post('/export/reports', function () {
 
     $phpWord->addTableStyle('CountTable', ['borderSize' => 1, 'borderColor' => 'grey', 'cellMargin' => 80]);
 
-    $styleCell = ['valign'=>'center'];
+    $styleCell = ['valign' => 'center'];
     $styleText = [];
-    $styleTextBold = ['bold'=>true];
-    $styleParagraph =  ['spaceBefore'=>0,'spaceAfter'=>0];
-    $styleParagraphCenter =  ['spaceBefore'=>0,'spaceAfter'=>0,'align' => 'center'];
+    $styleTextBold = ['bold' => true];
+    $styleParagraph =  ['spaceBefore' => 0, 'spaceAfter' => 0];
+    $styleParagraphCenter =  ['spaceBefore' => 0, 'spaceAfter' => 0, 'align' => 'center'];
     // $cellBold = $styleTextBold;
     // $cellNormal = [, 'valign'=>'center']
     // Adding an empty Section to the document...
@@ -446,10 +544,10 @@ Route::post('/export/reports', function () {
             $cell->addText("Department", $styleTextBold, $styleParagraph);
             $cell = $table->addCell(2500, $styleCell);
             $n = array_sum(array_column($countTables[$cat], 'chapter'));
-            $cell->addText("Book Chapters (total: $n)", ["bold" => true, ]);
+            $cell->addText("Book Chapters (total: $n)", ["bold" => true,]);
             $cell = $table->addCell(2500, $styleCell);
             $n = array_sum(array_column($countTables[$cat], 'article'));
-            $cell->addText("Refereed Publications (total: $n)", ["bold" => true, ]);
+            $cell->addText("Refereed Publications (total: $n)", ["bold" => true,]);
 
             foreach ($depts as $dept_short => $dept_name) {
                 $table->addRow();
@@ -485,10 +583,10 @@ Route::post('/export/reports', function () {
                         $section->addTitle($title3, 3);
                         if ($pubtype == 'article') {
                             $table = $section->addTable();
-                                $table->addRow();
-                                $cell = $table->addCell(9000);
-                                $cell = $table->addCell(1000);
-                                $cell->addText('Impact Factor', ['bold'=>true, 'underline'=> 'single'], $styleParagraphCenter);
+                            $table->addRow();
+                            $cell = $table->addCell(9000);
+                            $cell = $table->addCell(1000);
+                            $cell->addText('Impact Factor', ['bold' => true, 'underline' => 'single'], $styleParagraphCenter);
                         }
                         foreach ($result['publication'][$cat][$D][$pubtype] as $doc) {
                             if ($pubtype == 'article') {

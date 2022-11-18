@@ -334,6 +334,7 @@ function getPubmed(id) {
                 day: date.getDate(),
                 type: pub.doctype == 'chapter' ? 'book' : pub.pubtype[0],
                 journal: pub.fulljournalname,
+                // issn: (pub.ISSN ?? []).join(' '),
                 issue: pub.issue,
                 volume: pub.volume,
                 pages: pub.pages,
@@ -413,6 +414,7 @@ function getDOI(doi) {
                 day: date[2],
                 type: pub.type,
                 journal: pub['container-title'][0],
+                issn: (pub.ISSN ?? []).join(' '),
                 issue: issue,
                 volume: pub.volume ?? '',
                 pages: pub.page,
@@ -423,7 +425,7 @@ function getDOI(doi) {
                 publisher: pub['publisher-name'],
                 city: pub['publisher-location'],
                 // open_access: pub.open_access,
-                epub: pub.issued === undefined,
+                epub: pub['published-print'] === undefined,
             }
             fillForm(pubdata)
             $('.loader').removeClass('show')
@@ -615,6 +617,7 @@ function fillForm(pub) {
         'month',
         'day',
         'journal',
+        'issn',
         'issue',
         'volume',
         'pages',
@@ -750,7 +753,7 @@ function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el = nul
         }
     }
     var author = $('<div class="author">')
-        .on('click', function () {
+        .on('dblclick', function () {
             toggleAffiliation(this)
         })
         .html(lastname + ', ' + firstname);

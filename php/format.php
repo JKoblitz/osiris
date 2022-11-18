@@ -187,87 +187,87 @@ function activity_icon($doc, $tooltip = true)
                 case 'journal-article':
                 case 'article':
                     $name = "Journal article";
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-file-lines'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
                     break 2;
 
                 case 'magazine article':
                 case 'magazine':
                     $name = "Magazine article";
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-newspaper'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-newspaper'></i>";
                     break 2;
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
                     $name = "Book chapter";
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-book'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
                     break 2;
                 case 'book-editor':
                     $name = "Book";
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-book-bookmark'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-book-bookmark'></i>";
                 case 'book':
                     $name = "Book";
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-book'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
                     break 2;
                 case 'others':
                     $name = lang('Others', 'Weiteres');
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-memo-pad'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
                     break 2;
                 default:
                     $name = "Journal article";
-                    $icon = "<i class='far fa-fw fa-lg text-publication fa-file-lines'></i>";
+                    $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
                     break 2;
             }
         case 'poster':
             $name = "Poster";
-            $icon = "<i class='far fa-fw fa-lg text-poster fa-presentation-screen'></i>";
+            $icon = "<i class='far fa-lg text-poster fa-presentation-screen'></i>";
             break;
         case 'lecture':
             $name = "Lecture";
-            $icon = "<i class='far fa-fw fa-lg text-lecture fa-keynote'></i>";
+            $icon = "<i class='far fa-lg text-lecture fa-keynote'></i>";
             break;
         case 'review':
             switch (strtolower($doc['role'] ?? '')) {
                 case 'editorial':
                 case 'editor':
                     $name = "Editorial board";
-                    $icon = "<i class='far fa-fw fa-lg text-review fa-book-open-cover'></i>";
+                    $icon = "<i class='far fa-lg text-review fa-book-open-cover'></i>";
                     break 2;
                 case 'grant-rev':
                     $name = "Grant proposal";
-                    $icon = "<i class='far fa-fw fa-lg text-review fa-file-chart-pie'></i>";
+                    $icon = "<i class='far fa-lg text-review fa-file-chart-pie'></i>";
                     break 2;
                 case 'thesis-rev':
                     $name = "Thesis review";
-                    $icon = "<i class='far fa-fw fa-lg text-review fa-graduation-cap'></i>";
+                    $icon = "<i class='far fa-lg text-review fa-graduation-cap'></i>";
                     break 2;
                 default:
                     $name = "Review";
-                    $icon = "<i class='far fa-fw fa-lg text-review fa-file-lines'></i>";
+                    $icon = "<i class='far fa-lg text-review fa-file-lines'></i>";
                     break 2;
             }
 
         case 'misc':
             $name = "Miscellaneous";
-            $icon = "<i class='far fa-fw fa-lg text-misc fa-icons'></i>";
+            $icon = "<i class='far fa-lg text-misc fa-icons'></i>";
             break;
         case 'students':
             $cat = strtolower(trim($doc['category'] ?? 'thesis'));
             if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
                 $name = "Students (Theses)";
-                $icon = "<i class='far fa-fw fa-lg text-students fa-user-graduate'></i>";
+                $icon = "<i class='far fa-lg text-students fa-user-graduate'></i>";
                 break;
             }
             $name = "Guests";
-            $icon = "<i class='far fa-fw fa-lg text-students fa-user-tie'></i>";
+            $icon = "<i class='far fa-lg text-students fa-user-tie'></i>";
             break;
 
         case 'teaching':
             $name = "Teaching";
-            $icon = "<i class='far fa-fw fa-lg text-teaching fa-chalkboard-user'></i>";
+            $icon = "<i class='far fa-lg text-teaching fa-chalkboard-user'></i>";
             break;
         case 'software':
             $name = "Software";
-            $icon = "<i class='far fa-fw fa-lg text-software fa-desktop'></i>";
+            $icon = "<i class='far fa-lg text-software fa-desktop'></i>";
             break;
         default:
             break;
@@ -285,14 +285,14 @@ function activity_icon($doc, $tooltip = true)
 
 class Format
 {
-    private $useronly = false;
+    private $highlight = true;
     private $usecase = "web";
     private $first = 1;
     private $last = 1;
 
-    function __construct($useronly = false, $usecase = 'web')
+    function __construct($highlight = true, $usecase = 'web')
     {
-        $this->useronly = $useronly;
+        $this->highlight = $highlight;
         $this->usecase = $usecase;
     }
 
@@ -331,9 +331,9 @@ class Format
         $authors = array();
         foreach ($raw_authors as $a) {
             $author = abbreviateAuthor($a['last'], $a['first']);
-            if (!$this->useronly) {
+            if ($this->highlight === true) {
                 if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
-            } else if ($a['user'] == $this->useronly) {
+            } else if ($this->highlight && $a['user'] == $this->highlight) {
                 $author = "<b>$author</b>";
             }
             if ($first > 1 && $a['position'] == 'first') {
@@ -352,9 +352,9 @@ class Format
         $editors = array();
         foreach ($raw_editors as $a) {
             $editor = abbreviateAuthor($a['last'], $a['first'], false);
-            if (!$this->useronly) {
+            if ($this->highlight === true) {
                 if (($a['aoi'] ?? 0) == 1) $editor = "<b>$editor</b>";
-            } else if ($a['user'] ?? '' == $this->useronly) {
+            } else if ($this->highlight && $a['user'] ?? '' == $this->highlight) {
                 $editor = "<b>$editor</b>";
             }
             $editors[] = $editor;
@@ -590,9 +590,9 @@ class Format
 
     //     $authorFunction = function ($a, $renderedText) {
     //         $author = $renderedText;
-    //         if (!$this->useronly) {
+    //         if (!$this->highlight) {
     //             if (($a->aoi ?? 0) == 1) $author = "<b>$author</b>";
-    //         } else if ($a->user == $this->useronly) {
+    //         } else if ($a->user == $this->highlight) {
     //             $author = "<b>$author</b>";
     //         }
     //         if ($a->append) {
@@ -771,9 +771,9 @@ class Format
                         $ep[] = "pp. $doc[pages]";
                     }
 
-                    $result .= " (" . implode(', ', $ep) . ")";
+                    $result .= " (" . implode(', ', $ep) . ").";
                 }
-                $result .= ".";
+                // $result .= ".";
 
                 if (!empty($doc['city'])) {
                     $result .= " $doc[city]:";
@@ -783,7 +783,18 @@ class Format
                 }
                 break;
             default:
-                # code...
+                $result .= $authors;
+                if (!empty($doc['year'])) {
+                    $result .= " ($doc[year])";
+                }
+                if (!empty($doc['title'])) {
+                    $result .= " $doc[title].";
+                }
+                
+                $result .= " [".($doc["doc_type"] ?? ucfirst($doc['pubtype']))."].";
+                if (!empty($doc['link'])) {
+                    $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
+                }
                 break;
         }
 

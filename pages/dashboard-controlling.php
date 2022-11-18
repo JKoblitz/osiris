@@ -505,7 +505,7 @@ foreach ($impacts as $vals) {
         <i class="far fa-book-bookmark text-danger"></i>
         <?= lang('View all activites', 'Zeige alle Aktivitäten') ?>
     </a>
-    <a href="<?= ROOTPATH ?>/export/reports" class="btn btn-select bg-white">
+    <a href="<?= ROOTPATH ?>/reports" class="btn btn-select bg-white">
         <i class="far fa-file-chart-column text-success"></i>
         <?= lang('Generate report', 'Erstelle Report') ?>
     </a>

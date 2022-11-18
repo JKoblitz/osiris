@@ -4,7 +4,8 @@
 - [ ] Ich wollte bei einem Vortrag die pptx-Datei anhängen, da kam Error 405 und es ging nicht weiter (war vielleicht zu groß?)
 - [ ] bei den nicht-begutachteten Publikationen habe ich versucht eine PDF hochzuladen. Die war danach nicht sichtbar (selbst, wenn wäre das die falsche gewesen und da war mir aufgefallen, dass hier keine Möglichkeit gab, den Anhang zu löschen ;-))
 - [ ] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt
-- [ ] 
+- [ ] Für Autoren sollte die ORCID zusätzlich gespeichert werden.
+- [ ] Funding sollte gespeichert werden
 - [x] Ein detailliertes Profil (vielleicht auch mit einem BarChart über ALLE Aktivitäten?)
 - [x] Eine Legende für das Koautorennetzwerk
 - [x] Invited Lectures bei Vorträgen

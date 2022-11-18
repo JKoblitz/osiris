@@ -234,7 +234,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Tools') ?>
                     </div> -->
 
-                    <a href="<?= ROOTPATH ?>/export/publications" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('export/publications') ?>">
+                    <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-signal with-icon <?= $pageactive('download') ?>">
                         <i class="far fa-download" aria-hidden="true"></i>
                         Download
                     </a>
@@ -278,7 +278,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Points', 'Punkte') ?>
                         </a>
 
-                        <a href="<?= ROOTPATH ?>/export/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('export/reports') ?>">
+                        <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('reports') ?>">
                             <i class="far fa-file-chart-column" aria-hidden="true"></i>
                             Export <?= lang('Reports', 'Berichte') ?>
                         </a>
