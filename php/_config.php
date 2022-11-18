@@ -49,7 +49,7 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'add-success':
             $header = lang("Success", "Erfolg");
             $text = lang("Data set was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
-            $text .= '<br/><a class="btn mt-10" href="'.ROOTPATH.'/activities/new">'.lang('Add another activity', 'Weitere Aktivität hinzufügen').'</a>';
+            $text .= '<br/><a class="btn mt-10" href="' . ROOTPATH . '/activities/new">' . lang('Add another activity', 'Weitere Aktivität hinzufügen') . '</a>';
             $class = "success";
             break;
 
@@ -257,43 +257,64 @@ function typeInfo($type)
         case 'publication':
             return [
                 'name' => lang('Publications', 'Publikationen'),
-                'color' => "#006EB7"
+                'color' => "#006EB7",
+                'icon' => 'book-bookmark'
                 // 'color' => 'var(--primary-color)'
             ];
         case 'poster':
             return [
                 'name' => lang('Poster'),
-                'color' => "#B61F29"
+                'color' => "#B61F29",
+                'icon' => 'presentation-screen'
                 // 'color' => 'var(--danger-color)'
             ];
         case 'lecture':
             return [
                 'name' => lang('Lectures', 'Vorträge'),
-                'color' => "#ECAF00"
+                'color' => "#ECAF00",
+                'icon' => 'keynote'
                 // 'color' => 'var(--signal-color)'
             ];
         case 'review':
             return [
                 'name' => lang('Reviews & Editorial boards'),
-                'color' => "#1FA138"
+                'color' => "#1FA138",
+                'icon' => 'book-open-cover'
                 // 'color' => 'var(--success-color)'
             ];
         case 'misc':
             return [
                 'name' => lang('Other activities', 'Sonstige Aktivitäten'),
-                'color' => "#b3b3b3"
+                'color' => "#b3b3b3",
+                'icon' => 'icons'
                 // 'color' => 'var(--muted-color)'
             ];
         case 'students':
             return [
                 'name' => lang('Students & Guests', 'Studierende & Gäste'),
-                'color' => "#575756"
+                'color' => "#575756",
+                'icon' => 'user-graduate'
+                // 'color' => 'var(--dark-color)'
+            ];
+        case 'teaching':
+            return [
+                'name' => lang('Teaching', 'Lehre'),
+                'color' => "#575756",
+                'icon' => 'chalkboard-user'
+                // 'color' => 'var(--dark-color)'
+            ];
+        case 'software':
+            return [
+                'name' => lang('Software & Data', 'Software & Daten'),
+                'color' => "#575756",
+                'icon' => 'desktop'
                 // 'color' => 'var(--dark-color)'
             ];
         default:
             return [
                 'name' => $type,
-                'color' => '#cccccc'
+                'color' => '#cccccc',
+                'icon' => 'notdef'
             ];
     }
 }
@@ -327,7 +348,7 @@ function type2title($type)
 }
 
 
-function deptInfo($dept=null)
+function deptInfo($dept = null)
 {
     $depts =  [
         "MIOS" => [
@@ -383,7 +404,7 @@ function deptInfo($dept=null)
             'name' => 'Presse und Kommunikation'
         ]
     ];
-    if ($dept === null ) return $depts;
+    if ($dept === null) return $depts;
     return $depts[$dept] ?? [
         "color" => '#cccccc',
         'name' => $dept
