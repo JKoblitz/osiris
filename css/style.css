@@ -395,7 +395,7 @@ strong {
 
 
 [data-element] {
-    cursor: help;    
+    cursor: help;
     display: inline;
     position: relative;
     font-size: 1.2rem;
@@ -481,9 +481,11 @@ strong {
 .element-time[data-element] {
     background-color: var(--signal-color-very-light);
 }
+
 .element-cat[data-element] {
     background-color: var(--success-color-very-light);
 }
+
 .element-link[data-element] {
     background-color: #fcddf8;
 }
@@ -493,22 +495,23 @@ label.element-title,
 label.element-time,
 label.element-cat,
 label.element-link,
-label.element-other{
+label.element-other {
     position: relative;
     z-index: 2;
 }
+
 label.element-author::before,
 label.element-title::before,
 label.element-time::before,
 label.element-cat::before,
 label.element-link::before,
-label.element-other::before{
+label.element-other::before {
     content: '';
     width: 100%;
-    height: .5rem;
+    height: 1.5rem;
     z-index: -1;
     position: absolute;
-    bottom: 0;
+    bottom: .3rem;
     visibility: hidden;
 }
 
@@ -523,9 +526,11 @@ label.element-title::before {
 label.element-time::before {
     background-color: var(--signal-color-very-light);
 }
+
 label.element-cat::before {
     background-color: var(--success-color-very-light);
 }
+
 label.element-link::before {
     background-color: #fcddf8;
 }
@@ -538,24 +543,31 @@ label.element-other::before {
 .text-publication {
     color: var(--primary-color);
 }
+
 .text-poster {
     color: var(--danger-color);
 }
+
 .text-lecture {
     color: var(--signal-color);
 }
+
 .text-review {
     color: var(--success-color);
 }
+
 .text-misc {
     color: var(--muted-color);
 }
+
 .text-teaching {
     color: var(--dark-color);
 }
+
 .text-students {
     color: var(--color-warm-darkred);
 }
+
 .text-software {
     color: var(--color-cold-purple);
 }
@@ -566,13 +578,14 @@ label.element-other::before {
 .show-examples label.element-time::before,
 .show-examples label.element-cat::before,
 .show-examples label.element-link::before,
-.show-examples label.element-other::before{
+.show-examples label.element-other::before {
     visibility: visible;
 }
 
-#publication-form #examples{
+#publication-form #examples {
     display: none;
 }
- #publication-form.show-examples #examples{
+
+#publication-form.show-examples #examples {
     display: block;
 }

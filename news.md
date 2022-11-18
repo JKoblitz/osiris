@@ -1,5 +1,8 @@
 # Changelog
 
+## 18.11.22
+- Ich habe zusätzlich zu Crossref auch DataCite hinzugefügt. Dadurch können jetzt auch **DOIs von anderen Aktivitäten** als nur Publikationen hinzugefügt werden, beispielsweise Software, Datensätze, Poster, Präsentationen, usw. Um eine DOI für eine solche Aktivität zu bekommen, empfehle ich die Aktivität auf einem Datenarchiv wie beispielsweise [Zenodo](https://zenodo.org/) hochzuladen.
+
 ## 17.11.22
 Ich habe sehr viel User-Feedback aus der Beta-Phase eingearbeitet, u.a. folgendes:
 

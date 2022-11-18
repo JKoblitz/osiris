@@ -271,7 +271,8 @@ function downloadCSVFile(csv_data) {
 
 function getPublication(id) {
     $('.loader').addClass('show')
-    if (/^(10\.\d{4,5}\/[\S]+[^;,.\s])$/.test(id)) {
+    if (/(10\.\d{4,5}\/[\S]+[^;,.\s])$/.test(id)) {
+        id = id.match(/(10\.\d{4,5}\/[\S]+[^;,.\s])$/)[0]
         getDOI(id)
     } else if (/^(\d{7,8})$/.test(id)) {
         getPubmed(id)
@@ -371,7 +372,6 @@ function getDOI(doi) {
         //   },
         url: url,
         success: function (data) {
-            console.log(AFFILIATION);
             var pub = data.message
             console.log(pub);
 
@@ -429,12 +429,134 @@ function getDOI(doi) {
             $('.loader').removeClass('show')
         },
         error: function (response) {
-            toastError(response.responseText)
+            // toastError(response.responseText)
             $('.loader').removeClass('show')
+            toastWarning('DOI was not found in CrossRef. I am looking in DataCite now.')
+            getDataciteDOI(doi)
         }
     })
 }
 
+function getDataciteDOI(doi) {
+    url = "https://api.datacite.org/dois/" + doi //+ '?mailto=juk20@dsmz.de'
+    $('.loader').addClass('show')
+
+    var dataCiteTypes = {
+        'book': 'book',
+        'bookchapter': 'bookchapter',
+        'journal': 'article',
+        'journalarticle': 'article',
+        'conferencepaper': 'article',
+        'conferenceproceeding': 'article',
+        'dissertation': 'dissertation',
+        'preprint': 'preprint',
+        'software': 'software',
+        'computationalnotebook': 'software',
+        'model': 'software',
+        'datapaper': 'dataset',
+        'dataset': 'dataset',
+        'peerreview': 'review',
+        'audiovisual': 'misc',
+        'collection': 'misc',
+        'event': 'misc',
+        'image': 'misc',
+        'report': 'others',
+        'interactiveresource': 'misc',
+        'outputmanagementplan': 'misc',
+        'physicalobject': 'misc',
+        'service': 'misc',
+        'sound': 'misc',
+        'standard': 'misc',
+        'text': 'misc',
+        'workflow': 'misc',
+        'other': 'misc',
+        'presentation': 'lecture',
+        'poster': 'poster'
+    }
+
+    $.ajax({
+        type: "GET",
+        // data: data,
+        dataType: "json",
+        // cors: true ,
+        //   contentType:'application/json',
+        //   secure: true,
+        //   headers: {
+        //     'Access-Control-Allow-Origin': '*',
+        //   },
+        url: url,
+        success: function (data) {
+            var pub = data.data.attributes
+            console.log(pub);
+
+            var date = pub.dates[0].date
+            if (date !== undefined) {
+                dateSplit = getDate(date.split('-'))
+                date = strDate(dateSplit)
+            } else {
+                dateSplit = [pub.publicationYear, 1, null]
+                date = pub.publicationYear + "-01-01"
+            }
+            console.log(dateSplit, date);
+
+            var authors = [];
+            // var editors = [];
+            var first = 1
+            pub.creators.forEach((a, i) => {
+                var aoi = false
+                a.affiliation.forEach(e => {
+                    if (e.includes(AFFILIATION)) {
+                        aoi = true
+                    }
+                })
+                if (a.sequence == "first") {
+                    first = i + 1
+                }
+                var name = {
+                    family: a.familyName,
+                    given: a.givenName,
+                    affiliation: aoi
+                }
+                authors.push(name)
+            });
+            var type = pub.types.resourceTypeGeneral.toLowerCase()
+            type = dataCiteTypes[type]
+
+            var resType = pub.types.resourceType
+            if (resType !== undefined && dataCiteTypes[resType.toLowerCase()] !== undefined) {
+                type = dataCiteTypes[resType.toLowerCase()]
+            }
+            console.info(type);
+
+            var pubdata = {
+                type: type,
+                title: pub.titles[0].title,
+                first_authors: first,
+                authors: authors,
+                doi: pub.doi,
+                date_start: date
+            }
+
+            if (type == 'software' || type == 'dataset') {
+                pubdata['date_start'] = date
+                pubdata['software_version'] = pub.version
+                pubdata['software_doi'] = pub.doi
+                pubdata['software_venue'] = pub.publisher
+            } else {
+                pubdata['year'] = dateSplit[0] ?? null
+                pubdata['month'] = dateSplit[1] ?? null
+                pubdata['day'] = dateSplit[2] ?? null
+            }
+
+            fillForm(pubdata)
+            $('.loader').removeClass('show')
+        },
+        error: function (response) {
+            toastError(response.responseText.errors.title)
+            $('.loader').removeClass('show')
+        }
+    })
+}
 function fillForm(pub) {
     console.log(pub);
 
@@ -464,12 +586,21 @@ function fillForm(pub) {
                 togglePubType('book')
             }
             break;
+        case 'software':
+        case 'dataset':
+        case 'report':
+            togglePubType('software')
+            $('#software_type option[value="' + pub.type + '"]').prop("selected", true);
+            break;
+        // case 'book-chapter':
+        //     togglePubType('chapter')
+        //     break;
 
         default:
-            togglePubType('article')
+            togglePubType(pub.type)
             break;
     }
-    $('#type').addClass('is-valid')
+    // $('#type').addClass('is-valid')
     $('#pubtype').addClass('is-valid')
 
     if (pub.title !== undefined) {
@@ -478,7 +609,8 @@ function fillForm(pub) {
         $('.title-editor .ql-editor').html("<p>" + pub.title + "</p>").addClass('is-valid')
     }
 
-    var elements = ['first_authors',
+    var elements = [
+        'first_authors',
         'year',
         'month',
         'day',
@@ -490,12 +622,18 @@ function fillForm(pub) {
         'pubmed',
         'book',
         'edition',
-        'publisher',
-        'city']
+        'publisher', ,
+        'city',
+        'software_venue',
+        'software_version',
+        'date_start',
+        'software_doi'
+    ]
 
     elements.forEach(element => {
         if (pub[element] !== undefined && !UPDATE || !isEmpty(pub[element]))
             $('#' + element).val(pub[element]).addClass('is-valid')
+        // console.log($('#' + element));
     });
 
     if (pub.epub !== undefined && (!UPDATE || !pub.epub || !pub.epub.length))
@@ -573,6 +711,20 @@ function getDate(element) {
     // if (element[1]) date = ("0" + element[1]).slice(-2) + "." + date
     // if (element[2]) date = ("0" + element[2]).slice(-2) + "." + date
     return date
+}
+
+
+
+function strDate(date) {
+    var res = date[0];
+
+    if (date[1] != '') res += "-" + ("0" + date[1]).slice(-2)
+    else res += "-01"
+
+    if (date[2] != '') res += "-" + ("0" + date[2]).slice(-2)
+    else res += "-01"
+
+    return res
 }
 
 function affiliationCheck() {
@@ -711,9 +863,9 @@ function togglePubType(type) {
         'lecture-internship': 'guests',
         'student-internship': 'guests',
         'reviewer': 'review',
-        'editor': 'editorial'
+        'editor': 'editorial',
     }
-    if (type == "others") return;
+    // if (type == "others") return;
     type = types[type] ?? type;
     console.log(type);
     $('.select-btns').find('.btn').removeClass('active')
@@ -721,7 +873,7 @@ function togglePubType(type) {
     $('#type').val(type)
     var form = $('#publication-form')
 
-    var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others', 'thesis']
+    var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others', 'dissertation']
     if (publications.includes(type)) {
         $('#pubtype option[value="' + type + '"]').prop("selected", true);
         $('#type').val('publication')

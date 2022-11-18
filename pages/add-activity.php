@@ -43,7 +43,7 @@ function val($index, $default = '')
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="modal-title">
@@ -96,7 +96,7 @@ function val($index, $default = '')
         <h3 class=""><?= lang('Add activity', 'Füge Aktivität hinzu') ?></h3>
         <form method="get" onsubmit="getPubData(event, this)">
             <div class="form-group">
-                <label for="doi"><?= lang('Search publication by DOI or Pubmed-ID', 'Suche Publikation über die DOI oder Pubmed-ID') ?>:</label>
+                <label for="doi"><?= lang('Search by DOI or Pubmed-ID', 'Suche über die DOI oder Pubmed-ID') ?>:</label>
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                     <div class="input-group-append">
@@ -113,7 +113,7 @@ function val($index, $default = '')
             <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
             <button onclick="togglePubType('teaching')" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></button>
             <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-btn"><?= activity_icon('students', false) ?><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
-            <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software') ?></button>
+            <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software &amp; Data') ?></button>
             <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Misc') ?></button>
         </div>
 
@@ -156,14 +156,15 @@ function val($index, $default = '')
 
             <?php } ?>
 
-            <div class="mb-20 select-btns" data-visible="article,preprint,magazine,book,chapter">
+            <div class="mb-20 select-btns" data-visible="article,preprint,magazine,book,chapter,dissertation,others">
                 <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article') ?></button>
                 <button onclick="togglePubType('magazine')" class="btn btn-select text-publication" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article') ?></button>
                 <!-- <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button> -->
                 <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
                 <button onclick="togglePubType('chapter')" class="btn btn-select text-publication" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
                 <button onclick="togglePubType('preprint')" class="btn btn-select text-publication" id="preprint-btn"><i class="fa-regular fa-file"></i> <?= lang('Preprint') ?></button>
-                <!-- <button onclick="togglePubType('thesis')" class="btn btn-select text-publication" id="thesis-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Thesis') ?></button> -->
+                <button onclick="togglePubType('dissertation')" class="btn btn-select text-publication" id="dissertation-btn"><i class="fa-regular fa-book-user"></i> <?= lang('Thesis') ?></button>
+                <button onclick="togglePubType('others')" class="btn btn-select text-publication" id="others-btn"><i class="fa-regular fa-memo-pad"></i> <?= lang('Others', 'Weitere') ?></button>
 
             </div>
 
@@ -220,7 +221,7 @@ function val($index, $default = '')
                 <p data-visible="preprint">
                     TODO
                 </p>
-                <p data-visible="thesis">
+                <p data-visible="dissertation">
                     TODO
                 </p>
                 <p data-visible="poster">
@@ -323,7 +324,7 @@ function val($index, $default = '')
                 <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
                 <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
 
-                <div class="form-row row-eq-spacing" data-visible="article,preprint,magazine,book,chapter">
+                <div class="form-row row-eq-spacing" data-visible="article,preprint,magazine,book,chapter,dissertation,others">
                     <!-- <div class="col-sm">
                         <label for="type"><?= lang('Type of activity', 'Art der Aktivität') ?>:</label>
                     </div> -->
@@ -336,15 +337,16 @@ function val($index, $default = '')
                             <option value="preprint">Preprint (non refereed)</option>
                             <!-- <option value="conference"><?= lang('Conference preceedings', 'Konfrenzbeitrag') ?></option> -->
                             <option value="magazine"><?= lang('Magazine article (non refereed)', 'Magazin-Artikel (non-refereed)') ?></option>
+                            <option value="dissertation"><?= lang('Thesis') ?></option>
                             <option value="others"><?= lang('Others', 'Weiteres') ?></option>
                         </select>
                     </div>
                 </div>
 
 
-                <div class="form-group lang-<?= lang('en', 'de') ?>" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
+                <div class="form-group lang-<?= lang('en', 'de') ?>" data-visible="article,preprint,magazine,book,chapter,lecture,poster,dissertation,others,misc-once,misc-annual,students,guests,teaching,software">
                     <label for="title" class="required element-title">
-                        <span data-visible="article,preprint,magazine,book,chapter,lecture,poster,software"><?= lang('Title', 'Titel') ?></span>
+                        <span data-visible="article,preprint,magazine,book,chapter,dissertation,others,lecture,poster,software"><?= lang('Title', 'Titel') ?></span>
                         <span data-visible="misc-once,misc-annual,students,guests,teaching"><?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?></span>
                     </label>
 
@@ -353,10 +355,10 @@ function val($index, $default = '')
                 </div>
 
 
-                <div class="form-group" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
+                <div class="form-group" data-visible="article,preprint,magazine,book,chapter,dissertation,others,lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
                     <label for="author" class="element-author">
                         <span data-visible="students,guests,teaching"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
-                        <span data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual,software"><?= lang('Author(s)', 'Autor(en)') ?></span>
+                        <span data-visible="article,preprint,magazine,book,dissertation,others,chapter,lecture,poster,misc-once,misc-annual,software"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
                         <a class="" href="#author-help"><i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
                     </label>
@@ -427,7 +429,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing " data-visible="article,preprint,magazine,book,chapter">
+                <div class="form-row row-eq-spacing " data-visible="article,preprint,magazine,book,dissertation,others,chapter">
                     <div class="col-sm">
                         <label for="year" class="required element-time">Year</label>
                         <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" required value="<?= val('year') ?>">
@@ -530,6 +532,7 @@ function val($index, $default = '')
                             <option value="database" <?= val('software_type') == 'database' ? 'selected' : '' ?>>Database</option>
                             <option value="dataset" <?= val('software_type') == 'dataset' ? 'selected' : '' ?>>Dataset</option>
                             <option value="webtool" <?= val('software_type') == 'webtool' ? 'selected' : '' ?>>Website</option>
+                            <option value="report" <?= val('software_type') == 'report' ? 'selected' : '' ?>>Report</option>
                         </select>
                     </div>
                 </div>
@@ -619,19 +622,22 @@ function val($index, $default = '')
                 </div>
 
 
-                <div class="form-row row-eq-spacing" data-visible="book,chapter">
+                <div class="form-row row-eq-spacing" data-visible="book,chapter,dissertation">
                     <div class="col-sm" data-visible="chapter">
                         <label for="book" class="required element-cat"><?= lang('Book title', 'Buchtitel') ?></label>
                         <input type="text" class="form-control" name="values[book]" value="<?= val('book') ?>" id="book" required>
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
-                    <div class="col-sm">
+                    <div class="col-sm" data-visible="book,chapter">
                         <label for="edition" class="element-other">Edition</label>
                         <input type="number" class="form-control" name="values[edition]" value="<?= val('edition') ?>" id="edition">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
-                        <label for="publisher" class="element-other"><?= lang('Publisher', 'Verlag') ?></label>
+                        <label for="publisher" class="element-other">
+                            <span data-visible="book,chapter"><?= lang('Publisher', 'Verlag') ?></span>
+                            <span data-visible="book,chapter,dissertation"><?= lang('University', 'Universität') ?></span>
+                        </label>
                         <input type="text" class="form-control" name="values[publisher]" value="<?= val('publisher') ?>" id="publisher">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
@@ -649,7 +655,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="article,preprint,book,chapter">
+                <div class="form-row row-eq-spacing" data-visible="article,preprint,book,chapter,dissertation,others">
                     <div class="col-sm">
                         <label for="doi" class="element-link">DOI</label>
                         <?php if (empty($form)) { ?>
@@ -674,9 +680,13 @@ function val($index, $default = '')
                         <input type="number" class="form-control" name="values[pubmed]" value="<?= val('pubmed') ?>" id="pubmed">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
-                    <div class="col-sm">
+                    <div class="col-sm" data-visible="book,chapter,dissertation">
                         <label for="isbn">ISBN</label>
                         <input type="text" class="form-control" name="values[isbn]" value="<?= val('isbn') ?>" id="pubmed">
+                    </div>
+                    <div class="col-sm" data-visible="others">
+                        <label for="doc_type"><?=lang('Document type', 'Dokumententyp')?></label>
+                        <input type="text" class="form-control" name="values[doc_type]" value="<?= val('doc_type') ?>" id="doctype" placeholder="Report">
                     </div>
                 </div>
 
