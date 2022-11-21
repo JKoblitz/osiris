@@ -1,6 +1,6 @@
 <?php
-    
-    $Format = new Format();
+
+$Format = new Format(true);
 ?>
 
 <h2><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h2>
@@ -10,18 +10,18 @@
 </p>
 
 <div class="alert alert-signal mt-20">
-    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-signal">
+    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn">
         <i class="fas fa-edit"></i>
         <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
     </a>
     <?php if (isset($activity['authors'])) {
-        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn btn-signal">
+        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
         <i class="fas fa-users"></i>
         ' . lang("Edit authors", "Autorenliste bearbeiten") .
             '</a>';
     } ?>
     <?php if (isset($activity['editors'])) {
-        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn btn-signal">
+        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
         <i class="fas fa-users"></i>
         ' . lang("Edit editors", "Editorenliste bearbeiten") .
             '</a>';
@@ -29,32 +29,20 @@
 
 
     <?php if (in_array($activity['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
-        echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn btn-signal">
+        echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn">
         <i class="fas fa-copy"></i>
         ' . lang("Add a copy", "Eine Kopie anlegen") .
             '</a>';
-    } ?>
+    }
 
-    <?php if ($activity['type'] == 'lecture') { ?>
-        <!--  && $activity['lecture_type'] != 'repetition' -->
-        <!-- <div class="dropdown with-arrow">
-            <button class="btn btn-signal" data-toggle="dropdown" type="button" id="add-repetition-dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa-regular fa-lg fa-calendar-plus"></i>
-                <?= lang('Add repetition', 'Wiederholung hinzufügen') ?>
-            </button>
-            <div class="dropdown-menu dropdown-menu-center" aria-labelledby="add-repetition-dropdown">
-                <div class="content">
-                    <input type="hidden" name="repetition" value="<?= $activity['_id'] ?>">
-                    <label class="required" for="start"><?= lang('Repeated at', 'Wiederholt am') ?></label>
-                    <input type="date" class="form-control" name="start" id="start" required>
-                    <button class="btn mt-20" type="button" onclick="_addRepetition('<?= $activity['_id'] ?>')">
-                        <?= lang('Add repetition', 'Wiederholung hinzufügen') ?>
-                    </button>
-                </div>
-            </div>
-        </div> -->
+    ?>
+
+    <?php if (in_array($activity['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
+        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn">
+            <i class="fas fa-upload"></i>
+            <?= lang('Edit files', 'Dateien hochladen') ?>
+        </a>
     <?php } ?>
-
 </div>
 
 

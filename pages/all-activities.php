@@ -5,7 +5,7 @@
 <?php
 
 $user = $user ?? $_SESSION['username'];
-$useronly = false;
+$useronly = true;
 if ($page == 'my-activities') {
     $useronly = $user;
 }

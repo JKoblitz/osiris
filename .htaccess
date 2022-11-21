@@ -14,7 +14,7 @@ RewriteEngine on
 RewriteBase /osiris
 
 # Deliver the folder or file directly if it exists on the server
-RewriteRule ^(css|img|js)($|/) - [L]
+RewriteRule ^(css|img|js|uploads)($|/) - [L]
 
 # Push every request to index.php
 RewriteRule ^(.*)$ index.php [QSA]

@@ -3,3 +3,4 @@ css/Rubik
 .data
 /vendor/
 *.old.php
+uploads/*

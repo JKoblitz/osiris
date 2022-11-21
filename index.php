@@ -321,15 +321,76 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     $id = new MongoDB\BSON\ObjectId($id);
 
     $activity = $osiris->activities->findOne(['_id' => $id]);
+    
+    $name = $activity['title']??$id;
+    if (strlen($name) > 20)
+        $name = mb_substr($name, 0, 20)."&hellip;";
+    $name = ucfirst($activity['type']) . ": ". $name;
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => lang("#" . $id)]
+        ['name' => $name]
     ];
     include BASEPATH . "/header.php";
     if (empty($activity)) {
         echo "Activity not found!";
     } else {
         include BASEPATH . "/pages/activity.php";
+    }
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/activities/files/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $user = $_SESSION['username'];
+
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    $activity = $osiris->activities->findOne(['_id' => $id]);
+
+    $name = $activity['title']??$id;
+    if (strlen($name) > 20)
+        $name = mb_substr($name, 0, 20)."&hellip;";
+    $name = ucfirst($activity['type']) . ": ". $name;
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => $name, 'path' => "/activities/view/$id"],
+        ['name' => lang("Files", "Dateien")]
+    ];
+    include BASEPATH . "/header.php";
+    if (empty($activity)) {
+        echo "Activity not found!";
+    } else {
+        include BASEPATH . "/pages/files.php";
+    }
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::post('/activities/files/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $user = $_SESSION['username'];
+
+    $mongoid = new MongoDB\BSON\ObjectId($id);
+
+    $activity = $osiris->activities->findOne(['_id' => $mongoid]);
+    
+    $name = $activity['title']??$id;
+    if (strlen($name) > 20)
+        $name = mb_substr($name, 0, 20)."&hellip;";
+    $name = ucfirst($activity['type']) . ": ". $name;
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => $name, 'path' => "/activities/view/$id"],
+        ['name' => lang("Files", "Dateien")]
+    ];
+    include BASEPATH . "/header.php";
+    if (empty($activity)) {
+        echo "Activity not found!";
+    } else {
+        include BASEPATH . "/pages/files.php";
     }
     // include BASEPATH . "/pages/add-activity.php";
     include BASEPATH . "/footer.php";
@@ -367,8 +428,14 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     $form = $osiris->activities->findOne(['_id' => $id]);
     $copy = false;
 
+    
+    $name = $activity['title']??$id;
+    if (strlen($name) > 20)
+        $name = mb_substr($name, 0, 20)."&hellip;";
+    $name = ucfirst($activity['type']) . ": ". $name;
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => $name, 'path' => "/activities/view/$id"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
 

@@ -99,7 +99,7 @@ Route::post('/download', function () {
 
         foreach ($cursor as $u) {
             if (empty($u['username'] ?? '')) continue;
-            $users[] = $u['username'];
+            $users[] = strtolower($u['username']);
         }
         $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
         $filename .= "_".trim($params['dept']);

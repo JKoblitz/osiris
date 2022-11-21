@@ -1,4 +1,16 @@
 
+
+function objectifyForm(el) {
+    var formArray = $(el).serializeArray();
+    //serialize data function
+    var returnArray = {};
+    for (var i = 0; i < formArray.length; i++) {
+        returnArray[formArray[i]['name']] = formArray[i]['value'];
+    }
+    return returnArray;
+}
+
+
 function _create(data) {
     $('.loader').addClass('show')
     $.ajax({
@@ -43,6 +55,27 @@ function _update(id, data) {
     })
 }
 
+function _updateUser(id, data) {
+    $('.loader').addClass('show')
+    $.ajax({
+        type: "POST",
+        data: {
+            values: data
+        },
+        dataType: "html",
+        url: ROOTPATH + '/update-user/' + id,
+        success: function (response) {
+            $('.loader').removeClass('show')
+            console.log(response);
+            toastSuccess("Updated " + response.updated + " datasets.")
+            // $('#result').html(response)
+        },
+        error: function (response) {
+            $('.loader').removeClass('show')
+            toastError(response.responseText)
+        }
+    })
+}
 
 function _approve(id, approval) {
     $('.loader').addClass('show')
@@ -56,13 +89,13 @@ function _approve(id, approval) {
         success: function (response) {
             $('.loader').removeClass('show')
             var loc = location.pathname.split('/')
-            if (loc[loc.length-1] == "issues"){
+            if (loc[loc.length - 1] == "issues") {
                 $('#tr-' + id).remove()
                 return;
             };
 
             if (approval == 1) {
-                $('#approve-'+ id).remove()
+                $('#approve-' + id).remove()
                 toastSuccess('Approved')
             }
             if (approval == 2) {

@@ -549,10 +549,10 @@ function val($index, $default = '')
                         <input type="text" class="form-control" name="values[link]" id="software_link" value="<?= val('link') ?>">
                     </div>
 
-                    <div class="col-sm">
+                    <!-- <div class="col-sm">
                         <label for="software_doi" class="element-link">DOI</label>
                         <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="software_doi" placeholder="10.5281/zenodo.3742817">
-                    </div>
+                    </div> -->
 
                     <div class="col-sm-2">
                         <label class="element-other" for="software_version"><?= lang('Version') ?></label>
@@ -663,7 +663,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <div class="form-row row-eq-spacing" data-visible="article,preprint,book,chapter,dissertation,others">
+                <div class="form-row row-eq-spacing" data-visible="article,preprint,magazine,book,chapter,lecture,poster,dissertation,others,misc-once,misc-annual,software">
                     <div class="col-sm">
                         <label for="doi" class="element-link">DOI</label>
                         <?php if (empty($form)) { ?>
@@ -683,7 +683,7 @@ function val($index, $default = '')
                         <?php } ?>
 
                     </div>
-                    <div class="col-sm">
+                    <div class="col-sm" data-visible="article,preprint,magazine,book,chapter,others">
                         <label for="pubmed">Pubmed</label>
                         <input type="number" class="form-control" name="values[pubmed]" value="<?= val('pubmed') ?>" id="pubmed">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
@@ -794,16 +794,20 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <?php if (!empty($form) && isset($form['file']) && !empty($form['file']) && !$copy) { ?>
+                <!-- <?php if (!empty($form) && isset($form['file']) && !empty($form['file']) && !$copy) { ?>
                     <p>
                         <?= lang('The following file is appended to this entry:', 'Die folgende Datei ist diesem Eintrag angehängt:') ?>
                         <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>/file" class="btn"><?= lang('FILE', 'DATEI') ?></a>
                         <?= lang('Uploading a new file will overwrite the existing one.', 'Wenn du eine neue Datei hochlädst, wird sie überschrieben.') ?>
                     </p>
 
-                <?php } ?>
-
+                <?php } ?> -->
+<!-- 
                 <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
+                    <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                    <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
+                </div> -->
+                <div data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                     <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                     <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div>

@@ -589,3 +589,16 @@ label.element-other::before {
 #publication-form.show-examples #examples {
     display: block;
 }
+
+[data-toggle="tooltip"]::after {
+text-overflow: ellipsis;
+overflow: hidden;
+}
+
+.file-link {
+    color: var(--success-color);
+}
+
+.file-link:hover {
+    color: var(--success-color-dark)
+}

@@ -13,9 +13,9 @@ function validateValues($values)
     foreach ($values as $key => $value) {
         if ($key == 'doi') {
             if (!str_contains($value, '10.')) $value = null;
-            elseif (!str_starts_with($value, '10.')){
-                $value = explode('10.',$value,2);
-                $values[$key] = "10.".$value[1];
+            elseif (!str_starts_with($value, '10.')) {
+                $value = explode('10.', $value, 2);
+                $values[$key] = "10." . $value[1];
             }
             // dump($value);
             // die;
@@ -107,7 +107,7 @@ function validateValues($values)
         if (!isset($values['correction'])) $values['correction'] = false;
     }
 
-    if (isset($values['year']) && ($values['year']<1900 || $values['year']>(CURRENTYEAR??2055)+5)){
+    if (isset($values['year']) && ($values['year'] < 1900 || $values['year'] > (CURRENTYEAR ?? 2055) + 5)) {
         echo "The year $values[year] is not valid!";
         die();
     }
@@ -298,11 +298,11 @@ Route::post('/create', function () {
     }
 
 
-    if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-        $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
+    // if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
+    //     $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
 
-        $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
-    }
+    //     $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
+    // }
     foreach ($required as $req) {
         if (!isset($values[$req]) || empty($values[$req])) {
             echo "$req is required";
@@ -332,6 +332,20 @@ Route::post('/create', function () {
     ]);
 });
 
+// Route::post('/upload-file/([A-Za-z0-9]*)', function ($id) {
+
+//     if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
+//         $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
+
+//         $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
+//     }
+
+//     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+//         $red = str_replace("*", $id, $_POST['redirect']);
+//         header("Location: " . $red . "?msg=add-success");
+//         die();
+//     }
+// });
 
 Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
@@ -386,6 +400,9 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
 
     $collection = $osiris->users;
     $values = validateValues($values);
+
+    // dump($values, true);
+    // die;
 
     $values['is_controlling'] = boolval($values['is_controlling'] ?? false);
     $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
@@ -662,6 +679,12 @@ Route::get('/form/(lecture|misc|poster|publication|students)/([A-Za-z0-9]*)', fu
     $url = ROOTPATH . "/$col";
     $form = $collection->findOne(['_id' => $id]);
     include BASEPATH . "/components/form-$col.php";
+});
+
+Route::get('/form/user/([A-Za-z0-9]*)', function ($user) {
+    include_once BASEPATH . "/php/_db.php";
+    $data = getUserFromId($user);
+    include BASEPATH . "/pages/editor/user.php";
 });
 
 

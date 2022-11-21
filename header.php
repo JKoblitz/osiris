@@ -131,35 +131,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-
-            <!-- <a href="<?= ROOTPATH ?>/activities/new" class="btn w-250 btn-primary font-weight-bold test-<?= $pageactive('activities/new') ?>">
-                            <i class="far fa-plus" aria-hidden="true"></i>
-                            <?= lang('Add activity', 'Aktivität hinzuf.') ?>
-                        </a> -->
-            <!-- <form id="navbar-search" action="" method="get" class="nav-search">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                            <i class="fa-regular fa-calendar-day"></i>
-                        </div>
-                    </div>
-                    <select name="select-year" id="select-year" class="form-control">
-                        <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
-                            <option value="<?= $year ?>" <?= SELECTEDYEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
-                        <?php } ?>
-                    </select>
-                    <select name="select-quarter" id="select-quarter" class="form-control">
-                        <option value="1" <?= SELECTEDQUARTER == '1' ? 'selected' : '' ?>>Q1</option>
-                        <option value="2" <?= SELECTEDQUARTER == '2' ? 'selected' : '' ?>>Q2</option>
-                        <option value="3" <?= SELECTEDQUARTER == '3' ? 'selected' : '' ?>>Q3</option>
-                        <option value="4" <?= SELECTEDQUARTER == '4' ? 'selected' : '' ?>>Q4</option>
-                    </select>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary"><i class="fas fa-check"></i></button>
-                    </div>
-                </div>
-            </form> -->
-
+            <a href="<?= ROOTPATH ?>/news#18.11.22" class="btn text-signal">
+                <i class="fas fa-stars"></i>
+                NEWS
+                (<?= time_elapsed_string('2022-11-18 10:00') ?>)
+            </a>
         </nav>
 
         <!-- Sidebar start -->

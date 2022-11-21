@@ -752,6 +752,8 @@ function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el = nul
             el = $('#add-author')
         }
     }
+    if (lastname === undefined) lastname = ""
+    if (firstname === undefined) firstname = ""
     var author = $('<div class="author">')
         .on('dblclick', function () {
             toggleAffiliation(this)

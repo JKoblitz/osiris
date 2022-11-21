@@ -181,7 +181,7 @@ function activity_icon($doc, $tooltip = true)
     $name = "Undefined";
     switch ($type) {
         case 'publication':
-            $pubtype = strtolower(trim($doc['pubtype'] ?? ''));
+            $pubtype = strtolower(trim($doc['pubtype'] ?? $type));
             switch ($pubtype) {
                 case 'journal article':
                 case 'journal-article':
@@ -189,7 +189,6 @@ function activity_icon($doc, $tooltip = true)
                     $name = "Journal article";
                     $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
                     break 2;
-
                 case 'magazine article':
                 case 'magazine':
                     $name = "Magazine article";
@@ -202,19 +201,25 @@ function activity_icon($doc, $tooltip = true)
                     $icon = "<i class='far fa-lg text-publication fa-book'></i>";
                     break 2;
                 case 'book-editor':
+                case 'publication':
                     $name = "Book";
                     $icon = "<i class='far fa-lg text-publication fa-book-bookmark'></i>";
+                    break 2;
                 case 'book':
                     $name = "Book";
                     $icon = "<i class='far fa-lg text-publication fa-book'></i>";
+                    break 2;
+                case 'dissertation':
+                    $name = "Dissertation";
+                    $icon = "<i class='far fa-lg text-publication fa-book-user'></i>";
                     break 2;
                 case 'others':
                     $name = lang('Others', 'Weiteres');
                     $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
                     break 2;
                 default:
-                    $name = "Journal article";
-                    $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
+                    $name = lang('Others', 'Weiteres');
+                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
                     break 2;
             }
         case 'poster':
@@ -289,6 +294,8 @@ class Format
     private $usecase = "web";
     private $first = 1;
     private $last = 1;
+    private $appendix = '';
+    private $full = false;
 
     function __construct($highlight = true, $usecase = 'web')
     {
@@ -298,53 +305,84 @@ class Format
 
     function format($doc)
     {
+        $line = "";
         switch ($doc['type'] ?? '') {
             case 'students':
-                return $this->format_students($doc);
+                $line = $this->format_students($doc);
+                break;
             case 'teaching':
-                return $this->format_teaching($doc);
+                $line = $this->format_teaching($doc);
+                break;
             case 'poster':
-                return $this->format_poster($doc);
+                $line = $this->format_poster($doc);
+                break;
             case 'lecture':
-                return $this->format_lecture($doc);
+                $line = $this->format_lecture($doc);
+                break;
             case 'publication':
-                return $this->format_publication($doc);
+                $line = $this->format_publication($doc);
+                break;
             case 'misc':
-                return $this->format_misc($doc);
+                $line = $this->format_misc($doc);
+                break;
             case 'review':
-                return $this->format_review($doc);
+                $line = $this->format_review($doc);
+                break;
             case 'software':
-                return $this->format_software($doc);
-                // if (strtolower($doc['role']) == 'reviewer') {
-
-                // } else {
-                //     return $this->format_editorial($doc);
-                // }
+                $line = $this->format_software($doc);
+                break;
             default:
-                return "";
+                $line = "";
+                break;
         }
+        if ($this->usecase == 'web' && isset($doc['files'])) {
+            foreach ($doc['files'] as $file) {
+                $line .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filename]' class='file-link'><i class='far fa-file fa-file-$file[filetype]'></i></a>";
+            }
+        }
+        if (!empty($this->appendix)) {
+            $line .= "<br>";
+            $line .= $this->appendix;
+        }
+        return $line;
     }
 
 
     function formatAuthors($raw_authors, $separator = 'and', $first = 1, $last = 1)
     {
+        $n = 0;
         $authors = array();
         foreach ($raw_authors as $a) {
+
+            if (!$this->full && $n++ >= 10 && ($a['aoi'] ?? 0) == 0) {
+                if (end($authors) != '...')
+                    $authors[] = "...";
+                continue;
+            }
             $author = abbreviateAuthor($a['last'], $a['first']);
             if ($this->highlight === true) {
                 if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
             } else if ($this->highlight && $a['user'] == $this->highlight) {
                 $author = "<b>$author</b>";
             }
+            
             if ($first > 1 && $a['position'] == 'first') {
                 $author .= "<sup>#</sup>";
             }
             if ($last > 1 && $a['position'] == 'last') {
                 $author .= "<sup>*</sup>";
             }
+            
             $authors[] = $author;
         }
-        return commalist($authors, $separator);
+        
+        $append = "";
+        if (!$this->full && $n > 10 && end($authors) == '...') {
+            $append = " et al.";
+            $separator = ", ";
+            array_pop($authors);
+        }
+        return commalist($authors, $separator). $append;
     }
 
     function formatEditors($raw_editors, $separator = 'and')
@@ -790,8 +828,8 @@ class Format
                 if (!empty($doc['title'])) {
                     $result .= " $doc[title].";
                 }
-                
-                $result .= " [".($doc["doc_type"] ?? ucfirst($doc['pubtype']))."].";
+
+                $result .= " [" . ($doc["doc_type"] ?? ucfirst($doc['pubtype'])) . "].";
                 if (!empty($doc['link'])) {
                     $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
                 }
@@ -813,186 +851,12 @@ class Format
             }
         }
 
-        if ($first > 1 || $last > 1) $result .= "<br>";
+        // if ($first > 1 || $last > 1) $result .= "<br>";
         if ($first > 1) {
-            $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
+            $this->appendix .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
         }
         if ($last > 1) {
-            $result .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
-        }
-
-        return $result;
-    }
-
-    function format_publication_($doc)
-    {
-
-        $result = "";
-        $type = strtolower(trim($doc['pubtype']));
-        // $style = "apa6";
-
-        // prepare authors
-        $authors = "";
-        $first = 1;
-        $last = 1;
-        if (!empty($doc['authors']) && !is_array($doc['authors'])) {
-            $doc['authors'] = $doc['authors']->bsonSerialize();
-        }
-        if (!empty($doc['authors']) && is_array($doc['authors'])) {
-            $pos = array_count_values(array_column($doc['authors'], 'position'));
-            $first = $pos['first'] ?? 1;
-            $last = $pos['last'] ?? 1;
-            $authors = $this->formatAuthors($doc['authors'], 'and', $first, $last);
-        }
-
-
-
-        switch ($type) {
-            case 'journal article':
-            case 'journal-article':
-            case 'article':
-                $result .= $authors;
-                if (!empty($doc['year'])) {
-                    $result .= " ($doc[year])";
-                }
-                if (!empty($doc['correction'])) {
-                    $result .= " <span style='color:#B61F29;'>Correction to:</span>";
-                }
-                if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
-                }
-                if (!empty($doc['journal'])) {
-                    $result .= " <i>$doc[journal]</i>";
-
-                    if (!empty($doc['volume'])) {
-                        $result .= " $doc[volume]";
-                    }
-                    if (!empty($doc['pages'])) {
-                        $result .= ": $doc[pages]";
-                    }
-                    $result .= ".";
-                }
-                break;
-
-            case 'magazine article':
-            case 'magazine':
-                $result .= $authors;
-                if (!empty($doc['year'])) {
-                    $result .= " ($doc[year])";
-                }
-                if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
-                }
-                if (!empty($doc['magazine'])) {
-                    $result .= " <i>$doc[magazine]</i>.";
-                }
-                if (!empty($doc['link'])) {
-                    $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
-                }
-                break;
-            case 'book-chapter':
-            case 'chapter':
-                $result .= $authors;
-                if (!empty($doc['year'])) {
-                    $result .= " ($doc[year])";
-                }
-                if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
-                }
-                if (!empty($doc['book'])) {
-                    // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
-                    // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
-                    // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
-                    $result .= " In:";
-                    if (!empty($doc['editors'])) {
-                        $result .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
-                    };
-                    $result .= " <i>$doc[book]</i>";
-                }
-                if (!empty($doc['edition']) || !empty($doc['pages'])) {
-                    $ep = array();
-                    if (!empty($doc['edition'])) {
-                        $ed = $doc['edition'];
-                        if ($ed == 1) $ed .= "st";
-                        elseif ($ed == 1) $ed .= "nd";
-                        else $ed .= "th";
-                        $ep[] = $ed . " ed.";
-                    }
-
-                    if (!empty($doc['pages'])) {
-                        $ep[] = "pp. $doc[pages]";
-                    }
-
-                    $result .= " (" . implode(', ', $ep) . ")";
-                }
-                $result .= ".";
-
-                if (!empty($doc['city'])) {
-                    $result .= " $doc[city]:";
-                }
-                if (!empty($doc['publisher'])) {
-                    $result .= " $doc[publisher].";
-                }
-                break;
-            case 'book':
-                $result .= $authors;
-                if (!empty($doc['year'])) {
-                    $result .= " ($doc[year])";
-                }
-                if (!empty($doc['title'])) {
-                    $result .= " <i>$doc[title]</i>.";
-                }
-                if (!empty($doc['edition']) || !empty($doc['pages'])) {
-                    $ep = array();
-                    if (!empty($doc['edition'])) {
-                        $ed = $doc['edition'];
-                        if ($ed == 1) $ed .= "st";
-                        elseif ($ed == 1) $ed .= "nd";
-                        else $ed .= "th";
-                        $ep[] = $ed . " ed.";
-                    }
-
-                    if (!empty($doc['pages'])) {
-                        $ep[] = "pp. $doc[pages]";
-                    }
-
-                    $result .= " (" . implode(', ', $ep) . ")";
-                }
-                $result .= ".";
-
-                if (!empty($doc['city'])) {
-                    $result .= " $doc[city]:";
-                }
-                if (!empty($doc['publisher'])) {
-                    $result .= " $doc[publisher].";
-                }
-                break;
-            default:
-                # code...
-                break;
-        }
-
-        if ($this->usecase == 'web') {
-            if (!empty($doc['doi'])) {
-                $result .= " DOI: <a target='_blank' href='https://doi.org/$doc[doi]'>https://doi.org/$doc[doi]</a>";
-            }
-        }
-        if (!empty($doc['epub'])) {
-            $result .= " <span style='color:#B61F29;'>[Epub ahead of print]</span>";
-        }
-
-        if ($this->usecase == 'web') {
-            if (!empty($doc['open_access'])) {
-                $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
-            }
-        }
-
-        if ($first > 1 || $last > 1) $result .= "<br>";
-        if ($first > 1) {
-            $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
-        }
-        if ($last > 1) {
-            $result .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
+            $this->appendix .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
         }
 
         return $result;

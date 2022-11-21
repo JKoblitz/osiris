@@ -50,7 +50,8 @@ function getUserFromId($user)
     $USER['name'] = $USER['first'] . " " . $USER['last'];
     // $USER['name_formal'] = $USER['last'] . ", " . $USER['first'];
     $USER['first_abbr'] = "";
-    foreach (explode(" ", $USER['first']) as $name) {
+    $first = explode(" ", $USER['first']);
+    foreach ($first as $name) {
         $USER['first_abbr'] .= " " . $name[0] . ".";
     }
     return $USER;
