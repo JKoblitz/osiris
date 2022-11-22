@@ -22,10 +22,10 @@ $(document).ready(function () {
         var quill = new Quill(element, {
             modules: {
                 toolbar: [
-                    ['bold', 'italic', 'underline']
+                    ['italic', 'underline']
                 ]
             },
-            formats: ['bold', 'italic', 'underline', 'symbol'],
+            formats: ['italic', 'underline', 'symbol'],
             placeholder: '',
             theme: 'snow' // or 'bubble'
         });
@@ -947,10 +947,10 @@ function loadModal(path, data = {}) {
                 var quill = new Quill('#the-modal .title-editor', {
                     modules: {
                         toolbar: [
-                            ['bold', 'italic', 'underline']
+                            ['italic', 'underline']
                         ]
                     },
-                    formats: ['bold', 'italic', 'underline'],
+                    formats: ['italic', 'underline'],
                     placeholder: '',
                     theme: 'snow' // or 'bubble'
                 });

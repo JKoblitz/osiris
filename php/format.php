@@ -13,7 +13,10 @@ function commalist($array, $sep = "and")
 function abbreviateAuthor($last, $first, $reverse = true)
 {
     $fn = "";
-    foreach (explode(" ", $first) as $name) {
+    foreach (preg_split("/(\s| )/", $first) as $name) {
+        echo "<!--";
+        echo($name);
+        echo "-->";
         $fn .= " " . $name[0] . ".";
     }
     if ($reverse) return $last . "," . $fn;
@@ -306,6 +309,7 @@ class Format
     function format($doc)
     {
         $line = "";
+        $this->appendix = "";
         switch ($doc['type'] ?? '') {
             case 'students':
                 $line = $this->format_students($doc);

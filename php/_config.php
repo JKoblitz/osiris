@@ -328,21 +328,21 @@ function typeInfo($type)
         case 'students':
             return [
                 'name' => lang('Students & Guests', 'Studierende & Gäste'),
-                'color' => "#575756",
+                'color' => "#5F272A",
                 'icon' => 'user-graduate'
                 // 'color' => 'var(--dark-color)'
             ];
         case 'teaching':
             return [
                 'name' => lang('Teaching', 'Lehre'),
-                'color' => "#575756",
+                'color' => "#000000",
                 'icon' => 'chalkboard-user'
                 // 'color' => 'var(--dark-color)'
             ];
         case 'software':
             return [
                 'name' => lang('Software & Data', 'Software & Daten'),
-                'color' => "#575756",
+                'color' => "#9a499c",
                 'icon' => 'desktop'
                 // 'color' => 'var(--dark-color)'
             ];

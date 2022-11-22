@@ -194,7 +194,7 @@ if (isset($_GET['verbose'])) {
 
                     <i class="fad fa-lg fa-trophy text-signal"></i>
                     <span class="">
-                        <?= achievementText($achievement['title']) ?>
+                        <?= achievementText($achievement['title'], $scientist['first']) ?>
                         <small class="text-muted">am <?= $achievement['achieved'] ?></small>
                     </span>
                 <?php
@@ -250,9 +250,9 @@ if (isset($_GET['verbose'])) {
                 <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network text-signal"></i>
                     <?= lang('My coauthor network', 'Mein Koautoren-Netzwerk') ?>
                 </a> -->
-                <a href="<?= ROOTPATH ?>/my-activities" class="btn">
-                    <i class="far fa-book-bookmark text-danger"></i> <?= lang('My activities', 'Meine Aktivitäten ') ?>
-                </a>
+                    <a href="<?= ROOTPATH ?>/my-activities" class="btn">
+                        <i class="far fa-book-bookmark text-danger"></i> <?= lang('My activities', 'Meine Aktivitäten ') ?>
+                    </a>
                 </div>
 
 
@@ -292,14 +292,52 @@ if (isset($_GET['verbose'])) {
                         <td><?= lang('Telephone', 'Telefon') ?></td>
                         <td><?= $scientist['telephone'] ?? '' ?></td>
                     </tr>
-                    <tr>
-                        <td>ORCID</td>
-                        <td>
-                            <?php if (isset($scientist['orcid'])) { ?>
+                    <?php if (!empty($scientist['twitter'] ?? null)) { ?>
+                        <tr>
+                            <td>Twitter</td>
+                            <td>
+                                <a href="https://twitter.com/<?= $scientist['twitter'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['twitter'] ?></a>
+
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if (!empty($scientist['orcid'] ?? null)) { ?>
+                        <tr>
+                            <td>ORCID</td>
+                            <td>
                                 <a href="http://orcid.org/<?= $scientist['orcid'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['orcid'] ?></a>
-                            <?php } ?>
-                        </td>
-                    </tr>
+
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if (!empty($scientist['researchgate'] ?? null)) { ?>
+                        <tr>
+                            <td>ResearchGate</td>
+                            <td>
+                                <a href="https://www.researchgate.net/profile/<?= $scientist['researchgate'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['researchgate'] ?></a>
+
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if (!empty($scientist['google_scholar'] ?? null)) { ?>
+                        <tr>
+                            <td>Google Scholar</td>
+                            <td>
+                                <a href="https://scholar.google.com/citations?user=<?= $scientist['google_scholar'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['google_scholar'] ?></a>
+
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if (!empty($scientist['webpage'] ?? null)) {
+                        $web = preg_replace('/^https?:\/\//', '', $scientist['webpage']);
+                    ?>
+                        <tr>
+                            <td>Personal web page</td>
+                            <td>
+                                <a href="https://<?= $web ?>" target="_blank" rel="noopener noreferrer"><?= $web ?></a>
+                            </td>
+                        </tr>
+                    <?php } ?>
                     <tr>
                         <td><?= lang('Department', 'Abteilung') ?></td>
                         <td><?= deptInfo($scientist['dept'])['name'] ?></td>

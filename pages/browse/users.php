@@ -53,7 +53,7 @@
                     ?></td>
                 <td><?= $document['unit'] ?></td>
                 <td>
-                    <span class="hidden"><?= $document['is_scientist'] ?></span>
+                    <!-- <span class="hidden"><?= $document['is_scientist'] ?></span> -->
                     <?= bool_icon($document['is_scientist']) ?>
                 </td>
                 <!-- <td><?= bool_icon($document['is_active']) ?></td> -->

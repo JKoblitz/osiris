@@ -49,14 +49,6 @@ dump($data, true);
                 <?php } ?>
             </select>
         </div>
-
-        <div class="col-sm">
-            <label for="orcid">ORCID</label>
-            <input type="text" name="values[orcid]" id="orcid" class="form-control" value="<?= $data['orcid'] ?? '' ?>">
-        </div>
-    </div>
-
-    <div class="form-row row-eq-spacing-sm">
         <div class="col-sm">
             <label for="telephone"><?= lang('Telephone', 'Telefon') ?></label>
             <input type="text" name="values[telephone]" id="telephone" class="form-control" value="<?= $data['telephone'] ?? '' ?>">
@@ -65,24 +57,54 @@ dump($data, true);
             <label for="mail">Mail</label>
             <input type="text" name="values[mail]" id="mail" class="form-control" value="<?= $data['mail'] ?? '' ?>">
         </div>
+
     </div>
 
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?>>
-        <label for="is_controlling">Is Controlling</label>
+    <div class="form-row row-eq-spacing-sm">
+       
+    <div class="col-sm">
+            <label for="orcid">ORCID</label>
+            <input type="text" name="values[orcid]" id="orcid" class="form-control" value="<?= $data['orcid'] ?? '' ?>">
+        </div>
+    <div class="col-sm">
+            <label for="twitter">Twitter</label>
+            <input type="text" name="values[twitter]" id="twitter" class="form-control" value="<?= $data['twitter'] ?? '' ?>">
+        </div>
     </div>
 
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
-        <label for="is_scientist">Is Scientist</label>
-    </div>
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?>>
-        <label for="is_leader">Is Leader</label>
+    <div class="form-row row-eq-spacing-sm">
+     
+    <div class="col-sm">
+            <label for="researchgate">ResearchGate Handle</label>
+            <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
+        </div>
+        <div class="col-sm">
+            <label for="google_scholar">Google Scholar ID</label>
+            <input type="text" name="values[google_scholar]" id="google_scholar" class="form-control" value="<?= $data['google_scholar'] ?? '' ?>">
+        </div>
+        <div class="col-sm">
+            <label for="webpage">Personal web page</label>
+            <input type="text" name="values[webpage]" id="webpage" class="form-control" value="<?= $data['webpage'] ?? '' ?>">
+        </div>
     </div>
     <div class="form-group custom-checkbox">
         <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
         <label for="is_active">Is Active</label>
+    </div>
+    <div class="form-group custom-checkbox">
+        <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
+        <label for="is_scientist">Is Scientist</label>
+    </div>
+
+    
+    <div class="form-group custom-checkbox">
+        <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] ?? false) ? '' : 'disabled' ?>>
+        <label for="is_controlling">Is Controlling</label>
+    </div>
+
+    <div class="form-group custom-checkbox">
+        <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] ?? false) ? '' : 'disabled' ?>>
+        <label for="is_leader">Is Leader</label>
     </div>
 
     <button type="submit" class="btn btn-primary">

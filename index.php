@@ -324,7 +324,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     
     $name = $activity['title']??$id;
     if (strlen($name) > 20)
-        $name = mb_substr($name, 0, 20)."&hellip;";
+        $name = mb_substr(strip_tags($name), 0, 20)."&hellip;";
     $name = ucfirst($activity['type']) . ": ". $name;
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -351,7 +351,7 @@ Route::get('/activities/files/([a-zA-Z0-9]*)', function ($id) {
 
     $name = $activity['title']??$id;
     if (strlen($name) > 20)
-        $name = mb_substr($name, 0, 20)."&hellip;";
+        $name = mb_substr(strip_tags($name), 0, 20)."&hellip;";
     $name = ucfirst($activity['type']) . ": ". $name;
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -379,7 +379,7 @@ Route::post('/activities/files/([a-zA-Z0-9]*)', function ($id) {
     
     $name = $activity['title']??$id;
     if (strlen($name) > 20)
-        $name = mb_substr($name, 0, 20)."&hellip;";
+        $name = mb_substr(strip_tags($name), 0, 20)."&hellip;";
     $name = ucfirst($activity['type']) . ": ". $name;
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -429,10 +429,10 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     $copy = false;
 
     
-    $name = $activity['title']??$id;
+    $name = $form['title']??$id;
     if (strlen($name) > 20)
-        $name = mb_substr($name, 0, 20)."&hellip;";
-    $name = ucfirst($activity['type']) . ": ". $name;
+        $name = mb_substr(strip_tags($name), 0, 20)."&hellip;";
+    $name = ucfirst($form['type']) . ": ". $name;
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
         ['name' => $name, 'path' => "/activities/view/$id"],

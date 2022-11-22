@@ -15,11 +15,11 @@ $USER = array();
 if (!empty($_SESSION['username'])) {
     $USER = getUserFromId($_SESSION['username']);
 
-    if (empty($USER)){
+    if (empty($USER)) {
         require_once BASEPATH . '/php/_login.php';
         $USER = updateUser($username);
         $osiris->users->insertOne(
-           $USER
+            $USER
         );
     }
     // return $this->info['last_name'] . "," . $fn;
@@ -200,7 +200,7 @@ function addUserActivity($activity = 'create')
             $uact++;
         }
     }
-    
+
     if (empty($uact)) {
         $update['$push']['achievements'] = ['title' => "first-$activity", 'achieved' => date("d.m.Y")];
     } elseif ($uact === 9) {
@@ -217,8 +217,43 @@ function addUserActivity($activity = 'create')
 }
 
 
-function achievementText($title)
+function achievementText($title, $person = null)
 {
+    if ($person) {
+        switch ($title) {
+            case 'first-create':
+                return lang("$person created the first activity", "$person hat die erste Aktivität eingetragen");
+                break;
+
+            case 'first-update':
+                return lang("$person updated an activity for the first time", "$person hat zum ersten Mal eine Aktivität bearbeitet");
+                break;
+
+            case '10-create':
+                return lang("$person created 10 activities", "$person hat bereits 10 Aktivität eingetragen");
+                break;
+
+            case '10-update':
+                return lang("$person updated 10 activities", "$person hat bereits 10 Mal eine Aktivität bearbeitet");
+                break;
+
+            case '50-create':
+                return lang("$person created 50 activities", "$person hat bereits 50 Aktivität eingetragen");
+                break;
+
+            case '50-update':
+                return lang("$person updated 50 activities", "$person hat bereits 50 Mal eine Aktivität bearbeitet");
+                break;
+
+            case 'first-delete':
+                return lang("$person deleted an activity for the first time", "$person hat zum ersten Mal eine Aktivität gelöscht");
+                break;
+
+            default:
+                return "";
+                break;
+        }
+    }
     switch ($title) {
         case 'first-create':
             return lang("You created your first activity", "Du hast deine erste Aktivität eingetragen");

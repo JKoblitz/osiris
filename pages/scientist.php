@@ -79,7 +79,6 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
                 <?php
                 echo deptInfo($scientist['dept'])['name'];
                 ?>
-
             </h3>
             <p class="lead mt-0">
                 <i class="fad fa-lg fa-coin text-signal"></i>
@@ -97,7 +96,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
 
                     <i class="fad fa-lg fa-trophy text-signal"></i>
                     <span class="">
-                        <?= achievementText($achievement['title']) ?>
+                        <?= achievementText($achievement['title'], $scientist['first'] ?? null) ?>
                         <small class="text-muted">am <?= $achievement['achieved'] ?></small>
                     </span>
                 <?php
