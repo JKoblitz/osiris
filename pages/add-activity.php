@@ -3,6 +3,20 @@
 $form = $form ?? array();
 $copy = $copy ?? false;
 $preset = $form['authors'] ?? array($USER);
+
+$first = 1;
+$last = 1;
+if (!empty($form) && $form['type'] == 'publication' && !empty($form['authors'])){
+    if (!is_array($form['authors'])) {
+        $form['authors'] = $form['authors']->bsonSerialize();
+    }
+    if (is_array($form['authors'])) {
+        $pos = array_count_values(array_column($form['authors'], 'position'));
+        $first = $pos['first'] ?? 1;
+        $last = $pos['last'] ?? 1;
+    }
+}
+
 $authors = "";
 foreach ($preset as $a) {
     $authors .= authorForm($a);
@@ -365,9 +379,9 @@ function val($index, $default = '')
 
                     <div class="float-right" data-visible="article,preprint" id="author-numbers">
                         <label for="first-authors"><?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?></label>
-                        <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                        <input type="number" name="values[first_authors]" id="first-authors" value="<?= $first ?>" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
                         <label for="last-authors"><?= lang('last authors:', 'Letztautoren:') ?></label>
-                        <input type="number" name="values[last_authors]" id="last-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                        <input type="number" name="values[last_authors]" id="last-authors" value="<?= $last ?>" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
                     </div>
                     <div class="author-list">
                         <?= $authors ?>
@@ -752,7 +766,7 @@ function val($index, $default = '')
                             </label>
                             <select class="form-control" id="username" name="values[user]" required autocomplete="off">
                                 <?php
-                                $userlist = $osiris->users->find();
+                                $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
                                 foreach ($userlist as $j) { ?>
                                     <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                                 <?php } ?>
@@ -802,15 +816,15 @@ function val($index, $default = '')
                     </p>
 
                 <?php } ?> -->
-<!-- 
+                <!-- 
                 <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                     <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                     <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
-                </div> -->
+                </div>
                 <div data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                     <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                     <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
-                </div>
+                </div> -->
 
                 <button class="btn btn-primary" type="submit" id="submit-btn"><?= $btntext ?></button>
 
