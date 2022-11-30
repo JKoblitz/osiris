@@ -160,7 +160,6 @@ foreach ($impacts as $vals) {
                 y: {
                     stacked: true,
                     ticks: {
-                        // Include a dollar sign in the ticks
                         callback: function(value, index, ticks) {
                             // only show full numbers
                             if (Number.isInteger(value)) {

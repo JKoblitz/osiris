@@ -63,13 +63,19 @@ function validateValues($values)
             ];
         } else if (is_array($value)) {
             $values[$key] = validateValues($value);
+        } else if ($key == 'issn') {
+            if (empty($value)){
+                $values[$key] = array();
+            } else {
+                $values[$key] = explode(' ',$value);
+            }
         } else if ($value === 'true') {
             $values[$key] = true;
         } else if ($value === 'false') {
             $values[$key] = false;
-        } else if ($key == 'invited_lecture') {
+        } else if ($key == 'invited_lecture' || $key == 'open_access') {
             $values[$key] = boolval($value);
-        } else if (in_array($key, ['aoi', 'epub', 'correction', 'open_access'])) {
+        } else if (in_array($key, ['aoi', 'epub', 'correction'])) {
             // dump($value);
             // $values[$key] = boolval($value);
             $values[$key] = true;
@@ -88,7 +94,9 @@ function validateValues($values)
                 $values['month'] = $values[$key]['month'];
             }
         } else if (is_numeric($value)) {
-            if (is_float($value + 0)) {
+            if (str_starts_with($value, "0")){
+                $values[$key] = trim($value);
+            } elseif (is_float($value + 0)) {
                 $values[$key] = floatval($value);
             } else {
                 $values[$key] = intval($value);

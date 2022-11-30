@@ -1,3 +1,14 @@
+<style>
+    .custom-radio input#open_access:checked~label::before {
+        background-color: var(--success-color);
+        border-color: var(--success-color);
+    }
+
+    .custom-radio input#open_access-0:checked~label::before {
+        background-color: var(--danger-color);
+        border-color: var(--danger-color);
+    }
+</style>
 <?php
 
 $form = $form ?? array();
@@ -6,7 +17,7 @@ $preset = $form['authors'] ?? array($USER);
 
 $first = 1;
 $last = 1;
-if (!empty($form) && $form['type'] == 'publication' && !empty($form['authors'])){
+if (!empty($form) && $form['type'] == 'publication' && !empty($form['authors'])) {
     if (!is_array($form['authors'])) {
         $form['authors'] = $form['authors']->bsonSerialize();
     }
@@ -52,6 +63,8 @@ function val($index, $default = '')
 
 ?>
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
+
+<script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
 
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
@@ -107,7 +120,10 @@ function val($index, $default = '')
             <?= lang('How does this work?', 'Wie funktioniert das?') ?>
         </button>
         <!-- Create new activity -->
-        <h3 class=""><?= lang('Add activity', 'Füge Aktivität hinzu') ?></h3>
+        <h2 class="">
+            <i class="icon-activity-plus"></i>
+            <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
+        </h2>
         <form method="get" onsubmit="getPubData(event, this)">
             <div class="form-group">
                 <label for="doi"><?= lang('Search by DOI or Pubmed-ID', 'Suche über die DOI oder Pubmed-ID') ?>:</label>
@@ -364,7 +380,7 @@ function val($index, $default = '')
                         <span data-visible="misc-once,misc-annual,students,guests,teaching"><?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?></span>
                     </label>
 
-                    <div class="form-group title-editor"><?= val('title') ?></div>
+                    <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
                     <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= val('title') ?>">
                 </div>
 
@@ -609,7 +625,19 @@ function val($index, $default = '')
 
                     <div class="col-sm">
                         <label for="issn" class="element-cat">ISSN (<?= lang('space-seperated', 'getrennt durch Leerzeichen') ?></label>
-                        <input type="text" class="form-control" name="values[issn]" value="<?= val('issn') ?>" id="issn">
+                        <?php
+                        $issn = "";
+                        if (isset($form['issn'])) {
+                            $issn = $form['issn'];
+                            try {
+                                $issn = $issn->bsonSerialize();
+                            } catch (\Throwable $th) {
+                            }
+                            if (is_array($issn)) $issn = implode(' ', $issn);
+                        }
+                        ?>
+
+                        <input type="text" class="form-control" name="values[issn]" value="<?= $issn ?>" id="issn">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
@@ -713,9 +741,13 @@ function val($index, $default = '')
                 </div>
 
                 <div class="form-group" data-visible="article,preprint,book,chapter">
-                    <div class="custom-checkbox" id="open_access-div">
-                        <input type="checkbox" id="open_access" value="1" name="values[open_access]" <?= val('open_access', false) ? 'checked' : '' ?>>
-                        <label for="open_access">Open access</label>
+                    <div class="custom-radio d-inline-block" id="open_access-div">
+                        <input type="radio" id="open_access-0" value="false" name="values[open_access]" <?= val('open_access', false) ? '' : 'checked' ?>>
+                        <label for="open_access-0"><i class="icon-closed-access text-danger"></i> Closed access</label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-20" id="open_access-div">
+                        <input type="radio" id="open_access" value="true" name="values[open_access]" <?= val('open_access', false) ? 'checked' : '' ?>>
+                        <label for="open_access"><i class="icon-open-access text-success"></i> Open access</label>
                     </div>
                 </div>
 

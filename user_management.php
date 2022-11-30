@@ -172,3 +172,32 @@ Route::get('/userman/([A-Za-z0-9\-]*)', function ($username) {
     // }
 
 });
+
+
+
+Route::get('/userinfo/([A-Za-z0-9\-]*)', function ($username) {
+    include_once BASEPATH . "/php/_db.php";
+    require_once BASEPATH . '/php/_login.php';
+    $USER = getUserFromId($username);
+    dump($USER, true);
+    
+    $USER = updateUser($username);
+    dump($USER, true);
+    // if (empty($USER)){
+    //     require_once BASEPATH . '/php/_login.php';
+    //     $USER = updateUser($username);
+    //     $osiris->users->insertOne(
+    //        $USER
+    //     );
+    // } else {
+    //     echo "user exists";
+    // }
+
+    // echo "test";
+    // dump($activities);
+
+    // foreach ($activities as $key) {
+       
+    // }
+
+});

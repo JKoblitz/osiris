@@ -43,6 +43,18 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'welcome':
             $header = lang("Welcome,", "Willkommen,") . " " . ($_SESSION["name"] ?? '') . ".";
             $text = lang("You are now logged in.", "Du bist jetzt eingeloggt.");
+            if (isset($_GET['new'])) {
+                $text = lang(
+                    '',
+                    'Du bist zum ersten Mal hier? Ich habe dir einen neuen Account angelegt. 
+                    Bitte überprüfe <a class="link" href="' . ROOTPATH . '/edit/user/' . $_SESSION['username'] . '">dein Profil</a> und ergänze bzw. korrigiere die Angaben.'
+                );
+                if (!empty($_GET['new'])){
+                   $text .=  '<br/>'.lang('Ich habe außerdem <b>'.$_GET['new'].' Aktivitäten</b> gefunden, die vielleicht zu dir gehören. Du kannst sie <a class="link" href="' . ROOTPATH . '/issues">hier</a> überprüfen.');
+                }
+            }
+
+
             $class = "success";
             break;
 
@@ -57,6 +69,13 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $header = lang("Success", "Erfolg");
             $text = lang("Data set was updated successfully.", "Der Datensatz wurde erfolgreich bearbeitet.");
             $class = "success";
+            break;
+
+        case 'deleted':
+        case 'deleted-1':
+            $header = lang("Deleted", "Gelöscht");
+            $text = lang("You have deleted an activity.", "Du hast eine Aktivität gelöscht.");
+            $class = "danger";
             break;
 
         default:
@@ -445,4 +464,38 @@ function deptInfo($dept = null)
         "color" => '#cccccc',
         'name' => $dept
     ];
+}
+
+
+function getFileIcon($type)
+{
+    switch ($type) {
+        case 'pdf':
+        case 'csv':
+            return 'file-' . $type;
+        case 'xlsx':
+        case 'xls':
+            return 'file-excel';
+        case 'pptx':
+        case 'ppt':
+            return 'file-powerpoint';
+        case 'docx':
+        case 'doc':
+            return 'file-word';
+        case 'zip':
+        case 'gz':
+            return 'file-zipper';
+        case 'png':
+        case 'gif':
+        case 'jpg':
+        case 'jpeg':
+            return 'file-image';
+        case 'mp4':
+        case 'mpeg':
+            return 'file-video';
+        case 'json':
+            return 'file-code';
+        default:
+            return 'file-exclamation';
+    }
 }

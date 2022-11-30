@@ -58,3 +58,11 @@ GROUP BY journal_id ORDER BY `publications` DESC
 
 https://www.scimagojr.com/journalrank.php?wos=true&openaccess=true
 
+
+
+GRIS hat eine IDA Schnittstelle (REST)
+
+ida-wiki.leibniz-gemeinschaft.de
+
+
+ida@leibniz-gemeinschaft.de

@@ -38,9 +38,7 @@
         // });
         $('#result-table').DataTable({
             ajax: ROOTPATH + '/test/journals',
-            columnDefs: [
-
-                {
+            columnDefs: [{
                     "targets": 0,
                     "data": "name",
                     "render": function(data, type, full, meta) {
@@ -61,6 +59,12 @@
                     data: 'if'
                 },
             ],
+            <?php if (isset($_GET['q'])) { ?> 
+                "oSearch": {
+                    "sSearch": "<?=$_GET['q']?>"
+                }
+            <?php } ?>
         });
+
     });
 </script>

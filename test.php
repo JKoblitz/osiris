@@ -155,7 +155,9 @@ if (!empty($doc['epub'])) {
 
 if ($this->usecase == 'web') {
     if (!empty($doc['open_access'])) {
-        $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
+        $result .= ' <i class="icon-open-access text-success" title="Open Access"></i>';
+    } else {
+        $result .= ' <i class="icon-closed-access text-orange" title="Open Access"></i>';
     }
 }
 

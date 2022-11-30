@@ -1,5 +1,35 @@
 # Changelog
 
+## 29.11.12
+- Neue Visualisierungen wurden hinzugefügt (Abteilungs-Netzwerk und -Übersicht) und die vorhandene (Coautoren-Netzwerk) wurde verbessert
+
+## 24.11.22
+- Das Menü wurde umstrukturiert und farblich etwas einfacher gehalten
+- Neue Icons für Aktivitäten wurden eingeführt
+- Der Knopf zum Hinzufügen von Aktivitäten war anscheinend zu fancy, um ihn wahrzunehmen. Er wurde vereinfacht.
+- Die neue Primärfarbe ist "Osiris"-Orange
+- Die Profilseite wurde überarbeitet:
+  - Es wurde eine Grafik zur Rolle in Publikationen hinzugefügt
+  - Publikationen und andere Aktivitäten werden jetzt getrennt voneinander aufgeführt
+  - Viele Graphen haben nun Achsenbeschriftungen bekommen
+  - Der Polar-Chart zu Impact Faktoren wurde durch ein Histogramm ersetzt
+  - Die neuen Aktivitätstypen (Software & Teaching) wurden der Grafik über alle Aktivitäten hinzugefügt
+- Bei den zu überprüfenden Autorenschaften wurde die Information hinzugefügt, wer die Aktivität hinzugefügt bzw. zuletzt bearbeitet hat
+- Das Löschen von Aktivitäten ist nach ausdrücklichem Wunsch des Controllings für vergangene Quartale nicht mehr möglich. Fehlerhafte oder doppelte Aktivitäten können vom Controlling gelöscht werden, ein Knopf für schnellen Kontakt wurde hinzugefügt.
+- "Open Access" ist jetzt ein Radio Button statt einer Checkbox
+- Ein Icon für "Closed Access" wurde eingeführt
+- Die Übersichtsseite der Aktivitäten wurde grundsätzlich überarbeitet und ist jetzt deutlich übersichtlicher gestaltet
+- Der Upload von Dokumenten zu Aktivitäten wurde überarbeitet
+  - Jetzt getrennt vom Erstellen einer Publikation
+  - Es können mehrere Dokumente für eine Aktivität hochgeladen werden
+  - Es können jetzt auch andere Dokumente als PDF hochgeladen werden (z.B. PPTX, Word, usw.)
+  - Dokumente können jetzt wieder gelöscht werden
+  - Ein kleines Datei-Icon mit Link zum Dokument erscheint in der formatierten Aktivität.
+- Bug Fixes:
+  - Anzahl der Erst- und Letztautoren werden beim Bearbeiten einer Publikation nicht mehr versehentlich überschrieben
+  - Eine Aktivität zu kopieren war nicht möglich
+  - Viele kleinere Bug Fixes
+
 ## 18.11.22
 - Ich habe zusätzlich zu Crossref auch DataCite hinzugefügt. Dadurch können jetzt auch **DOIs von anderen Aktivitäten** als nur Publikationen hinzugefügt werden, beispielsweise Software, Datensätze, Poster, Präsentationen, usw. Um eine DOI für eine solche Aktivität zu bekommen, empfehle ich die Aktivität auf einem Datenarchiv wie beispielsweise [Zenodo](https://zenodo.org/) hochzuladen.
 - Die Seite "Mein Jahr" wurde für die neuen Aktivitäten aktualisiert

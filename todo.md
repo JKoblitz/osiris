@@ -1,11 +1,19 @@
 # To-Do-Liste
 
 ## Aus Beta-Feedback
-- [ ] Ich wollte bei einem Vortrag die pptx-Datei anhängen, da kam Error 405 und es ging nicht weiter (war vielleicht zu groß?)
-- [ ] bei den nicht-begutachteten Publikationen habe ich versucht eine PDF hochzuladen. Die war danach nicht sichtbar (selbst, wenn wäre das die falsche gewesen und da war mir aufgefallen, dass hier keine Möglichkeit gab, den Anhang zu löschen ;-))
 - [ ] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt
 - [ ] Für Autoren sollte die ORCID zusätzlich gespeichert werden.
 - [ ] Funding sollte gespeichert werden
+- [x] closed access icon
+- [x] open access als radio
+- [ ] impact factors
+- [x] copy geht nicht
+- [x] löschen nach dem Quartal nicht mehr möglich: Anfrage an Controlling
+- [x] bei vornamen kein leerzeichen
+- [x] first und last bei edit
+- [x] übersichtsseite bearbeiten
+- [x] Ich wollte bei einem Vortrag die pptx-Datei anhängen, da kam Error 405 und es ging nicht weiter (war vielleicht zu groß?)
+- [x] bei den nicht-begutachteten Publikationen habe ich versucht eine PDF hochzuladen. Die war danach nicht sichtbar (selbst, wenn wäre das die falsche gewesen und da war mir aufgefallen, dass hier keine Möglichkeit gab, den Anhang zu löschen ;-))
 - [x] Ein detailliertes Profil (vielleicht auch mit einem BarChart über ALLE Aktivitäten?)
 - [x] Eine Legende für das Koautorennetzwerk
 - [x] Invited Lectures bei Vorträgen
@@ -58,7 +66,7 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 - [x] hier werden genau definierte Zeiträume gebraucht (Start und Ende)
 - [x] Support für verschiedene Zitationsstile
 - [x] Für Wissenschaftler: nur eigener Name fett
-- [ ] Filtern nach Abteilungen usw.
+- [x] Filtern nach Abteilungen usw.
 
 ## Statistik:
 - [x] Co-Autoren-Netzwerk
@@ -72,10 +80,12 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 
 - [x] Dashboard mit Statistiken und wichtigen Links
 - [ ] Schreibe Impact Factor in die Pub-Tabelle
-- [ ] Speichere ISSN in den Publikationen (Journalname kann variieren)
+- [x] Speichere ISSN in den Publikationen (Journalname kann variieren)
 - [ ] Warnung wenn IF nicht bekannt
-- [ ] Files: Error wenn Datei größer als 15 MB!
-
+- [x] Files: Error wenn Datei größer als 15 MB!
 
 <!-- 
-<div class="csl-entry">Feynman, R. (2000). Probability Theory. In <i>Reliability, Maintenance and Logistic Support</i> (pp. 13–49). Springer US. https://doi.org/10.1007/978-1-4615-4655-9_2</div> -->
+
+<div class="csl-entry">Feynman, R. (2000). Probability Theory. In <i>Reliability, Maintenance and Logistic Support</i> (pp. 13–49). Springer US. https://doi.org/10.1007/978-1-4615-4655-9_2</div> 
+
+-->

@@ -1,5 +1,5 @@
 <?php
-$files = $activity['files'] ?? array();
+$files = $doc['files'] ?? array();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $target_dir = BASEPATH . "/uploads/";
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else if (file_exists($target_dir . $filename)) {
             printMsg(lang("Sorry, file already exists.", "Die Datei existiert bereits. Um sie zu überschreiben, muss sie zunächst gelöscht werden."), "error");
         } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
-            printMsg(lang("The file $filename has been uploaded.","Die Datei <q>$filename</q> wurde hochgeladen."), "success");
+            printMsg(lang("The file $filename has been uploaded.", "Die Datei <q>$filename</q> wurde hochgeladen."), "success");
             $values = [
                 "filename" => $filename,
                 "filetype" => $filetype,
@@ -75,10 +75,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // printMsg("File has been deleted from the database.", "success");
     }
 
-    $activity = $osiris->activities->findOne(['_id' => $mongoid]);
-    $files = $activity['files'] ?? array();
+    $doc = $osiris->activities->findOne(['_id' => $mongoid]);
+    $files = $doc['files'] ?? array();
 }
+$Format = new Format(false);
 ?>
+
+<p>
+    <?php echo $Format->format($doc); ?>
+</p>
 
 <div class="box">
     <div class="content">
@@ -123,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form action="#" method="post" enctype="multipart/form-data">
             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
             <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
-                <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                 <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>

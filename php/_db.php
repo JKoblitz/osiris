@@ -15,13 +15,13 @@ $USER = array();
 if (!empty($_SESSION['username'])) {
     $USER = getUserFromId($_SESSION['username']);
 
-    if (empty($USER)) {
-        require_once BASEPATH . '/php/_login.php';
-        $USER = updateUser($username);
-        $osiris->users->insertOne(
-            $USER
-        );
-    }
+    // if (empty($USER)) {
+    //     require_once BASEPATH . '/php/_login.php';
+    //     $USER = updateUser($username);
+    //     $osiris->users->insertOne(
+    //         $USER
+    //     );
+    // }
     // return $this->info['last_name'] . "," . $fn;
 }
 

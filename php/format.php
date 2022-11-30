@@ -12,12 +12,13 @@ function commalist($array, $sep = "and")
 
 function abbreviateAuthor($last, $first, $reverse = true)
 {
-    $fn = "";
-    foreach (preg_split("/(\s| )/", $first) as $name) {
-        echo "<!--";
-        echo($name);
-        echo "-->";
-        $fn .= " " . $name[0] . ".";
+    $fn = " ";
+    foreach (preg_split("/(\s| |-|\.)/", $first) as $name) {
+        if (empty($name)) continue;
+        // echo "<!--";
+        // echo($name);
+        // echo "-->";
+        $fn .= "" . $name[0] . ".";
     }
     if ($reverse) return $last . "," . $fn;
     return $fn . " " . $last;
@@ -132,7 +133,7 @@ function getQuarter($time)
     return ceil($month / 3);
 }
 
-function inSelectedQuarter($start, $end = null, $qarter = CURRENTQUARTER, $year = CURRENTYEAR)
+function inQuarter($start, $end = null, $qarter = CURRENTQUARTER, $year = CURRENTYEAR)
 {
     // check if time period in selected quarter
     if (empty($end)) {
@@ -146,6 +147,22 @@ function inSelectedQuarter($start, $end = null, $qarter = CURRENTQUARTER, $year 
     if ($start <= $qstart && $qstart <= $end) {
         return true;
     } elseif ($qstart <= $start && $start <= $qend) {
+        return true;
+    }
+    return false;
+}
+
+function inCurrentQuarter($year, $month)
+{
+    // check if time period in selected quarter
+    $qstart = new DateTime($year . '-' . (3 * CURRENTQUARTER - 2) . '-1 00:00:00');
+    $qend = new DateTime($year . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+
+    $time = new DateTime();
+    $time->setDate($year, $month, 15);
+    if ($time <= $qstart && $qstart <= $time) {
+        return true;
+    } elseif ($qstart <= $time && $time <= $qend) {
         return true;
     }
     return false;
@@ -341,7 +358,10 @@ class Format
         }
         if ($this->usecase == 'web' && isset($doc['files'])) {
             foreach ($doc['files'] as $file) {
-                $line .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filename]' class='file-link'><i class='far fa-file fa-file-$file[filetype]'></i></a>";
+                $icon = getFileIcon($file['filetype']);
+                $line .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'>
+                <i class='far fa-file fa-$icon'></i>
+                </a>";
             }
         }
         if (!empty($this->appendix)) {
@@ -498,7 +518,9 @@ class Format
         if (!empty($doc['location'])) {
             $result .= ", $doc[location]";
         }
-        $result .= ".";
+        if (!empty($doc['conference']) && !empty($doc['location'])) {
+            $result .= ".";
+        }
 
         $result .= " " . fromToDate($doc['start'], $doc['end'] ?? null);
         $result .= ".";
@@ -726,7 +748,7 @@ class Format
                         $result .= "($doc[issue])";
                     }
                     if (!empty($doc['pages'])) {
-                        $result .= ":$doc[pages].";
+                        $result .= ": $doc[pages].";
                     }
                 }
                 break;
@@ -851,7 +873,9 @@ class Format
 
         if ($this->usecase == 'web') {
             if (!empty($doc['open_access'])) {
-                $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
+                $result .= ' <i class="icon-open-access text-success" title="Open Access"></i>';
+            } else {
+                $result .= ' <i class="icon-closed-access text-danger" title="Closed Access"></i>';
             }
         }
 

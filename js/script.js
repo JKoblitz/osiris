@@ -1,4 +1,4 @@
-// var quill = null 
+
 
 var SCIENTISTS;
 $(document).ready(function () {
@@ -22,31 +22,34 @@ $(document).ready(function () {
         var quill = new Quill(element, {
             modules: {
                 toolbar: [
-                    ['italic', 'underline']
+                    ['italic', 'underline'],
+                    [{ script: 'super' }, { script: 'sub' }]
                 ]
             },
-            formats: ['italic', 'underline', 'symbol'],
+            formats: ['italic', 'underline', 'script','symbol'],
             placeholder: '',
             theme: 'snow' // or 'bubble'
         });
 
         quill.on('text-change', function (delta, oldDelta, source) {
             var delta = quill.getContents()
-            // console.log(delta);
-            var str = ""
-            delta.ops.forEach(el => {
-                if (el.attributes !== undefined) {
-                    if (el.attributes.bold) str += "<b>";
-                    if (el.attributes.italic) str += "<i>";
-                    if (el.attributes.underline) str += "<u>";
-                }
-                str += el.insert;
-                if (el.attributes !== undefined) {
-                    if (el.attributes.underline) str += "</u>";
-                    if (el.attributes.italic) str += "</i>";
-                    if (el.attributes.bold) str += "</b>";
-                }
-            });
+            console.log(delta);
+            var str = $(element).find('.ql-editor p').html()
+            console.log(str);
+            // var str = ""
+            // delta.ops.forEach(el => {
+            //     if (el.attributes !== undefined) {
+            //         // if (el.attributes.bold) str += "<b>";
+            //         if (el.attributes.italic) str += "<i>";
+            //         if (el.attributes.underline) str += "<u>";
+            //     }
+            //     str += el.insert;
+            //     if (el.attributes !== undefined) {
+            //         if (el.attributes.underline) str += "</u>";
+            //         if (el.attributes.italic) str += "</i>";
+            //         // if (el.attributes.bold) str += "</b>";
+            //     }
+            // });
             // $('.add-form #title').val(str)
             $(element).next().val(str)
         });
@@ -75,6 +78,32 @@ $(document).ready(function () {
     // }
 
 })
+
+function readHash() {
+    var hash = window.location.hash.substr(1);
+    console.log(hash);
+    if (hash === undefined || hash == "") return {}
+    return hash.split('&').reduce(function (res, item) {
+        var parts = item.split('=');
+        res[parts[0]] = parts[1];
+        return res;
+    }, {});
+}
+
+function writeHash(data) {
+    var hash = readHash()
+    for (const key in data) {
+        if (data[key] === null)
+            delete hash[key]
+        else
+            hash[key] = data[key];
+    }
+    hash = Object.entries(hash)
+    var arr = hash.map(function (a) {
+        return a[0] + "=" + a[1]
+    })
+    window.location.hash = arr.join("&")
+}
 
 $('input[name=activity]').on('change', function () {
     $('input[name=activity]').removeClass('btn-primary')
@@ -281,6 +310,29 @@ function getPublication(id) {
         $('.loader').removeClass('show')
         return
     }
+}
+
+function getJournal(name) {
+    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+    var data = {
+        db: 'pubmed',
+        term: name + " AND+ncbijournals[filter]",
+        retmode: 'json'
+    }
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+
+        url: url,
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('.loader').removeClass('show')
+        }
+    })
 }
 
 function getPubmed(id) {
@@ -565,7 +617,7 @@ function fillForm(pub) {
     if (UPDATE) {
         $('#publication-form').find('input:not(.hidden)').removeClass('is-valid')
     } else {
-        $('#publication-form').find('input:not(.hidden)').val('').removeClass('is-valid')
+        $('#publication-form').find('input:not(.hidden):not([type=radio]):not([type=checkbox])').val('').removeClass('is-valid')
     }
     // $('.affiliation-warning').show()
 

@@ -20,22 +20,31 @@ $Format = new Format($useronly);
 
 
 <?php if ($page == 'activities' && $USER['is_scientist']) { ?>
-    <h1 class='m-0'><?= lang("All activities", "Alle Aktivitäten") ?></h1>
+    <h1 class='m-0'>
+        <i class="fa-regular fa-book-open"></i>
+        <?= lang("All activities", "Alle Aktivitäten") ?>
+    </h1>
     <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="fa-regular fa-user"></i>
+        <i class="fa-solid fa-circle-user"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
 <?php
 } elseif (isset($_GET['user'])) { ?>
-    <h1 class='m-0'><?= lang("Activities of $user", "Aktivitäten von $user") ?></h1>
+    <h1 class='m-0'>
+        <i class="icon-activity-user"></i>
+        <?= lang("Activities of $user", "Aktivitäten von $user") ?>
+    </h1>
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="fa-regular fa-user"></i>
+        <i class="fa-solid fa-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } elseif ($page == 'my-activities') { ?>
-    <h1 class='m-0'><?= lang("My activities", "Meine Aktivitäten") ?></h1>
+    <h1 class='m-0'>
+        <i class="icon-activity-user"></i>
+        <?= lang("My activities", "Meine Aktivitäten") ?>
+    </h1>
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="fa-regular fa-user"></i>
+        <i class="fa-solid fa-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } ?>
@@ -146,7 +155,7 @@ $Format = new Format($useronly);
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </button> -->
                         <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="fa-regular fa-search"></i>
+                        <i class="icon-activity-search"></i>
                         </a>
                         <?php
                         $useractivity = false;
@@ -169,10 +178,10 @@ $Format = new Format($useronly);
                         }
                         if ($useractivity) { ?>
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                                <i class="fa-regular fa-edit"></i>
+                                <i class="icon-activity-pen"></i>
                             </a>
                         <?php } ?>
-                        <?php if ($page == 'my-activities') { ?>
+                        <?php if ($page == 'my-activities' && false) { ?>
                             <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline">
                                 <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/my-activities" ?>">
                                 <button type="submit" class="btn btn-link btn-square text-danger"><i class="fa-regular fa-trash-alt"></i></button>
@@ -214,16 +223,37 @@ $Format = new Format($useronly);
         });
 
         <?php if (isset($_GET['type'])) { ?>
-            filterDataTable(1, '<?= $_GET['type'] ?>');
+            window.location.hash = "type=<?= $_GET['type'] ?>";
         <?php } ?>
+
+        var hash = readHash();
+        if (hash.type !== undefined) {
+            filterDataTable(1, hash.type)
+        }
+
+        if (hash.time !== undefined) {
+            var time = hash.time.split(',')
+            $("#from-month").val(time[0])
+            $("#from-year").val(time[1])
+            $("#to-month").val(time[2])
+            $("#to-year").val(time[3])
+            filtertime()
+        }
+
     });
 
     function filterDataTable(col, item) {
         if ($('#select-btns #' + item + '-btn').hasClass('active')) {
+            writeHash({
+                type: null
+            })
             $('#select-btns .btn').removeClass('active')
             dataTable.columns(col).search("", true, false, true).draw();
 
         } else {
+            writeHash({
+                type: item
+            })
             $('#select-btns .btn').removeClass('active')
             $('#select-btns #' + item + '-btn').addClass('active')
             dataTable.columns(col).search(item, true, false, true).draw();
@@ -250,6 +280,9 @@ $Format = new Format($useronly);
             $("#to-month").val("")
             $("#to-year").val("")
             dataTable.columns(0).search("", true, false, true).draw();
+            writeHash({
+                time: null
+            })
             return
         }
 
@@ -281,6 +314,10 @@ $Format = new Format($useronly);
         if (fromYear == toYear && fromMonth > toMonth) {
             fromMonth = toMonth
         }
+
+        writeHash({
+            time: `${fromMonth},${fromYear},${toMonth},${toYear}`
+        })
 
         $("#from-month").val(fromMonth)
         $("#from-year").val(fromYear)

@@ -109,7 +109,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
                 <?= lang('Profile of ', 'Profil von ') . $name ?>
             </a><br>
 
-            <a class="btn mt-5" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
+            <a class="btn mt-5" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
                 <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
             </a>
 

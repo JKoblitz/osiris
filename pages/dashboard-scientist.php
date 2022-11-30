@@ -1,7 +1,6 @@
-
 <div class="content">
     <h2>
-        <?= lang('Publications in this time frame', 'Publikationen in diesem Zeitrahmen') ?>
+        <?= lang('Publications in the last four quarters', 'Publikationen in den letzten vier Quartalen') ?>
     </h2>
 </div>
 
@@ -50,33 +49,43 @@
                                     }
                                     const item = items[0];
                                     const x = item.parsed.x;
-                                    const min = x - 1;
-                                    const max = x;
+                                    const min = x;
+                                    const max = x + 1;
                                     return `IF: ${min} - ${max}`;
                                 }
                             }
                         }
                     },
                     responsive: true,
-                    x: {
-                        type: 'linear',
-                        offset: false,
-                        grid: {
-                            offset: false
-                        },
-                        ticks: {
-                            stepSize: 1
-                        },
-                        stacked: true,
-                    },
-                    y: {
-                        // beginAtZero: true
-                        stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Y axis title'
-                        }
-                    },
+                    scales: {
+                                x: {
+                                    type: 'linear',
+                                    ticks: {
+                                        stepSize: 1
+                                    },
+                                    stacked: true,
+                                    title: {
+                                        display: true,
+                                        text: lang('Impact factor', 'Impact factor')
+                                    },
+                                },
+                                y: {
+                                    stacked: true,
+                                    title: {
+                                        display: true,
+                                        text: lang('Number of publications', 'Anzahl Publikationen')
+                                    },
+                                    ticks: {
+                                        callback: function(value, index, ticks) {
+                                            // only show full numbers
+                                            if (Number.isInteger(value)) {
+                                                return value
+                                            }
+                                            return "";
+                                        }
+                                    }
+                                }
+                            },
                 },
                 data: {
                     labels: labels,
@@ -84,7 +93,7 @@
 
                         <?php foreach ($quarters as $q => $data) {
                             $imp = [];
-                            for ($i = 1; $i < $max_impact; $i++) {
+                            for ($i = 1; $i <= $max_impact; $i++) {
                                 $imp[] = $data['impacts'][$i] ?? 0;
                             }
                         ?> {
@@ -218,6 +227,11 @@
 
 
 </div>
+
+<?php
+    // include BASEPATH ."/pages/visualize-departments.php";
+?>
+
 
 <div class="content mt-0">
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-select bg-white mr-20">
