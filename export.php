@@ -67,6 +67,7 @@ Route::post('/download', function () {
         }
     }
     $Format = new Format($highlight, 'word');
+    $Format->full = true;
 
     $order = array(
         'publication',
@@ -336,7 +337,9 @@ function clean_comment_export($subject, $front_addition_text = '')
 Route::post('/reports', function () {
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/format.php';
-    $Format = new Format(false, 'word');
+    $Format = new Format(true, 'word');
+    $Format->full = true;
+    $Format->abbr_journal = true;
 
     // prepare user dict with all departments
     $users_cursor = $osiris->users->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
@@ -404,6 +407,7 @@ Route::post('/reports', function () {
             $cat = 'collab';
             // get the departments
             $dept = [];
+            if (isset($doc['epub']) && $doc['epub']) continue;
 
             foreach ($doc['authors'] as $a) {
                 $aoi = $a['aoi'] ?? false;

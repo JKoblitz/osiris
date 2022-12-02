@@ -114,7 +114,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
             </a>
 
 
-            <?php if ($currentuser) { ?>
+            <?php if ($currentuser || $USER['is_admin'] || $USER['is_controlling']) { ?>
                 <br>
                 <a class="btn mt-5" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="fas fa-user-pen"></i>
                     <?= lang('Edit user profile', 'Bearbeite Profil') ?>
@@ -329,16 +329,16 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
 
                         </td>
 
-                        <?php if ($currentuser) { ?>
                             <td class="unbreakable w-50">
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="fa-regular fa-search"></i>
+                                    <i class="icon-activity-search"></i>
                                 </a>
+                        <?php if ($currentuser) { ?>
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                                    <i class="fa-regular fa-edit"></i>
+                                    <i class="icon-activity-pen"></i>
                                 </a>
-                            </td>
                         <?php } ?>
+                            </td>
                         <td class='lom w-50'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
                         </tr>
                     <?php } ?>

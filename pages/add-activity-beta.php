@@ -120,12 +120,8 @@ function val($index, $default = '')
             </a>
 
             <label for="journal-search"><?=lang('Search Journal by name or ISSN', 'Suche Journal nach Name oder ISSN')?></label>
-            <div class="input-group">
             <input type="text" class="form-control" onchange="getJournal(this.value)" list="journal-list" id="journal-search" value="<?=$form['journal']??''?>">
-            <div class="input-group-append">
-                <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="fas fa-search"></i></button>
-            </div>
-            </div>
+
             <table class="table table-simple">
                 <tbody id="journal-suggest">
 

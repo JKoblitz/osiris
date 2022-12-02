@@ -312,10 +312,9 @@ class Format
 {
     private $highlight = true;
     private $usecase = "web";
-    private $first = 1;
-    private $last = 1;
     private $appendix = '';
-    private $full = false;
+    public $full = false;
+    public $abbr_journal = false;
 
     function __construct($highlight = true, $usecase = 'web')
     {
@@ -495,7 +494,7 @@ class Format
     {
         $result = $this->formatAuthors($doc['authors']);
         if (!empty($doc['title'])) {
-            $result .= " <em>$doc[title]</em>";
+            $result .= " <i>$doc[title]</i>";
         }
         if (!empty($doc['affiliation'])) {
             $result .= ", $doc[affiliation]";
@@ -739,7 +738,14 @@ class Format
                     $result .= " $doc[title].";
                 }
                 if (!empty($doc['journal'])) {
-                    $result .= " <em>$doc[journal]</em>";
+                    $journal = $doc['journal'];
+                    if($this->abbr_journal){
+                        $j = getJournal($doc);
+                        if (!empty($j) && !empty($j['abbr'])){
+                            $journal = $j['abbr'];
+                        }
+                    }
+                    $result .= " <i>$journal</i>";
 
                     if (!empty($doc['volume'])) {
                         $result .= " $doc[volume]";
@@ -763,7 +769,7 @@ class Format
                     $result .= " $doc[title].";
                 }
                 if (!empty($doc['magazine'])) {
-                    $result .= " <em>$doc[magazine]</em>.";
+                    $result .= " <i>$doc[magazine]</i>.";
                 }
                 if (!empty($doc['link'])) {
                     $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
@@ -786,7 +792,7 @@ class Format
                     if (!empty($doc['editors'])) {
                         $result .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
                     };
-                    $result .= " <em>$doc[book]</em>";
+                    $result .= " <i>$doc[book]</i>";
                 }
                 if (!empty($doc['edition']) || !empty($doc['pages'])) {
                     $ep = array();
@@ -819,7 +825,7 @@ class Format
                     $result .= " ($doc[year])";
                 }
                 if (!empty($doc['title'])) {
-                    $result .= " <em>$doc[title]</em>.";
+                    $result .= " <i>$doc[title]</i>.";
                 }
                 if (!empty($doc['edition']) || !empty($doc['pages'])) {
                     $ep = array();
@@ -1012,7 +1018,7 @@ class Format
         }
 
         if (!empty($doc['title'])) {
-            $result .= " <em>$doc[title]</em>";
+            $result .= " <i>$doc[title]</i>";
         }
         if (!empty($doc['version'])) {
             $result .= " (Version $doc[version])";

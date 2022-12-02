@@ -1,6 +1,11 @@
 # Changelog
 
-## 29.11.12
+## 02.12.22
+- Beim Hinzufügen von Publikationen werden Journale jetzt standardisiert und verknüpft
+- Neue Journale können anhand des NLM-Katalogs hinzugefügt werden
+- Journale können bearbeitet und um neue Impact Factoren erweitert werden
+
+## 29.11.22
 - Neue Visualisierungen wurden hinzugefügt (Abteilungs-Netzwerk und -Übersicht) und die vorhandene (Coautoren-Netzwerk) wurde verbessert
 
 ## 24.11.22

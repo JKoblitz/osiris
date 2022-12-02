@@ -151,3 +151,92 @@
     ?>
 </div>
 
+
+<?php
+
+$Format = new Format(true);
+?>
+
+<h2><?=lang('Newly added activities', 'Zuletzt hinzugefügte Aktivitäten')?></h2>
+<div class="mt-20">
+
+    <table class="table dataTable" id="activity-table">
+        <thead>
+            <tr>
+                <th><?= lang('Added', 'Hinzugefügt') ?></th>
+                <th><?= lang('By', 'Von') ?></th>
+                <th><?= lang('Type', 'Typ') ?></th>
+                <th><?= lang('Activity', 'Aktivität') ?></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $filter = ['created' => ['$exists' => true]];
+            $options = ['sort' => ["created" => -1]];
+            $cursor = $osiris->activities->find($filter, $options);
+
+            if (empty($cursor)) {
+                echo "<tr class='row-danger'><td colspan='3'>" . lang('No activities found.', 'Keine Publikationen gefunden.') . "</td></tr>";
+            } else foreach ($cursor as $i => $doc) {
+                $id = $doc['_id'];
+                if ($i >= 30) break;
+            ?>
+                <tr class="" id="<?= $id ?>">
+                    <td class="">
+                        <span class="hidden"><?= $doc['created'] ?></span>
+                        <?php
+                        $date = date_create($doc['created']);
+                        echo date_format($date, "d.m.Y");
+                        ?>
+                    </td>
+                    <td>
+                        <a href="<?= ROOTPATH ?>/profile/<?= $doc['created_by'] ?? '' ?>">
+                            <?= $doc['created_by'] ?? '' ?>
+                        </a>
+                    </td>
+                    <td class="text-center ">
+                        <?php
+                        echo activity_icon($doc);
+                        ?>
+                    </td>
+                    <td>
+                        <?php echo $Format->format($doc); ?>
+                    </td>
+                    <td class="unbreakable">
+                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                            <i class="icon-activity-search"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+
+    </table>
+</div>
+
+<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $.extend($.fn.DataTable.ext.classes, {
+        sPaging: "pagination mt-10 ",
+        sPageFirst: "direction ",
+        sPageLast: "direction ",
+        sPagePrevious: "direction ",
+        sPageNext: "direction ",
+        sPageButtonActive: "active ",
+        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sInfo: "float-right text-muted",
+        sLength: "float-right"
+    });
+    var dataTable;
+    $(document).ready(function() {
+        dataTable = $('#activity-table').DataTable({
+            "order": [
+                [0, 'desc'],
+            ],
+            "pageLength": 5
+        });
+    });
+</script>

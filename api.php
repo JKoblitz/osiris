@@ -6,7 +6,7 @@ function return_rest($data, $count = 0, $status = 200)
 
     if (!empty($limit) && $count > $limit && is_array($data)) {
         $offset = intval($_GET['offset'] ?? 0) || 0;
-        $data = array_slice($data, $offset, min($limit, $count-$offset));
+        $data = array_slice($data, $offset, min($limit, $count - $offset));
         $result += array(
             'limit' => $limit,
             'offset' => $offset
@@ -87,8 +87,46 @@ function return_rest($data, $count = 0, $status = 200)
     ...
 ]
  */
-Route::get('/download/publications', function () {
+Route::get('/api/publications', function () {
     $result = array();
     echo return_rest($result, count($result));
 });
 
+
+
+Route::get('/api/journal', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['search'])) {
+        $j = new \MongoDB\BSON\Regex('^' . trim($_GET['search']), 'i');
+        $filter = ['$or' =>  [
+            ['journal' => ['$regex' => $j]],
+            ['issn' => $_GET['search']]
+        ]];
+    }
+    $result = $osiris->journals->find($filter)->toArray();
+
+    echo return_rest($result, count($result));
+});
+
+Route::get('/api/journals', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $journals = $osiris->journals->find()->toArray();
+    $result = ['data' => []];
+    // $i = 0;
+    foreach ($journals as $doc) {
+        // if ($i++ > 100) break;
+        $result['data'][] = [
+            'id' => strval($doc['_id']),
+            'name' => $doc['journal'],
+            'abbr' => $doc['abbr'],
+            'issn' => implode(', ', $doc['issn']->bsonSerialize()),
+            'if' => impact_from_year($doc, intval(CURRENTYEAR) - 1) ?? ''
+        ];
+    }
+
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    echo json_encode($result);
+});

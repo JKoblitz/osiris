@@ -110,7 +110,13 @@ foreach (['authors', 'editors'] as $role) {
                             <th class="key">Journal:</th>
                             <td>
                                 <em>
-                                    <a href="<?=ROOTPATH?>/browse/journal?q=<?= $doc['journal'] ?>"><?= $doc['journal'] ?></a>
+                                    <?php if (isset($doc['journal_id'])) { ?>
+                                        <a href="<?=ROOTPATH?>/view/journal/<?= $doc['journal_id'] ?>">
+                                    <?php } else { ?>
+                                        <a href="<?=ROOTPATH?>/browse/journal?q=<?= $doc['journal'] ?>">
+                                    <?php } ?>
+                                    <?= $doc['journal'] ?>
+                                </a>
                                 </em>
                                 <span class="text-muted">
                                     <?php

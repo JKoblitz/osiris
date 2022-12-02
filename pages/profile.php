@@ -236,6 +236,12 @@ if (isset($_GET['verbose'])) {
             <a class="btn btn-osiris mt-5" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
                 <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
             </a>
+            <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+                <br>
+                <a class="btn mt-5" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="fas fa-user-pen"></i>
+                    <?= lang('Edit user profile', 'Bearbeite Profil') ?>
+                </a>
+            <?php } ?>
 
         </div>
     </div>
@@ -504,10 +510,9 @@ if (isset($_GET['verbose'])) {
                     $max_impact = ceil(max($impacts));
 
 
-                    for ($i = 1; $i <= $max_impact; $i++) {
+                    for ($i = 0; $i <= $max_impact; $i++) {
                         $x[] = $i;
                     }
-
                     $y = array_fill(0, $max_impact, 0);
 
                     foreach ($impacts as $val) {

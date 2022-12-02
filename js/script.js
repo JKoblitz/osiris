@@ -26,7 +26,7 @@ $(document).ready(function () {
                     [{ script: 'super' }, { script: 'sub' }]
                 ]
             },
-            formats: ['italic', 'underline', 'script','symbol'],
+            formats: ['italic', 'underline', 'script', 'symbol'],
             placeholder: '',
             theme: 'snow' // or 'bubble'
         });
@@ -274,6 +274,7 @@ function tableToCSV() {
 
     downloadCSVFile(csv_data);
 }
+
 function downloadCSVFile(csv_data) {
 
     // Create CSV file object and feed our
@@ -313,11 +314,14 @@ function getPublication(id) {
 }
 
 function getJournal(name) {
-    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+    console.log(name);
+    const SUGGEST = $('#journal-suggest')
+    SUGGEST.empty()
+    var url = ROOTPATH + '/api/journal'
+    // https://api.clarivate.com/apis/wos-journals/v1/journals?q=matrix biology
     var data = {
-        db: 'pubmed',
-        term: name + " AND+ncbijournals[filter]",
-        retmode: 'json'
+        search: name,
+        limit: 10
     }
     $.ajax({
         type: "GET",
@@ -325,8 +329,191 @@ function getJournal(name) {
         dataType: "json",
 
         url: url,
-        success: function (data) {
-            console.log(data);
+        success: function (response) {
+            var journals = [];
+            response.data.forEach(j => {
+
+                journals.push({
+                    journal: j.journal,
+                    issn: j.issn,
+                    abbr: j.abbr,
+                    publisher: j.publisher,
+                    id: j._id['$oid']
+                })
+            });
+            if (journals.length === 1) {
+                selectJournal(journals[0])
+            } else if (journals.length === 0) {
+                SUGGEST.append('<tr><td>' + lang('Journal not found in OSIRIS', 'Journal nicht in OSIRIS gefunden') + '</tr></td>')
+            } else {
+                journals.forEach((j) => {
+                    var row = $('<tr>')
+
+                    var button = $('<button class="btn" title="select">')
+                    button.html('<i class="fas fa-lg fa-check"></i>')
+                    button.on('click', function () {
+                        selectJournal(j);
+                    })
+                    row.append($('<td class="w-50">').append(button))
+
+                    var data = $('<td>')
+                    data.append(`<h5 class="m-0">${j.journal}</h5>`)
+                    data.append(`<span class="float-right">${j.publisher}</span>`)
+                    data.append(`<span class="text-muted">${j.issn.join(', ')}</span>`)
+                    row.append(data)
+
+                    SUGGEST.append(row)
+                })
+                window.location.replace('#journal-select')
+            }
+            var row = $('<tr>')
+            var button = $('<button class="btn">')
+            button.html(lang('Search in NLM Catalog', 'Suche im NLM-Katalog'))
+            button.on('click', function () {
+                getJournalNLM(name)
+            })
+            row.append($('<td>').append(button))
+            SUGGEST.append(row)
+            window.location.replace('#journal-select')
+
+
+            console.log(journals);
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('.loader').removeClass('show')
+        }
+    })
+}
+
+function selectJournal(j, n = false) {
+    
+    if (n) {
+        console.log(j);
+        $.ajax({
+            type: "POST",
+            data: {
+                values: j
+            },
+            dataType: "json",
+            url: ROOTPATH + '/create-journal',
+            success: function (response) {
+                // $('.loader').removeClass('show')
+                console.log(response);
+                if (response.msg) {
+                    toastWarning(response.msg)
+                    selectJournal(response, false)
+                    return;
+                } else {
+                    $('#journal_id').val(response.id['$oid'])
+                    $('#journal_rev_id').val(response.id['$oid'])
+                    $('#journal').val(j.journal)
+                    $('#journal-input').val(j.journal)
+                    $('#issn').val(j.issn.join(' '))
+                }
+            },
+            error: function (response) {
+                $('.loader').removeClass('show')
+                toastError(response.responseText)
+            }
+        })
+    } else {
+        $('#journal_id').val(j.id['$oid'] ?? j.id)
+        $('#journal_rev_id').val(j.id['$oid'] ?? j.id)
+        $('#journal').val(j.journal)
+        $('#journal-input').val(j.journal)
+        $('#issn').val(j.issn.join(' '))
+    }
+    window.location.replace('#')
+}
+
+function getJournalNLM(name) {
+    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
+    const SUGGEST = $('#journal-suggest')
+    SUGGEST.empty()
+    // https://api.clarivate.com/apis/wos-journals/v1/journals?q=matrix biology
+    var data = {
+        db: 'nlmcatalog',
+        term: '("' + name + '"[title]) AND (ncbijournals[filter])',
+        retmode: 'json',
+        usehistory: 'y'
+    }
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+
+        url: url,
+        success: function (response) {
+            var env = response.esearchresult.webenv
+            var key = response.esearchresult.querykey
+
+            var data = {
+                retmode: 'json',
+                db: 'nlmcatalog',
+                query_key: key,
+                WebEnv: env
+            }
+            var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+
+            $.ajax({
+                type: "GET",
+                data: data,
+                dataType: "json",
+                url: url,
+                success: function (result) {
+                    console.log(result);
+                    var journals = [];
+
+                    for (const id in result.result) {
+                        if (id == 'uids') continue;
+                        const j = result.result[id];
+                        console.log(j);
+                        var issn = [];
+                        j.issnlist.forEach(item => {
+                            issn.push(item.issn)
+                        });
+                        if (issn.length === 0) continue;
+                        var name = j.titlemainlist[0].title
+                        journals.push({
+                            journal: name.slice(0, name.length - 1),
+                            issn: issn,
+                            abbr: j.medlineta,
+                            publisher: j.publicationinfolist[0].publisher,
+                            nlmid: id
+                        })
+                    }
+                    journals.forEach((j) => {
+                        var row = $('<tr>')
+
+                        var button = $('<button class="btn" title="select">')
+                        button.html('<i class="fas fa-lg fa-check"></i>')
+                        button.on('click', function () {
+                            selectJournal(j, true);
+                        })
+                        row.append($('<td class="w-50">').append(button))
+
+                        var data = $('<td>')
+                        data.append(`<h5 class="m-0">${j.journal}</h5>`)
+                        data.append(`<span class="float-right">${j.publisher}</span>`)
+                        data.append(`<span class="text-muted">${j.issn.join(', ')}</span>`)
+                        row.append(data)
+
+                        SUGGEST.append(row)
+                    })
+                    if (journals.length === 0) {
+                        SUGGEST.append('<tr><td>' + lang('Journal not found in NLM. Maybe you want to add a magazine article?', 'Journal nicht in NLM gefunden. Wolltest du vielleicht einen Magazin-Artikel hinzufügen?') + '</tr></td>')
+                    }
+
+                    console.log(journals);
+                },
+                error: function (response) {
+                    toastError(response.responseText)
+                    $('.loader').removeClass('show')
+                }
+            })
+
+
         },
         error: function (response) {
             toastError(response.responseText)
@@ -694,6 +881,12 @@ function fillForm(pub) {
     if (pub.epub !== undefined && (!UPDATE || !pub.epub || !pub.epub.length))
         $('#epub').attr('checked', pub.epub).addClass('is-valid')
 
+    if (pub.journal) {
+        // TODO: prefer ISSN
+        // var val = pub.issn
+        $('#journal-search').val(pub.journal)
+        getJournal(pub.journal)
+    }
 
     $('.author-list').addClass('is-valid').find('.author').remove()
 
@@ -702,9 +895,6 @@ function fillForm(pub) {
         if (d.affiliation === undefined) {
             aff_undef = true
         }
-        // if (d.affiliation){
-        //     $('.affiliation-warning').hide()
-        // }
         addAuthorDiv(d.family, d.given, d.affiliation ?? false)
     })
     if (pub.editors !== undefined) {

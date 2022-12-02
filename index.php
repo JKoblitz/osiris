@@ -348,6 +348,18 @@ Route::get('/activities/new', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::get('/activities/beta', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Add new", "Neu hinzufügen")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/add-activity-beta.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
@@ -535,7 +547,7 @@ Route::get('/browse/users', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/browse/users.php";
+    include BASEPATH . "/pages/users-table.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -624,32 +636,24 @@ Route::get('/browse/journal', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/browse/journal.php";
+    include BASEPATH . "/pages/journals-table.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/journal', function () {
+    // if ($page == 'users') 
+    $breadcrumb = [
+        ['name' => lang('Journals', 'Journale'), 'path' => "/browse/journal"],
+        ['name' => lang('Overview', 'Überblick')]
+    ];
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/journals-table.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 
-Route::get('/test/journals', function () {
-    include_once BASEPATH . "/php/_db.php";
-    $journals = $osiris->journals->find()->toArray();
-    $result = ['data' => []];
-    // $i = 0;
-    foreach ($journals as $doc) {
-        // if ($i++ > 100) break;
-        $result['data'][] = [
-            'id' => strval($doc['_id']),
-            'name' => $doc['journal'],
-            'abbr' => $doc['abbr'],
-            'issn' => implode(', ', $doc['issn']->bsonSerialize()),
-            'if' => impact_from_year($doc, intval(CURRENTYEAR) - 1) ?? ''
-        ];
-    }
-
-    header("Content-Type: application/json");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    echo json_encode($result);
-});
 
 Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
@@ -664,7 +668,7 @@ Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/view/journal.php";
+    include BASEPATH . "/pages/journal-view.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -683,7 +687,7 @@ Route::get('/edit/journal/([a-zA-Z0-9]*)', function ($id) {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/editor/journal.php";
+    include BASEPATH . "/pages/journal-editor.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -703,7 +707,7 @@ Route::get('/edit/user/([a-z0-9]+)', function ($user) {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/editor/user.php";
+    include BASEPATH . "/pages/user-editor.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 

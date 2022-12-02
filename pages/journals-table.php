@@ -37,7 +37,7 @@
         //     ]
         // });
         $('#result-table').DataTable({
-            ajax: ROOTPATH + '/test/journals',
+            ajax: ROOTPATH + '/api/journals',
             columnDefs: [{
                     "targets": 0,
                     "data": "name",
@@ -59,9 +59,8 @@
                     data: 'if'
                 },
             ],
-            <?php if (isset($_GET['q'])) { ?> 
-                "oSearch": {
-                    "sSearch": "<?=$_GET['q']?>"
+            <?php if (isset($_GET['q'])) { ?> "oSearch": {
+                    "sSearch": "<?= $_GET['q'] ?>"
                 }
             <?php } ?>
         });

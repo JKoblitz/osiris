@@ -44,7 +44,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
-    <!-- Quill (rich-text editor) --><link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
+    <!-- Quill (rich-text editor) -->
+    <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
 
@@ -132,7 +133,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             <a href="<?= ROOTPATH ?>/news#24.11.22" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2022-11-24 06:00') ?>)
+                (<?= time_elapsed_string('2022-12-02 06:00') ?>)
             </a>
         </nav>
 
@@ -151,7 +152,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </div>
 
                     <div class="cta">
-                        <a href="<?= ROOTPATH ?>/activities/new" class="btn btn-osiris test-<?= $pageactive('activities/new') ?>">
+                        <a href="<?= ROOTPATH ?>/activities/new" class="btn btn-osiris <?= $pageactive('activities/new') ?>" style="border-radius:2rem">
                             <i class="icon-activity-plus mr-10" aria-hidden="true"></i>
                             <?= lang('Add activity', 'Aktivität hinzuf.') ?>
                         </a>
@@ -162,6 +163,17 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="far fa-chart-column" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
+
+                        <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
+                            <i class="far fa-coin" aria-hidden="true"></i>
+                            <?= lang('Points', 'Punkte') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
+                            <i class="far fa-file-chart-column" aria-hidden="true"></i>
+                            <?= lang('Reports', 'Berichte') ?>
+                        </a>
+
                     <?php } else { ?>
                         <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
                             <i class="far fa-user-graduate" aria-hidden="true"></i>
@@ -178,7 +190,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="icon-activity-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
                         </a>
-
                     <?php } ?>
                     <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('visualize') ?>">
                         <i class="far fa-chart-network" aria-hidden="true"></i>
@@ -216,18 +227,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
                     <?php if ($USER['is_scientist']) { ?>
-                        
-                    <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                        <i class="far fa-chart-line" aria-hidden="true"></i>
-                        <?= lang('Dashboard') ?>
-                    </a>
+
+                        <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
+                            <i class="far fa-chart-line" aria-hidden="true"></i>
+                            <?= lang('Dashboard') ?>
+                        </a>
                     <?php } ?>
-                    
 
 
 
 
-                    <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+
+                    <?php if ($USER['is_admin']) { ?>
 
                         <div class="sidebar-title">
                             <?= lang('Controlling') ?>

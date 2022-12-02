@@ -64,10 +64,10 @@ function validateValues($values)
         } else if (is_array($value)) {
             $values[$key] = validateValues($value);
         } else if ($key == 'issn') {
-            if (empty($value)){
+            if (empty($value)) {
                 $values[$key] = array();
             } else {
-                $values[$key] = explode(' ',$value);
+                $values[$key] = explode(' ', $value);
             }
         } else if ($value === 'true') {
             $values[$key] = true;
@@ -94,7 +94,7 @@ function validateValues($values)
                 $values['month'] = $values[$key]['month'];
             }
         } else if (is_numeric($value)) {
-            if (str_starts_with($value, "0")){
+            if (str_starts_with($value, "0")) {
                 $values[$key] = trim($value);
             } elseif (is_float($value + 0)) {
                 $values[$key] = floatval($value);
@@ -340,6 +340,53 @@ Route::post('/create', function () {
     ]);
 });
 
+
+Route::post('/create-journal', function () {
+    include_once BASEPATH . "/php/_db.php";
+    if (!isset($_POST['values'])) {
+        echo "no values given";
+        die;
+    }
+    $collection = $osiris->journals;
+
+    $values = validateValues($_POST['values']);
+    $values['impact'] = [];
+
+    // add information on creating process
+    $values['created'] = date('Y-m-d');
+    $values['created_by'] = $_SESSION['username'];
+
+    if (isset($values['issn']) && !empty($values['issn'])) {
+        $issn_exist = $collection->findOne(['issn' => ['$in' => $values['issn']]]);
+        if (!empty($issn_exist)) {
+            echo json_encode([
+                'msg' => "ISSN already existed",
+                'id' => $issn_exist['_id'],
+                'journal' => $issn_exist['journal'],
+                'issn' => $issn_exist['issn'],
+            ]);
+            die;
+        }
+    }
+
+    $insertOneResult  = $collection->insertOne($values);
+    $id = $insertOneResult->getInsertedId();
+    echo json_encode([
+        'inserted' => $insertOneResult->getInsertedCount(),
+        'id' => $id,
+        // 'result' => format($col, $result)
+    ]);
+
+    // // addUserActivity('create');
+
+    // if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+    //     $red = str_replace("*", $id, $_POST['redirect']);
+    //     header("Location: " . $red . "?msg=add-success");
+    //     die();
+    // }
+    // $result = $collection->findOne(['_id' => $id]);
+});
+
 // Route::post('/upload-file/([A-Za-z0-9]*)', function ($id) {
 
 //     if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
@@ -404,22 +451,14 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
     }
 
     $values = $_POST['values'];
-
-
-    $collection = $osiris->users;
     $values = validateValues($values);
 
-    // dump($values, true);
-    // die;
+    $collection = $osiris->users;
 
     $values['is_controlling'] = boolval($values['is_controlling'] ?? false);
     $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
     $values['is_leader'] = boolval($values['is_leader'] ?? false);
     $values['is_active'] = boolval($values['is_active'] ?? false);
-    // if (!isset($values['is_controlling'])) $values['is_controlling'] = false;
-    // if (!isset($values['is_scientist'])) $values['is_scientist'] = false;
-    // if (!isset($values['is_leader'])) $values['is_leader'] = false;
-    // if (!isset($values['is_active'])) $values['is_active'] = false;
 
     if (isset($values['last']) && isset($values['first']))
         $values['displayname'] = "$values[first] $values[last]";
@@ -449,6 +488,58 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+
+Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/_db.php";
+
+    $values = $_POST['values'];
+    $values = validateValues($values);
+
+    $collection = $osiris->journals;
+    $id = new MongoDB\BSON\ObjectId($id);
+
+    if (isset($values['year'])) {
+        $year = intval($values['year']);
+        $if = $values['if'] ?? null;
+
+        // remove existing year
+        $updateResult = $collection->updateOne(
+            ['_id' => $id, 'impact.year' => ['$exists' => true]],
+            ['$pull' => ['impact' => ['year' => $year]]]
+        );
+        if (empty($if)) {
+            // do nothing more
+        } else {
+            // add new impact factor
+            $updateResult = $collection->updateOne(
+                ['_id' => $id],
+                ['$push' => ['impact' => ['year' => $year, 'impact' => $if]]]
+            );
+            // dump([$values, $updateResult], true);
+            // die;
+        }
+    } else {
+
+        // // add information on updating process
+        $values['updated'] = date('Y-m-d');
+        $values['updated_by'] = $_SESSION['username'];
+
+
+        $updateResult = $collection->updateOne(
+            ['_id' => $id],
+            ['$set' => $values]
+        );
+    }
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount(),
+        'result' => $collection->findOne(['_id' => $id])
+    ]);
+});
 
 Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
@@ -692,7 +783,7 @@ Route::get('/form/(lecture|misc|poster|publication|students)/([A-Za-z0-9]*)', fu
 Route::get('/form/user/([A-Za-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_db.php";
     $data = getUserFromId($user);
-    include BASEPATH . "/pages/editor/user.php";
+    include BASEPATH . "/pages/user-editor.php";
 });
 
 

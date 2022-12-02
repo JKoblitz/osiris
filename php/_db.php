@@ -80,9 +80,37 @@ function getUserAuthor($authors, $user)
     return reset($author);
 }
 
+function getJournal($doc)
+{
+    global $osiris;
+    if (isset($doc['journal_id'])) {
+        $id = $doc['journal_id'];
+        if (is_numeric($id)) {
+            $id = intval($id);
+        } else {
+            $id = new MongoDB\BSON\ObjectId($id);
+        }
+        $journal = $osiris->journals->findOne(['_id' => $id]);
+        if (!empty($journal)) return $journal;
+    }
+
+    if (isset($doc['issn'])) {
+        $issn = $doc['issn'];
+        if (is_string($issn)){
+            $issn = explode(' ', $issn);
+        }
+        $journal = $osiris->journals->findOne(['issn' => ['$in' => $issn]]);
+        if (!empty($journal)) return $journal;
+    }
+
+    $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']), 'i');
+    return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+}
+
 function impact_from_year($journal, $year = CURRENTYEAR)
 {
     $if = null;
+    if (!isset($journal['impact'])) return '';
     $impact = $journal['impact']->bsonSerialize();
     $last = end($impact)['impact'] ?? null;
     if (is_array($impact)) {

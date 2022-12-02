@@ -181,13 +181,6 @@ $Format = new Format($useronly);
                                 <i class="icon-activity-pen"></i>
                             </a>
                         <?php } ?>
-                        <?php if ($page == 'my-activities' && false) { ?>
-                            <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline">
-                                <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/my-activities" ?>">
-                                <button type="submit" class="btn btn-link btn-square text-danger"><i class="fa-regular fa-trash-alt"></i></button>
-                            </form>
-                        <?php } ?>
-
                     </td>
                 </tr>
             <?php } ?>
