@@ -101,13 +101,14 @@ $Format = new Format($useronly);
             //, 'year' => intval(SELECTEDYEAR)
             if (empty($cursor)) {
                 echo "<tr class='row-danger'><td colspan='3'>" . lang('No activities found.', 'Keine Publikationen gefunden.') . "</td></tr>";
-            } else foreach ($cursor as $document) {
+            } else foreach ($cursor as $doc) {
 
-                $id = $document['_id'];
-                $q = getQuarter($document);
-                $y = getYear($document);
+                $id = $doc['_id'];
+                $type = $doc['type'];
+                $q = getQuarter($doc);
+                $y = getYear($doc);
                 $quarter = $endQuarter = $y . "Q" . $q;
-                // $author = getUserAuthor($document['authors'] ?? array(), $user);
+                // $author = getUserAuthor($doc['authors'] ?? array(), $user);
             ?>
                 <tr class="" id="<?= $id ?>">
                     <td class="quarter">
@@ -115,13 +116,13 @@ $Format = new Format($useronly);
 
                         <span class="hidden">
                             <!-- for date filtering -->
-                            <?= $document['month'] . "M" . $document['year'] . "Y" ?>
-                            <?php if (isset($document['end']) && !empty($document['end'])) {
+                            <?= $doc['month'] . "M" . $doc['year'] . "Y" ?>
+                            <?php if (isset($doc['end']) && !empty($doc['end'])) {
 
-                                $em = $document['end']['month'];
-                                $ey = $document['end']['year'];
-                                $sm = $document['month'];
-                                $sy = $document['year'];
+                                $em = $doc['end']['month'];
+                                $ey = $doc['end']['year'];
+                                $sm = $doc['month'];
+                                $sy = $doc['year'];
                                 for ($i = $y; $i <= $ey; $i++) {
                                     $endMonth = $i != $ey ? 11 : $em - 1;
                                     $startMon = $i === $y ? $sm - 1 : 0;
@@ -141,35 +142,51 @@ $Format = new Format($useronly);
                     </td>
                     <td class="text-center ">
                         <?php
-                        echo activity_icon($document);
+                        echo activity_icon($doc);
                         ?>
                         <span class="hidden">
-                            <?= $document['type'] ?>
+                            <?php
+                            echo $type;
+                            echo " ";
+                            switch ($type) {
+                                case 'publication':
+                                    echo strtolower(trim($doc['pubtype'] ?? $type));
+                                    break;
+                                case 'review':
+                                    echo strtolower($doc['role'] ?? '');
+                                    break;
+                                case 'students':
+                                    echo strtolower(trim($doc['category'] ?? 'thesis'));
+                                    break;
+                                default:
+                                    break;
+                            }
+                            ?>
                         </span>
                     </td>
                     <td>
-                        <?php echo $Format->format($document); ?>
+                        <?php echo $Format->format($doc); ?>
                     </td>
                     <td class="unbreakable">
-                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $document['type'] ?>', '<?= $id ?>')">
+                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
                             <i class="fa-regular fa-lg fa-edit"></i>
                         </button> -->
                         <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                        <i class="icon-activity-search"></i>
+                            <i class="icon-activity-search"></i>
                         </a>
                         <?php
                         $useractivity = false;
                         $auth = [];
-                        if (isset($document['authors']) && !empty($document['authors'])) {
-                            foreach ($document['authors'] as $a) {
+                        if (isset($doc['authors']) && !empty($doc['authors'])) {
+                            foreach ($doc['authors'] as $a) {
                                 if ($a['user'] == $user) {
                                     $useractivity = true;
                                     break;
                                 }
                             }
                         }
-                        if (isset($document['editors']) && !empty($document['editors'])) {
-                            foreach ($document['editors'] as $a) {
+                        if (isset($doc['editors']) && !empty($doc['editors'])) {
+                            foreach ($doc['editors'] as $a) {
                                 if ($a['user'] == $user) {
                                     $useractivity = true;
                                     break;

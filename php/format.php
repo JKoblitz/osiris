@@ -49,7 +49,11 @@ function getDateTime($date)
             $date['day'] ?? 1
         );
     } else {
-        $d = date_create($date);
+        try {
+            $d = date_create($date);
+        } catch (TypeError $th) {
+            $d = null;
+        }
     }
     return $d;
 }
@@ -128,8 +132,14 @@ function getQuarter($time)
     if (is_int($time)) {
         return ceil($time / 3);
     }
-    $date = getDateTime($time);
-    $month = date_format($date, 'n');
+
+    try {
+        $date = getDateTime($time);
+        $month = date_format($date, 'n');
+    } catch (TypeError $th) {
+        $month = 1;
+    }
+
     return ceil($month / 3);
 }
 
@@ -388,24 +398,24 @@ class Format
             } else if ($this->highlight && $a['user'] == $this->highlight) {
                 $author = "<b>$author</b>";
             }
-            
+
             if ($first > 1 && $a['position'] == 'first') {
                 $author .= "<sup>#</sup>";
             }
             if ($last > 1 && $a['position'] == 'last') {
                 $author .= "<sup>*</sup>";
             }
-            
+
             $authors[] = $author;
         }
-        
+
         $append = "";
         if (!$this->full && $n > 10 && end($authors) == '...') {
             $append = " et al.";
             $separator = ", ";
             array_pop($authors);
         }
-        return commalist($authors, $separator). $append;
+        return commalist($authors, $separator) . $append;
     }
 
     function formatEditors($raw_editors, $separator = 'and')
@@ -742,9 +752,9 @@ class Format
                 }
                 if (!empty($doc['journal'])) {
                     $journal = $doc['journal'];
-                    if($this->abbr_journal){
+                    if ($this->abbr_journal) {
                         $j = getJournal($doc);
-                        if (!empty($j) && !empty($j['abbr'])){
+                        if (!empty($j) && !empty($j['abbr'])) {
                             $journal = $j['abbr'];
                         }
                     }

@@ -1,12 +1,12 @@
 # To-Do-Liste
 
 ## Aus Beta-Feedback
-- [ ] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt
-- [ ]  Wenn man Pflichtfelder offen lässt, kann man nicht speichern, es kommt aber keine Meldung oder so
+- [x] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt
+- [x]  Wenn man Pflichtfelder offen lässt, kann man nicht speichern, es kommt aber keine Meldung oder so
 - [ ] Für Autoren sollte die ORCID zusätzlich gespeichert werden.
 - [ ] Funding sollte gespeichert werden
-- [ ] Fix: Typ-Sortierung bei Studenten usw.
-- [ ] Außerdem wäre es wahrscheinlich recht schön, wenn oben gehighlightet wäre, ob man Abschlussarbeiten oder Gäste & Praktika ausgewählt hat
+- [x] Fix: Typ-Sortierung bei Studenten usw.
+- [x] Außerdem wäre es wahrscheinlich recht schön, wenn oben gehighlightet wäre, ob man Abschlussarbeiten oder Gäste & Praktika ausgewählt hat
 - [ ] Es gibt ja diesen Reiter Lehre, wo die Leute auch ihre Vorlesungen eintragen. Dazu kommen ja dann auch die Leute und machen ein Praktikum, also in den Formularen steht dann meistens "Praktikum MI03" oder so. Man könnte das doch irgendwie verbinden oder? Das man auswählen kann, dass das ein Laborpraktikum ist und dann kriegt man da die Auswahl?
 - [x] closed access icon
 - [x] open access als radio
