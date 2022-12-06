@@ -223,7 +223,7 @@ function val($index, $default = '')
             </div>
 
             <div class="mb-20 select-btns" data-visible="review,editorial,grant-rev,thesis-rev">
-                <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Paper review') ?></button>
+                <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review2-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Paper review') ?></button>
                 <button onclick="togglePubType('editorial')" class="btn btn-select text-review" id="editorial-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Editorial board') ?></button>
                 <button onclick="togglePubType('grant-rev')" class="btn btn-select text-review" id="grant-rev-btn"><i class="fa-regular fa-file-chart-pie"></i> <?= lang('Grant proposal') ?></button>
                 <button onclick="togglePubType('thesis-rev')" class="btn btn-select text-review" id="thesis-rev-btn"><i class="fa-regular fa-graduation-cap"></i> <?= lang('Thesis review') ?></button>
@@ -235,8 +235,8 @@ function val($index, $default = '')
             </div>
 
             <div class="mb-20 select-btns" data-visible="students,guests">
-                <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-once-btn"><i class="fa-regular fa-user-graduate"></i> <?= lang('Theses', 'Abschlussarbeiten') ?></button>
-                <button onclick="togglePubType('guests')" class="btn btn-select text-students" id="students-annual-btn"><i class="fa-regular fa-user-tie"></i> <?= lang('Guests & interns', 'Gäste & Praktika') ?></button>
+                <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students2-btn"><i class="fa-regular fa-user-graduate"></i> <?= lang('Theses', 'Abschlussarbeiten') ?></button>
+                <button onclick="togglePubType('guests')" class="btn btn-select text-students" id="guests-btn"><i class="fa-regular fa-user-tie"></i> <?= lang('Guests & interns', 'Gäste & Praktika') ?></button>
             </div>
 
             <div id="examples" class="mb-20">

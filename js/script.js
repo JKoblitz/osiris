@@ -1095,6 +1095,49 @@ function removeAuthor(event, el) {
 //     }
 // }
 
+function activeButtons(type) {
+    $('.select-btns').find('.btn').removeClass('active')
+
+    $('#' + type + '-btn').addClass('active')
+    switch (type) {
+        case 'publication':
+            $('#article-btn').addClass('active')
+            break;
+        case 'review':
+            $('#review2-btn').addClass('active')
+            break;
+        case 'misc':
+            $('#misc-once-btn').addClass('active')
+            break;
+
+        case 'students':
+            $('#students2-btn').addClass('active')
+            break;
+        case 'guests':
+            $('#students-btn').addClass('active')
+            break;
+        case 'editorial':
+        case 'grant-rev':
+        case 'thesis-rev':
+            $('#review-btn').addClass('active')
+            break;
+        case 'misc-once':
+        case 'misc-annual':
+            $('#misc-btn').addClass('active')
+            break;
+        case 'article':
+        case 'magazine':
+        case 'book':
+        case 'chapter':
+        case 'preprint':
+        case 'dissertation':
+        case 'others':
+            $('#publication-btn').addClass('active')
+            break;
+        default:
+            break;
+    }
+}
 
 function togglePubType(type) {
     type = type.trim().toLowerCase().replace(' ', '-')
@@ -1115,8 +1158,8 @@ function togglePubType(type) {
     // if (type == "others") return;
     type = types[type] ?? type;
     console.log(type);
-    $('.select-btns').find('.btn').removeClass('active')
-    $('#' + type + '-btn').addClass('active')
+    
+    activeButtons(type)
     $('#type').val(type)
     var form = $('#publication-form')
 
@@ -1256,12 +1299,12 @@ function verifyForm(event, form) {
         //retrieve field name and value from the DOM
         var input = $(this)
         var selector = input
-        if (input.attr('id') == 'title'){
+        if (input.attr('id') == 'title') {
             selector = $('.title-editor')
         }
         if ((input.prop('required') && !input.prop('disabled'))) {
-            
-        console.log(input);
+
+            console.log(input);
             if (!$(this).val()) {
                 selector.addClass('is-invalid')
                 // .on('input', function(){
@@ -1276,7 +1319,7 @@ function verifyForm(event, form) {
     });
 
     // check if authors are defined
-    if ($('.author-list').find('.author').length === 0){
+    if ($('.author-list').find('.author').length === 0) {
         $('.author-list').addClass('is-invalid').removeClass('is-valid')
         correct = false
     } else {
