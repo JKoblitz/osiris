@@ -18,7 +18,102 @@ $default = ROOTPATH . "/img/person.jpg";
 $size = 140;
 
 $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
+
+
+
+
+$groups = [
+    'publication' => [],
+    'poster' => [],
+    'lecture' => [],
+    'review' => [],
+    "teaching" => [],
+    "students" => [],
+    "software" => [],
+    "misc" => [],
+];
+// $timeline = [
+//     'publication' => ['label' => 'publication', 'times' => []],
+//     'poster' => ['label' => 'poster', 'times' => []],
+//     'lecture' => ['label' => 'lecture', 'times' => []],
+//     'review' => ['label' => 'review', 'times' => []],
+//     'teaching' => ['label' => 'teaching', 'times' => []],
+//     'students' => ['label' => 'students', 'times' => []],
+//     'software' => ['label' => 'software', 'times' => []],
+//     'misc' => ['label' => 'misc', 'times' => []],
+// ];
+
+$timeline = [];
+$timelineGroups = [];
+
+$filter = ['authors.user' => $user];
+$filter['$or'] =   array(
+    [
+        "start.year" => array('$lte' => $YEAR),
+        '$or' => array(
+            ['end.year' => array('$gte' => $YEAR)],
+            ['end' => null]
+        )
+    ],
+    ['year' => $YEAR]
+);
+
+$options = [
+    'sort' => ["year" => -1, "month" => -1],
+    // 'projection' => ['file' => -1]
+];
+$cursor = $osiris->activities->find($filter, $options);
+
+
+$endOfYear = new DateTime("$YEAR-12-31");
+$startOfYear = new DateTime("$YEAR-01-01");
+foreach ($cursor as $doc) {
+    if (!array_key_exists($doc['type'], $groups)) continue;
+
+    $format = $Format->format($doc);
+    $doc['format'] = $format;
+    $groups[$doc['type']][] = $doc;
+    $icon = activity_icon($doc, false);
+
+    $date = getDateTime($doc['start'] ?? $doc);
+
+    // make sure date lies in range
+    if ($date < $startOfYear) $date = $startOfYear;
+
+    $starttime = $date->getTimestamp();
+
+    $event = [
+        'starting_time' => $starttime,
+        'type' => $doc['type'],
+        'id' => strval($doc['_id']),
+        'title' => htmlspecialchars(strip_tags($doc['title'] ?? $format)),
+        // 'icon' => ($icon )
+    ];
+    if (isset($doc['end'])) {
+        if (empty($doc['end'])) {
+            $date = $endOfYear;
+        } else {
+            $date = getDateTime($doc['end']);
+
+            // make sure date lies in range
+            if ($date > $endOfYear) $date = $endOfYear;
+        }
+        $endtime = $date->getTimestamp();
+        if ($endtime - $starttime > 2595625) {
+            // etwa ein monat
+            $event['ending_time'] = $endtime;
+        }
+    } else {
+        // $event["display"] = "circle";
+    }
+    // $timeline[$doc['type']]['times'][] = $event;
+    $timeline[] = $event;
+    if (!in_array($doc['type'], $timelineGroups)) $timelineGroups[] = $doc['type'];
+}
+
+// dump($timeline, true);
 ?>
+
 
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -116,7 +211,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
 
             <?php if ($currentuser || $USER['is_admin'] || $USER['is_controlling']) { ?>
                 <br>
-                <a class="btn mt-5" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="fas fa-user-pen"></i>
+                <a class="btn mt-5" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="fas fa-user-pen"></i>
                     <?= lang('Edit user profile', 'Bearbeite Profil') ?>
                 </a>
             <?php } ?>
@@ -197,76 +292,235 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
             </a>
         <?php } ?>
 
+    <?php } ?>
+
+
+    <style>
+        .table tbody tr:active,
+        .table tbody tr.active {
+            -moz-box-shadow: 0 0 0.5rem 0.2rem var(--primary-color-light);
+            -webkit-box-shadow: 0 0 0.5rem 0.2rem var(--primary-color-light);
+            box-shadow: 0 0 0.5rem 0.2rem var(--primary-color-light);
+            z-index: 2;
+            position: relative;
+        }
+
+        svg .axes line,
+        svg .axes path {
+            stroke: var(--text-color);
+        }
+
+        svg .axes text {
+            fill: var(--text-color);
+        }
+    </style>
+
+    <div id="timeline" class="box">
+        <div class="content mb-0">
+            <h4 class="title">
+                Timeline
+            </h4>
+        </div>
+    </div>
+
+    <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
+    <script src="<?= ROOTPATH ?>/js/popover.js"></script>
+    <!-- <script src="<?= ROOTPATH ?>/js/d3-timeline.js"></script> -->
+
+    <script>
+        let typeInfo = JSON.parse('<?= json_encode(typeInfo(null)) ?>');
+        let events = JSON.parse('<?= json_encode(array_values($timeline)) ?>');
+        console.log(events);
+        var types = JSON.parse('<?= json_encode($timelineGroups) ?>');
+
+        // set the dimensions and margins of the graph
+        var radius = 3,
+            distance = 8,
+            divSelector = '#timeline'
+
+        var margin = {
+                top: 8,
+                right: 25,
+                bottom: 30,
+                left: 60
+            },
+            width = 600,
+            height = (distance * types.length) + margin.top + margin.bottom;
+
+
+        var svg = d3.select(divSelector).append('svg')
+            .attr("viewBox", `0 0 ${width} ${height}`)
+
+        width = width - margin.left - margin.right
+        height = height - margin.top - margin.bottom;
+
+        var timescale = d3.scaleTime()
+            .domain([new Date(<?= $YEAR ?>, 0, 1), new Date(<?= $YEAR ?>, 12, 1)])
+            .range([0, width]);
+
+        // var types = Object.keys(typeInfo)
+        let ordinalScale = d3.scaleOrdinal()
+            .domain(types.reverse())
+            .range(Array.from({
+                length: types.length
+            }, (x, i) => i * (height / (types.length - 1))));
+
+
+        let axisLeft = d3.axisLeft(ordinalScale);
+        svg.append('g').attr('class', 'axes')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
+            .call(axisLeft);
+
+        var axisBottom = d3.axisBottom(timescale)
+            .ticks(12)
+        // .tickPadding(5).tickSize(20);
+        svg.append('g').attr('class', 'axes')
+            .attr('transform', `translate(${margin.left}, ${height+margin.top+radius*2})`)
+            .call(axisBottom);
+
+        d3.selectAll("g>.tick>text")
+            .each(function(d, i) {
+                d3.select(this).style("font-size", "8px");
+            });
+
+        var Tooltip = d3.select(divSelector)
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+
+
+        function mouseover(d, i) {
+
+            d3.select(this)
+                .select('circle,rect')
+                .transition()
+                .duration(300)
+                // .attr('cy', -2)
+                // .attr('y', -radius-2)
+                // .attr("r", radius * 1.5)
+                .style('opacity', 1)
+
+            //Define and show the tooltip over the mouse location
+            $(this).popover({
+                placement: 'auto top',
+                container: divSelector,
+                mouseOffset: 10,
+                followMouse: true,
+                trigger: 'hover',
+                html: true,
+                content: function() {
+                    var icon = '';
+                    if (typeInfo[d.type]) {
+                        icon = `<i class="fas fa-${typeInfo[d.type].icon}" style="color:${typeInfo[d.type].color}"></i>`
+                    }
+                    return `${icon} ${d.title ?? 'No title available'}`
+                }
+            });
+            $(this).popover('show');
+        } //mouseoverChord
+
+        //Bring all chords back to default opacity
+        function mouseout(event, d) {
+            d3.select(this).select('circle,rect')
+                .transition()
+                .duration(300)
+                // .attr("r", radius)
+                // .attr('dy', 4)
+                // .attr('cy', 0)
+                // .attr('y', -radius)
+                .style('opacity', .6)
+            //Hide the tooltip
+            $('.popover').each(function() {
+                $(this).remove();
+            });
+        }
+
+        var dots = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
+            .selectAll("g")
+            .data(events)
+            .enter().append("g")
+            .attr('transform', function(d, i) {
+                var date = new Date(d.starting_time * 1000)
+                var x = timescale(date)
+                var y = ordinalScale(d.type) //(typeInfo[d.type]['index'] * -(radius * 2)) + radius
+                return `translate(${x}, ${y})`
+            })
+
+        dots.on("mouseover", mouseover)
+            // .on("mousemove", mousemove)
+            .on("mouseout", mouseout)
+            .on("click", (d) => {
+                // $('tr.active').removeClass('active')
+                var element = document.getElementById("tr-" + d.id);
+                // element.className="active"
+                var headerOffset = 60;
+                var elementPosition = element.getBoundingClientRect().top;
+                var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            });
+        // .style("stroke", "gray")
+
+        var circle = dots.append('circle')
+            .style("fill", function(d, i) {
+                if (d.ending_time !== undefined) return 'transparent'
+                return typeInfo[d.type]['color']
+            })
+            .attr("r", radius)
+            .attr('cy', (d) => Math.random() * distance - distance / 2)
+            .style('opacity', .6)
+
+        var lines = dots.append('rect')
+            .style("fill", function(d, i) {
+                if (d.ending_time === undefined) return 'transparent'
+                return typeInfo[d.type]['color']
+            })
+            .attr('height', radius * 2)
+            .attr('width', function(d, i) {
+                if (d.ending_time === undefined) return 0
+
+                var date = new Date(d.starting_time * 1000)
+                var x1 = timescale(date)
+                var date = new Date(d.ending_time * 1000)
+                var x2 = timescale(date)
+                return x2 - x1
+            })
+            .style('opacity', .6)
+            .attr('rx', 3)
+            .attr('y', -radius)
+        // ending_time
+        // var labels = dots.append('text')
+        // .attr("cx", function(d, i) {
+        //     var date = new Date(d.starting_time * 1000)
+        //     return timescale(date)
+        // })
+        // .attr("cy", (d)=>((typeInfo[d.type]['index'])*-8)+4)
+
+        //     .on('mouseover', function(d){
+        //     d3.select(this).style({opacity:'0.8'})
+        //     d3.select("text").style({opacity:'1.0'});
+        //             })
+        // .on('mouseout', function(d){
+        //   d3.select(this).style({opacity:'0.0',})
+        //   d3.select("text").style({opacity:'0.0'});
+        // })
+    </script>
+
+
+
+
+
     <?php
-    } ?>
-
-
-    <?php
-    $options = ['sort' => ["year" => -1, "month" => -1]];
-    $queries = array(
-        "publication" => [
-            '$or' => [
-                ['authors.user' => $user],
-                ['editors.user' => $user]
-            ],
-            'year' => $YEAR
-        ],
-        "poster" => [
-            'authors.user' => $user,
-            "year" => $YEAR
-        ],
-        "lecture" =>  [
-            'authors.user' => $user,
-            "year" => $YEAR
-        ],
-        "review" => [
-            'authors.user' => $user,
-            '$or' => array(
-                [
-                    "role" => "editorial",
-                    "start.year" => array('$lte' => $YEAR),
-                    '$or' => array(
-                        ['end.year' => array('$gte' => $YEAR)],
-                        ['end' => null]
-                    )
-                ],
-                ['year' => $YEAR]
-            )
-        ],
-        "teaching" => [
-            'authors.user' => $user,
-            "start.year" => array('$lte' => $YEAR),
-            '$or' => array(
-                ['end.year' => array('$gte' => $YEAR)],
-                ['end' => null]
-            )
-        ],
-        "students" => [
-            'authors.user' => $user,
-            "start.year" => array('$lte' => $YEAR),
-            '$or' => array(
-                ['end.year' => array('$gte' => $YEAR)],
-                ['end' => null]
-            )
-        ],
-        "software" => [
-            'authors.user' => $user,
-            "year" => $YEAR,
-        ],
-        "misc" => [
-            'authors.user' => $user,
-            "start.year" => array('$lte' => $YEAR),
-            '$or' => array(
-                ['end.year' => array('$gte' => $YEAR)],
-                ['end' => null]
-            )
-        ],
-    );
-
-    foreach ($queries as $col => $filter) {
-        // $collection = get_collection($col);
-        $collection = $osiris->activities;
-
+    foreach ($groups as $col => $data) {
     ?>
 
 
@@ -277,10 +531,10 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
             <table class="table table-simple">
                 <tbody>
                     <?php
-                    $filter['type'] = $col;
-                    $cursor = $collection->find($filter, $options);
+                    // $filter['type'] = $col;
+                    // $cursor = $collection->find($filter, $options);
                     // dump($cursor);
-                    foreach ($cursor as $doc) {
+                    foreach ($data as $doc) {
                         $id = $doc['_id'];
                         $l = $LOM->lom($doc);
                         $_lom += $l['lom'];
@@ -294,7 +548,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
                         }
 
 
-                        echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$col-$id'>";
+                        echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$id'>";
                         // echo "<td class='w-25'>";
                         // echo activity_icon($doc);
                         // echo "</td>";
@@ -302,7 +556,7 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
                         if (!empty($q)) echo "Q$q";
                         echo "</td>";
                         echo "<td>";
-                        echo $Format->format($doc);
+                        echo $doc['format'];
 
                         // show error messages, warnings and todos
                         $has_issues = has_issues($doc);
@@ -320,25 +574,21 @@ $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) .
                             </b>
                         <?php
                         }
-                        // if($doc['type'] == 'misc') {
-                        //     dump($doc, true);
-                        // dump(is_null($doc['end']??''));
-                        // }
 
                         ?>
 
                         </td>
 
-                            <td class="unbreakable w-50">
-                                <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="icon-activity-search"></i>
-                                </a>
-                        <?php if ($currentuser) { ?>
+                        <td class="unbreakable w-50">
+                            <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                <i class="icon-activity-search"></i>
+                            </a>
+                            <?php if ($currentuser) { ?>
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
                                     <i class="icon-activity-pen"></i>
                                 </a>
-                        <?php } ?>
-                            </td>
+                            <?php } ?>
+                        </td>
                         <td class='lom w-50'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
                         </tr>
                     <?php } ?>

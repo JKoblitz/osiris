@@ -579,6 +579,38 @@ label.element-other::before {
 }
 
 
+.box-publication {
+    border-left: 4px solid  var(--primary-color);
+}
+
+.box-poster {
+    border-left: 4px solid  var(--danger-color);
+}
+
+.box-lecture {
+    border-left: 4px solid  var(--signal-color);
+}
+
+.box-review {
+    border-left: 4px solid  var(--success-color);
+}
+
+.box-misc {
+    border-left: 4px solid  var(--muted-color);
+}
+
+.box-teaching {
+    border-left: 4px solid  var(--dark-color);
+}
+
+.box-students {
+    border-left: 4px solid  var(--color-warm-darkred);
+}
+
+.box-software {
+    border-left: 4px solid  var(--color-cold-purple);
+}
+
 .show-examples label.element-author::before,
 .show-examples label.element-title::before,
 .show-examples label.element-time::before,

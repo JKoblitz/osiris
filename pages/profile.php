@@ -238,7 +238,7 @@ if (isset($_GET['verbose'])) {
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                 <br>
-                <a class="btn mt-5" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="fas fa-user-pen"></i>
+                <a class="btn mt-5" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="fas fa-user-pen"></i>
                     <?= lang('Edit user profile', 'Bearbeite Profil') ?>
                 </a>
             <?php } ?>
@@ -271,7 +271,7 @@ if (isset($_GET['verbose'])) {
                         <?= lang('Add activity', 'Aktivität hinzufügen') ?>
                     </a>
 
-                    <a class="btn" href="<?= ROOTPATH ?>/edit/user/<?= $user ?>"><i class="far fa-user-pen text-primary"></i>
+                    <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="far fa-user-pen text-primary"></i>
                         <?= lang('Edit user profile', 'Bearbeite Profil') ?>
                     </a>
 

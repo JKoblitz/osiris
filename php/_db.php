@@ -170,7 +170,7 @@ function has_issues($doc, $user = null)
         }
     }
     if ($epub) $issues[] = "epub";
-    if ($doc['type'] == "students" && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
+    if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
 
     if (($doc['type'] == 'misc' || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
         if (isset($doc['end-delay'])) {

@@ -539,7 +539,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
 
 
 
-Route::get('/browse/users', function () {
+Route::get('/user/browse', function () {
     // if ($page == 'users') 
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen')]
@@ -563,7 +563,7 @@ Route::get('/(profile)/?([a-z0-9]*)', function ($page, $user) {
     $name = $scientist['displayname'];
 
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/browse/users"],
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
         ['name' => $name]
     ];
 
@@ -573,7 +573,7 @@ Route::get('/(profile)/?([a-z0-9]*)', function ($page, $user) {
 }, 'login');
 
 
-Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
+Route::get('/scientist/?([a-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -585,7 +585,7 @@ Route::get('/(scientist)/?([a-z0-9]*)', function ($page, $user) {
     $name = $scientist['displayname'];
 
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/browse/users"],
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
         ['name' => lang("$name", "$name"), 'path' => "/profile/$user"],
         ['name' => lang("The Year", "Das Jahr")]
     ];
@@ -628,7 +628,7 @@ Route::get('/visualize/(\w*)', function ($page) {
 });
 
 
-Route::get('/browse/journal', function () {
+Route::get('/journal', function () {
     // if ($page == 'users') 
     $breadcrumb = [
         ['name' => lang('Journals', 'Journale')]
@@ -636,15 +636,16 @@ Route::get('/browse/journal', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/journals-table.php";
+    include BASEPATH . "/pages/journals-overview.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/journal', function () {
+
+Route::get('/journal/browse', function () {
     // if ($page == 'users') 
     $breadcrumb = [
-        ['name' => lang('Journals', 'Journale'), 'path' => "/browse/journal"],
-        ['name' => lang('Overview', 'Überblick')]
+        ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
+        ['name' => lang('Table', 'Tabelle')]
     ];
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
@@ -655,7 +656,7 @@ Route::get('/journal', function () {
 
 
 
-Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
+Route::get('/journal/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -663,7 +664,8 @@ Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
-        ['name' => lang('Journals', 'Journale'), 'path' => "/browse/journal"],
+        ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
+        ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
         ['name' => $data['journal']]
     ];
 
@@ -673,7 +675,7 @@ Route::get('/view/journal/([a-zA-Z0-9]*)', function ($id) {
 }, 'login');
 
 
-Route::get('/edit/journal/([a-zA-Z0-9]*)', function ($id) {
+Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -681,8 +683,9 @@ Route::get('/edit/journal/([a-zA-Z0-9]*)', function ($id) {
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
-        ['name' => lang('Journals', 'Journale'), 'path' => "/browse/journal"],
-        ['name' => $data['journal'], 'path' => "/view/journal/$id"],
+        ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
+        ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
+        ['name' => $data['journal'], 'path' => "/journal/view/$id"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
 
@@ -693,7 +696,7 @@ Route::get('/edit/journal/([a-zA-Z0-9]*)', function ($id) {
 
 
 
-Route::get('/edit/user/([a-z0-9]+)', function ($user) {
+Route::get('/user/edit/([a-z0-9]+)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -701,7 +704,7 @@ Route::get('/edit/user/([a-z0-9]+)', function ($user) {
 
     $data = getUserFromId($user);
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/browse/users"],
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
         ['name' => $data['name'], 'path' => "/profile/$user"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];

@@ -47,10 +47,10 @@ function printMsg($msg = null, $type = 'info', $header = "default")
                 $text = lang(
                     '',
                     'Du bist zum ersten Mal hier? Ich habe dir einen neuen Account angelegt. 
-                    Bitte überprüfe <a class="link" href="' . ROOTPATH . '/edit/user/' . $_SESSION['username'] . '">dein Profil</a> und ergänze bzw. korrigiere die Angaben.'
+                    Bitte überprüfe <a class="link" href="' . ROOTPATH . '/user/edit/' . $_SESSION['username'] . '">dein Profil</a> und ergänze bzw. korrigiere die Angaben.'
                 );
-                if (!empty($_GET['new'])){
-                   $text .=  '<br/>'.lang('Ich habe außerdem <b>'.$_GET['new'].' Aktivitäten</b> gefunden, die vielleicht zu dir gehören. Du kannst sie <a class="link" href="' . ROOTPATH . '/issues">hier</a> überprüfen.');
+                if (!empty($_GET['new'])) {
+                    $text .=  '<br/>' . lang('Ich habe außerdem <b>' . $_GET['new'] . ' Aktivitäten</b> gefunden, die vielleicht zu dir gehören. Du kannst sie <a class="link" href="' . ROOTPATH . '/issues">hier</a> überprüfen.');
                 }
             }
 
@@ -306,72 +306,68 @@ function time_elapsed_string($datetime, $full = false, $type = 'str')
 }
 
 
-function typeInfo($type)
+function typeInfo($type = null)
 {
-    switch ($type) {
-        case 'publication':
-            return [
-                'name' => lang('Publications', 'Publikationen'),
-                'color' => "#006EB7",
-                'icon' => 'book-bookmark'
-                // 'color' => 'var(--primary-color)'
-            ];
-        case 'poster':
-            return [
-                'name' => lang('Poster'),
-                'color' => "#B61F29",
-                'icon' => 'presentation-screen'
-                // 'color' => 'var(--danger-color)'
-            ];
-        case 'lecture':
-            return [
-                'name' => lang('Lectures', 'Vorträge'),
-                'color' => "#ECAF00",
-                'icon' => 'keynote'
-                // 'color' => 'var(--signal-color)'
-            ];
-        case 'review':
-            return [
-                'name' => lang('Reviews & Editorial boards'),
-                'color' => "#1FA138",
-                'icon' => 'book-open-cover'
-                // 'color' => 'var(--success-color)'
-            ];
-        case 'misc':
-            return [
-                'name' => lang('Other activities', 'Sonstige Aktivitäten'),
-                'color' => "#b3b3b3",
-                'icon' => 'icons'
-                // 'color' => 'var(--muted-color)'
-            ];
-        case 'students':
-            return [
-                'name' => lang('Students & Guests', 'Studierende & Gäste'),
-                'color' => "#5F272A",
-                'icon' => 'user-graduate'
-                // 'color' => 'var(--dark-color)'
-            ];
-        case 'teaching':
-            return [
-                'name' => lang('Teaching', 'Lehre'),
-                'color' => "#000000",
-                'icon' => 'chalkboard-user'
-                // 'color' => 'var(--dark-color)'
-            ];
-        case 'software':
-            return [
-                'name' => lang('Software & Data', 'Software & Daten'),
-                'color' => "#9a499c",
-                'icon' => 'desktop'
-                // 'color' => 'var(--dark-color)'
-            ];
-        default:
-            return [
-                'name' => $type,
-                'color' => '#cccccc',
-                'icon' => 'notdef'
-            ];
-    }
+    $types = [
+        'publication' => [
+            'name' => lang('Publications', 'Publikationen'),
+            'color' => "#006EB7",
+            'icon' => 'book-bookmark',
+            'index' => 1
+        ],
+        'poster' => [
+            'name'  => lang('Poster'),
+            'color' => "#B61F29",
+            'icon' => 'presentation-screen',
+            'index' => 2
+        ],
+        'lecture' => [
+            'name' => lang('Lectures', 'Vorträge'),
+            'color' => "#ECAF00",
+            'icon' => 'keynote',
+            'index' => 3
+        ],
+        'review' => [
+            'name' => lang('Reviews & Editorial boards'),
+            'color' => "#1FA138",
+            'icon' => 'book-open-cover',
+            'index' => 4
+        ],
+        'misc' => [
+            'name' => lang('Other activities', 'Sonstige Aktivitäten'),
+            'color' => "#b3b3b3",
+            'icon' => 'icons',
+            'index' => 5
+        ],
+        'students' => [
+            'name' => lang('Students & Guests', 'Studierende & Gäste'),
+            'color' => "#5F272A",
+            'icon' => 'user-graduate',
+            'index' => 6
+        ],
+        'teaching' => [
+            'name' => lang('Teaching', 'Lehre'),
+            'color' => "#000000",
+            'icon' => 'chalkboard-user',
+            'index' => 7
+        ],
+        'software' => [
+            'name' => lang('Software & Data', 'Software & Daten'),
+            'color' => "#9a499c",
+            'icon' => 'desktop',
+            'index' => 8
+        ],
+    ];
+
+    if ($type === null) return $types;
+
+    if (array_key_exists($type, $types)) return $types[$type];
+
+    return [
+        'name' => $type,
+        'color' => '#cccccc',
+        'icon' => 'notdef'
+    ];
 }
 function adjustBrightness($hex, $steps)
 {

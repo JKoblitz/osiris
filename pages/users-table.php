@@ -59,7 +59,7 @@
                 <!-- <td><?= bool_icon($document['is_active']) ?></td> -->
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
-                        <!-- <a href="<?= ROOTPATH ?>/edit/user/<?= $document['_id'] ?>" class="btn btn-link">
+                        <!-- <a href="<?= ROOTPATH ?>/user/edit/<?= $document['_id'] ?>" class="btn btn-link">
                         <i class="fas fa-edit"></i>
                     </a> -->
                         <btn class="btn btn-link" type="button" onclick="editUser('<?= $document['_id'] ?>')">

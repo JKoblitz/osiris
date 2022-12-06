@@ -25,7 +25,9 @@ class LOM
 
     function get_author($doc)
     {
-        $authors = $doc['authors']->bsonSerialize();
+        $authors = $doc['authors'];
+        if (!is_array($authors))
+            $authors = $authors->bsonSerialize();
         $author = array_filter($authors, function ($author) {
             return $author['user'] == $this->user;
         });
@@ -35,7 +37,7 @@ class LOM
             $author = array_filter($authors, function ($author) {
                 return $author['user'] == $this->user;
             });
-            if (!empty($author)){
+            if (!empty($author)) {
                 $author = reset($author);
                 $author['is_editor'] = true;
                 return $author;
@@ -193,10 +195,9 @@ class LOM
 
     function lecture($doc)
     {
-        // TODO: filter by presenting author only???
         $authors = $doc['authors']->bsonSerialize();
         $author = array_shift($authors);
-        if ($author['user'] != $this->user){
+        if ($author['user'] != $this->user) {
             return array(
                 'type' => "",
                 'id' => 0,

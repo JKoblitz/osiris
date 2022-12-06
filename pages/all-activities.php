@@ -212,7 +212,11 @@ $Format = new Format($useronly);
             "order": [
                 [0, 'desc'],
                 [1, 'asc']
-            ]
+            ],
+            <?php if (isset($_GET['q'])) { ?> "oSearch": {
+                    "sSearch": "<?= $_GET['q'] ?>"
+                }
+            <?php } ?>
         });
 
         <?php if (isset($_GET['type'])) { ?>

@@ -4,6 +4,7 @@
         <th>Abbr</th>
         <th>ISSN</th>
         <th><span data-toggle="tooltip" data-title="Last year impact factor if available">IF</span></th>
+        <th><span data-toggle="tooltip" data-title="Publication count"><?=lang('Publications', 'Publikationen')?></span></th>
     </thead>
     <tbody>
     </tbody>
@@ -42,7 +43,7 @@
                     "targets": 0,
                     "data": "name",
                     "render": function(data, type, full, meta) {
-                        return `<a href="${ROOTPATH}/view/journal/${full.id}">${data}</a>`;
+                        return `<a href="${ROOTPATH}/journal/view/${full.id}">${data}</a>`;
                     }
                 },
                 {
@@ -58,6 +59,14 @@
                     targets: 3,
                     data: 'if'
                 },
+                {
+                    type: 'natural',
+                    targets: 4,
+                    data: 'count'
+                },
+            ],
+            "order": [
+                [4, 'desc'],
             ],
             <?php if (isset($_GET['q'])) { ?> "oSearch": {
                     "sSearch": "<?= $_GET['q'] ?>"

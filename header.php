@@ -212,11 +212,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('All activities', 'Alle Aktivitäten') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/browse/users" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
+                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
                         <i class="far fa-user-graduate" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
-                    <a href="<?= ROOTPATH ?>/browse/journal" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
+                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
                         <i class="far fa-institution" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
                     </a>

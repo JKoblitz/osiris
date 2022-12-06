@@ -111,9 +111,9 @@ foreach (['authors', 'editors'] as $role) {
                             <td>
                                 <em>
                                     <?php if (isset($doc['journal_id'])) { ?>
-                                        <a href="<?=ROOTPATH?>/view/journal/<?= $doc['journal_id'] ?>">
+                                        <a href="<?=ROOTPATH?>/journal/view/<?= $doc['journal_id'] ?>">
                                     <?php } else { ?>
-                                        <a href="<?=ROOTPATH?>/browse/journal?q=<?= $doc['journal'] ?>">
+                                        <a href="<?=ROOTPATH?>/journal/browse?q=<?= $doc['journal'] ?>">
                                     <?php } ?>
                                     <?= $doc['journal'] ?>
                                 </a>

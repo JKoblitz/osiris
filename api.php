@@ -87,11 +87,38 @@ function return_rest($data, $count = 0, $status = 200)
     ...
 ]
  */
-Route::get('/api/publications', function () {
-    $result = array();
+// Route::get('/api/publications', function () {
+//     $result = array();
+//     echo return_rest($result, count($result));
+// });
+
+
+Route::get('/api/activities', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['filter'])) {
+        $filter = $_GET['filter'];
+    }
+    $result = $osiris->activities->find($filter)->toArray();
+
+
+    if (isset($_GET['formatted']) && $_GET['formatted']){
+        include_once BASEPATH . "/php/format.php";
+        $table = [];
+        $Format = new Format(true, 'web');
+
+        foreach ($result as $doc) {
+            $table[] = [
+                'id' => strval($doc['_id']),
+                'activity'=> $Format->format($doc)
+            ];
+        }
+
+        $result = $table;
+    }
+
     echo return_rest($result, count($result));
 });
-
 
 
 Route::get('/api/journal', function () {
@@ -106,6 +133,7 @@ Route::get('/api/journal', function () {
     }
     $result = $osiris->journals->find($filter)->toArray();
 
+
     echo return_rest($result, count($result));
 });
 
@@ -114,6 +142,9 @@ Route::get('/api/journals', function () {
     $journals = $osiris->journals->find()->toArray();
     $result = ['data' => []];
     // $i = 0;
+    $activities = $osiris->activities->find(['journal_id'=>['$exists'=>1]], ['projection'=>['journal_id'=>1]])->toArray();
+    $activities = array_column($activities, 'journal_id');
+    $activities = array_count_values($activities);
     foreach ($journals as $doc) {
         // if ($i++ > 100) break;
         $result['data'][] = [
@@ -121,7 +152,8 @@ Route::get('/api/journals', function () {
             'name' => $doc['journal'],
             'abbr' => $doc['abbr'],
             'issn' => implode(', ', $doc['issn']->bsonSerialize()),
-            'if' => impact_from_year($doc, intval(CURRENTYEAR) - 1) ?? ''
+            'if' => impact_from_year($doc, intval(CURRENTYEAR) - 1) ?? '',
+            'count' => $activities[strval($doc['_id'])] ?? 0
         ];
     }
 
