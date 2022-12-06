@@ -311,7 +311,7 @@ function activity_icon($doc, $tooltip = true)
 class Format
 {
     private $highlight = true;
-    private $usecase = "web";
+    public $usecase = "web";
     private $appendix = '';
     public $full = false;
     public $abbr_journal = false;
@@ -452,6 +452,9 @@ class Format
                 break;
             case 'student internship':
                 $result .= "; Schülerpraktikum";
+                break;
+            case 'other':
+                $result .= "; Sonstiges";
                 break;
             default:
                 $result .= "; $doc[category]";

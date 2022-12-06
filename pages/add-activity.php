@@ -508,6 +508,7 @@ function val($index, $default = '')
                             <!-- <option value="mandatory internship" <?= val('category') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium')?></option> -->
                             <option value="lecture internship" <?= val('category') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Vorlesung und Laborpraktikum') ?></option>
                             <option value="student internship" <?= val('category') == 'student internship' ? 'selected' : '' ?>><?= lang('Student Internship', 'Schülerpraktikum') ?></option>
+                            <option value="other" <?= val('category') == 'other' ? 'selected' : '' ?>><?= lang('Other', 'Sonstiges') ?></option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="students">
@@ -518,8 +519,11 @@ function val($index, $default = '')
                             <option value="bachelor thesis" <?= val('category') == 'bachelor thesis' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelor-Thesis') ?></option>
                         </select>
                     </div>
-                    <div class="col-sm" data-visible="students">
-                        <label for="details"><?= lang('Details (scholarship, etc.)', 'Details (Stipendium, etc.)') ?></label>
+                    <div class="col-sm" data-visible="students,guests">
+                        <label for="details">
+                            <span data-visible="students"><?= lang('Details (scholarship, etc.)', 'Details (Stipendium, etc.)') ?></span>
+                            <span data-visible="guests"><?= lang('Details') ?></span>
+                        </label>
                         <input type="text" class="form-control" name="values[details]" id="details" value="<?= val('details') ?>">
                     </div>
                 </div>
