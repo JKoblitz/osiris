@@ -387,7 +387,7 @@ function getJournal(name) {
 }
 
 function selectJournal(j, n = false) {
-    
+
     if (n) {
         console.log(j);
         $.ajax({
@@ -1049,51 +1049,51 @@ function removeAuthor(event, el) {
     affiliationCheck();
 }
 
-function addRow2db(el) {
-    var tr = $(el).closest('tr');
-    //init data string
-    var data = {};
-    var correct = true
-    // for each input in the TR
-    tr.find(':input').each(function () {
-        //retrieve field name and value from the DOM
-        var input = $(this)
-        var field = input.attr('name');
-        if (input.attr('type') == 'checkbox') {
-            if (input.prop('checked')) {
-                data[field] = 1;
-            }
-        } else {
-            if (input.prop('required') && !$(this).val()) {
-                // toastError(lang('The field ' + field + ' is required.', 'Das Feld ' + field + ' wird benötigt.'))
-                input.addClass('is-invalid');
-                correct = false;
-            }
-            data[field] = input.val();
-        }
-    });
-    console.log("addRow2db", data);
-    if (correct && data.type !== undefined) {
-        $.ajax({
-            type: "POST",
-            data: data,
-            dataType: "html",
-            url: ROOTPATH + '/ajax/' + data.type + '.php',
-            success: function (response) {
-                if (response.startsWith('Error')) {
-                    toastError(response)
-                } else {
-                    // toastSuccess()
-                    tr.before(response)
-                }
-            },
-            error: function (response) {
-                toastError(response.responseText)
-                $('.loader').removeClass('show')
-            }
-        })
-    }
-}
+// function addRow2db(el) {
+//     var tr = $(el).closest('tr');
+//     //init data string
+//     var data = {};
+//     var correct = true
+//     // for each input in the TR
+//     tr.find(':input').each(function () {
+//         //retrieve field name and value from the DOM
+//         var input = $(this)
+//         var field = input.attr('name');
+//         if (input.attr('type') == 'checkbox') {
+//             if (input.prop('checked')) {
+//                 data[field] = 1;
+//             }
+//         } else {
+//             if (input.prop('required') && !$(this).val()) {
+//                 // toastError(lang('The field ' + field + ' is required.', 'Das Feld ' + field + ' wird benötigt.'))
+//                 input.addClass('is-invalid');
+//                 correct = false;
+//             }
+//             data[field] = input.val();
+//         }
+//     });
+//     console.log("addRow2db", data);
+//     if (correct && data.type !== undefined) {
+//         $.ajax({
+//             type: "POST",
+//             data: data,
+//             dataType: "html",
+//             url: ROOTPATH + '/ajax/' + data.type + '.php',
+//             success: function (response) {
+//                 if (response.startsWith('Error')) {
+//                     toastError(response)
+//                 } else {
+//                     // toastSuccess()
+//                     tr.before(response)
+//                 }
+//             },
+//             error: function (response) {
+//                 toastError(response.responseText)
+//                 $('.loader').removeClass('show')
+//             }
+//         })
+//     }
+// }
 
 
 function togglePubType(type) {
@@ -1247,3 +1247,44 @@ function filter_results(input) {
     });
 }
 
+
+function verifyForm(event, form) {
+    // event.preventDefault()
+    form = $(form)
+    correct = true
+    form.find(':input').each(function () {
+        //retrieve field name and value from the DOM
+        var input = $(this)
+        var selector = input
+        if (input.attr('id') == 'title'){
+            selector = $('.title-editor')
+        }
+        if ((input.prop('required') && !input.prop('disabled'))) {
+            
+        console.log(input);
+            if (!$(this).val()) {
+                selector.addClass('is-invalid')
+                // .on('input', function(){
+                //     if (this.value !== '') selector.addClass('is-valid').removeClass('is-invalid')
+                //     else selector.addClass('is-invalid').removeClass('is-valid')
+                // })
+                correct = false;
+            } else {
+                selector.addClass('is-valid').removeClass('is-invalid');
+            }
+        }
+    });
+
+    // check if authors are defined
+    if ($('.author-list').find('.author').length === 0){
+        $('.author-list').addClass('is-invalid').removeClass('is-valid')
+        correct = false
+    } else {
+        $('.author-list').addClass('is-valid').removeClass('is-invalid')
+    }
+
+    if (correct) return true
+
+    event.preventDefault()
+    return false
+}

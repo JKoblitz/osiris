@@ -611,6 +611,13 @@ label.element-other::before {
     border-left: 4px solid  var(--color-cold-purple);
 }
 
+.title-editor.is-invalid, .author-list.is-invalid{
+    border-color: var(--danger-color);
+}
+.title-editor.is-valid, .author-list.is-valid{
+    border-color: var(--success-color);
+}
+
 .show-examples label.element-author::before,
 .show-examples label.element-title::before,
 .show-examples label.element-time::before,

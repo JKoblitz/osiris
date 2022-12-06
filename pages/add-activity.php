@@ -374,7 +374,7 @@ function val($index, $default = '')
             </div>
 
 
-            <form action="<?= $formaction ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= $formaction ?>" method="post" enctype="multipart/form-data" id="activity-form">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
                 <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
 
@@ -834,7 +834,7 @@ function val($index, $default = '')
                         </div>
                             <!-- <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= val('journal') ?>" name="values[journal]" list="journal-list" required> -->
                         </div>
-                        <div class="col-sm">
+                        <div class="col-sm" data-visible="review,editorial">
                         <label for="journal_rev_id" class="element-cat required">Journal ID</label>
                         <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_rev_id" required readonly>
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
@@ -864,7 +864,7 @@ function val($index, $default = '')
                         <label class="required element-time" for="date">
                             <?= lang('Date', 'Datum') ?>
                         </label>
-                        <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray(val('start')) ?>">
+                        <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray(val('start')) ?>" required>
                         <small class="text-muted">
                             <?= lang('Only month and year are considered', 'Nur Monat und Jahr sind relevant') ?>
                         </small>
@@ -912,7 +912,7 @@ function val($index, $default = '')
                     <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
                 </div> -->
 
-                <button class="btn btn-primary" type="submit" id="submit-btn"><?= $btntext ?></button>
+                <button class="btn btn-primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 
             </form>
         </div>
