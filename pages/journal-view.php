@@ -1,4 +1,7 @@
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/jquery.dataTables.naturalsort.js"></script>
+
 
 <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
     <a href="<?= ROOTPATH ?>/journal/edit/<?= $id ?>" class="btn btn-osiris float-right"><?= lang('Edit Journal', 'Journal bearbeiten') ?></a>
@@ -46,9 +49,6 @@
     <tbody>
     </tbody>
 </table>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.naturalsort.js"></script>
-
 <script>
     $.extend($.fn.DataTable.ext.classes, {
         sPaging: "pagination mt-10 ",
@@ -63,6 +63,7 @@
         sLength: "float-right"
     });
     var dataTable;
+
     $(document).ready(function() {
         $('#publication-table').DataTable({
             ajax: {
@@ -70,6 +71,7 @@
                 "data": {
                     "filter": {
                         journal_id: '<?= $id ?>',
+                        type: 'publication'
                     },
                     formatted: true
                 }
@@ -87,7 +89,7 @@
                     "targets": 1,
                     "data": "name",
                     "render": function(data, type, full, meta) {
-                        return `<a href="${ROOTPATH}/journal/view/${full.id}"><i class="icon-activity-search"></a>`;
+                        return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="icon-activity-search"></a>`;
                     }
                 },
             ],
@@ -97,6 +99,68 @@
             <?php } ?>
         });
 
+    });
+</script>
+
+
+<h3>
+    <?= lang('Peer-Reviews & Editorial board memberships', 'Peer-Reviews & Mitglieder des Editorial Board') ?>
+</h3>
+
+<table class="table" id="review-table">
+    <thead>
+        <th>Name</th>
+        <th><?=lang('Reviewer count', 'Anzahl Reviews')?></th>
+        <th><?=lang('Editor activity', 'Editoren-Tätigkeit')?></th>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(document).ready(function() {
+        $('#review-table').DataTable({
+            ajax: {
+                "url": ROOTPATH + '/api/reviews',
+                "data": {
+                    "filter": {
+                        journal_id: '<?= $id ?>'
+                    }
+                }
+            },
+            language: {
+                "zeroRecords": "No matching records found",
+                "emptyTable": lang('No reviews/editorials available for this journal.', 'Für dieses Journal sind noch keine Reviews/Editorials verfügbar.'),
+            },
+            "pageLength": 5,
+            columnDefs: [
+                {
+                    "targets": 2,
+                    "data": "Editor",
+                    "render": function(data, type, full, meta) {
+                        var res = []
+                        full.Editorials.forEach(el => {
+                            res.push(`${el.date} (${el.details == '' ? 'Editor' : el.details})`)
+                        });
+                        return res.join('<br>');
+                    }
+                },
+                {
+                    targets: 1,
+                    data: 'Reviewer'
+                },
+                {
+                    "targets": 0,
+                    "data": "Name",
+                    "render": function(data, type, full, meta) {
+                        return `<a href="${ROOTPATH}/profile/${full.User}">${data}</a>`;
+                    }
+                },
+            ],
+            <?php if (isset($_GET['q'])) { ?> "oSearch": {
+                    "sSearch": "<?= $_GET['q'] ?>"
+                }
+            <?php } ?>
+        });
     });
 </script>
 

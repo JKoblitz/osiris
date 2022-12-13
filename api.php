@@ -102,7 +102,7 @@ Route::get('/api/activities', function () {
     $result = $osiris->activities->find($filter)->toArray();
 
 
-    if (isset($_GET['formatted']) && $_GET['formatted']){
+    if (isset($_GET['formatted']) && $_GET['formatted']) {
         include_once BASEPATH . "/php/format.php";
         $table = [];
         $Format = new Format(true, 'web');
@@ -110,7 +110,7 @@ Route::get('/api/activities', function () {
         foreach ($result as $doc) {
             $table[] = [
                 'id' => strval($doc['_id']),
-                'activity'=> $Format->format($doc)
+                'activity' => $Format->format($doc)
             ];
         }
 
@@ -118,6 +118,70 @@ Route::get('/api/activities', function () {
     }
 
     echo return_rest($result, count($result));
+});
+
+
+Route::get('/api/reviews', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['filter'])) {
+        $filter = $_GET['filter'];
+    }
+    $filter['type'] = 'review';
+    $result = $osiris->activities->find($filter)->toArray();
+
+    $reviews = [];
+    foreach ($result as $doc) {
+        if (!array_key_exists($doc['user'], $reviews)) {
+            $u = getUserFromId($doc['user']);
+            $reviews[$doc['user']] = [
+                'User' => $doc['user'],
+                'Name' => $u['displayname'],
+                'Editor' => 0,
+                'Editorials' => [],
+                'Reviewer' => 0,
+                "Reviews" => []
+            ];
+        }
+        switch (strtolower($doc['role'] ?? 'review')) {
+            case 'editor':
+            case 'editorial':
+                $reviews[$doc['user']]['Editor']++;
+                $date = format_date($doc['start'] ?? $doc);
+                if (isset($doc['end']) && !empty($doc['end'])){
+                    $date .= " - ". format_date($doc['end']);
+                } else {
+                    $date .= " - today";
+                }
+
+                $reviews[$doc['user']]['Editorials'][] = [
+                    'id'=>strval($doc['_id']),
+                    'date'=>$date,
+                    'details'=>$doc['editor_type'] ??''
+                ];
+                break;
+
+            case 'reviewer':
+            case 'review':
+                $reviews[$doc['user']]['Reviewer']++;
+                $reviews[$doc['user']]['Reviews'][] = [
+                    'id'=>strval($doc['_id']),
+                    'date'=>format_date($doc)
+                ];
+                break;
+            default:
+                $reviews[$doc['user']]['Reviewer']++;
+                $reviews[$doc['user']]['Reviews'][] = [
+                    'id'=>strval($doc['_id']),
+                    'date'=>format_date($doc)
+                ];
+                break;
+        }
+    }
+
+    $table = array_values($reviews);
+
+    echo return_rest($table, count($result));
 });
 
 
@@ -142,7 +206,7 @@ Route::get('/api/journals', function () {
     $journals = $osiris->journals->find()->toArray();
     $result = ['data' => []];
     // $i = 0;
-    $activities = $osiris->activities->find(['journal_id'=>['$exists'=>1]], ['projection'=>['journal_id'=>1]])->toArray();
+    $activities = $osiris->activities->find(['journal_id' => ['$exists' => 1]], ['projection' => ['journal_id' => 1]])->toArray();
     $activities = array_column($activities, 'journal_id');
     $activities = array_count_values($activities);
     foreach ($journals as $doc) {

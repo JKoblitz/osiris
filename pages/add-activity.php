@@ -119,12 +119,12 @@ function val($index, $default = '')
                 <span aria-hidden="true">&times;</span>
             </a>
 
-            <label for="journal-search"><?=lang('Search Journal by name or ISSN', 'Suche Journal nach Name oder ISSN')?></label>
+            <label for="journal-search"><?= lang('Search Journal by name or ISSN', 'Suche Journal nach Name oder ISSN') ?></label>
             <div class="input-group">
-            <input type="text" class="form-control" onchange="getJournal(this.value)" list="journal-list" id="journal-search" value="<?=$form['journal']??''?>">
-            <div class="input-group-append">
-                <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="fas fa-search"></i></button>
-            </div>
+                <input type="text" class="form-control" onchange="getJournal(this.value)" list="journal-list" id="journal-search" value="<?= $form['journal'] ?? '' ?>">
+                <div class="input-group-append">
+                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="fas fa-search"></i></button>
+                </div>
             </div>
             <table class="table table-simple">
                 <tbody id="journal-suggest">
@@ -826,19 +826,19 @@ function val($index, $default = '')
                                 <?= lang('Journal') ?>
                             </label>
                             <div class="input-group">
-                            <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal-input" list="journal-list" required readonly>
-                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
-                            <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Edit Journal', 'Bearbeite Journal') ?>">
-                                <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
+                                <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal-input" list="journal-list" required readonly>
+                                <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                                <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Edit Journal', 'Bearbeite Journal') ?>">
+                                    <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
+                                </div>
                             </div>
-                        </div>
                             <!-- <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= val('journal') ?>" name="values[journal]" list="journal-list" required> -->
                         </div>
                         <div class="col-sm" data-visible="review,editorial">
-                        <label for="journal_rev_id" class="element-cat required">Journal ID</label>
-                        <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_rev_id" required readonly>
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
-                    </div>
+                            <label for="journal_rev_id" class="element-cat required">Journal ID</label>
+                            <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_rev_id" required readonly>
+                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                        </div>
 
                         <div class="col-sm" data-visible="grant-rev,thesis-rev">
                             <label class="required element-title" for="title-input">
@@ -895,22 +895,25 @@ function val($index, $default = '')
                 </div>
 
                 <!-- <?php if (!empty($form) && isset($form['file']) && !empty($form['file']) && !$copy) { ?>
-                    <p>
-                        <?= lang('The following file is appended to this entry:', 'Die folgende Datei ist diesem Eintrag angehängt:') ?>
-                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>/file" class="btn"><?= lang('FILE', 'DATEI') ?></a>
-                        <?= lang('Uploading a new file will overwrite the existing one.', 'Wenn du eine neue Datei hochlädst, wird sie überschrieben.') ?>
-                    </p>
+                    
 
                 <?php } ?> -->
-                <!-- 
-                <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
-                    <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
-                    <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
-                </div>
-                <div data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
-                    <input type="file" id="file-input" name="file" accept=".pdf" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
-                    <label for="file-input"><?= lang('Append a file (in PDF format)', 'Hänge eine Datei an (im PDF-Format)') ?></label>
-                </div> -->
+
+                <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
+                    <div class="form-group">
+                        <a onclick="$(this).next().toggleClass('hidden')">
+                            <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
+                                <i class="fas fa-plus"></i> <?= lang('Add comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
+                            </label>
+                        </a>
+                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) { echo val('comment'); } ?></textarea>
+                    </div>
+                <?php } else { ?>
+                    <div class="form-group">
+                        <label for="comment"><?= lang('Comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)</label>
+                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control"><?php if (!$copy) { echo val('comment'); } ?></textarea>
+                    </div>
+                <?php } ?>
 
                 <button class="btn btn-primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 
@@ -948,6 +951,7 @@ function val($index, $default = '')
     if ($t == 'publication') $t = $form['pubtype'];
     if ($t == 'students') $t = $form['category'] ?? 'doctoral thesis';
     if ($t == 'review') $t = $form['role'] ?? 'review';
+    if ($t == 'misc') $t = 'misc-' . ($form['iteration'] ?? 'once');
     // dump($t);
 ?>
     <script>

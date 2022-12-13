@@ -101,7 +101,7 @@ Route::get('/', function () {
         include BASEPATH . "/footer.php";
     } else {
         $path = ROOTPATH . "/profile/" . $_SESSION['username'];
-        if (!empty($_SERVER['QUERY_STRING'])) $path .= "?".$_SERVER['QUERY_STRING'];
+        if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
         header("Location: $path");
     }
 });
@@ -248,7 +248,7 @@ Route::post('/user/login', function () {
                 if (empty($USER)) {
                     die('Sorry, the user does not exist. Please contact system administrator!');
                 }
-                $osiris->users->insertOne($USER);    
+                $osiris->users->insertOne($USER);
 
                 // try to connect the user with existing authors
                 $updateResult = $osiris->activities->updateMany(
@@ -270,12 +270,12 @@ Route::post('/user/login', function () {
                 $_SESSION['name'] = "unknown";
             }
             $_SESSION['loggedin'] = true;
-            
+
             if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
                 header("Location: " . $_POST['redirect'] . $msg);
                 die();
             }
-            header("Location: " . ROOTPATH . "/". $msg);
+            header("Location: " . ROOTPATH . "/" . $msg);
             die();
         } else {
             $auth = login($_POST['username'], $_POST['password']);
@@ -285,7 +285,7 @@ Route::post('/user/login', function () {
                     header("Location: " . $_POST['redirect'] . $msg);
                     die();
                 }
-                header("Location: " . ROOTPATH . "/". $msg);
+                header("Location: " . ROOTPATH . "/" . $msg);
                 die();
             }
         }
@@ -718,7 +718,31 @@ Route::get('/user/edit/([a-z0-9]+)', function ($user) {
 Route::get('/docs/([\w-]+)', function ($doc) {
     // header("HTTP/1.0 $error");
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/docs/$doc.html";
+    $path    = BASEPATH . '/pages/docs';
+
+    $breadcrumb = [
+        ['name' => lang('Documentation', 'Dokumentation')]
+    ];
+
+    if (file_exists("$path/$doc.html")) {
+        include "$path/$doc.html";
+    } elseif (file_exists("$path/$doc.php")) {
+        include "$path/$doc.php";
+    } elseif (file_exists("$path/$doc.md")) {
+        include_once BASEPATH . "/php/MyParsedown.php";
+        $text = file_get_contents("$path/$doc.md");
+        $parsedown = new Parsedown;
+        // $header = $parsedown->header;
+        // $header = array_filter($header, function ($v) {
+        //     return $v['level'] <= 2;
+        // });
+        // $headers = array_merge($headers, $header);
+        echo "<div class='container'>";
+        echo $parsedown->text($text);
+        echo "</div>";
+    } else {
+        echo "Doc not found.";
+    }
     // include BASEPATH . "/pages/error.php";
     include BASEPATH . "/footer.php";
 });

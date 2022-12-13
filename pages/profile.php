@@ -96,7 +96,7 @@ foreach ($cursor as $doc) {
     if ($type == 'publication') {
         foreach ($doc['authors'] ?? array() as $a) {
             if (($a['user'] ?? '') == $user) {
-                if (isset($a['position']) && ($a['position'] == 'first' || $a['position'] == 'last')) {
+                if (isset($a['position']) && (in_array($a['position'], ['first', 'last', 'corresponding']))) {
                     $authors['firstorlast']++;
                 } else {
                     $authors['middle']++;

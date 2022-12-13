@@ -4,7 +4,7 @@
         <th>Abbr</th>
         <th>ISSN</th>
         <th><span data-toggle="tooltip" data-title="Last year impact factor if available">IF</span></th>
-        <th><span data-toggle="tooltip" data-title="Publication count"><?=lang('Publications', 'Publikationen')?></span></th>
+        <th><span data-toggle="tooltip" data-title="Publications, Reviews and Editorials"><?=lang('Activities', 'Aktivitäten')?></span></th>
     </thead>
     <tbody>
     </tbody>

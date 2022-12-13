@@ -8,6 +8,7 @@
 - [x] Fix: Typ-Sortierung bei Studenten usw.
 - [x] Außerdem wäre es wahrscheinlich recht schön, wenn oben gehighlightet wäre, ob man Abschlussarbeiten oder Gäste & Praktika ausgewählt hat
 - [ ] Es gibt ja diesen Reiter Lehre, wo die Leute auch ihre Vorlesungen eintragen. Dazu kommen ja dann auch die Leute und machen ein Praktikum, also in den Formularen steht dann meistens "Praktikum MI03" oder so. Man könnte das doch irgendwie verbinden oder? Das man auswählen kann, dass das ein Laborpraktikum ist und dann kriegt man da die Auswahl?
+- [ ] Reviews und Editorials auf der Journal-Übersicht zeigen
 - [x] closed access icon
 - [x] open access als radio
 - [ ] impact factors

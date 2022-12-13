@@ -15,6 +15,11 @@ $USER = array();
 if (!empty($_SESSION['username'])) {
     $USER = getUserFromId($_SESSION['username']);
 
+    if (!isset($USER['is_controlling'])) $USER['is_controlling'] = false;
+    if (!isset($USER['is_admin'])) $USER['is_admin'] = false;
+    if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
+    if (!isset($USER['is_leader'])) $USER['is_leader'] = false;
+
     // if (empty($USER)) {
     //     require_once BASEPATH . '/php/_login.php';
     //     $USER = updateUser($username);
@@ -54,6 +59,7 @@ function getUserFromId($user)
     foreach ($first as $name) {
         $USER['first_abbr'] .= " " . $name[0] . ".";
     }
+
     return $USER;
 }
 
@@ -172,7 +178,7 @@ function has_issues($doc, $user = null)
     if ($epub) $issues[] = "epub";
     if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
 
-    if (($doc['type'] == 'misc' || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
+    if ((($doc['type'] == 'misc' && $doc['iteration']=='annual') || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
         if (isset($doc['end-delay'])) {
             if (new DateTime() > new DateTime($doc['end-delay'])) {
                 $issues[] = "openend";
@@ -205,6 +211,19 @@ function get_collection($col)
             echo "unsupported collection";
             return;
     }
+}
+
+function isUserActivity($doc, $user){
+    if (isset($doc['user']) && $doc['user'] == $user) return true;
+    foreach (['authors', 'editors'] as $role) {
+        if (!isset($doc[$role])) continue;
+        foreach ($doc[$role] as $author) {
+            if (isset($author['user']) && !empty($author['user'])) {
+                if ($user == $author['user']) return true;
+            }
+        }
+    }
+    return false;
 }
 
 

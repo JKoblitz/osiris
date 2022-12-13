@@ -131,14 +131,18 @@ class LOM
         }
 
         $pos = $author['position'] ?? 'middle';
+        
+        $posKey = $pos;
+        if ($pos =='corresponding') $posKey='last';
+
 
         if ($type == "non-refereed") {
-            $points = $this->matrix['publication']['non-refereed'][$pos];
+            $points = $this->matrix['publication']['non-refereed'][$posKey];
             return array(
                 'type' => "publication>non-refereed>$pos",
                 'id' => $doc['_id'],
                 'title' => $doc['title'],
-                'points' => "$points (non-refereed)",
+                'points' => "$points (non-refereed, $pos)",
                 'lom' => $points
             );
         }
@@ -158,7 +162,7 @@ class LOM
                 }
             }
         }
-        $points = $this->matrix['publication']['refereed'][$pos];
+        $points = $this->matrix['publication']['refereed'][$posKey];
         return array(
             'type' => "publication>refereed>$pos",
             'id' => $doc['_id'],
@@ -195,17 +199,21 @@ class LOM
 
     function lecture($doc)
     {
-        $authors = $doc['authors']->bsonSerialize();
-        $author = array_shift($authors);
-        if ($author['user'] != $this->user) {
-            return array(
-                'type' => "",
-                'id' => 0,
-                'title' => "",
-                'points' => "0 (not presenting)",
-                'lom' => 0
-            );
+        $author = $this->get_author($doc);
+        if (!isset($author['position']) || $author['position']!== 'first'){
+            $authors = $doc['authors']->bsonSerialize();
+            $author = array_shift($authors);
+            if ($author['user'] != $this->user) {
+                return array(
+                    'type' => "",
+                    'id' => 0,
+                    'title' => "",
+                    'points' => "0 (not presenting)",
+                    'lom' => 0
+                );
+            }
         }
+        
         $aff = (isset($author['aoi']) && ($author['aoi'] === 0 || $author['aoi'] === false));
         if (empty($author) || $aff) {
             return array(

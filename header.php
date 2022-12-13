@@ -268,6 +268,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
 
+                <a href="<?= ROOTPATH ?>/docs/faq" class="sidebar-link with-icon <?= $pageactive('docs/faq') ?>">
+                    <i class="far fa-comment-question" aria-hidden="true"></i>
+                    <?= lang('FAQ') ?>
+                </a>
+
                 <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon">
                     <i class="far fa-comments" aria-hidden="true"></i>
                     <?= lang('Feedback') ?>

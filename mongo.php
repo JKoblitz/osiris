@@ -21,7 +21,8 @@ function validateValues($values)
             // die;
         } else if ($key == 'authors' || $key == "editors") {
             $values[$key] = array();
-            foreach ($value as $i => $author) {
+            $i = 0;
+            foreach ($value as $author) {
                 $author = explode(';', $author, 3);
                 $user = getUserFromName($author[0], $author[1]);
                 if ($key == "editors") {
@@ -49,6 +50,7 @@ function validateValues($values)
                         'approved' => $user == $_SESSION['username']
                     ];
                 }
+                $i++;
             }
         } else if ($key == 'user') {
             $user = getUserFromId($value);
@@ -111,8 +113,12 @@ function validateValues($values)
         // since non-checked boxes are not shown in the posted data,
         // it is necessary to get false values
         if (!isset($values['epub'])) $values['epub'] = false;
+        else $values['epub-delay'] = endOfCurrentQuarter(true);
         if (!isset($values['open_access'])) $values['open_access'] = false;
         if (!isset($values['correction'])) $values['correction'] = false;
+    }
+    if (($values['type']??'') == 'misc' && ($values['iteration']??'') == 'annual'){
+        $values['end-delay'] = endOfCurrentQuarter(true);
     }
 
     if (isset($values['year']) && ($values['year'] < 1900 || $values['year'] > (CURRENTYEAR ?? 2055) + 5)) {

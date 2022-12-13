@@ -175,24 +175,7 @@ $Format = new Format($useronly);
                             <i class="icon-activity-search"></i>
                         </a>
                         <?php
-                        $useractivity = false;
-                        $auth = [];
-                        if (isset($doc['authors']) && !empty($doc['authors'])) {
-                            foreach ($doc['authors'] as $a) {
-                                if ($a['user'] == $user) {
-                                    $useractivity = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (isset($doc['editors']) && !empty($doc['editors'])) {
-                            foreach ($doc['editors'] as $a) {
-                                if ($a['user'] == $user) {
-                                    $useractivity = true;
-                                    break;
-                                }
-                            }
-                        }
+                        $useractivity = isUserActivity($doc, $user);
                         if ($useractivity) { ?>
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
                                 <i class="icon-activity-pen"></i>

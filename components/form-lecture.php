@@ -55,10 +55,10 @@ if (!empty($form) && isset($form['_id'])) {
 
     <div class="form-row row-eq-spacing">
         <div class="col-sm">
-            <label class="required" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
+            <label class="required" for="lecture_type"><?= lang('Length of lecture (incl. discussion)', 'Länge des Vortrages (inkl. Diskussion)') ?></label>
             <select name="values[lecture_type]" id="lecture_type" class="form-control">
-                <option value="short" <?= $form['lecture_type'] ?? '' == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
-                <option value="long" <?= $form['lecture_type'] ?? '' == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
+                <option value="short" <?= $form['lecture_type'] ?? '' == 'short' ? 'selected' : '' ?>><?=lang('short', 'kurz')?> (< 30 min.)</option>
+                <option value="long" <?= $form['lecture_type'] ?? '' == 'long' ? 'selected' : '' ?>><?=lang('long', 'lang')?> (>= 30 min.)</option>
             </select>
         </div>
         <div class="col-sm">

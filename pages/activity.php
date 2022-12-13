@@ -3,16 +3,8 @@
 $Format = new Format(true);
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 
-$user_activity = false;
-
-foreach (['authors', 'editors'] as $role) {
-    if (!isset($activity[$role])) continue;
-    foreach ($activity[$role] as $i => $author) {
-        if (isset($author['user']) && !empty($author['user'])) {
-            if ($user == $author['user']) $user_activity = true;
-        }
-    }
-} ?>
+$user_activity = isUserActivity($doc, $user);
+?>
 
 <style>
     .key {
@@ -111,12 +103,12 @@ foreach (['authors', 'editors'] as $role) {
                             <td>
                                 <em>
                                     <?php if (isset($doc['journal_id'])) { ?>
-                                        <a href="<?=ROOTPATH?>/journal/view/<?= $doc['journal_id'] ?>">
-                                    <?php } else { ?>
-                                        <a href="<?=ROOTPATH?>/journal/browse?q=<?= $doc['journal'] ?>">
-                                    <?php } ?>
-                                    <?= $doc['journal'] ?>
-                                </a>
+                                        <a href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
+                                        <?php } else { ?>
+                                            <a href="<?= ROOTPATH ?>/journal/browse?q=<?= $doc['journal'] ?>">
+                                            <?php } ?>
+                                            <?= $doc['journal'] ?>
+                                            </a>
                                 </em>
                                 <span class="text-muted">
                                     <?php
@@ -479,6 +471,18 @@ foreach (['authors', 'editors'] as $role) {
 
 
 
+                    <?php if (($user_activity || $USER['is_controlling'] || $USER['is_controlling']) && isset($doc['created_by'])) : ?>
+                        <tr class="text-muted">
+                            <th class="key" style="text-decoration: 1px dotted underline;" data-toggle="tooltip" data-title="<?=lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Controlling-MA.')?>"><?= lang('Comment', 'Kommentar') ?>:</th>
+                            <td>
+                                <?= $doc['comment'] ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    
+
+
+
                     <?php if (isset($doc['created_by'])) :
                         if ($user == $doc['created_by']) $user_activity = true;
                     ?>
@@ -648,99 +652,23 @@ foreach (['authors', 'editors'] as $role) {
     </div>
 </div>
 
-<section class="section">
 
-    <div class="content">
+<?php if ($USER['is_admin']) { ?>
+    <section class="section">
 
-        <h2>
-            Raw data
-        </h2>
+        <div class="content">
 
-        <?= lang('Raw data as they are stored in the database - for development only.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden - nur für die Entwicklung.') ?>
+            <h2>
+                Raw data
+            </h2>
 
-        <?php
-        dump($doc, true);
-        ?>
+            <?= lang('Raw data as they are stored in the database - for development only.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden - nur für die Entwicklung.') ?>
 
-
-    </div>
-</section>
-<!-- 
-
-<table class="table">
-    <tbody>
-        <?php
-
-        // if (isset($activity['title'])) {
-        //     echo '<tr>';
-        //     echo '<th>' . lang('Title', 'Titel') . '</th>';
-        //     echo "<td>$activity[title]</td>";
-        //     echo '<tr>';
-        // }
+            <?php
+            dump($doc, true);
+            ?>
 
 
-        // foreach ($activity as $key => $value) {
-        //     echo "<tr>";
-        //     if ($key == '_id') {
-        //         echo "<td>$key</td>";
-        //         echo "<td>$id</td>";
-        //     } else if ($key == 'authors') {
-        //         continue;
-        //     } else if ($key == 'files') {
-        //         continue;
-        //     } else if ($key == 'file') {
-        //         echo "<td>$key</td>";
-        //         echo '<td><a href="' . ROOTPATH . '/activities/view/' . $id . '/file" class="btn">' . lang("Download file", "Datei herunterladen") . '</a></td>';
-        //     } else if (is_array($value)) {
-        //         if (isset($value[0])) {
-        //             echo "<td>$key</td>
-        //                     <td>
-        //                     <table class='table table-simple'>";
-        //             echo "<tr>";
-        //             foreach ($value[0] ?? [] as $head => $tr) {
-        //                 echo "<th>$head</th>";
-        //             }
-        //             echo "</tr>";
-        //             foreach ($value as $k => $tr) {
-        //                 echo "<tr>";
-        //                 foreach ($tr as $td) {
-        //                     echo "<td>$td</td>";
-        //                 }
-        //                 echo "</tr>";
-        //             }
-        //             echo "</table></td>";
-        //         } else {
-        //             foreach ($value as $k => $v) {
-        //                 echo "<tr>";
-        //                 echo "<td>$key > $k</td>";
-        //                 if (is_bool($v)) {
-        //                     echo "<td>" . bool_icon($v) . "</td>";
-        //                 } else {
-        //                     echo "<td>$v</td>";
-        //                 }
-        //                 echo "</tr>";
-        //             }
-        //         }
-        //     } else if (is_bool($value)) {
-        //         echo "<td>$key</td>";
-        //         echo "<td>" . bool_icon($value) . "</td>";
-        //     } else {
-        //         echo "<td>$key</td>";
-        //         echo "<td>$value</td>";
-        //     }
-        //     echo "</tr>";
-        // }
-        // if (isset($activity['files'])) {
-        //     foreach ($activity['files'] as $i => $file) {
-        //         echo '<tr>';
-        //         echo "<td>File " . ($i + 1) . "</td>";
-        //         echo '<td><a href="' . $file['filepath'] . '" class="">' . $file['filename'] . '</a> 
-        //                 <a href="' . ROOTPATH . '/activities/files/' . $id . '" class="btn btn-sm"><i class="fas fa-edit"></i></a>
-        //                 </td>';
-        //         echo '</tr>';
-        //     }
-        // }
-        ?>
-
-    </tbody>
-</table> -->
+        </div>
+    </section>
+<?php } ?>

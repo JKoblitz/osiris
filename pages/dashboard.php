@@ -100,7 +100,7 @@ foreach ($cursor as $doc) {
 
             $firstorlast = false;
             foreach ($doc['authors'] as $a) {
-                if (($a['aoi'] ?? false) && isset($a['position']) && ($a['position'] == 'first' || $a['position'] == 'last')) {
+                if (($a['aoi'] ?? false) && isset($a['position']) && ($a['position'] == 'first' || $a['position'] == 'last' || $a['position'] == 'corresponding')) {
                     $firstorlast = true;
                     break;
                 }
@@ -175,7 +175,7 @@ foreach ($impacts as $vals) {
     };
 </script>
 
-<?php if ($USER['is_controlling']) { ?>
+<?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
     <div class="content">
 
         <h1 class="m-0">Controlling Dashboard</h1>

@@ -405,7 +405,11 @@ class Format
             if ($last > 1 && $a['position'] == 'last') {
                 $author .= "<sup>*</sup>";
             }
-
+            if ( isset($a['position']) && $a['position'] == 'corresponding') {
+                $author .= "<sup>§</sup>";
+                $this->appendix .= "<span style='color:#878787;'><sup>§</sup> Corresponding author</span>";
+            }
+            
             $authors[] = $author;
         }
 

@@ -46,6 +46,7 @@
                             <select name="authors[<?= $i ?>][position]" class="form-control">
                                 <option value="first" <?= ($author['position'] == 'first' ? 'selected' : '') ?>>first</option>
                                 <option value="middle" <?= ($author['position'] == 'middle' ? 'selected' : '') ?>>middle</option>
+                                <option value="corresponding" <?= ($author['position'] == 'corresponding' ? 'selected' : '') ?>>corresponding</option>
                                 <option value="last" <?= ($author['position'] == 'last' ? 'selected' : '') ?>>last</option>
                             </select>
                             <?php } else { ?>
@@ -104,7 +105,7 @@
         tr.append('<td><i class="fas fa-grip-dots-vertical text-muted handle"></i></td>')
         tr.append('<td><input name="authors[' + counter + '][last]" type="text" class="form-control"></td>')
         tr.append('<td><input name="authors[' + counter + '][first]" type="text" class="form-control"></td>')
-        tr.append('<td><select name="authors[' + counter + '][position]" class="form-control"><option value="first">first</option><option value="middle" selected>middle</option><option value="last">last</option></select></td>')
+        tr.append('<td><select name="authors[' + counter + '][position]" class="form-control"><option value="first">first</option><option value="middle" selected>middle</option><option value="corresponding">corresponding</option><option value="last">last</option></select></td>')
         tr.append('<td><div class="custom-checkbox"><input type="checkbox" id="checkbox-' + counter + '" name="authors[' + counter + '][aoi]" value="1"><label for="checkbox-' + counter + '" class="blank"></label></div></td>')
         tr.append('<td> <input name="authors[' + counter + '][user]" type="text" class="form-control" list="user-list"></td>')
         var btn = $('<button class="btn" type="button">').html('<i class="fas fa-trash-alt"></i>').on('click', function() {
