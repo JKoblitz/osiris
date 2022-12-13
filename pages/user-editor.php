@@ -98,12 +98,12 @@ dump($data, true);
 
     
     <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] ?? false) ? '' : 'disabled' ?>>
+        <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
         <label for="is_controlling">Is Controlling</label>
     </div>
 
     <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] ?? false) ? '' : 'disabled' ?>>
+        <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
         <label for="is_leader">Is Leader</label>
     </div>
 
