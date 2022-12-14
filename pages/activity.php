@@ -469,18 +469,14 @@ $user_activity = isUserActivity($doc, $user);
                     <?php endif; ?>
 
 
-
-
-                    <?php if (($user_activity || $USER['is_controlling'] || $USER['is_controlling']) && isset($doc['created_by'])) : ?>
+                    <?php if (($user_activity || $USER['is_controlling'] || $USER['is_controlling']) && isset($doc['comment'])) : ?>
                         <tr class="text-muted">
-                            <th class="key" style="text-decoration: 1px dotted underline;" data-toggle="tooltip" data-title="<?=lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Controlling-MA.')?>"><?= lang('Comment', 'Kommentar') ?>:</th>
+                            <th class="key" style="text-decoration: 1px dotted underline;" data-toggle="tooltip" data-title="<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Controlling-MA.') ?>"><?= lang('Comment', 'Kommentar') ?>:</th>
                             <td>
                                 <?= $doc['comment'] ?>
                             </td>
                         </tr>
                     <?php endif; ?>
-                    
-
 
 
                     <?php if (isset($doc['created_by'])) :
