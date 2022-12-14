@@ -9,7 +9,6 @@ $Format = new Format(true);
     </h1>
     <form action="#" method="get">
 
-
         $doc['academic_title']
         $doc['affiliation']
         $doc['book']
