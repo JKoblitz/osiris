@@ -225,63 +225,69 @@ if (array_sum($a) === 0) {
         $id = $doc['_id'];
         $type = $doc['type'];
     ?>
-        <p class="mb-0">
-            <?php
-            if (isset($doc['updated_by'])) {
-                $updated_by = getUserFromId($doc['updated_by']);
-                if (!empty($updated_by)) {
-                    echo $updated_by['name'];
-                    echo lang(
-                        ' has updated the following activity:',
-                        ' hat die folgende Aktivität bearbeitet:'
-                    );
-                }
-            } else 
-        if (isset($doc['created_by'])) {
-                $created_by = getUserFromId($doc['created_by']);
-                if (!empty($created_by)) {
-                    echo $created_by['displayname'];
-                    // if (!empty($doc['created'] ?? '')) {
-                    //    echo lang('at ', 'am ');
-                    //    echo $doc['created'];
-                    // }
-                    echo lang(
-                        ' has created the following activity for you:',
-                        ' hat die folgende Aktivität für dich hinzugefügt:'
-                    );
-                }
-            }
-            ?>
-        </p>
 
-        <div id="tr-<?= $id ?>" class="box mt-0">
-            <div class="content my-10">
-                <p>
-                <span class="mr-20"><?= activity_icon($doc); ?></span>
-                <?= $Format->format($doc); ?>
-        </p>
-                <div class='' id="approve-<?= $id ?>">
-                <?php if (isset($updated_by) && !empty($updated_by)) { ?>
-                    <?= lang('Please confirm (possibly again) that you are the author: ', 'Bitte bestätige (evtl. erneut), dass du Autor:in bist:') ?>
-                <?php } else { ?>
-                    <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
-                <?php } ?>
-                    <br>
-                    <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . AFFILIATION, 'Ja, und ich war der ' . AFFILIATION . ' angehörig') ?>">
-                        <i class="fas fa-fw fa-check"></i>
-                    </button>
-                    <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>">
-                        <i class="far fa-fw fa-handshake-slash"></i>
-                    </button>
-                    <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
-                        <i class="fas fa-fw fa-xmark"></i>
-                    </button>
-                    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary ml-10" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
-                        <i class="icon-activity-pen"></i>
-                    </a>
-                    <a href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
-                        <i class="icon-activity-search"></i>
-                    </a>
+        <div id="tr-<?= $id ?>">
+
+
+            <div class="box mt-0">
+                <div class="content my-10">
+                    <p class="mb-0">
+                        <?php
+                        if (isset($doc['updated_by'])) {
+                            $updated_by = getUserFromId($doc['updated_by']);
+                            if (!empty($updated_by)) {
+                                echo $updated_by['displayname'];
+                                echo lang(
+                                    ' has updated the following activity.',
+                                    ' hat die folgende Aktivität bearbeitet.'
+                                );
+                            }
+                            if (isset($doc['editor-comment']) && !empty($doc['editor-comment'])) {
+                                echo '<br><b>' . lang('Editor comment:</b> ', 'Editor-Kommentar:') . '</b> <em>' . $doc['editor-comment'] . '</em>';
+                            }
+                        } else if (isset($doc['created_by'])) {
+                            $created_by = getUserFromId($doc['created_by']);
+                            if (!empty($created_by)) {
+                                echo $created_by['displayname'];
+                                // if (!empty($doc['created'] ?? '')) {
+                                //    echo lang('at ', 'am ');
+                                //    echo $doc['created'];
+                                // }
+                                echo lang(
+                                    ' has created the following activity for you:',
+                                    ' hat die folgende Aktivität für dich hinzugefügt:'
+                                );
+                            }
+                        }
+                        ?>
+                    </p>
+                    <p>
+                        <span class="mr-20"><?= activity_icon($doc); ?></span>
+                        <?= $Format->format($doc); ?>
+                    </p>
+                    <div class='' id="approve-<?= $id ?>">
+                        <?php if (isset($updated_by) && !empty($updated_by)) { ?>
+                            <?= lang('Please confirm (possibly again) that you are the author: ', 'Bitte bestätige (evtl. erneut), dass du Autor:in bist:') ?>
+                        <?php } else { ?>
+                            <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
+                        <?php } ?>
+                        <br>
+                        <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . AFFILIATION, 'Ja, und ich war der ' . AFFILIATION . ' angehörig') ?>">
+                            <i class="fas fa-fw fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>">
+                            <i class="far fa-fw fa-handshake-slash"></i>
+                        </button>
+                        <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
+                            <i class="fas fa-fw fa-xmark"></i>
+                        </button>
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary ml-10" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
+                            <i class="icon-activity-pen"></i>
+                        </a>
+                        <a href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
+                            <i class="icon-activity-search"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

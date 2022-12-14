@@ -111,28 +111,28 @@ $('input[name=activity]').on('change', function () {
 
 })
 
-function toastError(msg = "") {
+function toastError(msg = "", title='Error') {
     digidive.initStickyAlert({
         content: msg,
-        title: "Error",
+        title: title,
         alertType: "danger",
         hasDismissButton: true,
         timeShown: 10000
     })
 }
-function toastSuccess(msg = "") {
+function toastSuccess(msg = "", title='Success') {
     digidive.initStickyAlert({
         content: msg,
-        title: "Success",
+        title: title,
         alertType: "success",
         hasDismissButton: true,
         timeShown: 10000
     })
 }
-function toastWarning(msg = "") {
+function toastWarning(msg = "", title='Warning') {
     digidive.initStickyAlert({
         content: msg,
-        title: "Warning",
+        title: title,
         alertType: "signal",
         hasDismissButton: true,
         timeShown: 10000
@@ -343,10 +343,13 @@ function getJournal(name) {
             });
             if (journals.length === 1) {
                 selectJournal(journals[0])
+                toastSuccess(lang('Journal ID added.', 'Journal-ID wurde hinzugefügt.'), lang('Journal found', 'Journal gefunden'))
             } else if (journals.length === 0) {
                 SUGGEST.append('<tr><td>' + lang('Journal not found in OSIRIS', 'Journal nicht in OSIRIS gefunden') + '</tr></td>')
+                window.location.replace('#journal-select')
             } else {
                 journals.forEach((j) => {
+                    console.log(j);
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
@@ -374,7 +377,7 @@ function getJournal(name) {
             })
             row.append($('<td>').append(button))
             SUGGEST.append(row)
-            window.location.replace('#journal-select')
+            // window.location.replace('#journal-select')
 
 
             console.log(journals);

@@ -1,8 +1,17 @@
 # To-Do-Liste
 
+- [ ] Webanzeige: OSIRIS kann genutzt werden, um ein Webprofil zu erstellen. Nutzer:innen können auswählen, welche Aktivitäten gezeigt werden
+- [ ] Import: Nutzer:innen können Daten aus bspw. BibTeX importieren
+- [ ] Man kann weitere Namen zu seinem Profil hinzufügen, unter denen publiziert wurde
+- [ ] In »Aktivität bearbeiten« gibt es einen Detaileditor für Autoren
+- [ ] Bilder hochladen (vlt Bilder von der ÖA?)
+- [ ] Weitere Profilinformationen: Position, Vita, Teams
+- [ ] Zitationsstil: »Die Ausgabe der Einträge in GRIS folgt derzeit (November 2014) dem &bdquo;author-date&ldquo; Format des  &bdquo;Chicago Manual of Style&ldquo; in der 16. Auflage. Dies ist ein international gängiges, englischsprachiges  Format. 
+- [ ] 
+
 ## Aus Beta-Feedback
 - [x] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt
-- [x]  Wenn man Pflichtfelder offen lässt, kann man nicht speichern, es kommt aber keine Meldung oder so
+- [x] Wenn man Pflichtfelder offen lässt, kann man nicht speichern, es kommt aber keine Meldung oder so
 - [ ] Für Autoren sollte die ORCID zusätzlich gespeichert werden.
 - [ ] Funding sollte gespeichert werden
 - [x] Fix: Typ-Sortierung bei Studenten usw.
@@ -52,7 +61,6 @@
 - [x] Warnmeldung wenn keine Autoren mit DSMZ-Affiliation angezeigt werden.
 - [x] Eine weitere Kategorie sind Preprints. Diese sollten ebenfalls hinzufügbar sein.
 - [x] beim Hinzufügen von Publikationen sollte angezeigt werden, zu welcher Abteilung die Publikation zugeordnet wird. Dies sollte auch als Datenfeld in die Datenbank geschrieben werden. Die Zugehörigkeit sollte nachträglich bearbeitet werden können.
-- [ ] Import: Nutzer können Daten aus bspw. BibTeX importieren
 
 ## Confirmation:
 Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivitäten hinzufügen:
@@ -65,7 +73,6 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 - [x] Beim Akzeptieren des Quartals sollten Fehlermeldungen angezeigt werden
 - [x] Außerdem: neue, noch unbestätigte Confirmations
 - [x] Nur bereits vergangene Quartale können bestätigt werden
-- [ ] Das Controlling kann eine Abfrage starten, woraufhin Mails an die Wissenschaftler geschickt werden
 
 ## Reports:
 - [x] hier werden genau definierte Zeiträume gebraucht (Start und Ende)
@@ -75,23 +82,17 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 
 ## Statistik:
 - [x] Co-Autoren-Netzwerk
-- [ ] Kollaboration-Network
+- [x] Kollaboration-Network
 
 ## Nutzermanagement:
-- [ ] Neue Nutzer müssen angelegt werden können
+- [x] Neue Nutzer müssen angelegt werden können
 - [x] Vorhandene Nutzer sollten bearbeitet werden können (z.B. Abteilungen zuordnen, Namen ändern usw.; die Frage ist hier, wie viel wir über LDAP lösen können...)
 - [x] Vielleicht wäre ein Rechtevergabesystem sinnvoll?
 
 
 - [x] Dashboard mit Statistiken und wichtigen Links
-- [ ] Schreibe Impact Factor in die Pub-Tabelle
+- [x] Schreibe Impact Factor in die Pub-Tabelle
 - [x] Speichere ISSN in den Publikationen (Journalname kann variieren)
-- [ ] Warnung wenn IF nicht bekannt
+- [x] Warnung wenn IF nicht bekannt
 - [x] Files: Error wenn Datei größer als 15 MB!
-
-<!-- 
-
-<div class="csl-entry">Feynman, R. (2000). Probability Theory. In <i>Reliability, Maintenance and Logistic Support</i> (pp. 13–49). Springer US. https://doi.org/10.1007/978-1-4615-4655-9_2</div> 
-
--->
 

@@ -894,11 +894,6 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <!-- <?php if (!empty($form) && isset($form['file']) && !empty($form['file']) && !$copy) { ?>
-                    
-
-                <?php } ?> -->
-
                 <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
                     <div class="form-group">
                         <a onclick="$(this).next().toggleClass('hidden')">
@@ -906,12 +901,37 @@ function val($index, $default = '')
                                 <i class="fas fa-plus"></i> <?= lang('Add comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
                             </label>
                         </a>
-                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) { echo val('comment'); } ?></textarea>
+                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {
+                                                                                                                            echo val('comment');
+                                                                                                                        } ?></textarea>
                     </div>
                 <?php } else { ?>
                     <div class="form-group">
                         <label for="comment"><?= lang('Comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)</label>
-                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control"><?php if (!$copy) { echo val('comment'); } ?></textarea>
+                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control"><?php if (!$copy) {
+                                                                                                                    echo val('comment');
+                                                                                                                } ?></textarea>
+                    </div>
+                <?php } ?>
+                <?php if (!$copy && !empty($form)) { ?>
+                    <div class="alert alert-signal p-10 mb-10">
+                        <div class="title">
+                            <?=lang('Editorial area', 'Bearbeitungs-Bereich')?>
+                        </div>
+                        <!-- <div class="form-group"> -->
+                        <label for="editor-comment"><?= lang('Editor comment (tell your co-authors what you have changed)', 'Editor-Kommentar (teile deinen Ko-Autoren mit, was du geändert hast)') ?></label>
+                        <textarea name="values[editor-comment]" id="editor-comment" cols="30" rows="2" class="form-control"></textarea>
+                        <!-- </div> -->
+                        <div class="mt-10">
+                            <div class="custom-checkbox" id="minor-div">
+                                <input type="checkbox" id="minor" value="1" name="minor">
+                                <label for="minor"><?= lang('Changes are minor and coauthors do not need to be notified.', 'Änderungen sind minimal und Koautoren müssen nicht benachrichtigt werden.') ?></label>
+                            </div>
+                            <small class="text-muted">
+                                <?=lang('Please note that changes to the author list are ignored if this checkmark is set.', 
+                                'Bitte beachte, dass Änderungen an den Autoren ignoriert werden, wenn dieser Haken gesetzt ist.')?>
+                            </small>
+                        </div>
                     </div>
                 <?php } ?>
 

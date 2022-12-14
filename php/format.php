@@ -27,8 +27,8 @@ function abbreviateAuthor($last, $first, $reverse = true)
 function authorForm($a, $is_editor = false)
 {
     $name = $is_editor ? 'editors' : 'authors';
-    $aoi = $a['aoi'] ?? 1;
-    return "<div class='author " . ($aoi == 1 ? 'author-aoi' : '') . "' onclick='toggleAffiliation(this);'>
+    $aoi = $a['aoi'] ?? false;
+    return "<div class='author " . ($aoi ? 'author-aoi' : '') . "' onclick='toggleAffiliation(this);'>
         $a[last], $a[first]<input type='hidden' name='values[$name][]' value='$a[last];$a[first];$aoi'>
         <a onclick='removeAuthor(event, this);'>&times;</a>
         </div>";

@@ -70,6 +70,7 @@ function validateValues($values)
                 $values[$key] = array();
             } else {
                 $values[$key] = explode(' ', $value);
+                $values[$key] = array_unique($values[$key]);
             }
         } else if ($value === 'true') {
             $values[$key] = true;
@@ -417,11 +418,19 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     $collection = $osiris->activities;
     $values = validateValues($_POST['values']);
 
-    if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-        $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
-
-        $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
+    if (isset($_POST['minor']) && $_POST['minor'] == 1){
+        unset($values['authors']);
+        unset($values['editors']);
     }
+
+    // dump($values, true);
+    // die;
+
+    // if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
+    //     $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
+
+    //     $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
+    // }
 
     // add information on updating process
     $values['updated'] = date('Y-m-d');

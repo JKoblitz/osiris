@@ -45,7 +45,7 @@ dump($data, true);
                 <option value="">Unknown</option>
                 <?php
                 foreach (deptInfo() as $d => $dept) { ?>
-                    <option value="<?= $d ?>" <?= $data['dept'] == $d ? 'selected' : '' ?>><?=$dept['name']!=$d ? "$d: ":''?><?= $dept['name'] ?></option>
+                    <option value="<?= $d ?>" <?= $data['dept'] == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -61,20 +61,20 @@ dump($data, true);
     </div>
 
     <div class="form-row row-eq-spacing-sm">
-       
-    <div class="col-sm">
+
+        <div class="col-sm">
             <label for="orcid">ORCID</label>
             <input type="text" name="values[orcid]" id="orcid" class="form-control" value="<?= $data['orcid'] ?? '' ?>">
         </div>
-    <div class="col-sm">
+        <div class="col-sm">
             <label for="twitter">Twitter</label>
             <input type="text" name="values[twitter]" id="twitter" class="form-control" value="<?= $data['twitter'] ?? '' ?>">
         </div>
     </div>
 
     <div class="form-row row-eq-spacing-sm">
-     
-    <div class="col-sm">
+
+        <div class="col-sm">
             <label for="researchgate">ResearchGate Handle</label>
             <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
         </div>
@@ -87,6 +87,31 @@ dump($data, true);
             <input type="text" name="values[webpage]" id="webpage" class="form-control" value="<?= $data['webpage'] ?? '' ?>">
         </div>
     </div>
+
+<div class="form-group">
+    <span><?=lang('Gender', 'Geschlecht')?>:</span>
+    <?php
+        $gender = $data['gender'] ?? 'n';
+    ?>
+    
+    <div class="custom-radio d-inline-block ml-10">
+        <input type="radio" name="values[gender]" id="gender-m" value="m" <?=$gender == 'm' ? 'checked' : ''?>>
+        <label for="gender-m"><?=lang('Male', 'Männlich')?></label>
+    </div>
+    <div class="custom-radio d-inline-block ml-10">
+        <input type="radio" name="values[gender]" id="gender-f" value="f" <?=$gender == 'f' ? 'checked' : ''?>>
+        <label for="gender-f"><?=lang('Female', 'Weiblich')?></label>
+    </div>
+    <div class="custom-radio d-inline-block ml-10">
+        <input type="radio" name="values[gender]" id="gender-d" value="d" <?=$gender == 'd' ? 'checked' : ''?>>
+        <label for="gender-d"><?=lang('Non-binary', 'Divers')?></label>
+    </div>
+    <div class="custom-radio d-inline-block ml-10">
+        <input type="radio" name="values[gender]" id="gender-n" value="n" <?=$gender == 'n' ? 'checked' : ''?>>
+        <label for="gender-n"><?=lang('Not specified', 'Nicht angegeben')?></label>
+    </div>
+
+</div>
     <div class="form-group custom-checkbox">
         <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
         <label for="is_active">Is Active</label>
@@ -96,7 +121,7 @@ dump($data, true);
         <label for="is_scientist">Is Scientist</label>
     </div>
 
-    
+
     <div class="form-group custom-checkbox">
         <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
         <label for="is_controlling">Is Controlling</label>

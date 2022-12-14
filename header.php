@@ -133,7 +133,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             <a href="<?= ROOTPATH ?>/news#24.11.22" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2022-12-02 06:00') ?>)
+                (<?= time_elapsed_string('2022-12-13 06:00') ?>)
             </a>
         </nav>
 

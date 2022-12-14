@@ -1,5 +1,19 @@
 # Changelog
 
+## 13.12.22
+- Aktivitäten:
+  - Zu allen Aktivitäten können nun optional Kommentare hinzugefügt werden
+  - Kommentare sind nur für Autoren der Aktivität (und Admins, a.k.a. Julia und das Controlling) sichtbar
+  - Dadurch können einerseits "private" Notizen zu den eigenen Aktivitäten hinzugefügt werden, aber auch Bemerkungen für das Controlling können hinterlassen werden.
+- Mein Jahr:
+  - Die Seite "Mein Jahr" wurde etwas überarbeitet: unwichtige Sachen wurden entfernt und wichtige bekommen zentralere Positionen.
+  - Eine Timeline wurde hinzugefügt, um eine visuelle Übersicht über das Jahr zu geben.
+  - Der Prozess, mit dem ein Quartal für das Controlling freigegeben werden kann, wurde verbessert.
+  - Wenn das letzte Quartal noch nicht freigegeben wurde, erscheint eine Nachricht im persönlichen Profil.
+- Journale:
+  - Die Tabelle mit allen Journalen wurde verbessert und enthält nun eine Anzahl von Aktivitäten in OSIRIS, nach der auch standardmäßig sortiert wird.
+  - Auf der Übersicht eines Journals werden jetzt alle Publikationen, sowie Reviewer- und Editortätigkeiten in dem jeweiligen Journal gezeigt.
+
 ## 02.12.22
 - Beim Hinzufügen von Publikationen werden Journale jetzt standardisiert und verknüpft
 - Neue Journale können anhand des NLM-Katalogs hinzugefügt werden

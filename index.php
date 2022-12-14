@@ -591,7 +591,7 @@ Route::get('/scientist/?([a-z0-9]*)', function ($user) {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/scientist.php";
+    include BASEPATH . "/pages/my-year.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 

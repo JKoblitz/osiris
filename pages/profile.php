@@ -14,6 +14,12 @@ $LOM = new LOM($user, $osiris);
 
 $_lom = 0;
 
+$achievements = array();
+if (isset($scientist['achievements'])) {
+    $achievements = $scientist['achievements']->bsonSerialize();
+}
+// dump($achievements);
+
 // gravatar
 $email = $scientist['mail']; #. "@dsmz.de";
 $default = ROOTPATH . "/img/person.jpg";
@@ -53,16 +59,6 @@ $filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], [
 $options = ['sort' => ["year" => -1, "month" => -1, "day" => -1]];
 $cursor = $osiris->activities->find($filter, $options);
 $cursor = $cursor->toArray();
-
-// $detailstats = array(
-//     "publication" => [],
-//     "poster" => [],
-//     "lecture" => [],
-//     "review" => [],
-//     "misc" => [],
-//     "students" => []
-// );
-
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
@@ -124,14 +120,9 @@ foreach ($cursor as $doc) {
     $stats[$year][$type] += 1;
 
     if ($currentuser) {
-        // if (!isset($detailstats[$type])) $detailstats[$type] = [];
-        // if (!isset($detailstats[$type][$year])) $detailstats[$type][$year] = ["x" => $year, "good" => 0, "bad" => 0];
-
         if (has_issues($doc)) {
-            // $detailstats[$type][$year]['bad'] += 1;
             $issues++;
         }
-        // else $detailstats[$type][$year]['good'] += 1;
     }
 }
 
@@ -212,88 +203,133 @@ if (isset($_GET['verbose'])) {
                     <i class="far fa-question-circle text-muted"></i>
                 </a>
 
-                <?php if (isset($scientist['achievements'])) {
-                    $achievements = $scientist['achievements']->bsonSerialize();
-                    $achievement = end($achievements);
+                <?php if (!empty($achievements)) {
+                    $last_achievement = end($achievements);
                 ?>
                     <br>
 
                     <i class="fad fa-lg fa-trophy text-signal"></i>
                     <span class="">
-                        <?= achievementText($achievement['title'], $scientist['first']) ?>
-                        <small class="text-muted">am <?= $achievement['achieved'] ?></small>
+                        <?= achievementText($last_achievement['title'], $scientist['first']) ?>
+                        <small class="text-muted">am <?= $last_achievement['achieved'] ?></small>
                     </span>
                 <?php
                 } ?>
 
             </p>
         </div>
-        <div class="col text-right">
-            <a class="btn btn-osiris" href="<?= ROOTPATH ?>/scientist/<?= $user ?>"><i class="far fa-calendar"></i>
-                <?= lang('The year of ', 'Das Jahr von ') . $name ?>
-            </a><br>
+        <?php if (!$currentuser) { ?>
 
-            <a class="btn btn-osiris mt-5" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
-                <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
-            </a>
-            <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
-                <br>
-                <a class="btn mt-5" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="fas fa-user-pen"></i>
-                    <?= lang('Edit user profile', 'Bearbeite Profil') ?>
+            <div class="col text-right">
+                <a class="btn btn-osiris" href="<?= ROOTPATH ?>/scientist/<?= $user ?>"><i class="far fa-calendar"></i>
+                    <?= lang('The year of ', 'Das Jahr von ') . $name ?>
+                </a><br>
+
+                <a class="btn btn-osiris mt-5" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
+                    <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
                 </a>
-            <?php } ?>
+                <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+                    <br>
+                    <a class="btn btn-osiris mt-5" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="fas fa-user-pen"></i>
+                        <?= lang('Edit user profile', 'Bearbeite Profil') ?>
+                    </a>
+                <?php } ?>
 
-        </div>
+            </div>
+        <?php } ?>
+
     </div>
 
     <?php if ($currentuser) { ?>
 
+        <div class="box p-5 row-<?= $scientist['dept'] ?>" style="border-left-width:5px">
+            <!-- <div class="content"> -->
 
-        <div class="box row-<?= $scientist['dept'] ?>" style="border-left-width:5px">
-            <div class="content">
-
-                <p class="lead">
+            <!-- <p class="mt-0">
+                   
+                </p> -->
+            <div class="m-10">
+                <h5 class="title font-size-16">
                     <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
-                </p>
+                </h5>
+
+                <div class="btn-group btn-group-lg">
+                    <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
+                        <i class="icon-activity-plus text-orange fa-fw"></i>
+                        <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
+                    </a>
+                    <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
+                        <i class="far fa-calendar text-success fa-fw"></i>
+                        <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
+                    </a>
+                    <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
+                        <i class="icon-activity-user text-primary fa-fw"></i>
+                        <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
+                    </a>
+
+                    <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                        <i class="far fa-user-pen text-muted fa-fw"></i>
+                        <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                    </a>
+                </div>
+
+
                 <?php if ($issues !== 0) { ?>
-                    <p>
+                    <div class="alert alert-danger mt-20">
                         <a class="link text-danger" href='<?= ROOTPATH ?>/issues'>
                             <?= lang(
                                 "You have $issues unresolved " . ($issues == 1 ? 'issue' : 'issues') . " with your activities.",
                                 "Du hast $issues " . ($issues == 1 ? 'ungelöstes Problem' : 'ungelöste Probleme') . " mit deinen Aktivitäten."
                             ) ?>
                         </a>
-                    </p>
+                    </div>
                 <?php } ?>
 
-                <div class="">
-                    <a class="btn" href="<?= ROOTPATH ?>/activities/new"><i class="far fa-plus text-signal"></i>
-                        <?= lang('Add activity', 'Aktivität hinzufügen') ?>
-                    </a>
+                <?php
+                $approvedQ = array();
+                if (isset($scientist['approved'])) {
+                    $approvedQ = $scientist['approved']->bsonSerialize();
+                }
 
-                    <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="far fa-user-pen text-primary"></i>
-                        <?= lang('Edit user profile', 'Bearbeite Profil') ?>
-                    </a>
+                // TODO: for testing
+                // $Q = 1 - 1;
+                // $Y = 2023;
+                $Q = CURRENTQUARTER - 1;
+                $Y = CURRENTYEAR;
+                if ($Q < 1) {
+                    $Q = 4;
+                    $Y -= 1;
+                }
+                $lastquarter = "${Y}Q$Q";
 
-                    <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>"><i class="far fa-calendar text-success"></i>
-                        <?= lang('My Year', 'Mein Jahr') ?>
-                    </a>
-                    <!-- 
-                <a class="btn" href="<?= ROOTPATH ?>/visualize?scientist=<?= $user ?>"><i class="far fa-chart-network text-signal"></i>
-                    <?= lang('My coauthor network', 'Mein Koautoren-Netzwerk') ?>
-                </a> -->
-                    <a href="<?= ROOTPATH ?>/my-activities" class="btn">
-                        <i class="far fa-book-bookmark text-danger"></i> <?= lang('My activities', 'Meine Aktivitäten ') ?>
-                    </a>
-                </div>
+                if (!in_array($lastquarter, $approvedQ)) { ?>
+                    <div class="alert alert-muted mt-20">
+
+                        <div class="title">
+                            <?= lang("The past quarter ($lastquarter) has not been approved yet.", "Das vergangene Quartal ($lastquarter) wurde von dir noch nicht freigegeben.") ?>
+                        </div>
+
+                        <p>
+                            <?= lang('
+                            For the quarterly controlling, you need to confirm that all activities from the previous quarter are stored in OSIRIS and saved correctly.
+                            To do this, go to your year and check your activities. Afterwards you can release the quarter via the green button.
+                            ', '
+                            Für das Quartalscontrolling musst du bestätigen, dass alle Aktivitäten aus dem vergangenen Quartal in OSIRIS hinterlegt und korrekt gespeichert sind.
+                            Gehe dazu in dein Jahr und überprüfe deine Aktivitäten. Danach kannst du über den grünen Button das Quartal freigeben.
+                            ') ?>
+                        </p>
+
+                        <a class="btn btn-success" href="<?= ROOTPATH ?>/scientist/<?= $user ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
+                            <?= lang('Review & Approve', 'Überprüfen & Freigeben') ?>
+                        </a>
+                    </div>
+                <?php } ?>
 
 
             </div>
 
         </div>
-
-
-    <?php } ?>
+            <?php } ?>
 
 
 </div>
@@ -315,6 +351,19 @@ if (isset($_GET['verbose'])) {
                     <tr>
                         <td><?= lang('Academic title', 'Akademischer Titel') ?></td>
                         <td><?= $scientist['academic_title'] ?? '' ?></td>
+                    </tr>
+                    <tr>
+                        <td><?= lang('Gender', 'Geschlecht') ?></td>
+                        <td><?php
+                            $genders = [
+                                'm' => lang('male', 'männlich'),
+                                'f' => lang('female', 'weiblich'),
+                                'd' => lang('non-binary', 'divers'),
+                                'n' => lang('not specified', 'nicht angegeben'),
+                            ];
+                            echo $genders[$scientist['gender'] ?? 'n'];
+                            ?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Email</td>

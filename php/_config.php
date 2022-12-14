@@ -57,6 +57,11 @@ function printMsg($msg = null, $type = 'info', $header = "default")
 
             $class = "success";
             break;
+        case 'approved':
+            $header = lang("Quarter approved.", "Quartal freigegeben.");
+            $text = lang("Thank you.", "Vielen Dank.");
+           $class = "success";
+            break;
 
         case 'add-success':
             $header = lang("Success", "Erfolg");
@@ -241,20 +246,22 @@ function endOfCurrentQuarter($as_string = false)
 function dump($element, $as_json = false)
 {
     echo '<pre class="code">';
-    if ($as_json && is_array($element)) {
-        $element = array_merge($element);
-        echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        if (!empty(json_last_error())) {
-            var_dump(json_last_error_msg()) . PHP_EOL;
-            var_export($element);
-        }
-    } else if ($as_json) {
+    if ($element instanceof MongoDB\Model\BSONArray) {
         $element = $element->bsonSerialize();
+    }
+    if ($as_json) {
         echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         if (!empty(json_last_error())) {
             var_dump(json_last_error_msg()) . PHP_EOL;
             var_export($element);
         }
+        // } else if ($as_json) {
+
+        //     echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        //     if (!empty(json_last_error())) {
+        //         var_dump(json_last_error_msg()) . PHP_EOL;
+        //         var_export($element);
+        //     }
     } else {
         var_dump($element);
     }

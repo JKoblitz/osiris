@@ -13,14 +13,11 @@ $LOM = new LOM($user, $osiris);
 $_lom = 0;
 
 // gravatar
-$email = $scientist['mail']; #. "@dsmz.de";
-$default = ROOTPATH . "/img/person.jpg";
-$size = 140;
+// $email = $scientist['mail']; #. "@dsmz.de";
+// $default = ROOTPATH . "/img/person.jpg";
+// $size = 140;
 
-$gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
-
-
-
+// $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
 
 $groups = [
     'publication' => [],
@@ -32,16 +29,6 @@ $groups = [
     "software" => [],
     "misc" => [],
 ];
-// $timeline = [
-//     'publication' => ['label' => 'publication', 'times' => []],
-//     'poster' => ['label' => 'poster', 'times' => []],
-//     'lecture' => ['label' => 'lecture', 'times' => []],
-//     'review' => ['label' => 'review', 'times' => []],
-//     'teaching' => ['label' => 'teaching', 'times' => []],
-//     'students' => ['label' => 'students', 'times' => []],
-//     'software' => ['label' => 'software', 'times' => []],
-//     'misc' => ['label' => 'misc', 'times' => []],
-// ];
 
 $timeline = [];
 $timelineGroups = [];
@@ -151,24 +138,17 @@ foreach ($cursor as $doc) {
     </div>
 </div>
 
-<div class="content">
+<div class="">
 
     <div class="row align-items-center">
-        <div class="col flex-grow-0">
-            <div class="position-relative">
-                <img src="<?= $gravatar ?>" alt="">
 
-                <?php if ($currentuser) { ?>
-                    <a class="position-absolute bottom-0 right-0 m-5 mb-10 border-0 badge badge-pill" href="https://de.gravatar.com/" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-edit "></i>
-                    </a>
-                <?php } ?>
-
-            </div>
-
-        </div>
-        <div class="col ml-20">
-            <h1 class="mb-0"><?= $name ?></h1>
+        <div class="col">
+            <h1 class="mb-0">
+                Das Jahr von
+                <a href="<?= ROOTPATH ?>/profile/<?= $user ?>" class="link colorless">
+                    <?= $name ?>
+                </a>
+            </h1>
 
             <h3 class="m-0 text-<?= $scientist['dept'] ?>">
                 <?php
@@ -182,24 +162,79 @@ foreach ($cursor as $doc) {
                 <a href='#coins' class="text-muted">
                     <i class="far fa-question-circle text-muted"></i>
                 </a>
-
-                <?php if (isset($scientist['achievements'])) {
-                    $achievements = $scientist['achievements']->bsonSerialize();
-                    $achievement = end($achievements);
-                ?>
-                    <br>
-
-                    <i class="fad fa-lg fa-trophy text-signal"></i>
-                    <span class="">
-                        <?= achievementText($achievement['title'], $scientist['first'] ?? null) ?>
-                        <small class="text-muted">am <?= $achievement['achieved'] ?></small>
-                    </span>
-                <?php
-                } ?>
-
             </p>
+
+            <?php
+            if ($currentuser) {
+                $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+                $approval_needed = array();
+
+                $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
+                $quarter_in_past = new DateTime() > $q_end;
+            ?>
+
+                <?php if (!$quarter_in_past) { ?>
+                    <a href="#" class="btn disabled">
+                        <i class="fas fa-check mr-5"></i>
+                        <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
+                    </a>
+                <?php
+
+                } elseif ($approved) { ?>
+                    <a href="#" class="btn disabled">
+                        <i class="fas fa-check mr-5"></i>
+                        <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
+                    </a>
+                <?php } else { ?>
+                    <a class="btn btn-lg btn-success" href="#approve">
+                        <i class="fas fa-question mr-5"></i>
+                        <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
+                    </a>
+                <?php } ?>
+
+            <?php } ?>
+
+
         </div>
-        <div class="col text-right">
+        <div class="col">
+
+            <form id="" action="" method="get" class="w-400 mw-full ml-auto">
+                <div class="form-group">
+                    <label for="year">
+                        <?= lang('Change year and quarter', 'Ändere Jahr und Quartal') ?>:
+                    </label>
+
+                    <div class="input-group">
+
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
+                                <i class="fa-regular fa-calendar-day"></i>
+                            </div>
+                        </div>
+                        <select name="year" id="year" class="form-control">
+                            <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
+                                <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
+                            <?php } ?>
+                        </select>
+                        <select name="quarter" id="quarter" class="form-control">
+                            <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
+                            <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
+                            <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
+                            <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary"><i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+
+                    <p class="text-muted font-size-12 mt-0">
+                        <?= lang('The entire year is shown here. Activities outside the selected quarter are grayed out. ', 'Das gesamte Jahr ist hier gezeigt. Aktivitäten außerhalb des gewählten Quartals sind ausgegraut.') ?>
+                    </p>
+                </div>
+            </form>
+
+        </div>
+        <!-- <div class="col text-right">
             <a class="btn" href="<?= ROOTPATH ?>/profile/<?= $user ?>"><i class="far fa-user-graduate"></i>
                 <?= lang('Profile of ', 'Profil von ') . $name ?>
             </a><br>
@@ -215,84 +250,12 @@ foreach ($cursor as $doc) {
                     <?= lang('Edit user profile', 'Bearbeite Profil') ?>
                 </a>
             <?php } ?>
-        </div>
+        </div> -->
     </div>
 
 
 
 
-
-
-    <h1>
-        <?php
-        echo lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR;
-        ?>
-    </h1>
-
-    <form id="" action="" method="get" class="w-400 mw-full">
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                    <i class="fa-regular fa-calendar-day"></i>
-                </div>
-            </div>
-            <select name="year" id="year" class="form-control">
-                <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
-                    <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
-                <?php } ?>
-            </select>
-            <select name="quarter" id="quarter" class="form-control">
-                <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
-                <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
-                <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
-                <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
-            </select>
-            <div class="input-group-append">
-                <button class="btn btn-primary"><i class="fas fa-check"></i></button>
-            </div>
-        </div>
-    </form>
-
-    <p class="text-muted font-size-12 mt-0">
-        <?= lang('The entire year is shown here. Activities outside the selected quarter are grayed out. ', 'Das gesamte Jahr ist hier gezeigt. Aktivitäten außerhalb des gewählten Quartals sind ausgegraut.') ?>
-    </p>
-
-    <?php
-    if ($currentuser) {
-
-        $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
-        $approval_needed = array();
-
-        $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
-        $quarter_in_past = new DateTime() > $q_end;
-
-    ?>
-        <!-- <p class="row-muted">
-        <?= lang(
-            'This is your personal page. Please review your recent research activities carefully and add new activities.',
-            'Dies ist deine persönliche Seite. Bitte überprüfe deine letzten Aktivitäten sorgfältig und füge neue hinzu, falls angebracht.'
-        ) ?>
-    </p> -->
-        <?php if (!$quarter_in_past) { ?>
-            <a href="#" class="btn disabled">
-                <i class="fas fa-check mr-5"></i>
-                <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
-            </a>
-        <?php
-
-        } elseif ($approved) { ?>
-            <a href="#" class="btn disabled">
-                <i class="fas fa-check mr-5"></i>
-                <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
-            </a>
-        <?php } else { ?>
-            <a class="btn btn-success" href="#approve">
-                <i class="fas fa-question mr-5"></i>
-                <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
-            </a>
-        <?php } ?>
-
-    <?php } ?>
 
 
     <style>
@@ -317,9 +280,14 @@ foreach ($cursor as $doc) {
 
     <div id="timeline" class="box">
         <div class="content mb-0">
-            <h4 class="title">
-                Timeline
-            </h4>
+
+            <h1>
+                <?php
+                echo lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR;
+                ?>
+            </h1>
+
+
         </div>
     </div>
 
@@ -621,19 +589,21 @@ foreach ($cursor as $doc) {
 
         <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                <div class="modal-content w-400 mw-full">
+                <div class="modal-content w-400 mw-full" style="border: 2px solid var(--success-color);">
                     <a href="#" class="btn float-right" role="button" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </a>
-                    <h5 class="modal-title"><?= lang('Approve', 'Freigeben') ?></h5>
+                    <h5 class="title text-success"><?= lang("Approve quarter $QUARTER", "Quartal $QUARTER freigeben") ?></h5>
 
                     <?php
-                    if ($approved) {
+                    if (!$quarter_in_past) {
+                        echo "<p>" . lang('Quarter is not over yet.', 'Das gewählte Quartal ist noch nicht zu Ende.') . "</p>";
+                    } else  if ($approved) {
                         echo "<p>" . lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') . "</p>";
                     } else if (!empty($approval_needed)) {
                         echo "<p>" . lang(
                             "The following activities have unresolved warnings. Please <a href='" . ROOTPATH . "/issues' class='link'>review all issues</a> before approving the current quarter.",
-                            "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='" . ROOTPATH . "/issues' class='link'>klären sie alle Probleme</a> bevor sie das aktuelle Quartal freigeben können."
+                            "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='" . ROOTPATH . "/issues' class='link'>kläre alle Probleme</a> bevor du das aktuelle Quartal freigeben kannst."
                         ) . "</p>";
                         echo "<ul class='list'>";
                         foreach ($approval_needed as $item) {
@@ -642,10 +612,19 @@ foreach ($cursor as $doc) {
                         }
                         echo "</ul>";
                     } else { ?>
+
+                        <p>
+                            <?= lang('
+                            You are about to approve the current quarter. Your data will be sent to the Controlling and you hereby confirm that you have entered or checked all reportable activities for this year and that all data is correct. This process cannot be reversed and any changes to the quarter after this must be reported to Controlling.
+                            ', '
+                            Du bist dabei, das aktuelle Quartal freizugeben. Deine Daten werden an das Controlling übermittelt und du bestätigst hiermit, dass du alle meldungspflichtigen Aktivitäten für dieses Jahr eingetragen bzw. überprüft hast und alle Daten korrekt sind. Dieser Vorgang kann nicht rückgängig gemacht werden und alle Änderungen am Quartal im Nachhinein müssen dem Controlling gemeldet werden.
+                            ') ?>
+                        </p>
+
                         <form action="<?= ROOTPATH ?>/approve" method="post">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="quarter" class="hidden" value="<?= $YEAR . "Q" . $QUARTER ?>">
-                            <button class="btn"><?= lang('Approve', 'Freigeben') ?></button>
+                            <button class="btn btn-success"><?= lang('Approve', 'Freigeben') ?></button>
                         </form>
                     <?php } ?>
 
