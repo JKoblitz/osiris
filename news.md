@@ -2,6 +2,13 @@
 
 ## 18.12.22
 - Neues "Experten-Tool": mit der [erweiterten Suche](activities/search) können jetzt alle Aktivitäten detailliert durchsucht werden. 45 Datenfelder sind mit unterschieldichen Optionen durchsuchbar. Ein Anleitungsvideo folgt in Kürze.
+- In der Übersicht einer Aktivität sind nun alle Autoren aufgeführt
+- Bei Autoren ohne Vornamen (z.B. "The Microbiome Consortium") wird nun kein Komma mehr angezeigt
+- Bug Fixes im Report:
+  - Impact Faktoren werden korrekt angezeigt
+  - Hoch- und tiefgestellte Zeichen werden jetzt korrekt übernommen
+  - Leerzeile zwischen der Publikation und der Bemerkung "Shared authors" wurde entfernt
+  - Wenn in einer Aktivität kein Autor mit DSMZ-Affiliation gefunden wurde, wird sie nicht aufgeführt
 
 ## 13.12.22
 - Aktivitäten:

@@ -20,6 +20,7 @@ function abbreviateAuthor($last, $first, $reverse = true)
         // echo "-->";
         $fn .= "" . $name[0] . ".";
     }
+    if (empty(trim($fn))) return $last;
     if ($reverse) return $last . "," . $fn;
     return $fn . " " . $last;
 }
@@ -165,8 +166,8 @@ function inQuarter($start, $end = null, $qarter = CURRENTQUARTER, $year = CURREN
 function inCurrentQuarter($year, $month)
 {
     // check if time period in selected quarter
-    $qstart = new DateTime($year . '-' . (3 * CURRENTQUARTER - 2) . '-1 00:00:00');
-    $qend = new DateTime($year . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+    $qstart = new DateTime(CURRENTYEAR . '-' . (3 * CURRENTQUARTER - 2) . '-1 00:00:00');
+    $qend = new DateTime(CURRENTYEAR . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59');
 
     $time = new DateTime();
     $time->setDate($year, $month, 15);
@@ -374,7 +375,11 @@ class Format
             }
         }
         if (!empty($this->appendix)) {
-            $line .= "<br>";
+            // if ($this->usecase == 'word') {
+            //     $line .= "<w:br/>";
+            // } else {
+                $line .= "<br>";
+            // }
             $line .= $this->appendix;
         }
         return $line;
@@ -405,11 +410,11 @@ class Format
             if ($last > 1 && $a['position'] == 'last') {
                 $author .= "<sup>*</sup>";
             }
-            if ( isset($a['position']) && $a['position'] == 'corresponding') {
+            if (isset($a['position']) && $a['position'] == 'corresponding') {
                 $author .= "<sup>§</sup>";
                 $this->appendix .= "<span style='color:#878787;'><sup>§</sup> Corresponding author</span>";
             }
-            
+
             $authors[] = $author;
         }
 

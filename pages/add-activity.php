@@ -13,7 +13,14 @@
 
 $form = $form ?? array();
 $copy = $copy ?? false;
-$preset = $form['authors'] ?? array($USER);
+$preset = $form['authors'] ?? array(
+    [
+        'last' => $USER['last'],
+        'first' => $USER['first'],
+        'aoi' => true,
+        'user' => $USER['username']
+    ]
+);
 
 $first = 1;
 $last = 1;
@@ -1014,24 +1021,24 @@ function val($index, $default = '')
 
 <script>
     TODO:
-    function getFieldList() {
+        function getFieldList() {
 
-        $('input').each(function() {
-            fields = {
-                id: 'magazine',
-                label: lang('Magazine', 'Magazin'),
-                type: 'string'
-            }
-        })
+            $('input').each(function() {
+                fields = {
+                    id: 'magazine',
+                    label: lang('Magazine', 'Magazin'),
+                    type: 'string'
+                }
+            })
 
-        $('select').each(function() {
-            fields = {
-                id: 'type',
-                label: lang('Type', 'Typ'),
-                type: 'string',
-                input: 'select',
-                values: ['publication', 'poster', 'lecture', 'review', 'students']
-            },
-        })
-    }
+            $('select').each(function() {
+                fields = {
+                    id: 'type',
+                    label: lang('Type', 'Typ'),
+                    type: 'string',
+                    input: 'select',
+                    values: ['publication', 'poster', 'lecture', 'review', 'students']
+                },
+            })
+        }
 </script>

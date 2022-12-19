@@ -1,6 +1,8 @@
 <?php
 
 $Format = new Format(true);
+$Format->full = true;
+
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 
 $user_activity = isUserActivity($doc, $user);

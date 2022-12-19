@@ -87,11 +87,11 @@ Route::post('/download', function () {
     $filter = [];
     if (isset($params['type']) && !empty($params['type'])) {
         $filter['type'] = trim($params['type']);
-        $filename .= "_".trim($params['type']);
+        $filename .= "_" . trim($params['type']);
     }
     if (isset($params['user']) && !empty($params['user'])) {
         $filter['$or'] = [['authors.user' => $params['user']], ['editors.user' => $params['user']]];
-        $filename .= "_".trim($params['user']);
+        $filename .= "_" . trim($params['user']);
     }
     if (isset($params['dept']) && !empty($params['dept'])) {
 
@@ -103,7 +103,7 @@ Route::post('/download', function () {
             $users[] = strtolower($u['username']);
         }
         $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
-        $filename .= "_".trim($params['dept']);
+        $filename .= "_" . trim($params['dept']);
     }
 
     // if (isset($params['year']) && !empty($params['year'])) {
@@ -138,7 +138,7 @@ Route::post('/download', function () {
                 ],
                 ['year' => ['$in' => $years]]
             );
-        $filename .= "_".implode("-",$years);
+            $filename .= "_" . implode("-", $years);
         }
     }
 
@@ -198,7 +198,7 @@ Route::post('/download', function () {
         }
 
         // Download file
-        $file = $filename.'.docx';
+        $file = $filename . '.docx';
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="' . $file . '"');
         header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
@@ -287,7 +287,7 @@ function clean_comment_export($subject, $front_addition_text = '')
     $subject = preg_replace('#(<br */?>\s*)+#i', '<br />', $subject);
 
     // Try and catch all the weird spaces...
-    $subject = str_replace(array("<br />", "<br/>"), "</p><p>", '<p>' . $subject . '</p>');
+    // $subject = str_replace(array("<br />", "<br/>"), "</p><p>", '<p>' . $subject . '</p>');
 
     // Sort the spacing
     $subject = preg_replace('#\R+#', "\r\n", preg_replace("/[\r\n]+/", "\r\n", $subject));
@@ -320,7 +320,7 @@ function clean_comment_export($subject, $front_addition_text = '')
     $subject = preg_replace('!\s+!', ' ', $subject);
 
     // Strip all tags, except <b><i><strike>
-    $subject = strip_tags($subject, '<b><i><strike>');
+    $subject = strip_tags($subject, '<b><i><strike><sub><sup><br>');
 
     // Remove any ### at the start
     $subject = rtrim(ltrim($subject, "#"), "#");
@@ -402,6 +402,7 @@ Route::post('/reports', function () {
         }
 
         $doc['file'] = "";
+        $aoi_exists = false;
         if ($doc['type'] == 'publication') {
             // get the category of research
             $cat = 'collab';
@@ -410,7 +411,8 @@ Route::post('/reports', function () {
             if (isset($doc['epub']) && $doc['epub']) continue;
 
             foreach ($doc['authors'] as $a) {
-                $aoi = $a['aoi'] ?? false;
+                $aoi = boolval($a['aoi'] ?? false);
+                $aoi_exists = $aoi_exists || $aoi;
                 if ($aoi) {
                     if ($a['position'] == 'first' || $a['position'] == 'last') {
                         $cat = 'autonom';
@@ -421,6 +423,8 @@ Route::post('/reports', function () {
                     }
                 }
             }
+
+            if (!$aoi_exists) continue;
 
             $dept = array_count_values($dept);
 
@@ -463,13 +467,15 @@ Route::post('/reports', function () {
             $dept = [];
 
             foreach ($doc['authors'] as $a) {
-                $aoi = $a['aoi'] ?? false;
+                $aoi = boolval($a['aoi'] ?? false);
+                $aoi_exists = $aoi_exists || $aoi;
                 if ($aoi) {
                     if (isset($a['user']) && isset($users[$a['user']])) {
                         $dept[] = $users[$a['user']];
                     }
                 }
             }
+            if (!$aoi_exists) continue;
 
             $dept = array_count_values($dept);
 
@@ -602,8 +608,11 @@ Route::post('/reports', function () {
                                 // dump([$doc['dept'], $D]);
                                 $line = clean_comment_export($line);
                                 \PhpOffice\PhpWord\Shared\Html::addHtml($cell, $line, false, false);
-
-                                $if = get_impact($doc['journal'], $doc['year'] - 1);
+                                if (isset($doc['impact'])) {
+                                    $if = $doc['impact'];
+                                } else {
+                                    $if = get_impact($doc);
+                                }
                                 if (empty($if)) {
                                     $if = "IF not yet available";
                                 } else {
@@ -706,10 +715,12 @@ Route::post('/reports', function () {
     }
 
 
-
-    // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
-    // $objWriter->save('.data/report.html');
-    // include_once '.data/report.html';
+    if (false) {
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
+        $objWriter->save('.data/report.html');
+        include_once '.data/report.html';
+        die;
+    }
 
     // Download file
     $file = 'Report.docx';

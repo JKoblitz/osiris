@@ -117,8 +117,10 @@ function validateValues($values)
         else $values['epub-delay'] = endOfCurrentQuarter(true);
         if (!isset($values['open_access'])) $values['open_access'] = false;
         if (!isset($values['correction'])) $values['correction'] = false;
+
+        $values['impact'] = get_impact($values);
     }
-    if (($values['type']??'') == 'misc' && ($values['iteration']??'') == 'annual'){
+    if (($values['type'] ?? '') == 'misc' && ($values['iteration'] ?? '') == 'annual') {
         $values['end-delay'] = endOfCurrentQuarter(true);
     }
 
@@ -183,7 +185,7 @@ Route::get('/testing', function () {
 
     $updateResult = $osiris->activities->updateMany(
         ['doi' => ['$regex' => '10.1111/1462-2920']],
-        ['$set' => ['journal' => 'Environmental microbiology', 'journal_id'=> '6364d153f7323cdc825310c0', 'journal_abbr'=>'Environ Microbiol', "issn" => ["1462-2920","1462-2912"], 'impact'=>null, 'open_access' => true]]
+        ['$set' => ['journal' => 'Environmental microbiology', 'journal_id' => '6364d153f7323cdc825310c0', 'journal_abbr' => 'Environ Microbiol', "issn" => ["1462-2920", "1462-2912"], 'impact' => null, 'open_access' => true]]
     );
     echo "Updated: " . $updateResult->getModifiedCount() . "<br>";
     // $names = [
@@ -411,7 +413,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     $collection = $osiris->activities;
     $values = validateValues($_POST['values']);
 
-    if (isset($_POST['minor']) && $_POST['minor'] == 1){
+    if (isset($_POST['minor']) && $_POST['minor'] == 1) {
         unset($values['authors']);
         unset($values['editors']);
     }
@@ -468,12 +470,13 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
     $values['is_leader'] = boolval($values['is_leader'] ?? false);
     $values['is_active'] = boolval($values['is_active'] ?? false);
 
-    if (isset($values['last']) && isset($values['first']))
+    if (isset($values['last']) && isset($values['first'])) {
         $values['displayname'] = "$values[first] $values[last]";
-    $values['formalname'] = "$values[last], $values[first]";
-    $values['first_abbr'] = "";
-    foreach (explode(" ", $values['first']) as $name) {
-        $values['first_abbr'] .= " " . $name[0] . ".";
+        $values['formalname'] = "$values[last], $values[first]";
+        $values['first_abbr'] = "";
+        foreach (explode(" ", $values['first']) as $name) {
+            $values['first_abbr'] .= " " . $name[0] . ".";
+        }
     }
 
     // add information on updating process
@@ -586,9 +589,21 @@ Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
     }
     $id = new MongoDB\BSON\ObjectId($id);
 
+    $authors = [];
+    foreach ($_POST['authors'] as $i => $a) {
+        $authors[] = [
+            'last' => $a['last'],
+            'first' => $a['first'],
+            'position' => $a['position'] ?? 'middle',
+            'aoi' => (boolval($a['aoi'] ?? false) || ($_SESSION['username'] == $a['user'] ?? '')),
+            'user' => empty($a['user']) ? null : $a['user'],
+            'approved' => boolval($a['approved'] ?? false),
+        ];
+    }
+
     $osiris->activities->updateOne(
         ['_id' => $id],
-        ['$set' => ["authors" => $_POST['authors']]]
+        ['$set' => ["authors" => $authors]]
     );
 
     header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
