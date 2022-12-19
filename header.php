@@ -130,10 +130,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#24.11.22" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#18.12.22" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2022-12-13 06:00') ?>)
+                (<?= time_elapsed_string('2022-12-18 06:00') ?>)
             </a>
         </nav>
 
@@ -221,11 +221,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Journals', 'Journale') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
-                        <i class="far fa-download" aria-hidden="true"></i>
-                        Download
-                    </a>
-
                     <?php if ($USER['is_scientist']) { ?>
 
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
@@ -233,6 +228,17 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Dashboard') ?>
                         </a>
                     <?php } ?>
+
+                    <a href="<?= ROOTPATH ?>/activities/search" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/search') ?>">
+                        <i class="icon-activity-search" aria-hidden="true"></i>
+                        <?= lang('Advanced search', 'Erweiterte Suche') ?>
+                    </a>
+
+
+                    <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
+                        <i class="far fa-download" aria-hidden="true"></i>
+                        Download
+                    </a>
 
 
 
@@ -246,7 +252,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                         <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-signal <?= $pageactive('lom') ?>">
                             <i class="far fa-coin" aria-hidden="true"></i>
-                            <?= lang('Points', 'Punkte') ?>
+                            <?= lang('Coins') ?>
                         </a>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('reports') ?>">

@@ -1,5 +1,8 @@
 # Changelog
 
+## 18.12.22
+- Neues "Experten-Tool": mit der [erweiterten Suche](activities/search) können jetzt alle Aktivitäten detailliert durchsucht werden. 45 Datenfelder sind mit unterschieldichen Optionen durchsuchbar. Ein Anleitungsvideo folgt in Kürze.
+
 ## 13.12.22
 - Aktivitäten:
   - Zu allen Aktivitäten können nun optional Kommentare hinzugefügt werden

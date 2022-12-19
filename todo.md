@@ -7,7 +7,13 @@
 - [ ] Bilder hochladen (vlt Bilder von der ÖA?)
 - [ ] Weitere Profilinformationen: Position, Vita, Teams
 - [ ] Zitationsstil: »Die Ausgabe der Einträge in GRIS folgt derzeit (November 2014) dem &bdquo;author-date&ldquo; Format des  &bdquo;Chicago Manual of Style&ldquo; in der 16. Auflage. Dies ist ein international gängiges, englischsprachiges  Format. 
-- [ ] 
+- [ ] [Kerndatensatz Forschung](https://kerndatensatz-forschung.de/)
+- [ ] Projekte
+- [ ] Keywords
+- [ ] Infrastrukturen
+  - [ ] Maintainer
+  - [ ] assoziierte Projekte
+  - [ ] Nutzerzahlen …
 
 ## Aus Beta-Feedback
 - [x] In Formularen: es wäre cool, wenn ein "*-Feld" noch nicht ausgefüllt wurde, dieses rot zu markieren, wenn man auf Speichern klickt

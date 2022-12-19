@@ -132,12 +132,23 @@ function impact_from_year($journal, $year = CURRENTYEAR)
     return $if;
 }
 
-function get_impact($journal_name, $year)
+function get_impact($doc, $year)
 {
     global $osiris;
-    if (empty($journal_name)) return null;
-    $j = new \MongoDB\BSON\Regex('^' . trim($journal_name), 'i');
-    $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+    if (isset($doc['journal_id']) && !empty($doc['journal_id'])){
+        $id = new MongoDB\BSON\ObjectId($doc['journal_id']);
+        $journal = $osiris->journals->findOne(['_id' => $id]);
+
+    } else if (isset($doc['issn']) && !empty($doc['issn'])){
+        $journal = $osiris->journals->findOne(['issn' => ['$in' => $doc['issn']]]);
+
+    } else if (isset($doc['journal']) && !empty($doc['journal'])) {
+        $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']) .'$', 'i');
+        $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+    } else {
+        return null;
+    }
+    
     if (empty($journal)) return null;
     // $journal = $journal->toArray();
 

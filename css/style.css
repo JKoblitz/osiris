@@ -832,3 +832,28 @@ label.element-other::before {
         border-right-width: 0;
         border-left-color: #fff;
       }
+
+
+
+      .query-builder .btn-xs, .query-builder .btn-group-xs > .btn {
+        padding: 1px 5px;
+        font-size: 12px;
+        line-height: 1.5;
+        border-radius: 3px;
+        height: auto;
+      }
+
+      .query-builder .btn-group label {
+        margin: 0;
+      }
+
+      .query-builder .rule-value-container {
+        min-width: 15rem;
+      }
+      .query-builder .rule-operator-container {
+        max-width: 12rem;
+      }
+
+      .w-800 {
+        width: 80rem !important;
+      }

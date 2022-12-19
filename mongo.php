@@ -181,69 +181,62 @@ Route::get('/testing', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
-    $names = [
-        ['Nubel', 'Nübel', 'uln14'],
-        ['Ozturk', 'Öztürk', 'bas18'],
-        ['Goker', 'Göker', 'mgo08'],
-        ['Sproer', 'Spröer', 'ckc'],
-        ['Pauker', 'Päuker', 'opa'],
-        ['Steenpass', 'Steenpaß', 'las20'],
-        ['Carbasse', 'Sardà Carbasse', 'joc18'],
-    ];
+    $updateResult = $osiris->activities->updateMany(
+        ['doi' => ['$regex' => '10.1111/1462-2920']],
+        ['$set' => ['journal' => 'Environmental microbiology', 'journal_id'=> '6364d153f7323cdc825310c0', 'journal_abbr'=>'Environ Microbiol', "issn" => ["1462-2920","1462-2912"], 'impact'=>null, 'open_access' => true]]
+    );
+    echo "Updated: " . $updateResult->getModifiedCount() . "<br>";
+    // $names = [
+    //     ['Nubel', 'Nübel', 'uln14'],
+    //     ['Ozturk', 'Öztürk', 'bas18'],
+    //     ['Goker', 'Göker', 'mgo08'],
+    //     ['Sproer', 'Spröer', 'ckc'],
+    //     ['Pauker', 'Päuker', 'opa'],
+    //     ['Steenpass', 'Steenpaß', 'las20'],
+    //     ['Carbasse', 'Sardà Carbasse', 'joc18'],
+    // ];
 
-    foreach ($names as $n) {
-        # code...
-        $updateResult = $osiris->activities->updateMany(
-            ['authors.last' => $n[0]],
-            ['$set' => ['authors.$.last' => $n[1], 'authors.$.user' => $n[2]]]
-        );
-        echo $n[0] . " " . $updateResult->getModifiedCount() . "<br>";
-    }
+    // foreach ($names as $n) {
+    //     # code...
+    //     $updateResult = $osiris->activities->updateMany(
+    //         ['authors.last' => $n[0]],
+    //         ['$set' => ['authors.$.last' => $n[1], 'authors.$.user' => $n[2]]]
+    //     );
+    //     echo $n[0] . " " . $updateResult->getModifiedCount() . "<br>";
+    // }
 
     // $updateResult = $osiris->users->updateMany(
-    //     ['unit' => new MongoDB\BSON\Regex('bis.*')],
-    //     ['$set' => ['is_active'=>false]]
+    //     ['is_controlling' => 1],
+    //     ['$set' => ['is_controlling' => true]]
     // );
-    // echo "All ". $updateResult->getModifiedCount()."<br>";
-
     // $updateResult = $osiris->users->updateMany(
-    //     ['unit' => new MongoDB\BSON\Regex('Abmeldung')],
-    //     ['$set' => ['is_active'=>false]]
+    //     ['is_scientist' => 1],
+    //     ['$set' => ['is_scientist' => true]]
     // );
-    // echo "All ". $updateResult->getModifiedCount()."<br>";
-
-    $updateResult = $osiris->users->updateMany(
-        ['is_controlling' => 1],
-        ['$set' => ['is_controlling' => true]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_scientist' => 1],
-        ['$set' => ['is_scientist' => true]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_leader' => 1],
-        ['$set' => ['is_leader' => true]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_active' => 1],
-        ['$set' => ['is_active' => true]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_controlling' => 0],
-        ['$set' => ['is_controlling' => false]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_scientist' => 0],
-        ['$set' => ['is_scientist' => false]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_leader' => 0],
-        ['$set' => ['is_leader' => false]]
-    );
-    $updateResult = $osiris->users->updateMany(
-        ['is_active' => 0],
-        ['$set' => ['is_active' => false]]
-    );
+    // $updateResult = $osiris->users->updateMany(
+    //     ['is_leader' => 1],
+    //     ['$set' => ['is_leader' => true]]
+    // );
+    // $updateResult = $osiris->users->updateMany(
+    //     ['is_active' => 1],
+    //     ['$set' => ['is_active' => true]]
+    // );
+    // $updateResult = $osiris->users->updateMany(
+    //     ['is_controlling' => 0],
+    //     ['$set' => ['is_controlling' => false]]
+    // );
+    // $updateResult = $osiris->users->updateMany(
+    //     ['is_scientist' => 0],
+    //     ['$set' => ['is_scientist' => false]]
+    // );
+    // $updateResult = $osiris->users->updateMany(
+    //     ['is_leader' => 0],
+    //     ['$set' => ['is_leader' => false]]
+    // );
+    // $updateResult = $osiris->users->updateMany(
+    //     ['is_active' => 0],
+    //     ['$set' => ['is_active' => false]]
+    // );
     // echo "All " . $updateResult->getModifiedCount() . "<br>";
 
     // $updateResult = $osiris->activities->updateMany(
@@ -255,7 +248,7 @@ Route::get('/testing', function () {
     // $data = $collection->findone(['_id'=> $_SESSION['username']]);
     // dump($data, true);
 
-});
+}, 'admin');
 
 
 Route::post('/create', function () {

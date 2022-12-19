@@ -99,6 +99,9 @@ Route::get('/api/activities', function () {
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
     }
+    if (isset($_GET['json'])) {
+        $filter = json_decode($_GET['json']);
+    }
     $result = $osiris->activities->find($filter)->toArray();
 
 
@@ -110,7 +113,8 @@ Route::get('/api/activities', function () {
         foreach ($result as $doc) {
             $table[] = [
                 'id' => strval($doc['_id']),
-                'activity' => $Format->format($doc)
+                'activity' => $Format->format($doc),
+                'icon' => activity_icon($doc)
             ];
         }
 

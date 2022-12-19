@@ -916,7 +916,7 @@ function val($index, $default = '')
                 <?php if (!$copy && !empty($form)) { ?>
                     <div class="alert alert-signal p-10 mb-10">
                         <div class="title">
-                            <?=lang('Editorial area', 'Bearbeitungs-Bereich')?>
+                            <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>
                         </div>
                         <!-- <div class="form-group"> -->
                         <label for="editor-comment"><?= lang('Editor comment (tell your co-authors what you have changed)', 'Editor-Kommentar (teile deinen Ko-Autoren mit, was du geändert hast)') ?></label>
@@ -928,8 +928,10 @@ function val($index, $default = '')
                                 <label for="minor"><?= lang('Changes are minor and coauthors do not need to be notified.', 'Änderungen sind minimal und Koautoren müssen nicht benachrichtigt werden.') ?></label>
                             </div>
                             <small class="text-muted">
-                                <?=lang('Please note that changes to the author list are ignored if this checkmark is set.', 
-                                'Bitte beachte, dass Änderungen an den Autoren ignoriert werden, wenn dieser Haken gesetzt ist.')?>
+                                <?= lang(
+                                    'Please note that changes to the author list are ignored if this checkmark is set.',
+                                    'Bitte beachte, dass Änderungen an den Autoren ignoriert werden, wenn dieser Haken gesetzt ist.'
+                                ) ?>
                             </small>
                         </div>
                     </div>
@@ -1009,3 +1011,27 @@ function val($index, $default = '')
 <?php } ?>
 
 <script src="<?= ROOTPATH ?>/js/tour/add-activity.js"></script>
+
+<script>
+    TODO:
+    function getFieldList() {
+
+        $('input').each(function() {
+            fields = {
+                id: 'magazine',
+                label: lang('Magazine', 'Magazin'),
+                type: 'string'
+            }
+        })
+
+        $('select').each(function() {
+            fields = {
+                id: 'type',
+                label: lang('Type', 'Typ'),
+                type: 'string',
+                input: 'select',
+                values: ['publication', 'poster', 'lecture', 'review', 'students']
+            },
+        })
+    }
+</script>
