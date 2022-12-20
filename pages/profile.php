@@ -73,7 +73,7 @@ foreach ($cursor as $doc) {
     if ($type == 'publication' && isset($doc['journal'])) {
         // dump([get_impact($doc['journal'], $doc['year'] - 1), $doc['year'], $doc['journal']], true);
         if (!isset($doc['impact'])) {
-            $if = get_impact($doc['journal'], $doc['year'] - 1);
+            $if = get_impact($doc);
             if (!empty($if)) {
                 $osiris->activities->updateOne(
                     ['_id' => $doc['_id']],

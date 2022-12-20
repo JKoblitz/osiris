@@ -5,6 +5,18 @@ $Format->full = true;
 
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 
+if ($doc['type'] == 'publication' && isset($doc['journal'])) {
+    $if = get_impact($doc);
+    // update impact if necessary
+    if (!empty($if) && !isset($doc['impact']) || $if != $doc['impact']){
+        $osiris->activities->updateOne(
+            ['_id' => $doc['_id']],
+            ['$set' => ['impact' => $if]]
+        );
+        $doc['impact'] = $if;
+    }
+}
+
 $user_activity = isUserActivity($doc, $user);
 ?>
 

@@ -131,9 +131,9 @@ class LOM
         }
 
         $pos = $author['position'] ?? 'middle';
-        
+
         $posKey = $pos;
-        if ($pos =='corresponding') $posKey='last';
+        if ($pos == 'corresponding') $posKey = 'last';
 
 
         if ($type == "non-refereed") {
@@ -147,20 +147,10 @@ class LOM
             );
         }
 
-        $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']), 'i');
-        $journal = $this->osiris->journals->findOne(['journal' => ['$regex' => $j]]);
-
-        $if = 1;
-        if (!empty($journal)) {
-            $impact = $journal['impact']->bsonSerialize();
-            if (is_array($impact)) {
-                $impact = array_filter($impact, function ($a) use ($prev_year) {
-                    return $a['year'] == $prev_year;
-                });
-                if (!empty($impact)) {
-                    $if = reset($impact)['impact'];
-                }
-            }
+        if (isset($doc['impact'])) {
+            $if = $doc['impact'];
+        } else {
+            $if = get_impact($doc);
         }
         $points = $this->matrix['publication']['refereed'][$posKey];
         return array(
@@ -200,7 +190,7 @@ class LOM
     function lecture($doc)
     {
         $author = $this->get_author($doc);
-        if (!isset($author['position']) || $author['position']!== 'first'){
+        if (!isset($author['position']) || $author['position'] !== 'first') {
             $authors = $doc['authors']->bsonSerialize();
             $author = array_shift($authors);
             if ($author['user'] != $this->user) {
@@ -213,7 +203,7 @@ class LOM
                 );
             }
         }
-        
+
         $aff = (isset($author['aoi']) && ($author['aoi'] === 0 || $author['aoi'] === false));
         if (empty($author) || $aff) {
             return array(
