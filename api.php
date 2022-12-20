@@ -125,6 +125,21 @@ Route::get('/api/activities', function () {
 });
 
 
+Route::get('/api/users', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['filter'])) {
+        $filter = $_GET['filter'];
+    }
+    if (isset($_GET['json'])) {
+        $filter = json_decode($_GET['json']);
+    }
+    $result = $osiris->users->find($filter)->toArray();
+
+    echo return_rest($result, count($result));
+});
+
+
 Route::get('/api/reviews', function () {
     include_once BASEPATH . "/php/_db.php";
     $filter = [];

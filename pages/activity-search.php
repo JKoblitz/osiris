@@ -5,18 +5,26 @@ $Format = new Format(true);
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<!-- <script src="<?= ROOTPATH ?>/js/query-builder.mongodb-support.js"></script> -->
 
 <div class="content">
+    <div class="btn-group float-right">
+        <a href="#" class="btn btn-osiris active">
+            <i class="icon-activity-search"></i> <?= lang('Activities', 'Aktivitäten') ?>
+        </a>
+        <a href="<?= ROOTPATH ?>/user/search" class="btn btn-osiris">
+            <i class="far fa-user-graduate"></i> <?= lang('Users', 'Nutzer:innen') ?>
+        </a>
+    </div>
+
     <h1>
-        <i class="icon-activity-search"></i>
-        <?= lang('Advanced search', 'Erweiterte Suche') ?>
+        <i class="icon-activity-search text-orange"></i>
+        <?= lang('Advanced activity search', 'Erweiterte Aktivitäten-Suche') ?>
     </h1>
     <!-- <form action="#" method="get"> -->
 
     <div id="builder"></div>
 
-    <button class="btn btn-osiris" onclick="getResult()"><i class="fas fa-search"></i> <?=lang('Search', 'Suchen')?></button>
+    <button class="btn btn-osiris" onclick="getResult()"><i class="fas fa-search"></i> <?= lang('Search', 'Suchen') ?></button>
 
     <pre id="result" class="code my-20"></pre>
 
@@ -44,6 +52,38 @@ $Format = new Format(true);
                     id: 'title',
                     label: lang('Title', 'Titel'),
                     type: 'string'
+                },
+                {
+                    id: 'authors.first',
+                    label: lang('Author (first name)', 'Autor (Vorname)'),
+                    type: 'string'
+                },
+                {
+                    id: 'authors.last',
+                    label: lang('Author (last name)', 'Autor (Nachname)'),
+                    type: 'string'
+                },
+                {
+                    id: 'authors.user',
+                    label: lang('Author (username)', 'Autor (Username)'),
+                    type: 'string'
+                },
+                {
+                    id: 'authors.position',
+                    label: lang('Author (position)', 'Autor (Position)'),
+                    type: 'string',
+                    input: 'select',
+                    values: ['first', 'middle', 'last', 'corresponding']
+                },
+                {
+                    id: 'authors.approved',
+                    label: lang('Author (approved)', 'Autor (Bestätigt)'),
+                    type: 'boolean',
+                    values: {
+                        'true': 'yes',
+                        'false': 'no'
+                    },
+                    input: 'radio'
                 },
                 {
                     id: 'journal',
@@ -315,38 +355,6 @@ $Format = new Format(true);
                     label: lang('Updated by (Abbreviation)', 'Aktualisiert von (Kürzel)'),
                     type: 'string'
                 },
-                {
-                    id: 'authors.first',
-                    label: lang('Author (first name)', 'Autor (Vorname)'),
-                    type: 'string'
-                },
-                {
-                    id: 'authors.last',
-                    label: lang('Author (last name)', 'Autor (Nachname)'),
-                    type: 'string'
-                },
-                {
-                    id: 'authors.user',
-                    label: lang('Author (username)', 'Autor (Username)'),
-                    type: 'string'
-                },
-                {
-                    id: 'authors.position',
-                    label: lang('Author (position)', 'Autor (Position)'),
-                    type: 'string',
-                    input: 'select',
-                    values: ['first', 'middle', 'last', 'corresponding']
-                },
-                {
-                    id: 'authors.approved',
-                    label: lang('Author (approved)', 'Autor (Bestätigt)'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio'
-                },
                 // {
                 //         id: 'updated',
                 //         label: lang('Updated', ''),
@@ -361,7 +369,9 @@ $Format = new Format(true);
                 remove_group: 'fas fa-xmark-circle',
                 remove_rule: 'fas fa-xmark',
                 error: 'fas fa-exclamation-triangle',
-            }
+            },
+            allow_empty: true,
+            default_filter: 'type'
         });
 
         $.extend($.fn.DataTable.ext.classes, {
@@ -376,22 +386,41 @@ $Format = new Format(true);
             sInfo: "float-right text-muted",
             sLength: "float-right"
         });
+
         var dataTable;
 
+        function getResult() {
+            dataTable.ajax.reload()
+
+        }
+
+
         $(document).ready(function() {
+            var hash = window.location.hash.substr(1);
+            if (hash !== undefined && hash != "") {
+                try {
+                    var rules = JSON.parse(decodeURI(hash))
+                    $('#builder').queryBuilder('setRulesFromMongo', rules);
+                } catch (SyntaxError) {
+                    console.info('invalid hash')
+                }
+            }
+
             dataTable = $('#activity-table').DataTable({
                 ajax: {
                     "url": ROOTPATH + '/api/activities',
-                    // "data": {
-                    //     "json": '[]',
-                    //     formatted: true
-                    // }
-                    data: function( d ) {
-                        var result = $('#builder').queryBuilder('getMongo')
-                        if (result === null) result = []
-                        console.log(result);
-                        d.json= JSON.stringify(result)
-                        d.formatted= true
+                    data: function(d) {
+                        // https://medium.com/code-kings/datatables-js-how-to-update-your-data-object-for-ajax-json-data-retrieval-c1ac832d7aa5
+                        var rules = $('#builder').queryBuilder('getMongo')
+                        if (rules === null) rules = []
+                        console.log(rules);
+
+                        rules = JSON.stringify(rules)
+                        $('#result').html('filter = ' + rules)
+                        d.json = rules
+                        d.formatted = true
+
+                        window.location.hash = rules
                     },
                 },
                 language: {
@@ -399,8 +428,7 @@ $Format = new Format(true);
                     "emptyTable": lang('No activities found for your filters.', 'Für diese Filter konnten keine Aktivitäten gefunden werden.'),
                 },
                 // "pageLength": 5,
-                columnDefs: [
-                    {
+                columnDefs: [{
                         targets: 0,
                         data: 'icon'
                     },
@@ -418,26 +446,8 @@ $Format = new Format(true);
                 ]
             });
 
+            // getResult()
         });
-
-        // function updateTable(){
-        //     var valve = $("#valveSelect").val();
-        //     var tab = "2"
-        //     var query_string = $.param({"valve" : valve, "tab" : tab})
-        //     var ajax_source = "ajax/update.php?" + query_string
-        //     var table = $("#dataTable").DataTable(); // get api instance
-        //     // load data using api
-        //     dataTable.ajax.url(ajax_source).load();
-        // };
-
-        function getResult() {
-            var result = $('#builder').queryBuilder('getMongo')
-            if (result === null) result = []
-            $('#result').html('filter = '+JSON.stringify(result))
-
-            dataTable.ajax.reload() 
-            
-        }
     </script>
-   
+
 </div>

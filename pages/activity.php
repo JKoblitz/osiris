@@ -6,11 +6,20 @@ $Format->full = true;
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 
 if ($doc['type'] == 'publication' && isset($doc['journal'])) {
+    // fix old journal_ids
+    if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])){
+        $doc['journal_id'] = null;
+        $osiris->activities->updateOne(
+            ['_id' => $activity['_id']],
+            ['$unset' => ['journal_id' => '']]
+        );
+    }
+
     $if = get_impact($doc);
     // update impact if necessary
-    if (!empty($if) && !isset($doc['impact']) || $if != $doc['impact']){
+    if (!empty($if) && !isset($doc['impact']) && $if != $doc['impact']){
         $osiris->activities->updateOne(
-            ['_id' => $doc['_id']],
+            ['_id' => $activity['_id']],
             ['$set' => ['impact' => $if]]
         );
         $doc['impact'] = $if;

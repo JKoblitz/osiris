@@ -565,6 +565,20 @@ Route::get('/user/browse', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+Route::get('/user/search', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang("Search", "Suche")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/user-search.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/(profile)/?([a-z0-9]*)', function ($page, $user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
