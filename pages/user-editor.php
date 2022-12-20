@@ -38,6 +38,30 @@ dump($data, true);
         </div>
     </div>
 
+    <div class="form-group">
+        <span><?= lang('Gender', 'Geschlecht') ?>:</span>
+        <?php
+        $gender = $data['gender'] ?? 'n';
+        ?>
+
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-m" value="m" <?= $gender == 'm' ? 'checked' : '' ?>>
+            <label for="gender-m"><?= lang('Male', 'Männlich') ?></label>
+        </div>
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-f" value="f" <?= $gender == 'f' ? 'checked' : '' ?>>
+            <label for="gender-f"><?= lang('Female', 'Weiblich') ?></label>
+        </div>
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-d" value="d" <?= $gender == 'd' ? 'checked' : '' ?>>
+            <label for="gender-d"><?= lang('Non-binary', 'Divers') ?></label>
+        </div>
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-n" value="n" <?= $gender == 'n' ? 'checked' : '' ?>>
+            <label for="gender-n"><?= lang('Not specified', 'Nicht angegeben') ?></label>
+        </div>
+
+    </div>
     <div class="form-row row-eq-spacing-sm">
         <div class="col-sm">
             <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
@@ -88,30 +112,6 @@ dump($data, true);
         </div>
     </div>
 
-<div class="form-group">
-    <span><?=lang('Gender', 'Geschlecht')?>:</span>
-    <?php
-        $gender = $data['gender'] ?? 'n';
-    ?>
-    
-    <div class="custom-radio d-inline-block ml-10">
-        <input type="radio" name="values[gender]" id="gender-m" value="m" <?=$gender == 'm' ? 'checked' : ''?>>
-        <label for="gender-m"><?=lang('Male', 'Männlich')?></label>
-    </div>
-    <div class="custom-radio d-inline-block ml-10">
-        <input type="radio" name="values[gender]" id="gender-f" value="f" <?=$gender == 'f' ? 'checked' : ''?>>
-        <label for="gender-f"><?=lang('Female', 'Weiblich')?></label>
-    </div>
-    <div class="custom-radio d-inline-block ml-10">
-        <input type="radio" name="values[gender]" id="gender-d" value="d" <?=$gender == 'd' ? 'checked' : ''?>>
-        <label for="gender-d"><?=lang('Non-binary', 'Divers')?></label>
-    </div>
-    <div class="custom-radio d-inline-block ml-10">
-        <input type="radio" name="values[gender]" id="gender-n" value="n" <?=$gender == 'n' ? 'checked' : ''?>>
-        <label for="gender-n"><?=lang('Not specified', 'Nicht angegeben')?></label>
-    </div>
-
-</div>
     <div class="form-group custom-checkbox">
         <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
         <label for="is_active">Is Active</label>
