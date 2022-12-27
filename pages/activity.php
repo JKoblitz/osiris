@@ -17,7 +17,8 @@ if ($doc['type'] == 'publication' && isset($doc['journal'])) {
 
     $if = get_impact($doc);
     // update impact if necessary
-    if (!empty($if) && !isset($doc['impact']) && $if != $doc['impact']){
+    if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])){
+        // dump($if);
         $osiris->activities->updateOne(
             ['_id' => $activity['_id']],
             ['$set' => ['impact' => $if]]

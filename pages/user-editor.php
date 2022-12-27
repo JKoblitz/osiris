@@ -111,26 +111,73 @@ dump($data, true);
             <input type="text" name="values[webpage]" id="webpage" class="form-control" value="<?= $data['webpage'] ?? '' ?>">
         </div>
     </div>
+    <div>
 
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
-        <label for="is_active">Is Active</label>
-    </div>
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
-        <label for="is_scientist">Is Scientist</label>
-    </div>
+        <div class="form-group custom-checkbox d-inline-block ml-10">
+            <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
+            <label for="is_active">Is Active</label>
+        </div>
+        <div class="form-group custom-checkbox d-inline-block ml-10">
+            <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
+            <label for="is_scientist">Is Scientist</label>
+        </div>
 
 
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
-        <label for="is_controlling">Is Controlling</label>
+        <div class="form-group custom-checkbox d-inline-block ml-10">
+            <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
+            <label for="is_controlling">Is Controlling</label>
+        </div>
+
+        <div class="form-group custom-checkbox d-inline-block ml-10">
+            <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
+            <label for="is_leader">Is Leader</label>
+        </div>
+
     </div>
 
-    <div class="form-group custom-checkbox">
-        <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?> <?= ($USER['is_admin'] || $USER['is_controlling']) ? '' : 'disabled' ?>>
-        <label for="is_leader">Is Leader</label>
-    </div>
+    <?php if ($data['username'] == $_SESSION['username']) { ?>
+
+        <div class="alert alert-signal mb-20">
+            <div class="title">
+                <?= lang('Profile preferences', 'Profil-Einstellungen') ?>
+            </div>
+
+
+            <div class="mt-10">
+                <span><?= lang('Show coins', 'Zeige Coins') ?>:</span>
+                <?php
+                $hide_coins = $data['hide_coins'] ?? false;
+                ?>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[hide_coins]" id="hide_coins-false" value="false" <?= $hide_coins ? '' : 'checked' ?>>
+                    <label for="hide_coins-false"><?= lang('Yes', 'Ja') ?></label>
+                </div>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[hide_coins]" id="hide_coins-true" value="true" <?= $hide_coins ? 'checked' : '' ?>>
+                    <label for="hide_coins-true"><?= lang('No', 'Nein') ?></label>
+                </div>
+            </div>
+
+
+            <div class="mt-10">
+                <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>
+                <?php
+                $hide_achievements = $data['hide_achievements'] ?? false;
+                ?>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[hide_achievements]" id="hide_achievements-false" value="false" <?= $hide_achievements ? '' : 'checked' ?>>
+                    <label for="hide_achievements-false"><?= lang('Yes', 'Ja') ?></label>
+                </div>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[hide_achievements]" id="hide_achievements-true" value="true" <?= $hide_achievements ? 'checked' : '' ?>>
+                    <label for="hide_achievements-true"><?= lang('No', 'Nein') ?></label>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+
 
     <button type="submit" class="btn btn-primary">
         Update

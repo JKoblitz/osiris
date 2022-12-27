@@ -1,23 +1,37 @@
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
+<link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css">
+
 <style>
     .box.h-full {
         height: calc(100% - 4rem) !important;
     }
 </style>
+
 <?php
 
 $currentuser = $user == $_SESSION['username'];
+
+
+$Achievement = new Achievement($osiris);
+$Achievement->initUser($user);
+
+$achievements = $Achievement->achievements;
+
+$Achievement->checkAchievements();
+$user_ac = $Achievement->userac;
 
 include_once BASEPATH . "/php/_lom.php";
 $LOM = new LOM($user, $osiris);
 
 $_lom = 0;
 
-$achievements = array();
-if (isset($scientist['achievements'])) {
-    $achievements = $scientist['achievements']->bsonSerialize();
-}
+// $achievements = array();
+// if (isset($scientist['achievements'])) {
+//     $achievements = $scientist['achievements']->bsonSerialize();
+// }
+
+
 // dump($achievements);
 
 // gravatar
@@ -195,59 +209,39 @@ if (isset($_GET['verbose'])) {
                 ?>
 
             </h3>
-            <p class="lead mt-0">
-                <i class="fad fa-lg fa-coin text-signal"></i>
-                <b id="lom-points"><?= $_lom ?></b>
-                Coins
-                <a href='#coins' class="text-muted">
-                    <i class="far fa-question-circle text-muted"></i>
-                </a>
+            <?php if (!($scientist['hide_coins'] ?? false)) { ?>
+                <p class="lead mt-0">
+                    <i class="fad fa-lg fa-coin text-signal"></i>
+                    <b id="lom-points"><?= $_lom ?></b>
+                    Coins
+                    <a href='#coins' class="text-muted">
+                        <i class="far fa-question-circle text-muted"></i>
+                    </a>
+                </p>
+            <?php } ?>
 
-                <?php if (!empty($achievements)) {
-                    $last_achievement = end($achievements);
-                ?>
-                    <br>
 
-                    <i class="fad fa-lg fa-trophy text-signal"></i>
-                    <span class="">
-                        <?= achievementText($last_achievement['title'], $scientist['first']) ?>
-                        <small class="text-muted">am <?= $last_achievement['achieved'] ?></small>
-                    </span>
-                <?php
+        </div>
+
+        <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false)) {
+        ?>
+            <div class="achievements text-right" style="max-width: 22rem;">
+                <h5 class="mb-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
+
+                <?php foreach ($user_ac as $ac) {
+                    $Achievement->icon($ac);
                 } ?>
 
-            </p>
-        </div>
-        <?php if (!$currentuser) { ?>
-
-            <div class="col text-right">
-                <a class="btn btn-osiris" href="<?= ROOTPATH ?>/scientist/<?= $user ?>"><i class="far fa-calendar"></i>
-                    <?= lang('The year of ', 'Das Jahr von ') . $name ?>
-                </a><br>
-
-                <a class="btn btn-osiris mt-5" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
-                    <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
-                </a>
-                <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
-                    <br>
-                    <a class="btn btn-osiris mt-5" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="fas fa-user-pen"></i>
-                        <?= lang('Edit user profile', 'Bearbeite Profil') ?>
-                    </a>
-                <?php } ?>
-
             </div>
-        <?php } ?>
-
+        <?php
+        } ?>
     </div>
+
+
 
     <?php if ($currentuser) { ?>
 
         <div class="box p-5 row-<?= $scientist['dept'] ?>" style="border-left-width:5px">
-            <!-- <div class="content"> -->
-
-            <!-- <p class="mt-0">
-                   
-                </p> -->
             <div class="m-10">
                 <h5 class="title font-size-16">
                     <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
@@ -271,6 +265,11 @@ if (isset($_GET['verbose'])) {
                         <i class="far fa-user-pen text-muted fa-fw"></i>
                         <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                     </a>
+
+                    <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
+                        <i class="far fa-trophy text-signal fa-fw"></i>
+                        <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                    </a>
                 </div>
 
 
@@ -291,9 +290,6 @@ if (isset($_GET['verbose'])) {
                     $approvedQ = $scientist['approved']->bsonSerialize();
                 }
 
-                // TODO: for testing
-                // $Q = 1 - 1;
-                // $Y = 2023;
                 $Q = CURRENTQUARTER - 1;
                 $Y = CURRENTYEAR;
                 if ($Q < 1) {
@@ -325,17 +321,59 @@ if (isset($_GET['verbose'])) {
                     </div>
                 <?php } ?>
 
+                <div class="mt-20">
+
+                    <?php
+                    $new = $Achievement->new;
+
+                    if (!empty($new)) {
+                        echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
+                        foreach ($new as $i => $n) {
+                            $Achievement->snack($n);
+                        }
+                        $Achievement->save();
+                    }
+                    ?>
+                </div>
 
             </div>
 
         </div>
+
+    <?php } else { ?>
+        <div class="btn-group btn-group-lg mt-15">
+            <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of', 'Das Jahr ') . $scientist['first'] ?> ">
+                <i class="far fa-calendar text-success fa-fw"></i>
+                <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
+            </a>
+            <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
+                <i class="icon-activity-user text-primary fa-fw"></i>
+                <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
+            </a>
+            <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
+                <i class="far fa-chart-network text-danger fa-fw"></i>
+                <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
+            </a>
+
+            <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Meine Errungenschaften von ') . $scientist['first'] ?>">
+                <i class="far fa-trophy text-signal fa-fw"></i>
+            </a>
+            <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+
+                <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                    <i class="far fa-user-pen text-muted fa-fw"></i>
+                    <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                </a>
             <?php } ?>
+
+        </div>
+    <?php } ?>
 
 
 </div>
 
 <div class="row row-eq-spacing my-0">
-    <div class="col-md-4">
+    <div class="col-lg-4">
         <div class="box h-full">
             <table class="table table-simple">
                 <tbody>
@@ -453,7 +491,7 @@ if (isset($_GET['verbose'])) {
     </div>
     <div class="v-spacer d-md-none"></div>
 
-    <div class="col-md-8">
+    <div class="col-lg-8">
         <div class="box h-full">
             <div class="content">
                 <h4 class="title"><?= lang('Latest publications', 'Neueste Publikationen') ?></h4>
@@ -495,7 +533,7 @@ if (isset($_GET['verbose'])) {
 
 <div class="row row-eq-spacing-md my-0">
 
-    <!-- <div class="col-md-4">
+    <!-- <div class="col-lg-4">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center"><?= lang('Impact factors', 'Impact Factors') ?></h5>
@@ -544,7 +582,7 @@ if (isset($_GET['verbose'])) {
             </div>
         </div>
     </div> -->
-    <div class="col-md-6">
+    <div class="col-lg-6">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center">
@@ -669,7 +707,7 @@ if (isset($_GET['verbose'])) {
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center">
@@ -729,7 +767,7 @@ if (isset($_GET['verbose'])) {
 
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center">
@@ -821,7 +859,7 @@ if (isset($_GET['verbose'])) {
 
 
 <div class="row row-eq-spacing my-0">
-    <div class="col-md-12 col-lg-6">
+    <div class="col-lg-12 col-xl-6">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center"><?= lang('All activities', 'Alle Aktivitäten') ?></h5>
@@ -913,7 +951,7 @@ if (isset($_GET['verbose'])) {
     </div>
 
     <div class="v-spacer d-lg-none"></div>
-    <div class="col-md-12 col-lg-6">
+    <div class="col-lg-12 col-xl-6">
         <div class="box h-full">
             <div class="content">
                 <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>

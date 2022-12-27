@@ -156,13 +156,23 @@ Route::post('/lom', function () {
 });
 
 
-Route::get('/achievements', function () {
-
+Route::get('/achievements/?([a-z0-9]*)', function ($user) {
+    if (empty($user)) $user = $_SESSION['username'];
+    
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/_achievements.php";
+    
+    $scientist = getUserFromId($user);
+    $name = $scientist['displayname'];
+    
     $breadcrumb = [
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => $name, 'path' => "/profile/$user"],
         ['name' => lang('Achievements', 'Errungenschaften')]
+
     ];
 
-    include_once BASEPATH . "/php/_config.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/achievements.php";
     include BASEPATH . "/footer.php";
@@ -585,6 +595,8 @@ Route::get('/(profile)/?([a-z0-9]*)', function ($page, $user) {
 
     if (empty($user)) $user = $_SESSION['username'];
     include_once BASEPATH . "/php/format.php";
+    include_once BASEPATH . "/php/_achievements.php";
+
     $Format = new Format($user);
 
     $scientist = getUserFromId($user);

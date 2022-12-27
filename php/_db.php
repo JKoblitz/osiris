@@ -244,6 +244,7 @@ function isUserActivity($doc, $user){
 function addUserActivity($activity = 'create')
 {
     global $osiris;
+    return;
     $update = ['$push' => ['activity' => ['type' => $activity, 'date' => date("Y-m-d")]]];
     $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
     $act = $u['activity'] ?? array();

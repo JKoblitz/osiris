@@ -2,38 +2,12 @@
     "name": "juk20/osiris",
     "description": "Open, simple and integrated research information system",
     "type": "project",
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "citation-style-language/locales",
-                "version":"1.0.0",
-                "source": {
-                    "type": "git",
-                    "url": "https://github.com/citation-style-language/locales.git",
-                    "reference": "master"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "citation-style-language/styles",
-                "version":"1.0.0",
-                "source": {
-                    "type": "git",
-                    "url": "https://github.com/citation-style-language/styles.git",
-                    "reference": "master"
-                }
-            }
-        }
-    ],
     "require": {
         "mongodb/mongodb": "1.12.0",
-        "phpoffice/phpword": "^0.18.3",
-        "citation-style-language/locales":"@dev",
-        "citation-style-language/styles":"@dev",
-        "seboettg/citeproc-php": "^2.5"
+        "phpoffice/phpword": "^0.18.3"
+    },
+    "require-dev": {
+        "panique/php-sass": "1.0"
     },
     "license": "MIT",
     "autoload": {

@@ -1,10 +1,322 @@
 [
-    "Added your very first dataset.",
-    "Added your first publication.",
-    "Added your first poster.",
-    "Confirmed your first Co-Authorship.",
-    "Have a publication with more than [100|200|300|400|500] credits.",
-    "Have more than [100|250|500|750|1000] credits in one year.",
-    "Approve your first quarter.",
-    "Approve every quarter in a year."
+    {
+        "id": "create",
+        "icon": "create",
+        "title": {
+            "de": "Anfänger",
+            "de_f": "Anfängerin",
+            "en": "Beginner"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 1,
+                "de": "* hat seine/ihre erste Aktivität eingetragen.",
+                "en": "* created his/her first activity."
+            },
+            {
+                "level": 2,
+                "step": 3,
+                "de": "* hat bereits 3 unterschiedliche Arten von Aktivitäten eingetragen.",
+                "en": "* created three different types of activities."
+            },
+            {
+                "level": 3,
+                "step": 5,
+                "de": "* hat bereits 5 unterschiedliche Arten von Aktivitäten eingetragen.",
+                "en": "* created three different types of activities."
+            },
+            {
+                "level": 4,
+                "step": 8,
+                "de": "* hat eine Aktivität jeder Art eingetragen.",
+                "en": "* created an activity of each type."
+            }
+        ]
+    },
+    {
+        "id": "publications",
+        "icon": "publication",
+        "title": {
+            "de": "Schreiberling",
+            "de_f": "Schreiberling",
+            "en": "Pen Pusher"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 5,
+                "de": "* hat 5 oder mehr Publikationen in OSIRIS.",
+                "en": "* has 5 or more publications in OSIRIS."
+            },
+            {
+                "level": 2,
+                "step": 10,
+                "de": "* hat 10 oder mehr Publikationen in OSIRIS.",
+                "en": "* has 10 or more publications in OSIRIS."
+            },
+            {
+                "level": 3,
+                "step": 50,
+                "de": "* hat 50 oder mehr Publikationen in OSIRIS.",
+                "en": "* has 50 or more publications in OSIRIS."
+            },
+            {
+                "level": 4,
+                "step": 200,
+                "de": "* hat 200 oder mehr Publikationen in OSIRIS.",
+                "en": "* has 200 or more publications in OSIRIS."
+            }
+        ]
+    },
+    {
+        "id": "posters",
+        "icon": "poster",
+        "title": {
+            "de": "Poster-Designer",
+            "de_f": "Poster-Designerin",
+            "en": "Poster Designer"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 1,
+                "de": "* hat mindestens ein Poster in OSIRIS.",
+                "en": "* has at least one poster in OSIRIS."
+            },
+            {
+                "level": 2,
+                "step": 5,
+                "de": "* hat 5 oder mehr Poster in OSIRIS.",
+                "en": "* has 5 or more posters in OSIRIS."
+            },
+            {
+                "level": 3,
+                "step": 20,
+                "de": "* hat 20 oder mehr Poster in OSIRIS.",
+                "en": "* has 20 or more posters in OSIRIS."
+            },
+            {
+                "level": 4,
+                "step": 50,
+                "de": "* hat 50 oder mehr Poster in OSIRIS.",
+                "en": "* has 50 or more posters in OSIRIS."
+            }
+        ]
+    },
+    {
+        "id": "lectures",
+        "icon": "lecture",
+        "title": {
+            "de": "Präsentator",
+            "de_f": "Präsentatorin",
+            "en": "Presenter"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 1,
+                "de": "* hat mindestens einen Vortrag in OSIRIS.",
+                "en": "* has at least one lecture in OSIRIS."
+            },
+            {
+                "level": 2,
+                "step": 5,
+                "de": "* hat 5 oder mehr Vorträge in OSIRIS.",
+                "en": "* has 5 or more lectures in OSIRIS."
+            },
+            {
+                "level": 3,
+                "step": 20,
+                "de": "* hat 20 oder mehr Vorträge in OSIRIS.",
+                "en": "* has 20 or more lectures in OSIRIS."
+            },
+            {
+                "level": 4,
+                "step": 50,
+                "de": "* hat 50 oder mehr Vorträge in OSIRIS.",
+                "en": "* has 50 or more lectures in OSIRIS."
+            }
+        ]
+    },
+    {
+        "id": "coauthors",
+        "icon": "coauthors",
+        "title": {
+            "de": "Ko-Autor",
+            "de_f": "Ko-Autorin",
+            "en": "Co-Author"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 1,
+                "de": "* hat seine/ihre erste Koautorenschaft bestätigt.",
+                "en": "* confirmed his/her first co-authorship."
+            }
+        ]
+    },
+    {
+        "id": "pub-star",
+        "icon": "publication-star",
+        "title": {
+            "de": "Publikations-Sternchen",
+            "de_f": "Publikations-Sternchen",
+            "en": "Publication Star"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 100,
+                "de": "* hat eine Publikation mit mehr als 100 Coins.",
+                "en": "* has a publication with more than 100 coins."
+            },
+            {
+                "level": 2,
+                "step": 200,
+                "de": "* hat eine Publikation mit mehr als 200 Coins.",
+                "en": "* has a publication with more than 200 coins."
+            },
+            {
+                "level": 3,
+                "step": 300,
+                "de": "* hat eine Publikation mit mehr als 300 Coins.",
+                "en": "* has a publication with more than 300 coins."
+            },
+            {
+                "level": 4,
+                "step": 500,
+                "de": "* hat eine Publikation mit mehr als 500 Coins.",
+                "en": "* has a publication with more than 500 coins."
+            }
+        ]
+    },
+    {
+        "id": "pub-impact",
+        "icon": "publication-impact",
+        "title": {
+            "de": "Eindrucksvoller Autor",
+            "de_f": "Eindrucksvolle Autorin",
+            "en": "Impactful Author"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 3,
+                "de": "* hat eine Publikation mit einem Impact von mehr als 3.",
+                "en": "* a publication with an impact of more than 3."
+            },
+            {
+                "level": 2,
+                "step": 5,
+                "de": "* hat eine Publikation mit einem Impact von mehr als 5.",
+                "en": "* a publication with an impact of more than 5."
+            },
+            {
+                "level": 3,
+                "step": 10,
+                "de": "* hat eine Publikation mit einem Impact von mehr als 10.",
+                "en": "* a publication with an impact of more than 10."
+            },
+            {
+                "level": 4,
+                "step": 20,
+                "de": "* hat eine Publikation mit einem Impact von mehr als 20.",
+                "en": "* a publication with an impact of more than 20."
+            }
+        ]
+    },
+    {
+        "id": "year-star",
+        "icon": "year-star",
+        "title": {
+            "de": "Eifriger Sammler",
+            "de_f": "Eifrige Sammlerin",
+            "en": ""
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 100,
+                "de": "* hat mehr als 100 coins in einem Jahr erlangt.",
+                "en": "* has reached more than 100 coins in one year."
+            },
+            {
+                "level": 2,
+                "step": 250,
+                "de": "* hat mehr als 250 coins in einem Jahr erlangt.",
+                "en": "* has reached more than 250 coins in one year."
+            },
+            {
+                "level": 3,
+                "step": 500,
+                "de": "* hat mehr als 500 coins in einem Jahr erlangt.",
+                "en": "* has reached more than 500 coins in one year."
+            },
+            {
+                "level": 4,
+                "step": 1000,
+                "de": "* hat mehr als 1000 coins in einem Jahr erlangt.",
+                "en": "* has reached more than 1000 coins in one year."
+            }
+        ]
+    },
+    {
+        "id": "coins",
+        "icon": "coins",
+        "title": {
+            "de": "Münzsammler",
+            "de_f": "Münzsammlerin",
+            "en": "Coin collector"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 200,
+                "de": "* hat mehr als 200 coins angesammelt.",
+                "en": "* has collected more than 200 coins."
+            },
+            {
+                "level": 2,
+                "step": 1000,
+                "de": "* hat mehr als 1000 coins angesammelt.",
+                "en": "* has collected more than 1000 coins."
+            },
+            {
+                "level": 3,
+                "step": 5000,
+                "de": "* hat mehr als 5000 coins angesammelt.",
+                "en": "* has collected more than 5000 coins."
+            },
+            {
+                "level": 4,
+                "step": 10000,
+                "de": "* hat mehr als 10.000 coins angesammelt.",
+                "en": "* has collected more than 10,000 coins."
+            }
+        ]
+    },
+    {
+        "id": "approved",
+        "icon": "quarter",
+        "title": {
+            "de": "Gewissenhafter Nutzer",
+            "de_f": "Gewissenhafte Nutzerin",
+            "en": "Diligent User"
+        },
+        "levels": [
+            {
+                "level": 1,
+                "step": 1,
+                "de": "* hat das erste Mal ein Quartal freigegeben.",
+                "en": "* has approved a quarter for the first time."
+            },
+            {
+                "level": 2,
+                "step": 4,
+                "de": "* hat alle Quartale eines Jahres freigegeben.",
+                "en": "* has approved all quarter of one year."
+            }
+        ]
+    }
 ]

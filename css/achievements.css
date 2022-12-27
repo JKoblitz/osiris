@@ -1,0 +1,134 @@
+/* .tile {
+ min-width: 20rem;
+ max-width: 30rem;
+ }
+ */
+ 
+.row .tile.achievement {
+  -webkit-flex-basis: 0;
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.row .tile.achievement .tile-content {
+  flex: 1 1 auto;
+}
+@media (min-width: 1200px) {
+  .col-lg-25 {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 20%;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
+@media (min-width: 1600px) {
+  .col-xl-25 {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 20%;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
+.level span {
+  width: 2rem;
+  height: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  display: inline-block;
+  -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+}
+.achievement h3, .achievement h5 {
+  margin: 0;
+  font-weight: 800;
+}
+.achievement h5 {
+  text-transform: uppercase;
+  color: white;
+}
+.achievement svg {
+  height: auto;
+  max-height: 100%;
+}
+.achievement svg #color * {
+  fill: white !important;
+}
+.achievement [data-toggle="tooltip"]::after {
+  width: 14rem;
+}
+.achievement .thumb svg {
+  height: 8rem;
+  width: 8rem;
+  margin-right: 2rem;
+}
+.achievement .thumb-sm {
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+}
+.achievement .lvl0 h3 {
+  color: var(--muted-color);
+}
+.achievement.lvl1 h5 {
+  color: #8bc34a;
+}
+.achievement.lvl1 svg #color * {
+  fill: #8bc34a !important;
+}
+.achievement.lvl1 .level span:nth-of-type(1) {
+  background-color: #8bc34a;
+}
+.achievement.lvl2 h5 {
+  color: #039be5;
+}
+.achievement.lvl2 svg #color * {
+  fill: #039be5 !important;
+}
+.achievement.lvl2 .level span:nth-of-type(1) {
+  background-color: #8bc34a;
+}
+.achievement.lvl2 .level span:nth-of-type(2) {
+  background-color: #039be5;
+}
+.achievement.lvl3 h5 {
+  color: #9c27b0;
+}
+.achievement.lvl3 svg #color * {
+  fill: #9c27b0 !important;
+}
+.achievement.lvl3 .level span:nth-of-type(1) {
+  background-color: #8bc34a;
+}
+.achievement.lvl3 .level span:nth-of-type(2) {
+  background-color: #039be5;
+}
+.achievement.lvl3 .level span:nth-of-type(3) {
+  background-color: #9c27b0;
+}
+.achievement.max-4.lvl4 h5, .achievement.max-3.lvl3 h5, .achievement.max-2.lvl2 h5, .achievement.max-1.lvl1 h5 {
+  color: #f2ab38;
+}
+.achievement.max-4.lvl4 svg #color *, .achievement.max-3.lvl3 svg #color *, .achievement.max-2.lvl2 svg #color *, .achievement.max-1.lvl1 svg #color * {
+  fill: #f2ab38 !important;
+}
+.achievement.max-4.lvl4 .level span:nth-of-type(1), .achievement.max-3.lvl3 .level span:nth-of-type(1), .achievement.max-2.lvl2 .level span:nth-of-type(1), .achievement.max-1.lvl1 .level span:nth-of-type(1) {
+  background-color: #8bc34a;
+}
+.achievement.max-4.lvl4 .level span:nth-of-type(2), .achievement.max-3.lvl3 .level span:nth-of-type(2), .achievement.max-2.lvl2 .level span:nth-of-type(2), .achievement.max-1.lvl1 .level span:nth-of-type(2) {
+  background-color: #039be5;
+}
+.achievement.max-4.lvl4 .level span:nth-of-type(3), .achievement.max-3.lvl3 .level span:nth-of-type(3), .achievement.max-2.lvl2 .level span:nth-of-type(3), .achievement.max-1.lvl1 .level span:nth-of-type(3) {
+  background-color: #9c27b0;
+}
+.achievement.max-4.lvl4 .level span:last-of-type, .achievement.max-3.lvl3 .level span:last-of-type, .achievement.max-2.lvl2 .level span:last-of-type, .achievement.max-1.lvl1 .level span:last-of-type {
+  background-color: #f2ab38;
+}
