@@ -279,9 +279,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
 
-                <a href="<?= ROOTPATH ?>/docs/faq" class="sidebar-link with-icon <?= $pageactive('docs/faq') ?>">
+                <a href="<?= ROOTPATH ?>/docs" class="sidebar-link with-icon <?= $pageactive('docs') ?>">
                     <i class="far fa-comment-question" aria-hidden="true"></i>
-                    <?= lang('FAQ') ?>
+                    <?= lang('Documentation', 'Dokumentation') ?>
                 </a>
 
                 <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon">
@@ -301,7 +301,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             <div class="content-container">
                 <?php
-
                 if (function_exists('printMsg') && isset($_GET['msg'])) {
                     printMsg();
                 }

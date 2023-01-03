@@ -18,6 +18,9 @@
 - Download von Aktivitäten
   - Einzelne Aktivitäten können jetzt auf der Übersichtsseite heruntergeladen werden. Dafür gehst du rechts oben auf Download und kannst dann auswählen, ob und wer fett hervorgehoben wird und in welchem Format du herunterladen möchtest
   - Der "Einkaufswagen" wurde hinzugefügt. Damit können einzelne Aktivitäten gesammelt werden (sowohl auf der Übersichtsseite als auch bei Alle Aktivitäten). Alle ausgewählten Aktivitäten können dann gesammelt heruntergeladen werden.
+- Dokumentation
+  - Eine erste Dokumentation wurde bereitgestellt, diese deckt zurzeit erstmal nur das Hinzufügen von Aktivitäten ab
+  - In den nächsten Tagen und Wochen werde ich sie um weitere Themen erweitern
 
 OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werden natürlich trotzdem weiterhin Feedback einsammeln und an dem Tool weiterentwickeln. Danke an alle, die an der Betaphase beteiligt waren!
 
