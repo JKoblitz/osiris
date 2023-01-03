@@ -165,7 +165,13 @@ $Format = new Format($useronly);
                         </span>
                     </td>
                     <td>
-                        <?php echo $Format->format($doc); ?>
+                        <?php
+                        if ($USER['display_activities'] == 'web') {
+                            echo $Format->formatShort($doc);
+                        } else {
+                            echo $Format->format($doc);
+                        }
+                        ?>
                     </td>
                     <td class="unbreakable">
                         <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
@@ -181,6 +187,9 @@ $Format = new Format($useronly);
                                 <i class="icon-activity-pen"></i>
                             </a>
                         <?php } ?>
+                        <button class="btn btn-link btn-square" onclick="addToCart(this, '<?= $id ?>')">
+                            <i class="<?= (in_array($id, $cart)) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus' ?>"></i>
+                        </button>
                     </td>
                 </tr>
             <?php } ?>

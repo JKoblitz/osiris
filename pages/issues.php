@@ -4,6 +4,13 @@ $Format = new Format($user);
 
 ?>
 
+<style>
+    .box:target {
+        -moz-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+        -webkit-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+        box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+    }
+</style>
 
 <div class="modal" id="why-approval" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -229,7 +236,7 @@ if (array_sum($a) === 0) {
         <div id="tr-<?= $id ?>">
 
 
-            <div class="box mt-0">
+            <div class="box mt-0" id="<?= $id ?>">
                 <div class="content my-10">
                     <p class="mb-0">
                         <?php

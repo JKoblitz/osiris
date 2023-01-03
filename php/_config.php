@@ -60,7 +60,7 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'approved':
             $header = lang("Quarter approved.", "Quartal freigegeben.");
             $text = lang("Thank you.", "Vielen Dank.");
-           $class = "success";
+            $class = "success";
             break;
 
         case 'add-success':
@@ -99,6 +99,13 @@ function printMsg($msg = null, $type = 'info', $header = "default")
       </div>";
 }
 
+function readCart()
+{
+    $cart = $_COOKIE['osiris-cart'] ?? '';
+    if (empty($cart)) return array();
+    $cart = explode(',', $cart);
+    return $cart;
+}
 
 function hiddenFieldsFromGet($exclude = array())
 {

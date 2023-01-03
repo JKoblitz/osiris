@@ -15,19 +15,13 @@ $USER = array();
 if (!empty($_SESSION['username'])) {
     $USER = getUserFromId($_SESSION['username']);
 
+    // set standard values
     if (!isset($USER['is_controlling'])) $USER['is_controlling'] = false;
     if (!isset($USER['is_admin'])) $USER['is_admin'] = false;
     if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
     if (!isset($USER['is_leader'])) $USER['is_leader'] = false;
+    if (!isset($USER['display_activities'])) $USER['display_activities'] = 'web';
 
-    // if (empty($USER)) {
-    //     require_once BASEPATH . '/php/_login.php';
-    //     $USER = updateUser($username);
-    //     $osiris->users->insertOne(
-    //         $USER
-    //     );
-    // }
-    // return $this->info['last_name'] . "," . $fn;
 }
 
 function mongo_date($date)

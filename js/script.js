@@ -111,7 +111,7 @@ $('input[name=activity]').on('change', function () {
 
 })
 
-function toastError(msg = "", title='Error') {
+function toastError(msg = "", title = 'Error') {
     digidive.initStickyAlert({
         content: msg,
         title: title,
@@ -120,7 +120,7 @@ function toastError(msg = "", title='Error') {
         timeShown: 10000
     })
 }
-function toastSuccess(msg = "", title='Success') {
+function toastSuccess(msg = "", title = 'Success') {
     digidive.initStickyAlert({
         content: msg,
         title: title,
@@ -129,7 +129,7 @@ function toastSuccess(msg = "", title='Success') {
         timeShown: 10000
     })
 }
-function toastWarning(msg = "", title='Warning') {
+function toastWarning(msg = "", title = 'Warning') {
     digidive.initStickyAlert({
         content: msg,
         title: title,
@@ -1161,7 +1161,7 @@ function togglePubType(type) {
     // if (type == "others") return;
     type = types[type] ?? type;
     console.log(type);
-    
+
     activeButtons(type)
     $('#type').val(type)
     var form = $('#publication-form')
@@ -1333,4 +1333,58 @@ function verifyForm(event, form) {
 
     event.preventDefault()
     return false
+}
+
+function updateCart(add = true) {
+    var cart = $('#cart-counter')
+    var counter = cart.html()
+    if (add) {
+        counter++;
+    } else {
+        counter--;
+    }
+    cart.html(counter)
+    if (counter == 0) {
+        cart.addClass('hidden')
+    } else {
+        cart.removeClass('hidden')
+    }
+}
+
+function addToCart(el, id) {//.addClass('animate__flip')
+    // document.cookie = "username=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC"; 
+    var fav = digidive.readCookie('osiris-cart')
+    if (fav) {
+        var favlist = fav.split(',')
+        console.log(favlist);
+        const index = favlist.indexOf(id);
+        if (index > -1) {
+            favlist.splice(index, 1);
+            console.info("remove");
+            updateCart(false)
+        } else {
+            if (favlist.length > 30) {
+                toastError(lang('You can have no more than 30 items in your cart.', 'Du kannst nicht mehr als 30 Aktivitäten in deinem Einkaufswagen haben.'))
+                return;
+            }
+            favlist.push(id)
+            console.info("add");
+            updateCart(true)
+        }
+        fav = favlist.join(',')
+    } else {
+        fav = id
+        console.info("add");
+        updateCart(true)
+    }
+    digidive.createCookie('osiris-cart', fav, 30)
+    if (el === null) {
+        location.reload()
+    } else {
+        $(el).find('i').toggleClass('fas').toggleClass('fal').toggleClass('text-success')
+    }
+    // setTimeout(function () {
+    //     $(el).find('i').removeClass('animate__flip')
+    //     // animate__headShake
+    // }, 1000)
 }

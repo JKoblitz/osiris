@@ -43,8 +43,8 @@
   background-color: white;
   border-radius: 1rem;
   display: inline-block;
-  -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
   box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
 .achievement h3, .achievement h5 {

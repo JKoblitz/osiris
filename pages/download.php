@@ -15,7 +15,7 @@
 
         <h3><?= lang('Export activities', 'Exportiere Aktivitäten') ?></h3>
 
-        <p class="text-danger">Warnung: ALPHA STATUS! Einige Funktionen sind noch nicht ganz ausgereift. Bug reports gern an <a href="mailto:julia.koblitz@dsmz.de?subject=[OSIRIS] Bug Report Downloads">mich</a>.</p>
+        <p class="text-danger">Die Download-Funktion ist noch im Beta-Status. Bug reports gern an <a href="mailto:julia.koblitz@dsmz.de?subject=[OSIRIS] Bug Report Downloads">mich</a>.</p>
 
 
         <div class="form-group">

@@ -22,6 +22,18 @@ Route::get('/download', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::get('/cart', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $breadcrumb = [
+        // ['name' => 'Export', 'path' => "/export"], 
+        ['name' => lang("Cart", "Einkaufswagen")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/cart.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 
 Route::get('/reports', function () {
     include_once BASEPATH . "/php/_config.php";
@@ -36,33 +48,23 @@ Route::get('/reports', function () {
 }, 'login');
 
 
-// function getTypeTitle($type)
-// {
-//     $types = [
-//         'students' => 'Lehre und Gäste',
-//         'poster' => 'Poster',
-//         'lecture' => 'Vorträge',
-//         'publication' => 'Publikationen',
-//         'misc' => 'Weitere Aktivitäten',
-//         'review' => 'Reviews &amp; Editorial Boards'
-//     ];
-//     return $types[$type] ?? '';
-// }
-
-
 Route::post('/download', function () {
+    error_reporting(E_ERROR | E_PARSE);
+
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/format.php';
 
-    $params = $_POST['filter'];
+    $params = $_POST['filter'] ?? array();
+
+
     $timefilter = false;
     $filename = "osiris";
 
     $highlight = false;
-    if (isset($params['highlight']) && !empty($params['highlight'])) {
-        if ($params['highlight'] == 'user') {
+    if ($_POST['format'] == 'word' && isset($_POST['highlight']) && !empty($_POST['highlight'])) {
+        if ($_POST['highlight'] == 'user') {
             $highlight = $_SESSION['username'];
-        } elseif ($params['highlight'] == 'aoi') {
+        } elseif ($_POST['highlight'] == 'aoi') {
             $highlight = true;
         }
     }
@@ -94,7 +96,6 @@ Route::post('/download', function () {
         $filename .= "_" . trim($params['user']);
     }
     if (isset($params['dept']) && !empty($params['dept'])) {
-
         $users = [];
         $cursor = $osiris->users->find(['dept' => $params['dept']], ['projection' => ['username' => 1]]);
 
@@ -105,6 +106,12 @@ Route::post('/download', function () {
         $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
         $filename .= "_" . trim($params['dept']);
     }
+    if (isset($params['id']) && !empty($params['id'])) {
+        $id = new MongoDB\BSON\ObjectId($params['id']);
+        $filter['_id'] = $id;
+        $filename .= "_" . trim($params['id']);
+    }
+
 
     // if (isset($params['year']) && !empty($params['year'])) {
     //     $filter['year'] = intval($params['year']);
@@ -142,20 +149,21 @@ Route::post('/download', function () {
         }
     }
 
-    $cursor = $collection->find($filter, $options);
-
-    // dump($filter, true);
-
-    // foreach ($cursor as $doc) {
-    //     // fallback
-    //     // filtering by month is to much effort, so we just do not show activities out
-    //     if ($timefilter && $startyear == $doc['year'] && $startmonth < $doc['month']) continue;
-    //     if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
-    //     echo $Format->format($doc) . "<br><br>";
-    // }
-    // die;
-
-
+    if (isset($_POST['cart'])) {
+        $cursor = array();
+        $cart = readCart();
+        if (!empty($cart)) {
+            foreach ($cart as $id) {
+                $mongo_id = new MongoDB\BSON\ObjectId($id);
+                $cursor[] = $osiris->activities->findOne(['_id' => $mongo_id]);
+            }
+            $filename .= "_cart";
+        } else {
+            die("Cart is empty!");
+        }
+    } else {
+        $cursor = $collection->find($filter, $options);
+    }
 
 
     $headers = [];
@@ -177,7 +185,9 @@ Route::post('/download', function () {
         $section = $phpWord->addSection();
 
         // sort the elements
-        $cursor = $cursor->toArray();
+        if ($cursor instanceof MongoDB\Driver\Cursor) {
+            $cursor = $cursor->toArray();
+        }
         usort($cursor, function ($a, $b) use ($order) {
             $pos_a = array_search($a['type'], $order);
             $pos_b = array_search($b['type'], $order);
@@ -194,7 +204,8 @@ Route::post('/download', function () {
             }
             $paragraph = $section->addTextRun();
             $line = $Format->format($doc);
-            \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+            $line = clean_comment_export($line, false);
+            \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
         }
 
         // Download file
@@ -329,7 +340,9 @@ function clean_comment_export($subject, $front_addition_text = '')
     $subject = str_replace("###", "</p><br/><p>", $subject);
 
     // Sort the breaks before and after formatting tags
-    $subject = '<p>' . nl2br($front_addition_text . $subject) . '</p>';
+    if ($front_addition_text !== false) {
+        $subject = '<p>' . nl2br($front_addition_text . $subject) . '</p>';
+    }
 
     return $subject;
 }

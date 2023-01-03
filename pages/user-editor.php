@@ -142,6 +142,23 @@ dump($data, true);
                 <?= lang('Profile preferences', 'Profil-Einstellungen') ?>
             </div>
 
+            <div class="mt-10">
+                <span><?= lang('Activity display', 'Aktivitäten-Anzeige') ?>:</span>
+                <?php
+                $display_activities = $data['display_activities'] ?? 'web';
+                ?>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[display_activities]" id="display_activities-web" value="web" <?= $display_activities == 'web'? 'checked' : '' ?>>
+                    <label for="display_activities-web"><?= lang('Web') ?></label>
+                </div>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[display_activities]" id="display_activities-print" value="print" <?= $display_activities != 'web' ? 'checked' : '' ?>>
+                    <label for="display_activities-print"><?= lang('Print', 'Druck') ?></label>
+                </div>
+            </div>
+
+
 
             <div class="mt-10">
                 <span><?= lang('Show coins', 'Zeige Coins') ?>:</span>

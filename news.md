@@ -1,5 +1,27 @@
 # Changelog
 
+## 29.12.22
+Über die Feiertage habe ich noch ein paar Features hinzugefügt und (nicht aufgeführt) ein paar Bugs entfernt:
+
+- Achievements:
+  - Errungenschaften wurden eingeführt
+  - für den Anfang gibt es 10 Errungenschaften mit eigenen Icons, verschiedenen Leveln und Beschreibungen
+  - Errungenschaften werden auf der Profilseite angezeigt
+  - Es gibt eine eigene Seite, um detailliert die Errungenschaften einer Person anzuschauen
+- Profileinstellungen
+  - Im Menü "Profil bearbeiten" können jetzt Präferenzen festgelegt werden
+  - Beispielsweise können Coins und Errungenschaften ausgeblendet werden. Sie werden dann weder für dich selbst noch für andere Nutzer auf deinem Profil gezeigt.
+- Es gibt jetzt eine neue Ansicht für Aktivitäten, die besser fürs Web optimiert ist
+  - Der Titel wird dabei größer dargestellt, Autoren und weitere Infos sind je in einer eigenen Zeile
+  - Die neue Ansicht ist jetzt der Standard bei allen Tabellen und auf Profil- und Jahresseiten
+  - Falls euch die alte Ansicht besser gefallen hat, könnt ihr in euren Profileinstellungen im Punkt "Aktivitäten-Anzeige" auf Print stellen.
+- Download von Aktivitäten
+  - Einzelne Aktivitäten können jetzt auf der Übersichtsseite heruntergeladen werden. Dafür gehst du rechts oben auf Download und kannst dann auswählen, ob und wer fett hervorgehoben wird und in welchem Format du herunterladen möchtest
+  - Der "Einkaufswagen" wurde hinzugefügt. Damit können einzelne Aktivitäten gesammelt werden (sowohl auf der Übersichtsseite als auch bei Alle Aktivitäten). Alle ausgewählten Aktivitäten können dann gesammelt heruntergeladen werden.
+
+OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werden natürlich trotzdem weiterhin Feedback einsammeln und an dem Tool weiterentwickeln. Danke an alle, die an der Betaphase beteiligt waren!
+
+
 ## 18.12.22
 - Neues "Experten-Tool": mit der [erweiterten Suche](activities/search) können jetzt alle Aktivitäten detailliert durchsucht werden. 45 Datenfelder sind mit unterschieldichen Optionen durchsuchbar. Ein Anleitungsvideo folgt in Kürze.
 - In der Übersicht einer Aktivität sind nun alle Autoren aufgeführt

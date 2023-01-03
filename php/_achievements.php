@@ -81,6 +81,9 @@ class Achievement
             if ($user_lvl < $max_lvl) {
                 switch ($key) {
                     case 'create':
+                        $value = $this->osiris->activities->count(['created_by' => $this->username]);
+                        break;
+                    case 'versatile':
                         $created = $this->osiris->activities->find(['created_by' => $this->username])->toArray();
                         $created_types = array_column($created, 'type');
                         $value = count(array_unique($created_types));
@@ -94,6 +97,16 @@ class Achievement
                     case 'posters':
                         $value = $types['poster'] ?? 0;
                         break;
+                    case 'reviews':
+                        $value = $types['review'] ?? 0;
+                        break;
+                    case 'software':
+                        $value = $types['software'] ?? 0;
+                        break;
+                    case 'profile-edit':
+                        if (isset($this->userdata['updated_by']) && $this->userdata['updated_by'] == $this->username)
+                            $value = 1;
+                        break;
                     case 'coauthors':
                         $value = $this->osiris->activities->count([
                             'authors' => [
@@ -105,6 +118,29 @@ class Achievement
                             'created_by' => ['$ne' => $this->username]
                         ]);
                         break;
+
+                    case 'theses':
+                        foreach ($activities as $a) {
+                            if ($a['type'] == "students" && isset($a['status']) && $a['status'] == 'completed') $value++;
+                        }
+                        break;
+                    case 'network':
+                        $authors = [];
+                        foreach ($activities as $a) {
+                            if (isset($a['authors'])){
+                                foreach ($a['authors'] as $au) {
+                                    if (!isset($au['first']) || !isset($au['last']) ||($au['user'] ?? '') == $this->username) continue;
+                                    $name = strtolower($au['first']." ".$au['last']);
+                                    if (!in_array($name, $authors)){
+                                        $authors[] = $name;
+                                        $value ++;
+
+                                    }
+                                }
+                            }
+                        }
+                        break;
+    
                     case 'year-coins':
                         $lom_years = [];
                         foreach ($activities as $a) {
@@ -166,14 +202,14 @@ class Achievement
     function icon($uac)
     {
         $ac = $this->achievements[$uac['id']] ?? array();
-        
+
         $title = $ac['title'][$this->lang_g];
 
         $lvl = $uac['level'] ?? 1;
         if ($lvl == $ac['maxlvl']) $lvl = "max";
         $title .= " (Level&nbsp;$lvl)";
 
-        ?>
+?>
         <a class="achievement lvl<?= $uac['level'] ?> max-<?= $ac['maxlvl'] ?? 4 ?>" href="<?= ROOTPATH ?>/achievements/<?= $this->username ?>#<?= $uac['id'] ?>">
 
             <span class="thumb-sm" data-toggle="tooltip" data-title="<?= $title ?>">

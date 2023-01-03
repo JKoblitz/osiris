@@ -56,8 +56,11 @@ $endOfYear = new DateTime("$YEAR-12-31");
 $startOfYear = new DateTime("$YEAR-01-01");
 foreach ($cursor as $doc) {
     if (!array_key_exists($doc['type'], $groups)) continue;
-
-    $format = $Format->format($doc);
+    if ($USER['display_activities'] == 'web') {
+        $format = $Format->formatShort($doc);
+    } else {
+        $format = $Format->format($doc);
+    }
     $doc['format'] = $format;
     $groups[$doc['type']][] = $doc;
     $icon = activity_icon($doc, false);
@@ -73,7 +76,7 @@ foreach ($cursor as $doc) {
         'starting_time' => $starttime,
         'type' => $doc['type'],
         'id' => strval($doc['_id']),
-        'title' => htmlspecialchars(strip_tags($doc['title'] ?? $format)),
+        'title' => htmlspecialchars(strip_tags(trim($doc['title'] ?? $format))),
         // 'icon' => ($icon )
     ];
     if (isset($doc['end'])) {
@@ -234,36 +237,16 @@ foreach ($cursor as $doc) {
             </form>
 
         </div>
-        <!-- <div class="col text-right">
-            <a class="btn" href="<?= ROOTPATH ?>/profile/<?= $user ?>"><i class="far fa-user-graduate"></i>
-                <?= lang('Profile of ', 'Profil von ') . $name ?>
-            </a><br>
-
-            <a class="btn mt-5" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>"><i class="far fa-chart-network"></i>
-                <?= lang('View coauthor network', 'Zeige Koautoren-Netzwerk') ?>
-            </a>
-
-
-            <?php if ($currentuser || $USER['is_admin'] || $USER['is_controlling']) { ?>
-                <br>
-                <a class="btn mt-5" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>"><i class="fas fa-user-pen"></i>
-                    <?= lang('Edit user profile', 'Bearbeite Profil') ?>
-                </a>
-            <?php } ?>
-        </div> -->
     </div>
 
 
 
-
-
-
     <style>
-        .table tbody tr:active,
-        .table tbody tr.active {
-            -moz-box-shadow: 0 0 0.5rem 0.2rem var(--primary-color-light);
-            -webkit-box-shadow: 0 0 0.5rem 0.2rem var(--primary-color-light);
-            box-shadow: 0 0 0.5rem 0.2rem var(--primary-color-light);
+        .table tbody tr:target,
+        .table tbody tr.target {
+            -moz-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+            -webkit-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+            box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
             z-index: 2;
             position: relative;
         }
@@ -531,14 +514,14 @@ foreach ($cursor as $doc) {
                         if ($currentuser && !empty($has_issues)) {
                             $approval_needed[] = array(
                                 'type' => $col,
-                                'id' => $doc['_id'],
+                                'id' => $id,
                                 'title' => $doc['title'] ?? $doc['journal'] ?? ''
                             );
                     ?>
                             <br>
                             <b class="text-danger">
                                 <?= lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.') ?>
-                                <a href="<?= ROOTPATH ?>/issues" class="link">Review</a>
+                                <a href="<?= ROOTPATH ?>/issues#<?= $id ?>" class="link">Review</a>
                             </b>
                         <?php
                         }
@@ -551,6 +534,9 @@ foreach ($cursor as $doc) {
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
                                 <i class="icon-activity-search"></i>
                             </a>
+                            <button class="btn btn-link btn-square" onclick="addToCart(this, '<?= $id ?>')">
+                                <i class="<?= (in_array($id, $cart)) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus' ?>"></i>
+                            </button>
                             <?php if ($currentuser) { ?>
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
                                     <i class="icon-activity-pen"></i>

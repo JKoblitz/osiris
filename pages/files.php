@@ -81,8 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $Format = new Format(false);
 ?>
 
-<p>
-    <?php echo $Format->format($doc); ?>
+<p class="lead">
+    <span class="mr-10"><?=activity_icon($doc)?></span>
+    <?php echo $Format->formatShort($doc); ?>
 </p>
 
 <div class="box">

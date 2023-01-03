@@ -98,7 +98,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <!-- Navbar start -->
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
-                <img src="<?= ROOTPATH ?>/img/logo-beta.svg" alt="OSIRIS">
+                <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
+                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v1.0</span>
             </a>
 
             <a href="//www.dsmz.de/" class="navbar-brand ml-auto">
@@ -130,10 +131,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#18.12.22" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#29.12.22" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2022-12-18 06:00') ?>)
+                (<?= time_elapsed_string('2023-01-02 19:14') ?>)
             </a>
         </nav>
 
@@ -159,19 +160,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </div>
 
                     <?php if ($USER['is_controlling']) { ?>
-                        <a href="<?= ROOTPATH ?>/" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
+                        <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
                             <i class="far fa-chart-column" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
 
                         <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
                             <i class="far fa-coin" aria-hidden="true"></i>
-                            <?= lang('Points', 'Punkte') ?>
-                        </a>
-
-                        <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
-                            <i class="far fa-file-chart-column" aria-hidden="true"></i>
-                            <?= lang('Reports', 'Berichte') ?>
+                            <?= lang('Coins') ?>
                         </a>
 
                     <?php } else { ?>
@@ -235,29 +231,38 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
-                        <i class="far fa-download" aria-hidden="true"></i>
-                        Download
-                    </a>
-
-
-
-
-
-                    <?php if ($USER['is_admin']) { ?>
-
-                        <div class="sidebar-title">
-                            <?= lang('Controlling') ?>
+                    
+                    <div class="sidebar-title">
+                            <?= lang('Download') ?>
                         </div>
 
-                        <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-signal <?= $pageactive('lom') ?>">
-                            <i class="far fa-coin" aria-hidden="true"></i>
-                            <?= lang('Coins') ?>
-                        </a>
+                    <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
+                        <i class="far fa-download" aria-hidden="true"></i>
+                        Download <?=lang('Activities', 'Aktivitäten')?>
+                    </a>
 
-                        <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-danger with-icon <?= $pageactive('reports') ?>">
+                    <a href="<?= ROOTPATH ?>/cart" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('cart') ?>">
+                        <i class="far fa-cart-arrow-down" aria-hidden="true"></i>
+                        <?=lang('Cart', 'Einkaufswagen')?>
+                        <?php 
+                        $cart = readCart();
+                        if (!empty($cart)) { ?>
+                            <span class="badge badge-primary badge-pill ml-10" id="cart-counter">
+                                <?=count($cart)?>
+                            </span>
+                        <?php } else { ?>
+                            <span class="badge badge-primary badge-pill ml-10 hidden" id="cart-counter">
+                                0
+                            </span>
+                        <?php } ?>
+                    </a>
+
+                    
+                    <?php if ($USER['is_controlling']) { ?>
+
+                        <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
                             <i class="far fa-file-chart-column" aria-hidden="true"></i>
-                            Export <?= lang('Reports', 'Berichte') ?>
+                            <?= lang('Reports', 'Berichte') ?>
                         </a>
 
                     <?php } ?>

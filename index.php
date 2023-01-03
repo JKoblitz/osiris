@@ -96,9 +96,9 @@ Route::get('/', function () {
         include BASEPATH . "/pages/userlogin.php";
         include BASEPATH . "/footer.php";
     } elseif ($USER['is_controlling']) {
-        include BASEPATH . "/header.php";
-        include BASEPATH . "/pages/dashboard.php";
-        include BASEPATH . "/footer.php";
+        $path = ROOTPATH . "/dashboard";
+        if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
+        header("Location: $path");
     } else {
         $path = ROOTPATH . "/profile/" . $_SESSION['username'];
         if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
@@ -158,14 +158,14 @@ Route::post('/lom', function () {
 
 Route::get('/achievements/?([a-z0-9]*)', function ($user) {
     if (empty($user)) $user = $_SESSION['username'];
-    
+
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     include_once BASEPATH . "/php/_achievements.php";
-    
+
     $scientist = getUserFromId($user);
     $name = $scientist['displayname'];
-    
+
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
         ['name' => $name, 'path' => "/profile/$user"],
@@ -290,6 +290,33 @@ Route::post('/user/login', function () {
         } else {
             $auth = login($_POST['username'], $_POST['password']);
             if ($auth["status"] == true) {
+
+                // check if user exists in our database
+                $USER = getUserFromId($_POST['username']);
+                if (empty($USER)) {
+                    // create user from LDAP
+                    $USER = updateUser($_POST['username']);
+                    if (empty($USER)) {
+                        die('Sorry, the user does not exist. Please contact system administrator!');
+                    }
+                    $osiris->users->insertOne($USER);
+
+                    // try to connect the user with existing authors
+                    $updateResult = $osiris->activities->updateMany(
+                        [
+                            'authors.last' => $USER['last'],
+                            'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
+                        ],
+                        ['$set' => ["authors.$.user" => $username]]
+                    );
+                    $n = $updateResult->getModifiedCount();
+                    $msg .= "&new=$n";
+                }
+
+                $updateResult = $osiris->users->updateOne(
+                    [ '_id' => $_POST['username']],
+                    ['$set' => ["lastlogin" => date('d.m.Y')]]
+                );
 
                 if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
                     header("Location: " . $_POST['redirect'] . $msg);

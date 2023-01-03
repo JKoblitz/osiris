@@ -201,14 +201,13 @@ function format_month($month)
 }
 
 
-function activity_icon($doc, $tooltip = true)
+function activity_title($doc)
 {
     if (is_string($doc)) {
         $type = strtolower(trim($doc));
     } else {
         $type = strtolower(trim($doc['type'] ?? ''));
     }
-    $icon = "<i class='far fa-lg text-misc fa-notdef'></i>";
     $name = "Undefined";
     switch ($type) {
         case 'publication':
@@ -218,91 +217,163 @@ function activity_icon($doc, $tooltip = true)
                 case 'journal-article':
                 case 'article':
                     $name = "Journal article";
-                    $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
                     break 2;
                 case 'magazine article':
                 case 'magazine':
                     $name = "Magazine article";
-                    $icon = "<i class='far fa-lg text-publication fa-newspaper'></i>";
                     break 2;
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
                     $name = "Book chapter";
-                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
                     break 2;
                 case 'book-editor':
                 case 'publication':
                     $name = "Book";
-                    $icon = "<i class='far fa-lg text-publication fa-book-bookmark'></i>";
                     break 2;
                 case 'book':
                     $name = "Book";
-                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
                     break 2;
                 case 'dissertation':
                     $name = "Dissertation";
-                    $icon = "<i class='far fa-lg text-publication fa-book-user'></i>";
                     break 2;
                 case 'others':
                     $name = lang('Others', 'Weiteres');
-                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
                     break 2;
                 default:
                     $name = lang('Others', 'Weiteres');
-                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
                     break 2;
             }
         case 'poster':
             $name = "Poster";
-            $icon = "<i class='far fa-lg text-poster fa-presentation-screen'></i>";
             break;
         case 'lecture':
             $name = "Lecture";
-            $icon = "<i class='far fa-lg text-lecture fa-keynote'></i>";
             break;
         case 'review':
             switch (strtolower($doc['role'] ?? '')) {
                 case 'editorial':
                 case 'editor':
                     $name = "Editorial board";
-                    $icon = "<i class='far fa-lg text-review fa-book-open-cover'></i>";
                     break 2;
                 case 'grant-rev':
                     $name = "Grant proposal";
-                    $icon = "<i class='far fa-lg text-review fa-file-chart-pie'></i>";
                     break 2;
                 case 'thesis-rev':
                     $name = "Thesis review";
-                    $icon = "<i class='far fa-lg text-review fa-graduation-cap'></i>";
                     break 2;
                 default:
                     $name = "Review";
-                    $icon = "<i class='far fa-lg text-review fa-file-lines'></i>";
                     break 2;
             }
 
         case 'misc':
             $name = "Miscellaneous";
-            $icon = "<i class='far fa-lg text-misc fa-icons'></i>";
             break;
         case 'students':
             $cat = strtolower(trim($doc['category'] ?? 'thesis'));
             if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
                 $name = "Students (Theses)";
-                $icon = "<i class='far fa-lg text-students fa-user-graduate'></i>";
                 break;
             }
             $name = "Guests";
-            $icon = "<i class='far fa-lg text-students fa-user-tie'></i>";
             break;
 
         case 'teaching':
             $name = "Teaching";
-            $icon = "<i class='far fa-lg text-teaching fa-chalkboard-user'></i>";
             break;
         case 'software':
             $name = "Software";
+            break;
+        default:
+            break;
+    }
+
+    return $name;
+}
+
+function activity_icon($doc, $tooltip = true)
+{
+    if (is_string($doc)) {
+        $type = strtolower(trim($doc));
+    } else {
+        $type = strtolower(trim($doc['type'] ?? ''));
+    }
+    $icon = "<i class='far fa-lg text-misc fa-notdef'></i>";
+    switch ($type) {
+        case 'publication':
+            $pubtype = strtolower(trim($doc['pubtype'] ?? $type));
+            switch ($pubtype) {
+                case 'journal article':
+                case 'journal-article':
+                case 'article':
+                    $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
+                    break 2;
+                case 'magazine article':
+                case 'magazine':
+                    $icon = "<i class='far fa-lg text-publication fa-newspaper'></i>";
+                    break 2;
+                case 'book-chapter':
+                case 'book chapter':
+                case 'chapter':
+                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
+                    break 2;
+                case 'book-editor':
+                case 'publication':
+                    $icon = "<i class='far fa-lg text-publication fa-book-bookmark'></i>";
+                    break 2;
+                case 'book':
+                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
+                    break 2;
+                case 'dissertation':
+                    $icon = "<i class='far fa-lg text-publication fa-book-user'></i>";
+                    break 2;
+                case 'others':
+                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
+                    break 2;
+                default:
+                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
+                    break 2;
+            }
+        case 'poster':
+            $icon = "<i class='far fa-lg text-poster fa-presentation-screen'></i>";
+            break;
+        case 'lecture':
+            $icon = "<i class='far fa-lg text-lecture fa-keynote'></i>";
+            break;
+        case 'review':
+            switch (strtolower($doc['role'] ?? '')) {
+                case 'editorial':
+                case 'editor':
+                    $icon = "<i class='far fa-lg text-review fa-book-open-cover'></i>";
+                    break 2;
+                case 'grant-rev':
+                    $icon = "<i class='far fa-lg text-review fa-file-chart-pie'></i>";
+                    break 2;
+                case 'thesis-rev':
+                    $icon = "<i class='far fa-lg text-review fa-graduation-cap'></i>";
+                    break 2;
+                default:
+                    $icon = "<i class='far fa-lg text-review fa-file-lines'></i>";
+                    break 2;
+            }
+
+        case 'misc':
+            $icon = "<i class='far fa-lg text-misc fa-icons'></i>";
+            break;
+        case 'students':
+            $cat = strtolower(trim($doc['category'] ?? 'thesis'));
+            if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
+                $icon = "<i class='far fa-lg text-students fa-user-graduate'></i>";
+                break;
+            }
+            $icon = "<i class='far fa-lg text-students fa-user-tie'></i>";
+            break;
+
+        case 'teaching':
+            $icon = "<i class='far fa-lg text-teaching fa-chalkboard-user'></i>";
+            break;
+        case 'software':
             $icon = "<i class='far fa-lg text-software fa-desktop'></i>";
             break;
         default:
@@ -310,6 +381,7 @@ function activity_icon($doc, $tooltip = true)
     }
 
     if ($tooltip) {
+        $name = activity_title($doc);
         return "<span data-toggle='tooltip' data-title='$name'>
             $icon
         </span>";
@@ -322,10 +394,14 @@ function activity_icon($doc, $tooltip = true)
 class Format
 {
     private $highlight = true;
-    public $usecase = "web";
     private $appendix = '';
+    private $title = "";
+    private $subtitle = "";
+
+    public $usecase = "web";
     public $full = false;
     public $abbr_journal = false;
+
 
     function __construct($highlight = true, $usecase = 'web')
     {
@@ -337,6 +413,8 @@ class Format
     {
         $line = "";
         $this->appendix = "";
+        $this->title = "";
+        $this->subtitle = "";
         switch ($doc['type'] ?? '') {
             case 'students':
                 $line = $this->format_students($doc);
@@ -378,9 +456,77 @@ class Format
             // if ($this->usecase == 'word') {
             //     $line .= "<w:br/>";
             // } else {
-                $line .= "<br>";
+            $line .= "<br>";
             // }
             $line .= $this->appendix;
+        }
+        return $line;
+    }
+
+    function formatShort($doc, $link = true)
+    {
+        // init formatting:
+        $this->format($doc);
+
+        // format authors
+        $author = "";
+        if (isset($doc['authors']) && !empty($doc['authors'])) {
+            // $a = $doc['authors'][0];
+            // $author = abbreviateAuthor($a['last'], $a['first']);
+            $authors = array();
+            foreach ($doc['authors'] as $n => $a) {
+                if ($n > 9) break;
+                $authors[] = abbreviateAuthor($a['last'], $a['first']);
+            }
+            $author = implode(', ', $authors);
+            if (is_countable($doc['authors']) && count($doc['authors']) > 9) $author .= " et al.";
+        }
+
+        switch ($doc['type'] ?? '') {
+            case 'publication':
+            case 'poster':
+            case 'lecture':
+            case 'software':
+            case 'misc':
+                $this->subtitle = "<span class='d-block'>$author</span>" . $this->subtitle;
+                break;
+            case 'students':
+            case 'teaching':
+                $this->subtitle = "<span class='d-block'>".lang('supervised by ', 'betreut von ') . "$author" ."</span>". $this->subtitle;
+                break;
+                $this->subtitle = "<span class='d-block'>".lang('supervised by ', 'betreut von ') . "$author" ."</span>". $this->subtitle;
+                break;
+            case 'review':
+                $this->subtitle = $author . $this->subtitle;
+                break;
+            default:
+                break;
+        }
+
+        // $icon = activity_icon($doc);
+        if ($link) {
+            $id = strval($doc['_id']);
+            $line = "
+            <a class='colorless' href='" . ROOTPATH . "/activities/view/$id'>$this->title</a>";
+        } else {
+            $line = $this->title;
+        }
+        
+        $files = "";
+        if (isset($doc['files'])){
+            foreach ($doc['files'] as $file) {
+                $icon = getFileIcon($file['filetype']);
+                $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]' class='file-link'>
+                <i class='far fa-file fa-$icon'></i>
+                </a>";
+            }
+        }
+
+        if (!empty($this->subtitle) || !empty($files)) {
+            $line .= "<br><small class='text-muted'>
+                $this->subtitle
+                $files
+                </small>";
         }
         return $line;
     }
@@ -451,38 +597,41 @@ class Format
         }
         $result .= $doc['name'] . ', ' . $doc['affiliation'] . '. ';
         $result .=  $doc['title'];
+
+        $this->title = $result;
         $cat = strtolower(trim($doc['category']));
 
         switch ($cat) {
             case 'doctoral thesis':
-                $result .= "; Doktorand:in";
+                $this->subtitle = "Doktorand:in";
                 break;
             case 'master thesis':
-                $result .= "; Master-Thesis";
+                $this->subtitle = "Master-Thesis";
                 break;
             case 'bachelor thesis':
-                $result .= "; Bachelor-Thesis";
+                $this->subtitle = "Bachelor-Thesis";
                 break;
             case 'guest scientist':
-                $result .= "; Gastwissenschaftler:in";
+                $this->subtitle = "Gastwissenschaftler:in";
                 break;
             case 'lecture internship':
-                $result .= "; Vorlesung und Laborpraktikum";
+                $this->subtitle = "Vorlesung und Laborpraktikum";
                 break;
             case 'student internship':
-                $result .= "; Schülerpraktikum";
+                $this->subtitle = "Schülerpraktikum";
                 break;
             case 'other':
-                $result .= "; Sonstiges";
+                $this->subtitle = "Sonstiges";
                 break;
             default:
-                $result .= "; $doc[category]";
+                $this->subtitle = "$doc[category]";
                 break;
         }
-
         if (!empty($doc['details'])) {
-            $result .= " (" . $doc["details"] . ")";
+            $this->subtitle .= " (" . $doc["details"] . ")";
         }
+        $result .= "; $this->subtitle";
+
         $result .= ". ";
         $result .= fromToDate($doc['start'], $doc['end']);
 
@@ -500,15 +649,6 @@ class Format
 
         $result .= " betreut von " . $this->formatAuthors($doc['authors']);
 
-        // if ($verbose) {
-        //     if ($doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) {
-        //         echo '<p class="text-danger mt-0">' . lang(
-        //             "Attention: the Thesis of $doc[name] has ended. Please confirm if the work was successfully completed or not or extend the time frame.",
-        //             "Achtung: die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
-        //         ) . '</p>';
-        //     }
-        // }
-
         return $result;
     }
 
@@ -516,7 +656,9 @@ class Format
     {
         $result = $this->formatAuthors($doc['authors']);
         if (!empty($doc['title'])) {
-            $result .= " <i>$doc[title]</i>";
+
+            $this->title = $doc['title'];
+            $result .= " <i>$this->title</i>";
         }
         if (!empty($doc['affiliation'])) {
             $result .= ", $doc[affiliation]";
@@ -531,18 +673,21 @@ class Format
     {
         $result = $this->formatAuthors($doc['authors']);
         if (!empty($doc['title'])) {
-            $result .= " $doc[title].";
+            $this->title = $doc['title'];
+            $result .= " $this->title.";
         }
+
         if (!empty($doc['conference'])) {
-            $result .= " $doc[conference]";
+            $this->subtitle .= "$doc[conference]";
         }
         if (!empty($doc['location'])) {
-            $result .= ", $doc[location]";
+            $this->subtitle .= ", $doc[location]";
         }
+
+        $result .= " $this->subtitle";
         if (!empty($doc['conference']) && !empty($doc['location'])) {
             $result .= ".";
         }
-
         $result .= " " . fromToDate($doc['start'], $doc['end'] ?? null);
         $result .= ".";
         return $result;
@@ -550,181 +695,14 @@ class Format
 
     function format_lecture($doc)
     {
-        $result = $this->formatAuthors($doc['authors']);
-        // if (!empty($doc['year'])) {
-        //     $result .= " ($doc[year])";
-        // }
-        if (!empty($doc['title'])) {
-            $result .= " $doc[title].";
-        }
-        if (!empty($doc['conference'])) {
-            $result .= " $doc[conference]";
-        }
-        if (!empty($doc['location'])) {
-            $result .= ", $doc[location]";
-        }
-        $result .= ".";
-
-        $result .= " " . fromToDate($doc['start'], null);
-
-        $result .= ".";
+        $result = $this->format_poster($doc);
 
         $result .= " (" . $doc['lecture_type'] . ")";
         return $result;
     }
 
-    // function format_publication_CiteProc($doc)
-    // {
-    //     $first = 1;
-    //     $last = 1;
-    //     if (!empty($doc['authors']) && !is_array($doc['authors'])) {
-    //         $doc['authors'] = $doc['authors']->bsonSerialize();
-    //     }
-    //     if (!empty($doc['authors']) && is_array($doc['authors'])) {
-    //         $pos = array_count_values(array_column($doc['authors'], 'position'));
-    //         $first = $pos['first'] ?? 1;
-    //         $last = $pos['last'] ?? 1;
-    //     }
-
-    //     $types = [
-    //         'article' => 'article-journal'
-    //     ];
-
-    //     $pub = [
-    //         'author' => [],
-    //         'id' => 'id' . rand(1000, 9999),
-    //         'issued' => ['date-parts' => [[strval($doc['year'])]]],
-    //         'title' => $doc['title'] ?? '',
-    //         'type' => $types[$doc['pubtype']] ?? $doc['pubtype']
-    //     ];
-    //     foreach ($doc['authors'] as $a) {
-    //         $item = [
-    //             'family' => $a['last'],
-    //             'given' => $a['first'],
-    //             'aoi' => $a['aoi'] ?? false,
-    //             'append' => '',
-    //             'user' => $a['user'] ?? null
-    //         ];
-    //         if ($first > 1 && $a->position == 'first') {
-    //             $item['append'] = "<sup>#</sup>";
-    //         }
-    //         if ($last > 1 && $a->position == 'last') {
-    //             $item['append'] = "<sup>*</sup>";
-    //         }
-    //         $pub['author'][] = $item;
-    //     }
-
-    //     if (!empty($doc['editors'] ?? null)) {
-    //         foreach ($doc['editors'] as $a) {
-    //             $item = [
-    //                 'family' => $a['last'],
-    //                 'given' => $a['first'],
-    //                 'aoi' => $a['aoi'] ?? false,
-    //                 'append' => '',
-    //                 'user' => $a['user'] ?? null
-    //             ];
-    //             $pub['container-author'][] = $item;
-    //         }
-    //     }
-    //     if (!empty($doc['month'] ?? null)) {
-    //         $pub['issued']['date-parts'][0][] = $doc['month'];
-    //     }
-    //     if (!empty($doc['doi'] ?? null)) {
-    //         $pub['DOI'] = $doc['doi'];
-    //     }
-    //     if (!empty($doc['isbn'] ?? null)) {
-    //         $pub['ISBN'] = $doc['isbn'];
-    //     }
-    //     if (!empty($doc['url'] ?? null)) {
-    //         $pub['URL'] = $doc['url'];
-    //     }
-    //     if (!empty($doc['volume'] ?? null)) {
-    //         $pub['volume'] = $doc['volume'];
-    //     }
-    //     if (!empty($doc['pages'] ?? null)) {
-    //         if ($doc['pubtype'] == 'book') {
-    //             $pub['number-of-pages'] = $doc['pages'];
-    //         } else {
-    //             $pub['page'] = $doc['pages'];
-    //         }
-    //     }
-    //     if (!empty($doc['issue'] ?? null)) {
-    //         $pub['issue'] = $doc['issue'];
-    //     }
-    //     if (!empty($doc['journal'] ?? null)) {
-    //         $pub['container-title'] = $doc['journal'];
-    //     }
-    //     if (!empty($doc['city'] ?? null)) {
-    //         $pub['publisher-place'] = $doc['city'];
-    //     }
-    //     if (!empty($doc['publisher'] ?? null)) {
-    //         $pub['publisher'] = $doc['publisher'];
-    //     }
-    //     if (!empty($doc['edition'] ?? null)) {
-    //         $pub['edition'] = $doc['edition'];
-    //     }
-
-    //     // dump($pub);
-    //     //styling functions
-    //     // $titleFunction = function ($cslItem, $renderedText) {
-    //     //     return '<a href="https://example.org/publication/' . $cslItem->id . '">' . $renderedText . '</a>';
-    //     // };
-    //     $doiFunction = function ($cslItem, $renderedText) {
-    //         return '<a target="_blank" href="https://doi.org/' . $renderedText . '">' . $renderedText . '</a>';
-    //     };
-
-    //     $authorFunction = function ($a, $renderedText) {
-    //         $author = $renderedText;
-    //         if (!$this->highlight) {
-    //             if (($a->aoi ?? 0) == 1) $author = "<b>$author</b>";
-    //         } else if ($a->user == $this->highlight) {
-    //             $author = "<b>$author</b>";
-    //         }
-    //         if ($a->append) {
-    //             $author .= $a->append;
-    //         }
-    //         // if (isset($a->aoi) && $a->aoi) {
-    //         //     return '<a href="https://example.org/author/' . $a->aoi . '">' . $renderedText . '</a>';
-    //         // }
-    //         return $author;
-    //     };
-
-    //     $additionalMarkup = [
-    //         // "title" => $titleFunction,
-    //         "author" => $authorFunction,
-    //         'DOI' => $doiFunction
-    //     ];
-
-
-    //     $dataString = json_encode([$pub]);
-    //     $data = json_decode($dataString);
-
-    //     $style = Seboettg\CiteProc\StyleSheet::loadStyleSheet("apa-6th-edition");
-    //     $citeProc = new Seboettg\CiteProc\CiteProc($style, "en-US", $additionalMarkup);
-    //     $result = $citeProc->render($data, "bibliography", []);
-    //     $result = trim($result);
-
-    //     if ($this->usecase == 'web') {
-    //         if (!empty($doc['open_access'])) {
-    //             $result .= ' <i class="icon-open-access text-orange" title="Open Access"></i>';
-    //         }
-    //     }
-
-
-    //     if ($first > 1 || $last > 1) $result .= "<br>";
-    //     if ($first > 1) {
-    //         $result .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
-    //     }
-    //     if ($last > 1) {
-    //         $result .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
-    //     }
-    //     return $result;
-    // }
-
     function format_publication($doc)
     {
-
-
         $result = "";
         $type = strtolower(trim($doc['pubtype']));
         // $style = "apa6";
@@ -744,12 +722,12 @@ class Format
         }
 
 
+        $result .= $authors;
 
         switch ($type) {
             case 'journal article':
             case 'journal-article':
             case 'article':
-                $result .= $authors;
                 if (!empty($doc['year'])) {
                     $result .= " ($doc[year])";
                 }
@@ -757,7 +735,8 @@ class Format
                     $result .= " <span class='text-danger'>Correction to:</span>";
                 }
                 if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
+                    $this->title = $doc['title'];
+                    $result .= " $this->title.";
                 }
                 if (!empty($doc['journal'])) {
                     $journal = $doc['journal'];
@@ -767,31 +746,34 @@ class Format
                             $journal = $j['abbr'];
                         }
                     }
-                    $result .= " <i>$journal</i>";
+                    $this->subtitle .= " <i>$journal</i>";
 
                     if (!empty($doc['volume'])) {
-                        $result .= " $doc[volume]";
+                        $this->subtitle .= " $doc[volume]";
                     }
                     if (!empty($doc['issue'])) {
-                        $result .= "($doc[issue])";
+                        $this->subtitle .= "($doc[issue])";
                     }
                     if (!empty($doc['pages'])) {
-                        $result .= ": $doc[pages].";
+                        $this->subtitle .= ": $doc[pages].";
                     }
+
+                    $result .= " $this->subtitle";
                 }
                 break;
 
             case 'magazine article':
             case 'magazine':
-                $result .= $authors;
                 if (!empty($doc['year'])) {
                     $result .= " ($doc[year])";
                 }
                 if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
+                    $this->title = $doc['title'];
+                    $result .= " $this->title.";
                 }
                 if (!empty($doc['magazine'])) {
-                    $result .= " <i>$doc[magazine]</i>.";
+                    $this->subtitle .= "<i>$doc[magazine]</i>.";
+                    $result .= " $this->subtitle";
                 }
                 if (!empty($doc['link'])) {
                     $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
@@ -799,22 +781,23 @@ class Format
                 break;
             case 'book-chapter':
             case 'chapter':
-                $result .= $authors;
+            case 'book':
                 if (!empty($doc['year'])) {
                     $result .= " ($doc[year])";
                 }
                 if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
+                    $this->title = $doc['title'];
+                    $result .= " $this->title.";
                 }
                 if (!empty($doc['book'])) {
                     // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
                     // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
                     // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
-                    $result .= " In:";
+                    $this->subtitle .= " In:";
                     if (!empty($doc['editors'])) {
-                        $result .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
+                        $this->subtitle .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
                     };
-                    $result .= " <i>$doc[book]</i>";
+                    $this->subtitle .= " <i>$doc[book]</i>";
                 }
                 if (!empty($doc['edition']) || !empty($doc['pages'])) {
                     $ep = array();
@@ -830,9 +813,9 @@ class Format
                         $ep[] = "pp. $doc[pages]";
                     }
 
-                    $result .= " (" . implode(', ', $ep) . ")";
+                    $this->subtitle .= " (" . implode(', ', $ep) . ")";
                 }
-                $result .= ".";
+                $result .= "$this->subtitle.";
 
                 if (!empty($doc['city'])) {
                     $result .= " $doc[city]:";
@@ -841,49 +824,48 @@ class Format
                     $result .= " $doc[publisher].";
                 }
                 break;
-            case 'book':
-                $result .= $authors;
-                if (!empty($doc['year'])) {
-                    $result .= " ($doc[year])";
-                }
-                if (!empty($doc['title'])) {
-                    $result .= " <i>$doc[title]</i>.";
-                }
-                if (!empty($doc['edition']) || !empty($doc['pages'])) {
-                    $ep = array();
-                    if (!empty($doc['edition'])) {
-                        $ed = $doc['edition'];
-                        if ($ed == 1) $ed .= "st";
-                        elseif ($ed == 1) $ed .= "nd";
-                        else $ed .= "th";
-                        $ep[] = $ed . " ed.";
-                    }
+                // if (!empty($doc['year'])) {
+                //     $result .= " ($doc[year])";
+                // }
+                // if (!empty($doc['title'])) {
+                //     $this->title = $doc['title'];
+                //     $result .= " <i>$this->title</i>.";
+                // }
+                // if (!empty($doc['edition']) || !empty($doc['pages'])) {
+                //     $ep = array();
+                //     if (!empty($doc['edition'])) {
+                //         $ed = $doc['edition'];
+                //         if ($ed == 1) $ed .= "st";
+                //         elseif ($ed == 1) $ed .= "nd";
+                //         else $ed .= "th";
+                //         $ep[] = $ed . " ed.";
+                //     }
 
-                    if (!empty($doc['pages'])) {
-                        $ep[] = "pp. $doc[pages]";
-                    }
+                //     if (!empty($doc['pages'])) {
+                //         $ep[] = "pp. $doc[pages]";
+                //     }
 
-                    $result .= " (" . implode(', ', $ep) . ").";
-                }
-                // $result .= ".";
+                //     $result .= " (" . implode(', ', $ep) . ").";
+                // }
+                // // $result .= ".";
 
-                if (!empty($doc['city'])) {
-                    $result .= " $doc[city]:";
-                }
-                if (!empty($doc['publisher'])) {
-                    $result .= " $doc[publisher].";
-                }
-                break;
+                // if (!empty($doc['city'])) {
+                //     $result .= " $doc[city]:";
+                // }
+                // if (!empty($doc['publisher'])) {
+                //     $result .= " $doc[publisher].";
+                // }
+                // break;
             default:
-                $result .= $authors;
                 if (!empty($doc['year'])) {
                     $result .= " ($doc[year])";
                 }
                 if (!empty($doc['title'])) {
-                    $result .= " $doc[title].";
+                    $this->title = $doc['title'];
+                    $result .= " $this->title.";
                 }
-
-                $result .= " [" . ($doc["doc_type"] ?? ucfirst($doc['pubtype'])) . "].";
+                $this->subtitle = ($doc["doc_type"] ?? ucfirst($doc['pubtype']));
+                $result .= " [$this->subtitle].";
                 if (!empty($doc['link'])) {
                     $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
                 }
@@ -901,10 +883,12 @@ class Format
 
         if ($this->usecase == 'web') {
             if (!empty($doc['open_access'])) {
-                $result .= ' <i class="icon-open-access text-success" title="Open Access"></i>';
+                $access = '<i class="icon-open-access text-success" title="Open Access"></i>';
             } else {
-                $result .= ' <i class="icon-closed-access text-danger" title="Closed Access"></i>';
+                $access = '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
             }
+            $result .= " $access";
+            $this->subtitle .= " $access";
         }
 
         // if ($first > 1 || $last > 1) $result .= "<br>";
@@ -924,12 +908,11 @@ class Format
         $result = $this->formatAuthors($doc['authors']);
 
         if (!empty($doc['title'])) {
-            $result .= " $doc[title], ";
+            $this->title = $doc['title'];
+            $result .= " $this->title, ";
         }
 
         if ($doc['iteration'] == "annual") {
-
-            // $dates = $doc['dates'][0];
             $start = format_date($doc['start']);
             if (empty($doc['end'])) {
                 $end = lang('today', "heute");
@@ -938,17 +921,12 @@ class Format
             }
             $result .= lang("from $start to $end", "von $start bis $end");
         } else {
-
-            // $dbdates = $doc['dates'];
-            // foreach ($dbdates as $d) {
-            //     $dates[] = fromToDate($d['start'], $d['end']);
-            // }
-            // $result .= commalist($dates, lang('and', 'und'));
             $result .= fromToDate($doc['start'], $doc['end']);
         }
 
         if (!empty($doc['location'])) {
             $result .= ", $doc[location].";
+            // $this->subtitle =
         } else {
             $result .= ".";
         }
@@ -956,30 +934,54 @@ class Format
     }
 
 
-
-    function format_review($doc)
+    function format_review_role($doc)
     {
         $result = "";
-        if (!empty($doc['name'] ?? '')) {
-            $result .= "<b>$doc[name]</b>";
-        } elseif (!empty($doc['authors'] ?? '')) {
-            $result .= $this->formatAuthors($doc['authors']);
-        } else {
-            $userdata = getUserFromId($doc['user']);
-            $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
-        }
-
-
         switch (strtolower($doc['role'])) {
             case 'editorial':
             case 'editor':
-                $result .= lang(" Member of the Editorial board of ", ' Mitglied des Editorial Board von ');
+                $result .= lang("Member of the Editorial board of ", 'Mitglied des Editorial Board von ');
                 $result .= '<i>' . $doc['journal'] . '</i>';
 
                 if (!empty($doc['editor_type'])) {
                     $result .= " ($doc[editor_type])";
                 }
+                break;
+            case 'grant-rev':
+                $result .= lang("Reviewer of Grant Proposals: ", 'Begutachtung eines Forschungsantrages:');
+                $result .= '<i>' . $doc['title'] . '</i>. ';
+                break;
+            case 'thesis-rev':
+                $result .= lang("Reviewer for Doctoral Thesis: ", 'Begutachtung einer Doktorarbeit: ');
+                $result .= '<i>' . $doc['journal'] . '</i>. ';
+                break;
+            default:
+                $result .= lang("Reviewer for ", 'Reviewer für ');
+                $result .= '<i>' . $doc['journal'] . '</i>. ';
+                break;
+        }
+        return $result;
+    }
 
+
+    function format_review($doc)
+    {
+        $result = "";
+        if (!empty($doc['authors'] ?? '')) {
+            $result .= $this->formatAuthors($doc['authors']);
+        } elseif (!empty($doc['name'] ?? '')) {
+            $result .= "<b>$doc[name]</b>";
+        } else {
+            $userdata = getUserFromId($doc['user']);
+            $result .= "<b>$userdata[last], $userdata[first_abbr]</b>";
+        }
+
+        $this->title = $this->format_review_role($doc);
+        $result .= " $this->title";
+
+        switch (strtolower($doc['role'])) {
+            case 'editorial':
+            case 'editor':
                 if (!empty($doc['start'])) {
                     if (!empty($doc['end'])) {
                         $result .= lang(", from ", ", von ");
@@ -993,39 +995,12 @@ class Format
                 }
                 break;
             case 'grant-rev':
-                $result .= " " . lang("Reviewer of Grant Proposals: ", 'Begutachtung eines Forschungsantrages:');
-                $result .= '<i>' . $doc['title'] . '</i>. ';
-                $result .= format_month($doc['month']) . " " . $doc['year'];
-                break;
             case 'thesis-rev':
-                $result .= " " . lang("Reviewer for Doctoral Thesis: ", 'Begutachtung einer Doktorarbeit: ');
-                $result .= '<i>' . $doc['journal'] . '</i>. ';
-                $result .= format_month($doc['month']) . " " . $doc['year'];
-                break;
+            case 'review':
             default:
-                $result .= " " . lang("Reviewer for ", 'Reviewer für ');
-                $result .= '<i>' . $doc['journal'] . '</i>. ';
                 $result .= format_month($doc['month']) . " " . $doc['year'];
                 break;
         }
-
-
-        // $times = 0;
-        // $times_current = 0;
-        // foreach ($doc['dates'] as $date) {
-        //     $times += 1;
-        //     if ($date['year'] == SELECTEDYEAR) {
-        //         $times_current += 1;
-        //     }
-        // }
-        // if ($filterYear) {
-        //     $result .= " ($times_current " . lang('times', 'mal') . ")";
-        // } else {
-        //     $result .= lang(
-        //         " ($times times, $times_current in " . SELECTEDYEAR . ")",
-        //         " ($times mal, davon $times_current in " . SELECTEDYEAR . ")"
-        //     );
-        // }
         $result .= ".";
         return $result;
     }
@@ -1040,33 +1015,35 @@ class Format
         }
 
         if (!empty($doc['title'])) {
-            $result .= " <i>$doc[title]</i>";
+            $this->title = $doc['title'];
         }
         if (!empty($doc['version'])) {
-            $result .= " (Version $doc[version])";
+            $this->title .= " (Version $doc[version])";
         }
+        $result .= " <i>$this->title</i>";
 
         switch ($doc['software_type']) {
             case 'software':
-                $result .= " [Computer software]";
+                $this->subtitle .= "Computer software";
                 break;
             case 'database':
-                $result .= " [Database]";
+                $this->subtitle .= "Database";
                 break;
             case 'webtool':
-                $result .= " [Webpage]";
+                $this->subtitle .= "Webpage";
                 break;
             case 'dataset':
-                $result .= " [Dataset]";
+                $this->subtitle .= "Dataset";
                 break;
             default:
-                $result .= " [Computer software]";
+                $this->subtitle .= "Computer software";
                 break;
         }
-        $result .= ".";
+        $result .= " [$this->subtitle].";
 
         if (!empty($doc['software_venue'])) {
             $result .= " $doc[software_venue].";
+            $this->subtitle .= ", $doc[software_venue]";
         }
 
         if (!empty($doc['link'])) {

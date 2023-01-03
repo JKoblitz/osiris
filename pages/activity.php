@@ -7,7 +7,7 @@ $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 
 if ($doc['type'] == 'publication' && isset($doc['journal'])) {
     // fix old journal_ids
-    if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])){
+    if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])) {
         $doc['journal_id'] = null;
         $osiris->activities->updateOne(
             ['_id' => $activity['_id']],
@@ -17,7 +17,7 @@ if ($doc['type'] == 'publication' && isset($doc['journal'])) {
 
     $if = get_impact($doc);
     // update impact if necessary
-    if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])){
+    if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])) {
         // dump($if);
         $osiris->activities->updateOne(
             ['_id' => $activity['_id']],
@@ -55,6 +55,77 @@ $user_activity = isUserActivity($doc, $user);
 
 <div class="content">
 
+    <div class="float-md-right">
+        <div class="btn-group">
+            <button class="btn " onclick="addToCart(this, '<?= $id ?>')">
+                <i class="<?= (in_array($id, $cart)) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus' ?>"></i>
+                <?= lang('Add to cart', 'Für Download sammeln') ?>
+            </button>
+            <div class=" dropdown with-arrow btn-group ">
+                <button class="btn" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                    <i class="far fa-download"></i> Download
+                    <i class="fas fa-angle-down ml-5" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
+                    <div class="content">
+                        <form action="/osiris/download" method="post">
+
+                            <input type="hidden" name="filter[id]" value="<?= $id ?>">
+
+                            <div class="form-group">
+
+                                <?= lang('Highlight:', 'Hervorheben:') ?>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
+                                    <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                                </div>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
+                                    <label for="highlight-aoi"><?= AFFILIATION ?><?= lang(' Authors', '-Autoren') ?></label>
+                                </div>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="highlight" id="highlight-none" value="">
+                                    <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <?= lang('File format:', 'Dateiformat:') ?>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="format" id="format-word" value="word" checked="checked">
+                                    <label for="format-word">Word</label>
+                                </div>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="format" id="format-bibtex" value="bibtex">
+                                    <label for="format-bibtex">BibTex</label>
+                                </div>
+
+                            </div>
+                            <button class="btn btn-osiris">Download</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <h2><?= activity_title($doc) ?></h2>
+
+    <p class="lead">
+
+        <span class='mr-10'><?= activity_icon($doc) ?></span>
+        <?= $Format->formatShort($doc, $link = false) ?>
+    </p>
+
     <h2><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h2>
 
     <p>
@@ -68,25 +139,29 @@ $user_activity = isUserActivity($doc, $user);
         <h2>Details</h2>
 
         <div class="btn-toolbar mb-10">
-            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-10">
+            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
                 <i class="icon-activity-pen"></i>
                 <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
             </a>
 
             <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
-                echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-10">
+                echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
         <i class="fas fa-book-copy"></i>
-        ' . lang("Add a copy", "Eine Kopie anlegen") .
+        ' . lang("Add a copy", "Kopie anlegen") .
                     '</a>';
             }
             ?>
 
+
             <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
-                <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-10">
-                    <i class="fas fa-upload"></i>
+                <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
+                    <i class="far fa-upload"></i>
                     <?= lang('Upload files', 'Dateien hochladen') ?>
                 </a>
             <?php } ?>
+
+
+
         </div>
 
         <div class="box mt-0">

@@ -91,7 +91,8 @@ foreach ($activities as $doc) {
 
 uasort($labels, function ($a, $b) use ($scientist) {
     if ($a['user'] == $scientist) return -1;
-    return $a['dept'] > $b['dept'];
+    if ($a['dept'] > $b['dept']) return 1;
+    return 0; 
 });
 $i = 0;
 foreach ($labels as $key => $val) {
