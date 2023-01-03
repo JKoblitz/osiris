@@ -61,6 +61,8 @@ class Achievement
         if ($this->username === null) return false;
         $activities = $this->osiris->activities->find(['authors.user' => $this->username])->toArray();
 
+        if (empty($activities)) return false;
+
         $types = array_column($activities, 'type');
         $types = array_count_values($types);
 
@@ -69,7 +71,6 @@ class Achievement
             $l =  $LOM->lom($doc);
             $activities[$i]['coins'] = $l['lom'] ?? 0;
         }
-
 
         foreach ($this->achievements as $key => $achievement) {
             $user_ac = $this->userac[$key] ?? [];
@@ -134,7 +135,6 @@ class Achievement
                                     if (!in_array($name, $authors)){
                                         $authors[] = $name;
                                         $value ++;
-
                                     }
                                 }
                             }
@@ -150,7 +150,8 @@ class Achievement
                         $value = max($lom_years);
                         break;
                     case 'pub-impact':
-                        $value = max(array_column($activities, 'impact'));
+                        $arr = array_column($activities, 'impact');
+                        if (!empty($arr)) $value = max($arr);
                         break;
                     case 'pub-coins':
                         $array = array_filter($activities, function ($a) {
