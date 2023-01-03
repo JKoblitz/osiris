@@ -905,7 +905,7 @@ function val($index, $default = '')
                     <div class="form-group">
                         <a onclick="$(this).next().toggleClass('hidden')">
                             <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
-                                <i class="fas fa-plus"></i> <?= lang('Add comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
+                                <i class="fas fa-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
                             </label>
                         </a>
                         <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {

@@ -139,10 +139,13 @@ $user_activity = isUserActivity($doc, $user);
         <h2>Details</h2>
 
         <div class="btn-toolbar mb-10">
+           <?php if ($user_activity || $USER['is_controlling'] || $USER['is_controlling']) { ?>
             <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
                 <i class="icon-activity-pen"></i>
                 <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
             </a>
+           <?php } ?>
+           
 
             <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">

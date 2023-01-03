@@ -1,45 +1,22 @@
-<style>
-    blockquote {
-        font-style: inherit;
-    }
-</style>
+
+<h1>
+    <?=lang('Documentation', 'Dokumentation')?>
+</h1>
 
 
-<div class="row">
+<div class="select-btns" id="select-btns">
+    <a href="<?=ROOTPATH?>/docs/add-activities" class="btn btn-select text-poster" id="poster-btn"><i class="fa-lg icon-activity-plus"></i><?=lang('Add activities', 'Aktivitäten hinzufügen')?></a>
+    <a href="<?=ROOTPATH?>/docs/faq" class="btn btn-select text-publication" id="publication-btn"><i class="far fa-lg fa-comment-question"></i>FAQ</a>
 
-    <div class="col-lg-9">
-        <div class="documentation">
-            <?php
-
-            $path    = BASEPATH . '/pages/docs';
-            $files = array_diff(scandir($path), array('.', '..'));
-            // dump($files, true);
-
-            // $headers = [];
-
-            foreach ($files as $file) {
-                $text = file_get_contents($path . "/" . $file);
-                $parsedown = new Parsedown;
-                // $header = $parsedown->header;
-                // $header = array_filter($header, function ($v) {
-                //     return $v['level'] <= 2;
-                // });
-                // $headers = array_merge($headers, $header);
-                echo $parsedown->text($text);
-            }
-
-
-            ?>
-
-        </div>
-        <div class="col-lg-3 d-none d-lg-block">
-            <div class="on-this-page-nav" id="on-this-page-nav">
-                <div class="content">
-                    <div class="title">On this page</div>
-                    <a href="#beispielaktivitäten">Beispielaktivitäten</a>
-                </div>
-            </div>
-        </div>
-
-    </div>
 </div>
+
+<p>Die folgenden Docs sind zurzeit in Arbeit:</p>
+
+<ul class="list">
+    <li>Mein Jahr</li>
+    <li>Erweiterte Suche</li>
+    <li>Download-Funktionen</li>
+    <li>Visualisierungen</li>
+    <li>Erweiterung des FAQ</li>
+    <li>Übersetzungen ins Englische</li>
+</ul>

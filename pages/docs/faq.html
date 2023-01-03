@@ -1,0 +1,51 @@
+<style>
+    details {
+        margin-bottom: 1rem;
+    }
+
+    .collapse-header {
+        background-color: white !important;
+    }
+
+    .collapse-content {
+        background-color: #f7f7f7;
+    }
+</style>
+<h1>
+    <i class="fad fa-comment-question text-orange"></i>
+    FAQ
+</h1>
+
+<input class="form-control mb-20" type="search" name="search" id="search" oninput="filterFAQ(this.value);"
+    placeholder="Filter ...">
+
+<details class="collapse-panel">
+    <summary class="collapse-header">
+        Ich reviewe die gleiche Publikation mehrmals im Rahmen des gleichen Reviewprozesses (immer nachdem die Autoren
+        Änderungen vorgenommen haben). Trage ich das mehrmals in OSIRIS ein?
+    </summary>
+    <div class="collapse-content">
+        Ja, jedes Review wird einzeln eingetragen: immer beim gleichen Journal, aber an unterschiedlichen Daten. Dabei
+        ist immer das Datum einzutragen, an dem das Review fertiggestellt wurde.
+    </div>
+</details>
+
+<details class="collapse-panel">
+    <summary class="collapse-header">
+        Ich war Corresponding author in einer Publikation, bin aber weder Erst- noch Letztautor gewesen. Bekomme ich
+        dafür mehr Coins als gewöhnlich?
+    </summary>
+    <div class="collapse-content">
+        Ja, ein Corresponding author wird wie ein Letztautor gezählt. Diese Rolle kann nur extra im Autoreneditor
+        angegeben werden (unter Bearbeiten > Autoren bearbeiten). Wenn der Corresponding Author zugleich Erst- oder
+        Letztautor war, kann und muss diese Rolle nicht ausgefüllt werden.
+    </div>
+</details>
+
+
+<script>
+    function filterFAQ(input) {
+        $('details').hide()
+        $('details:contains("' + input + '")').show()
+    }
+</script>

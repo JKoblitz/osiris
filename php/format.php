@@ -29,7 +29,7 @@ function authorForm($a, $is_editor = false)
 {
     $name = $is_editor ? 'editors' : 'authors';
     $aoi = $a['aoi'] ?? false;
-    return "<div class='author " . ($aoi ? 'author-aoi' : '') . "' onclick='toggleAffiliation(this);'>
+    return "<div class='author " . ($aoi ? 'author-aoi' : '') . "' ondblclick='toggleAffiliation(this);'>
         $a[last], $a[first]<input type='hidden' name='values[$name][]' value='$a[last];$a[first];$aoi'>
         <a onclick='removeAuthor(event, this);'>&times;</a>
         </div>";

@@ -225,7 +225,7 @@ if (isset($_GET['verbose'])) {
 
         <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false)) {
         ?>
-            <div class="achievements text-right" style="max-width: 22rem;">
+            <div class="achievements text-right" style="max-width: 35rem;">
                 <h5 class="mb-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
 
                 <?php foreach ($user_ac as $ac) {
