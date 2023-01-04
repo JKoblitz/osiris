@@ -54,7 +54,7 @@ $groups = [
     "misc" => 0,
 ];
 
-$authors = ["firstorlast" => 0, 'middle' => 0, 'editor' => 0];
+$authors = ["first" => 0, "last" => 0, 'middle' => 0, 'editor' => 0];
 
 $issues = 0;
 
@@ -106,8 +106,10 @@ foreach ($cursor as $doc) {
     if ($type == 'publication') {
         foreach ($doc['authors'] ?? array() as $a) {
             if (($a['user'] ?? '') == $user) {
-                if (isset($a['position']) && (in_array($a['position'], ['first', 'last', 'corresponding']))) {
-                    $authors['firstorlast']++;
+                if (isset($a['position']) && (in_array($a['position'], ['last', 'corresponding']))) {
+                    $authors['last']++;
+                } elseif (isset($a['position']) && $a['position'] == 'first') {
+                    $authors['first']++;
                 } else {
                     $authors['middle']++;
                 }
@@ -249,7 +251,7 @@ if (isset($_GET['verbose'])) {
 
                 <div class="btn-group btn-group-lg">
                     <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
-                        <i class="icon-activity-plus text-orange fa-fw"></i>
+                        <i class="icon-activity-plus text-osiris fa-fw"></i>
                         <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
                     </a>
                     <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
@@ -611,7 +613,7 @@ if (isset($_GET['verbose'])) {
 
                     foreach ($impacts as $val) {
                         $imp = ceil($val);
-                        $y[$val]++;
+                        $y[$imp - 1]++;
                     }
                 }
                 ?>
@@ -723,24 +725,42 @@ if (isset($_GET['verbose'])) {
                 </h5>
                 <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
 
+                <?php
+                    $labels = array();
+                    $data = array();
+                    $colors = array();
+                    if ($authors['first'] !== 0){
+                        $labels[] = lang("First author", "Erstautor");
+                        $data[] = $authors['first'];
+                        $colors[] = '#006EB795';
+                    }
+                    if ($authors['last'] !== 0){
+                        $labels[] = lang("Last author", "Letztautor");
+                        $data[] = $authors['last'];
+                        $colors[] = '#13357A95';
+                    }
+                    if ($authors['middle'] !== 0){
+                        $labels[] = lang("Middle author", "Mittelautor");
+                        $data[] = $authors['middle'];
+                        $colors[] = '#83D0F595';
+                    }
+                    if ($authors['editor'] !== 0){
+                        $labels[] = lang("Editorship", "Editorenschaft");
+                        $data[] = $authors['editor'];
+                        $colors[] = '#13357A';
+                    }
+                ?>
+                
                 <script>
                     var ctx = document.getElementById('chart-authors')
                     var myChart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                            labels: [
-                                '<?= lang("First or last author", "Erst- oder Letztautor") ?>',
-                                '<?= lang("Middle authors", "Mittelautor") ?>',
-                                <?= $authors['editor'] !== 0 ? lang("'Editorship'", "'Editorenschaft'") : '' ?>
-                            ],
+                            labels: <?=json_encode($labels)?>,
                             datasets: [{
                                 label: '# of Scientists',
-                                data: [<?= $authors['firstorlast'] ?>, <?= $authors['middle'] ?>, <?= $authors['editor'] !== 0 ? $authors['editor'] : '' ?>],
-                                backgroundColor: [
-                                    '#006EB795',
-                                    '#83D0F595',
-                                    '#13357A95'
-                                ],
+                                data: <?=json_encode($data)?>,
+                                backgroundColor: <?=json_encode($colors)?>,
                                 borderColor: '#464646', //'',
                                 borderWidth: 1,
                             }]
