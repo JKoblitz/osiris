@@ -109,7 +109,7 @@ function validateValues($values)
         }
     }
 
-    if (isset($values['journal']) && !isset($values['role'])) {
+    if (isset($values['journal']) && !isset($values['role']) && isset($values['year'])) {
         // it is an article
         // since non-checked boxes are not shown in the posted data,
         // it is necessary to get false values
@@ -522,10 +522,18 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
             // do nothing more
         } else {
             // add new impact factor
-            $updateResult = $collection->updateOne(
-                ['_id' => $id],
-                ['$push' => ['impact' => ['year' => $year, 'impact' => $if]]]
-            );
+            try {
+                $updateResult = $collection->updateOne(
+                    ['_id' => $id],
+                    ['$push' => ['impact' => ['year' => $year, 'impact' => $if]]]
+                );
+            } catch (MongoDB\Driver\Exception\BulkWriteException $th) {
+                $updateResult = $collection->updateOne(
+                    ['_id' => $id],
+                    ['$set' => ['impact' => [['year' => $year, 'impact' => $if]]]]
+                );
+            }
+            
             // dump([$values, $updateResult], true);
             // die;
         }

@@ -110,8 +110,8 @@
 <table class="table" id="review-table">
     <thead>
         <th>Name</th>
-        <th><?=lang('Reviewer count', 'Anzahl Reviews')?></th>
-        <th><?=lang('Editor activity', 'Editoren-Tätigkeit')?></th>
+        <th><?= lang('Reviewer count', 'Anzahl Reviews') ?></th>
+        <th><?= lang('Editor activity', 'Editoren-Tätigkeit') ?></th>
     </thead>
     <tbody>
     </tbody>
@@ -132,8 +132,7 @@
                 "emptyTable": lang('No reviews/editorials available for this journal.', 'Für dieses Journal sind noch keine Reviews/Editorials verfügbar.'),
             },
             "pageLength": 5,
-            columnDefs: [
-                {
+            columnDefs: [{
                     "targets": 2,
                     "data": "Editor",
                     "render": function(data, type, full, meta) {
@@ -164,14 +163,14 @@
     });
 </script>
 
-<?php
-$impacts = $data['impact']->bsonSerialize();
-sort($impacts);
-$years = array_column((array) $impacts, 'year');
-?>
-
 
 <h3><?= lang('Impact factors', 'Impact-Faktoren') ?></h3>
+<?php
+$impacts = $data['impact'] ?? array();
+if ($impacts instanceof MongoDB\Model\BSONArray) {
+    $impacts = $impacts->bsonSerialize();
+}
+?>
 
 <div class="box">
     <div class="content">
@@ -187,7 +186,7 @@ $years = array_column((array) $impacts, 'year');
                             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <div class="form-group">
                                 <label for="year"><?= lang('Year', 'Jahr') ?></label>
-                                <input type="number" min="1970" max="2050" step="1" class="form-control" name="values[year]" id="year" value="<?= CURRENTYEAR ?>" required>
+                                <input type="number" min="1970" max="2050" step="1" class="form-control" name="values[year]" id="year" value="<?= CURRENTYEAR - 1 ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="if"><?= lang('Impact') ?></label>
@@ -201,56 +200,67 @@ $years = array_column((array) $impacts, 'year');
         <?php } ?>
 
 
-        <canvas id="chart-if" style="max-height: 400px;"></canvas>
+        <?php
+        if (!empty($impacts)) {
+
+            sort($impacts);
+            $years = array_column((array) $impacts, 'year');
+        ?>
+            <canvas id="chart-if" style="max-height: 400px;"></canvas>
+
+            <script>
+                var barChartConfig = {
+                    type: 'bar',
+                    data: [],
+                    options: {
+                        plugins: {
+                            title: {
+                                display: false,
+                                text: 'Chart'
+                            },
+                            legend: {
+                                display: false,
+                            }
+                        },
+                        responsive: true,
+                        scales: {
+                            x: {
+                                stacked: true,
+                            },
+                            y: {
+                                stacked: true,
+                            }
+                        }
+                    },
+
+                };
+                var ctx = document.getElementById('chart-if')
+                var data = Object.assign({}, barChartConfig)
+                var raw_data = Object.values(<?= json_encode($impacts) ?>);
+                console.log(raw_data);
+                data.data = {
+                    labels: <?= json_encode($years) ?>,
+                    datasets: [{
+                        label: 'Impact factor',
+                        data: raw_data,
+                        parsing: {
+                            yAxisKey: 'impact',
+                            xAxisKey: 'year'
+                        },
+                        backgroundColor: 'rgba(236, 175, 0, 0.7)',
+                        borderColor: 'rgba(236, 175, 0, 1)',
+                        borderWidth: 3
+                    }, ],
+                }
+
+
+                console.log(data);
+                var myChart = new Chart(ctx, data);
+            </script>
+        <?php } else { ?>
+            <p><?= lang('No impact factors available.', 'Keine Impact Faktoren verfügbar.') ?></p>
+        <?php } ?>
+
+
     </div>
 </div>
-
-<script>
-    var barChartConfig = {
-        type: 'bar',
-        data: [],
-        options: {
-            plugins: {
-                title: {
-                    display: false,
-                    text: 'Chart'
-                },
-                legend: {
-                    display: false,
-                }
-            },
-            responsive: true,
-            scales: {
-                x: {
-                    stacked: true,
-                },
-                y: {
-                    stacked: true,
-                }
-            }
-        },
-
-    };
-    var ctx = document.getElementById('chart-if')
-    var data = Object.assign({}, barChartConfig)
-    var raw_data = Object.values(<?= json_encode($impacts) ?>);
-    console.log(raw_data);
-    data.data = {
-        labels: <?= json_encode($years) ?>,
-        datasets: [{
-            label: 'Impact factor',
-            data: raw_data,
-            parsing: {
-                yAxisKey: 'impact',
-                xAxisKey: 'year'
-            },
-            backgroundColor: 'rgba(236, 175, 0, 0.7)',
-            borderColor: 'rgba(236, 175, 0, 1)',
-            borderWidth: 3
-        }, ],
-    }
-
-
-    console.log(data);
-    var myChart = new Chart(ctx, data);
-</script>
