@@ -37,10 +37,18 @@ $filter = ['authors.user' => $user];
 $filter['$or'] =   array(
     [
         "start.year" => array('$lte' => $YEAR),
-        '$or' => array(
-            ['end.year' => array('$gte' => $YEAR)],
-            ['end' => null]
+        '$and' => array(
+            ['$or' => array(
+                ['end.year' => array('$gte' => $YEAR)],
+                ['end' => null]
+            )],
+            ['$or' => array(
+                ['type' => 'misc', 'iteration' => 'annual'],
+                ['type' => 'review', 'role' => 'Editor'],
+            )]
         )
+
+        // 'type' => ['$in' => array()]
     ],
     ['year' => $YEAR]
 );
@@ -50,6 +58,8 @@ $options = [
     // 'projection' => ['file' => -1]
 ];
 $cursor = $osiris->activities->find($filter, $options);
+
+// dump($cursor->toArray(), true);
 
 
 $endOfYear = new DateTime("$YEAR-12-31");
@@ -77,7 +87,7 @@ foreach ($cursor as $doc) {
         'type' => $doc['type'],
         'id' => strval($doc['_id']),
         'title' => htmlspecialchars(strip_tags(trim($doc['title'] ?? $format))),
-        // 'icon' => ($icon )
+        'icon' => $icon
     ];
     if (isset($doc['end'])) {
         if (empty($doc['end'])) {
@@ -477,7 +487,10 @@ foreach ($cursor as $doc) {
 
         <div class="box box-<?= $col ?>" id="<?= $col ?>">
             <div class="content">
-                <h4 class="title text-<?= $col ?>"><i class="far fa-fw fa-<?= typeInfo($col)['icon'] ?> mr-5"></i> <?= typeInfo($col)['name'] ?></h4>
+                <h4 class="title text-<?= $col ?>">
+                    <i class="far fa-fw fa-<?= typeInfo($col)['icon'] ?> mr-5"></i>
+                    <?= typeInfo($col)['name'] ?>
+                </h4>
             </div>
             <table class="table table-simple">
                 <tbody>
@@ -521,7 +534,7 @@ foreach ($cursor as $doc) {
                             <br>
                             <b class="text-danger">
                                 <?= lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.') ?>
-                                <a href="<?= ROOTPATH ?>/issues#<?= $id ?>" class="link">Review</a>
+                                <a href="<?= ROOTPATH ?>/issues#tr-<?= $id ?>" class="link">Review</a>
                             </b>
                         <?php
                         }

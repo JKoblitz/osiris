@@ -17,7 +17,7 @@ $Format = new Format(true);
     </div>
 
     <h1>
-        <i class="icon-activity-search text-orange"></i>
+        <i class="icon-activity-search text-osiris"></i>
         <?= lang('Advanced activity search', 'Erweiterte Aktivitäten-Suche') ?>
     </h1>
     <!-- <form action="#" method="get"> -->

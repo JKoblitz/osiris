@@ -1,6 +1,6 @@
 
 
-# <i class="icon-activity-plus text-orange"></i>    Aktivitäten hinzufügen
+# <i class="icon-activity-plus text-osiris"></i>    Aktivitäten hinzufügen
 
 
 ##  Eine Aktivität mittels einer DOI hinzufügen
@@ -527,7 +527,7 @@ So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
         <span class="mr-20"><span data-toggle="tooltip" data-title="Journal article">
             <i class="far fa-lg text-publication fa-file-lines"></i>
         </span></span>
-        <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Epub ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
+        <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
         <a href="/uploads/632da4672199cd3df8dbc166/gkac803_after proof.pdf" target="_blank" data-toggle="tooltip" data-title="pdf: gkac803_after proof.pdf" class="file-link"><i class="far fa-file fa-file-pdf"></i></a> 
     </p>
     <div class="" id="approve-632da4672199cd3df8dbc166">

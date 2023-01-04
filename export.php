@@ -138,9 +138,15 @@ Route::post('/download', function () {
             $filter['$or'] =   array(
                 [
                     "start.year" => array('$lte' => intval($startyear)),
-                    '$or' => array(
-                        ['end.year' => array('$gte' => intval($endyear))],
-                        ['end' => null]
+                    '$and' => array(
+                        ['$or' => array(
+                            ['end.year' => array('$gte' => intval($endyear))],
+                            ['end' => null]
+                        )],
+                        ['$or' => array(
+                            ['type' => 'misc', 'iteration' => 'annual'],
+                            ['type' => 'review', 'role' => 'Editor'],
+                        )]
                     )
                 ],
                 ['year' => ['$in' => $years]]

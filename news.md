@@ -1,24 +1,41 @@
 # Changelog
 
-## 29.12.22
+## 02.01.23
 Über die Feiertage habe ich noch ein paar Features hinzugefügt und (nicht aufgeführt) ein paar Bugs entfernt:
 
-- Achievements:
+**Download von Aktivitäten**
+
+  - Einzelne Aktivitäten können jetzt auf der Übersichtsseite heruntergeladen werden. Dafür gehst du rechts oben auf Download und kannst dann auswählen, ob und wer fett hervorgehoben wird und in welchem Format du herunterladen möchtest
+  - Der "Einkaufswagen" wurde hinzugefügt. Damit können einzelne Aktivitäten gesammelt werden (sowohl auf der Übersichtsseite als auch bei Alle Aktivitäten). Alle ausgewählten Aktivitäten können dann gesammelt heruntergeladen werden.
+
+**Import von Aktivitäten**
+
+  - Der Import von Publikationen aus Google Scholar wurde hinzugefügt
+  - Dazu muss im Nutzerprofil der Google Scholar-Account hinterlegt sein
+  - Um Duplikate zu vermeiden, wird sowohl nach Titelübereinstimmung (Levenshtein-Distanz) als auch nach DOIs gesucht
+  - Bitte beachtet, dass oftmals eine Überprüfung der Publikation notwendig ist, da Google Scholar-Infos leider oft inkorrekt oder unvollständig sind
+
+**Achievements:**
+
   - Errungenschaften wurden eingeführt
   - für den Anfang gibt es 10 Errungenschaften mit eigenen Icons, verschiedenen Leveln und Beschreibungen
   - Errungenschaften werden auf der Profilseite angezeigt
   - Es gibt eine eigene Seite, um detailliert die Errungenschaften einer Person anzuschauen
-- Profileinstellungen
+
+**Profileinstellungen**
+
   - Im Menü "Profil bearbeiten" können jetzt Präferenzen festgelegt werden
   - Beispielsweise können Coins und Errungenschaften ausgeblendet werden. Sie werden dann weder für dich selbst noch für andere Nutzer auf deinem Profil gezeigt.
-- Es gibt jetzt eine neue Ansicht für Aktivitäten, die besser fürs Web optimiert ist
+
+**Neue Aktivitätsansicht**
+
+  - Es gibt jetzt eine neue Ansicht für Aktivitäten, die besser fürs Web optimiert ist
   - Der Titel wird dabei größer dargestellt, Autoren und weitere Infos sind je in einer eigenen Zeile
   - Die neue Ansicht ist jetzt der Standard bei allen Tabellen und auf Profil- und Jahresseiten
   - Falls euch die alte Ansicht besser gefallen hat, könnt ihr in euren Profileinstellungen im Punkt "Aktivitäten-Anzeige" auf Print stellen.
-- Download von Aktivitäten
-  - Einzelne Aktivitäten können jetzt auf der Übersichtsseite heruntergeladen werden. Dafür gehst du rechts oben auf Download und kannst dann auswählen, ob und wer fett hervorgehoben wird und in welchem Format du herunterladen möchtest
-  - Der "Einkaufswagen" wurde hinzugefügt. Damit können einzelne Aktivitäten gesammelt werden (sowohl auf der Übersichtsseite als auch bei Alle Aktivitäten). Alle ausgewählten Aktivitäten können dann gesammelt heruntergeladen werden.
-- Dokumentation
+
+**Dokumentation**
+
   - Eine erste Dokumentation wurde bereitgestellt, diese deckt zurzeit erstmal nur das Hinzufügen von Aktivitäten ab
   - In den nächsten Tagen und Wochen werde ich sie um weitere Themen erweitern
 

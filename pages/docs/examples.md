@@ -9,7 +9,7 @@ Publikationen sind unterteilt in `Journal article`, `Magazine article`, `Book` u
 ### Journal article
 Alle referierten (peer-reviewed) Publikationen, die in einem Journal veröffentlicht wurden. 
 
-> Koblitz, J., Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R., Pester, M., Overmann, J.<sup>*</sup> and Reimer, L.<sup>*</sup> (2022) Media*Dive*: the expert-curated cultivation media database. <em>Nucleic Acids Research</em> DOI: [](https://dx.doi.org/10.1093/nar/gkac803) <span style="color:#B61F29;">[Epub ahead of print]</span> <i class="icon-open-access text-orange" title="Open Access"></i>
+> Koblitz, J., Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R., Pester, M., Overmann, J.<sup>*</sup> and Reimer, L.<sup>*</sup> (2022) Media*Dive*: the expert-curated cultivation media database. <em>Nucleic Acids Research</em> DOI: [](https://dx.doi.org/10.1093/nar/gkac803) <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-osiris" title="Open Access"></i>
 > <br><span style="color:#878787;"><sup>*</sup> Shared last authors</span>                    
 
 ### Magazine Article

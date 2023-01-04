@@ -787,7 +787,7 @@ function val($index, $default = '')
                 <div class="form-group" data-visible="article">
                     <div class="custom-checkbox <?= isset($_GET['epub']) ? 'text-danger' : '' ?>" id="epub-div">
                         <input type="checkbox" id="epub" value="1" name="values[epub]" <?= (!isset($_GET['epub']) && val('epub', false)) ? 'checked' : '' ?>>
-                        <label for="epub">Epub ahead of print</label>
+                        <label for="epub">Online ahead of print</label>
                     </div>
                 </div>
                 <div class="form-group" data-visible="article">

@@ -377,7 +377,7 @@ if (isset($_GET['verbose'])) {
 <div class="row row-eq-spacing my-0">
     <div class="col-lg-4">
         <div class="box h-full">
-            <table class="table table-simple">
+            <table class="table table-simple mb-10">
                 <tbody>
 
                     <tr>
@@ -612,8 +612,8 @@ if (isset($_GET['verbose'])) {
                     $y = array_fill(0, $max_impact, 0);
 
                     foreach ($impacts as $val) {
-                        $imp = ceil($val);
-                        $y[$imp - 1]++;
+                        $imp = floor($val);
+                        $y[$imp]++;
                     }
                 }
                 ?>
@@ -716,7 +716,7 @@ if (isset($_GET['verbose'])) {
             </div>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-md-6 col-lg-3">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center">
@@ -794,7 +794,7 @@ if (isset($_GET['verbose'])) {
 
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-md-6 col-lg-3">
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center">
@@ -977,7 +977,7 @@ if (isset($_GET['verbose'])) {
         </script>
     </div>
 
-    <div class="v-spacer d-lg-none"></div>
+    <!-- <div class="v-spacer d-lg-none"></div> -->
     <div class="col-lg-12 col-xl-6">
         <div class="box h-full">
             <div class="content">

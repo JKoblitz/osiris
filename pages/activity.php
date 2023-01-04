@@ -139,13 +139,13 @@ $user_activity = isUserActivity($doc, $user);
         <h2>Details</h2>
 
         <div class="btn-toolbar mb-10">
-           <?php if ($user_activity || $USER['is_controlling'] || $USER['is_controlling']) { ?>
-            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
-                <i class="icon-activity-pen"></i>
-                <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
-            </a>
-           <?php } ?>
-           
+            <?php if ($user_activity || $USER['is_controlling'] || $USER['is_admin']) { ?>
+                <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
+                    <i class="icon-activity-pen"></i>
+                    <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
+                </a>
+            <?php } ?>
+
 
             <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
@@ -170,13 +170,13 @@ $user_activity = isUserActivity($doc, $user);
         <div class="box mt-0">
             <div class="content">
                 <?php if (isset($doc['title'])) : ?>
-                    <p class="lead">
-                        <span class="mr-10"><?= activity_icon($doc) ?></span>
+                    <p class="lead mb-0">
+                        <!-- <span class="mr-10"><?= activity_icon($doc) ?></span> -->
                         <?= $doc['title'] ?>
                     </p>
                 <?php elseif ($doc['type'] == "review") : ?>
-                    <p class="lead">
-                        <span class="mr-10"><?= activity_icon($doc) ?></span>
+                    <p class="lead mb-0">
+                        <!-- <span class="mr-10"><?= activity_icon($doc) ?></span> -->
                         <?php
                         switch (strtolower($doc['role'] ?? '')) {
                             case 'editorial':
@@ -196,6 +196,9 @@ $user_activity = isUserActivity($doc, $user);
                         ?>
                     </p>
                 <?php endif; ?>
+                <div class="mb-10">
+                    <?= activity_badge($doc) ?>
+                </div>
 
                 <table class="w-full" id="detail-table">
 
@@ -206,11 +209,23 @@ $user_activity = isUserActivity($doc, $user);
                                 <em>
                                     <?php if (isset($doc['journal_id'])) { ?>
                                         <a href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
-                                        <?php } else { ?>
-                                            <a href="<?= ROOTPATH ?>/journal/browse?q=<?= $doc['journal'] ?>">
-                                            <?php } ?>
                                             <?= $doc['journal'] ?>
-                                            </a>
+                                        </a>
+                                    <?php } else { ?>
+                                        <a href="<?= ROOTPATH ?>/journal/browse?q=<?= $doc['journal'] ?>">
+                                            <?= $doc['journal'] ?>
+                                        </a>
+
+                                        <?php if ($user_activity) { ?>
+                                            <small class="text-danger d-block">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                <?= lang(
+                                                    'Journal is not standardized. Please edit activity and update.',
+                                                    'Journal ist nicht standardisiert. Bitte Aktivität bearbeiten und korrigieren.'
+                                                ) ?>
+                                            </small>
+                                        <?php } ?>
+                                    <?php } ?>
                                 </em>
                                 <span class="text-muted">
                                     <?php
@@ -523,7 +538,7 @@ $user_activity = isUserActivity($doc, $user);
                     <?php endif; ?>
                     <?php if (isset($doc['epub'])) : ?>
                         <tr>
-                            <th class="key">Epub ahead of print:</th>
+                            <th class="key">Online ahead of print:</th>
                             <td>
                                 <?= bool_icon($doc['epub']) ?>
                             </td>

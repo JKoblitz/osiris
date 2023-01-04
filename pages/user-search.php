@@ -18,7 +18,7 @@ $Format = new Format(true);
     </div>
 
     <h1>
-        <i class="far fa-user-graduate text-orange"></i>
+        <i class="far fa-user-graduate text-osiris"></i>
         <?= lang('Advanced user search', 'Erweiterte Nutzer-Suche') ?>
     </h1>
     <!-- <form action="#" method="get"> -->

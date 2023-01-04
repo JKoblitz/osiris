@@ -167,16 +167,16 @@ Route::get('/api/reviews', function () {
             case 'editorial':
                 $reviews[$doc['user']]['Editor']++;
                 $date = format_date($doc['start'] ?? $doc);
-                if (isset($doc['end']) && !empty($doc['end'])){
-                    $date .= " - ". format_date($doc['end']);
+                if (isset($doc['end']) && !empty($doc['end'])) {
+                    $date .= " - " . format_date($doc['end']);
                 } else {
                     $date .= " - today";
                 }
 
                 $reviews[$doc['user']]['Editorials'][] = [
-                    'id'=>strval($doc['_id']),
-                    'date'=>$date,
-                    'details'=>$doc['editor_type'] ??''
+                    'id' => strval($doc['_id']),
+                    'date' => $date,
+                    'details' => $doc['editor_type'] ?? ''
                 ];
                 break;
 
@@ -184,15 +184,15 @@ Route::get('/api/reviews', function () {
             case 'review':
                 $reviews[$doc['user']]['Reviewer']++;
                 $reviews[$doc['user']]['Reviews'][] = [
-                    'id'=>strval($doc['_id']),
-                    'date'=>format_date($doc)
+                    'id' => strval($doc['_id']),
+                    'date' => format_date($doc)
                 ];
                 break;
             default:
                 $reviews[$doc['user']]['Reviewer']++;
                 $reviews[$doc['user']]['Reviews'][] = [
-                    'id'=>strval($doc['_id']),
-                    'date'=>format_date($doc)
+                    'id' => strval($doc['_id']),
+                    'date' => format_date($doc)
                 ];
                 break;
         }
@@ -243,5 +243,29 @@ Route::get('/api/journals', function () {
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
+    echo json_encode($result);
+});
+
+
+
+Route::get('/api/google', function () {
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    if (!isset($_GET["user"]))
+        exit - 1;
+
+    include(BASEPATH . '/php/GoogleScholar.php');
+    $user = $_GET["user"];
+    $google = new GoogleScholar($user);
+    # create and load the HTML
+
+    if (!isset($_GET['doc'])) {
+        $result = $google->getAllUserEntries();        
+    } else {
+        $doc = $_GET["doc"];
+        $result = $google->getDocumentDetails($doc);
+    }
+
     echo json_encode($result);
 });

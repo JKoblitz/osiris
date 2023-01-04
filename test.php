@@ -150,14 +150,14 @@ if ($this->usecase == 'web') {
     }
 }
 if (!empty($doc['epub'])) {
-    $result .= " <span style='color:#B61F29;'>[Epub ahead of print]</span>";
+    $result .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
 }
 
 if ($this->usecase == 'web') {
     if (!empty($doc['open_access'])) {
         $result .= ' <i class="icon-open-access text-success" title="Open Access"></i>';
     } else {
-        $result .= ' <i class="icon-closed-access text-orange" title="Open Access"></i>';
+        $result .= ' <i class="icon-closed-access text-osiris" title="Open Access"></i>';
     }
 }
 

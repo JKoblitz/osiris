@@ -589,6 +589,113 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
 }, 'login');
 
 
+Route::get('/import', function () {
+    // if ($page == 'users') 
+    $breadcrumb = [
+        ['name' => lang('Import')]
+    ];
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/import.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::post('/import/google', function () {
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    if (!isset($_POST["user"]) || !isset($_POST['doc']))
+        exit - 1;
+
+    include(BASEPATH . '/php/_db.php');
+    include(BASEPATH . '/php/GoogleScholar.php');
+    $user = $_POST["user"];
+    $google = new GoogleScholar($user);
+
+    $docid = $_POST["doc"];
+    $pub = $google->getDocumentDetails($docid);
+
+    $result = [];
+
+    if (empty($pub['title'])) die('Error: Title was empty.');
+    if (empty($pub['Publikationsdatum'])) die('Error: Date was empty.');
+
+    $result['type'] = 'publication';
+    $result['title'] = $pub['title'];
+    $result['doi'] = empty($pub['doi']) ? null : $pub['doi'];
+    $date = explode('/', $pub['Publikationsdatum']);
+    $result['year'] = intval($date[0]);
+    $result['month'] = isset($date[1]) ? intval($date[1]) : null;
+    $result['day'] = isset($date[2]) ? intval($date[2]) : null;
+
+    $result['volume'] = $pub['Band'] ?? null;
+    $result['issue'] = $pub['Ausgabe'] ?? null;
+    $result['pages'] = $pub['Seiten'] ?? null;
+
+    $result['pubtype'] = 'article';
+
+    if (isset($pub['Zeitschrift']) || isset($pub['Quelle'])) {
+        $result['journal'] = $pub['Zeitschrift'] ?? $pub['Quelle'];
+        $j = new \MongoDB\BSON\Regex('^' . trim($result['journal']) . '$', 'i');
+        $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+        if (!empty($journal)) {
+            $result['journal_id'] = strval($journal['_id']);
+            $result['journal'] = $journal['journal'];
+        }
+    } else if (isset($pub['Buch'])) {
+        $result['book'] = $pub['Buch'];
+        $result['publisher'] = $pub['Verlag'];
+        $result['pubtype'] = 'chapter';
+    } else {
+        $result['publisher'] = $pub['Verlag'];
+        $result['pubtype'] = 'book';
+    }
+
+    // update authors and check if they are in the database
+    $result['authors'] = array();
+    foreach ($pub['Autoren'] as $a) {
+        $a = explode(' ', $a);
+        $last = array_pop($a);
+        $first = implode(' ', $a);
+        $username = getUserFromName($last, $first);
+        $author = [
+            'first' => $first,
+            'last' => $last,
+            'user' => $username,
+            'aoi' => !empty($username)
+        ];
+        $result['authors'][] = $author;
+    }
+
+    // insert document into the database
+    $result['created'] = date('Y-m-d');
+    $result['created_by'] = $_SESSION['username'];
+
+
+    if (isset($result['doi']) && !empty($result['doi'])) {
+        $doi_exist = $$osiris->activities->findOne(['doi' => $result['doi']]);
+        if (!empty($doi_exist)) {
+            die('DOI already exists. Publication could not be added.');
+        }
+    }
+    $insertOneResult  = $osiris->activities->insertOne($result);
+    $id = $insertOneResult->getInsertedId();
+    $result['_id'] = $id;
+    $Format = new Format();
+
+    echo json_encode([
+        'inserted' => $insertOneResult->getInsertedCount(),
+        'id' => strval($id),
+        'result' => $result,
+        'formatted' => $Format->formatShort($result)
+    ]);
+
+    // echo json_encode($result);
+});
+
+
 
 Route::get('/user/browse', function () {
     // if ($page == 'users') 
@@ -807,7 +914,7 @@ Route::get('/docs/([\w-]+)', function ($doc) {
         include_once BASEPATH . "/php/MyParsedown.php";
         $text = file_get_contents("$path/$doc.md");
         $parsedown = new Parsedown;
-        
+
         echo '<div class="row">
             <div class="col-lg-9">';
         echo $parsedown->text($text);
@@ -869,6 +976,42 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
 });
 
 
+Route::get('/fix-journals', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php"; 
+
+    $cursor = $osiris->activities->find(['journal'=> ['$exists'=>true]]);
+    foreach ($cursor as $doc) {
+        echo '<br>';
+        $j_id = $doc['journal_id']??'None';
+
+        echo "Journal: ".$doc['journal'] . "<br>";
+        // echo "ISSN: ".($doc['issn']??'') . "<br>";
+        echo "Journal-ID: ".($j_id) . "<br>";
+        
+        if (preg_match("/^[0-9a-fA-F]{24}$/", $j_id)){
+            echo "supi<br>";
+            continue;
+        }
+        if (is_numeric($j_id)) $j_id = null;
+        
+
+        // $j = new \MongoDB\BSON\Regex('^' . trim($result['journal']) . '$', 'i');
+        // $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+        // if (!empty($journal)) {
+        //     $result['journal_id'] = strval($journal['_id']);
+        //     $result['journal'] = $journal['journal'];
+        // }
+    }
+    
+    // $updateResult = $osiris->activities->updateMany(
+    //     ['doi' => ['$regex' => '10.1111/1462-2920']],
+    //     ['$set' => ['journal' => 'Environmental microbiology', 'journal_id' => '6364d153f7323cdc825310c0', 'journal_abbr' => 'Environ Microbiol', "issn" => ["1462-2920", "1462-2912"], 'impact' => null, 'open_access' => true]]
+    // );
+    // echo "Updated: " . $updateResult->getModifiedCount() . "<br>";
+});
+
+
 Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_db.php";
     include_once BASEPATH . "/php/_lom.php";
@@ -911,9 +1054,15 @@ Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {
         '$or' => array(
             [
                 "start.year" => array('$lte' => SELECTEDYEAR),
-                '$or' => array(
-                    ['end.year' => array('$gte' => SELECTEDYEAR)],
-                    ['end' => null]
+                '$and' => array(
+                    ['$or' => array(
+                        ['end.year' => array('$gte' => SELECTEDYEAR)],
+                        ['end' => null]
+                    )],
+                    ['$or' => array(
+                        ['type' => 'misc', 'iteration' => 'annual'],
+                        ['type' => 'review', 'role' => 'Editor'],
+                    )]
                 )
             ],
             ["dates.year" => SELECTEDYEAR]

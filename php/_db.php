@@ -80,6 +80,17 @@ function getUserAuthor($authors, $user)
     return reset($author);
 }
 
+function getActivity($id)
+{
+    global $osiris;
+    
+    if (is_numeric($id)) {
+        $id = intval($id);
+    } else {
+        $id = new MongoDB\BSON\ObjectId($id);
+    }
+    return $osiris->activities->findOne(['_id' => $id]);
+}
 function getJournal($doc)
 {
     global $osiris;
@@ -111,7 +122,11 @@ function impact_from_year($journal, $year = CURRENTYEAR)
 {
     $if = null;
     if (!isset($journal['impact'])) return '';
-    $impact = $journal['impact']->bsonSerialize();
+    $impact = $journal['impact'];
+    if ($impact instanceof MongoDB\Model\BSONArray) {
+        $impact = $impact->bsonSerialize();
+    }
+    if (empty($impact)) return $if;
     $last = end($impact)['impact'] ?? null;
     if (is_array($impact)) {
         $impact = array_filter($impact, function ($a) use ($year) {
@@ -147,7 +162,7 @@ function get_impact($doc, $year = null)
     // $journal = $journal->toArray();
 
     if ($year == null){
-        $year = intval($doc['year'])-1;
+        $year = intval($doc['year'] ?? 1)-1;
     }
     return impact_from_year($journal, $year);
 }
@@ -194,6 +209,10 @@ function has_issues($doc, $user = null)
         } else {
             $issues[] = "openend";
         }
+    }
+
+    if (isset($doc['journal']) && (!isset($doc['journal_id']) || empty($doc['journal_id']))){
+        $issues[] = 'journal_id';
     }
 
     return $issues;

@@ -186,6 +186,10 @@ strong {
     color: var(--color-warm-orange) !important;
 }
 
+.text-osiris {
+    color: #dd590e !important;
+}
+
 .text-blue {
     color: var(--color-cold-lightblue) !important;
 }
@@ -549,67 +553,106 @@ label.element-other::before {
 .text-publication {
     color: var(--primary-color);
 }
+.box-publication {
+    border-left: 4px solid  var(--primary-color);
+}
+.badge-publication {
+    color:  var(--primary-color);
+    border-color:  var(--primary-color);
+}
 
 .text-poster {
     color: var(--danger-color);
+}
+.box-poster {
+    border-left: 4px solid  var(--danger-color);
+}
+.badge-poster {
+    color:  var(--danger-color);
+    border-color:  var(--danger-color);
 }
 
 .text-lecture {
     color: var(--signal-color);
 }
+.box-lecture {
+    border-left: 4px solid  var(--signal-color);
+}
+.badge-lecture {
+    color:  var(--signal-color);
+    border-color:  var(--signal-color);
+}
 
 .text-review {
     color: var(--success-color);
+}
+.box-review {
+    border-left: 4px solid  var(--success-color);
+}
+.badge-review {
+    color:  var(--success-color);
+    border-color:  var(--success-color);
 }
 
 .text-misc {
     color: var(--muted-color);
 }
+.box-misc {
+    border-left: 4px solid  var(--muted-color);
+}
+.badge-misc {
+    color:  var(--muted-color);
+    border-color:  var(--muted-color);
+}
 
 .text-teaching {
     color: var(--dark-color);
+}
+.box-teaching {
+    border-left: 4px solid  var(--dark-color);
+}
+.badge-teaching {
+    color:  var(--dark-color);
+    border-color:  var(--dark-color);
 }
 
 .text-students {
     color: var(--color-warm-darkred);
 }
+.box-students {
+    border-left: 4px solid  var(--color-warm-darkred);
+}
+.badge-students {
+    color:  var(--color-warm-darkred);
+    border-color:  var(--color-warm-darkred);
+}
 
 .text-software {
     color: var(--color-cold-purple);
 }
-
-
-.box-publication {
-    border-left: 4px solid  var(--primary-color);
-}
-
-.box-poster {
-    border-left: 4px solid  var(--danger-color);
-}
-
-.box-lecture {
-    border-left: 4px solid  var(--signal-color);
-}
-
-.box-review {
-    border-left: 4px solid  var(--success-color);
-}
-
-.box-misc {
-    border-left: 4px solid  var(--muted-color);
-}
-
-.box-teaching {
-    border-left: 4px solid  var(--dark-color);
-}
-
-.box-students {
-    border-left: 4px solid  var(--color-warm-darkred);
-}
-
 .box-software {
     border-left: 4px solid  var(--color-cold-purple);
 }
+.badge-software {
+    color:  var(--color-cold-purple);
+    border-color:  var(--color-cold-purple);
+}
+
+.badge {
+    border-radius: .4rem;
+}
+
+.badge-publication i,
+.badge-poster i,
+.badge-lecture i,
+.badge-review i,
+.badge-misc i,
+.badge-teaching i,
+.badge-students i,
+.badge-software i {
+    margin-right: .5rem;
+}
+
 
 .title-editor.is-invalid, .author-list.is-invalid{
     border-color: var(--danger-color);
@@ -641,7 +684,7 @@ label.element-other::before {
 }
 
 .file-link {
-    color: #de5b0d;
+    color: #dd590e;
 }
 
 .file-link:hover {
@@ -650,8 +693,8 @@ label.element-other::before {
 
 
 .btn.btn-osiris {
-    color: #de5b0d;
-    border-color: #de5b0d;
+    color: #dd590e;
+    border-color: #dd590e;
 }
 
 .btn.btn-osiris:hover {

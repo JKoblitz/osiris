@@ -131,7 +131,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#29.12.22" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#02.01.23" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
                 (<?= time_elapsed_string('2023-01-02 19:14') ?>)
@@ -230,6 +230,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Advanced search', 'Erweiterte Suche') ?>
                     </a>
 
+
+                    <a href="<?= ROOTPATH ?>/import" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('import') ?>">
+                        <i class="far fa-upload" aria-hidden="true"></i>
+                        <?= lang('Import') ?>
+                    </a>
 
                     
                     <div class="sidebar-title">

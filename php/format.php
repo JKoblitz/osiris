@@ -263,12 +263,13 @@ function activity_title($doc)
                     $name = "Thesis review";
                     break 2;
                 default:
-                    $name = "Review";
+                    $name = "Peer-Review";
                     break 2;
             }
 
         case 'misc':
-            $name = "Miscellaneous";
+            $iteration = $doc['iteration'] ?? 'once';
+            $name = "Miscellaneous ($iteration)";
             break;
         case 'students':
             $cat = strtolower(trim($doc['category'] ?? 'thesis'));
@@ -389,6 +390,13 @@ function activity_icon($doc, $tooltip = true)
     return $icon;
 }
 
+function activity_badge($doc)
+{
+    $name = activity_title($doc);
+    $icon = activity_icon($doc, false);
+    return "<span class='badge badge-$doc[type]'>$icon $name</span>";
+}
+
 // format functions
 
 class Format
@@ -492,9 +500,9 @@ class Format
                 break;
             case 'students':
             case 'teaching':
-                $this->subtitle = "<span class='d-block'>".lang('supervised by ', 'betreut von ') . "$author" ."</span>". $this->subtitle;
+                $this->subtitle = "<span class='d-block'>" . lang('supervised by ', 'betreut von ') . "$author" . "</span>" . $this->subtitle;
                 break;
-                $this->subtitle = "<span class='d-block'>".lang('supervised by ', 'betreut von ') . "$author" ."</span>". $this->subtitle;
+                $this->subtitle = "<span class='d-block'>" . lang('supervised by ', 'betreut von ') . "$author" . "</span>" . $this->subtitle;
                 break;
             case 'review':
                 $this->subtitle = $author . $this->subtitle;
@@ -511,9 +519,9 @@ class Format
         } else {
             $line = $this->title;
         }
-        
+
         $files = "";
-        if (isset($doc['files'])){
+        if (isset($doc['files'])) {
             foreach ($doc['files'] as $file) {
                 $icon = getFileIcon($file['filetype']);
                 $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]' class='file-link'>
@@ -523,7 +531,7 @@ class Format
         }
 
         if (!empty($this->subtitle) || !empty($files)) {
-            $line .= "<br><small class='text-muted'>
+            $line .= "<br><small class='text-muted d-block'>
                 $this->subtitle
                 $files
                 </small>";
@@ -592,7 +600,7 @@ class Format
     function format_students($doc, $verbose = false)
     {
         $result = "";
-        if (str_contains($doc['academic_title'], 'Dr')) {
+        if (!empty($doc['academic_title']) && str_contains($doc['academic_title'], 'Dr')) {
             $result .= $doc['academic_title'] . ' ';
         }
         $result .= $doc['name'] . ', ' . $doc['affiliation'] . '. ';
@@ -878,7 +886,7 @@ class Format
             }
         }
         if (!empty($doc['epub'])) {
-            $result .= " <span style='color:#B61F29;'>[Epub ahead of print]</span>";
+            $result .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
         }
 
         if ($this->usecase == 'web') {

@@ -68,11 +68,11 @@ $Format = new Format($user);
             <h5 class="title"><?= lang('Why do I have to review Epubs?', 'Warum muss ich Epubs reviewen?') ?></h5>
             <p>
                 <?= lang('
-                    [Epub ahead of print] means that the publication is already available online, but the actual publication in an issue is still pending. 
+                    [Online ahead of print] means that the publication is already available online, but the actual publication in an issue is still pending. 
                     An example is the NAR database issue, where publications are already available online in September or October, although the 
                     issue is not published until the following January.  
                     ', '
-                    [Epub ahead of print] bedeutet, dass die Publikation bereits online verfügbar ist, 
+                    [Online ahead of print] bedeutet, dass die Publikation bereits online verfügbar ist, 
                     die eigentliche Publikation in einem Issue jedoch noch aussteht. Als Beispiel kann man das NAR database issue nennen,
                     bei dem Publikationen bereits im September oder Oktober online verfügbar sind, obwohl das Issue erst im darauffolgenden Januar
                     erscheint.  
@@ -178,6 +178,9 @@ foreach ($cursor as $doc) {
     }
     if (in_array("openend", $has_issues)) {
         $issues['openend'][] = $doc;
+    }
+    if (in_array("journal_id", $has_issues)) {
+        $issues['journal_id'][] = $doc;
     }
 }
 ?>
@@ -324,8 +327,8 @@ if (array_sum($a) === 0) {
                     <?= $Format->format($doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <?= lang(
-                            'This publication is marked as <q>Epub ahead of print</q>. Is it still not officially published?',
-                            'Diese Aktivität ist markiert als <q>Epub ahead of print</q>. Ist sie noch nicht offiziell publiziert?'
+                            'This publication is marked as <q>Online ahead of print</q>. Is it still not officially published?',
+                            'Diese Aktivität ist markiert als <q>Online ahead of print</q>. Ist sie noch nicht offiziell publiziert?'
                         ) ?>
                         <br>
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
@@ -454,6 +457,43 @@ if (array_sum($a) === 0) {
                             <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
                         </a>
 
+                    </div>
+                </td>
+            </tr>
+            </tr>
+        <?php } ?>
+    </table>
+<?php } ?>
+
+
+
+<?php if (!empty($issues['journal_id'])) { ?>
+    <h2 class="mb-0">
+        <?= lang(
+            'The following articles do not have a standardized journal:',
+            'Die folgenden Aktivitäten haben kein standardisiertes Journal:'
+        ) ?>
+    </h2>
+    <!-- <p class="mt-0">
+        <a href="#why-journal_id" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+    </p> -->
+
+    <table class="table">
+        <?php
+        foreach ($issues['journal_id'] as $doc) {
+            $id = $doc['_id'];
+            $type = $doc['type'];
+        ?>
+            <tr id="tr-<?= $id ?>">
+            <tr id="tr-<?= $id ?>">
+                <td class="w-50"><?= activity_icon($doc); ?></td>
+                <td>
+                    <?= $Format->format($doc); ?>
+                    <div class='alert alert-signal' id="approve-<?= $id ?>">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
+                            <i class="fas fa-edit"></i>
+                            <?=lang('Edit activity', 'Aktivität bearbeiten')?>
+                        </a>
                     </div>
                 </td>
             </tr>
