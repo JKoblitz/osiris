@@ -24,6 +24,14 @@ if (!empty($_SESSION['username'])) {
 
 }
 
+function is_ObjectID($id){
+    if (empty($id)) return false;
+    if (preg_match("/^[0-9a-fA-F]{24}$/", $id)) {
+        return true;
+    } 
+    return false;
+}
+
 function mongo_date($date)
 {
     $time = (new DateTime($date))->getTimestamp();
@@ -91,10 +99,11 @@ function getActivity($id)
     }
     return $osiris->activities->findOne(['_id' => $id]);
 }
+
 function getJournal($doc)
 {
     global $osiris;
-    if (isset($doc['journal_id'])) {
+    if (isset($doc['journal_id']) && !empty($doc['journal_id'])) {
         $id = $doc['journal_id'];
         if (is_numeric($id)) {
             $id = intval($id);
@@ -141,22 +150,50 @@ function impact_from_year($journal, $year = CURRENTYEAR)
     return $if;
 }
 
-function get_impact($doc, $year = null)
+function latest_impact($journal)
 {
+    $last = null;
+    if (!isset($journal['impact'])) return null;
+    $impact = $journal['impact'];
+    if ($impact instanceof MongoDB\Model\BSONArray) {
+        $impact = $impact->bsonSerialize();
+    }
+    if (empty($impact)) return null;
+    $last = end($impact)['impact'] ?? null;
+    return $last;
+}
+
+function get_journal($doc){
     global $osiris;
-    if (isset($doc['journal_id']) && preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])){
+    if (isset($doc['journal_id']) && is_ObjectID($doc['journal_id'])){
         $id = new MongoDB\BSON\ObjectId($doc['journal_id']);
-        $journal = $osiris->journals->findOne(['_id' => $id]);
+        return $osiris->journals->findOne(['_id' => $id]);
 
     } else if (isset($doc['issn']) && !empty($doc['issn'])){
-        $journal = $osiris->journals->findOne(['issn' => ['$in' => $doc['issn']]]);
+        return $osiris->journals->findOne(['issn' => ['$in' => $doc['issn']]]);
 
     } else if (isset($doc['journal']) && !empty($doc['journal'])) {
         $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']) .'$', 'i');
-        $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+        return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
     } else {
-        return null;
+        return array();
     }
+}
+function get_oa($doc){
+    $journal = get_journal($doc);
+    if (!isset($journal['oa']) || $journal['oa'] === false) {
+        return false;
+    } elseif ($journal['oa'] > 0) {
+        if (intval($doc['year'])> $journal['oa']) return true;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function get_impact($doc, $year = null)
+{
+    $journal = get_journal($doc);
     
     if (empty($journal)) return null;
     // $journal = $journal->toArray();

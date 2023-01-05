@@ -723,7 +723,7 @@ Route::get('/user/search', function () {
 }, 'login');
 
 
-Route::get('/(profile)/?([a-z0-9]*)', function ($page, $user) {
+Route::get('/profile/?([a-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -956,138 +956,20 @@ Route::get('/user/logout', function () {
     header("Location: " . ROOTPATH . "/");
 }, 'login');
 
-Route::get('/info', function () {
-    include BASEPATH . "/header.php";
-    phpinfo();
-    include BASEPATH . "/footer.php";
-}, 'login');
-
 include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";
 
 include_once BASEPATH . "/export.php";
 include_once BASEPATH . "/user_management.php";
 
-
+if ($_SESSION['username'] == 'juk20') {
+    include_once BASEPATH ."/test.php";
+}
 
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/components/$path.php";
 });
-
-
-Route::get('/fix-journals', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php"; 
-
-    $cursor = $osiris->activities->find(['journal'=> ['$exists'=>true]]);
-    foreach ($cursor as $doc) {
-        echo '<br>';
-        $j_id = $doc['journal_id']??'None';
-
-        echo "Journal: ".$doc['journal'] . "<br>";
-        // echo "ISSN: ".($doc['issn']??'') . "<br>";
-        echo "Journal-ID: ".($j_id) . "<br>";
-        
-        if (preg_match("/^[0-9a-fA-F]{24}$/", $j_id)){
-            echo "supi<br>";
-            continue;
-        }
-        if (is_numeric($j_id)) $j_id = null;
-        
-
-        // $j = new \MongoDB\BSON\Regex('^' . trim($result['journal']) . '$', 'i');
-        // $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
-        // if (!empty($journal)) {
-        //     $result['journal_id'] = strval($journal['_id']);
-        //     $result['journal'] = $journal['journal'];
-        // }
-    }
-    
-    // $updateResult = $osiris->activities->updateMany(
-    //     ['doi' => ['$regex' => '10.1111/1462-2920']],
-    //     ['$set' => ['journal' => 'Environmental microbiology', 'journal_id' => '6364d153f7323cdc825310c0', 'journal_abbr' => 'Environ Microbiol', "issn" => ["1462-2920", "1462-2912"], 'impact' => null, 'open_access' => true]]
-    // );
-    // echo "Updated: " . $updateResult->getModifiedCount() . "<br>";
-});
-
-
-Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {
-    include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/_lom.php";
-
-    $LOM = new LOM($user, $osiris);
-    $result = array();
-
-    // publications
-    $cursor = $osiris->publications->find([
-        '$or' => [
-            ['authors.user' => $user], ['editors.user' => $user]
-        ],
-        'year' => SELECTEDYEAR
-    ]);
-    foreach ($cursor as $doc) {
-        $result[] = $LOM->publication($doc);
-    }
-
-    // posters
-    $cursor = $osiris->posters->find([
-        'authors.user' => $user,
-        "start.year" => SELECTEDYEAR
-    ]);
-    foreach ($cursor as $doc) {
-        $result[] = $LOM->poster($doc);
-    }
-
-    // lectures
-    $cursor = $osiris->lectures->find([
-        'authors.user' => $user,
-        "start.year" => SELECTEDYEAR
-    ]);
-    foreach ($cursor as $doc) {
-        $result[] = $LOM->lecture($doc);
-    }
-
-    // reviews
-    $cursor = $osiris->reviews->find([
-        'user' => $user,
-        '$or' => array(
-            [
-                "start.year" => array('$lte' => SELECTEDYEAR),
-                '$and' => array(
-                    ['$or' => array(
-                        ['end.year' => array('$gte' => SELECTEDYEAR)],
-                        ['end' => null]
-                    )],
-                    ['$or' => array(
-                        ['type' => 'misc', 'iteration' => 'annual'],
-                        ['type' => 'review', 'role' => 'Editor'],
-                    )]
-                )
-            ],
-            ["dates.year" => SELECTEDYEAR]
-        )
-    ]);
-    foreach ($cursor as $doc) {
-        $result[] = $LOM->review($doc);
-    }
-
-    // miscs
-    $cursor = $osiris->miscs->find([
-        'authors.user' => $user,
-        "dates.start.year" => array('$lte' => SELECTEDYEAR),
-        '$or' => array(
-            ['dates.end.year' => array('$gte' => SELECTEDYEAR)],
-            ['dates.end' => null]
-        )
-    ]);
-    foreach ($cursor as $doc) {
-        $result[] = $LOM->misc($doc);
-    }
-
-    echo json_encode(array("LOM" => array_sum(array_column($result, 'lom')), "details" => $result));
-});
-
 
 
 // Add a 404 not found route

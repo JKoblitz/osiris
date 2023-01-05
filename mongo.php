@@ -97,6 +97,9 @@ function validateValues($values)
                 $values['month'] = $values[$key]['month'];
             }
         } else if (is_numeric($value)) {
+            // dump($key);
+            // dump($value);
+            // die;
             if (str_starts_with($value, "0")) {
                 $values[$key] = trim($value);
             } elseif (is_float($value + 0)) {
@@ -115,7 +118,9 @@ function validateValues($values)
         // it is necessary to get false values
         if (!isset($values['epub'])) $values['epub'] = false;
         else $values['epub-delay'] = endOfCurrentQuarter(true);
-        if (!isset($values['open_access'])) $values['open_access'] = false;
+        if (!isset($values['open_access']) || !$values['open_access']) {
+            $values['open_access'] = get_oa($values);
+        }
         if (!isset($values['correction'])) $values['correction'] = false;
 
         $values['impact'] = get_impact($values);
@@ -143,115 +148,6 @@ function valiDate($date)
         'day' => intval($t[2] ?? 1),
     );
 }
-
-Route::get('/mongo', function () {
-    include_once BASEPATH . "/php/_db.php";
-    include BASEPATH . "/php/_config.php";
-    include BASEPATH . "/header.php";
-    // $collection = $osiris->publications;
-    // $document = $collection->findOne(['_id' => 21768]);
-    // var_dump($document);
-    echo "<div id='result'></div>";
-    echo "<script src='" . ROOTPATH . "/js/osiris.js'></script>";
-    include BASEPATH . "/footer.php";
-});
-
-
-
-Route::get('/test/(users|activities|journals)/([a-zA-Z0-9]*)', function ($col, $id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
-    if ($col == 'users') {
-        $collection = $osiris->users;
-    } elseif ($col == 'journals') {
-        $collection = $osiris->journals;
-    } else {
-        $collection = $osiris->activities;
-    }
-
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else if ($col != 'users') {
-        $id = new MongoDB\BSON\ObjectId($id);
-    }
-
-    $data = $collection->findone(['_id' => $id]);
-    dump($data, true);
-});
-
-Route::get('/testing', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
-
-    $updateResult = $osiris->activities->updateMany(
-        ['doi' => ['$regex' => '10.1111/1462-2920']],
-        ['$set' => ['journal' => 'Environmental microbiology', 'journal_id' => '6364d153f7323cdc825310c0', 'journal_abbr' => 'Environ Microbiol', "issn" => ["1462-2920", "1462-2912"], 'impact' => null, 'open_access' => true]]
-    );
-    echo "Updated: " . $updateResult->getModifiedCount() . "<br>";
-    // $names = [
-    //     ['Nubel', 'Nübel', 'uln14'],
-    //     ['Ozturk', 'Öztürk', 'bas18'],
-    //     ['Goker', 'Göker', 'mgo08'],
-    //     ['Sproer', 'Spröer', 'ckc'],
-    //     ['Pauker', 'Päuker', 'opa'],
-    //     ['Steenpass', 'Steenpaß', 'las20'],
-    //     ['Carbasse', 'Sardà Carbasse', 'joc18'],
-    // ];
-
-    // foreach ($names as $n) {
-    //     # code...
-    //     $updateResult = $osiris->activities->updateMany(
-    //         ['authors.last' => $n[0]],
-    //         ['$set' => ['authors.$.last' => $n[1], 'authors.$.user' => $n[2]]]
-    //     );
-    //     echo $n[0] . " " . $updateResult->getModifiedCount() . "<br>";
-    // }
-
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_controlling' => 1],
-    //     ['$set' => ['is_controlling' => true]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_scientist' => 1],
-    //     ['$set' => ['is_scientist' => true]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_leader' => 1],
-    //     ['$set' => ['is_leader' => true]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_active' => 1],
-    //     ['$set' => ['is_active' => true]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_controlling' => 0],
-    //     ['$set' => ['is_controlling' => false]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_scientist' => 0],
-    //     ['$set' => ['is_scientist' => false]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_leader' => 0],
-    //     ['$set' => ['is_leader' => false]]
-    // );
-    // $updateResult = $osiris->users->updateMany(
-    //     ['is_active' => 0],
-    //     ['$set' => ['is_active' => false]]
-    // );
-    // echo "All " . $updateResult->getModifiedCount() . "<br>";
-
-    // $updateResult = $osiris->activities->updateMany(
-    //     ['authors.last' => 'Ozturk'],
-    //     ['$set' => ['authors.$.last'=>'Öztürk', 'authors.$.user'=>'bas18']]
-    // );
-    // addUserActivity();
-    // $collection = $osiris->users;
-    // $data = $collection->findone(['_id'=> $_SESSION['username']]);
-    // dump($data, true);
-
-}, 'admin');
-
 
 Route::post('/create', function () {
     include_once BASEPATH . "/php/_db.php";
@@ -326,7 +222,7 @@ Route::post('/create', function () {
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
-    addUserActivity('create');
+    // addUserActivity('create');
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         $red = str_replace("*", $id, $_POST['redirect']);
@@ -358,6 +254,7 @@ Route::post('/create-journal', function () {
     $values['created'] = date('Y-m-d');
     $values['created_by'] = $_SESSION['username'];
 
+    // check if issn already exists:
     if (isset($values['issn']) && !empty($values['issn'])) {
         $issn_exist = $collection->findOne(['issn' => ['$in' => $values['issn']]]);
         if (!empty($issn_exist)) {
@@ -371,15 +268,48 @@ Route::post('/create-journal', function () {
         }
     }
 
+    // try to get oa information from DOAJ
+    $name = $values['journal'];
+    $oa = $values['oa'] ?? false;
+    $issn = $values['issn'];
+    $query = [];
+    foreach ($issn as $i) {
+        $query[] = "issn:" . $i;
+    }
+    if ($oa === false && !empty($query)) {
+        $query = implode(' OR ', $query);
+        $url = "https://doaj.org/api/search/journals/" . $query;
+        $response = CallAPI('GET', $url);
+        $json = json_decode($response, true);
+
+        if (!empty($json['results'] ?? null) && isset($json['results'][0]['bibjson'])) {
+            $n = count($json['results']);
+            $index = 0;
+            if ($n > 1) {
+                $compare_name = strtolower($name);
+                $compare_name = explode('(', $compare_name)[0];
+                $compare_name = trim($compare_name);
+                foreach ($json['results'] as $i => $res) {
+                    if (isset($res['bibjson']['is_replaced_by'])) continue;
+                    $index = $i;
+                    if (strtolower($res['bibjson']['title']) == $compare_name) {
+                        break;
+                    }
+                }
+            }
+            $r = $json['results'][$index]['bibjson'];
+            $oa = $r['oa_start'] ?? false;
+        }
+    }
+
+    $values['oa'] = $oa;
+
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
     echo json_encode([
         'inserted' => $insertOneResult->getInsertedCount(),
         'id' => $id,
-        // 'result' => format($col, $result)
     ]);
-
-    // // addUserActivity('create');
 
     // if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
     //     $red = str_replace("*", $id, $_POST['redirect']);
@@ -389,20 +319,6 @@ Route::post('/create-journal', function () {
     // $result = $collection->findOne(['_id' => $id]);
 });
 
-// Route::post('/upload-file/([A-Za-z0-9]*)', function ($id) {
-
-//     if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-//         $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
-
-//         $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
-//     }
-
-//     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-//         $red = str_replace("*", $id, $_POST['redirect']);
-//         header("Location: " . $red . "?msg=add-success");
-//         die();
-//     }
-// });
 
 Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
@@ -418,15 +334,6 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         unset($values['editors']);
     }
 
-    // dump($values, true);
-    // die;
-
-    // if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-    //     $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
-
-    //     $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
-    // }
-
     // add information on updating process
     $values['updated'] = date('Y-m-d');
     $values['updated_by'] = $_SESSION['username'];
@@ -441,7 +348,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['$set' => $values]
     );
 
-    addUserActivity('update');
+    // addUserActivity('update');
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");
         die();
@@ -507,7 +414,7 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
     $values = validateValues($values);
 
     $collection = $osiris->journals;
-    $id = new MongoDB\BSON\ObjectId($id);
+    $mongoid = new MongoDB\BSON\ObjectId($id);
 
     if (isset($values['year'])) {
         $year = intval($values['year']);
@@ -515,7 +422,7 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
 
         // remove existing year
         $updateResult = $collection->updateOne(
-            ['_id' => $id, 'impact.year' => ['$exists' => true]],
+            ['_id' => $mongoid, 'impact.year' => ['$exists' => true]],
             ['$pull' => ['impact' => ['year' => $year]]]
         );
         if (empty($if)) {
@@ -524,16 +431,16 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
             // add new impact factor
             try {
                 $updateResult = $collection->updateOne(
-                    ['_id' => $id],
+                    ['_id' => $mongoid],
                     ['$push' => ['impact' => ['year' => $year, 'impact' => $if]]]
                 );
             } catch (MongoDB\Driver\Exception\BulkWriteException $th) {
                 $updateResult = $collection->updateOne(
-                    ['_id' => $id],
+                    ['_id' => $mongoid],
                     ['$set' => ['impact' => [['year' => $year, 'impact' => $if]]]]
                 );
             }
-            
+
             // dump([$values, $updateResult], true);
             // die;
         }
@@ -543,9 +450,16 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
         $values['updated'] = date('Y-m-d');
         $values['updated_by'] = $_SESSION['username'];
 
+        if (isset($values['oa']) && $values['oa'] !== false) {
+            $updateResult = $osiris->activities->updateMany(
+                ['journal_id' => $id, 'year' => ['$gt' => $values['oa']]],
+                ['$set' => ['open_access' => true]]
+            );
+        }
+
 
         $updateResult = $collection->updateOne(
-            ['_id' => $id],
+            ['_id' => $mongoid],
             ['$set' => $values]
         );
     }
@@ -630,149 +544,6 @@ Route::post('/approve-all', function () {
     header("Location: " . ROOTPATH . "/issues?msg=update-success");
 });
 
-// Route::post('/update/delay-epub/([A-Za-z0-9]*)', function ($id) {
-//     include_once BASEPATH . "/php/_db.php";
-
-//     $id = new MongoDB\BSON\ObjectId($id);
-//     $updateResult = $osiris->activities->updateOne(
-//         ['_id' => $id],
-//         ['$set' => ["epub-delay" => date('Y-m-d')]]
-//     );
-
-//     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-//         header("Location: " . $_POST['redirect'] . "?msg=Epub+delayed");
-//         die();
-//     }
-//     echo json_encode([
-//         'updated' => $updateResult->getModifiedCount(),
-//         'result' => $collection->findOne(['_id' => $id])
-//     ]);
-// });
-
-Route::post('/push-dates/misc/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
-    // prepare values and id
-    $values = validateValues($_POST['values']);
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = new MongoDB\BSON\ObjectId($id);
-    }
-
-    // get current iteration
-    $collection = $osiris->miscs;
-    $current = $collection->findOne(['_id' => $id]);
-    if ($current['iteration'] == 'once') {
-        $updateResult = $collection->updateOne(
-            ['_id' => $id],
-            ['$push' => ["dates" => $values]]
-        );
-    } else {
-        $updateResult = $collection->updateOne(
-            ['_id' => $id],
-            ['$set' => ["dates" => [$values]]]
-        );
-    }
-
-    $updateCount = $updateResult->getModifiedCount();
-
-    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-        header("Location: " . $_POST['redirect'] . "?msg=update-success");
-        die();
-    }
-    echo json_encode([
-        'updated' => $updateCount
-    ]);
-});
-
-
-Route::post('/push-dates/review/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
-    // prepare values and id
-    $values = validateValues($_POST['values']);
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = new MongoDB\BSON\ObjectId($id);
-    }
-
-    // get current iteration
-    $collection = $osiris->reviews;
-    // $current = $collection->findOne(['_id' => $id]);
-    if (isset($values['dates'])) {
-        $updateResult = $collection->updateOne(
-            ['_id' => $id],
-            ['$push' => ["dates" => $values['dates']]]
-        );
-    } else {
-        $updateResult = $collection->updateOne(
-            ['_id' => $id],
-            ['$set' => $values]
-        );
-    }
-
-    $updateCount = $updateResult->getModifiedCount();
-
-    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-        header("Location: " . $_POST['redirect'] . "?msg=update-success");
-        die();
-    }
-    echo json_encode([
-        'updated' => $updateCount
-    ]);
-});
-
-
-Route::post('/add-repetition/lecture/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['date'])) {
-        echo "no date given";
-        die;
-    }
-    // prepare values and id
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = new MongoDB\BSON\ObjectId($id);
-    }
-
-    // get current iteration
-    $collection = $osiris->lectures;
-    $duplicate = $collection->findOne(['_id' => $id]);
-    if (empty($duplicate)) {
-        echo "element was not found.";
-        die;
-    }
-
-    unset($duplicate['_id']);
-    $duplicate['start'] = valiDate($_POST['date']);
-    $duplicate['lecture_type'] = 'repetition';
-    // echo json_encode($duplicate);
-    // die;
-    $insertOneResult  = $collection->insertOne($duplicate);
-
-    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-        header("Location: " . $_POST['redirect'] . "?msg=add-success");
-        die();
-    }
-    $id = $insertOneResult->getInsertedId();
-    include_once BASEPATH . "/php/format.php";
-    $result = $collection->findOne(['_id' => $id]);
-    echo json_encode([
-        'inserted' => $insertOneResult->getInsertedCount(),
-        'id' => $id,
-        'result' => format('lecture', $result)
-    ]);
-});
-
 Route::post('/approve', function () {
     include_once BASEPATH . "/php/_db.php";
     $id = $_SESSION['username'];
@@ -797,19 +568,19 @@ Route::post('/approve', function () {
 });
 
 
-Route::get('/form/(lecture|misc|poster|publication|students)/([A-Za-z0-9]*)', function ($col, $id) {
-    include_once BASEPATH . "/php/_db.php";
+// Route::get('/form/(lecture|misc|poster|publication|students)/([A-Za-z0-9]*)', function ($col, $id) {
+//     include_once BASEPATH . "/php/_db.php";
 
-    $collection = get_collection($col);
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = new MongoDB\BSON\ObjectId($id);
-    }
-    $url = ROOTPATH . "/$col";
-    $form = $collection->findOne(['_id' => $id]);
-    include BASEPATH . "/components/form-$col.php";
-});
+//     $collection = get_collection($col);
+//     if (is_numeric($id)) {
+//         $id = intval($id);
+//     } else {
+//         $id = new MongoDB\BSON\ObjectId($id);
+//     }
+//     $url = ROOTPATH . "/$col";
+//     $form = $collection->findOne(['_id' => $id]);
+//     include BASEPATH . "/components/form-$col.php";
+// });
 
 Route::get('/form/user/([A-Za-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_db.php";
@@ -858,8 +629,6 @@ Route::post('/approve/([A-Za-z0-9]*)', function ($id) {
             # code...
             break;
     }
-
-
 
     $updateCount = $updateResult->getModifiedCount();
 

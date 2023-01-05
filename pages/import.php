@@ -32,7 +32,8 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                 $id = $l[0];
                 $sim = round($l[2], 1);
                 if ($sim < 50) $sim = 0;
-                $years_ago = CURRENTYEAR - $pub['year'];
+                $years_ago = 100;
+                if (is_numeric($pub['year'])) $years_ago = CURRENTYEAR - intval($pub['year']);
                 $pubs[] = [$sim, $years_ago, $id, $pub];
             }
 

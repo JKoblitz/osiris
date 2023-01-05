@@ -62,7 +62,7 @@
 }
 .achievement svg #color * {
   fill: white !important;
-  opacity: 0.8;
+  /* opacity: 0.8; */
 }
 .achievement [data-toggle="tooltip"]::after {
   width: 14rem;
@@ -90,31 +90,31 @@
   background-color: #8bc34a;
 }
 .achievement.lvl2 h5 {
-  color: #039be5;
+  color: #35afea;
 }
 .achievement.lvl2 svg #color * {
-  fill: #039be5 !important;
+  fill: #35afea !important;
 }
 .achievement.lvl2 .level span:nth-of-type(1) {
   background-color: #8bc34a;
 }
 .achievement.lvl2 .level span:nth-of-type(2) {
-  background-color: #039be5;
+  background-color: #35afea;
 }
 .achievement.lvl3 h5 {
-  color: #9c27b0;
+  color: #af52bf;
 }
 .achievement.lvl3 svg #color * {
-  fill: #9c27b0 !important;
+  fill: #af52bf !important;
 }
 .achievement.lvl3 .level span:nth-of-type(1) {
   background-color: #8bc34a;
 }
 .achievement.lvl3 .level span:nth-of-type(2) {
-  background-color: #039be5;
+  background-color: #35afea;
 }
 .achievement.lvl3 .level span:nth-of-type(3) {
-  background-color: #9c27b0;
+  background-color: #af52bf;
 }
 .achievement.max-4.lvl4 h5, .achievement.max-3.lvl3 h5, .achievement.max-2.lvl2 h5, .achievement.max-1.lvl1 h5 {
   color: #f2ab38;
@@ -126,10 +126,10 @@
   background-color: #8bc34a;
 }
 .achievement.max-4.lvl4 .level span:nth-of-type(2), .achievement.max-3.lvl3 .level span:nth-of-type(2), .achievement.max-2.lvl2 .level span:nth-of-type(2), .achievement.max-1.lvl1 .level span:nth-of-type(2) {
-  background-color: #039be5;
+  background-color: #35afea;
 }
 .achievement.max-4.lvl4 .level span:nth-of-type(3), .achievement.max-3.lvl3 .level span:nth-of-type(3), .achievement.max-2.lvl2 .level span:nth-of-type(3), .achievement.max-1.lvl1 .level span:nth-of-type(3) {
-  background-color: #9c27b0;
+  background-color: #af52bf;
 }
 .achievement.max-4.lvl4 .level span:last-of-type, .achievement.max-3.lvl3 .level span:last-of-type, .achievement.max-2.lvl2 .level span:last-of-type, .achievement.max-1.lvl1 .level span:last-of-type {
   background-color: #f2ab38;

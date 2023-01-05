@@ -2,8 +2,10 @@
     <thead>
         <th>Journal name</th>
         <th>Abbr</th>
+        <th>Publisher</th>
         <th>ISSN</th>
-        <th><span data-toggle="tooltip" data-title="Last year impact factor if available">IF</span></th>
+        <th>OA</th>
+        <th><span data-toggle="tooltip" data-title="Latest impact factor if available">IF</span></th>
         <th><span data-toggle="tooltip" data-title="Publications, Reviews and Editorials"><?=lang('Activities', 'Aktivitäten')?></span></th>
     </thead>
     <tbody>
@@ -52,21 +54,29 @@
                 },
                 {
                     targets: 2,
+                    data: 'publisher'
+                },
+                {
+                    targets: 3,
                     data: 'issn'
                 },
                 {
+                    targets: 4,
+                    data: 'open_access'
+                },
+                {
                     type: 'natural',
-                    targets: 3,
+                    targets: 5,
                     data: 'if'
                 },
                 {
                     type: 'natural',
-                    targets: 4,
+                    targets: 6,
                     data: 'count'
                 },
             ],
             "order": [
-                [4, 'desc'],
+                [6, 'desc'],
             ],
             <?php if (isset($_GET['q'])) { ?> "oSearch": {
                     "sSearch": "<?= $_GET['q'] ?>"

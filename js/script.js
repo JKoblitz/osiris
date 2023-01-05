@@ -441,6 +441,10 @@ function getJournalNLM(name) {
         retmode: 'json',
         usehistory: 'y'
     }
+    if (name.match(/\d{4}-?\d{4}/)){
+        // issn search
+        data.term = name  + ' AND (ncbijournals[filter])'
+    }
     $.ajax({
         type: "GET",
         data: data,
@@ -1271,10 +1275,10 @@ function loadModal(path, data = {}) {
     })
 }
 
-function toggleEditForm(collection, id) {
-    loadModal('form/' + collection + '/' + id);
+// function toggleEditForm(collection, id) {
+//     loadModal('form/' + collection + '/' + id);
 
-}
+// }
 
 
 function filter_results(input) {

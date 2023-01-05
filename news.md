@@ -34,6 +34,13 @@
   - Die neue Ansicht ist jetzt der Standard bei allen Tabellen und auf Profil- und Jahresseiten
   - Falls euch die alte Ansicht besser gefallen hat, könnt ihr in euren Profileinstellungen im Punkt "Aktivitäten-Anzeige" auf Print stellen.
 
+**Journale**
+
+  - Ein Journal kann nun als Open Access markiert werden 
+  - Dazu kann entweder angegeben werden, dass das Journal ausschließlich open access ist, oder ab welchem Jahr
+  - Neu hinzugefügte Publikationen, die nach dem angegebenen Jahr publiziert wurden, werden automatisch als Open Access markiert
+  - Wenn das Open Access Jahr eines Jorunals neu gesetzt wird, werden alle Publikationen die *nach* dem Jahr publiziert wurden, automatisch als Open Access markiert. Publikationen *im* angegebenen Jahr müssen manuell überprüft werden
+
 **Dokumentation**
 
   - Eine erste Dokumentation wurde bereitgestellt, diese deckt zurzeit erstmal nur das Hinzufügen von Aktivitäten ab

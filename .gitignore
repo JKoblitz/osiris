@@ -4,3 +4,4 @@ css/Rubik
 /vendor/
 *.old.php
 uploads/*
+test.php

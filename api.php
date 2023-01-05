@@ -221,28 +221,41 @@ Route::get('/api/journal', function () {
 });
 
 Route::get('/api/journals', function () {
+    include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    
     $journals = $osiris->journals->find()->toArray();
     $result = ['data' => []];
     // $i = 0;
-    $activities = $osiris->activities->find(['journal_id' => ['$exists' => 1]], ['projection' => ['journal_id' => 1]])->toArray();
+    $activities = $osiris->activities->find(['journal_id' => ['$exists' => 1, '$ne'=>null]], ['projection' => ['journal_id' => 1]])->toArray();
     $activities = array_column($activities, 'journal_id');
     $activities = array_count_values($activities);
+    $no = lang('No', 'Nein');
+    $yes = lang('Yes', 'Ja');
+    $since = lang('since ', 'seit ');
     foreach ($journals as $doc) {
-        // if ($i++ > 100) break;
+        if (!isset($doc['oa']) || $doc['oa'] === false){
+            $oa = $no;
+        } elseif ($doc['oa'] === 0) {
+            $oa =  $yes;
+        } elseif ($doc['oa'] > 0) {
+            $oa =  $since . $doc['oa'];
+        } 
         $result['data'][] = [
             'id' => strval($doc['_id']),
             'name' => $doc['journal'],
             'abbr' => $doc['abbr'],
+            'publisher' => $doc['publisher'] ?? '',
+            'open_access' => $oa,
             'issn' => implode(', ', $doc['issn']->bsonSerialize()),
-            'if' => impact_from_year($doc, intval(CURRENTYEAR) - 1) ?? '',
+            'if' => latest_impact($doc) ?? '',
             'count' => $activities[strval($doc['_id'])] ?? 0
         ];
     }
 
-    header("Content-Type: application/json");
-    header("Pragma: no-cache");
-    header("Expires: 0");
     echo json_encode($result);
 });
 

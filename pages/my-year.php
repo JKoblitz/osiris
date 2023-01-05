@@ -66,12 +66,8 @@ $endOfYear = new DateTime("$YEAR-12-31");
 $startOfYear = new DateTime("$YEAR-01-01");
 foreach ($cursor as $doc) {
     if (!array_key_exists($doc['type'], $groups)) continue;
-    if ($USER['display_activities'] == 'web') {
-        $format = $Format->formatShort($doc);
-    } else {
-        $format = $Format->format($doc);
-    }
-    $doc['format'] = $format;
+   
+    // $doc['format'] = $format;
     $groups[$doc['type']][] = $doc;
     $icon = activity_icon($doc, false);
 
@@ -86,8 +82,8 @@ foreach ($cursor as $doc) {
         'starting_time' => $starttime,
         'type' => $doc['type'],
         'id' => strval($doc['_id']),
-        'title' => htmlspecialchars(strip_tags(trim($doc['title'] ?? $format))),
-        'icon' => $icon
+        'title' => htmlspecialchars(strip_tags(trim($doc['title'] ?? $doc['journal']))),
+        // 'icon' => $icon
     ];
     if (isset($doc['end'])) {
         if (empty($doc['end'])) {
@@ -520,7 +516,12 @@ foreach ($cursor as $doc) {
                         if (!empty($q)) echo "Q$q";
                         echo "</td>";
                         echo "<td>";
-                        echo $doc['format'];
+                        // echo $doc['format'];
+                        if ($USER['display_activities'] == 'web') {
+                            echo $Format->formatShort($doc);
+                        } else {
+                            echo $Format->format($doc);
+                        }
 
                         // show error messages, warnings and todos
                         $has_issues = has_issues($doc);
@@ -528,7 +529,9 @@ foreach ($cursor as $doc) {
                             $approval_needed[] = array(
                                 'type' => $col,
                                 'id' => $id,
-                                'title' => $doc['title'] ?? $doc['journal'] ?? ''
+                                'title' => $Format->title,
+                                'badge' => activity_badge($doc),
+                                'tags' => $has_issues
                             );
                     ?>
                             <br>
@@ -588,7 +591,7 @@ foreach ($cursor as $doc) {
 
         <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                <div class="modal-content w-400 mw-full" style="border: 2px solid var(--success-color);">
+                <div class="modal-content w-600 mw-full" style="border: 2px solid var(--success-color);">
                     <a href="#" class="btn float-right" role="button" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </a>
@@ -600,16 +603,34 @@ foreach ($cursor as $doc) {
                     } else  if ($approved) {
                         echo "<p>" . lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') . "</p>";
                     } else if (!empty($approval_needed)) {
+
+                        $tagnames = [
+                            'approval'=> lang('Approval needed', 'Überprüfung nötig'),
+                            'epub' => 'Online ahead of print',
+                            'students' => lang('Student\' graduation', "Studenten-Abschluss"),
+                            'openend' => lang('Open-end'),
+                            'journal_id' => lang('Non-standardized journal', 'Nicht-standardisiertes Journal')
+                        ];
+
                         echo "<p>" . lang(
                             "The following activities have unresolved warnings. Please <a href='" . ROOTPATH . "/issues' class='link'>review all issues</a> before approving the current quarter.",
                             "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='" . ROOTPATH . "/issues' class='link'>kläre alle Probleme</a> bevor du das aktuelle Quartal freigeben kannst."
                         ) . "</p>";
-                        echo "<ul class='list'>";
+                        echo "<table class='table table-simple'><tbody>";
                         foreach ($approval_needed as $item) {
-                            $type = ucfirst($item['type']);
-                            echo "<li><b>$type</b>: $item[title]</li>";
+                            // $type = ucfirst($item['type']);
+                            echo "<tr><td class='px-0'>
+                                $item[title]
+                                <br>
+                                $item[badge]";
+                                foreach ($item['tags'] as $tag) {
+                                    $tag = $tagnames[$tag] ?? $tag;
+                                    echo "<a class='badge badge-danger filled ml-5' href='" . ROOTPATH . "/issues#tr-$item[id]'>$tag</a>";
+                                }
+                                
+                            echo "</td></tr>";
                         }
-                        echo "</ul>";
+                        echo "</tbody></table>";
                     } else { ?>
 
                         <p>

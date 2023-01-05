@@ -40,8 +40,7 @@ class Achievement
             $ac['achievement'] = $this->achievements[$ac['id']];
             $this->userac[$ac['id']] = $ac;
         }
-
-        if ($USER['gender'] ?? 'n' == 'f') {
+        if (($this->userdata['gender'] ?? 'n') == 'f') {
             $this->lang_g .= "_f";
         }
     }

@@ -118,18 +118,23 @@ $user_activity = isUserActivity($doc, $user);
         </div>
     </div>
 
-    <h2><?= activity_title($doc) ?></h2>
+    <h2>
+        <span class='mr-10'><?= activity_icon($doc, false) ?></span>
+        <?= activity_title($doc) ?>
+    </h2>
 
     <p class="lead">
-
-        <span class='mr-10'><?= activity_icon($doc) ?></span>
         <?= $Format->formatShort($doc, $link = false) ?>
     </p>
 
-    <h2><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h2>
+    <h4><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h4>
 
     <p>
-        <?= $Format->format($doc) ?>
+        <?php
+            $Format->abbr_journal = true;
+            echo $Format->format($doc);
+        ?>
+        
     </p>
 </div>
 
@@ -169,10 +174,10 @@ $user_activity = isUserActivity($doc, $user);
 
         <div class="box mt-0">
             <div class="content">
-                <?php if (isset($doc['title'])) : ?>
+                <?php if (isset($Format->title)) : ?>
                     <p class="lead mb-0">
                         <!-- <span class="mr-10"><?= activity_icon($doc) ?></span> -->
-                        <?= $doc['title'] ?>
+                        <?= $Format->title ?>
                     </p>
                 <?php elseif ($doc['type'] == "review") : ?>
                     <p class="lead mb-0">

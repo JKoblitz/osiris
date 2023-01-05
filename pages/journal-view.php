@@ -34,8 +34,21 @@
         <td>ISSN</td>
         <td><?= implode('<br>', $data['issn']->bsonSerialize()) ?></td>
     </tr>
+    <tr>
+        <td>Open Access</td>
+        <td>
+            <?php
+            if (!($data['oa'] ?? false)) {
+                echo lang('No', 'Nein');
+            } elseif ($data['oa'] > 0) {
+                echo lang('since ', 'seit ') . $data['oa'];
+            } else {
+                echo lang('Yes', 'Ja');
+            }
+            ?>
+        </td>
+    </tr>
 </table>
-
 
 <h3>
     <?= lang('Publications in this journal', 'Publikationen in diesem Journal') ?>

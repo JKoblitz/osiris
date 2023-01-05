@@ -403,9 +403,9 @@ class Format
 {
     private $highlight = true;
     private $appendix = '';
-    private $title = "";
-    private $subtitle = "";
 
+    public $title = "";
+    public $subtitle = "";
     public $usecase = "web";
     public $full = false;
     public $abbr_journal = false;
@@ -889,8 +889,8 @@ class Format
             $result .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
         }
 
-        if ($this->usecase == 'web') {
-            if (!empty($doc['open_access'])) {
+        if ($this->usecase == 'web' && in_array($type, ['article', 'book', 'chapter'])) {
+            if (!empty($doc['open_access'] ?? false)) {
                 $access = '<i class="icon-open-access text-success" title="Open Access"></i>';
             } else {
                 $access = '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
@@ -957,15 +957,15 @@ class Format
                 break;
             case 'grant-rev':
                 $result .= lang("Reviewer of Grant Proposals: ", 'Begutachtung eines Forschungsantrages:');
-                $result .= '<i>' . $doc['title'] . '</i>. ';
+                $result .= ' <i>' . $doc['title'] . '</i>. ';
                 break;
             case 'thesis-rev':
                 $result .= lang("Reviewer for Doctoral Thesis: ", 'Begutachtung einer Doktorarbeit: ');
-                $result .= '<i>' . $doc['journal'] . '</i>. ';
+                $result .=  '<i>' . $doc['title'] . '</i>. ';
                 break;
             default:
                 $result .= lang("Reviewer for ", 'Reviewer für ');
-                $result .= '<i>' . $doc['journal'] . '</i>. ';
+                $result .= ' <i>' . $doc['journal'] . '</i>. ';
                 break;
         }
         return $result;
