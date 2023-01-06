@@ -541,7 +541,7 @@ function val($index, $default = '')
                         <select name="values[lecture_type]" id="lecture_type" class="form-control" autocomplete="off">
                             <option value="short" <?= val('lecture_type') == 'short' ? 'selected' : '' ?>>short (15-25 min.)</option>
                             <option value="long" <?= val('lecture_type') == 'long' ? 'selected' : '' ?>>long (> 30 min.)</option>
-                            <option value="repetition" <?= val('lecture_type' == 'repetition' || $copy) ? 'selected' : '' ?>>repetition</option>
+                            <option value="repetition" <?= val('lecture_type') == 'repetition' || $copy ? 'selected' : '' ?>>repetition</option>
                         </select>
                     </div>
 
