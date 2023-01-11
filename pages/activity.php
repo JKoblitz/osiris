@@ -51,6 +51,26 @@ $user_activity = isUserActivity($doc, $user);
         background-color: var(--color-warm-orange); */
         background-color: var(--signal-color-very-light);
     }
+
+    /* .table tr[class^="row-"]{
+        border-right-width: 5px;
+    } */
+    .table tbody tr[class^="row-"]:hover {
+        border-left-width: 5px;
+    }
+/* 
+    [data-dept]{
+        position: relative;
+        transform:scale(1,1);
+    }
+    [data-dept]:hover::before {
+        content: attr(data-dept);
+        position: absolute;
+        left: 0;
+        text-anchor: middle;
+        transform: rotate(270deg);
+
+    } */
 </style>
 
 <div class="content">
@@ -131,10 +151,10 @@ $user_activity = isUserActivity($doc, $user);
 
     <p>
         <?php
-            $Format->abbr_journal = true;
-            echo $Format->format($doc);
+        $Format->abbr_journal = true;
+        echo $Format->format($doc);
         ?>
-        
+
     </p>
 </div>
 
@@ -738,10 +758,23 @@ $user_activity = isUserActivity($doc, $user);
                         </tr>
                     </thead>
                     <tbody id="<?= $role ?>">
-                        <?php foreach ($activity[$role] as $i => $author) { ?>
-                            <tr>
+                        <?php foreach ($activity[$role] as $i => $author) {
+                            $cls = "";
+                            $dept = "";
+                            if (isset($author['user']) && !empty($author['user'])) {
+                                $u = getUserFromId($author['user']);
+                                $dept = $u['dept'] ?? 'unknown';
+                                $cls = "row-" . ($u['dept'] ?? 'muted');
+                            }
+                            // row-MIOS 
+                        ?>
+                            <tr class="<?= $cls ?>" data-dept="<?= $dept ?>">
                                 <td class="<?= (($author['aoi'] ?? 0) == '1' ? 'font-weight-bold' : '') ?>">
-                                    <?= $author['last'] ?? '' ?>
+                                    <?php if (!empty($dept)) { ?>
+                                        <span data-toggle="tooltip" data-title="<?= $dept ?>"><?= $author['last'] ?? '' ?></span>
+                                    <?php } else { ?>
+                                        <?= $author['last'] ?? '' ?>
+                                    <?php } ?>
                                 </td>
                                 <td>
                                     <?= $author['first'] ?? '' ?>

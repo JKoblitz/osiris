@@ -190,7 +190,15 @@ function val($index, $default = '')
         <h3 class=""><?= lang('Copy activity', 'Kopiere Aktivität') ?></h3>
     <?php } else { ?>
         <!-- Edit existing activity -->
-        <h3 class=""><?= lang('Edit activity', 'Bearbeite Aktivität') ?> <span class="text-signal">#<?= $id ?></span></h3>
+        <h3 class="mb-0"><?= lang('Edit activity', 'Bearbeite Aktivität') ?>:</h3>
+        <div class="mb-10">
+        <?php
+            $Format = new Format(false);
+            echo activity_icon($form);
+            echo $Format->formatShort($form);
+        ?>
+        </div>
+        
     <?php } ?>
 
     <?php if (!empty($form)) { ?>

@@ -568,7 +568,6 @@ class Format
             }
             if (isset($a['position']) && $a['position'] == 'corresponding') {
                 $author .= "<sup>§</sup>";
-                $this->appendix .= "<span style='color:#878787;'><sup>§</sup> Corresponding author</span>";
             }
 
             $authors[] = $author;
@@ -726,6 +725,7 @@ class Format
         $authors = "";
         $first = 1;
         $last = 1;
+        $corresponding = false;
         if (!empty($doc['authors']) && !is_array($doc['authors'])) {
             $doc['authors'] = $doc['authors']->bsonSerialize();
         }
@@ -733,6 +733,7 @@ class Format
             $pos = array_count_values(array_column($doc['authors'], 'position'));
             $first = $pos['first'] ?? 1;
             $last = $pos['last'] ?? 1;
+            $corresponding = array_key_exists('corresponding', $pos);
             $authors = $this->formatAuthors($doc['authors'], 'and', $first, $last);
         }
 
@@ -876,12 +877,14 @@ class Format
             $this->subtitle .= " $access";
         }
 
-        // if ($first > 1 || $last > 1) $result .= "<br>";
         if ($first > 1) {
-            $this->appendix .= "<span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
+            $this->appendix .= " <span style='color:#878787;'><sup>#</sup> Shared first authors</span>";
         }
         if ($last > 1) {
-            $this->appendix .= "<span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
+            $this->appendix .= " <span style='color:#878787;'><sup>*</sup> Shared last authors</span>";
+        }
+        if ($corresponding) {
+            $this->appendix .= " <span style='color:#878787;'><sup>§</sup> Corresponding author</span>";
         }
 
         return $result;

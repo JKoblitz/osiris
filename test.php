@@ -43,25 +43,24 @@ Route::get('/journals-open-access', function () {
 
 
         if (!empty($json['results'] ?? null) && isset($json['results'][0]['bibjson'])) {
-           
+
             $n = count($json['results']);
             $index = 0;
             if ($n > 1) {
                 $compare_name = strtolower($name);
                 $compare_name = explode('(', $compare_name)[0];
                 $compare_name = trim($compare_name);
-                echo("$n results.<br>");
+                echo ("$n results.<br>");
                 foreach ($json['results'] as $i => $res) {
-                    echo $res['bibjson']['title']."<br>";
+                    echo $res['bibjson']['title'] . "<br>";
                     if (isset($res['bibjson']['is_replaced_by'])) continue;
                     $index = $i;
-                    if (strtolower($res['bibjson']['title']) == $compare_name){
+                    if (strtolower($res['bibjson']['title']) == $compare_name) {
                         // echo "HIT <br>";
                         break;
                     }
                 }
                 echo $index;
-
             }
             $r = $json['results'][$index]['bibjson'];
             $oa = $r['oa_start'];
@@ -73,12 +72,12 @@ Route::get('/journals-open-access', function () {
             ['$set' => ['oa' => $oa]]
         );
 
-        if (!empty($oa)){
+        if (!empty($oa)) {
             $updateResult = $osiris->activities->updateMany(
-                ['journal_id' => strval($journal['_id']), 'year' => ['$gt' => $oa], 'type'=> 'publication'],
+                ['journal_id' => strval($journal['_id']), 'year' => ['$gt' => $oa], 'type' => 'publication'],
                 ['$set' => ['open_access' => true]]
             );
-            echo $updateResult->getModifiedCount(). " activities updated<br>";
+            echo $updateResult->getModifiedCount() . " activities updated<br>";
         }
 
         // $ch = curl_init($url);
@@ -366,7 +365,7 @@ Route::get('/mongo', function () {
           }
     ]';
     $levels = json_decode($levels, true);
-    
+
     $updateResult = $osiris->achievements->updateOne(
         ['id' => 'create'],
         ['$set' => ['levels' => $levels]]
@@ -387,3 +386,141 @@ Route::get('/info', function () {
 }, 'login');
 
 
+Route::get('/test-scientist', function () {
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+
+    $scientists = [
+        "Overmann",
+        "Steenpaß",
+        "Pester",
+        "Winter",
+        "Gronow",
+        "Abt",
+        "Pukall",
+        "Thiel",
+        "Rohde",
+        "Nouioui",
+        "Verbarg",
+        "Kirstein",
+        "Pradella",
+        "Bajerski",
+        "Spring",
+        "Quentmeier",
+        "Hahnke",
+        "Pommerenke",
+        "Yurkov",
+        "Dirks",
+        "Menzel",
+        "Felsch",
+        "Steube",
+        "Spröer",
+        "Nübel",
+        "Eberth",
+        "Uphoff",
+        "Riedel",
+        "Göker",
+        "Nagel",
+        "Neumann-Schaal",
+        "Krenz",
+        "Rand",
+        "Sikorski",
+        "Gomez Escribano",
+        "Petersen",
+        "Knierim",
+        "Margaria",
+        "Bunk",
+        "Mast",
+        "Scholz",
+        "Wittmann",
+        "Baschien",
+        "Huber-Fischer",
+        "Boldt",
+        "Päuker",
+        "Wolf",
+        "Dyksma",
+        "Ngugi",
+        "Gomes Vieira",
+        "Marter",
+        "Meyer Cifuentes",
+        "Öztürk",
+        "Kwant",
+        "Feldhinkel",
+        "Markesch",
+        "Bergmann",
+        "Witt",
+        "Boustaji",
+        "Halama",
+        "Linnemann",
+        "Leike",
+        "Lindemann",
+        "Gllareva",
+        "Haake",
+        "Kovalova",
+        "Lissin",
+        "Schober",
+        "Ebeling",
+        "Nuñez Vega",
+        "Mandip",
+        "Rolland",
+        "Kolte",
+        "Papendorf",
+        "Moreira Martins",
+        "Flocco",
+        "Muñoz García ",
+        "Ijaz",
+        "Vasconcelos Rissi",
+        "Barys",
+        "Sett",
+        "Sheat",
+        "Bosviel",
+        "Stickel",
+        "Frentrup",
+        "Koblitz",
+        "Sicking",
+        "Gehrke",
+        "Lusznat",
+        "Omoregbe",
+        "Faggionato",
+        "Bingert",
+        "Degenhardt",
+        "Freese",
+        "Gierling",
+        "Hagendorf",
+        "Janßen",
+        "Karger",
+        "Lilienthal",
+        "Meier-Kolthoff",
+        "Reimer",
+        "Sardà Carbasse",
+    ];
+
+    // $res = $osiris->users->find([
+    //     'is_scientist' => true,
+    //     'is_active' => true,
+    //     'last' => ['$nin'=>$scientists]
+    // ])->toArray();
+    // foreach ($res as $r) {
+    //     echo "$r[last], $r[first]<br>";
+    // }
+    $updateResult = $osiris->users->updateMany(
+        [
+            'is_scientist' => true,
+            'is_active' => true,
+            'last' => ['$nin'=>$scientists]
+        ],
+        ['$set' => ['is_scientist' => false]]
+    );
+    dump($updateResult);
+
+    $res = $osiris->users->find([
+        'is_scientist' => false,
+        // 'is_active' => true,
+        'last' => ['$in'=>$scientists]
+    ])->toArray();
+    foreach ($res as $r) {
+        echo "<a href='".ROOTPATH."/user/edit/$r[username]'>$r[last], $r[first]</a><br>";
+    }
+
+    include BASEPATH . "/footer.php";
+});
