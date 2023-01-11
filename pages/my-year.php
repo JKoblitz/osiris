@@ -37,17 +37,16 @@ $filter = ['authors.user' => $user];
 $filter['$or'] =   array(
     [
         "start.year" => array('$lte' => $YEAR),
-        '$and' => array(
-            ['$or' => array(
-                ['end.year' => array('$gte' => $YEAR)],
-                ['end' => null]
-            )],
-            ['$or' => array(
-                ['type' => 'misc', 'iteration' => 'annual'],
-                ['type' => 'review', 'role' => 'Editor'],
-            )]
+        '$or' => array(
+            ['end.year' => array('$gte' => $YEAR)],
+            [
+                'end' => null,
+                '$or' => array(
+                    ['type' => 'misc', 'iteration' => 'annual'],
+                    ['type' => 'review', 'role' => 'Editor'],
+                )
+            ]
         )
-
         // 'type' => ['$in' => array()]
     ],
     ['year' => $YEAR]
@@ -66,7 +65,7 @@ $endOfYear = new DateTime("$YEAR-12-31");
 $startOfYear = new DateTime("$YEAR-01-01");
 foreach ($cursor as $doc) {
     if (!array_key_exists($doc['type'], $groups)) continue;
-   
+
     // $doc['format'] = $format;
     $groups[$doc['type']][] = $doc;
     $icon = activity_icon($doc, false);
@@ -172,38 +171,6 @@ foreach ($cursor as $doc) {
                     <i class="far fa-question-circle text-muted"></i>
                 </a>
             </p>
-
-            <?php
-            if ($currentuser) {
-                $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
-                $approval_needed = array();
-
-                $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
-                $quarter_in_past = new DateTime() > $q_end;
-            ?>
-
-                <?php if (!$quarter_in_past) { ?>
-                    <a href="#" class="btn disabled">
-                        <i class="fas fa-check mr-5"></i>
-                        <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
-                    </a>
-                <?php
-
-                } elseif ($approved) { ?>
-                    <a href="#" class="btn disabled">
-                        <i class="fas fa-check mr-5"></i>
-                        <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
-                    </a>
-                <?php } else { ?>
-                    <a class="btn btn-lg btn-success" href="#approve">
-                        <i class="fas fa-question mr-5"></i>
-                        <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
-                    </a>
-                <?php } ?>
-
-            <?php } ?>
-
-
         </div>
         <div class="col">
 
@@ -244,7 +211,42 @@ foreach ($cursor as $doc) {
 
         </div>
     </div>
+    <div class="d-flex">
+    <?php
+    if ($currentuser) {
+        $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+        $approval_needed = array();
 
+        $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
+        $quarter_in_past = new DateTime() > $q_end;
+    ?>
+
+        <?php if (!$quarter_in_past) { ?>
+            <a href="#" class="btn disabled">
+                <i class="fas fa-check mr-5"></i>
+                <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
+            </a>
+        <?php
+
+        } elseif ($approved) { ?>
+            <a href="#" class="btn disabled">
+                <i class="fas fa-check mr-5"></i>
+                <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
+            </a>
+        <?php } else { ?>
+            <a class="btn btn-lg btn-success" href="#approve">
+                <i class="fas fa-question mr-5"></i>
+                <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
+            </a>
+        <?php } ?>
+
+    <?php } ?>
+    <a target="_blank" href="<?= ROOTPATH ?>/docs/my-year" class="btn btn-tour ml-auto" id="tour">
+        <i class="far fa-lg fa-book-sparkles mr-5"></i>
+        <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+    </a>
+
+    </div>
 
 
     <style>
@@ -502,9 +504,11 @@ foreach ($cursor as $doc) {
                         if ($doc['year'] == $YEAR) {
                             $q = getQuarter($doc);
                             $in_quarter = $q == $QUARTER;
+                            $q = "Q$q";
                         } else {
-                            $q = '';
+                            $q = getQuarter($doc);
                             $in_quarter = false;
+                            $q = $doc['year'] . "Q$q";
                         }
 
 
@@ -513,7 +517,7 @@ foreach ($cursor as $doc) {
                         // echo activity_icon($doc);
                         // echo "</td>";
                         echo "<td class='quarter'>";
-                        if (!empty($q)) echo "Q$q";
+                        if (!empty($q)) echo "$q";
                         echo "</td>";
                         echo "<td>";
                         // echo $doc['format'];
@@ -605,7 +609,7 @@ foreach ($cursor as $doc) {
                     } else if (!empty($approval_needed)) {
 
                         $tagnames = [
-                            'approval'=> lang('Approval needed', 'Überprüfung nötig'),
+                            'approval' => lang('Approval needed', 'Überprüfung nötig'),
                             'epub' => 'Online ahead of print',
                             'students' => lang('Student\' graduation', "Studenten-Abschluss"),
                             'openend' => lang('Open-end'),
@@ -623,11 +627,11 @@ foreach ($cursor as $doc) {
                                 $item[title]
                                 <br>
                                 $item[badge]";
-                                foreach ($item['tags'] as $tag) {
-                                    $tag = $tagnames[$tag] ?? $tag;
-                                    echo "<a class='badge badge-danger filled ml-5' href='" . ROOTPATH . "/issues#tr-$item[id]'>$tag</a>";
-                                }
-                                
+                            foreach ($item['tags'] as $tag) {
+                                $tag = $tagnames[$tag] ?? $tag;
+                                echo "<a class='badge badge-danger filled ml-5' href='" . ROOTPATH . "/issues#tr-$item[id]'>$tag</a>";
+                            }
+
                             echo "</td></tr>";
                         }
                         echo "</tbody></table>";

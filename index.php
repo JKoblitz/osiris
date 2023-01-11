@@ -962,7 +962,7 @@ include_once BASEPATH . "/mongo.php";
 include_once BASEPATH . "/export.php";
 include_once BASEPATH . "/user_management.php";
 
-if ($_SESSION['username'] == 'juk20') {
+if (isset($_SESSION['username']) && $_SESSION['username'] == 'juk20') {
     include_once BASEPATH ."/test.php";
 }
 

@@ -298,7 +298,7 @@ if (isset($_GET['verbose'])) {
                     $Q = 4;
                     $Y -= 1;
                 }
-                $lastquarter = "${Y}Q$Q";
+                $lastquarter = $Y . "Q" . $Q;;
 
                 if (!in_array($lastquarter, $approvedQ)) { ?>
                     <div class="alert alert-muted mt-20">
@@ -369,6 +369,20 @@ if (isset($_GET['verbose'])) {
             <?php } ?>
 
         </div>
+
+        <?php if (($USER['is_admin'] || $USER['is_controlling']) && isset($scientist['approved'])) { 
+            $approvedQ = $scientist['approved']->bsonSerialize();
+            sort($approvedQ);
+            echo "<div class='mt-20'>";
+            echo "<b>".lang('Quarters approved', 'Bestätigte Quartale').":</b>";
+            foreach ($approvedQ as $appr) {
+                $Q = explode('Q', $appr);
+                echo "<a href='".ROOTPATH."/scientist/$user?year=$Q[0]&quarter=$Q[1]' class='badge badge-success ml-5'>$appr</a>";
+            }
+            echo "</div>";
+         } ?>
+
+
     <?php } ?>
 
 

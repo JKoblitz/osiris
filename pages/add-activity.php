@@ -114,6 +114,9 @@ function val($index, $default = '')
                     Verschrieben? Ein Autor wird nicht korrekt einem Nutzer zugeordnet? Nachdem du den Datensatz hinzugefügt hast, kannst du die Autorenliste <b>im Detail noch einmal bearbeiten</b>.
                 </p>
             <?php } ?>
+
+            <a href="<?= ROOTPATH ?>/docs/add-activities#autoren-bearbeiten" class="btn btn-tour" target="_blank"><?= lang('Read more', 'Lies mehr') ?></a>
+
         </div>
     </div>
 </div>
@@ -144,11 +147,16 @@ function val($index, $default = '')
 
 
 <div class="content">
+    <a target="_blank" href="<?= ROOTPATH ?>/docs/warnings" class="btn btn-tour float-right ml-5" id="docs-btn">
+        <i class="far fa-lg fa-book-sparkles mr-5"></i>
+        <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+    </a>
     <?php if (empty($form)) { ?>
 
+
         <button class="btn btn-tour float-right" id="tour">
-            <i class="far fa-message-question mr-10"></i>
-            <?= lang('How does this work?', 'Wie funktioniert das?') ?>
+            <i class="far fa-lg fa-message-question mr-5"></i>
+            <?= lang('Interactive tour', 'Interactive Tour') ?>
         </button>
         <!-- Create new activity -->
         <h2 class="">
@@ -166,7 +174,6 @@ function val($index, $default = '')
                 </div>
             </div>
         </form>
-
         <div class="my-20 select-btns" id="select-btns">
             <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="publication-btn"><?= activity_icon('publication', false) ?><?= lang('Publication', 'Publikation') ?></button>
             <button onclick="togglePubType('poster')" class="btn btn-select text-poster" id="poster-btn"><?= activity_icon('poster', false) ?><?= lang('Posters', 'Poster') ?></button>
@@ -178,11 +185,31 @@ function val($index, $default = '')
             <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Misc') ?></button>
         </div>
 
+
     <?php } elseif ($copy) { ?>
         <h3 class=""><?= lang('Copy activity', 'Kopiere Aktivität') ?></h3>
     <?php } else { ?>
         <!-- Edit existing activity -->
         <h3 class=""><?= lang('Edit activity', 'Bearbeite Aktivität') ?> <span class="text-signal">#<?= $id ?></span></h3>
+    <?php } ?>
+
+    <?php if (!empty($form)) { ?>
+
+        <a href="#" class="text-decoration-none" onclick="$(this).next().slideToggle()">
+            <i class="fas fa-caret-down"></i>
+            <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
+        </a>
+        <div class="mb-20 select-btns" id="select-btns" style="display:none">
+            <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="publication-btn"><?= activity_icon('publication', false) ?><?= lang('Publication', 'Publikation') ?></button>
+            <button onclick="togglePubType('poster')" class="btn btn-select text-poster" id="poster-btn"><?= activity_icon('poster', false) ?><?= lang('Posters', 'Poster') ?></button>
+            <button onclick="togglePubType('lecture')" class="btn btn-select text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?><?= lang('Lectures', 'Vorträge') ?></button>
+            <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
+            <button onclick="togglePubType('teaching')" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></button>
+            <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-btn"><?= activity_icon('students', false) ?><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
+            <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software &amp; Data') ?></button>
+            <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Misc') ?></button>
+        </div>
+
     <?php } ?>
 
 
@@ -220,7 +247,6 @@ function val($index, $default = '')
             <div class="mb-20 select-btns" data-visible="article,preprint,magazine,book,chapter,dissertation,others">
                 <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article') ?></button>
                 <button onclick="togglePubType('magazine')" class="btn btn-select text-publication" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article') ?></button>
-                <!-- <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button> -->
                 <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
                 <button onclick="togglePubType('chapter')" class="btn btn-select text-publication" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
                 <button onclick="togglePubType('preprint')" class="btn btn-select text-publication" id="preprint-btn"><i class="fa-regular fa-file"></i> <?= lang('Preprint') ?></button>
@@ -614,11 +640,6 @@ function val($index, $default = '')
                         <input type="text" class="form-control" name="values[link]" id="software_link" value="<?= val('link') ?>">
                     </div>
 
-                    <!-- <div class="col-sm">
-                        <label for="software_doi" class="element-link">DOI</label>
-                        <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="software_doi" placeholder="10.5281/zenodo.3742817">
-                    </div> -->
-
                     <div class="col-sm-2">
                         <label class="element-other" for="software_version"><?= lang('Version') ?></label>
                         <input type="text" class="form-control" name="values[version]" id="software_version" value="<?= val('version') ?>">
@@ -637,7 +658,7 @@ function val($index, $default = '')
                     </div>
                     <div class="col-sm" data-visible="lecture,poster">
                         <label for="conference" class="element-other"><?= lang('Conference', 'Konferenz') ?></label>
-                        <input type="text" class="form-control" name="values[conference]" id="conference" placeholder="VAAM 2022" value="<?= val('conference') ?>">
+                        <input type="text" class="form-control" name="values[conference]" id="conference" list="conference-list" placeholder="VAAM 2022" value="<?= val('conference') ?>">
                     </div>
                     <div class="col-sm">
                         <label for="location" class="element-other"><?= lang('Location', 'Ort') ?></label>
@@ -653,7 +674,12 @@ function val($index, $default = '')
 
                 <div class="form-row row-eq-spacing" data-visible="article,preprint">
                     <div class="col-sm">
-                        <label for="journal" class="element-cat required">Journal</label>
+                        <label for="journal" class="element-cat required">
+                            Journal
+                            <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank">
+                                <i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                            </a>
+                        </label>
                         <div class="input-group">
                             <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required readonly>
                             <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
@@ -966,6 +992,19 @@ function val($index, $default = '')
     $scientist = $osiris->users->find();
     foreach ($scientist as $s) { ?>
         <option><?= $s['last'] ?>, <?= $s['first'] ?></option>
+    <?php } ?>
+</datalist>
+
+<datalist id="conference-list">
+    <?php
+    $conference = $osiris->activities->find(['conference' => ['$exists' => true]], ['projection' => ['conference' => 1]])->toArray();
+
+    $conference = array_map(function ($a) {
+        return $a['conference'];
+    }, $conference);
+    $conference = array_unique($conference);
+    foreach ($conference as $c) { ?>
+        <option><?= $c ?></option>
     <?php } ?>
 </datalist>
 

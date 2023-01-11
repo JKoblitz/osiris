@@ -461,11 +461,7 @@ class Format
             }
         }
         if (!empty($this->appendix)) {
-            // if ($this->usecase == 'word') {
-            //     $line .= "<w:br/>";
-            // } else {
             $line .= "<br>";
-            // }
             $line .= $this->appendix;
         }
         return $line;
@@ -484,7 +480,13 @@ class Format
             $authors = array();
             foreach ($doc['authors'] as $n => $a) {
                 if ($n > 9) break;
-                $authors[] = abbreviateAuthor($a['last'], $a['first']);
+                $author = abbreviateAuthor($a['last'], $a['first']);
+                if ($this->highlight === true) {
+                    //if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
+                } else if ($this->highlight && $a['user'] == $this->highlight) {
+                    $author = "<u>$author</u>";
+                }
+                $authors[] = $author;
             }
             $author = implode(', ', $authors);
             if (is_countable($doc['authors']) && count($doc['authors']) > 9) $author .= " et al.";
@@ -597,7 +599,7 @@ class Format
     }
 
 
-    function format_students($doc, $verbose = false)
+    function format_students($doc)
     {
         $result = "";
         if (!empty($doc['academic_title']) && str_contains($doc['academic_title'], 'Dr')) {
@@ -638,11 +640,9 @@ class Format
         if (!empty($doc['details'])) {
             $this->subtitle .= " (" . $doc["details"] . ")";
         }
+
+        $this->subtitle .= ", " . fromToDate($doc['start'], $doc['end']);
         $result .= "; $this->subtitle";
-
-        $result .= ". ";
-        $result .= fromToDate($doc['start'], $doc['end']);
-
 
         if ((str_contains($cat, "thesis") || $cat == 'doktorand:in') && !empty($doc['status'])) {
 
@@ -689,14 +689,15 @@ class Format
             $this->subtitle .= "$doc[conference]";
         }
         if (!empty($doc['location'])) {
-            $this->subtitle .= ", $doc[location]";
         }
 
         $result .= " $this->subtitle";
         if (!empty($doc['conference']) && !empty($doc['location'])) {
             $result .= ".";
         }
-        $result .= " " . fromToDate($doc['start'], $doc['end'] ?? null);
+        $date = fromToDate($doc['start'], $doc['end'] ?? null);
+        $this->subtitle .= " ($date)";
+        $result .= " " . $date;
         $result .= ".";
         return $result;
     }
@@ -704,8 +705,14 @@ class Format
     function format_lecture($doc)
     {
         $result = $this->format_poster($doc);
-
-        $result .= " (" . $doc['lecture_type'] . ")";
+        $type = ucfirst($doc['lecture_type']);
+        if ($doc['invited_lecture'] ?? false) {
+            $type = "Invited Lecture: $type";
+        } else {
+            $type .= " Lecture";
+        }
+        $this->subtitle .= ", $type";
+        $result .= " ($type)";
         return $result;
     }
 
@@ -763,10 +770,10 @@ class Format
                         $this->subtitle .= "($doc[issue])";
                     }
                     if (!empty($doc['pages'])) {
-                        $this->subtitle .= ": $doc[pages].";
+                        $this->subtitle .= ": $doc[pages]";
                     }
 
-                    $result .= " $this->subtitle";
+                    $result .= " $this->subtitle.";
                 }
                 break;
 
@@ -780,8 +787,8 @@ class Format
                     $result .= " $this->title.";
                 }
                 if (!empty($doc['magazine'])) {
-                    $this->subtitle .= "<i>$doc[magazine]</i>.";
-                    $result .= " $this->subtitle";
+                    $this->subtitle .= "<i>$doc[magazine]</i>";
+                    $result .= " $this->subtitle.";
                 }
                 if (!empty($doc['link'])) {
                     $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
@@ -832,38 +839,6 @@ class Format
                     $result .= " $doc[publisher].";
                 }
                 break;
-                // if (!empty($doc['year'])) {
-                //     $result .= " ($doc[year])";
-                // }
-                // if (!empty($doc['title'])) {
-                //     $this->title = $doc['title'];
-                //     $result .= " <i>$this->title</i>.";
-                // }
-                // if (!empty($doc['edition']) || !empty($doc['pages'])) {
-                //     $ep = array();
-                //     if (!empty($doc['edition'])) {
-                //         $ed = $doc['edition'];
-                //         if ($ed == 1) $ed .= "st";
-                //         elseif ($ed == 1) $ed .= "nd";
-                //         else $ed .= "th";
-                //         $ep[] = $ed . " ed.";
-                //     }
-
-                //     if (!empty($doc['pages'])) {
-                //         $ep[] = "pp. $doc[pages]";
-                //     }
-
-                //     $result .= " (" . implode(', ', $ep) . ").";
-                // }
-                // // $result .= ".";
-
-                // if (!empty($doc['city'])) {
-                //     $result .= " $doc[city]:";
-                // }
-                // if (!empty($doc['publisher'])) {
-                //     $result .= " $doc[publisher].";
-                // }
-                // break;
             default:
                 if (!empty($doc['year'])) {
                     $result .= " ($doc[year])";
@@ -879,6 +854,8 @@ class Format
                 }
                 break;
         }
+
+        $this->subtitle .= " ($doc[year])";
 
         if ($this->usecase == 'web') {
             if (!empty($doc['doi'])) {
@@ -927,17 +904,19 @@ class Format
             } else {
                 $end = format_date($doc['end']);
             }
-            $result .= lang("from $start to $end", "von $start bis $end");
+            $date = lang("from $start to $end", "von $start bis $end");
         } else {
-            $result .= fromToDate($doc['start'], $doc['end']);
+            $date = fromToDate($doc['start'], $doc['end']);
         }
+        $result .= $date;
 
         if (!empty($doc['location'])) {
+            $this->subtitle .= "$doc[location]";
             $result .= ", $doc[location].";
-            // $this->subtitle =
         } else {
             $result .= ".";
         }
+        $this->subtitle .= " ($date)";
         return $result;
     }
 
@@ -992,13 +971,15 @@ class Format
             case 'editor':
                 if (!empty($doc['start'])) {
                     if (!empty($doc['end'])) {
-                        $result .= lang(", from ", ", von ");
-                        $result .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
-                        $result .= lang(" until ", " bis ");
-                        $result .= format_month($doc['end']['month']) . ' ' . $doc['end']['year'];
+                        $date = lang("from ", "von ");
+                        $date .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
+                        $date .= lang(" until ", " bis ");
+                        $date .= format_month($doc['end']['month']) . ' ' . $doc['end']['year'];
+                        $result .= ", $date.";
                     } else {
-                        $result .= lang(", since ", ", seit ");
-                        $result .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
+                        $date = lang("since ", "seit ");
+                        $date .= format_month($doc['start']['month']) . ' ' . $doc['start']['year'];
+                        $result .= ", $date.";
                     }
                 }
                 break;
@@ -1006,10 +987,11 @@ class Format
             case 'thesis-rev':
             case 'review':
             default:
-                $result .= format_month($doc['month']) . " " . $doc['year'];
+                $date = format_month($doc['month']) . " " . $doc['year'];
+                $result .= "$date.";
                 break;
         }
-        $result .= ".";
+        $this->subtitle .= " ($date)";
         return $result;
     }
 
@@ -1048,6 +1030,9 @@ class Format
                 break;
         }
         $result .= " [$this->subtitle].";
+        if (!empty($doc['year'])) {
+            $this->subtitle .= " ($doc[year])";
+        }
 
         if (!empty($doc['software_venue'])) {
             $result .= " $doc[software_venue].";

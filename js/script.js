@@ -852,9 +852,11 @@ function fillForm(pub) {
     $('#pubtype').addClass('is-valid')
 
     if (pub.title !== undefined) {
-        $('#title').val(pub.title).addClass('is-valid')
-        // quill.setText(pub.title);
-        $('.title-editor .ql-editor').html("<p>" + pub.title + "</p>").addClass('is-valid')
+        var title = pub.title.replace(/\s+/g, ' ')
+        console.info(title);
+        $('#title').val(title).addClass('is-valid')
+        // quill.setText(title);
+        $('.title-editor .ql-editor').html("<p>" + title + "</p>").addClass('is-valid')
     }
 
     var elements = [

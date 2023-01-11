@@ -528,10 +528,9 @@ So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
             <i class="far fa-lg text-publication fa-file-lines"></i>
         </span></span>
         <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
-        <a href="/uploads/632da4672199cd3df8dbc166/gkac803_after proof.pdf" target="_blank" data-toggle="tooltip" data-title="pdf: gkac803_after proof.pdf" class="file-link"><i class="far fa-file fa-file-pdf"></i></a> 
     </p>
     <div class="" id="approve-632da4672199cd3df8dbc166">
-                                    Bitte bestätige (evtl. erneut), dass du Autor:in bist:                                                <br>
+    Bitte bestätige (evtl. erneut), dass du Autor:in bist:<br>
         <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
             <i class="fas fa-fw fa-check"></i>
         </span>
@@ -552,3 +551,33 @@ So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
 
 
 Falls du der Meinung sind, dass deine Änderungen zu minimal sind, um eine Kontrolle durch die Koautoren erforderlich zu machen, kannst du auch den entsprechenden Haken setzen. In den meisten Fällen gehört es aber zum guten Ton, seine Koautoren über etwaige Änderungen zu informieren.
+
+
+## Eine Aktivität kopieren
+
+Bei den folgenden Aktivitäten ist es zurzeit möglich, eine Kopie anzulegen: Poster, Lecture, Review, Misc, Students.
+Die Idee ist, dass man eine Aktivität wiederholt, wobei nur kleine Änderungen vorzunehmen sind, beispielsweise am Datum.
+
+Ein Beispiel:
+
+Ich halte einen Vortrag auf einer Konferenz. Auf einem Minisymposium ein paar Wochen später halte ich exakt den gleichen Vortrag noch einmal. Dafür gibt es in OSIRIS eine eigene Vortragskategorie, denn neben Kurz- und Langvoträgen gibt es auch noch "Repetitions". Ich gehe also in OSIRIS und wähle den Vortrag bei der Konferenz aus. Dort finde ich folgenden Knopf:
+
+<div class="demo">
+    <h2 class="mt-0">Details</h2>
+    <span class="btn btn-osiris mr-5">
+        <i class="icon-activity-pen"></i>
+        Aktivität bearbeiten            
+    </span>
+    <span class="btn btn-osiris mr-5 active">
+        <i class="fas fa-book-copy"></i>
+        Kopie anlegen            
+    </span>
+    <span class="btn btn-osiris">
+        <i class="far fa-upload"></i>
+        Dateien hochladen
+    </span>
+</div>
+
+Darauf klicke ich und bekomme ein Formular angezeigt, in dem alle Daten zu meinem Vortrag schon vorausgefüllt sind. OSIRIS merkt sogar, dass ich einen Vortrag kopiere und wählt automatisch die Kategorie "Repetition" aus. Ich muss jetzt nur noch das Datum, die Konferenz und den Ort anpassen. Titel und Autoren stimmen. 
+
+Noch einfacher ist es beispielsweise bei Reviews, da ich hier nur das Datum austauschen muss, wenn ich mehrmals für das gleiche Journal tätig war. Und wenn mehrere Gäste zur gleichen Veranstaltung kommen, kann ich die Aktivität kopieren und nur die Namen anpassen.

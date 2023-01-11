@@ -142,15 +142,6 @@ $Format = new Format($user);
 
 
 <?php
-// $filter = [
-//     "authors" => [
-//         '$elemMatch' => [
-//             "user" => "$user",
-//             "approved" => false
-//         ]
-//     ]
-// ];
-
 $user = $_SESSION['username'];
 $filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]]];
 $options = ['sort' => ["year" => -1, "month" => -1]];
@@ -185,6 +176,15 @@ foreach ($cursor as $doc) {
 }
 ?>
 
+<a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right" id="">
+    <i class="far fa-lg fa-book-sparkles mr-5"></i>
+    <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+</a>
+<h1>
+    <i class="fas fa-exclamation-triangle text-osiris"></i>
+    <?=lang('Warnings', 'Warnungen')?>
+</h1>
+
 <?php
 $a = array_map(function ($a) {
     return empty($a) ? 0 : 1;
@@ -206,7 +206,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="#why-approval" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#Überprüfung-der-autorenschaft-nötig" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <div class="dropdown">
@@ -285,16 +285,16 @@ if (array_sum($a) === 0) {
                         <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . AFFILIATION, 'Ja, und ich war der ' . AFFILIATION . ' angehörig') ?>">
                             <i class="fas fa-fw fa-check"></i>
                         </button>
-                        <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>">
+                        <button class="btn btn-sm text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . AFFILIATION, 'Ja, aber ich war nicht der ' . AFFILIATION . ' angehörig') ?>">
                             <i class="far fa-fw fa-handshake-slash"></i>
                         </button>
                         <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
                             <i class="fas fa-fw fa-xmark"></i>
                         </button>
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary ml-10" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
+                        <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
                             <i class="icon-activity-pen"></i>
                         </a>
-                        <a href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
+                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
                             <i class="icon-activity-search"></i>
                         </a>
                     </div>
@@ -312,7 +312,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="#why-epub" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#online-ahead-of-print" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">
@@ -368,7 +368,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="#why-students" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#studenten-abschluss" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">
@@ -426,9 +426,9 @@ if (array_sum($a) === 0) {
             'Arbeitest du noch immer an den folgenden Aktivitäten?'
         ) ?>
     </h2>
-    <!-- <p class="mt-0">
-        <a href="#why-openend" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
-    </p> -->
+    <p class="mt-0">
+        <a href="<?= ROOTPATH ?>/docs/warnings#open-end" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+    </p>
 
     <table class="table">
         <?php
@@ -448,7 +448,7 @@ if (array_sum($a) === 0) {
                             <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn btn-sm text-success">
                                 <i class="fas fa-check"></i>
-                                <?= lang('Yes (ask again later)', 'Ja (frag später nochmal)') ?>
+                                <?= lang('Yes', 'Ja') ?>
                             </button>
                         </form>
 
@@ -474,9 +474,9 @@ if (array_sum($a) === 0) {
             'Die folgenden Aktivitäten haben kein standardisiertes Journal:'
         ) ?>
     </h2>
-    <!-- <p class="mt-0">
-        <a href="#why-journal_id" class=""><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
-    </p> -->
+    <p class="mt-0">
+        <a href="<?= ROOTPATH ?>/docs/warnings#nicht-standardisiertes-journal" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+    </p>
 
     <table class="table">
         <?php

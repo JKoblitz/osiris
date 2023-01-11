@@ -245,7 +245,7 @@ class LOM
             return array(
                 'type' => "$pos",
                 'id' => $doc['_id'],
-                'title' => $doc['journal'],
+                'title' => $doc['journal'] ?? '',
                 'points' => "$points (Review)",
                 'lom' => $points
             );

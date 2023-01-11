@@ -1,5 +1,10 @@
 # Changelog
 
+## 11.01.23
+- Es wurde eine Möglichkeit hinzugefügt, den Typ einer Aktivität nachträglich zu bearbeiten
+- In die neue Web-Ansicht wurde das Datum der Aktivität integriert
+- Es wurde ein Bug gefixt, durch den beim Filtern nach Vorträgen in allen Aktivitäten auch bestimmte Studierende gezeigt wurden
+
 ## 02.01.23
 Über die Feiertage habe ich noch ein paar Features hinzugefügt und (nicht aufgeführt) ein paar Bugs entfernt:
 
@@ -18,7 +23,7 @@
 **Achievements:**
 
   - Errungenschaften wurden eingeführt
-  - für den Anfang gibt es 10 Errungenschaften mit eigenen Icons, verschiedenen Leveln und Beschreibungen
+  - für den Anfang gibt es 16 Errungenschaften mit eigenen Icons, verschiedenen Leveln und Beschreibungen
   - Errungenschaften werden auf der Profilseite angezeigt
   - Es gibt eine eigene Seite, um detailliert die Errungenschaften einer Person anzuschauen
 
@@ -43,8 +48,9 @@
 
 **Dokumentation**
 
-  - Eine erste Dokumentation wurde bereitgestellt, diese deckt zurzeit erstmal nur das Hinzufügen von Aktivitäten ab
-  - In den nächsten Tagen und Wochen werde ich sie um weitere Themen erweitern
+  - Eine erste Dokumentation wurde bereitgestellt
+  - Es werden zurzeit bereits Themen wie zum Beispiel das Hinzufügen von Aktivitäten, mein Jahr und Warnungen abgebildet
+  - Weitere Themen sind in Arbeit und werden sukzessiv hinzugefügt
 
 OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werden natürlich trotzdem weiterhin Feedback einsammeln und an dem Tool weiterentwickeln. Danke an alle, die an der Betaphase beteiligt waren!
 

@@ -54,7 +54,7 @@ $Format = new Format($useronly);
     <button onclick="filterDataTable(1, 'publication')" class="btn btn-select- text-publication" id="publication-btn"><?= activity_icon('publication', false) ?> <?= lang('Publication', "Publikationen") ?></button>
     <button onclick="filterDataTable(1, 'poster')" class="btn btn-select- text-poster" id="poster-btn"><?= activity_icon('poster', false) ?> <?= lang('Posters', 'Poster') ?></button>
     <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?> <?= lang('Lectures', 'Vorträge') ?></button>
-    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
+    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-review" id="review-btn"><?= activity_icon('review', false) ?> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
     <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select- text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?> <?= lang('Teaching', 'Lehre') ?></button>
     <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-students" id="students-btn"><?= activity_icon('students', false) ?> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
     <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-software" id="software-btn"><?= activity_icon('software', false) ?> <?= lang('Software') ?></button>
@@ -146,21 +146,7 @@ $Format = new Format($useronly);
                         ?>
                         <span class="hidden">
                             <?php
-                            echo $type;
-                            echo " ";
-                            switch ($type) {
-                                case 'publication':
-                                    echo strtolower(trim($doc['pubtype'] ?? $type));
-                                    break;
-                                case 'review':
-                                    echo strtolower($doc['role'] ?? '');
-                                    break;
-                                case 'students':
-                                    echo strtolower(trim($doc['category'] ?? 'thesis'));
-                                    break;
-                                default:
-                                    break;
-                            }
+                            echo $type . " ". activity_title($doc);
                             ?>
                         </span>
                     </td>

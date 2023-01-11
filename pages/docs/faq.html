@@ -42,6 +42,61 @@
     </div>
 </details>
 
+<details class="collapse-panel">
+    <summary class="collapse-header">
+        Ich will eine Publikation/ein Review eintragen, doch OSIRIS findet das Journal nicht. Was mache ich jetzt?
+    </summary>
+    <div class="collapse-content">
+        Die Daten zu Journalen werden aus OSIRIS selbst und dann aus dem <a class="link"
+            href="https://www.ncbi.nlm.nih.gov/nlmcatalog/journals/" target="_blank"
+            rel="noopener noreferrer">NLM-Katalog</a> abgerufen.
+        Wenn das Journal nicht gefunden wird, gibt es zwei Möglichkeiten: Du benutzt eine alternative Schreibweise, die
+        NLM nicht kennt, oder das Journal ist nicht im NLM-Katalog gelistet.
+        <p>
+
+            Um Abhilfe zu schaffen kannst du einfach die <a class="link"
+                href="https://www.issn.org/understanding-the-issn/what-is-an-issn/" target="_blank"
+                rel="noopener noreferrer">ISSN</a> zur Suche benutzen. Sie ist ein einzigartiger Code für das Journal
+            und müsste irgendwo (meist im Footer) auf der Webseite des Journals zu finden sein.
+        </p>
+        <p>
+            Wenn du trotzdem nicht in der Lage bist, das Journal zu finden, <em>ist es vielleicht nicht gelistet.</em>
+            Deshalb frage ich ganz plump: hat das Journal einen Impact Factor? Ist es im <a class="link"
+                href="https://jcr.clarivate.com/" target="_blank" rel="noopener noreferrer">Web of Science JCR</a> zu
+            finden? Solltest du diese Fragen mit nein beantworten, muss ich dich leider enttäuschen. Es ist nicht
+            möglich, das Journal zu OSIRIS hinzuzufügen.
+        </p>
+
+        <p>
+            Es ist aber möglich, deine Publikation oder dein Review trotzdem in OSIRIS einzutragen: Die Publikation ist
+            allerdings "nur" ein Magazinartikel (non-refereed), Selbst wenn dir ein Peer-Review wiederfahren ist, kann
+            es nicht gewertet werden, wenn es sich nicht um ein indiziertes Journal handelt. Ebenso ist es mit einem
+            Review von dir: das müsstest du wohl als "Sonstige Aktivität" <i class="fas fa-icons text-misc"></i>
+            eintragen. Zum Beispiel als "Review für COVID". Trag dann am Besten als Notiz ein, dass es sich um ein nicht
+            in NLM gelistetes Journal handelt, damit die Kollegen vom Controlling nicht verwirrt sind.
+        </p>
+
+    </div>
+</details>
+
+<details class="collapse-panel">
+    <summary class="collapse-header">
+        Woher bezieht OSIRIS die Impact Faktoren?
+    </summary>
+    <div class="collapse-content">
+        <p>
+            OSIRIS bezieht seine Daten von 
+            <a href="https://www.scimagojr.com/" target="_blank" rel="noopener noreferrer">SJR</a>, dem SCImago Journal Rank, der wiederum aus der Scopus Datenbank von Elsevier gebildet wird. 
+            Diese weichen leicht von den Impact Factoren von Clarivate (Web of Science) ab. 
+            Das liegt daran, dass Zitate nach der "Bedeutung" der Zeitschriften gewichtet werden, aus denen sie stammen, "so dass Zitate aus wichtigeren Zeitschriften wertvoller sind als Zitate aus weniger wichtigen Zeitschriften". Mehr könnt ihr in 
+            <a href="https://arxiv.org/ftp/arxiv/papers/0912/0912.4141.pdf" target="_blank" rel="noopener noreferrer">dieser Publikation</a> lesen.            
+        </p>
+
+    </div>
+</details>
+
+
+
 
 <script>
     function filterFAQ(input) {
