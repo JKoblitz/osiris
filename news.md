@@ -44,7 +44,8 @@
   - Ein Journal kann nun als Open Access markiert werden 
   - Dazu kann entweder angegeben werden, dass das Journal ausschließlich open access ist, oder ab welchem Jahr
   - Neu hinzugefügte Publikationen, die nach dem angegebenen Jahr publiziert wurden, werden automatisch als Open Access markiert
-  - Wenn das Open Access Jahr eines Jorunals neu gesetzt wird, werden alle Publikationen die *nach* dem Jahr publiziert wurden, automatisch als Open Access markiert. Publikationen *im* angegebenen Jahr müssen manuell überprüft werden
+  - Wenn das Open Access Jahr eines Journals neu gesetzt wird, werden alle Publikationen die *nach* dem Jahr publiziert wurden, automatisch als Open Access markiert. Publikationen *im* angegebenen Jahr müssen manuell überprüft werden
+  - Journale können jetzt manuell hinzugefügt werden (für Admins)
 
 **Dokumentation**
 

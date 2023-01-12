@@ -8,7 +8,7 @@
 <?php } ?>
 
 
-<h2>
+<h2 class="mt-0">
     <?= $data['journal'] ?>
 </h2>
 

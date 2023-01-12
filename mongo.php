@@ -250,6 +250,8 @@ Route::post('/create-journal', function () {
     $values = validateValues($_POST['values']);
     $values['impact'] = [];
 
+    $values['abbr'] = $values['abbr'] ?? $values['journal'];
+
     // add information on creating process
     $values['created'] = date('Y-m-d');
     $values['created_by'] = $_SESSION['username'];
@@ -306,16 +308,17 @@ Route::post('/create-journal', function () {
 
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        $red = str_replace("*", $id, $_POST['redirect']);
+        header("Location: " . $red . "?msg=success");
+        die();
+    }
+
     echo json_encode([
         'inserted' => $insertOneResult->getInsertedCount(),
         'id' => $id,
     ]);
-
-    // if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
-    //     $red = str_replace("*", $id, $_POST['redirect']);
-    //     header("Location: " . $red . "?msg=add-success");
-    //     die();
-    // }
     // $result = $collection->findOne(['_id' => $id]);
 });
 

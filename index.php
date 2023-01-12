@@ -849,6 +849,23 @@ Route::get('/journal/view/([a-zA-Z0-9]*)', function ($id) {
 }, 'login');
 
 
+Route::get('/journal/add', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $id = null;
+    $data = [];
+    $breadcrumb = [
+        ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
+        ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
+        ['name' => lang("Add", "Hinzufügen")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/journal-editor.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";

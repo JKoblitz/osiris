@@ -1,3 +1,16 @@
+
+<?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
+    <a href="<?= ROOTPATH ?>/journal/add" class="btn btn-osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
+<?php } ?>
+
+
+<h2 class="mt-0">
+    <i class="far fa-book-open-cover text-osiris mr-5"></i>
+   <?=lang('Journals', 'Journale')?>
+</h2>
+
+
+
 <table class="table" id="result-table">
     <thead>
         <th>Journal name</th>
@@ -11,8 +24,6 @@
     <tbody>
     </tbody>
 </table>
-
-
 
 
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
