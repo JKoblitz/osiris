@@ -631,6 +631,9 @@ function getDOI(doi) {
             var authors = [];
             // var editors = [];
             var first = 1
+            if (pub.author === undefined && pub.editor !== undefined){
+                pub.author = pub.editor
+            }
             pub.author.forEach((a, i) => {
                 var aoi = false
                 a.affiliation.forEach(e => {
@@ -662,13 +665,13 @@ function getDOI(doi) {
                 journal: pub['container-title'][0],
                 issn: (pub.ISSN ?? []).join(' '),
                 issue: issue,
-                volume: pub.volume ?? '',
+                volume: pub.volume,
                 pages: pub.page,
                 doi: pub.DOI,
                 // pubmed: null,
-                book: pub['container-title'][0],
                 // edition: pub.edition,
-                publisher: pub['publisher-name'],
+                publisher: pub['publisher'] ?? pub['publisher-name'],
+                isbn: pub['ISBN'],
                 city: pub['publisher-location'],
                 // open_access: pub.open_access,
                 epub: pub['published-print'] === undefined,
@@ -826,13 +829,17 @@ function fillForm(pub) {
             togglePubType('chapter')
             break;
         case 'book':
-            if (pub.editors.length > 0 && pub.authors.length > 0) {
+            if (pub.editors !== undefined && pub.editors.length > 0 && pub.authors.length > 0) {
                 togglePubType('chapter')
-            } else if (pub.editors.length > 0) {
+                pub.book = pub.journal;
+            } else if (pub.editors !== undefined && pub.editors.length > 0) {
                 togglePubType('editor')
+                pub.book = pub.journal;
             } else {
                 togglePubType('book')
+                pub.series = pub.journal;
             }
+            delete pub.journal
             break;
         case 'software':
         case 'dataset':
@@ -873,7 +880,9 @@ function fillForm(pub) {
         'pubmed',
         'book',
         'edition',
-        'publisher', ,
+        'publisher',
+        'series',
+        'isbn',
         'city',
         'software_venue',
         'software_version',
@@ -1315,7 +1324,7 @@ function verifyForm(event, form) {
 
             console.log(input);
             if (!$(this).val()) {
-                selector.addClass('is-invalid')
+                selector.removeClass('is-valid').addClass('is-invalid')
                 // .on('input', function(){
                 //     if (this.value !== '') selector.addClass('is-valid').removeClass('is-invalid')
                 //     else selector.addClass('is-invalid').removeClass('is-valid')

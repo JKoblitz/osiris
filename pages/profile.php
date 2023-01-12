@@ -357,7 +357,7 @@ if (isset($_GET['verbose'])) {
                 <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
             </a>
 
-            <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Meine Errungenschaften von ') . $scientist['first'] ?>">
+            <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
                 <i class="far fa-trophy text-signal fa-fw"></i>
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>

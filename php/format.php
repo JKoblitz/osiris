@@ -317,8 +317,6 @@ function activity_icon($doc, $tooltip = true)
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
-                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
-                    break 2;
                 case 'book-editor':
                 case 'publication':
                     $icon = "<i class='far fa-lg text-publication fa-book-bookmark'></i>";
@@ -806,6 +804,13 @@ class Format
                     $result .= " $this->title.";
                 }
                 if (!empty($doc['book'])) {
+                    $this->subtitle .= " In:";
+                    if (!empty($doc['editors'])) {
+                        $this->subtitle .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
+                    };
+                    $this->subtitle .= " <i>$doc[book]</i>";
+                }
+                if (!empty($doc['book'])) {
                     // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
                     // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
                     // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
@@ -815,7 +820,7 @@ class Format
                     };
                     $this->subtitle .= " <i>$doc[book]</i>";
                 }
-                if (!empty($doc['edition']) || !empty($doc['pages'])) {
+                if (!empty($doc['edition']) || !empty($doc['pages']) || !empty($doc['volume'])) {
                     $ep = array();
                     if (!empty($doc['edition'])) {
                         $ed = $doc['edition'];
@@ -828,16 +833,43 @@ class Format
                     if (!empty($doc['pages'])) {
                         $ep[] = "pp. $doc[pages]";
                     }
+                    if (!empty($doc['volume'])) {
+                        $ep[] = "Vol. $doc[volume]";
+                    }
 
                     $this->subtitle .= " (" . implode(', ', $ep) . ")";
                 }
-                $result .= "$this->subtitle.";
+                $result .= "$this->subtitle";
 
                 if (!empty($doc['city'])) {
                     $result .= " $doc[city]:";
                 }
                 if (!empty($doc['publisher'])) {
                     $result .= " $doc[publisher].";
+                    $this->subtitle .= " $doc[publisher].";
+                }
+                break;
+            case 'dissertation':
+                if (!empty($doc['year'])) {
+                    $result .= " ($doc[year])";
+                }
+                if (!empty($doc['title'])) {
+                    $this->title = $doc['title'];
+                    $result .= " $this->title";
+                }
+                $this->subtitle = "Dissertation";
+                $result .= " (Dissertation).";
+                if (!empty($doc['publisher'])) {
+                    $result .= " $doc[publisher]";
+                    $this->subtitle .= ", $doc[publisher]";
+                    if (!empty($doc['city'])) {
+                        $result .= ", $doc[city]";
+                        $this->subtitle .= ", $doc[city]";
+                    }
+                    $result .= ".";
+                }
+                if (!empty($doc['link'])) {
+                    $result .= " <a target='_blank' href='$doc[link]'>$doc[link]</a>";
                 }
                 break;
             default:

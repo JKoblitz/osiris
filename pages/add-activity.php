@@ -299,7 +299,13 @@ function val($index, $default = '')
                     <span class="element-link" data-element="<?= lang('Link') ?>">https://analyticalscience.wiley.com/do/10.1002/was.000600102/full/</span>
                 </p>
                 <p data-visible="book">
-                    TODO
+                    <span class="element-author" data-element="Autor(en)">Overmann, J.</span>
+                    (<span class="element-time" data-element="Jahr">2006</span>) 
+                    <span class="element-title" data-element="Titel">Molecular Basis of Symbiosis</span>. 
+                    (Vol. <span data-element="Volume">41</span>)
+                    <span data-element="Ort">Berlin/Heidelberg</span>: 
+                    <span data-element="Verlag">Springer-Verlag</span>. 
+                    DOI: https://doi.org/<span class="element-link" data-element="DOI">10.1007/3-540-28221-1</span>
                 </p>
                 <p data-visible="chapter">
                     <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Overmann, J.</span>
@@ -314,10 +320,14 @@ function val($index, $default = '')
                 </p>
 
                 <p data-visible="preprint">
-                    TODO
+                    Coming soon.
                 </p>
                 <p data-visible="dissertation">
-                    TODO
+                    <span class="element-author" data-element="Autor(en)">Helmecke, J.</span> 
+                    (<span class="element-time" data-element="Jahr">2019</span>) 
+                    <span class="element-title" data-element="Titel">Vom Genom zum systemweiten Verständnis des Stoffwechsels thermoacidophiler Sulfolobales</span> (Dissertation). 
+                    <span data-element="Universität">TU Braunschweig</span>.
+                    DOI: https://doi.org/<span class="element-link" data-element="DOI">10.24355/dbbs.084-201910291317-0</span>
                 </p>
                 <p data-visible="poster">
                     <span class="element-author" data-element="<?= lang('Author(s)', 'Autor(en)') ?>">Lissin, A., Podstawka, A., Reimer, L. C., Koblitz, J., Bunk, B. and Overmann, J. </span>
@@ -742,11 +752,21 @@ function val($index, $default = '')
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
+                        <label for="series" class="element-other"><?=lang('Series', 'Buchreihe')?></label>
+                        <input type="text" class="form-control" name="values[series]" value="<?= val('series') ?>" id="series">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                    </div>
+                    <div class="col-sm" data-visible="book,chapter">
+                        <label for="edition" class="element-other">Edition</label>
+                        <input type="number" class="form-control" name="values[edition]" value="<?= val('edition') ?>" id="edition">
+                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
+                    </div>
+                    <div class="col-sm">
                         <label for="volume" class="element-other">Volume</label>
                         <input type="text" class="form-control" name="values[volume]" value="<?= val('volume') ?>" id="volume">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
-                    <div class="col-sm">
+                    <div class="col-sm" data-visible="article,chapter">
                         <label for="pages" class="element-other">Pages</label>
                         <input type="text" class="form-control" name="values[pages]" value="<?= val('pages') ?>" id="pages">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
@@ -760,15 +780,10 @@ function val($index, $default = '')
                         <input type="text" class="form-control" name="values[book]" value="<?= val('book') ?>" id="book" required>
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
-                    <div class="col-sm" data-visible="book,chapter">
-                        <label for="edition" class="element-other">Edition</label>
-                        <input type="number" class="form-control" name="values[edition]" value="<?= val('edition') ?>" id="edition">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
-                    </div>
                     <div class="col-sm">
                         <label for="publisher" class="element-other">
                             <span data-visible="book,chapter"><?= lang('Publisher', 'Verlag') ?></span>
-                            <span data-visible="book,chapter,dissertation"><?= lang('University', 'Universität') ?></span>
+                            <span data-visible="dissertation"><?= lang('University', 'Universität') ?></span>
                         </label>
                         <input type="text" class="form-control" name="values[publisher]" value="<?= val('publisher') ?>" id="publisher">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
@@ -814,7 +829,7 @@ function val($index, $default = '')
                     </div>
                     <div class="col-sm" data-visible="book,chapter,dissertation">
                         <label for="isbn">ISBN</label>
-                        <input type="text" class="form-control" name="values[isbn]" value="<?= val('isbn') ?>" id="pubmed">
+                        <input type="text" class="form-control" name="values[isbn]" value="<?= val('isbn') ?>" id="isbn">
                     </div>
                     <div class="col-sm" data-visible="others">
                         <label for="doc_type"><?= lang('Document type', 'Dokumententyp') ?></label>
@@ -1065,27 +1080,3 @@ function val($index, $default = '')
 <?php } ?>
 
 <script src="<?= ROOTPATH ?>/js/tour/add-activity.js"></script>
-
-<script>
-    TODO:
-        function getFieldList() {
-
-            $('input').each(function() {
-                fields = {
-                    id: 'magazine',
-                    label: lang('Magazine', 'Magazin'),
-                    type: 'string'
-                }
-            })
-
-            $('select').each(function() {
-                fields = {
-                    id: 'type',
-                    label: lang('Type', 'Typ'),
-                    type: 'string',
-                    input: 'select',
-                    values: ['publication', 'poster', 'lecture', 'review', 'students']
-                },
-            })
-        }
-</script>
