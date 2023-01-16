@@ -60,7 +60,7 @@ $issues = 0;
 
 $years = [];
 $lom_years = [];
-for ($i = 2017; $i <= CURRENTYEAR; $i++) {
+for ($i = $Settings->startyear; $i <= CURRENTYEAR; $i++) {
     $years[] = strval($i);
     $lom_years[$i] = 0;
 }
@@ -76,7 +76,7 @@ $cursor = $cursor->toArray();
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-    if ($doc['year'] < 2017) continue;
+    if ($doc['year'] < $Settings->startyear) continue;
 
     $type = $doc['type'];
 
@@ -178,8 +178,8 @@ if (isset($_GET['verbose'])) {
 
             <p>
                 <?= lang(
-                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the DSMZ). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
-                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der DSMZ warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
+                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the '.$Settings->affiliation.'). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
+                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der '.$Settings->affiliation.' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
                 ) ?>
             </p>
 
@@ -207,7 +207,7 @@ if (isset($_GET['verbose'])) {
 
             <h3 class="m-0 text-<?= $scientist['dept'] ?>">
                 <?php
-                echo deptInfo($scientist['dept'])['name'];
+                echo $Settings->getDepartments($scientist['dept'])['name'];
                 ?>
 
             </h3>
@@ -475,7 +475,7 @@ if (isset($_GET['verbose'])) {
                     <?php } ?>
                     <tr>
                         <td><?= lang('Department', 'Abteilung') ?></td>
-                        <td><?= deptInfo($scientist['dept'])['name'] ?></td>
+                        <td><?= $Settings->getDepartments($scientist['dept'])['name'] ?></td>
                     </tr>
                     <!-- <tr>
                         <td><?= lang('Achievements', 'Erfolge') ?></td>
@@ -968,10 +968,10 @@ if (isset($_GET['verbose'])) {
                     datasets: [
                         <?php $n = 3;
                         foreach ($groups as $group => $i) {
-                            $color = typeInfo($group)['color'];
+                            $color = $Settings->getActivities($group)['color'];
                             // $color = adjustBrightness($color, ($n--)*10);
                         ?> {
-                                label: '<?= typeInfo($group)['name'] ?>',
+                                label: '<?= $Settings->getActivities($group)['name'] ?>',
                                 data: raw_data,
                                 parsing: {
                                     yAxisKey: '<?= $group ?>'

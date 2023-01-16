@@ -1,0 +1,142 @@
+{
+    "affiliation": {
+        "id": "DSMZ",
+        "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",
+        "link": "https://www.dsmz.de/",
+        "logo": "dsmz.svg"
+    },
+    "startyear": 2017,
+    "departments": [
+        {
+            "id": "MIOS",
+            "color": "#d31e25",
+            "name": "Mikroorganismen"
+        },
+        {
+            "id": "BIDB",
+            "color": "#5db5b7",
+            "name": "Bioinformatik & Datenbanken"
+        },
+        {
+            "id": "MIG",
+            "color": "#d1c02b",
+            "name": "Mikrobielle Genomforschung"
+        },
+        {
+            "id": "BUG",
+            "color": "#8a3f64",
+            "name": "Bioökonomie und Gesundheitsforschung"
+        },
+        {
+            "id": "MuTZ",
+            "color": "#31407b",
+            "name": "Menschliche & Tierische Zellkulturen"
+        },
+        {
+            "id": "PFVI",
+            "color": "#369e4b",
+            "name": "Pflanzenviren"
+        },
+        {
+            "id": "MÖD",
+            "color": "#d7a32e",
+            "name": "Mikrobielle Ökologie"
+        },
+        {
+            "id": "Services",
+            "color": "#4f2e39",
+            "name": "Services"
+        },
+        {
+            "id": "NFG",
+            "color": "#5F272A",
+            "name": "Nachwuchsforschungsgruppen"
+        },
+        {
+            "id": "Patente",
+            "color": "#5F272A",
+            "name": "Patente"
+        },
+        {
+            "id": "IT",
+            "color": "#afafaf",
+            "name": "IT"
+        },
+        {
+            "id": "Verwaltung",
+            "color": "#afafaf",
+            "name": "Verwaltung"
+        },
+        {
+            "id": "PuK",
+            "color": "#afafaf",
+            "name": "Presse und Kommunikation"
+        }
+    ],
+    "activities": [
+        {
+            "id": "publication",
+            "name": "Publications",
+            "name_de": "Publikationen",
+            "color": "#006EB7",
+            "icon": "book-bookmark",
+            "index": 1
+        },
+        {
+            "id": "poster",
+            "name": "Poster",
+            "name_de": "Poster",
+            "color": "#B61F29",
+            "icon": "presentation-screen",
+            "index": 2
+        },
+        {
+            "id": "lecture",
+            "name": "Lectures",
+            "name_de": "Vorträge",
+            "color": "#ECAF00",
+            "icon": "keynote",
+            "index": 3
+        },
+        {
+            "id": "review",
+            "name": "Reviews & Editorial boards",
+            "name_de": "Reviews & Editorial boards",
+            "color": "#1FA138",
+            "icon": "book-open-cover",
+            "index": 4
+        },
+        {
+            "id": "students",
+            "name": "Students & Guests",
+            "name_de": "Studierende & Gäste",
+            "color": "#5F272A",
+            "icon": "user-graduate",
+            "index": 5
+        },
+        {
+            "id": "teaching",
+            "name": "Teaching",
+            "name_de": "Lehre",
+            "color": "#000000",
+            "icon": "chalkboard-user",
+            "index": 6
+        },
+        {
+            "id": "software",
+            "name": "Software & Data",
+            "name_de": "Software & Daten",
+            "color": "#9a499c",
+            "icon": "desktop",
+            "index": 7
+        },
+        {
+            "id": "misc",
+            "name": "Other activities",
+            "name_de": "Sonstige Aktivitäten",
+            "color": "#b3b3b3",
+            "icon": "icons",
+            "index": 8
+        }
+    ]
+}

@@ -68,7 +68,7 @@ dump($data, true);
             <select name="values[dept]" id="dept" class="form-control">
                 <option value="">Unknown</option>
                 <?php
-                foreach (deptInfo() as $d => $dept) { ?>
+                foreach ($Settings->getDepartments() as $d => $dept) { ?>
                     <option value="<?= $d ?>" <?= $data['dept'] == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
                 <?php } ?>
             </select>

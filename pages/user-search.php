@@ -41,7 +41,7 @@ $Format = new Format(true);
 
     <?php
     $depts = [];
-    foreach (deptInfo() as $d => $val) {
+    foreach ($Settings->getDepartments() as $d => $val) {
         $depts[$d] = $val['name'];
     }
     ?>

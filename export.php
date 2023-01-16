@@ -206,7 +206,7 @@ Route::post('/download', function () {
             if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
             if (!in_array($doc['type'], $headers)) {
                 $headers[] = $doc['type'];
-                $section->addTitle(typeInfo($doc['type'])['name'], 1);
+                $section->addTitle($Settings->getActivities($doc['type'])['name'], 1);
             }
             $paragraph = $section->addTextRun();
             $line = $Format->format($doc);

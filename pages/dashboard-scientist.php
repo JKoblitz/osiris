@@ -119,7 +119,7 @@
     <div class="col-lg-4">
         <div class="box h-full">
             <div class="chart content">
-                <h5 class="title text-center"><?= lang('Role of DSMZ authors', 'Rolle der DSMZ-Autoren') ?></h5>
+                <h5 class="title text-center"><?= lang('Role of '.$Settings->affiliation.' authors', 'Rolle der '.$Settings->affiliation.'-Autoren') ?></h5>
                 <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
             </div>
             <script>
@@ -179,7 +179,7 @@
     <?php foreach ($stats as $type => $vals) {
 
         $years = [];
-        for ($i = 2017; $i <= CURRENTYEAR; $i++) {
+        for ($i = $Settings->startyear; $i <= CURRENTYEAR; $i++) {
             $years[] = strval($i);
         }
     ?>
@@ -187,7 +187,7 @@
 
             <div class="box">
                 <div class="chart content">
-                    <h5 class="title text-center"><?= type2title($type) ?></h5>
+                    <h5 class="title text-center"><?= $Settings->getActivities($type)['name'] ?></h5>
                     <canvas id="chart-<?= $type ?>"></canvas>
 
                     <div class="mt-5 text-right">
@@ -214,7 +214,7 @@
                     parsing: {
                         yAxisKey: 'good'
                     },
-                    backgroundColor: '<?= typeInfo($type)['color'] ?>95',
+                    backgroundColor: '<?= $Settings->getActivities($type)['color'] ?>95',
                     borderColor: '#464646',
                     borderWidth: 1,
                     borderRadius: 4

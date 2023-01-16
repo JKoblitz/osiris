@@ -1,15 +1,7 @@
 <?php
 
-
-// global $db;
-// $db = new PDO("mysql:host=localhost;dbname=osiris;charset=utf8mb4", 'juk', 'Zees1ius');
-
-// $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-// global $userClass;
-// include_once BASEPATH . "/php/User.php";
-// // global $userClass;
-// $userClass = new User($_SESSION['username'] ?? null);
+require_once BASEPATH . '/php/Settings.php';
+$Settings = new Settings();
 
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
@@ -355,69 +347,6 @@ function time_elapsed_string($datetime, $full = false, $type = 'str')
 }
 
 
-function typeInfo($type = null)
-{
-    $types = [
-        'publication' => [
-            'name' => lang('Publications', 'Publikationen'),
-            'color' => "#006EB7",
-            'icon' => 'book-bookmark',
-            'index' => 1
-        ],
-        'poster' => [
-            'name'  => lang('Poster'),
-            'color' => "#B61F29",
-            'icon' => 'presentation-screen',
-            'index' => 2
-        ],
-        'lecture' => [
-            'name' => lang('Lectures', 'Vorträge'),
-            'color' => "#ECAF00",
-            'icon' => 'keynote',
-            'index' => 3
-        ],
-        'review' => [
-            'name' => lang('Reviews & Editorial boards'),
-            'color' => "#1FA138",
-            'icon' => 'book-open-cover',
-            'index' => 4
-        ],
-        'misc' => [
-            'name' => lang('Other activities', 'Sonstige Aktivitäten'),
-            'color' => "#b3b3b3",
-            'icon' => 'icons',
-            'index' => 5
-        ],
-        'students' => [
-            'name' => lang('Students & Guests', 'Studierende & Gäste'),
-            'color' => "#5F272A",
-            'icon' => 'user-graduate',
-            'index' => 6
-        ],
-        'teaching' => [
-            'name' => lang('Teaching', 'Lehre'),
-            'color' => "#000000",
-            'icon' => 'chalkboard-user',
-            'index' => 7
-        ],
-        'software' => [
-            'name' => lang('Software & Data', 'Software & Daten'),
-            'color' => "#9a499c",
-            'icon' => 'desktop',
-            'index' => 8
-        ],
-    ];
-
-    if ($type === null) return $types;
-
-    if (array_key_exists($type, $types)) return $types[$type];
-
-    return [
-        'name' => $type,
-        'color' => '#cccccc',
-        'icon' => 'notdef'
-    ];
-}
 function adjustBrightness($hex, $steps)
 {
     // Steps should be between -255 and 255. Negative = darker, positive = lighter
@@ -441,76 +370,6 @@ function adjustBrightness($hex, $steps)
 
     return $return;
 }
-
-function type2title($type)
-{
-    return typeInfo($type)['name'];
-}
-
-
-function deptInfo($dept = null)
-{
-    $depts =  [
-        "MIOS" => [
-            "color" => '#d31e25',
-            'name' => 'Mikroorganismen'
-        ],
-        "BIDB" => [
-            "color" => '#5db5b7',
-            'name' => 'Bioinformatik & Datenbanken'
-        ],
-        "MIG" => [
-            "color" => '#d1c02b',
-            'name' => 'Mikrobielle Genomforschung'
-        ],
-        "BUG" => [
-            "color" => '#8a3f64',
-            'name' => 'Bioökonomie und Gesundheitsforschung'
-        ],
-        "MuTZ" => [
-            "color" => '#31407b',
-            'name' => 'Menschliche & Tierische Zellkulturen'
-        ],
-        "PFVI" => [
-            "color" => '#369e4b',
-            'name' => 'Pflanzenviren'
-        ],
-        "MÖD" => [
-            "color" => '#d7a32e',
-            'name' => 'Mikrobielle Ökologie'
-        ],
-        "Services" => [
-            "color" => '#4f2e39',
-            'name' => 'Services'
-        ],
-        "NFG" => [
-            "color" => '#5F272A',
-            'name' => 'Nachwuchsforschungsgruppen'
-        ],
-        "Patente" => [
-            "color" => '#5F272A',
-            'name' => 'Patente'
-        ],
-        "IT" => [
-            "color" => '#afafaf',
-            'name' => 'IT'
-        ],
-        "Verwaltung" => [
-            "color" => '#afafaf',
-            'name' => 'Verwaltung'
-        ],
-        "PuK" => [
-            "color" => '#afafaf',
-            'name' => 'Presse und Kommunikation'
-        ]
-    ];
-    if ($dept === null) return $depts;
-    return $depts[$dept] ?? [
-        "color" => '#cccccc',
-        'name' => $dept
-    ];
-}
-
 
 function getFileIcon($type)
 {

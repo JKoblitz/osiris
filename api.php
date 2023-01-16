@@ -60,7 +60,7 @@ function return_rest($data, $count = 0, $status = 200)
  * @apiParam {Integer} [limit] Max. number of results
  * @apiParam {Integer} [offset] Offset of results
  *
- * @apiSampleRequest https://mediadive.dsmz.de/download/publications
+ * @apiSampleRequest https://osiris.dsmz.de/download/publications
  * 
  * @apiSuccess {String} id Unique ID of the medium.
  * @apiSuccess {String} name  Name of the medium.
@@ -74,15 +74,8 @@ function return_rest($data, $count = 0, $status = 200)
  * @apiSuccessExample {json} Example data:
  * [
     {
-        "id": "119a",
-        "name": "METHANOBREVIBACTER MEDIUM",
-        "complex_medium": 1,
-        "source": "DSMZ",
-        "link": "https://www.dsmz.de/microorganisms/medium/pdf/DSMZ_Medium119a.pdf",
-        "min_pH": 6.8,
-        "max_pH": 7,
-        "reference": null,
-        "description": null
+        "id": "1",
+        "name": "TEST"
     },
     ...
 ]

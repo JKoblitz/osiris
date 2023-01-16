@@ -123,7 +123,7 @@ foreach ($combinations as $c) {
 
     var data = JSON.parse('<?= json_encode(array_values($labels)) ?>')
     
-    const DEPTS = JSON.parse('<?=json_encode(deptInfo())?>');
+    const DEPTS = JSON.parse('<?=json_encode($Settings->getDepartments())?>');
 
     var colors = []
     var links = []

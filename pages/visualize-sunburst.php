@@ -39,7 +39,7 @@ $activities = $osiris->activities->find($filter);
 $activities = $activities->toArray();
 
 $index = 0;
-$departments = deptInfo();
+$departments = $Settings->getDepartments();
 $i = 0;
 foreach ($departments as $dept => $val) {
     $flare[$i] = [

@@ -52,7 +52,7 @@
                     <select name="filter[dept]" id="dept" class="form-control">
                         <option value=""><?= lang('All departments', 'Alle Abteilungen') ?></option>
                         <?php
-                        foreach (deptInfo() as $d => $dept) { ?>
+                        foreach ($Settings->getDepartments() as $d => $dept) { ?>
                             <option value="<?= $d ?>"><?= $dept['name'] ?></option>
                         <?php } ?>
                     </select>
@@ -68,12 +68,12 @@
                     <span class="input-group-text"><?= lang('From', 'Von') ?></span>
                 </div>
                 <input type="number" name="filter[time][from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-                <input type="number" name="filter[time][from][year]" class="form-control" placeholder="year" min="2017" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+                <input type="number" name="filter[time][from][year]" class="form-control" placeholder="year" min="<?=$Settings->startyear?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><?= lang('to', 'bis') ?></span>
                 </div>
                 <input type="number" name="filter[time][to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-                <input type="number" name="filter[time][to][year]" class="form-control" placeholder="year" min="2017" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+                <input type="number" name="filter[time][to][year]" class="form-control" placeholder="year" min="<?=$Settings->startyear?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
                 <div class="input-group-append">
                     <button class="btn" type="button" onclick="filtertime(true)">&times;</button>
@@ -93,7 +93,7 @@
 
             <div class="custom-radio d-inline-block ml-10">
                 <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                <label for="highlight-aoi"><?= AFFILIATION ?><?= lang(' Authors', '-Autoren') ?></label>
+                <label for="highlight-aoi"><?= $Settings->affiliation ?><?= lang(' Authors', '-Autoren') ?></label>
             </div>
 
             <div class="custom-radio d-inline-block ml-10">
@@ -149,15 +149,15 @@
             fromMonth = 1
         }
         var fromYear = $("#from-year").val()
-        if (fromYear.length == 0 || parseInt(fromYear) < 2017 || parseInt(fromYear) > today.getFullYear()) {
-            fromYear = 2017
+        if (fromYear.length == 0 || parseInt(fromYear) < <?=$Settings->startyear?> || parseInt(fromYear) > today.getFullYear()) {
+            fromYear = <?=$Settings->startyear?>
         }
         var toMonth = $("#to-month").val()
         if (toMonth.length == 0 || parseInt(toMonth) < 1 || parseInt(toMonth) > 12) {
             toMonth = 12
         }
         var toYear = $("#to-year").val()
-        if (toYear.length == 0 || parseInt(toYear) < 2017 || parseInt(toYear) > today.getFullYear()) {
+        if (toYear.length == 0 || parseInt(toYear) < <?=$Settings->startyear?> || parseInt(toYear) > today.getFullYear()) {
             toYear = today.getFullYear()
         }
         // take care that from is not larger than to

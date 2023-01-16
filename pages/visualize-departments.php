@@ -26,7 +26,7 @@ foreach ($temp as $row) {
 
 // generate graph json
 $combinations = [];
-$labels = deptInfo();
+$labels = $Settings->getDepartments();
 
 foreach ($labels as $key => $val) {
     $labels[$key]['count'] = 0;

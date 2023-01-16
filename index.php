@@ -29,7 +29,6 @@ if ($sn == 'testserver' || $sn == 'localhost' || $sn == 'juk20-dev.dsmz.local') 
     define('ROOTPATH', '');
 }
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('AFFILIATION', 'DSMZ');
 
 // Language settings and cookies
 if (!empty($_GET['language'])) {
@@ -109,18 +108,6 @@ Route::get('/dashboard', function () {
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/dashboard.php";
-    include BASEPATH . "/footer.php";
-});
-
-Route::get('/about', function () {
-
-    $breadcrumb = [
-        ['name' => lang('About OSIRIS', 'Über OSIRIS')]
-    ];
-
-    include_once BASEPATH . "/php/_config.php";
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/about.php";
     include BASEPATH . "/footer.php";
 });
 

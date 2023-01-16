@@ -137,8 +137,8 @@ foreach ($cursor as $doc) {
 
             <p>
                 <?= lang(
-                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the DSMZ). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
-                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der DSMZ warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
+                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the '.$Settings->affiliation.'). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
+                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der '.$Settings->affiliation.' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
                 ) ?>
             </p>
 
@@ -160,7 +160,7 @@ foreach ($cursor as $doc) {
 
             <h3 class="m-0 text-<?= $scientist['dept'] ?>">
                 <?php
-                echo deptInfo($scientist['dept'])['name'];
+                echo $Settings->getDepartments($scientist['dept'])['name'];
                 ?>
             </h3>
             <p class="lead mt-0">
@@ -188,7 +188,7 @@ foreach ($cursor as $doc) {
                             </div>
                         </div>
                         <select name="year" id="year" class="form-control">
-                            <?php foreach (range(2017, CURRENTYEAR) as $year) { ?>
+                            <?php foreach (range($Settings->startyear, CURRENTYEAR) as $year) { ?>
                                 <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
                             <?php } ?>
                         </select>
@@ -287,7 +287,7 @@ foreach ($cursor as $doc) {
     <!-- <script src="<?= ROOTPATH ?>/js/d3-timeline.js"></script> -->
 
     <script>
-        let typeInfo = JSON.parse('<?= json_encode(typeInfo(null)) ?>');
+        let typeInfo = JSON.parse('<?= json_encode($Settings->getActivities(null)) ?>');
         let events = JSON.parse('<?= json_encode(array_values($timeline)) ?>');
         console.log(events);
         var types = JSON.parse('<?= json_encode($timelineGroups) ?>');
@@ -486,8 +486,8 @@ foreach ($cursor as $doc) {
         <div class="box box-<?= $col ?>" id="<?= $col ?>">
             <div class="content">
                 <h4 class="title text-<?= $col ?>">
-                    <i class="far fa-fw fa-<?= typeInfo($col)['icon'] ?> mr-5"></i>
-                    <?= typeInfo($col)['name'] ?>
+                    <i class="far fa-fw fa-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
+                    <?= $Settings->getActivities($col)['name'] ?>
                 </h4>
             </div>
             <table class="table table-simple">
@@ -574,8 +574,8 @@ foreach ($cursor as $doc) {
                     $t = $col;
                     if ($col == "publication") $t = "article";
                 ?>
-                    <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= typeInfo($col)['color'] ?>">
-                        <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= typeInfo($col)['name'] ?>
+                    <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
+                        <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)['name'] ?>
                     </a>
                     <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="fas fa-plus"></i></a>
 

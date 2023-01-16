@@ -1,6 +1,6 @@
 <h1><?= lang('Welcome!', 'Willkommen') ?></h1>
 
-<h5 class=""><?=lang('Please log-in to get access to the pages.', 'Bitte logge dich mit deinem DSMZ-Benutzeraccount an, um Zugang zu bekommen.')?></h5>
+<h5 class=""><?=lang('Please log-in to get access to the pages.', 'Bitte melde dich mit deinem '.$Settings->affiliation.'-Benutzeraccount an, um Zugang zu bekommen.')?></h5>
 
 <form action="<?= ROOTPATH ?>/user/login" method="POST" class="w-400 mw-full">
     <input type="hidden" name="redirect" value="<?= $_GET['redirect'] ?? $_SERVER['REQUEST_URI'] ?>">

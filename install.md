@@ -15,7 +15,6 @@ sudo yum -y update
 
 sudo yum -y install gcc php-pear php-devel
 sudo yum install php-ldap
-# sudo yum -y install php-zip
 
 sudo pecl install mongodb-1.12.0
 
@@ -35,11 +34,6 @@ composer require  mongodb/mongodb:1.12.0
 
 composer require --ignore-platform-reqs mongodb/mongodb:1.12.0
 composer require --ignore-platform-reqs phpoffice/phpword
-composer require --ignore-platform-reqs seboettg/citeproc-php
-composer require --ignore-platform-reqs citation-style-language/styles
-<!-- --ignore-platform-reqs  -->
 mongorestore  dump/
-
-eepei5sha8Aegh0ap4ie
 
 composer update --ignore-platform-reqs

@@ -36,7 +36,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <style>
         :root {
-            --affiliation: "<?= AFFILIATION ?>";
+            --affiliation: "<?= $Settings->affiliation ?>";
         }
     </style>
 
@@ -48,10 +48,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
+<?php
+    echo $Settings->generateStyleSheet();
+?>
+
 
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
-        const AFFILIATION = "<?= AFFILIATION ?>";
+        const AFFILIATION = "<?= $Settings->affiliation ?>";
     </script>
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/shepherd.css" />
@@ -102,9 +106,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v1.0</span>
             </a>
 
-            <a href="//www.dsmz.de/" class="navbar-brand ml-auto">
-                <!-- DSMZ Logo is mandatory -->
-                <img src="<?= ROOTPATH ?>/img/dsmz.svg" alt="DSMZ">
+            <a href="<?= $Settings->affiliation_details['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
+                <img src="<?= ROOTPATH ?>/img/<?= $Settings->affiliation_details['logo'] ?? '#' ?>" alt="<?=$Settings->affiliation?>">
             </a>
         </div>
         <nav class="navbar navbar-bottom">

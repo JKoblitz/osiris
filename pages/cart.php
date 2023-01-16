@@ -54,7 +54,7 @@
 
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                    <label for="highlight-aoi"><?= AFFILIATION ?><?= lang(' Authors', '-Autoren') ?></label>
+                    <label for="highlight-aoi"><?= $Settings->affiliation ?><?= lang(' Authors', '-Autoren') ?></label>
                 </div>
 
                 <div class="custom-radio d-inline-block ml-10">

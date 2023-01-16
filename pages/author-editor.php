@@ -24,7 +24,7 @@
                     <th>Last name</th>
                     <th>First name</th>
                     <th>Position</th>
-                    <th><?= AFFILIATION ?></th>
+                    <th><?= $Settings->affiliation ?></th>
                     <th>Username</th>
                     <th></th>
                 </tr>

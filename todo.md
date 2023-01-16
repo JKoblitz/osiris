@@ -1,5 +1,7 @@
 # To-Do-Liste
-
+- Überischt über laufende Aktivitäten
+- Gremienarbeit?
+- 
 - [ ] Webanzeige: OSIRIS kann genutzt werden, um ein Webprofil zu erstellen. Nutzer:innen können auswählen, welche Aktivitäten gezeigt werden
 - [ ] Import: Nutzer:innen können Daten aus bspw. BibTeX importieren
 - [ ] Man kann weitere Namen zu seinem Profil hinzufügen, unter denen publiziert wurde

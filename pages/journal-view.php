@@ -35,6 +35,10 @@
         <td><?= implode('<br>', $data['issn']->bsonSerialize()) ?></td>
     </tr>
     <tr>
+        <td>WoS Categories</td>
+        <td><?= isset($data['categories']) ? implode('<br>', $data['categories']->bsonSerialize()): '' ?></td>
+    </tr>
+    <tr>
         <td>Open Access</td>
         <td>
             <?php

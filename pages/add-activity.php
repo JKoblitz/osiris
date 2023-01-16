@@ -83,7 +83,7 @@ function val($index, $default = '')
             </h5>
             <?php if (lang("en", "de") == "en") { ?>
                 <p>
-                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. DSMZ authors are suggested in a list. An author from the list will be automatically assigned to DSMZ.
+                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?=$Settings->affiliation?> authors are suggested in a list. An author from the list will be automatically assigned to <?=$Settings->affiliation?>.
                 </p>
 
                 <p>
@@ -93,11 +93,11 @@ function val($index, $default = '')
                     To <b>change the author order</b>, you can take an author and drag and drop it to the desired position.
                 </p>
                 <p>
-                    To <b>mark an author as belonging to the DSMZ</b>, you can simply double click on it. The name will then be highlighted in blue and the word DSMZ will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are DSMZ employees but were not at the time of the activity, they must not be marked as a DSMZ author!
+                    To <b>mark an author as belonging to the <?=$Settings->affiliation?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?=$Settings->affiliation?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?=$Settings->affiliation?> employees but were not at the time of the activity, they must not be marked as a <?=$Settings->affiliation?> author!
                 </p>
             <?php } else { ?>
                 <p>
-                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
+                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?=$Settings->affiliation?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?=$Settings->affiliation?> zugeordnet.
                 </p>
 
                 <p>
@@ -107,7 +107,7 @@ function val($index, $default = '')
                     Um die <b>Autorenreihenfolge zu ändern</b>, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
                 </p>
                 <p>
-                    Um einen <b>Autor zur DSMZ zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort DSMZ taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der DSMZ sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als DSMZ-Autor markiert werden!
+                    Um einen <b>Autor zur <?=$Settings->affiliation?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?=$Settings->affiliation?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?=$Settings->affiliation?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?=$Settings->affiliation?>-Autor markiert werden!
                 </p>
 
                 <p>
@@ -501,11 +501,11 @@ function val($index, $default = '')
                 <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">
                     <h5 class="title">
                         <i class="fas fa-exclamation-circle"></i>
-                        <?= lang('Attention: No ' . AFFILIATION . " authors added.", 'Achtung: Keine ' . AFFILIATION . '-Autoren angegeben.') ?>
+                        <?= lang('Attention: No ' . $Settings->affiliation . " authors added.", 'Achtung: Keine ' . $Settings->affiliation . '-Autoren angegeben.') ?>
                     </h5>
                     <?= lang(
-                        'Please double click on every ' . AFFILIATION . ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.',
-                        'Bitte doppelklicken Sie auf jeden ' . AFFILIATION . '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.'
+                        'Please double click on every ' . $Settings->affiliation . ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.',
+                        'Bitte doppelklicken Sie auf jeden ' . $Settings->affiliation . '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.'
                     ) ?>
                 </div>
 

@@ -45,11 +45,11 @@ if (!empty($form) && isset($form['_id'])) {
     <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">
         <h5 class="title">
             <i class="fas fa-exclamation-circle"></i>
-            <?= lang('Attention: No ' . AFFILIATION . " authors added.", 'Achtung: Keine ' . AFFILIATION . '-Autoren angegeben.') ?>
+            <?= lang('Attention: No ' . $Settings->affiliation . " authors added.", 'Achtung: Keine ' . $Settings->affiliation . '-Autoren angegeben.') ?>
         </h5>
         <?= lang(
-            'Please click on every ' . AFFILIATION . ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.',
-            'Bitte klicken Sie auf jeden ' . AFFILIATION . '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.'
+            'Please click on every ' . $Settings->affiliation . ' author in the list above, to mark them as affiliated. Only affiliated authors will receive points and are shown in reports.',
+            'Bitte klicken Sie auf jeden ' . $Settings->affiliation . '-Autor in der Liste oben, um ihn als zugehörig zu markieren. Nur zugehörige Autoren erhalten Punkte und werden in Berichten berücksichtigt.'
         ) ?>
     </div>
 

@@ -58,7 +58,7 @@ $cursor = $osiris->activities->find($filter, $options);
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-    if ($doc['year'] < 2017) continue;
+    if ($doc['year'] < $Settings->startyear) continue;
     $type = $doc['type'];
     $year = strval($doc['year']);
     $issue = false;

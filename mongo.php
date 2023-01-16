@@ -480,7 +480,6 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
 Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     // select the right collection
-    // $collection = get_collection($col);
 
     // prepare id
     if (is_numeric($id)) {
@@ -571,26 +570,11 @@ Route::post('/approve', function () {
 });
 
 
-// Route::get('/form/(lecture|misc|poster|publication|students)/([A-Za-z0-9]*)', function ($col, $id) {
-//     include_once BASEPATH . "/php/_db.php";
-
-//     $collection = get_collection($col);
-//     if (is_numeric($id)) {
-//         $id = intval($id);
-//     } else {
-//         $id = new MongoDB\BSON\ObjectId($id);
-//     }
-//     $url = ROOTPATH . "/$col";
-//     $form = $collection->findOne(['_id' => $id]);
-//     include BASEPATH . "/components/form-$col.php";
-// });
-
 Route::get('/form/user/([A-Za-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_db.php";
     $data = getUserFromId($user);
     include BASEPATH . "/pages/user-editor.php";
 });
-
 
 
 Route::post('/approve/([A-Za-z0-9]*)', function ($id) {

@@ -1,12 +1,20 @@
 <?php
 require_once BASEPATH . '/vendor/autoload.php';
 require_once BASEPATH . '/php/format.php';
+
+if (!isset($Settings)) {
+    require_once BASEPATH . '/php/Settings.php';
+    $Settings = new Settings();
+}
+
+$dbname = "osiris";
+
 $mongoDB = new MongoDB\Client(
-    'mongodb://localhost:27017/osiris?retryWrites=true&w=majority'
+    "mongodb://localhost:27017/$dbname?retryWrites=true&w=majority"
 );
 
 global $osiris;
-$osiris = $mongoDB->osiris;
+$osiris = $mongoDB->$dbname;
 
 global $USER;
 // $user = $_SESSION['username'] ?? null;
@@ -21,14 +29,14 @@ if (!empty($_SESSION['username'])) {
     if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
     if (!isset($USER['is_leader'])) $USER['is_leader'] = false;
     if (!isset($USER['display_activities'])) $USER['display_activities'] = 'web';
-
 }
 
-function is_ObjectID($id){
+function is_ObjectID($id)
+{
     if (empty($id)) return false;
     if (preg_match("/^[0-9a-fA-F]{24}$/", $id)) {
         return true;
-    } 
+    }
     return false;
 }
 
@@ -91,7 +99,7 @@ function getUserAuthor($authors, $user)
 function getActivity($id)
 {
     global $osiris;
-    
+
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
@@ -116,7 +124,7 @@ function getJournal($doc)
 
     if (isset($doc['issn'])) {
         $issn = $doc['issn'];
-        if (is_string($issn)){
+        if (is_string($issn)) {
             $issn = explode(' ', $issn);
         }
         $journal = $osiris->journals->findOne(['issn' => ['$in' => $issn]]);
@@ -163,28 +171,28 @@ function latest_impact($journal)
     return $last;
 }
 
-function get_journal($doc){
+function get_journal($doc)
+{
     global $osiris;
-    if (isset($doc['journal_id']) && is_ObjectID($doc['journal_id'])){
+    if (isset($doc['journal_id']) && is_ObjectID($doc['journal_id'])) {
         $id = new MongoDB\BSON\ObjectId($doc['journal_id']);
         return $osiris->journals->findOne(['_id' => $id]);
-
-    } else if (isset($doc['issn']) && !empty($doc['issn'])){
+    } else if (isset($doc['issn']) && !empty($doc['issn'])) {
         return $osiris->journals->findOne(['issn' => ['$in' => $doc['issn']]]);
-
     } else if (isset($doc['journal']) && !empty($doc['journal'])) {
-        $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']) .'$', 'i');
+        $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']) . '$', 'i');
         return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
     } else {
         return array();
     }
 }
-function get_oa($doc){
+function get_oa($doc)
+{
     $journal = get_journal($doc);
     if (!isset($journal['oa']) || $journal['oa'] === false) {
         return false;
     } elseif ($journal['oa'] > 0) {
-        if (intval($doc['year'])> $journal['oa']) return true;
+        if (intval($doc['year']) > $journal['oa']) return true;
         return false;
     } else {
         return true;
@@ -194,12 +202,12 @@ function get_oa($doc){
 function get_impact($doc, $year = null)
 {
     $journal = get_journal($doc);
-    
+
     if (empty($journal)) return null;
     // $journal = $journal->toArray();
 
-    if ($year == null){
-        $year = intval($doc['year'] ?? 1)-1;
+    if ($year == null) {
+        $year = intval($doc['year'] ?? 1) - 1;
     }
     return impact_from_year($journal, $year);
 }
@@ -238,7 +246,7 @@ function has_issues($doc, $user = null)
     if ($epub) $issues[] = "epub";
     if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
 
-    if ((($doc['type'] == 'misc' && $doc['iteration']=='annual') || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
+    if ((($doc['type'] == 'misc' && $doc['iteration'] == 'annual') || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
         if (isset($doc['end-delay'])) {
             if (new DateTime() > new DateTime($doc['end-delay'])) {
                 $issues[] = "openend";
@@ -248,36 +256,16 @@ function has_issues($doc, $user = null)
         }
     }
 
-    if (isset($doc['journal']) && (!isset($doc['journal_id']) || empty($doc['journal_id']))){
+    if (isset($doc['journal']) && (!isset($doc['journal_id']) || empty($doc['journal_id']))) {
         $issues[] = 'journal_id';
     }
 
     return $issues;
 }
 
-function get_collection($col)
-{
-    global $osiris;
-    switch ($col) {
-        case 'lecture':
-            return $osiris->lectures;
-        case 'misc':
-            return $osiris->miscs;
-        case 'poster':
-            return $osiris->posters;
-        case 'publication':
-            return $osiris->publications;
-        case 'students':
-            return $osiris->studentss;
-        case 'review':
-            return $osiris->reviews;
-        default:
-            echo "unsupported collection";
-            return;
-    }
-}
 
-function isUserActivity($doc, $user){
+function isUserActivity($doc, $user)
+{
     if (isset($doc['user']) && $doc['user'] == $user) return true;
     foreach (['authors', 'editors'] as $role) {
         if (!isset($doc[$role])) continue;
@@ -291,112 +279,39 @@ function isUserActivity($doc, $user){
 }
 
 
-function addUserActivity($activity = 'create')
-{
-    global $osiris;
-    return;
-    $update = ['$push' => ['activity' => ['type' => $activity, 'date' => date("Y-m-d")]]];
-    $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
-    $act = $u['activity'] ?? array();
+// function addUserActivity($activity = 'create')
+// {
+//     global $osiris;
+//     return;
+//     $update = ['$push' => ['activity' => ['type' => $activity, 'date' => date("Y-m-d")]]];
+//     $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
+//     $act = $u['activity'] ?? array();
 
-    $uact = 0;
-    foreach ($act as $a) {
-        if (!isset($a['type'])) {
-            $osiris->users->updateOne(
-                ['_id' => $_SESSION['username']],
-                ['$set' => ['activity' => [], 'achievements' => []]]
-            );
-            break;
-        }
-        if (($a['type'] ?? '') == $activity) {
-            $uact++;
-        }
-    }
+//     $uact = 0;
+//     foreach ($act as $a) {
+//         if (!isset($a['type'])) {
+//             $osiris->users->updateOne(
+//                 ['_id' => $_SESSION['username']],
+//                 ['$set' => ['activity' => [], 'achievements' => []]]
+//             );
+//             break;
+//         }
+//         if (($a['type'] ?? '') == $activity) {
+//             $uact++;
+//         }
+//     }
 
-    if (empty($uact)) {
-        $update['$push']['achievements'] = ['title' => "first-$activity", 'achieved' => date("d.m.Y")];
-    } elseif ($uact === 9) {
-        $update['$push']['achievements'] = ['title' => "10-$activity", 'achieved' => date("d.m.Y")];
-    } elseif ($uact === 49) {
-        $update['$push']['achievements'] = ['title' => "50-$activity", 'achieved' => date("d.m.Y")];
-    }
-    // dump($update, true);
+//     if (empty($uact)) {
+//         $update['$push']['achievements'] = ['title' => "first-$activity", 'achieved' => date("d.m.Y")];
+//     } elseif ($uact === 9) {
+//         $update['$push']['achievements'] = ['title' => "10-$activity", 'achieved' => date("d.m.Y")];
+//     } elseif ($uact === 49) {
+//         $update['$push']['achievements'] = ['title' => "50-$activity", 'achieved' => date("d.m.Y")];
+//     }
+//     // dump($update, true);
 
-    $osiris->users->updateOne(
-        ['_id' => $_SESSION['username']],
-        $update
-    );
-}
-
-
-function achievementText($title, $person = null)
-{
-    if ($person) {
-        switch ($title) {
-            case 'first-create':
-                return lang("$person created the first activity", "$person hat die erste Aktivität eingetragen");
-                break;
-
-            case 'first-update':
-                return lang("$person updated an activity for the first time", "$person hat zum ersten Mal eine Aktivität bearbeitet");
-                break;
-
-            case '10-create':
-                return lang("$person created 10 activities", "$person hat bereits 10 Aktivität eingetragen");
-                break;
-
-            case '10-update':
-                return lang("$person updated 10 activities", "$person hat bereits 10 Mal eine Aktivität bearbeitet");
-                break;
-
-            case '50-create':
-                return lang("$person created 50 activities", "$person hat bereits 50 Aktivität eingetragen");
-                break;
-
-            case '50-update':
-                return lang("$person updated 50 activities", "$person hat bereits 50 Mal eine Aktivität bearbeitet");
-                break;
-
-            case 'first-delete':
-                return lang("$person deleted an activity for the first time", "$person hat zum ersten Mal eine Aktivität gelöscht");
-                break;
-
-            default:
-                return "";
-                break;
-        }
-    }
-    switch ($title) {
-        case 'first-create':
-            return lang("You created your first activity", "Du hast deine erste Aktivität eingetragen");
-            break;
-
-        case 'first-update':
-            return lang("You updated an activity for the first time", "Du hast zum ersten Mal eine Aktivität bearbeitet");
-            break;
-
-        case '10-create':
-            return lang("You created 10 activities", "Du hast bereits 10 Aktivität eingetragen");
-            break;
-
-        case '10-update':
-            return lang("You updated 10 activities", "Du hast bereits 10 Mal eine Aktivität bearbeitet");
-            break;
-
-        case '50-create':
-            return lang("You created 50 activities", "Du hast bereits 50 Aktivität eingetragen");
-            break;
-
-        case '50-update':
-            return lang("You updated 50 activities", "Du hast bereits 50 Mal eine Aktivität bearbeitet");
-            break;
-
-        case 'first-delete':
-            return lang("You deleted an activity for the first time", "Du hast zum ersten Mal eine Aktivität gelöscht");
-            break;
-
-        default:
-            return "";
-            break;
-    }
-}
+//     $osiris->users->updateOne(
+//         ['_id' => $_SESSION['username']],
+//         $update
+//     );
+// }
