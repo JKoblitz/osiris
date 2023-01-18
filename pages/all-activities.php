@@ -1,16 +1,8 @@
-<!-- <div class="form-group with-icon mb-10 mw-full w-350 d-inline-block">
-    <input type="search" class="form-control" placeholder="<?= lang('Filter') ?>" oninput="filter_results(this.value)">
-    <i class="fas fa-arrow-rotate-left" onclick="$(this).prev().val(''); filter_results('')"></i>
-</div> -->
+
 <?php
 
 $user = $user ?? $_SESSION['username'];
-$useronly = true;
-if ($page == 'my-activities') {
-    $useronly = $user;
-}
-$Format = new Format($useronly);
-// $author_highlight = $user;
+
 ?>
 
 
@@ -66,12 +58,12 @@ $Format = new Format($useronly);
         <span class="input-group-text"><?= lang('From', 'Von') ?></span>
     </div>
     <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-    <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?=$Settings->startyear?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+    <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
     <div class="input-group-prepend">
         <span class="input-group-text"><?= lang('to', 'bis') ?></span>
     </div>
     <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-    <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?=$Settings->startyear?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+    <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
     <div class="input-group-append">
         <button class="btn" type="button" onclick="filtertime(true)">&times;</button>
@@ -80,7 +72,7 @@ $Format = new Format($useronly);
 
 <div class="mt-20">
 
-    <table class="table dataTable" id="result-table">
+    <table class="table dataTable responsive" id="result-table">
         <thead>
             <tr>
                 <th><?= lang('Quarter', 'Quartal') ?></th>
@@ -90,95 +82,6 @@ $Format = new Format($useronly);
             </tr>
         </thead>
         <tbody>
-            <?php
-            // $options = ['sort' => ["year" => -1, "month" => -1]];
-            $filter = [];
-            if ($page == "my-activities") {
-                // only own work
-                $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
-            }
-            $cursor = $osiris->activities->find($filter);
-            //, 'year' => intval(SELECTEDYEAR)
-            if (empty($cursor)) {
-                echo "<tr class='row-danger'><td colspan='3'>" . lang('No activities found.', 'Keine Publikationen gefunden.') . "</td></tr>";
-            } else foreach ($cursor as $doc) {
-
-                $id = $doc['_id'];
-                $type = $doc['type'];
-                $q = getQuarter($doc);
-                $y = getYear($doc);
-                $quarter = $endQuarter = $y . "Q" . $q;
-                // $author = getUserAuthor($doc['authors'] ?? array(), $user);
-            ?>
-                <tr class="" id="<?= $id ?>">
-                    <td class="quarter">
-                        <?= $y ?>Q<?= $q ?>
-
-                        <span class="hidden">
-                            <!-- for date filtering -->
-                            <?= $doc['month'] . "M" . $doc['year'] . "Y" ?>
-                            <?php if (isset($doc['end']) && !empty($doc['end'])) {
-
-                                $em = $doc['end']['month'];
-                                $ey = $doc['end']['year'];
-                                $sm = $doc['month'];
-                                $sy = $doc['year'];
-                                for ($i = $y; $i <= $ey; $i++) {
-                                    $endMonth = $i != $ey ? 11 : $em - 1;
-                                    $startMon = $i === $y ? $sm - 1 : 0;
-                                    for ($j = $startMon; $j <= $endMonth; $j = $j > 12 ? $j % 12 || 11 : $j + 1) {
-                                        $month = $j + 1;
-                                        $displayMonth = $month < 10 ? '0' + $month : $month;
-                                        echo $displayMonth . "M" . $i . "Y ";
-                                        // QUARTER:
-                                        $endQuarter = $i . "Q" . ceil($displayMonth / 3);
-                                    }
-                                }
-                            } ?>
-                        </span>
-                        <?php if ($quarter != $endQuarter) {
-                            echo "-" . $endQuarter;
-                        } ?>
-                    </td>
-                    <td class="text-center ">
-                        <?php
-                        echo activity_icon($doc);
-                        ?>
-                        <span class="hidden">
-                            <?php
-                            echo $type . " ". activity_title($doc);
-                            ?>
-                        </span>
-                    </td>
-                    <td>
-                        <?php
-                        if ($USER['display_activities'] == 'web') {
-                            echo $Format->formatShort($doc);
-                        } else {
-                            echo $Format->format($doc);
-                        }
-                        ?>
-                    </td>
-                    <td class="unbreakable">
-                        <!-- <button class="btn btn-sm text-success" onclick="toggleEditForm('<?= $doc['type'] ?>', '<?= $id ?>')">
-                            <i class="fa-regular fa-lg fa-edit"></i>
-                        </button> -->
-                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="icon-activity-search"></i>
-                        </a>
-                        <?php
-                        $useractivity = isUserActivity($doc, $user);
-                        if ($useractivity) { ?>
-                            <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                                <i class="icon-activity-pen"></i>
-                            </a>
-                        <?php } ?>
-                        <button class="btn btn-link btn-square" onclick="addToCart(this, '<?= $id ?>')">
-                            <i class="<?= (in_array($id, $cart)) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus' ?>"></i>
-                        </button>
-                    </td>
-                </tr>
-            <?php } ?>
         </tbody>
 
     </table>
@@ -204,6 +107,34 @@ $Format = new Format($useronly);
     var dataTable;
     $(document).ready(function() {
         dataTable = $('#result-table').DataTable({
+            "ajax": {
+                "url": ROOTPATH + '/api/all-activities',
+                "data": {
+                    "page": '<?= $page ?>',
+                    'display_activities': '<?= $USER['display_activities'] ?>',
+                    'user': '<?= $user ?>'
+                },
+                dataSrc: 'data'
+            },
+            columnDefs: [{
+                    "targets": 0,
+                    "data": "quarter",
+        // className: 'quarter'
+                },
+                {
+                    targets: 1,
+                    data: 'type'
+                },
+                {
+                    targets: 2,
+                    data: 'activity'
+                },
+                {
+                    targets: 3,
+                    data: 'links',
+        className: 'unbreakable'
+                }
+            ],
             "order": [
                 [0, 'desc'],
                 [1, 'asc']
@@ -284,15 +215,15 @@ $Format = new Format($useronly);
             fromMonth = 1
         }
         var fromYear = $("#from-year").val()
-        if (fromYear.length == 0 || parseInt(fromYear) < $Settings->startyear || parseInt(fromYear) > today.getFullYear()) {
-            fromYear = $Settings->startyear
+        if (fromYear.length == 0 || parseInt(fromYear) < <?=$Settings->startyear?> || parseInt(fromYear) > today.getFullYear()) {
+            fromYear = <?=$Settings->startyear?>
         }
         var toMonth = $("#to-month").val()
         if (toMonth.length == 0 || parseInt(toMonth) < 1 || parseInt(toMonth) > 12) {
             toMonth = 12
         }
         var toYear = $("#to-year").val()
-        if (toYear.length == 0 || parseInt(toYear) < $Settings->startyear || parseInt(toYear) > today.getFullYear()) {
+        if (toYear.length == 0 || parseInt(toYear) < <?=$Settings->startyear?> || parseInt(toYear) > today.getFullYear()) {
             toYear = today.getFullYear()
         }
         // take care that from is not larger than to
@@ -339,12 +270,5 @@ $Format = new Format($useronly);
         }
         return dates;
     }
-    //     new gridjs.Grid({
-    //   from: document.getElementById('result-table') 
-    // // columns: ['Name', 'Email', 'Phone Number'],
-    // //   data: [
-    // //     ['John', 'john@example.com', '(353) 01 222 3333'],
-    // //     ['Mark', 'mark@gmail.com',   '(01) 22 888 4444']
-    // //   ]
-    // }).render(document.getElementById("result"));
+    
 </script>

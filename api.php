@@ -117,6 +117,94 @@ Route::get('/api/activities', function () {
     echo return_rest($result, count($result));
 });
 
+Route::get('/api/all-activities', function () {
+    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/format.php";
+
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    $user = $_GET['user'] ?? $_SESSION['username'];
+    $page = $_GET['page'] ?? 'all-activities';
+    $highlight = true;
+    if ($page == 'my-activities') {
+        $highlight = $user;
+    }
+    $Format = new Format($highlight);
+
+    $filter = [];
+    $result = [];
+    if ($page == "my-activities") {
+        // only own work
+        $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
+    }
+    $cursor = $osiris->activities->find($filter);
+    $cart = readCart();
+
+    foreach ($cursor as $doc) {
+        $id = $doc['_id'];
+        $type = $doc['type'];
+        $q = getQuarter($doc);
+        $y = getYear($doc);
+        $quarter = $endQuarter = $y . "Q" . $q;
+
+        if (($_GET['display_activities']??'web') == 'web') {
+            $format = $Format->formatShort($doc);
+        } else {
+            $format = $Format->format($doc);
+        }
+
+        $datum = [
+            'quarter' => $y . 'Q' . $q,
+            'type' => activity_icon($doc) . '<span class="hidden">' . $type . " " . activity_title($doc) . '</span>',
+            'activity' => $format,
+            'links' => ''
+        ];
+
+
+        $datum['quarter'] .= '<span class="hidden">' . $doc['month'] . "M" . $doc['year'] . "Y";
+        if (isset($doc['end']) && !empty($doc['end'])) {
+
+            $em = $doc['end']['month'];
+            $ey = $doc['end']['year'];
+            $sm = $doc['month'];
+            $sy = $doc['year'];
+            for ($i = $y; $i <= $ey; $i++) {
+                $endMonth = $i != $ey ? 11 : $em - 1;
+                $startMon = $i === $y ? $sm - 1 : 0;
+                for ($j = $startMon; $j <= $endMonth; $j = $j > 12 ? $j % 12 || 11 : $j + 1) {
+                    $month = $j + 1;
+                    $displayMonth = $month < 10 ? '0' + $month : $month;
+                    $datum['quarter'] .= $displayMonth . "M" . $i . "Y ";
+                    // QUARTER:
+                    $endQuarter = $i . "Q" . ceil($displayMonth / 3);
+                }
+            }
+        }
+        $datum['quarter'] .= '</span>';
+        if ($quarter != $endQuarter) {
+            $datum['quarter'] .= "-" . $endQuarter;
+        }
+
+        $datum['links'] =
+            "<a class='btn btn-link btn-square' href='" . ROOTPATH . "'/activities/view/$id'>
+                <i class='icon-activity-search'></i>
+            </a>";
+        $useractivity = isUserActivity($doc, $user);
+        if ($useractivity) {
+            $datum['links'] .= " <a class='btn btn-link btn-square' href='" . ROOTPATH . "'/activities/edit/$id'>
+                <i class='icon-activity-pen'></i>
+            </a>";
+        }
+        $datum['links'] .= "<button class='btn btn-link btn-square' onclick='addToCart(this, \"$id\")'>
+            <i class='" . (in_array($id, $cart) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus') . "'></i>
+        </button>";
+        $result[] = $datum;
+    }
+    echo return_rest($result, count($result));
+});
+
 
 Route::get('/api/users', function () {
     include_once BASEPATH . "/php/_db.php";
@@ -219,24 +307,24 @@ Route::get('/api/journals', function () {
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
-    
+
     $journals = $osiris->journals->find()->toArray();
     $result = ['data' => []];
     // $i = 0;
-    $activities = $osiris->activities->find(['journal_id' => ['$exists' => 1, '$ne'=>null]], ['projection' => ['journal_id' => 1]])->toArray();
+    $activities = $osiris->activities->find(['journal_id' => ['$exists' => 1, '$ne' => null]], ['projection' => ['journal_id' => 1]])->toArray();
     $activities = array_column($activities, 'journal_id');
     $activities = array_count_values($activities);
     $no = lang('No', 'Nein');
     $yes = lang('Yes', 'Ja');
     $since = lang('since ', 'seit ');
     foreach ($journals as $doc) {
-        if (!isset($doc['oa']) || $doc['oa'] === false){
+        if (!isset($doc['oa']) || $doc['oa'] === false) {
             $oa = $no;
         } elseif ($doc['oa'] === 0) {
             $oa =  $yes;
         } elseif ($doc['oa'] > 0) {
             $oa =  $since . $doc['oa'];
-        } 
+        }
         $result['data'][] = [
             'id' => strval($doc['_id']),
             'name' => $doc['journal'],
@@ -267,7 +355,7 @@ Route::get('/api/google', function () {
     # create and load the HTML
 
     if (!isset($_GET['doc'])) {
-        $result = $google->getAllUserEntries();        
+        $result = $google->getAllUserEntries();
     } else {
         $doc = $_GET["doc"];
         $result = $google->getDocumentDetails($doc);

@@ -557,7 +557,7 @@ function val($index, $default = '')
                         <select name="values[category]" id="category-guest" class="form-control" required>
                             <option value="guest scientist" <?= val('category') == 'guest scientist' ? 'selected' : '' ?>><?= lang('Guest Scientist', 'Gastwissenschaftler:in') ?></option>
                             <!-- <option value="mandatory internship" <?= val('category') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium')?></option> -->
-                            <option value="lecture internship" <?= val('category') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Vorlesung und Laborpraktikum') ?></option>
+                            <option value="lecture internship" <?= val('category') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Pflichtpraktikum im Rahmen des Studium') ?></option>
                             <option value="student internship" <?= val('category') == 'student internship' ? 'selected' : '' ?>><?= lang('Student Internship', 'Schülerpraktikum') ?></option>
                             <option value="other" <?= val('category') == 'other' ? 'selected' : '' ?>><?= lang('Other', 'Sonstiges') ?></option>
                         </select>

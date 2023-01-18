@@ -519,7 +519,8 @@ Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
             'last' => $a['last'],
             'first' => $a['first'],
             'position' => $a['position'] ?? 'middle',
-            'aoi' => (boolval($a['aoi'] ?? false) || ($_SESSION['username'] == $a['user'] ?? '')),
+            'aoi' => (boolval($a['aoi'] ?? false)),
+            //|| ($_SESSION['username'] == $a['user'] ?? '')
             'user' => empty($a['user']) ? null : $a['user'],
             'approved' => boolval($a['approved'] ?? false),
         ];

@@ -156,6 +156,7 @@ class Achievement
                         $array = array_filter($activities, function ($a) {
                             return $a['type'] == 'publication';
                         });
+                        if (count(array_column($array, 'coins'))> 0)
                         $value = max(array_column($array, 'coins'));
                         break;
                     case 'coins':

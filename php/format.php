@@ -622,7 +622,7 @@ class Format
                 $this->subtitle = "Gastwissenschaftler:in";
                 break;
             case 'lecture internship':
-                $this->subtitle = "Vorlesung und Laborpraktikum";
+                $this->subtitle = "Pflichtpraktikum im Rahmen des Studium";
                 break;
             case 'student internship':
                 $this->subtitle = "Schülerpraktikum";

@@ -235,7 +235,7 @@ $Format = new Format(true);
                     input: 'select',
                     values: {
                         'guest scientist': lang('Guest Scientist', 'Gastwissenschaftler:in'),
-                        'lecture internship': lang('Lecture Internship', 'Vorlesung und Laborpraktikum'),
+                        'lecture internship': lang('Lecture Internship', 'Pflichtpraktikum im Rahmen des Studium'),
                         'student internship': lang('Student Internship', 'Schülerpraktikum'),
                         'other': lang('Other', 'Sonstiges'),
                         'doctoral thesis': lang('Doctoral Thesis', 'Doktorand:in'),

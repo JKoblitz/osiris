@@ -348,7 +348,7 @@ if (isset($_GET['verbose'])) {
                 <i class="far fa-calendar text-success fa-fw"></i>
                 <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
             </a>
-            <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
+            <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
                 <i class="icon-activity-user text-primary fa-fw"></i>
                 <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
             </a>
@@ -357,7 +357,7 @@ if (isset($_GET['verbose'])) {
                 <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
             </a>
 
-            <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
+            <a class="btn" href="<?= ROOTPATH ?>/achievements<?=$user?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
                 <i class="far fa-trophy text-signal fa-fw"></i>
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>

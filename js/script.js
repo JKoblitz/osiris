@@ -441,9 +441,9 @@ function getJournalNLM(name) {
         retmode: 'json',
         usehistory: 'y'
     }
-    if (name.match(/\d{4}-?\d{4}/)){
+    if (name.match(/\d{4}-?\d{4}/)) {
         // issn search
-        data.term = name  + ' AND (ncbijournals[filter])'
+        data.term = name + ' AND (ncbijournals[filter])'
     }
     $.ajax({
         type: "GET",
@@ -631,7 +631,7 @@ function getDOI(doi) {
             var authors = [];
             // var editors = [];
             var first = 1
-            if (pub.author === undefined && pub.editor !== undefined){
+            if (pub.author === undefined && pub.editor !== undefined) {
                 pub.author = pub.editor
             }
             pub.author.forEach((a, i) => {

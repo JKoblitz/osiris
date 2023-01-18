@@ -64,7 +64,7 @@ if (!empty($form) && isset($form['_id'])) {
                     <option disabled>--- <?= lang('Guests', 'Gäste') ?> ---</option>
                     <option <?= ($form['category'] ?? '') == 'Gastwissenschaftler:in' ? 'selected' : '' ?>>Gastwissenschaftler:in</option>
                     <option <?= ($form['category'] ?? '') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium</option>
-                    <option <?= ($form['category'] ?? '') == 'Vorlesung und Laborpraktikum' ? 'selected' : '' ?>>Vorlesung und Laborpraktikum</option>
+                    <option <?= ($form['category'] ?? '') == 'Pflichtpraktikum im Rahmen des Studium' ? 'selected' : '' ?>>Pflichtpraktikum im Rahmen des Studium</option>
                     <option <?= ($form['category'] ?? '') == 'Schülerpraktikum' ? 'selected' : '' ?>>Schülerpraktikum</option>
                 </select>
             </div>
