@@ -1,7 +1,8 @@
 # To-Do-Liste
 - Überischt über laufende Aktivitäten
 - Gremienarbeit?
-- 
+- Eifriger Sammler hat auf level 1,2 keine englische übersetzung
+- ebenfalls wird bei mir bei fremd publikationen edit buttons angezeigt? 
 - [ ] Webanzeige: OSIRIS kann genutzt werden, um ein Webprofil zu erstellen. Nutzer:innen können auswählen, welche Aktivitäten gezeigt werden
 - [ ] Import: Nutzer:innen können Daten aus bspw. BibTeX importieren
 - [ ] Man kann weitere Namen zu seinem Profil hinzufügen, unter denen publiziert wurde
