@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 600">
+  <defs>
+    <linearGradient id="Unbenannter_Verlauf_18" data-name="Unbenannter Verlauf 18" x1="190.37" y1="189.88" x2="500.53" y2="500.04" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9a9b9f"/>
+      <stop offset=".31" stop-color="#fefefe"/>
+      <stop offset=".38" stop-color="#e0e0e1"/>
+      <stop offset=".47" stop-color="#c1c1c3"/>
+      <stop offset=".54" stop-color="#adaeb0"/>
+      <stop offset=".6" stop-color="#a7a8aa"/>
+      <stop offset=".72" stop-color="#abacae"/>
+      <stop offset=".86" stop-color="#b8b9bb"/>
+      <stop offset="1" stop-color="#cdced0"/>
+    </linearGradient>
+  </defs>
+  <polygon points="80.61 423.78 80.61 175.08 295.48 53.63 519.24 175.08 519.24 423.78 298.61 545.66 80.61 423.78" style="fill: url(#Unbenannter_Verlauf_18); stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+  <g>
+    <g style="opacity: .15;">
+      <path d="m327.03,373.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    </g>
+    <path d="m429.69,240.88v-127.32h-254.5v127.32c0,64.48,47.99,117.75,110.2,126.05h-7.78c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h-73.73v51.24h254.5v-51.24h-73.73c-17.56-13.93-28.93-36.21-28.93-61.32,0-2.1.08-4.18.24-6.24h-7.78c62.21-8.3,110.2-61.57,110.2-126.05Zm-83.92,58.76l-43.34-32.1-43.34,32.1,16.55-51.93-43.34-32.1h53.57l16.55-51.93,16.55,51.93h53.57l-43.34,32.1,16.55,51.93Z" style="fill: #fff;"/>
+    <path d="m327.03,373.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <g style="opacity: .15;">
+      <path d="m327.03,373.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z"/>
+    </g>
+    <path d="m292.55,113.56h137.15v254.5h-137.15c-64.77,0-117.35-52.58-117.35-117.35v-19.79c0-64.77,52.58-117.35,117.35-117.35Z" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <rect x="175.19" y="434.5" width="254.5" height="51.24" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <path d="m175.19,169.89v-27.55h-68.04v57.15c0,37.55,30.44,68,68,68h.04v-35.83h-8.01c-14.37,0-26.01-11.65-26.01-26.01v-35.76h34.02Z" style="fill: #fff; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <path d="m429.69,169.89v-27.55h68.04v57.15c0,37.55-30.44,68-68,68h-.04v-35.83h8.01c14.37,0,26.01-11.65,26.01-26.01v-35.76h-34.02Z" style="fill: #fff; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <g style="opacity: .15;">
+      <path d="m175.19,169.89v-27.55h-68.04v57.15c0,37.55,30.44,68,68,68h.04v-35.83h-8.01c-14.37,0-26.01-11.65-26.01-26.01v-35.76h34.02Z"/>
+    </g>
+    <g style="opacity: .15;">
+      <path d="m429.69,169.89v-27.55h68.04v57.15c0,37.55-30.44,68-68,68h-.04v-35.83h8.01c14.37,0,26.01-11.65,26.01-26.01v-35.76h-34.02Z"/>
+    </g>
+    <polygon points="302.44 163.68 319 215.62 372.56 215.62 329.23 247.71 345.78 299.65 302.44 267.55 259.11 299.65 275.66 247.71 232.32 215.62 285.89 215.62 302.44 163.68" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 15px;"/>
+  </g>
+</svg>

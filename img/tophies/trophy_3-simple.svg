@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 600">
+  <defs>
+    <linearGradient id="Neues_Verlaufsfeld_1" data-name="Neues Verlaufsfeld 1" x1="134.5" y1="187.26" x2="522.85" y2="575.6" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a36d0a"/>
+      <stop offset=".31" stop-color="#f8fb9f"/>
+      <stop offset=".6" stop-color="#cf9618"/>
+      <stop offset="1" stop-color="#a16705"/>
+    </linearGradient>
+  </defs>
+  <path d="m460.26,366.93l114.23-125.84-179.35-38.88-97.88-169.53-98.63,170.83L25.29,241.09l112.46,123.89-16.4,195.29,177.58-83.56,177.58,83.56-16.24-193.33Z" style="fill: url(#Neues_Verlaufsfeld_1); stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+  <g>
+    <g style="opacity: .15;">
+      <path d="m324.1,378.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    </g>
+    <path d="m426.77,147.34v-28.78h-254.5v28.78h-68.04v57.15c0,37.56,30.44,68,68,68h2.4c9.43,51.95,46.48,91.88,99.88,99.01l.18.44c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h-73.73v51.24h254.5v-51.24h-73.73c-17.56-13.93-28.93-36.21-28.93-61.32,0-2.1.08-4.18.24-6.24l.16-.44c53.4-7.13,90.47-47.06,99.9-99.01h2.4c37.56,0,68-30.44,68-68v-57.15h-68.04Zm-262.51,89.33c-14.36,0-26.01-11.65-26.01-26.01v-35.76h34.02v61.77h-8.01Zm178.6,67.98l-43.34-32.1-43.34,32.1,16.55-51.93-43.34-32.1h53.57l16.55-51.93,16.55,51.93h53.57l-43.34,32.1,16.55,51.93Zm117.93-93.99c0,14.37-11.65,26.01-26.01,26.01h-8.01v-61.77h34.02v35.76Z" style="fill: #fff; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <polygon points="299.51 168.68 316.07 220.62 369.63 220.62 326.3 252.71 342.85 304.65 299.51 272.55 256.18 304.65 272.73 252.71 229.39 220.62 282.96 220.62 299.51 168.68" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 15px;"/>
+    <g style="opacity: .25;">
+      <path d="m324.1,370.04c0-2.71.08-5.39.24-8.04,0,0-12.34,3-25.08,3-14.26,0-24.58-3-24.58-3,.16,2.65.24,5.33.24,8.04,0,32.33-11.37,61.02-28.93,78.96h107.05c-17.56-17.94-28.93-46.63-28.93-78.96Z"/>
+    </g>
+    <g style="opacity: .2;">
+      <path d="m181.26,174.89v-27.55h-77.04v57.15c0,37.55,30.44,68,68,68h9.04v-35.83h-17.01c-14.37,0-26.01-11.65-26.01-26.01v-35.76h43.02Z"/>
+    </g>
+    <g style="opacity: .2;">
+      <path d="m417.77,174.89v-27.55h77.04v57.15c0,37.55-30.44,68-68,68h-9.04v-35.83h17.01c14.37,0,26.01-11.65,26.01-26.01v-35.76h-43.02Z"/>
+    </g>
+  </g>
+</svg>

@@ -30,11 +30,12 @@ blockquote {
 .author-list {
     width: 100%;
     background-color: white;
-    border: 1px solid #afafaf;
-    padding-left: 0.8rem;
-    padding-right: 0.8rem;
+    /* border: 1px solid #afafaf; */
+    /* padding-left: 0.8rem;
+    padding-right: 0.8rem; */
     border-radius: 2pt;
     vertical-align: middle;
+    /* margin-bottom: .5rem; */
 }
 
 .author-list .author,
@@ -462,12 +463,24 @@ label.element-other::before {
     margin-right: .5rem;
 }
 
-.title-editor.is-invalid, .author-list.is-invalid {
-    border-color: var(--danger-color);
+.form-group.is-invalid .form-control, .form-control.is-invalid, .form-group.is-invalid .form-control:hover, .form-control.is-invalid:hover {
+    -moz-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    -webkit-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
 }
 
-.title-editor.is-valid, .author-list.is-valid {
-    border-color: var(--success-color);
+.title-editor.is-invalid, .author-list.is-invalid, #author-widget.is-invalid {
+    border-color: var(--danger-color) !important;
+    -moz-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    -webkit-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+}
+
+.title-editor.is-valid, .author-list.is-valid, #author-widget.is-valid {
+    border-color: var(--success-color) !important;
+    -moz-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    -webkit-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
 }
 
 .show-examples label.element-author::before,

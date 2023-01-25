@@ -13,12 +13,11 @@ function commalist($array, $sep = "and")
 function abbreviateAuthor($last, $first, $reverse = true)
 {
     $fn = " ";
-    foreach (preg_split("/(\s| |-|\.)/", $first) as $name) {
+    foreach (preg_split("/(\s| |-|\.)/u", ($first)) as $name) {
         if (empty($name)) continue;
         // echo "<!--";
-        // echo($name);
         // echo "-->";
-        $fn .= "" . $name[0] . ".";
+        $fn .= "" . mb_substr($name, 0, 1) . ".";
     }
     if (empty(trim($fn))) return $last;
     if ($reverse) return $last . "," . $fn;
@@ -257,7 +256,7 @@ function activity_title($doc)
                     $name = "Editorial board";
                     break 2;
                 case 'grant-rev':
-                    $name = "Grant proposal";
+                    $name = lang("Other review", "Sonstiges Review");
                     break 2;
                 case 'thesis-rev':
                     $name = "Thesis review";
@@ -347,7 +346,7 @@ function activity_icon($doc, $tooltip = true)
                     $icon = "<i class='far fa-lg text-review fa-book-open-cover'></i>";
                     break 2;
                 case 'grant-rev':
-                    $icon = "<i class='far fa-lg text-review fa-file-chart-pie'></i>";
+                    $icon = "<i class='far fa-lg text-review fa-file-magnifying-glass'></i>";
                     break 2;
                 case 'thesis-rev':
                     $icon = "<i class='far fa-lg text-review fa-graduation-cap'></i>";
@@ -551,7 +550,9 @@ class Format
                     $authors[] = "...";
                 continue;
             }
+            
             $author = abbreviateAuthor($a['last'], $a['first']);
+            
             if ($this->highlight === true) {
                 if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
             } else if ($this->highlight && $a['user'] == $this->highlight) {
@@ -970,7 +971,11 @@ class Format
                 }
                 break;
             case 'grant-rev':
-                $result .= lang("Reviewer of Grant Proposals: ", 'Begutachtung eines Forschungsantrages:');
+                if (isset($doc['review-type'])){
+                    $result .= $doc['review-type']. ": ";
+                } else {
+                    $result .= lang("Reviewer of Grant Proposals: ", 'Begutachtung eines Forschungsantrages:');
+                }
                 $result .= ' <i>' . $doc['title'] . '</i>. ';
                 break;
             case 'thesis-rev':

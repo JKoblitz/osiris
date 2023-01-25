@@ -1,5 +1,11 @@
 # Changelog
 
+## 23.01.23
+- Der Autoreneditor auf der Seite "Aktivität hinzufügen" wurde verbessert
+- Wenn ein Journal nicht in OSIRIS gefunden wurde, wird automatisch eine Suche in NLM durchgeführt.
+
+Unseren Vortrag für die morgige Betriebsversammlung findet ihr [hier](uploads/OSIRIS.pdf).
+
 ## 11.01.23
 - Es wurde eine Möglichkeit hinzugefügt, den Typ einer Aktivität nachträglich zu bearbeiten
 - In die neue Web-Ansicht wurde das Datum der Aktivität integriert

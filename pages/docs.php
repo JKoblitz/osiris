@@ -93,12 +93,35 @@
 
 
 
-<p>Die folgenden Docs sind zurzeit in Arbeit:</p>
+<p>
+    <?= lang('The following docs are currently under construction:', 'Die folgenden Docs sind zurzeit in Arbeit:') ?>
+</p>
 
 <ul class="list">
-    <li>Erweiterte Suche</li>
-    <li>Download-Funktionen</li>
-    <li>Visualisierungen</li>
-    <li>Erweiterung des FAQ</li>
-    <li>Übersetzungen ins Englische</li>
+    <li><?= lang('Advanced search', 'Erweiterte Suche') ?></li>
+    <li><?= lang('Download functions', 'Download-Funktionen') ?></li>
+    <li><?= lang('Visualizations', 'Visualisierungen') ?></li>
+    <li><?= lang('Improvement of FAQ', 'Erweiterung des FAQ') ?></li>
+    <li><?= lang('Translation in english! Sorry...', 'Übersetzungen ins Englische') ?></li>
 </ul>
+
+
+<h2 id="presentations">
+    <?= lang('Presentations', 'Präsentationen') ?>
+</h2>
+
+<h4 class="mb-0">
+    <?= lang('OSIRIS presentation from the Betriebsversammlung', 'OSIRIS-Präsentation von der Betriebsversammlung') ?>
+</h4>
+
+<small class="text-muted">
+    <?= lang(
+        'The globally selected language affects whether you see the German or English presentation.',
+        'Die global ausgewählte Sprache beeinflusst, ob du die deutsche oder englische Präsentation siehst.'
+    ) ?>
+</small>
+
+<div class="box">
+    <object data="<?= ROOTPATH ?>/uploads/OSIRIS_<?= lang('en', 'de') ?>.pdf" width="100%" height="500">
+    </object>
+</div>

@@ -249,7 +249,8 @@ $user = $user ?? $_SESSION['username'];
 
         var range = dateRange(fromMonth, fromYear, toMonth, toYear)
         console.log(range);
-        regExSearch = '(' + range.join('|') + ')';
+        regExSearch = ' (' + range.join('|') + ')';
+        console.log(regExSearch);
         dataTable.columns(0).search(regExSearch, true, false, true).draw();
         // table.column(columnNo).search(regExSearch, true, false).draw();
     }

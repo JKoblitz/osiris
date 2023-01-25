@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <g>
+    <polygon points="119.81 81.6 11.85 246.95 299.32 545.21 588.15 246.95 473.36 80.82 119.81 81.6" style="fill: #f2ab38; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <polygon points="300.42 80.82 174.7 246.64 426.13 246.64 300.42 80.82" style="opacity: .15;"/>
+    <polygon points="119.81 81.6 11.85 246.64 175.37 246.64 119.81 81.6" style="opacity: .15;"/>
+    <polygon points="475.43 81.6 583.39 246.64 419.87 246.64 475.43 81.6" style="opacity: .15;"/>
+    <polygon points="300.75 545.21 426.13 246.64 175.37 246.64 300.75 545.21" style="opacity: .15;"/>
+  </g>
+  <g>
+    <g style="opacity: .15;">
+      <path d="m324.59,373.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    </g>
+    <path d="m427.25,240.88v-127.32h-254.5v127.32c0,64.48,47.99,117.75,110.2,126.05h-7.78c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h-73.73v51.24h254.5v-51.24h-73.73c-17.56-13.93-28.93-36.21-28.93-61.32,0-2.1.08-4.18.24-6.24h-7.78c62.21-8.3,110.2-61.57,110.2-126.05Zm-83.92,58.76l-43.34-32.1-43.34,32.1,16.55-51.93-43.34-32.1h53.57l16.55-51.93,16.55,51.93h53.57l-43.34,32.1,16.55,51.93Z" style="fill: #fff;"/>
+    <path d="m324.59,373.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <g style="opacity: .15;">
+      <path d="m324.59,373.18c0-2.1.08-4.18.24-6.24h-49.66c.16,2.06.24,4.14.24,6.24,0,25.1-11.37,47.38-28.93,61.32h107.05c-17.56-13.93-28.93-36.21-28.93-61.32Z"/>
+    </g>
+    <path d="m290.1,113.56h137.15v254.5h-137.15c-64.77,0-117.35-52.58-117.35-117.35v-19.79c0-64.77,52.58-117.35,117.35-117.35Z" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <rect x="172.75" y="434.5" width="254.5" height="51.24" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <path d="m172.75,169.89v-27.55h-68.04v57.15c0,37.55,30.44,68,68,68h.04v-35.83h-8.01c-14.37,0-26.01-11.65-26.01-26.01v-35.76h34.02Z" style="fill: #fff; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <path d="m427.25,169.89v-27.55h68.04v57.15c0,37.55-30.44,68-68,68h-.04v-35.83h8.01c14.37,0,26.01-11.65,26.01-26.01v-35.76h-34.02Z" style="fill: #fff; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 19px;"/>
+    <g style="opacity: .15;">
+      <path d="m172.75,169.89v-27.55h-68.04v57.15c0,37.55,30.44,68,68,68h.04v-35.83h-8.01c-14.37,0-26.01-11.65-26.01-26.01v-35.76h34.02Z"/>
+    </g>
+    <g style="opacity: .15;">
+      <path d="m427.25,169.89v-27.55h68.04v57.15c0,37.55-30.44,68-68,68h-.04v-35.83h8.01c14.37,0,26.01-11.65,26.01-26.01v-35.76h-34.02Z"/>
+    </g>
+    <polygon points="300 163.68 316.55 215.62 370.12 215.62 326.78 247.71 343.34 299.65 300 267.55 256.66 299.65 273.22 247.71 229.88 215.62 283.45 215.62 300 163.68" style="fill: none; stroke: #000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 15px;"/>
+  </g>
+</svg>

@@ -38,6 +38,40 @@ dump($data, true);
         </div>
     </div>
 
+
+    <?php
+    if (!isset($data['names'])){
+        $names = [
+            $data['formalname'],
+            abbreviateAuthor($data['last'], $data['first'])
+        ];
+    } else {
+        $names = $data['names'];
+    }
+    ?>
+
+    <div class="box" id="">
+        <div class="p-10 pb-0">
+
+            <label for="names" class="font-weight-bold"><?= lang('Names for author matching', 'Namen für das Autoren-Matching') ?></label>
+        </div>
+        <div class="p-10 pt-0">
+            <?php foreach ($names as $n) { ?>
+                <div class="input-group input-group-sm d-inline-flex w-auto">
+                    <input type="text" name="values[names][]" value="<?= $n ?>" required>
+                    <div class="input-group-append">
+                        <a class="btn" onclick="$(this).closest('.input-group').remove();">×</a>
+                    </div>
+                </div>
+            <?php } ?>
+
+            <button class="btn btn-primary btn-sm ml-10" type="button" onclick="addName(event, this);">
+                <i class="fas fa-plus"></i> <?=lang('Add name', 'Füge Namen hinzu')?>
+            </button>
+        </div>
+
+    </div>
+
     <div class="form-group">
         <span><?= lang('Gender', 'Geschlecht') ?>:</span>
         <?php
@@ -62,6 +96,8 @@ dump($data, true);
         </div>
 
     </div>
+
+
     <div class="form-row row-eq-spacing-sm">
         <div class="col-sm">
             <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
@@ -149,7 +185,7 @@ dump($data, true);
                 ?>
 
                 <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[display_activities]" id="display_activities-web" value="web" <?= $display_activities == 'web'? 'checked' : '' ?>>
+                    <input type="radio" name="values[display_activities]" id="display_activities-web" value="web" <?= $display_activities == 'web' ? 'checked' : '' ?>>
                     <label for="display_activities-web"><?= lang('Web') ?></label>
                 </div>
                 <div class="custom-radio d-inline-block ml-10">
@@ -200,3 +236,20 @@ dump($data, true);
         Update
     </button>
 </form>
+
+<script>
+    function addName(evt, el){
+        var group = $('<div class="input-group input-group-sm d-inline-flex w-auto" required> ')
+        group.append('<input type="text" name="values[names][]" value="">')
+        // var input = $()
+        var btn = $('<a class="btn">')
+        btn.on('click', function (){
+            $(this).closest('.input-group').remove();
+        })
+        btn.html('&times;')
+        
+        group.append($('<div class="input-group-append">').append(btn))
+        // $(el).prepend(group);
+        $(group).insertBefore(el);
+    }
+</script>

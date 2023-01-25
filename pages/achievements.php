@@ -1,3 +1,4 @@
+<div class="content mt-0">
 <h1>
     <i class="fad fa-trophy text-signal"></i>
     <?= lang('Achievements', 'Errungenschaften') ?>
@@ -7,13 +8,12 @@
 // SassCompiler::run("scss/", "css/");
 ?>
 
-<link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css">
+<link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
 
 <?php
 $Achievement = new Achievement($osiris);
 $Achievement->initUser($user);
 
-$achievements = $Achievement->achievements;
 
 $Achievement->checkAchievements();
 $user_ac = $Achievement->userac;
@@ -28,16 +28,25 @@ if ($user == $_SESSION['username'] && !empty($Achievement->new)) {
     echo '</div>';
     $Achievement->save();
 }
+$Achievement->userOrder();
 
+// dump($Achievement->userac, true);
 
 $firstname = $scientist['first'];
+
+$Achievement->widget('lg');
 ?>
 
+</div>
 
 <div class="row">
 
-    <?php foreach ($achievements as $id => $ac) {
+    <?php foreach ($Achievement->achievements as $id => $ac) {
         $uac = $user_ac[$id] ?? [];
+        // dump($ac);
+        if (($ac['visible']??true) === false && empty($uac)){
+            continue;
+        }
         $user_descr = lang('<em>Unachieved.</em>', '<em>Noch nicht erreicht.</em>');
     ?>
         <div class="d-flex col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-25">

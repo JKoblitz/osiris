@@ -54,10 +54,16 @@ function mongo_date($date)
 function getUserFromName($last, $first)
 {
     global $osiris;
+    // if (str_ends_with($first, '.')){
+    //     $first = new MongoDB\BSON\Regex('^' . $first[0] . '.*');
+    // }
     $user = $osiris->users->findOne([
-        'last' => $last,
-        'first' => new MongoDB\BSON\Regex('^' . $first[0] . '.*')
+        '$or' => [
+            ['last' => $last,'first' => $first, 'names' => ['$exists'=>false]],
+            ['names'=> "$last, $first"]
+        ]
     ]);
+    
     if (empty($user)) return null;
     return $user['_id'];
 }
@@ -251,7 +257,7 @@ function has_issues($doc, $user = null)
     if ($epub) $issues[] = "epub";
     if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
 
-    if ((($doc['type'] == 'misc' && $doc['iteration'] == 'annual') || ($doc['type'] == 'review' && $doc['role'] == 'Editor')) && is_null($doc['end'])) {
+    if ((($doc['type'] == 'misc' && $doc['iteration'] == 'annual') || ($doc['type'] == 'review' && in_array($doc['role'], ['Editor', 'editorial']))) && is_null($doc['end'])) {
         if (isset($doc['end-delay'])) {
             if (new DateTime() > new DateTime($doc['end-delay'])) {
                 $issues[] = "openend";

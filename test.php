@@ -211,7 +211,7 @@ Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {
                     )],
                     ['$or' => array(
                         ['type' => 'misc', 'iteration' => 'annual'],
-                        ['type' => 'review', 'role' => 'Editor'],
+                        ['type' => 'review', 'role' =>  ['$in'=> ['Editor', 'editorial']]],
                     )]
                 )
             ],
@@ -347,21 +347,21 @@ Route::get('/mongo', function () {
           },
           {
             "level": 2,
-            "step": 100,
-            "de": "* hat mehr als 100 Aktivitäten eingetragen.",
-            "en": "* has created more than 100 activities."
+            "step": 50,
+            "de": "* hat mehr als 50 Aktivitäten eingetragen.",
+            "en": "* has created more than 50 activities."
           },
           {
             "level": 3,
-            "step": 300,
-            "de": "* hat mehr als 300 Aktivitäten eingetragen.",
-            "en": "* has created more than 300 activities."
+            "step": 200,
+            "de": "* hat mehr als 200 Aktivitäten eingetragen.",
+            "en": "* has created more than 200 activities."
           },
           {
             "level": 4,
-            "step": 1000,
-            "de": "* hat mehr als 1000 Aktivitäten eingetragen.",
-            "en": "* has created more than 1000 activities."
+            "step": 500,
+            "de": "* hat mehr als 500 Aktivitäten eingetragen.",
+            "en": "* has created more than 500 activities."
           }
     ]';
     $levels = json_decode($levels, true);
@@ -376,6 +376,59 @@ Route::get('/mongo', function () {
     // var_dump($document);
     echo "<div id='result'></div>";
     echo "<script src='" . ROOTPATH . "/js/osiris.js'></script>";
+    include BASEPATH . "/footer.php";
+});
+
+Route::get('/test/betatest', function () {
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+
+    $achievement = '{
+        "id": "betatest",
+        "icon": "person-star",
+        "visible": false,
+        "title": {
+          "de": "Beta-Tester",
+          "de_f": "Beta-Testerin",
+          "en": "Beta Tester"
+        },
+        "levels": [
+          {
+            "level": 1,
+            "step": 1,
+            "de": "* hat am Betatest für OSIRIS teilgenommen. Danke.",
+            "en": "* has enganged in the beta-testing for OSIRIS."
+          }
+        ],
+        "maxlvl": 1
+      }';
+    $achievement = json_decode($achievement, true);
+
+    $updateResult = $osiris->achievements->insertOne(
+        $achievement
+    );
+
+    $ach =  [
+        "id"=> "betatest",
+        "level"=> 1,
+        "achieved"=> "01.01.2023",
+        "new"=> true
+    ];
+
+    $tester = ['ayu','cef18','cpo14','daf22','dok21','feb13','hef12','jaw21','jsi06','juk20','kah11','las20','lor15','men17','mip17','ulr22','uln14','yvm19'];
+
+    foreach ($tester as $user) {
+        $updateResult = $osiris->users->updateOne(
+            ['_id' => $user],
+            ['$push' => ['achievements' => $ach]]
+        );
+        dump([$user, $updateResult], true);
+    }
+    // $collection = $osiris->publications;
+    // $document = $collection->findOne(['_id' => 21768]);
+    // var_dump($document);
+    // echo "<div id='result'></div>";
+    // echo "<script src='" . ROOTPATH . "/js/osiris.js'></script>";
     include BASEPATH . "/footer.php";
 });
 

@@ -94,22 +94,36 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
 
 <div class="demo">
     <label for="author" class="element-author">
-        Autor(en)
-        (in korrekter Reihenfolge, Format: Nachname, Vorname)
+        Autor(en) (in korrekter Reihenfolge, Format: Nachname, Vorname)
     </label>
-    <div class="author-list ui-sortable">
-        <div class="author author-aoi ui-sortable-handle" ondblclick="toggleAffiliation(this);">
-            Koblitz, Julia<input type="hidden" name="values[authors][]" value="Koblitz;Julia;1">
-            <a onclick="removeAuthor(event, this);">×</a>
+    <div class="border" id="author-widget">
+        <div class="author-list p-10" id="author-list">
+            <div class="author author-aoi ui-sortable-handle" ondblclick="toggleAffiliation(this);">
+                Koblitz, Julia<input type="hidden" name="values[authors][]" value="Koblitz;Julia;1">
+                <a onclick="removeAuthor(event, this);">×</a>
+            </div>
         </div>
-        <input type="text"
-            placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list"
-            class="ui-sortable-handle">
+        <div class="p-10 bg-light border-top d-flex">
+            <div class="input-group input-group-sm d-inline-flex w-auto">
+                <input type="text" placeholder="Füge Autor hinzu ..." onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
+                <div class="input-group-append">
+                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="ml-auto" data-visible="article,preprint" id="author-numbers">
+                <label for="first-authors">Anzahl der Erstautoren:</label>
+                <input type="number" name="values[first_authors]" id="first-authors" value="1" class="form-control form-control-sm w-50 d-inline-block mr-10" autocomplete="off">
+                <label for="last-authors">Letztautoren:</label>
+                <input type="number" name="values[last_authors]" id="last-authors" value="1" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+            </div>
+        </div>
     </div>
 </div>
 
 
-Um einen **Autor hinzuzufügen**, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
+Um einen **Autor hinzuzufügen**, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. Bestätigen kannst du durch Drücken von <kbd>Enter</kbd> oder den <i class="fas fa-plus"></i>-Knopf. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
 
 Um einen **Autor zu entfernen**, musst du auf das &times; hinter seinem Namen klicken.
 
@@ -569,7 +583,7 @@ Ich halte einen Vortrag auf einer Konferenz. Auf einem Minisymposium ein paar Wo
         Aktivität bearbeiten            
     </span>
     <span class="btn btn-osiris mr-5 active">
-        <i class="fas fa-book-copy"></i>
+        <i class="far fa-book-copy"></i>
         Kopie anlegen            
     </span>
     <span class="btn btn-osiris">

@@ -52,6 +52,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     echo $Settings->generateStyleSheet();
 ?>
 
+<!-- <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+ 
+<script type="text/javascript" src="DataTables/datatables.min.js"></script> -->
 
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
@@ -134,10 +137,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </nav>
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#11.01.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#23.01.23" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-01-11 6:00') ?>)
+                (<?= time_elapsed_string('2023-01-23 14:00') ?>)
             </a>
         </nav>
 
@@ -148,6 +151,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                 <!-- Sidebar links and titles -->
                 <?php if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) { ?>
+
+                    <div class="cta">
+                        <a href="<?= ROOTPATH ?>/" class="btn btn-osiris" style="border-radius:2rem">
+                            <i class="fa fa-right-to-bracket mr-10" aria-hidden="true"></i>
+                            <?= lang('Log in') ?>
+                        </a>
+                    </div>
+
                 <?php } else { ?>
 
                     <div class="sidebar-title">

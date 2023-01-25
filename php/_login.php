@@ -295,7 +295,10 @@ function updateUser($username){
         "telephone" => "telephonenumber",
         "mail" => "mail"
     ];
-    $value = getUser($username)[0];
+    $user = getUser($username);
+    // dump($user);
+    if (empty($user) || $user['count'] == 0) return false;
+    $value = $user[0];
     // dump($value);
     $user = array();
     foreach ($keys as $key => $name) {

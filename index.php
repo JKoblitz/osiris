@@ -253,7 +253,7 @@ Route::post('/user/login', function () {
                         'authors.last' => $USER['last'],
                         'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
                     ],
-                    ['$set' => ["authors.$.user" => $username]]
+                    ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
                 );
                 $n = $updateResult->getModifiedCount();
                 $msg .= "&new=$n";
@@ -294,7 +294,7 @@ Route::post('/user/login', function () {
                             'authors.last' => $USER['last'],
                             'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
                         ],
-                        ['$set' => ["authors.$.user" => $username]]
+                        ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
                     );
                     $n = $updateResult->getModifiedCount();
                     $msg .= "&new=$n";
@@ -370,6 +370,13 @@ Route::get('/activities/search', function () {
     ];
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/activity-search.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/main', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/main.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 

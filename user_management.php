@@ -139,7 +139,6 @@ Route::get('/userman', function () {
 Route::get('/userman/([A-Za-z0-9\-]*)', function ($username) {
     include_once BASEPATH . "/php/_db.php";
     $USER = getUserFromId($username);
-
     if (empty($USER)){
         require_once BASEPATH . '/php/_login.php';
         $USER = updateUser($username);

@@ -1,6 +1,6 @@
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
-<link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css">
+<link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
 
 <style>
     .box.h-full {
@@ -178,8 +178,8 @@ if (isset($_GET['verbose'])) {
 
             <p>
                 <?= lang(
-                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the '.$Settings->affiliation.'). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
-                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der '.$Settings->affiliation.' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
+                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the ' . $Settings->affiliation . '). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
+                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der ' . $Settings->affiliation . ' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
                 ) ?>
             </p>
 
@@ -222,7 +222,6 @@ if (isset($_GET['verbose'])) {
                 </p>
             <?php } ?>
 
-
         </div>
 
         <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false)) {
@@ -230,9 +229,12 @@ if (isset($_GET['verbose'])) {
             <div class="achievements text-right" style="max-width: 35rem;">
                 <h5 class="mb-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
 
-                <?php foreach ($user_ac as $ac) {
-                    $Achievement->icon($ac);
-                } ?>
+                <?php
+                $Achievement->widget();
+                // foreach ($user_ac as $ac) {
+                //     $Achievement->icon($ac);
+                // } 
+                ?>
 
             </div>
         <?php
@@ -270,7 +272,10 @@ if (isset($_GET['verbose'])) {
 
                     <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
                         <i class="far fa-trophy text-signal fa-fw"></i>
-                        <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                    </a>
+
+                    <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
+                        <i class="far fa-chart-network text-osiris fa-fw"></i>
                     </a>
                 </div>
 
@@ -346,41 +351,36 @@ if (isset($_GET['verbose'])) {
         <div class="btn-group btn-group-lg mt-15">
             <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of', 'Das Jahr ') . $scientist['first'] ?> ">
                 <i class="far fa-calendar text-success fa-fw"></i>
-                <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
             </a>
             <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
                 <i class="icon-activity-user text-primary fa-fw"></i>
-                <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
             </a>
             <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
                 <i class="far fa-chart-network text-danger fa-fw"></i>
-                <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
             </a>
 
-            <a class="btn" href="<?= ROOTPATH ?>/achievements<?=$user?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
+            <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
                 <i class="far fa-trophy text-signal fa-fw"></i>
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
-
                 <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="far fa-user-pen text-muted fa-fw"></i>
-                    <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                 </a>
             <?php } ?>
 
         </div>
 
-        <?php if (($USER['is_admin'] || $USER['is_controlling']) && isset($scientist['approved'])) { 
+        <?php if (($USER['is_admin'] || $USER['is_controlling']) && isset($scientist['approved'])) {
             $approvedQ = $scientist['approved']->bsonSerialize();
             sort($approvedQ);
             echo "<div class='mt-20'>";
-            echo "<b>".lang('Quarters approved', 'Bestätigte Quartale').":</b>";
+            echo "<b>" . lang('Quarters approved', 'Bestätigte Quartale') . ":</b>";
             foreach ($approvedQ as $appr) {
                 $Q = explode('Q', $appr);
-                echo "<a href='".ROOTPATH."/scientist/$user?year=$Q[0]&quarter=$Q[1]' class='badge badge-success ml-5'>$appr</a>";
+                echo "<a href='" . ROOTPATH . "/scientist/$user?year=$Q[0]&quarter=$Q[1]' class='badge badge-success ml-5'>$appr</a>";
             }
             echo "</div>";
-         } ?>
+        } ?>
 
 
     <?php } ?>
@@ -740,41 +740,41 @@ if (isset($_GET['verbose'])) {
                 <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
 
                 <?php
-                    $labels = array();
-                    $data = array();
-                    $colors = array();
-                    if ($authors['first'] !== 0){
-                        $labels[] = lang("First author", "Erstautor");
-                        $data[] = $authors['first'];
-                        $colors[] = '#006EB795';
-                    }
-                    if ($authors['last'] !== 0){
-                        $labels[] = lang("Last author", "Letztautor");
-                        $data[] = $authors['last'];
-                        $colors[] = '#13357A95';
-                    }
-                    if ($authors['middle'] !== 0){
-                        $labels[] = lang("Middle author", "Mittelautor");
-                        $data[] = $authors['middle'];
-                        $colors[] = '#83D0F595';
-                    }
-                    if ($authors['editor'] !== 0){
-                        $labels[] = lang("Editorship", "Editorenschaft");
-                        $data[] = $authors['editor'];
-                        $colors[] = '#13357A';
-                    }
+                $labels = array();
+                $data = array();
+                $colors = array();
+                if ($authors['first'] !== 0) {
+                    $labels[] = lang("First author", "Erstautor");
+                    $data[] = $authors['first'];
+                    $colors[] = '#006EB795';
+                }
+                if ($authors['last'] !== 0) {
+                    $labels[] = lang("Last author", "Letztautor");
+                    $data[] = $authors['last'];
+                    $colors[] = '#13357A95';
+                }
+                if ($authors['middle'] !== 0) {
+                    $labels[] = lang("Middle author", "Mittelautor");
+                    $data[] = $authors['middle'];
+                    $colors[] = '#83D0F595';
+                }
+                if ($authors['editor'] !== 0) {
+                    $labels[] = lang("Editorship", "Editorenschaft");
+                    $data[] = $authors['editor'];
+                    $colors[] = '#13357A';
+                }
                 ?>
-                
+
                 <script>
                     var ctx = document.getElementById('chart-authors')
                     var myChart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                            labels: <?=json_encode($labels)?>,
+                            labels: <?= json_encode($labels) ?>,
                             datasets: [{
                                 label: '# of Scientists',
-                                data: <?=json_encode($data)?>,
-                                backgroundColor: <?=json_encode($colors)?>,
+                                data: <?= json_encode($data) ?>,
+                                backgroundColor: <?= json_encode($colors) ?>,
                                 borderColor: '#464646', //'',
                                 borderWidth: 1,
                             }]
@@ -1039,3 +1039,64 @@ if (isset($_GET['verbose'])) {
     </div>
 
 </div>
+
+<?php
+$filter = [
+    'authors.user' => "$user",
+    'end' => null,
+    '$or' => array(
+        ['type' => 'misc', 'iteration' => 'annual'],
+        ['type' => 'review', 'role' =>  ['$in'=> ['Editor', 'editorial']]],
+    )
+];
+
+$count = $osiris->activities->count($filter);
+
+if ($count > 0) {
+    $cursor = $osiris->activities->find($filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1]]);
+?>
+
+    <div class="row row-eq-spacing my-0">
+        <div class="col-lg-12 col-xl-6">
+            <div class="box h-full">
+                <div class="content">
+                    <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
+                </div>
+                <table class="table table-simple mb-10">
+                    <tbody>
+                        <?php
+                        $i = 0;
+                        foreach ($cursor as $doc) {
+                            if ($doc['type'] == 'publication') continue;
+                            // if ($i++ > 5) break;
+                            $id = $doc['_id'];
+
+                        ?>
+                            <tr id='tr-<?= $id ?>'>
+                                <td class="w-50"><?= activity_icon($doc); ?></td>
+                                <td>
+                                    <?php
+                                    if ($USER['display_activities'] == 'web') {
+                                        echo $Format->formatShort($doc);
+                                    } else {
+                                        echo $Format->format($doc);
+                                    }
+                                    ?>
+
+                                </td>
+                                <td class="unbreakable w-25">
+                                    <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                        <i class="icon-activity-search"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<?php
+}
+?>

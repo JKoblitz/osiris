@@ -149,7 +149,7 @@ Route::get('/api/all-activities', function () {
         $y = getYear($doc);
         $quarter = $endQuarter = $y . "Q" . $q;
 
-        if (($_GET['display_activities']??'web') == 'web') {
+        if (($_GET['display_activities'] ?? 'web') == 'web') {
             $format = $Format->formatShort($doc);
         } else {
             $format = $Format->format($doc);
@@ -163,7 +163,7 @@ Route::get('/api/all-activities', function () {
         ];
 
 
-        $datum['quarter'] .= '<span class="hidden">' . $doc['month'] . "M" . $doc['year'] . "Y";
+        $datum['quarter'] .= '<span class="hidden"> ' . $doc['month'] . "M" . $doc['year'] . "Y";
         if (isset($doc['end']) && !empty($doc['end'])) {
 
             $em = $doc['end']['month'];
@@ -176,7 +176,7 @@ Route::get('/api/all-activities', function () {
                 for ($j = $startMon; $j <= $endMonth; $j = $j > 12 ? $j % 12 || 11 : $j + 1) {
                     $month = $j + 1;
                     $displayMonth = $month < 10 ? '0' + $month : $month;
-                    $datum['quarter'] .= $displayMonth . "M" . $i . "Y ";
+                    $datum['quarter'] .= " ". $displayMonth . "M" . $i . "Y ";
                     // QUARTER:
                     $endQuarter = $i . "Q" . ceil($displayMonth / 3);
                 }
@@ -188,12 +188,12 @@ Route::get('/api/all-activities', function () {
         }
 
         $datum['links'] =
-            "<a class='btn btn-link btn-square' href='" . ROOTPATH . "'/activities/view/$id'>
+            "<a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/view/$id'>
                 <i class='icon-activity-search'></i>
             </a>";
         $useractivity = isUserActivity($doc, $user);
         if ($useractivity) {
-            $datum['links'] .= " <a class='btn btn-link btn-square' href='" . ROOTPATH . "'/activities/edit/$id'>
+            $datum['links'] .= " <a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/edit/$id'>
                 <i class='icon-activity-pen'></i>
             </a>";
         }
@@ -296,8 +296,6 @@ Route::get('/api/journal', function () {
         ]];
     }
     $result = $osiris->journals->find($filter)->toArray();
-
-
     echo return_rest($result, count($result));
 });
 
@@ -362,4 +360,32 @@ Route::get('/api/google', function () {
     }
 
     echo json_encode($result);
+});
+
+
+
+Route::get('/api/wos-starter', function () {
+    // include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/Settings.php";
+    $Settings = new Settings();
+    $apikey = "";
+    foreach ($Settings['apis'] as $api) {
+        if ($api['id'] == "wos-starter") {
+            $apikey = $api['key'];
+        }
+    }
+    if (empty($apikey)) {
+        die("API key is missing.");
+    }
+    // $filter = [];
+    $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
+    $data = [
+        "X-ApiKey" => $apikey,
+        "q" => "issn=".$issn
+    ];
+    $result = CallAPI('GET', $url, $data);
+    $result = json_decode($response, true);
+    // $result = $osiris->journals->find($filter)->toArray();
+
+    echo return_rest($result, count($result));
 });

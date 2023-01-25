@@ -58,7 +58,8 @@ $user_activity = isUserActivity($doc, $user);
     .table tbody tr[class^="row-"]:hover {
         border-left-width: 5px;
     }
-/* 
+
+    /* 
     [data-dept]{
         position: relative;
         transform:scale(1,1);
@@ -174,20 +175,22 @@ $user_activity = isUserActivity($doc, $user);
 
             <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
-        <i class="fas fa-book-copy"></i>
+        <i class="far fa-book-copy"></i>
         ' . lang("Add a copy", "Kopie anlegen") .
                     '</a>';
             }
             ?>
 
 
-            <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
-                <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
-                    <i class="far fa-upload"></i>
-                    <?= lang('Upload files', 'Dateien hochladen') ?>
-                </a>
-            <?php } ?>
+            <?php if ($user_activity || $USER['is_controlling'] || $USER['is_admin']) { ?>
+                <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
+                    <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
+                        <i class="far fa-upload"></i>
+                        <?= lang('Upload files', 'Dateien hochladen') ?>
+                    </a>
+                <?php } ?>
 
+            <?php } ?>
 
 
         </div>
@@ -733,19 +736,22 @@ $user_activity = isUserActivity($doc, $user);
             <?php if (isset($activity[$role])) { ?>
 
                 <h2><?= ucfirst($role) ?></h2>
-                <div class="btn-toolbar mb-10">
-                    <?php if ($role == 'authors') {
-                        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
+
+                <?php if ($user_activity || $USER['is_controlling'] || $USER['is_admin']) { ?>
+                    <div class="btn-toolbar mb-10">
+                        <?php if ($role == 'authors') {
+                            echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
                                 <i class="fa-regular fa-user-pen"></i>
                                 ' . lang("Edit authors", "Autorenliste bearbeiten") .
-                            '</a>';
-                    } else {
-                        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
+                                '</a>';
+                        } else {
+                            echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
                                     <i class="fa-regular fa-user-pen"></i>
                                     ' . lang("Edit editors", "Editorenliste bearbeiten") .
-                            '</a>';
-                    } ?>
-                </div>
+                                '</a>';
+                        } ?>
+                    </div>
+                <?php } ?>
                 <table class="table">
                     <thead>
                         <tr>

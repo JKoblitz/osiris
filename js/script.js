@@ -345,7 +345,8 @@ function getJournal(name) {
                 selectJournal(journals[0])
                 toastSuccess(lang('Journal ID added.', 'Journal-ID wurde hinzugefügt.'), lang('Journal found', 'Journal gefunden'))
             } else if (journals.length === 0) {
-                SUGGEST.append('<tr><td>' + lang('Journal not found in OSIRIS', 'Journal nicht in OSIRIS gefunden') + '</tr></td>')
+                SUGGEST.append('<tr><td colspan="3">' + lang('Journal not found in OSIRIS. Starting search in NLM catalogue ...', 'Journal nicht in OSIRIS gefunden. Starte Suche im NLM-Katalog ...') + '</tr></td>')
+                getJournalNLM(name)
                 window.location.replace('#journal-select')
             } else {
                 journals.forEach((j) => {
@@ -433,7 +434,7 @@ function selectJournal(j, n = false) {
 function getJournalNLM(name) {
     var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     const SUGGEST = $('#journal-suggest')
-    SUGGEST.empty()
+    // SUGGEST.empty()
     // https://api.clarivate.com/apis/wos-journals/v1/journals?q=matrix biology
     var data = {
         db: 'nlmcatalog',
@@ -826,12 +827,14 @@ function fillForm(pub) {
             togglePubType('magazine')
             break;
         case 'book-chapter':
+        case 'chapter':
             togglePubType('chapter')
+            pub.book = pub.journal;
+            delete pub.journal
             break;
         case 'book':
             if (pub.editors !== undefined && pub.editors.length > 0 && pub.authors.length > 0) {
                 togglePubType('chapter')
-                pub.book = pub.journal;
             } else if (pub.editors !== undefined && pub.editors.length > 0) {
                 togglePubType('editor')
                 pub.book = pub.journal;
@@ -840,6 +843,7 @@ function fillForm(pub) {
                 pub.series = pub.journal;
             }
             delete pub.journal
+            console.log(pub);
             break;
         case 'software':
         case 'dataset':
@@ -1005,12 +1009,10 @@ function affiliationCheck() {
 }
 
 function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el = null) {
-    if (el == null) {
-        if (editor) {
-            el = $('#add-editor')
-        } else {
-            el = $('#add-author')
-        }
+    if (editor) {
+        el = $('#editor-list')
+    } else {
+        el = $('#author-list')
     }
     if (lastname === undefined) lastname = ""
     if (firstname === undefined) firstname = ""
@@ -1029,7 +1031,7 @@ function addAuthorDiv(lastname, firstname, aoi = false, editor = false, el = nul
     var classname = editor ? "editors" : "authors";
     author.append('<input type="hidden" name="values[' + classname + '][]" value="' + val + '">')
     author.append('<a onclick="removeAuthor(event, this)">&times;</a>')
-    author.insertBefore(el)
+    author.appendTo(el)
 }
 
 function toggleAffiliation(item) {
@@ -1045,16 +1047,24 @@ function toggleAffiliation(item) {
     affiliationCheck();
 }
 
-function addAuthor(event, el, editor = false) {
-    if (event.keyCode == '13') {
+function addAuthor(event, editor = false) {
+    if (editor) {
+        var el = $('#add-editor')
+    } else {
+        var el = $('#add-author')
+    }
+    var data = el.val()
+    console.log(data);
+    if ((event.type =='keypress' && event.keyCode == '13') || event.type =='click') {
         event.preventDefault();
-        const match = (SCIENTISTS.indexOf(el.value) != -1)
-        var value = el.value.split(',')
+        const match = (SCIENTISTS.indexOf(data) != -1)
+        var value = data.split(',')
+        console.log(data);
         if (value.length !== 2) {
             toastError('Author name must be formatted like this: Lastname, Firstname')
             return;
         }
-        addAuthorDiv(value[0], value[1], match, editor, $(el))
+        addAuthorDiv(value[0], value[1], match, editor)
 
         $(el).val('')
         affiliationCheck();
@@ -1312,7 +1322,8 @@ function filter_results(input) {
 function verifyForm(event, form) {
     // event.preventDefault()
     form = $(form)
-    correct = true
+    var correct = true
+    var errors = []
     form.find(':input').each(function () {
         //retrieve field name and value from the DOM
         var input = $(this)
@@ -1330,6 +1341,7 @@ function verifyForm(event, form) {
                 //     else selector.addClass('is-invalid').removeClass('is-valid')
                 // })
                 correct = false;
+                errors.push(input.attr('name').replace('values[', '').replace(']', ''))
             } else {
                 selector.addClass('is-valid').removeClass('is-invalid');
             }
@@ -1338,15 +1350,20 @@ function verifyForm(event, form) {
 
     // check if authors are defined
     if ($('.author-list').find('.author').length === 0) {
-        $('.author-list').addClass('is-invalid').removeClass('is-valid')
+        $('#author-widget').addClass('is-invalid').removeClass('is-valid')
         correct = false
+        errors.push("Authors")
     } else {
-        $('.author-list').addClass('is-valid').removeClass('is-invalid')
+        $('#author-widget').addClass('is-valid').removeClass('is-invalid')
     }
 
     if (correct) return true
 
     event.preventDefault()
+
+    var msg = lang('The following fields cannot be empty: ', 'Die folgenden Felder dürfen nicht leer sein: ');
+    msg += errors.join(', ')
+    toastError(msg)
     return false
 }
 

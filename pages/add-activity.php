@@ -83,7 +83,7 @@ function val($index, $default = '')
             </h5>
             <?php if (lang("en", "de") == "en") { ?>
                 <p>
-                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?=$Settings->affiliation?> authors are suggested in a list. An author from the list will be automatically assigned to <?=$Settings->affiliation?>.
+                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?= $Settings->affiliation ?> authors are suggested in a list. An author from the list will be automatically assigned to <?= $Settings->affiliation ?>.
                 </p>
 
                 <p>
@@ -93,11 +93,11 @@ function val($index, $default = '')
                     To <b>change the author order</b>, you can take an author and drag and drop it to the desired position.
                 </p>
                 <p>
-                    To <b>mark an author as belonging to the <?=$Settings->affiliation?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?=$Settings->affiliation?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?=$Settings->affiliation?> employees but were not at the time of the activity, they must not be marked as a <?=$Settings->affiliation?> author!
+                    To <b>mark an author as belonging to the <?= $Settings->affiliation ?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?= $Settings->affiliation ?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?= $Settings->affiliation ?> employees but were not at the time of the activity, they must not be marked as a <?= $Settings->affiliation ?> author!
                 </p>
             <?php } else { ?>
                 <p>
-                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?=$Settings->affiliation?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?=$Settings->affiliation?> zugeordnet.
+                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?= $Settings->affiliation ?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?= $Settings->affiliation ?> zugeordnet.
                 </p>
 
                 <p>
@@ -107,7 +107,7 @@ function val($index, $default = '')
                     Um die <b>Autorenreihenfolge zu ändern</b>, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
                 </p>
                 <p>
-                    Um einen <b>Autor zur <?=$Settings->affiliation?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?=$Settings->affiliation?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?=$Settings->affiliation?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?=$Settings->affiliation?>-Autor markiert werden!
+                    Um einen <b>Autor zur <?= $Settings->affiliation ?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?= $Settings->affiliation ?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?= $Settings->affiliation ?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?= $Settings->affiliation ?>-Autor markiert werden!
                 </p>
 
                 <p>
@@ -192,13 +192,13 @@ function val($index, $default = '')
         <!-- Edit existing activity -->
         <h3 class="mb-0"><?= lang('Edit activity', 'Bearbeite Aktivität') ?>:</h3>
         <div class="mb-10">
-        <?php
+            <?php
             $Format = new Format(false);
             echo activity_icon($form);
             echo $Format->formatShort($form);
-        ?>
+            ?>
         </div>
-        
+
     <?php } ?>
 
     <?php if (!empty($form)) { ?>
@@ -266,8 +266,8 @@ function val($index, $default = '')
             <div class="mb-20 select-btns" data-visible="review,editorial,grant-rev,thesis-rev">
                 <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review2-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Paper review') ?></button>
                 <button onclick="togglePubType('editorial')" class="btn btn-select text-review" id="editorial-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Editorial board') ?></button>
-                <button onclick="togglePubType('grant-rev')" class="btn btn-select text-review" id="grant-rev-btn"><i class="fa-regular fa-file-chart-pie"></i> <?= lang('Grant proposal') ?></button>
                 <button onclick="togglePubType('thesis-rev')" class="btn btn-select text-review" id="thesis-rev-btn"><i class="fa-regular fa-graduation-cap"></i> <?= lang('Thesis review') ?></button>
+                <button onclick="togglePubType('grant-rev')" class="btn btn-select text-review" id="grant-rev-btn"><i class="fa-regular fa-file-magnifying-glass"></i> <?= lang('Other reviews', "Sonstiges Review") ?></button>
             </div>
 
             <div class="mb-20 select-btns" data-visible="misc-once,misc-annual">
@@ -300,11 +300,11 @@ function val($index, $default = '')
                 </p>
                 <p data-visible="book">
                     <span class="element-author" data-element="Autor(en)">Overmann, J.</span>
-                    (<span class="element-time" data-element="Jahr">2006</span>) 
-                    <span class="element-title" data-element="Titel">Molecular Basis of Symbiosis</span>. 
+                    (<span class="element-time" data-element="Jahr">2006</span>)
+                    <span class="element-title" data-element="Titel">Molecular Basis of Symbiosis</span>.
                     (Vol. <span data-element="Volume">41</span>)
-                    <span data-element="Ort">Berlin/Heidelberg</span>: 
-                    <span data-element="Verlag">Springer-Verlag</span>. 
+                    <span data-element="Ort">Berlin/Heidelberg</span>:
+                    <span data-element="Verlag">Springer-Verlag</span>.
                     DOI: https://doi.org/<span class="element-link" data-element="DOI">10.1007/3-540-28221-1</span>
                 </p>
                 <p data-visible="chapter">
@@ -323,9 +323,9 @@ function val($index, $default = '')
                     Coming soon.
                 </p>
                 <p data-visible="dissertation">
-                    <span class="element-author" data-element="Autor(en)">Helmecke, J.</span> 
-                    (<span class="element-time" data-element="Jahr">2019</span>) 
-                    <span class="element-title" data-element="Titel">Vom Genom zum systemweiten Verständnis des Stoffwechsels thermoacidophiler Sulfolobales</span> (Dissertation). 
+                    <span class="element-author" data-element="Autor(en)">Helmecke, J.</span>
+                    (<span class="element-time" data-element="Jahr">2019</span>)
+                    <span class="element-title" data-element="Titel">Vom Genom zum systemweiten Verständnis des Stoffwechsels thermoacidophiler Sulfolobales</span> (Dissertation).
                     <span data-element="Universität">TU Braunschweig</span>.
                     DOI: https://doi.org/<span class="element-link" data-element="DOI">10.24355/dbbs.084-201910291317-0</span>
                 </p>
@@ -409,7 +409,7 @@ function val($index, $default = '')
                 </p>
                 <p data-visible="grant-rev">
                     <span class="element-author" data-element="<?= lang('Scientist', 'Wissenschaftler:in') ?>">Sikorski, J.</span>
-                    Reviewer of Grant Proposals:
+                    <span class="element-cat" data-element="<?= lang('Type of review', 'Art des Reviews') ?>">Reviewer of Grant Proposals</span>
                     <span class="element-title" data-element="Title/ Description/ Details">National Science Foundation USA</span>.
                     <span class="element-time" data-element="<?= lang('Date', 'Datum') ?>">October 2021</span>.
                 </p>
@@ -468,31 +468,30 @@ function val($index, $default = '')
                         <a class="" href="#author-help"><i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
                     </label>
 
-                    <div class="float-right" data-visible="article,preprint" id="author-numbers">
-                        <label for="first-authors"><?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?></label>
-                        <input type="number" name="values[first_authors]" id="first-authors" value="<?= $first ?>" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
-                        <label for="last-authors"><?= lang('last authors:', 'Letztautoren:') ?></label>
-                        <input type="number" name="values[last_authors]" id="last-authors" value="<?= $last ?>" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                    <div class="border" id="author-widget">
+                        <div class="author-list p-10" id="author-list">
+                            <?= $authors ?>
+                        </div>
+                        <div class="p-10 bg-light border-top d-flex">
+
+                            <div class="input-group input-group-sm d-inline-flex w-auto">
+                                <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="ml-auto" data-visible="article,preprint" id="author-numbers">
+                                <label for="first-authors"><?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?></label>
+                                <input type="number" name="values[first_authors]" id="first-authors" value="<?= $first ?>" class="form-control form-control-sm w-50 d-inline-block mr-10" autocomplete="off">
+                                <label for="last-authors"><?= lang('last authors:', 'Letztautoren:') ?></label>
+                                <input type="number" name="values[last_authors]" id="last-authors" value="<?= $last ?>" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="author-list">
-                        <?= $authors ?>
-                        <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event, this);" id="add-author" list="scientist-list">
-                    </div>
-                    <!-- <div class="float-right" id="department">
-                        <label for="dept"><?= lang('Dept:', 'Abteilung:') ?></label>
-                        <select name="values[dept]" id="dept" class="form-control form-control-sm w-150 d-inline-block">
-                            <option value="">Abteilungsübergreifend</option>
-                            <option value="BIDB" <?= $dept == 'BIDB' ? 'selected' : '' ?>>BIDB</option>
-                            <option value="BUG" <?= $dept == 'BUG' ? 'selected' : '' ?>>BUG</option>
-                            <option value="MIG" <?= $dept == 'MIG' ? 'selected' : '' ?>>MIG</option>
-                            <option value="MIOS" <?= $dept == 'MIOS' ? 'selected' : '' ?>>MIOS</option>
-                            <option value="MuTZ" <?= $dept == 'MuTZ' ? 'selected' : '' ?>>MuTZ</option>
-                            <option value="MÖD" <?= $dept == 'MÖD' ? 'selected' : '' ?>>MÖD</option>
-                            <option value="PFVI" <?= $dept == 'PFVI' ? 'selected' : '' ?>>PFVI</option>
-                            <option value="NFG" <?= $dept == 'NFG' ? 'selected' : '' ?>>NFG</option>
-                            <option value="Services" <?= $dept == 'Services' ? 'selected' : '' ?>>Services</option>
-                        </select>
-                    </div> -->
                     <small class="text-muted">
                         <?= lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.') ?>
                     </small>
@@ -751,8 +750,8 @@ function val($index, $default = '')
                         <input type="text" class="form-control" name="values[issue]" value="<?= val('issue') ?>" id="issue">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
-                    <div class="col-sm">
-                        <label for="series" class="element-other"><?=lang('Series', 'Buchreihe')?></label>
+                    <div class="col-sm" data-visible="book,chapter">
+                        <label for="series" class="element-other"><?= lang('Series', 'Buchreihe') ?></label>
                         <input type="text" class="form-control" name="values[series]" value="<?= val('series') ?>" id="series">
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
@@ -794,11 +793,26 @@ function val($index, $default = '')
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
+
+
                 <div class="form-group" data-visible="chapter">
                     <label for="editor" class="required element-author"><?= lang('Editor(s) (in correct order)', 'Editor(en) (in korrekter Reihenfolge)') ?></label>
-                    <div class="author-list">
-                        <?= $editors ?>
-                        <input type="text" placeholder="Add editor ..." onkeypress="addAuthor(event, this, true);" id="add-editor" list="scientist-list">
+                    <div class="border" id="editor-widget">
+                        <div class="author-list p-10" id="editor-list">
+                            <?= $editors ?>
+                        </div>
+                        <div class="p-10 bg-light border-top d-flex">
+
+                            <div class="input-group input-group-sm d-inline-flex w-auto">
+                                <input type="text" placeholder="<?= lang('Add editor ...', 'Füge Editor hinzu ...') ?>" onkeypress="addAuthor(event, true);" id="add-editor" list="scientist-list">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event, true);">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -872,8 +886,8 @@ function val($index, $default = '')
                                 <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
                                 <option value="review" <?= strtolower(val('role')) == 'review' ? 'selected' : '' ?>>Reviewer</option>
                                 <option value="editorial" <?= strtolower(val('role')) == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
-                                <option value="grant-rev" <?= strtolower(val('role')) == 'grant-rev' ? 'selected' : '' ?>>Grant proposal</option>
                                 <option value="thesis-rev" <?= strtolower(val('role')) == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
+                                <option value="grant-rev" <?= strtolower(val('role')) == 'grant-rev' ? 'selected' : '' ?>><?=lang('Other review', 'Sonstiges Review')?></option>
                             </select>
 
                         </div>
@@ -902,6 +916,29 @@ function val($index, $default = '')
                             </label>
                             <input type="text" class="form-control" id="title-input" value="<?= val('title') ?>" name="values[title]" required>
                         </div>
+                        
+                        <div class="col-sm" data-visible="grant-rev,thesis-rev">
+                            <label class="element-cat" for="review-type">
+                                <?= lang('Type of review', 'Art des Review') ?>
+                            </label>
+                            <input type="text" class="form-control" id="review-type" value="<?= val('review-type', 'Begutachtung eines Forschungsantrages') ?>" name="values[review-type]">
+                        </div>
+
+                    </div>
+
+                    <div class="form-row row-eq-spacing" data-visible="review,grant-rev,thesis-rev">
+                        <div class="col-sm">
+                            <div class="reviewer-role">
+                                <label class="required element-time" for="date">
+                                    <?= lang('Date', 'Datum') ?>
+                                </label>
+                                <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray(val('start')) ?>" required>
+                                <small class="text-muted">
+                                    <?= lang('Only month and year are considered', 'Nur Monat und Jahr sind relevant') ?>
+                                </small>
+                            </div>
+                        </div>
+
                         <div class="col-sm-3">
                             <label class="required element-author" for="username">
                                 <?= lang('Scientist', 'Wissenschaftler:in') ?>
@@ -914,16 +951,6 @@ function val($index, $default = '')
                                 <?php } ?>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="reviewer-role" data-visible="review,grant-rev,thesis-rev">
-                        <label class="required element-time" for="date">
-                            <?= lang('Date', 'Datum') ?>
-                        </label>
-                        <input type="date" class="form-control date" name="values[start]" id="date" value="<?= valueFromDateArray(val('start')) ?>" required>
-                        <small class="text-muted">
-                            <?= lang('Only month and year are considered', 'Nur Monat und Jahr sind relevant') ?>
-                        </small>
                     </div>
 
                     <div class="editor-role" data-visible="editorial">
@@ -946,6 +973,19 @@ function val($index, $default = '')
                                 </label>
                                 <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= val('editor_type') ?>" placeholder="Guest Editor for Research Topic 'XY'">
                             </div>
+                                    
+                        <div class="col-sm-3">
+                            <label class="required element-author" for="username">
+                                <?= lang('Scientist', 'Wissenschaftler:in') ?>
+                            </label>
+                            <select class="form-control" id="username" name="values[user]" required autocomplete="off">
+                                <?php
+                                $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+                                foreach ($userlist as $j) { ?>
+                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
                         </div>
                     </div>
                 </div>

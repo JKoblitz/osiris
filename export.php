@@ -145,7 +145,7 @@ Route::post('/download', function () {
                         )],
                         ['$or' => array(
                             ['type' => 'misc', 'iteration' => 'annual'],
-                            ['type' => 'review', 'role' => 'Editor'],
+                            ['type' => 'review', 'role' =>  ['$in'=> ['Editor', 'editorial']]],
                         )]
                     )
                 ],

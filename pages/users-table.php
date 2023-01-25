@@ -2,10 +2,10 @@
     <i class="fad fa-user-graduate"></i>
     <?= lang('Users', 'Nutzer:innen') ?>
 </h1>
-<p class="text-muted">
+<!-- <p class="text-muted">
     Achtung: Einteilung und Klassifizierung der Nutzer erfolgte automatisch
     und ist in vielen Fällen noch nicht korrekt!
-</p>
+</p> -->
 
 
 <table class="table dataTable" id="result-table">
@@ -17,6 +17,9 @@
         <th><?= lang('Phone', 'Telefon') ?></th>
         <th><?= lang('Comment', 'Kommentar') ?></th>
         <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
+        <th><?= lang('Active', 'Aktiv') ?></th>
+        <th><?= lang('Leader', 'Leiter') ?></th>
+        <th><?= lang('Gender', 'Geschlecht:in') ?></th>
         <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
             <th></th>
         <?php
@@ -52,11 +55,10 @@
                     }
                     ?></td>
                 <td><?= $document['unit'] ?></td>
-                <td>
-                    <!-- <span class="hidden"><?= $document['is_scientist'] ?></span> -->
-                    <?= bool_icon($document['is_scientist']) ?>
-                </td>
-                <!-- <td><?= bool_icon($document['is_active']) ?></td> -->
+                <td><?= bool_icon($document['is_scientist'] ?? false) ?> <span class="hidden"><?= $document['is_scientist'] ?></span></td>
+                <td><?= bool_icon($document['is_active'] ?? false) ?> <span class="hidden"><?= $document['is_active'] ?></span></td>
+                <td><?= bool_icon($document['is_leader'] ?? false) ?> <span class="hidden"><?= $document['is_leader'] ?></span></td>
+                <td><?= $document['gender'] ?? 'n' ?></td>
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
                         <!-- <a href="<?= ROOTPATH ?>/user/edit/<?= $document['_id'] ?>" class="btn btn-link">
@@ -79,6 +81,10 @@
 
 
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
+<script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script>
 
 <script>
     $.extend($.fn.DataTable.ext.classes, {
@@ -96,9 +102,32 @@
     var dataTable;
     $(document).ready(function() {
         dataTable = $('#result-table').DataTable({
+            // searchPanes: {
+            //     viewTotal: true,
+            //     columns: [6]
+            // },
+            // searchPanes: true,
+            // dom: 'Plfrtip',
+            dom: 'frtipP',
+            searchPanes: {
+                initCollapsed: true,
+                columns: [3, 6, 7, 8, 9]
+            },
+
+            columnDefs: [{
+                    targets: [3, 6],
+                    searchable: true,
+                    visible: true
+                },
+                {
+                    targets: [7, 8, 9],
+                    searchable: true,
+                    visible: false
+                },
+            ],
             "order": [
                 [0, 'asc'],
-            ]
+            ],
         });
     });
 
@@ -123,7 +152,7 @@
                     console.log(raw);
                     for (var key in raw) {
                         var val = raw[key];
-                        if (key.includes('values')){
+                        if (key.includes('values')) {
                             key = key.slice(7).replace(']', '')
                             data[key] = val
                         }

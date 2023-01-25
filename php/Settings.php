@@ -9,6 +9,7 @@ class Settings
     public $startyear = 2017;
     public $departments = array();
     public $activities = array();
+    public $apis = array();
 
     function __construct()
     {
@@ -41,6 +42,9 @@ class Settings
             if (!isset($val['id'])) die('Error in settings: activities needs an ID.');
             $this->activities[$val['id']] = $val;
         }
+
+        $this->apis = $this->json['apis'] ?? [];
+
     }
 
 

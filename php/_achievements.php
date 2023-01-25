@@ -45,25 +45,32 @@ class Achievement
         }
     }
 
-    // function getLom(){
-    //     if ($this->username === null) return false;
-    //     $LOM = new LOM($this->username, $this->osiris);
-    //     $lom = [
-    //         'pub' => 0,
-    //         'year' => 0,
-
-    //     ];
-    // }
-
+    function userOrder()
+    {
+        uasort(
+            $this->achievements,
+            function ($a, $b) {
+                $lvl1 = $this->userac[$a['id']]['level'] ?? '0';
+                if ($a['maxlvl'] == $lvl1) $lvl1 = 'max';
+                $lvl2 = $this->userac[$b['id']]['level'] ?? '0';
+                if ($b['maxlvl'] == $lvl2) $lvl2 = 'max';
+                if ($lvl1 > $lvl2) return -1;
+                if ($lvl2 > $lvl1) return 1;
+                return 0;
+            }
+        );
+    }
     function checkAchievements()
     {
         if ($this->username === null) return false;
         $activities = $this->osiris->activities->find(['authors.user' => $this->username])->toArray();
 
-        if (empty($activities)) return false;
 
-        $types = array_column($activities, 'type');
-        $types = array_count_values($types);
+        if (empty($activities)) $types = [];
+        else {
+            $types = array_column($activities, 'type');
+            $types = array_count_values($types);
+        }
 
         $LOM = new LOM($this->username, $this->osiris);
         foreach ($activities as $i => $doc) {
@@ -127,26 +134,27 @@ class Achievement
                     case 'network':
                         $authors = [];
                         foreach ($activities as $a) {
-                            if (isset($a['authors'])){
+                            if (isset($a['authors'])) {
                                 foreach ($a['authors'] as $au) {
-                                    if (!isset($au['first']) || !isset($au['last']) ||($au['user'] ?? '') == $this->username) continue;
-                                    $name = strtolower($au['first']." ".$au['last']);
-                                    if (!in_array($name, $authors)){
+                                    if (!isset($au['first']) || !isset($au['last']) || ($au['user'] ?? '') == $this->username) continue;
+                                    $name = strtolower($au['first'] . " " . $au['last']);
+                                    if (!in_array($name, $authors)) {
                                         $authors[] = $name;
-                                        $value ++;
+                                        $value++;
                                     }
                                 }
                             }
                         }
                         break;
-    
+
                     case 'year-coins':
                         $lom_years = [];
                         foreach ($activities as $a) {
                             if (!isset($lom_years[$a['year']])) $lom_years[$a['year']] = 0;
                             $lom_years[$a['year']] += $a['coins'];
                         }
-                        $value = max($lom_years);
+                        
+                        if (!empty($lom_years)) $value = max($lom_years);
                         break;
                     case 'pub-impact':
                         $arr = array_column($activities, 'impact');
@@ -156,8 +164,8 @@ class Achievement
                         $array = array_filter($activities, function ($a) {
                             return $a['type'] == 'publication';
                         });
-                        if (count(array_column($array, 'coins'))> 0)
-                        $value = max(array_column($array, 'coins'));
+                        if (count(array_column($array, 'coins')) > 0)
+                            $value = max(array_column($array, 'coins'));
                         break;
                     case 'coins':
                         $value = array_sum(array_column($activities, 'coins'));
@@ -179,7 +187,9 @@ class Achievement
                         $value = 0;
                         break;
                 }
+                // echo "<!--";
                 // dump([$key, $value], true);
+                // echo "-->";
 
                 // calculate new level
                 $new_lvl = $user_lvl;
@@ -189,7 +199,7 @@ class Achievement
                     $new_lvl = $lvl['level'];
                 }
             }
-            if ($new_lvl > $user_lvl) {
+            if ($new_lvl > $user_lvl || ($user_ac['new'] ?? false)) {
                 $this->userac[$key] = [
                     'id' => $key, "level" => $new_lvl, "achieved" => date("d.m.Y")
                 ];
@@ -221,6 +231,55 @@ class Achievement
 
         </a>
     <?php
+    }
+
+
+    function widget($size = "")
+    {
+        $levels = [
+            "max" => 0,
+            "3" => 0,
+            "2" => 0,
+            "1" => 0
+        ];
+        foreach ($this->userac as $id => $uac) {
+            $ac = $this->achievements[$uac['id']] ?? array();
+            $lvl = $uac['level'] ?? 1;
+            if ($lvl == $ac['maxlvl']) $lvl = "max";
+            if (!isset($levels[$lvl])) continue;
+            $levels[$lvl]++;
+        }
+        echo "<div class='achievement-widget achievement-widget-$size'>";
+        foreach ($levels as $lvl => $value) {
+            if ($value == 0) continue;
+            echo "<a class='achievement lvl-$lvl' href='" . ROOTPATH . "/achievements/$this->username'>";
+            echo "<img src='" . ROOTPATH . "/img/tophies/trophy_$lvl-simple.svg' alt='Level $lvl'>";
+            echo "<span>$value</span>";
+            echo "</a>";
+        }
+        echo "</div>";
+
+        // $levels = [
+        //     "4" => 0,
+        //     "3" => 0,
+        //     "2" => 0,
+        //     "1" => 0
+        // ];
+        // foreach ($this->userac as $id => $uac) {
+        //     $ac = $this->achievements[$uac['id']] ?? array();
+        //     $lvl = $uac['level'] ?? 1;
+        //     if ($lvl == $ac['maxlvl']) $lvl = "4";
+        //     if (!isset($levels[$lvl])) continue;
+        //     $levels[$lvl]++;
+        // }
+        // echo "<div class=''>";
+        // foreach ($levels as $lvl => $value) {
+        //     if ($value == 0) continue;
+        //     echo "<a class='achievement colorless font-size-16 max-4 lvl$lvl mr-10' href='".ROOTPATH."/achievements/$this->username'>";
+        //     echo "<i class='fas fa-lg fa-trophy'></i> $value";
+        //     echo "</a>";
+        // }
+        // echo "</div>";
     }
 
     function snack($uac)
