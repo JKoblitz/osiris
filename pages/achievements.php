@@ -1,56 +1,116 @@
 <div class="content mt-0">
-<h1>
-    <i class="fad fa-trophy text-signal"></i>
-    <?= lang('Achievements', 'Errungenschaften') ?>
-</h1>
+    <h1>
+        <i class="fad fa-trophy text-signal"></i>
+        <?= lang('Achievements', 'Errungenschaften') ?>
+    </h1>
 
-<?php
-// SassCompiler::run("scss/", "css/");
-?>
+    <?php
+    // SassCompiler::run("scss/", "css/");
+    ?>
 
-<link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
+    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
 
-<?php
-$Achievement = new Achievement($osiris);
-$Achievement->initUser($user);
+    <?php
+    $Achievement = new Achievement($osiris);
+    $Achievement->initUser($user);
 
 
-$Achievement->checkAchievements();
-$user_ac = $Achievement->userac;
-if ($user == $_SESSION['username'] && !empty($Achievement->new)) {
-    echo '<div class="alert alert-signal m-10">';
-    echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
+    $Achievement->checkAchievements();
+    $user_ac = $Achievement->userac;
+    if ($user == $_SESSION['username'] && !empty($Achievement->new)) {
+        echo '<div class="alert alert-signal m-10">';
+        echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
 
-    foreach ($Achievement->new as $i => $n) {
-        $Achievement->snack($n);
+        foreach ($Achievement->new as $i => $n) {
+            $Achievement->snack($n);
+        }
+
+        echo '</div>';
+        $Achievement->save();
     }
+    $Achievement->userOrder();
 
-    echo '</div>';
-    $Achievement->save();
-}
-$Achievement->userOrder();
+    // dump($Achievement->userac, true);
 
-// dump($Achievement->userac, true);
+    $firstname = $scientist['first'];
 
-$firstname = $scientist['first'];
-
-$Achievement->widget('lg');
-?>
+    $Achievement->widget('lg');
+    ?>
 
 </div>
 
-<div class="row">
+<div class="row row-eq-spacing-sm">
 
     <?php foreach ($Achievement->achievements as $id => $ac) {
         $uac = $user_ac[$id] ?? [];
         // dump($ac);
-        if (($ac['visible']??true) === false && empty($uac)){
+        if (($ac['visible'] ?? true) === false && empty($uac)) {
             continue;
         }
         $user_descr = lang('<em>Unachieved.</em>', '<em>Noch nicht erreicht.</em>');
     ?>
-        <div class="d-flex col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-25">
-            <div class="tile achievement max-<?= $ac['maxlvl'] ?> lvl<?= $uac['level'] ?? 0 ?>" id="<?= $id ?>">
+        <div class="col-sm-6 col-xl-4">
+            <div class="box mt-0" style="height: calc(100% - 2rem);">
+                <div class="content row achievement max-<?= $ac['maxlvl'] ?> lvl<?= $uac['level'] ?? 0 ?>" id="<?= $id ?>">
+                    <div class="col flex-grow-0 mr-20 text-center">
+                        <div class="w-100">
+                            <?php
+                            include BASEPATH . "/img/achievements/ac_$ac[icon].svg";
+                            ?>
+                            <div class="level">
+                                <?php foreach ($ac['levels'] ?? [] as $lvl) {
+                                    $descr = $lvl[$Achievement->lang];
+                                    if ($user == $_SESSION['username']) {
+                                        $descr = str_replace(lang('have', 'hat'), lang('has', 'hast'), $descr);
+                                        $descr = str_replace('*', 'Du', $descr);
+                                    } else {
+                                        $descr = str_replace('*', $firstname, $descr);
+                                    }
+                                    if ($lvl['level'] == ($uac['level'] ?? 0)) {
+                                        $user_descr = $descr;
+                                    }
+                                ?>
+                                    <span data-toggle="tooltip" data-title="<?= $descr ?>"></span>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <h3 class="title"><?= $ac['title'][$Achievement->lang_g] ?></h3>
+                        <h5>Level
+                            <?php
+                            $lvl = $uac['level'] ?? 0;
+                            if ($lvl == $ac['maxlvl']) $lvl = "max";
+                            echo $lvl;
+                            ?>
+                        </h5>
+                        <div class="tile-content">
+                            <small class="text-muted"><?= $uac['achieved'] ?? '-' ?></small>
+                            <p>
+                                <?= $user_descr ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    <?php } ?>
+
+</div>
+<div class="row">
+
+    <?php foreach ([] as $id => $ac) {
+        $uac = $user_ac[$id] ?? [];
+        // dump($ac);
+        if (($ac['visible'] ?? true) === false && empty($uac)) {
+            continue;
+        }
+        $user_descr = lang('<em>Unachieved.</em>', '<em>Noch nicht erreicht.</em>');
+    ?>
+        <div class="d-flex col flex-grow-0">
+            <div class="tile w-200 achievement max-<?= $ac['maxlvl'] ?> lvl<?= $uac['level'] ?? 0 ?>" id="<?= $id ?>" style="max-width:25rem">
                 <h3 class="title"><?= $ac['title'][$Achievement->lang_g] ?></h3>
                 <h5>Level
                     <?php

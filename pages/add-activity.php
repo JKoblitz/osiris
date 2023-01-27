@@ -669,8 +669,8 @@ function val($index, $default = '')
                     <div class="col-sm" data-visible="misc-once,misc-annual">
                         <label class="required" for="iteration"><?= lang('Iteration', 'Häufigkeit') ?></label>
                         <select name="values[iteration]" id="iteration" class="form-control" value="<?= val('iteration') ?>" onchange="togglePubType('misc-'+this.value)">
-                            <option value="once">once</option>
-                            <option value="annual">annual</option>
+                            <option value="once"><?=lang('once', 'einmalig')?></option>
+                            <option value="annual"><?=lang('continously', 'stetig')?></option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="lecture,poster">
@@ -1044,29 +1044,21 @@ function val($index, $default = '')
 
 <datalist id="journal-list">
     <?php
-    $journal = $osiris->journals->find();
-    foreach ($journal as $j) { ?>
-        <option><?= $j['journal'] ?></option>
+    foreach ($osiris->journals->distinct('journal') as $j) { ?>
+        <option><?= $j ?></option>
     <?php } ?>
 </datalist>
 
 <datalist id="scientist-list">
     <?php
-    $scientist = $osiris->users->find();
-    foreach ($scientist as $s) { ?>
-        <option><?= $s['last'] ?>, <?= $s['first'] ?></option>
+    foreach ($osiris->users->distinct('formalname') as $s) { ?>
+        <option><?= $s ?></option>
     <?php } ?>
 </datalist>
 
 <datalist id="conference-list">
     <?php
-    $conference = $osiris->activities->find(['conference' => ['$exists' => true]], ['projection' => ['conference' => 1]])->toArray();
-
-    $conference = array_map(function ($a) {
-        return $a['conference'];
-    }, $conference);
-    $conference = array_unique($conference);
-    foreach ($conference as $c) { ?>
+    foreach ($osiris->activities->distinct('conference') as $c) { ?>
         <option><?= $c ?></option>
     <?php } ?>
 </datalist>

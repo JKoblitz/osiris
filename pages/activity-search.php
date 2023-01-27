@@ -86,6 +86,16 @@ $Format = new Format(true);
                     input: 'radio'
                 },
                 {
+                    id: 'authors.aoi',
+                    label: lang('Author (affiliated)','Autor (Affiliated)'),
+                    type: 'boolean',
+                    values: {
+                        'true': 'yes',
+                        'false': 'no'
+                    },
+                    input: 'radio'
+                },
+                {
                     id: 'journal',
                     label: lang('Journal'),
                     type: 'string'
@@ -345,11 +355,11 @@ $Format = new Format(true);
                     label: lang('Created by (Abbreviation)', 'Erstellt von (Kürzel)'),
                     type: 'string'
                 },
-                // {
-                //         id: 'created',
-                //         label: lang('Created', ''),
-                //         type: 'string'
-                // },
+                {
+                        id: 'created',
+                        label: lang('Created at', 'Erstellt am'),
+                        type: 'string'
+                },
                 {
                     id: 'updated_by',
                     label: lang('Updated by (Abbreviation)', 'Aktualisiert von (Kürzel)'),

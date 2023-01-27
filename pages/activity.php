@@ -4,6 +4,7 @@ $Format = new Format(true);
 $Format->full = true;
 
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
+$locked = $activity['locked'] ?? false;
 
 if ($doc['type'] == 'publication' && isset($doc['journal'])) {
     // fix old journal_ids
@@ -165,7 +166,7 @@ $user_activity = isUserActivity($doc, $user);
         <h2>Details</h2>
 
         <div class="btn-toolbar mb-10">
-            <?php if ($user_activity || $USER['is_controlling'] || $USER['is_admin']) { ?>
+            <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
                 <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
                     <i class="icon-activity-pen"></i>
                     <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
@@ -182,7 +183,7 @@ $user_activity = isUserActivity($doc, $user);
             ?>
 
 
-            <?php if ($user_activity || $USER['is_controlling'] || $USER['is_admin']) { ?>
+            <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
                 <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
                     <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
                         <i class="far fa-upload"></i>
@@ -652,7 +653,7 @@ $user_activity = isUserActivity($doc, $user);
         </div>
         <?php
 
-        $in_quarter = inCurrentQuarter($doc['year'], $doc['month']);
+        // $in_quarter = inCurrentQuarter($doc['year'], $doc['month']);
         $is_controlling = $USER['is_controlling'] || $USER['is_admin'] ?? false;
         if ($is_controlling) :
         ?>
@@ -668,8 +669,8 @@ $user_activity = isUserActivity($doc, $user);
                     </button>
                 </form>
             </div>
-        <?php elseif (!$in_quarter) : ?>
-            <div class="alert alert-danger mt-20 py-20">
+        <?php elseif (false) : ?>
+            <!-- <div class="alert alert-danger mt-20 py-20">
 
                 <p class="mt-0">
                     <?= lang(
@@ -684,40 +685,58 @@ $user_activity = isUserActivity($doc, $user);
                     <i class="far fa-envelope" aria-hidden="true"></i>
                     <?= lang('Delete activity', 'Löschen beantragen') ?>
                 </a>
-            </div>
+            </div> -->
         <?php elseif (!$user_activity) : ?>
             <div class="alert alert-danger mt-20 py-20">
 
                 <p class="mt-0">
                     <?= lang(
-                        'This is not your own activity. If for any reason you want it deleted, please contact the creator of the activity or the controlling.',
-                        'Dies ist nicht deine Aktivität. Wenn du aus irgendwelchen Gründen willst, dass sie gelöscht wird, kontaktiere bitte den Urheber der Aktivität oder das Controlling.'
+                        'This is not your own activity. If for any reason you want it changed or deleted, please contact the creator of the activity or the controlling.',
+                        'Dies ist nicht deine Aktivität. Wenn du aus irgendwelchen Gründen willst, dass sie verändert oder gelöscht wird, kontaktiere bitte den Urheber der Aktivität oder das Controlling.'
                     ) ?>
                 </p>
                 <?php
-                $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
+                $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
-                <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Löschung&body=<?= $body ?>">
+                <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
                     <i class="far fa-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
                 <?php if (isset($doc['created_by'])) { ?>
 
-                    <a class="btn text-danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Löschung&body=<?= $body ?>">
+                    <a class="btn text-danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf 'Änderung'&body=<?= $body ?>">
                         <i class="far fa-envelope" aria-hidden="true"></i>
                         <?= lang('Contact creator', 'Urheber kontaktieren') ?>
                     </a>
                 <?php } ?>
 
+            </div> 
+            <?php elseif ($locked) : ?>
+            <div class="alert alert-danger mt-20 py-20">
+
+                <p class="mt-0">
+                    <?= lang(
+                        'This activity was locked because it was already used by Controlling in a report. Due to the documentation and verification obligation, activities may not be easily changed or deleted after the report. However, if a change is necessary, please contact the responsible persons:',
+                        'Diese Aktivität wurde gesperrt, da sie bereits vom Controlling in einem Report verwendet wurde. Wegen der Dokumentations- und Nachweispflicht dürfen Aktivitäten nach dem Report nicht mehr so einfach verändert oder gelöscht werden. Sollte dennoch eine Änderung notwenig sein, meldet euch bitte bei den Verantwortlichen:'
+                    ) ?>
+                </p>
+                <?php
+                $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
+                ?>
+                <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
+                    <i class="far fa-envelope" aria-hidden="true"></i>
+                    <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
+                </a>
+
             </div>
         <?php else : ?>
             <div class="alert alert-danger mt-20 py-20">
                 <p class="mt-0">
-                    <b>Info:</b>
-                    <?= lang(
+                    <!-- <b>Info:</b> -->
+                    <!-- <?= lang(
                         'This activity is not in the current quarter, i.e. it may have already been reported. Deleting it is therefore no longer possible. But you can write to Controlling why the entry should be deleted and they will take care of it.',
                         'Aktivitäten können problemlos gelöscht werden, solange sie sich im aktuellen Quartal befinden. Am Ende des Quartals werden alle Aktivitäten reportet, danach ist löschen nicht mehr einfach möglich.'
-                    ) ?>
+                    ) ?> -->
                 </p>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
@@ -737,7 +756,7 @@ $user_activity = isUserActivity($doc, $user);
 
                 <h2><?= ucfirst($role) ?></h2>
 
-                <?php if ($user_activity || $USER['is_controlling'] || $USER['is_admin']) { ?>
+                <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
                     <div class="btn-toolbar mb-10">
                         <?php if ($role == 'authors') {
                             echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
@@ -810,7 +829,7 @@ $user_activity = isUserActivity($doc, $user);
 </div>
 
 
-<?php if ($USER['is_admin']) { ?>
+<?php if ($USER['is_admin'] || isset($_GET['verbose'])) { ?>
     <section class="section">
 
         <div class="content">

@@ -1,3 +1,4 @@
+
 <div class="content">
     <h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
 
