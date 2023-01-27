@@ -45,9 +45,9 @@ $cursor = $osiris->users->aggregate([
 
     <?php foreach ($cursor as $doc) { ?>
         <div class="col-md-6 col-xl-4 expertise">
-            <div class="box">
+            <div class="box mt-0">
                 <div class="content">
-                    <h3 class="title text-monospace"><?= $doc['_id'] ?></h3>
+                    <h3 class="title text-uppercase"><?= $doc['_id'] ?></h3>
                     <p class="text-muted"><?= $doc['count'] ?> <?= lang('experts found:', 'Experten gefunden:') ?></p>
                     <?php foreach ($doc['users'] as $u) { ?>
                         <a href="<?= ROOTPATH ?>/profile/<?= $u['_id'] ?>" class="badge badge-<?= $u['dept'] ?>"><?= $u['displayname'] ?></a>
@@ -56,8 +56,6 @@ $cursor = $osiris->users->aggregate([
             </div>
         </div>
     <?php } ?>
-
-
 </div>
 
 
@@ -67,7 +65,7 @@ $cursor = $osiris->users->aggregate([
             $('.expertise').show()
             return
         }
-        input = input.toLowerCase()
+        input = input.toUpperCase()
         $('.expertise').hide()
         $('.expertise:contains("' + input + '")').show()
     }
