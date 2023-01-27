@@ -1,15 +1,19 @@
 # To-Do-Liste
-- [ ] Überischt über laufende Aktivitäten
-- [ ] Gremienarbeit?
+- [ ] Publikationen im DFG-Format exportieren
+- [ ] Datumsabk. ist sehr wild bei gleichem Monta und untersch. Jahr
+- [ ] ISSN-Abgleich bei Journalen, die über DOI hinzugefügt wurden
+- [ ] »Experten-Import« von Autoren
+- [ ] 
+- [x] Übersicht über laufende Aktivitäten
+- [x] Gremienarbeit?
 - [ ] Eifriger Sammler hat auf level 1,2 keine englische übersetzung
-- [ ] Expertise angeben mit Expertensuche
+- [x] Expertise angeben mit Expertensuche
 - [x] ebenfalls wird bei mir bei fremd publikationen edit buttons angezeigt? 
-- [ ] DRINGEND: alternative Namen angeben & Matching der Autoren verbessern
+- [x] DRINGEND: alternative Namen angeben & Matching der Autoren verbessern
 - [ ] Webanzeige: OSIRIS kann genutzt werden, um ein Webprofil zu erstellen. Nutzer:innen können auswählen, welche Aktivitäten gezeigt werden
 - [ ] Import: Nutzer:innen können Daten aus bspw. BibTeX importieren
-- [ ] Man kann weitere Namen zu seinem Profil hinzufügen, unter denen publiziert wurde
-- [ ] In »Aktivität bearbeiten« gibt es einen Detaileditor für Autoren
-- [ ] Bilder hochladen (vlt Bilder von der ÖA?)
+- [x] Man kann weitere Namen zu seinem Profil hinzufügen, unter denen publiziert wurde
+- [x] Bilder hochladen (vlt Bilder von der ÖA?)
 - [ ] Weitere Profilinformationen: Position, Vita, Teams
 - [ ] Zitationsstil: »Die Ausgabe der Einträge in GRIS folgt derzeit (November 2014) dem &bdquo;author-date&ldquo; Format des  &bdquo;Chicago Manual of Style&ldquo; in der 16. Auflage. Dies ist ein international gängiges, englischsprachiges  Format. 
 - [ ] [Kerndatensatz Forschung](https://kerndatensatz-forschung.de/)

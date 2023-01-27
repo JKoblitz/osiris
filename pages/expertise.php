@@ -26,15 +26,14 @@ $cursor = $osiris->users->aggregate([
     // [ '$limit' => 100 ]
 ]);
 
-// foreach ($cursor as $doc) {
-//     dump($doc, true);
-// }
-
-
-
 ?>
 
 <div class="content">
+    <h1 class="mt-0">
+        <i class="fal fa-lg fa-dumbbell text-osiris"></i>
+        <?=lang('Expertise search', 'Experten-Suche')?>
+    </h1>
+
     <div class="form-group with-icon">
         <input class="form-control mb-20" type="search" name="search" id="search" oninput="filterFAQ(this.value);" placeholder="Filter ...">
         <i class="fas fa-xmark" onclick="$(this).prev().val('');filterFAQ('')"></i>
