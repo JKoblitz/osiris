@@ -354,6 +354,10 @@ function clean_comment_export($subject, $front_addition_text = '')
 }
 
 Route::post('/reports', function () {
+    // hide errors! otherwise they will break the word document
+    error_reporting(E_ERROR);
+    ini_set('display_errors', 0);
+    
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/format.php';
     $Format = new Format(true, 'word');
@@ -368,16 +372,18 @@ Route::post('/reports', function () {
     }
 
     // select data
-    $startyear = intval(explode('-', $_POST['start'], 2)[0]);
-    $endyear = intval(explode('-', $_POST['end'], 2)[0]);
+    // $startyear = intval(explode('-', $_POST['start'], 2)[0]);
+    // $endyear = intval(explode('-', $_POST['end'], 2)[0]);
 
-    $collection = $osiris->activities;
-    $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
+    // $collection = $osiris->activities;
+    // $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
 
-    $filter = [
-        'year' => ['$gte' => $startyear, '$lte' => $endyear],
-    ];
-    $cursor = $collection->find($filter, $options);
+    // $filter = [
+    //     'year' => ['$gte' => $startyear, '$lte' => $endyear],
+    // ];
+    // $cursor = $collection->find($filter, $options);
+
+    $cursor = get_reportable_activities( $_POST['start'], $_POST['end']);
 
     $result = [
         'publication' => [],
@@ -406,32 +412,32 @@ Route::post('/reports', function () {
         "transfer" => []
     ];
 
-    $start = getDateTime($_POST['start'] . ' 00:00:00');
-    $end = getDateTime($_POST['end'] . ' 23:59:59');
+    // $start = getDateTime($_POST['start'] . ' 00:00:00');
+    // $end = getDateTime($_POST['end'] . ' 23:59:59');
     foreach ($cursor as $doc) {
-        $ds = getDateTime($doc['start'] ?? $doc);
-        if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
-        else $de = $ds;
-        if (($ds <= $start && $start <= $de) || ($start <= $ds && $ds <= $end)) {
-            // pass
-            // dump($doc['_id']);
-        } else {
-            // dump($doc['_id']);
-            continue;
-        }
+        // $ds = getDateTime($doc['start'] ?? $doc);
+        // if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
+        // else $de = $ds;
+        // if (($ds <= $start && $start <= $de) || ($start <= $ds && $ds <= $end)) {
+        //     // pass
+        //     // dump($doc['_id']);
+        // } else {
+        //     // dump($doc['_id']);
+        //     continue;
+        // }
 
         $doc['file'] = "";
-        $aoi_exists = false;
+        // $aoi_exists = false;
         if ($doc['type'] == 'publication') {
             // get the category of research
             $cat = 'collab';
             // get the departments
             $dept = [];
-            if (isset($doc['epub']) && $doc['epub']) continue;
+            // if (isset($doc['epub']) && $doc['epub']) continue;
 
             foreach ($doc['authors'] as $a) {
                 $aoi = boolval($a['aoi'] ?? false);
-                $aoi_exists = $aoi_exists || $aoi;
+                // $aoi_exists = $aoi_exists || $aoi;
                 if ($aoi) {
                     if ($a['position'] == 'first' || $a['position'] == 'last') {
                         $cat = 'autonom';
@@ -443,7 +449,7 @@ Route::post('/reports', function () {
                 }
             }
 
-            if (!$aoi_exists) continue;
+            // if (!$aoi_exists) continue;
 
             $dept = array_count_values($dept);
 
@@ -487,14 +493,14 @@ Route::post('/reports', function () {
 
             foreach ($doc['authors'] as $a) {
                 $aoi = boolval($a['aoi'] ?? false);
-                $aoi_exists = $aoi_exists || $aoi;
+                // $aoi_exists = $aoi_exists || $aoi;
                 if ($aoi) {
                     if (isset($a['user']) && isset($users[$a['user']])) {
                         $dept[] = $users[$a['user']];
                     }
                 }
             }
-            if (!$aoi_exists) continue;
+            // if (!$aoi_exists) continue;
 
             $dept = array_count_values($dept);
 

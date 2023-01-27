@@ -2,6 +2,16 @@
     line-height: inherit;
 }
 
+img.profile-img {
+    max-width: 10rem;
+    max-height: 15rem;
+    border-radius: .5rem;
+    border: 1px solid var(--border-color);
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+}
+
 blockquote {
     font-style: inherit;
 }

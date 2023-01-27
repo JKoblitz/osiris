@@ -40,7 +40,7 @@ dump($data, true);
 
 
     <?php
-    if (!isset($data['names'])){
+    if (!isset($data['names'])) {
         $names = [
             $data['formalname'],
             abbreviateAuthor($data['last'], $data['first'])
@@ -66,7 +66,7 @@ dump($data, true);
             <?php } ?>
 
             <button class="btn btn-primary btn-sm ml-10" type="button" onclick="addName(event, this);">
-                <i class="fas fa-plus"></i> <?=lang('Add name', 'Füge Namen hinzu')?>
+                <i class="fas fa-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
             </button>
         </div>
 
@@ -141,14 +141,17 @@ dump($data, true);
         <div class="col-sm">
             <label for="google_scholar">Google Scholar ID</label>
             <input type="text" name="values[google_scholar]" id="google_scholar" class="form-control" value="<?= $data['google_scholar'] ?? '' ?>">
+            <small class="text-muted">
+                <?= lang('Not the URL! Only the bold part: https://scholar.google.com/citations?user=<b>2G1YzvwAAAAJ</b>&hl=de ', 'Nicht die URL! Nur der fettgedruckte Teil: https://scholar.google.com/citations?user=<b>2G1YzvwAAAAJ</b>&hl=de') ?>
+            </small>
         </div>
         <div class="col-sm">
             <label for="webpage">Personal web page</label>
             <input type="text" name="values[webpage]" id="webpage" class="form-control" value="<?= $data['webpage'] ?? '' ?>">
         </div>
     </div>
-    <div>
 
+    <div>
         <div class="form-group custom-checkbox d-inline-block ml-10">
             <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
             <label for="is_active">Is Active</label>
@@ -238,16 +241,16 @@ dump($data, true);
 </form>
 
 <script>
-    function addName(evt, el){
-        var group = $('<div class="input-group input-group-sm d-inline-flex w-auto" required> ')
-        group.append('<input type="text" name="values[names][]" value="">')
+    function addName(evt, el) {
+        var group = $('<div class="input-group input-group-sm d-inline-flex w-auto"> ')
+        group.append('<input type="text" name="values[names][]" value="" required>')
         // var input = $()
         var btn = $('<a class="btn">')
-        btn.on('click', function (){
+        btn.on('click', function() {
             $(this).closest('.input-group').remove();
         })
         btn.html('&times;')
-        
+
         group.append($('<div class="input-group-append">').append(btn))
         // $(el).prepend(group);
         $(group).insertBefore(el);

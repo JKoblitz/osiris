@@ -182,7 +182,7 @@ foreach ($cursor as $doc) {
 </a>
 <h1>
     <i class="fas fa-exclamation-triangle text-osiris"></i>
-    <?=lang('Warnings', 'Warnungen')?>
+    <?= lang('Warnings', 'Warnungen') ?>
 </h1>
 
 <?php
@@ -291,9 +291,11 @@ if (array_sum($a) === 0) {
                         <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
                             <i class="fas fa-fw fa-xmark"></i>
                         </button>
-                        <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
-                            <i class="icon-activity-pen"></i>
-                        </a>
+                        <?php if (!($doc['locked'] ?? false)) { ?>
+                            <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
+                                <i class="icon-activity-pen"></i>
+                            </a>
+                        <?php } ?>
                         <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
                             <i class="icon-activity-search"></i>
                         </a>
@@ -492,7 +494,7 @@ if (array_sum($a) === 0) {
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
                             <i class="fas fa-edit"></i>
-                            <?=lang('Edit activity', 'Aktivität bearbeiten')?>
+                            <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
                         </a>
                     </div>
                 </td>

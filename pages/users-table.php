@@ -7,9 +7,48 @@
     und ist in vielen Fällen noch nicht korrekt!
 </p> -->
 
+<style>
+    .table {
+        border-collapse: separate !important;
+        border-spacing: 0 .5rem;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+    }
 
-<table class="table dataTable" id="result-table">
+    .table tr {
+        background-color: white;
+        -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    }
+
+    .table tr td,
+    .table tr th {
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .table tr td:first-child,
+    .table tr th:first-child {
+        border-left: 1px solid var(--border-color);
+    }
+
+    .table tr td:last-child,
+    .table tr th:last-child {
+        border-right: 1px solid var(--border-color);
+    }
+
+    .table img {
+        display: block;
+        width: 5.2rem;
+        border: 1px solid var(--border-color);
+    }
+</style>
+
+<table class="table dataTable" id="result-table" id="user-table">
     <thead>
+        <th></th>
         <th>User</th>
         <th><?= lang('Last name', 'Nachname') ?></th>
         <th><?= lang('First name', 'Vorname') ?></th>
@@ -18,8 +57,8 @@
         <th><?= lang('Comment', 'Kommentar') ?></th>
         <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
         <th><?= lang('Active', 'Aktiv') ?></th>
-        <th><?= lang('Leader', 'Leiter') ?></th>
-        <th><?= lang('Gender', 'Geschlecht:in') ?></th>
+        <th><?= lang('Leader', 'Leiter:in') ?></th>
+        <th><?= lang('Gender', 'Geschlecht') ?></th>
         <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
             <th></th>
         <?php
@@ -29,15 +68,23 @@
     <tbody>
 
         <?php
-        $result = $osiris->users->find(['is_active' => true])->toArray();
+        $result = $osiris->users->find(['is_active'=>true])->toArray();
 
         foreach ($result as $document) {
+            $username = strval($document['_id']);
+            $img = ROOTPATH . "/img/person.jpg";
+            if (file_exists(BASEPATH . "/img/users/${username}_sm.jpg")) {
+                $img = ROOTPATH . "/img/users/${username}_sm.jpg";
+            }
         ?>
-            <tr class="row-<?= $document['dept'] ?>">
-                <td><a href="<?= ROOTPATH ?>/profile/<?= $document['_id'] ?>"><?= $document['_id'] ?></a></td>
+            <tr class="">
+                <td class="p-0">
+                    <img src="<?= $img ?>" alt="">
+                </td>
+                <td><a href="<?= ROOTPATH ?>/profile/<?= $username ?>"><?= $username ?></a></td>
                 <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
                 <td><?= $document['first'] ?></td>
-                <td>
+                <td class="text-<?= $document['dept'] ?>">
                     <?php if ($document['is_leader']) { ?>
                         <strong><?= $document['dept'] ?></strong>
                     <?php } else { ?>
@@ -47,7 +94,6 @@
                 </td>
                 <td><?php
                     if (!empty($document['telephone'])) {
-                        // $ph = explode('-', $document['telephone']);
                         $ph = str_replace('+49', '0', $document['telephone']);
                         $ph = preg_replace('/^0531-?/', '', $ph);
                         $ph = preg_replace('/^2616-?/', '', $ph);
@@ -61,10 +107,7 @@
                 <td><?= $document['gender'] ?? 'n' ?></td>
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
-                        <!-- <a href="<?= ROOTPATH ?>/user/edit/<?= $document['_id'] ?>" class="btn btn-link">
-                        <i class="fas fa-edit"></i>
-                    </a> -->
-                        <btn class="btn btn-link" type="button" onclick="editUser('<?= $document['_id'] ?>')">
+                        <btn class="btn btn-link" type="button" onclick="editUser('<?= $username ?>')">
                             <i class="fas fa-edit"></i>
                         </btn>
                     </td>
@@ -111,23 +154,40 @@
             dom: 'frtipP',
             searchPanes: {
                 initCollapsed: true,
-                columns: [3, 6, 7, 8, 9]
+                columns: [4, 7, 8, 9, 10]
             },
 
             columnDefs: [{
-                    targets: [3, 6],
+                    targets: [0],
+                    searchable: false,
+                    sortable: false,
+                    visible: true
+                },
+                {
+                    targets: [4, 7],
                     searchable: true,
                     visible: true
                 },
                 {
-                    targets: [7, 8, 9],
+                    targets: [9, 10],
                     searchable: true,
                     visible: false
+                }, 
+                {
+                    targets: [8],
+                    searchable: true,
+                    visible: false,
+                    searchPanes: {
+                        preSelect: ['1']
+                    }
                 },
             ],
             "order": [
-                [0, 'asc'],
+                [1, 'asc'],
             ],
+            // "search": {
+            //     "search": "1"
+            // }
         });
     });
 

@@ -4,7 +4,19 @@
 
 <style>
     .box.h-full {
-        height: calc(100% - 4rem) !important;
+        height: calc(100% - 2rem) !important;
+    }
+
+    .expertise {
+        padding: .3rem 1rem;
+        background-color: white;
+        border-radius: 2rem;
+        border: 1px solid var(--border-color);
+        display: inline-block;
+        -moz-box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        -webkit-box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        margin-left: .5rem;
     }
 </style>
 
@@ -25,22 +37,6 @@ include_once BASEPATH . "/php/_lom.php";
 $LOM = new LOM($user, $osiris);
 
 $_lom = 0;
-
-// $achievements = array();
-// if (isset($scientist['achievements'])) {
-//     $achievements = $scientist['achievements']->bsonSerialize();
-// }
-
-
-// dump($achievements);
-
-// gravatar
-$email = $scientist['mail']; #. "@dsmz.de";
-$default = ROOTPATH . "/img/person.jpg";
-$size = 140;
-
-$gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
-
 
 $stats = [];
 $groups = [
@@ -142,11 +138,6 @@ foreach ($cursor as $doc) {
     }
 }
 
-if (isset($_GET['verbose'])) {
-    dump($scientist, true);
-}
-
-
 ?>
 
 
@@ -188,17 +179,18 @@ if (isset($_GET['verbose'])) {
 </div>
 <div class="content my-0">
 
+    <?php
+
+    $img = ROOTPATH . "/img/person.jpg";
+    if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
+        $img = ROOTPATH . "/img/users/$user.jpg";
+    }
+    ?>
 
     <div class="row align-items-center my-0">
         <div class="col flex-grow-0">
             <div class="position-relative">
-                <img src="<?= $gravatar ?>" alt="">
-
-                <?php if ($currentuser) { ?>
-                    <a class="position-absolute bottom-0 right-0 m-5 mb-10 border-0 badge badge-pill" href="https://de.gravatar.com/" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-edit "></i>
-                    </a>
-                <?php } ?>
+                <img src="<?= $img ?>" alt="" class="profile-img">
             </div>
 
         </div>
@@ -209,6 +201,13 @@ if (isset($_GET['verbose'])) {
                 <?php
                 echo $Settings->getDepartments($scientist['dept'])['name'];
                 ?>
+
+                <?php if (!$scientist['is_active']) { ?>
+                    <br>
+                    <span class="text-danger">
+                        <?= lang('INACTIVE', 'INAKTIV') ?>
+                    </span>
+                <?php } ?>
 
             </h3>
             <?php if (!($scientist['hide_coins'] ?? false)) { ?>
@@ -231,9 +230,6 @@ if (isset($_GET['verbose'])) {
 
                 <?php
                 $Achievement->widget();
-                // foreach ($user_ac as $ac) {
-                //     $Achievement->icon($ac);
-                // } 
                 ?>
 
             </div>
@@ -386,12 +382,82 @@ if (isset($_GET['verbose'])) {
     <?php } ?>
 
 
+    <?php
+    $expertise = $scientist['expertise'] ?? array();
+    ?>
+    <?php if ($currentuser) { ?>
+
+        <div class="box" id="expertise">
+            <div class="p-10 pb-0">
+
+                <label for="expertise" class="font-weight-bold">
+                    <i class="fa-regular fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?>
+                </label>
+            </div>
+            <div class="p-10 pt-0">
+
+                <form action="<?= ROOTPATH ?>/update-user/<?= $user ?>" method="post">
+                    <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+
+                    <?php foreach ($expertise as $n) { ?>
+                        <div class="input-group input-group-sm d-inline-flex w-auto mr-5">
+                            <input type="text" name="values[expertise][]" value="<?= $n ?>" list="expertise-list" required>
+                            <div class="input-group-append">
+                                <a class="btn" onclick="$(this).closest('.input-group').remove();">&times;</a>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                    <button class="btn btn-sm ml-10" type="button" onclick="addName(event, this);">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <br>
+                    <button class="btn btn-primary mt-10" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
+                </form>
+            </div>
+            <!-- TODO: Anzeige, Suche -->
+
+        </div>
+
+        <datalist id="expertise-list">
+            <?php
+            foreach ($osiris->users->distinct('expertise') as $d) { ?>
+                <option><?= $d ?></option>
+            <?php } ?>
+        </datalist>
+
+        <script>
+            function addName(evt, el) {
+                var group = $('<div class="input-group input-group-sm d-inline-flex w-auto mr-5"> ')
+                group.append('<input type="text" name="values[expertise][]" value="" list="expertise-list" required>')
+                // var input = $()
+                var btn = $('<a class="btn">')
+                btn.on('click', function() {
+                    $(this).closest('.input-group').remove();
+                })
+                btn.html('&times;')
+
+                group.append($('<div class="input-group-append">').append(btn))
+                // $(el).prepend(group);
+                $(group).insertBefore(el);
+            }
+        </script>
+    <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
+        <div class="mt-20" id="expertise">
+            <b><i class="fa-regular fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?></b>
+
+            <?php foreach ($scientist['expertise'] ?? array() as $key) { ?>
+                <span class="expertise"><?= $key ?></span>
+            <?php } ?>
+        </div>
+
+    <?php } ?>
 </div>
 
 <div class="row row-eq-spacing my-0">
     <div class="col-lg-4">
         <div class="box h-full">
-            <table class="table table-simple mb-10">
+            <table class="table table-simple">
                 <tbody>
 
                     <tr>
@@ -1046,7 +1112,7 @@ $filter = [
     'end' => null,
     '$or' => array(
         ['type' => 'misc', 'iteration' => 'annual'],
-        ['type' => 'review', 'role' =>  ['$in'=> ['Editor', 'editorial']]],
+        ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
     )
 ];
 
@@ -1062,7 +1128,7 @@ if ($count > 0) {
                 <div class="content">
                     <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
                 </div>
-                <table class="table table-simple mb-10">
+                <table class="table table-simple">
                     <tbody>
                         <?php
                         $i = 0;
@@ -1098,5 +1164,10 @@ if ($count > 0) {
     </div>
 
 <?php
+}
+
+
+if (isset($_GET['verbose'])) {
+    dump($scientist, true);
 }
 ?>

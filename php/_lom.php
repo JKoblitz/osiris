@@ -152,6 +152,7 @@ class LOM
         } else {
             $if = get_impact($doc);
         }
+        if (empty($if)) $if = 1;
         $points = $this->matrix['publication']['refereed'][$posKey];
         return array(
             'type' => "publication>refereed>$pos",

@@ -81,6 +81,10 @@ class Settings
             .row-$val[id] {
                 border-left: 3px solid $val[color];
             }
+            .badge-$val[id] {
+                color:  $val[color];
+                border-color:  $val[color];
+            }
             ";
         }
         foreach ($this->activities as $val) {

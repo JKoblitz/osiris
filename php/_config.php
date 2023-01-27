@@ -75,6 +75,13 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $class = "danger";
             break;
 
+        case 'locked':
+            $header = lang("This activity is locked.", "Diese Aktivität ist gesperrt.");
+            $text = lang("You cannot edit this activity because of our reporting rules. Contact controlling if there are any issues.", 
+            "Du kannst diese Aktivität aufgrund unserer Report-Richtlinien nicht löschen. Kontaktiere das Controlling, falls dadurch irgendwelche Probleme entstehen.");
+            $class = "danger";
+            break;
+
         default:
             $text = str_replace("-", " ", $msg);
             break;

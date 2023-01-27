@@ -177,6 +177,7 @@ foreach ($impacts as $vals) {
 
 <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
     <div class="content">
+    <a href="<?=ROOTPATH?>/controlling" class="btn btn-success float-right">Controlling</a>
 
         <h1 class="m-0">Controlling Dashboard</h1>
     </div>

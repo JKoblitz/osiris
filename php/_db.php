@@ -13,7 +13,7 @@ $mongoDB = new MongoDB\Client(
     "mongodb://localhost:27017/$dbname?retryWrites=true&w=majority"
 );
 
-$config = ['username'=>'root', 'password'=>'Zees1ius', 'database'=>'osiris'];
+$config = ['username' => 'root', 'password' => 'Zees1ius', 'database' => 'osiris'];
 
 // global $arango;
 // $arango = new ArangoClient\ArangoClient($config);
@@ -59,11 +59,11 @@ function getUserFromName($last, $first)
     // }
     $user = $osiris->users->findOne([
         '$or' => [
-            ['last' => $last,'first' => $first, 'names' => ['$exists'=>false]],
-            ['names'=> "$last, $first"]
+            ['last' => $last, 'first' => $first, 'names' => ['$exists' => false]],
+            ['names' => "$last, $first"]
         ]
     ]);
-    
+
     if (empty($user)) return null;
     return $user['_id'];
 }
@@ -326,3 +326,52 @@ function isUserActivity($doc, $user)
 //         $update
 //     );
 // }
+
+
+function get_reportable_activities($start, $end)
+{
+    global $osiris;
+    $result = [];
+
+    $startyear = intval(explode('-', $start, 2)[0]);
+    $endyear = intval(explode('-', $end, 2)[0]);
+
+    $starttime = getDateTime($start . ' 00:00:00');
+    $endtime = getDateTime($end . ' 23:59:59');
+
+    $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
+    $filter = [
+        'year' => ['$gte' => $startyear, '$lte' => $endyear],
+    ];
+    $cursor = $osiris->activities->find($filter, $options);
+
+    foreach ($cursor as $doc) {
+
+        // check if time of activity ist in the correct time range
+        $ds = getDateTime($doc['start'] ?? $doc);
+        if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
+        else $de = $ds;
+        if (($ds <= $starttime && $starttime <= $de) || ($starttime <= $ds && $ds <= $endtime)) {
+        } else {
+            continue;
+        }
+
+        // the following is only relevant for publications
+        if ($doc['type'] == 'publication') {
+            // epubs are not reported
+            if (isset($doc['epub']) && $doc['epub']) continue;
+        }
+
+         // check if any of the authors is affiliated
+         $aoi_exists = false;
+         foreach ($doc['authors'] as $a) {
+             $aoi = boolval($a['aoi'] ?? false);
+             $aoi_exists = $aoi_exists || $aoi;
+         }
+         if (!$aoi_exists) continue;
+
+         $result[] = $doc;
+    }
+
+    return $result;
+}

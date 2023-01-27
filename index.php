@@ -514,11 +514,14 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
 
     $user = $_SESSION['username'];
-    $id = new MongoDB\BSON\ObjectId($id);
+    $mongoid = new MongoDB\BSON\ObjectId($id);
 
     global $form;
-    $form = $osiris->activities->findOne(['_id' => $id]);
+    $form = $osiris->activities->findOne(['_id' => $mongoid]);
     $copy = false;
+    if (($form['locked'] ?? false) && !$USER['is_controlling']) {
+        header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
+    }
 
 
     $name = $form['title'] ?? $id;
@@ -566,6 +569,9 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
     $id = new MongoDB\BSON\ObjectId($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
+    if (($form['locked'] ?? false) && !$USER['is_controlling']) {
+        header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
+    }
 
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -716,6 +722,16 @@ Route::get('/user/search', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::get('/expertise', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $breadcrumb = [
+        ['name' => lang('Expertise search', 'Experten-Suche')]
+    ];
+    // include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/expertise.php";
+    include BASEPATH . "/footer.php";
+});
 
 Route::get('/profile/?([a-z0-9]*)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
@@ -763,6 +779,79 @@ Route::get('/scientist/?([a-z0-9]*)', function ($user) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+Route::get('/controlling', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    if (!$USER['is_controlling'] && !$USER['is_admin']) die ('You have no permission to be here.');
+    $breadcrumb = [
+        // ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
+        // ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
+        ['name' => lang("Controlling")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/controlling.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::post('/controlling', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    if (!$USER['is_controlling'] && !$USER['is_admin']) die ('You have no permission to be here.');
+
+    $breadcrumb = [
+        ['name' => lang("Controlling")]
+    ];
+
+    include BASEPATH . "/header.php";
+
+    $changes = 0;
+    if (isset($_POST['action']) && isset($_POST['start']) && isset($_POST['end'])) {
+
+        $lock = ($_POST['action'] == 'lock');
+        // dump($lock);
+
+        $cursor = get_reportable_activities($_POST['start'], $_POST['end']);
+        foreach ($cursor as $doc) {
+            // dump($doc['title'] ?? 'REVIEW');
+
+            if ($lock) {
+                // in progress stuff is not locked
+                if (
+                    (
+                        ($doc['type'] == 'misc' && $doc['iteration'] == 'annual') ||
+                        ($doc['type'] == 'review' && in_array($doc['role'], ['Editor', 'editorial']))
+                    ) && is_null($doc['end'])
+                ) {
+                    continue;
+                }
+                if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress'){
+                    continue;
+                }
+            }
+
+            $updateResult = $osiris->activities->updateOne(
+                ['_id' => $doc['_id']],
+                ['$set' => ['locked' => $lock]]
+            );
+
+            $changes += $updateResult->getModifiedCount();
+        }
+        // construct output message
+        $header = $lock ? lang('Locked activities.', 'Aktivitäten gesperrt.') : lang('Unlocked activities.', 'Aktivitäten entsperrt.');
+        $text = lang(
+            "Successfully changed the status of $changes activities.",
+            "Es wurde erfolgreich der Status von $changes Aktivitäten geändert."
+        );
+        printMsg($text, 'success', $header);
+    } else {
+        echo 'Nothing to do.';
+    }
+
+    include BASEPATH . "/pages/controlling.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
 
 Route::get('/visualize', function () {
     include_once BASEPATH . "/php/_config.php";
@@ -974,7 +1063,7 @@ include_once BASEPATH . "/export.php";
 include_once BASEPATH . "/user_management.php";
 
 if (isset($_SESSION['username']) && $_SESSION['username'] == 'juk20') {
-    include_once BASEPATH ."/test.php";
+    include_once BASEPATH . "/test.php";
 }
 
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {

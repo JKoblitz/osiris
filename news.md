@@ -1,10 +1,16 @@
 # Changelog
 
+## 25.01.23
+- Feedback zum Hinzufügen von Editorenschaften wurde eingepflegt (Danke an Andrey)
+- Auf der Profilseite gibt es (wenn vorh.) eine Übersicht mit allen laufenden Mitgliedschaften (Gremien & Editorial Boards)
+- Es gibt jetzt eine Liste mit Namen, die für das Autoren-Matching verwendet werden. Diese enthält standardmäßig den vollen Namen und den abgekürzten Namen. Letzterer kann jedoch auch entfernt werden (falls er zu viele Treffer verursacht). Außerdem können weitere Namen (Mädchenname, Pseudonyme, optionale Vornamen) hinzugefügt werden, die für das Matching relevant sind. Bearbeiten kann man die Liste im Profil.
+- Ein Bug wurde gefixt, bei dem eine Publikation ohne Impact Factor keine Coins gab.
+- Ein Bug wurde gefixt, wegen dem Autoren, deren Vornamen mit einem Sonderzeichen beginnen, das System gebrochen haben.
+
 ## 23.01.23
 - Der Autoreneditor auf der Seite "Aktivität hinzufügen" wurde verbessert
 - Wenn ein Journal nicht in OSIRIS gefunden wurde, wird automatisch eine Suche in NLM durchgeführt.
 
-Unseren Vortrag für die morgige Betriebsversammlung findet ihr [hier](uploads/OSIRIS.pdf).
 
 ## 11.01.23
 - Es wurde eine Möglichkeit hinzugefügt, den Typ einer Aktivität nachträglich zu bearbeiten

@@ -375,12 +375,14 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
 
     $collection = $osiris->users;
 
-    $values['is_controlling'] = boolval($values['is_controlling'] ?? false);
-    $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
-    $values['is_leader'] = boolval($values['is_leader'] ?? false);
-    $values['is_active'] = boolval($values['is_active'] ?? false);
+
 
     if (isset($values['last']) && isset($values['first'])) {
+        $values['is_controlling'] = boolval($values['is_controlling'] ?? false);
+        $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
+        $values['is_leader'] = boolval($values['is_leader'] ?? false);
+        $values['is_active'] = boolval($values['is_active'] ?? false);
+        
         $values['displayname'] = "$values[first] $values[last]";
         $values['formalname'] = "$values[last], $values[first]";
         $values['first_abbr'] = "";

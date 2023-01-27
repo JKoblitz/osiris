@@ -25,7 +25,7 @@
         },
         {
             "id": "MIG",
-            "color": "#d1c02b",
+            "color": "#d2691e",
             "name": "Mikrobielle Genomforschung"
         },
         {
@@ -45,7 +45,7 @@
         },
         {
             "id": "MÖD",
-            "color": "#d7a32e",
+            "color": "#d1c02b",
             "name": "Mikrobielle Ökologie"
         },
         {
@@ -77,6 +77,11 @@
             "id": "PuK",
             "color": "#afafaf",
             "name": "Presse und Kommunikation"
+        },
+        {
+            "id": "SPI",
+            "color": "#f08080",
+            "name": "Science Policy und Internationalisierung"
         }
     ],
     "activities": [

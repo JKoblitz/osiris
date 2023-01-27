@@ -226,6 +226,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="far fa-user-graduate" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
+                    
+                    <a href="<?= ROOTPATH ?>/expertise" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('expertise') ?>">
+                        <i class="far fa-dumbbell" aria-hidden="true"></i>
+                        <?= lang('Expertise search', 'Experten-Suche') ?>
+                    </a>
+                    
                     <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
                         <i class="far fa-institution" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
