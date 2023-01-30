@@ -174,7 +174,7 @@ dump($data, true);
 
     </div>
 
-    <?php if ($data['username'] == $_SESSION['username']) { ?>
+    <?php if ($data['username'] == $_SESSION['username'] || $USER['is_admin']) { ?>
 
         <div class="alert alert-signal mb-20">
             <div class="title">
@@ -232,7 +232,29 @@ dump($data, true);
                 </div>
             </div>
         </div>
+
+        <div class="alert alert-danger mb-20">
+            <div class="title">
+                <?= lang('Transfer the maintenance of your profile to someone else:', 'Übertrage die Pflege deines Profils an jemand anderes:') ?>
+            </div>
+            
+            <div class="form-group form-inline mb-0">
+                <label for="maintenance">Username:</label>
+            
+                <input type="text" list="user-list" name="values[maintenance]" id="maintenance" class="form-control" value="<?= $data['maintenance'] ?? '' ?>">
+            </div>
+
+            <datalist id="user-list">
+                <?php
+                $all_users = $osiris->users->find();
+                foreach ($all_users as $s) { ?>
+                    <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
+                <?php } ?>
+            </datalist>
+        </div>
     <?php } ?>
+
+
 
 
     <button type="submit" class="btn btn-primary">

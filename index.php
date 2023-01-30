@@ -75,6 +75,25 @@ define('CURRENTYEAR', intval($year));
 define('SELECTEDQUARTER', intval($_COOKIE['osiris-quarter'] ?? CURRENTQUARTER));
 define('SELECTEDYEAR', intval($_COOKIE['osiris-year'] ?? CURRENTYEAR));
 
+if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
+    // someone tries to switch users
+    include_once BASEPATH . "/php/_db.php";
+    $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
+    $username = $_GET['OSIRIS-SELECT-MAINTENANCE-USER'];
+
+    // check if the user is allowed to do that
+    $allowed = $osiris->users->count(['_id' => $username, 'maintenance' => $realusername]);
+
+    // change username if he is allowed
+    if ($allowed == 1 || $realusername == $username) {
+        $msg = "User switched!";
+        $_SESSION['realuser'] = $realusername;
+        $_SESSION['username'] = $username;
+        header("Location: ".ROOTPATH."/profile/$username");
+    }
+
+    // do nothing if he is not allowed
+}
 
 function lang($en, $de = null)
 {
@@ -783,7 +802,7 @@ Route::get('/scientist/?([a-z0-9]*)', function ($user) {
 Route::get('/controlling', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die ('You have no permission to be here.');
+    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
     $breadcrumb = [
         // ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
         // ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
@@ -798,7 +817,7 @@ Route::get('/controlling', function () {
 Route::post('/controlling', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die ('You have no permission to be here.');
+    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
 
     $breadcrumb = [
         ['name' => lang("Controlling")]
@@ -826,7 +845,7 @@ Route::post('/controlling', function () {
                 ) {
                     continue;
                 }
-                if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress'){
+                if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress') {
                     continue;
                 }
             }

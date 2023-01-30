@@ -210,7 +210,7 @@ foreach ($cursor as $doc) {
                 <?php } ?>
 
             </h3>
-            <?php if (!($scientist['hide_coins'] ?? false)) { ?>
+            <?php if (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? false)) { ?>
                 <p class="lead mt-0">
                     <i class="fad fa-lg fa-coin text-signal"></i>
                     <b id="lom-points"><?= $_lom ?></b>
@@ -223,7 +223,7 @@ foreach ($cursor as $doc) {
 
         </div>
 
-        <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false)) {
+        <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false) && !($USER['hide_achievements'] ?? false)) {
         ?>
             <div class="achievements text-right" style="max-width: 35rem;">
                 <h5 class="mb-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
@@ -400,7 +400,7 @@ foreach ($cursor as $doc) {
                     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                     <?php foreach ($expertise as $n) { ?>
-                        <div class="input-group input-group-sm d-inline-flex w-auto mr-5">
+                        <div class="input-group input-group-sm d-inline-flex w-auto mr-5 mb-10">
                             <input type="text" name="values[expertise][]" value="<?= $n ?>" list="expertise-list" required>
                             <div class="input-group-append">
                                 <a class="btn" onclick="$(this).closest('.input-group').remove();">&times;</a>
@@ -408,11 +408,11 @@ foreach ($cursor as $doc) {
                         </div>
                     <?php } ?>
 
-                    <button class="btn btn-sm ml-10" type="button" onclick="addName(event, this);">
+                    <button class="btn btn-sm" type="button" onclick="addName(event, this);">
                         <i class="fas fa-plus"></i>
                     </button>
                     <br>
-                    <button class="btn btn-primary mt-10" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
+                    <button class="btn btn-primary" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
                 </form>
             </div>
             <!-- TODO: Anzeige, Suche -->
@@ -428,7 +428,7 @@ foreach ($cursor as $doc) {
 
         <script>
             function addName(evt, el) {
-                var group = $('<div class="input-group input-group-sm d-inline-flex w-auto mr-5"> ')
+                var group = $('<div class="input-group input-group-sm d-inline-flex w-auto mr-5 mb-10"> ')
                 group.append('<input type="text" name="values[expertise][]" value="" list="expertise-list" required>')
                 // var input = $()
                 var btn = $('<a class="btn">')

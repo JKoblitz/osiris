@@ -48,11 +48,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
-<?php
+    <?php
     echo $Settings->generateStyleSheet();
-?>
+    ?>
 
-<!-- <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
  
 <script type="text/javascript" src="DataTables/datatables.min.js"></script> -->
 
@@ -110,7 +110,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </a>
 
             <a href="<?= $Settings->affiliation_details['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
-                <img src="<?= ROOTPATH ?>/img/<?= $Settings->affiliation_details['logo'] ?? '#' ?>" alt="<?=$Settings->affiliation?>">
+                <img src="<?= ROOTPATH ?>/img/<?= $Settings->affiliation_details['logo'] ?? '#' ?>" alt="<?= $Settings->affiliation ?>">
             </a>
         </div>
         <nav class="navbar navbar-bottom">
@@ -143,11 +143,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 (<?= time_elapsed_string('2023-01-23 14:00') ?>)
             </a>
         </nav>
-
         <!-- Sidebar start -->
         <div class="sidebar">
             <div class="sidebar-menu">
-
 
                 <!-- Sidebar links and titles -->
                 <?php if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) { ?>
@@ -160,6 +158,23 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </div>
 
                 <?php } else { ?>
+
+                    <?php
+                    $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
+                    $maintain = $osiris->users->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1]])->toArray();
+                    if (!empty($maintain)) { ?>
+                        <form action="" class="content">
+                            <select name="OSIRIS-SELECT-MAINTENANCE-USER" id="osiris-select-maintenance-user" class="form-control" onchange="$(this).parent().submit()">
+                                <option value="<?= $realusername ?>"><?= $_SESSION['name'] ?></option>
+                                <?php
+                                foreach ($maintain as $d) { ?>
+                                    <option value="<?= $d['_id'] ?>" <?= $d['_id'] ==  $_SESSION['username'] ? 'selected' : '' ?>><?= $d['displayname'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </form>
+
+                    <?php } ?>
+
 
                     <div class="sidebar-title">
                         <!-- <?= lang('User', 'Nutzer') ?> -->
@@ -174,6 +189,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </div>
 
                     <?php if ($USER['is_controlling']) { ?>
+                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
+                            <i class="far fa-user-graduate" aria-hidden="true"></i>
+                            <?= $USER["displayname"] ?? 'User' ?>
+                        </a>
+
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
                             <i class="far fa-chart-column" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
@@ -226,12 +246,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="far fa-user-graduate" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
-                    
+
                     <a href="<?= ROOTPATH ?>/expertise" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('expertise') ?>">
                         <i class="far fa-dumbbell" aria-hidden="true"></i>
                         <?= lang('Expertise search', 'Experten-Suche') ?>
                     </a>
-                    
+
                     <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
                         <i class="far fa-institution" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
@@ -256,24 +276,24 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Import') ?>
                     </a>
 
-                    
+
                     <div class="sidebar-title">
-                            <?= lang('Download') ?>
-                        </div>
+                        <?= lang('Download') ?>
+                    </div>
 
                     <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
                         <i class="far fa-download" aria-hidden="true"></i>
-                        Download <?=lang('Activities', 'Aktivitäten')?>
+                        Download <?= lang('Activities', 'Aktivitäten') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/cart" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('cart') ?>">
                         <i class="far fa-cart-arrow-down" aria-hidden="true"></i>
-                        <?=lang('Cart', 'Einkaufswagen')?>
-                        <?php 
+                        <?= lang('Cart', 'Einkaufswagen') ?>
+                        <?php
                         $cart = readCart();
                         if (!empty($cart)) { ?>
                             <span class="badge badge-primary badge-pill ml-10" id="cart-counter">
-                                <?=count($cart)?>
+                                <?= count($cart) ?>
                             </span>
                         <?php } else { ?>
                             <span class="badge badge-primary badge-pill ml-10 hidden" id="cart-counter">
@@ -282,7 +302,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?php } ?>
                     </a>
 
-                    
+
                     <?php if ($USER['is_controlling']) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">

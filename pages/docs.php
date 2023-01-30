@@ -64,7 +64,28 @@
                 </a>
             </h4>
             <p>
-                <?= lang('Learn how to solve warnings and why we show them.', 'Lerne, wie du Warnungen auflöst und warum wir sie dir zeigen.') ?>
+                <?= lang('Learn how to solve warnings and why we show them.', 
+                'Lerne, wie du Warnungen auflöst und warum wir sie dir zeigen.') ?>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="box p-10">
+    <div class="row align-items-center">
+        <div class="col flex-grow-0">
+            <div class="w-100 text-center text-muted">
+                <i class="fa-3x far fa-user-pen"></i>
+            </div>
+        </div>
+        <div class="col">
+            <h4 class="title">
+                <a href="<?= ROOTPATH ?>/docs/profile" class="link colorless">
+                    <?= lang('Profile editing', 'Profilbearbeitung') ?>
+                </a>
+            </h4>
+            <p>
+                <?= lang('Learn how to update your profile, provide alternative names for author matching, and delegate the maintenance of your profile to someone else.', 
+                'Lerne, wie du dein Profil aktualisierst, alternative Namen fürs Autoren-Matching angibst und die Pflege deines Profils an jemand anderes überträgst.') ?>
             </p>
         </div>
     </div>
