@@ -10,7 +10,7 @@
 - [x] Expertise angeben mit Expertensuche
 - [x] ebenfalls wird bei mir bei fremd publikationen edit buttons angezeigt? 
 - [x] DRINGEND: alternative Namen angeben & Matching der Autoren verbessern
-- [ ] Webanzeige: OSIRIS kann genutzt werden, um ein Webprofil zu erstellen. Nutzer:innen können auswählen, welche Aktivitäten gezeigt werden
+- [ ] Webanzeige: OSIRIS kann genutzt werden, um ein Webprofil zu erstellen. Nutzer:innen können auswählen, welche Aktivitäten gezeigt **werden**
 - [ ] Import: Nutzer:innen können Daten aus bspw. BibTeX importieren
 - [x] Man kann weitere Namen zu seinem Profil hinzufügen, unter denen publiziert wurde
 - [x] Bilder hochladen (vlt Bilder von der ÖA?)
@@ -111,3 +111,47 @@ Außerdem will ich einen Bestätigungsmechanismus zu allen Mehr-Autor-Aktivität
 - [x] Warnung wenn IF nicht bekannt
 - [x] Files: Error wenn Datei größer als 15 MB!
 
+
+
+
+
+
+
+# Schulung
+
+- Einloggen und Profil bearbeiten
+    - Autoren-Matching
+    - Profilübertragung
+    - Einstellungen
+- Aktivität anlegen / bearbeiten / löschen / kopieren
+    - Über die DOI beim Bearbeiten aktualisieren
+    - Der Autoren-Editor
+    - Affiliations und so
+    - Journale bearbeiten (Beispiel `Cell Stress`)
+- Mein Jahr & Quartalscontrolling
+    - Warum?
+    - Warnungen
+    - Bestätigen und seine Folgen
+    - Bearbeiten nicht mehr möglich 
+- Download
+- Visualisierung
+
+
+
+
+
+
+
+# TODO
+
+reference für predictions
+
+genome in die predictions tabelle
+
+unter sektion überschrift: Einzeiler mit Link zur Doku
+
+color coding
+
+
+
+dienstreiseantrag hannover

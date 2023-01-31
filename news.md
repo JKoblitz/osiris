@@ -1,6 +1,16 @@
 # Changelog
 
+## 31.01.23
+
+- Die Datenbank wurde aufgeräumt: nicht mehr benötigte/gepflegte/gezeigte Datenfelder wurden entfernt. 
+- Beim Hinzufügen von Publikationen via DOI oder PM-ID wird nun das Journal anhand der ISSN gesucht. Dadurch wird eine falsche Journalzuordnung durch unterschiedliche Namen vermieden.
+- Ich habe alle Journale, die mindestens ein verknüpftes Paper hatten, mit JCR verknüpft
+  - Über die API von Web of Science wurden MetaInformationen hinzugefügt.
+  - Auf der Übersichtsseite eines Journals findet sich bei betroffenen Journalen jetzt ein Link zum Journal Citation Report.
+  - Mittels eines selbstgeschriebenen Web Scrapers wurden Impact Factoren von JCR gezogen und gespei
+
 ## 25.01.23
+
 - Feedback zum Hinzufügen von Editorenschaften wurde eingepflegt (Danke an Andrey)
 - Auf der Profilseite gibt es (wenn vorh.) eine Übersicht mit allen laufenden Mitgliedschaften (Gremien & Editorial Boards)
 - Es gibt jetzt eine Liste mit Namen, die für das Autoren-Matching verwendet werden. Diese enthält standardmäßig den vollen Namen und den abgekürzten Namen. Letzterer kann jedoch auch entfernt werden (falls er zu viele Treffer verursacht). Außerdem können weitere Namen (Mädchenname, Pseudonyme, optionale Vornamen) hinzugefügt werden, die für das Matching relevant sind. Bearbeiten kann man die Liste im Profil.

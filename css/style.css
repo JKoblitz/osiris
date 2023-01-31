@@ -488,9 +488,9 @@ label.element-other::before {
 
 .title-editor.is-valid, .author-list.is-valid, #author-widget.is-valid {
     border-color: var(--success-color) !important;
-    -moz-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
-    -webkit-box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
-    box-shadow: 0 0.2rem 0 var(--danger-box-shadow-color);
+    -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+    -webkit-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+    box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
 }
 
 .show-examples label.element-author::before,

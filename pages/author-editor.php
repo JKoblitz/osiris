@@ -21,7 +21,7 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>Last name</th>
+                    <th>Last name <span class="text-danger">*</span></th>
                     <th>First name</th>
                     <th>Position</th>
                     <th><?= $Settings->affiliation ?></th>
@@ -36,7 +36,7 @@
                             <i class="fas fa-grip-dots-vertical text-muted handle"></i>
                         </td>
                         <td>
-                            <input name="authors[<?= $i ?>][last]" type="text" class="form-control" value="<?= $author['last'] ?>">
+                            <input name="authors[<?= $i ?>][last]" type="text" class="form-control" value="<?= $author['last'] ?>" required>
                         </td>
                         <td>
                             <input name="authors[<?= $i ?>][first]" type="text" class="form-control" value="<?= $author['first'] ?>">
@@ -103,7 +103,7 @@
         counter++;
         var tr = $('<tr>')
         tr.append('<td><i class="fas fa-grip-dots-vertical text-muted handle"></i></td>')
-        tr.append('<td><input name="authors[' + counter + '][last]" type="text" class="form-control"></td>')
+        tr.append('<td><input name="authors[' + counter + '][last]" type="text" class="form-control" required></td>')
         tr.append('<td><input name="authors[' + counter + '][first]" type="text" class="form-control"></td>')
         tr.append('<td><select name="authors[' + counter + '][position]" class="form-control"><option value="first">first</option><option value="middle" selected>middle</option><option value="corresponding">corresponding</option><option value="last">last</option></select></td>')
         tr.append('<td><div class="custom-checkbox"><input type="checkbox" id="checkbox-' + counter + '" name="authors[' + counter + '][aoi]" value="1"><label for="checkbox-' + counter + '" class="blank"></label></div></td>')

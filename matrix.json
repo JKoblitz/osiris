@@ -11,8 +11,8 @@
             "middle": "4"
         },
         "book": {
-            "chapter": "16",
-            "editor": "16"
+            "chapter": "12",
+            "editor": "12"
         }
     },
     "lecture": {
@@ -21,12 +21,18 @@
         "repetition": "4"
     },
     "poster": {
-        "first": "4",
-        "last": "0",
-        "middle": "0"
+        "first": "8",
+        "last": "4",
+        "middle": "4"
     },
     "review": "4",
     "editorial": "16",
+    "students": {
+        "thesis": "16",
+        "guests": "8"
+    },
+    "teaching": "6",
+    "software": "6",
     "misc": {
         "annual": "8",
         "once": "4"

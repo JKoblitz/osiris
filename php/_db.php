@@ -148,25 +148,39 @@ function getJournal($doc)
 
 function impact_from_year($journal, $year = CURRENTYEAR)
 {
-    $if = null;
-    if (!isset($journal['impact'])) return '';
+    $if = 0;
+    if (!isset($journal['impact']) || empty($journal['impact'])) return 0;
+
+    // get impact factors from journal
     $impact = $journal['impact'];
     if ($impact instanceof MongoDB\Model\BSONArray) {
         $impact = $impact->bsonSerialize();
     }
-    if (empty($impact)) return $if;
-    $last = end($impact)['impact'] ?? null;
-    if (is_array($impact)) {
-        $impact = array_filter($impact, function ($a) use ($year) {
-            return $a['year'] == $year;
-        });
-        if (empty($impact)) {
-            $impact = $last;
-        } else {
-            $if = reset($impact)['impact'];
-        }
+    // sort ascending by year
+    usort($impact, function ($a, $b) {
+        return $a['year'] - $b['year'];
+    });
+
+    foreach ($impact as $i) {
+        if ($i['year'] >= $year) break;
+        $if = $i['impact'];
     }
     return $if;
+
+
+    // if (empty($impact)) return $if;
+    // $last = end($impact)['impact'] ?? null;
+    // if (is_array($impact)) {
+    //     $impact = array_filter($impact, function ($a) use ($year) {
+    //         return $a['year'] == $year;
+    //     });
+    //     if (empty($impact)) {
+    //         $impact = $last;
+    //     } else {
+    //         $if = reset($impact)['impact'];
+    //     }
+    // }
+    // return $if;
 }
 
 function latest_impact($journal)
@@ -215,7 +229,6 @@ function get_impact($doc, $year = null)
     $journal = get_journal($doc);
 
     if (empty($journal)) return null;
-    // $journal = $journal->toArray();
 
     if ($year == null) {
         $year = intval($doc['year'] ?? 1) - 1;
@@ -374,4 +387,9 @@ function get_reportable_activities($start, $end)
     }
 
     return $result;
+}
+
+
+function fieldDefinition(){
+    
 }

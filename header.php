@@ -117,30 +117,39 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             <!-- Button to toggle sidebar -->
             <button class="btn btn-action active" type="button" onclick="digidive.toggleSidebar(this);"></button>
             <ul class="navbar-nav">
-                <nav aria-label="breadcrumbs">
-                    <ul class="breadcrumb">
-                        <?php
-                        $breadcrumb = $breadcrumb ?? [];
-                        if (!empty($breadcrumb)) {
-                            // array_unshift($breadcrumb , 'Home');
-                            echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . '/">Home</a></li>';
-                            foreach ($breadcrumb as $crumb) {
-                                if (!isset($crumb['path'])) {
-                                    echo '<li class="breadcrumb-item active" aria-current="page"><a href="#">' . $crumb['name'] . '</a></li>';
-                                } else {
-                                    echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . $crumb['path'] . '">' . $crumb['name'] . '</a></li>';
+                <?php if (false) { ?>
+                    <!-- set to true during maintenance -->
+                    <div class="alert alert-danger">
+                        <b><?= lang('System maintenance', 'Wartungsarbeiten') ?>.</b>
+                        <?= lang('Please do not add, edit or remove data. Changes might be overwritten.', 'Bitte keine Daten hinzufügen, bearbeiten oder löschen. Änderungen werden evtl. überschrieben.') ?>
+                    </div>
+                <?php } else { ?>
+                    <nav aria-label="breadcrumbs">
+                        <ul class="breadcrumb">
+                            <?php
+                            $breadcrumb = $breadcrumb ?? [];
+                            if (!empty($breadcrumb)) {
+                                // array_unshift($breadcrumb , 'Home');
+                                echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . '/">Home</a></li>';
+                                foreach ($breadcrumb as $crumb) {
+                                    if (!isset($crumb['path'])) {
+                                        echo '<li class="breadcrumb-item active" aria-current="page"><a href="#">' . $crumb['name'] . '</a></li>';
+                                    } else {
+                                        echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . $crumb['path'] . '">' . $crumb['name'] . '</a></li>';
+                                    }
                                 }
                             }
-                        }
-                        ?>
-                    </ul>
-                </nav>
+                            ?>
+                        </ul>
+                    </nav>
+                <?php } ?>
+
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#23.01.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#31.01.23" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-01-23 14:00') ?>)
+                (<?= time_elapsed_string('2023-01-31 10:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->

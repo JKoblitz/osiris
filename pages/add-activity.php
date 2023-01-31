@@ -147,7 +147,7 @@ function val($index, $default = '')
 
 
 <div class="content">
-    <a target="_blank" href="<?= ROOTPATH ?>/docs/warnings" class="btn btn-tour float-right ml-5" id="docs-btn">
+    <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
         <i class="far fa-lg fa-book-sparkles mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a>
@@ -683,11 +683,6 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <!-- 
-                <div class="form-group">
-                    <label class="required" for="publication"><?= lang('Date of publication (print preferred)', 'Datum der Publikation (bevorzugt Print)') ?></label>
-                    <input type="date" class="form-control" name="values[publication]" id="date_publication" required>
-                </div> -->
 
                 <div class="form-row row-eq-spacing" data-visible="article,preprint">
                     <div class="col-sm">
@@ -709,7 +704,7 @@ function val($index, $default = '')
                     </div>
 
                     <div class="col-sm">
-                        <label for="journal_id" class="element-cat required">Journal ID</label>
+                        <label for="journal_id" class="required">Journal ID</label>
                         <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_id" required readonly>
                         <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
@@ -905,7 +900,7 @@ function val($index, $default = '')
                             <!-- <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= val('journal') ?>" name="values[journal]" list="journal-list" required> -->
                         </div>
                         <div class="col-sm" data-visible="review,editorial">
-                            <label for="journal_rev_id" class="element-cat required">Journal ID</label>
+                            <label for="journal_rev_id" class="required">Journal ID</label>
                             <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_rev_id" required readonly>
                             <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                         </div>
@@ -917,7 +912,7 @@ function val($index, $default = '')
                             <input type="text" class="form-control" id="title-input" value="<?= val('title') ?>" name="values[title]" required>
                         </div>
                         
-                        <div class="col-sm" data-visible="grant-rev,thesis-rev">
+                        <div class="col-sm" data-visible="grant-rev">
                             <label class="element-cat" for="review-type">
                                 <?= lang('Type of review', 'Art des Review') ?>
                             </label>

@@ -274,7 +274,7 @@ $user_activity = isUserActivity($doc, $user);
                     <?php endif; ?>
                     <?php if (isset($doc['magazine'])) : ?>
                         <tr>
-                            <th class="key">Journal:</th>
+                            <th class="key"><?=lang('Magazine', 'Magazin')?>:</th>
                             <td>
                                 <em><?= $doc['magazine'] ?></em>
                             </td>
@@ -659,7 +659,7 @@ $user_activity = isUserActivity($doc, $user);
         ?>
             <div class="alert alert-danger mt-20 py-20">
                 <p class="mt-0">
-                    <?= lang('Controlling staff can delete any time:', 'Controlling-Mitarbeiter können jederzeit löschen:') ?>
+                    <?= lang('Admins can delete any time:', 'Admins können jederzeit löschen:') ?>
                 </p>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">

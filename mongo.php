@@ -275,7 +275,12 @@ Route::post('/create-journal', function () {
     $oa = $values['oa'] ?? false;
     $issn = $values['issn'];
     $query = [];
-    foreach ($issn as $i) {
+    foreach ($issn as $n => $i) {
+        if (empty($i)) {
+            unset($values['issn'][$n]);
+            continue;
+        }
+
         $query[] = "issn:" . $i;
     }
     if ($oa === false && !empty($query)) {
@@ -303,8 +308,32 @@ Route::post('/create-journal', function () {
             $oa = $r['oa_start'] ?? false;
         }
     }
-
     $values['oa'] = $oa;
+
+    try {
+        // try to get impact factor from WoS Journal info
+        include_once BASEPATH . "/php/simple_html_dom.php";
+
+        $settings = file_get_contents(BASEPATH . "/settings.json");
+        $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
+        $YEAR = $settings['wos-journal.info_year'] ?? 2021;
+
+        $html = new simple_html_dom();
+        foreach ($values['issn'] as $i) {
+            if (empty($i)) continue;
+            $url = 'https://wos-journal.info/?jsearch=' . $i;
+            $html->load_file($url);
+            foreach ($html->find("div.row") as $row) {
+                $el = $row->plaintext;
+                if (preg_match('/Impact Factor \(IF\):\s+(\d+\.?\d*)/', $el, $match)) {
+                    $values['impact'] = [['year' => $YEAR, 'impact' => floatval($match[1])]];
+                    break 2;
+                }
+            }
+        }
+    } catch (\Throwable $th) {
+    }
+
 
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
@@ -382,7 +411,7 @@ Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
         $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
         $values['is_leader'] = boolval($values['is_leader'] ?? false);
         $values['is_active'] = boolval($values['is_active'] ?? false);
-        
+
         $values['displayname'] = "$values[first] $values[last]";
         $values['formalname'] = "$values[last], $values[first]";
         $values['first_abbr'] = "";

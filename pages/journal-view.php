@@ -35,10 +35,6 @@
         <td><?= implode('<br>', $data['issn']->bsonSerialize()) ?></td>
     </tr>
     <tr>
-        <td>WoS Categories</td>
-        <td><?= isset($data['categories']) ? implode('<br>', $data['categories']->bsonSerialize()): '' ?></td>
-    </tr>
-    <tr>
         <td>Open Access</td>
         <td>
             <?php
@@ -52,6 +48,21 @@
             ?>
         </td>
     </tr>
+    <?php if (isset($data['wos'])) { ?>
+        <tr>
+            <td>Web of Science Links</td>
+            <td>
+                <?php foreach ($data['wos']['links'] as $link) { ?>
+                    <a href="<?= $link['url'] ?>" target="_blank" rel="noopener noreferrer" class="badge badge-primary"><?= $link['type'] ?></a>
+                <?php } ?>
+            </td>
+        </tr>
+    <?php } ?>
+    <!--     
+    <tr>
+        <td>WoS Categories</td>
+        <td><?= isset($data['categories']) ? implode('<br>', $data['categories']->bsonSerialize()) : '' ?></td>
+    </tr> -->
 </table>
 
 <h3>
@@ -281,3 +292,10 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
 
     </div>
 </div>
+
+<?php
+
+if (isset($_GET['verbose'])) {
+    dump($data, true);
+}
+?>

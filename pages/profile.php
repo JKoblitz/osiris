@@ -65,14 +65,14 @@ $impacts = [];
 $journals = [];
 
 
-$filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]]];
+$filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]], 'year' => ['$gte' => $Settings->startyear]];
 $options = ['sort' => ["year" => -1, "month" => -1, "day" => -1]];
 $cursor = $osiris->activities->find($filter, $options);
 $cursor = $cursor->toArray();
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-    if ($doc['year'] < $Settings->startyear) continue;
+    // if ($doc['year'] < $Settings->startyear) continue;
 
     $type = $doc['type'];
 
@@ -247,25 +247,23 @@ foreach ($cursor as $doc) {
                     <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
                 </h5>
 
-                <div class="btn-group btn-group-lg">
+                <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
                         <i class="icon-activity-plus text-osiris fa-fw"></i>
                         <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
-                    </a>
-                    <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
-                        <i class="far fa-calendar text-success fa-fw"></i>
-                        <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
                     </a>
                     <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
                         <i class="icon-activity-user text-primary fa-fw"></i>
                         <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
                     </a>
-
-                    <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                        <i class="far fa-user-pen text-muted fa-fw"></i>
-                        <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                    <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
+                        <i class="far fa-calendar text-success fa-fw"></i>
+                        <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
                     </a>
 
+
+                </div>
+                <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
                         <i class="far fa-trophy text-signal fa-fw"></i>
                     </a>
@@ -275,6 +273,12 @@ foreach ($cursor as $doc) {
                     </a>
                 </div>
 
+                <div class="btn-group btn-group-lg">
+                    <a class="btn btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                        <i class="far fa-user-pen text-muted fa-fw"></i>
+                        <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                    </a>
+                </div>
 
                 <?php if ($issues !== 0) { ?>
                     <div class="alert alert-danger mt-20">
@@ -457,9 +461,16 @@ foreach ($cursor as $doc) {
 <div class="row row-eq-spacing my-0">
     <div class="col-lg-4">
         <div class="box h-full">
+            <div class="content">
+                <?php if ($currentuser) { ?>
+                    <a class="float-right" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>">
+                        <i class="far fa-edit fa-lg"></i>
+                    </a>
+                <?php } ?>
+                <h4 class="title"><?= lang('Details') ?></h4>
+            </div>
             <table class="table table-simple">
                 <tbody>
-
                     <tr>
                         <td><?= lang('Last name', 'Nachname') ?></td>
                         <td><?= $scientist['last'] ?? '' ?></td>
@@ -673,11 +684,12 @@ foreach ($cursor as $doc) {
     </div> -->
     <div class="col-lg-6">
         <div class="box h-full">
-            <div class="chart content">
-                <h5 class="title text-center">
+            <div class="chart content text-center">
+                <h5 class="title mb-0">
                     <i class="fad fa-file-lines text-primary"></i>
                     <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
                 </h5>
+                <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
                 <canvas id="chart-impact" style="max-height: 30rem;"></canvas>
                 <?php
                 $x = [];
@@ -798,11 +810,13 @@ foreach ($cursor as $doc) {
     </div>
     <div class="col-md-6 col-lg-3">
         <div class="box h-full">
-            <div class="chart content">
-                <h5 class="title text-center">
+            <div class="chart content text-center">
+                <h5 class="title mb-0">
                     <i class="fad fa-book-user text-primary"></i>
                     <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
                 </h5>
+                <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
+
                 <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
 
                 <?php
@@ -876,11 +890,12 @@ foreach ($cursor as $doc) {
     </div>
     <div class="col-md-6 col-lg-3">
         <div class="box h-full">
-            <div class="chart content">
-                <h5 class="title text-center">
+            <div class="chart content text-center">
+                <h5 class="title">
                     <i class="fad fa-lg fa-coin text-signal"></i>
                     <?= lang('Coins per Year', 'Coins pro Jahr') ?>
                 </h5>
+                <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
                 <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
             </div>
         </div>

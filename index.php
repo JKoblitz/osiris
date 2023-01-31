@@ -283,7 +283,8 @@ Route::post('/user/login', function () {
                 $_SESSION['name'] = "Julia Koblitz";
             } else {
                 $_SESSION['username'] = $_POST['username'];
-                $_SESSION['name'] = "unknown";
+                $useracc = getUserFromId($_SESSION['username']);
+                $_SESSION['name'] = $useracc['displayname'];
             }
             $_SESSION['loggedin'] = true;
 
