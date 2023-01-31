@@ -90,9 +90,8 @@ function fromToDate($from, $to)
     $f = explode('.', $from, 3);
     $t = explode('.', $to, 3);
 
-    $from = "";
-    $from .= $f[0] . ".";
-    if ($f[1] != $t[1]) {
+    $from = $f[0] . ".";
+    if ($f[1] != $t[1] || $f[2] != $t[2]) {
         $from .= $f[1] . ".";
     }
     if ($f[2] != $t[2]) {
