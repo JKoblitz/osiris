@@ -365,27 +365,36 @@ Route::get('/api/google', function () {
 
 
 Route::get('/api/wos-starter', function () {
-    // include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/Settings.php";
-    $Settings = new Settings();
-    $apikey = "";
-    foreach ($Settings['apis'] as $api) {
-        if ($api['id'] == "wos-starter") {
+
+    if (!isset($_GET['issn'])) die("no issn given");
+    $issn = $_GET['issn'];
+
+    $settings = file_get_contents(BASEPATH . "/apis.json");
+    $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
+    foreach ($settings as $api) {
+        if ($api['id'] == 'wos-starter') {
             $apikey = $api['key'];
+            
+            if (empty($apikey)) {
+                die("API key is missing.");
+            }
+            // $filter = [];
+            $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
+            $url .= "?issn=".$issn;
+
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                'Accept: application/json',
+                "X-ApiKey: $apikey"
+            ]);
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec($curl);
+            $result = json_decode($result, true);
+            echo return_rest($result, count($result));
         }
     }
-    if (empty($apikey)) {
-        die("API key is missing.");
-    }
-    // $filter = [];
-    $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
-    $data = [
-        "X-ApiKey" => $apikey,
-        "q" => "issn=".$issn
-    ];
-    $result = CallAPI('GET', $url, $data);
-    $result = json_decode($response, true);
-    // $result = $osiris->journals->find($filter)->toArray();
 
-    echo return_rest($result, count($result));
+
+    
 });

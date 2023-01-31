@@ -1,9 +1,8 @@
 # To-Do-Liste
 - [ ] Publikationen im DFG-Format exportieren
-- [ ] Datumsabk. ist sehr wild bei gleichem Monta und untersch. Jahr
-- [ ] ISSN-Abgleich bei Journalen, die über DOI hinzugefügt wurden
+- [x] Datumsabk. ist sehr wild bei gleichem Monta und untersch. Jahr
+- [x] ISSN-Abgleich bei Journalen, die über DOI hinzugefügt wurden
 - [ ] »Experten-Import« von Autoren
-- [ ] 
 - [x] Übersicht über laufende Aktivitäten
 - [x] Gremienarbeit?
 - [ ] Eifriger Sammler hat auf level 1,2 keine englische übersetzung

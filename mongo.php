@@ -314,20 +314,51 @@ Route::post('/create-journal', function () {
         // try to get impact factor from WoS Journal info
         include_once BASEPATH . "/php/simple_html_dom.php";
 
-        $settings = file_get_contents(BASEPATH . "/settings.json");
+        $settings = file_get_contents(BASEPATH . "/apis.json");
         $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
-        $YEAR = $settings['wos-journal.info_year'] ?? 2021;
+        foreach ($settings as $api) {
+            if ($api['id'] == 'wos-journal.info') {
+                $YEAR = $api['year'] ?? 2021;
 
-        $html = new simple_html_dom();
-        foreach ($values['issn'] as $i) {
-            if (empty($i)) continue;
-            $url = 'https://wos-journal.info/?jsearch=' . $i;
-            $html->load_file($url);
-            foreach ($html->find("div.row") as $row) {
-                $el = $row->plaintext;
-                if (preg_match('/Impact Factor \(IF\):\s+(\d+\.?\d*)/', $el, $match)) {
-                    $values['impact'] = [['year' => $YEAR, 'impact' => floatval($match[1])]];
-                    break 2;
+                $html = new simple_html_dom();
+                foreach ($values['issn'] as $i) {
+                    if (empty($i)) continue;
+                    $url = 'https://wos-journal.info/?jsearch=' . $i;
+                    $html->load_file($url);
+                    foreach ($html->find("div.row") as $row) {
+                        $el = $row->plaintext;
+                        if (preg_match('/Impact Factor \(IF\):\s+(\d+\.?\d*)/', $el, $match)) {
+                            $values['impact'] = [['year' => $YEAR, 'impact' => floatval($match[1])]];
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            if ($api['id'] == 'wos-starter') {
+                $apikey = $api['key'];
+                if (empty($apikey)) {
+                    continue;
+                }
+                foreach ($values['issn'] as $i) {
+                    if (empty($i)) continue;
+
+
+                    $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
+                    $url .= "?issn=" . $i;
+
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                        'Accept: application/json',
+                        "X-ApiKey: $apikey"
+                    ]);
+                    curl_setopt($curl, CURLOPT_URL, $url);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                    $result = curl_exec($curl);
+                    $result = json_decode($result, true);
+                    if (!empty($result['hits'])) {
+                        $values['wos'] = $result['hits'][0];
+                    }
                 }
             }
         }
