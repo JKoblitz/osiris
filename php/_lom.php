@@ -51,27 +51,17 @@ class LOM
 
     function lom($doc)
     {
-        switch ($doc['type'] ?? '') {
-            case 'students':
-                return $this->students($doc);
-            case 'poster':
-                return $this->poster($doc);
-            case 'lecture':
-                return $this->lecture($doc);
-            case 'publication':
-                return $this->publication($doc);
-            case 'misc':
-                return $this->misc($doc);
-            case 'review':
-                return $this->review($doc);
-            default:
-                return array(
-                    'type' => "",
-                    'id' => 0,
-                    'title' => "",
-                    'points' => "0",
-                    'lom' => 0
-                );
+        $type = $doc['type'] ?? 'unknown';
+        if (method_exists($this, $type)) {
+            return $this->$type($doc);
+        } else {
+            return array(
+                'type' => "",
+                'id' => 0,
+                'title' => "",
+                'points' => "0 (not implemented yet)",
+                'lom' => 0
+            );
         }
     }
 
@@ -120,7 +110,7 @@ class LOM
                 $pos = "chapter";
             }
 
-            $points = $this->matrix['publication']['book'][$pos];
+            $points = $this->matrix['publication']['book'][$pos] ?? 0;
             return array(
                 'type' => "publication>book>$pos",
                 'id' => $doc['_id'],
@@ -137,7 +127,7 @@ class LOM
 
 
         if ($type == "non-refereed") {
-            $points = $this->matrix['publication']['non-refereed'][$posKey];
+            $points = $this->matrix['publication']['non-refereed'][$posKey] ?? 0;
             return array(
                 'type' => "publication>non-refereed>$pos",
                 'id' => $doc['_id'],
@@ -153,7 +143,7 @@ class LOM
             $if = get_impact($doc);
         }
         if (empty($if)) $if = 1;
-        $points = $this->matrix['publication']['refereed'][$posKey];
+        $points = $this->matrix['publication']['refereed'][$posKey] ?? 0;
         return array(
             'type' => "publication>refereed>$pos",
             'id' => $doc['_id'],
@@ -178,7 +168,7 @@ class LOM
         }
         $pos = $author['position'] ?? 'middle';
 
-        $points = $this->matrix['poster'][$pos];
+        $points = $this->matrix['poster'][$pos] ?? 0;
         return array(
             'type' => "poster>$pos",
             'id' => $doc['_id'],
@@ -216,7 +206,7 @@ class LOM
             );
         }
         $pos = $doc['lecture_type'] ?? 'short';
-        $points = $this->matrix['lecture'][$pos];
+        $points = $this->matrix['lecture'][$pos] ?? 0;
         return array(
             'type' => "lecture>$pos",
             'id' => $doc['_id'],
@@ -230,7 +220,7 @@ class LOM
     {
         if ($doc['role'] == "Editor") {
             $pos = "editorial";
-            $points = $this->matrix[$pos];
+            $points = $this->matrix[$pos] ?? 0;
 
             return array(
                 'type' => "$pos",
@@ -257,7 +247,7 @@ class LOM
     function misc($doc)
     {
         $pos = $doc['iteration'] ?? 'once';
-        $points = $this->matrix['misc'][$pos];
+        $points = $this->matrix['misc'][$pos] ?? 0;
         return array(
             'type' => "misc>$pos",
             'id' => $doc['_id'],
@@ -269,15 +259,49 @@ class LOM
 
     function students($doc)
     {
+        $cat = strtolower(trim($doc['category'] ?? 'thesis'));
+        if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
+            $cat = "thesis";
+        } else {
+            $cat = 'guests';
+        }
+        $points = $this->matrix['students'][$cat] ?? 0;
         return  array(
-            'type' => "students",
+            'type' => "students>$cat",
             'id' => $doc['_id'],
             'title' => $doc['title'],
-            'points' => "0 (not implemented yet",
-            'lom' => 0
+            'points' => "$points ($cat)",
+            'lom' => $points
         );
     }
 
-    // TODO: students
+    function teaching($doc)
+    {
+
+        $points = $this->matrix['teaching'] ?? 0;
+        $sws = $doc['sws'];
+        return  array(
+            'type' => "teaching",
+            'id' => $doc['_id'],
+            'title' => $doc['title'],
+            'points' => "$points * $sws (SWS)",
+            'lom' => $points * $sws
+        );
+    }
+
+
+    function software($doc)
+    {
+
+        $points = $this->matrix['software'] ?? 0;
+        return  array(
+            'type' => "software",
+            'id' => $doc['_id'],
+            'title' => $doc['title'],
+            'points' => "$points",
+            'lom' => $points
+        );
+    }
+
 
 }

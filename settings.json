@@ -5,13 +5,8 @@
         "link": "https://www.dsmz.de/",
         "logo": "dsmz.svg"
     },
-    "apis": [
-        {
-            "id": "wos-starter",
-            "key": "438bc95555fa1fc97c389712a5889013eeacc623"
-        }
-    ],
     "startyear": 2017,
+    "wos-journal.info_year": 2021,
     "departments": [
         {
             "id": "MIOS",
