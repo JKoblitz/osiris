@@ -289,7 +289,7 @@ Route::get('/api/journal', function () {
     include_once BASEPATH . "/php/_db.php";
     $filter = [];
     if (isset($_GET['search'])) {
-        $j = new \MongoDB\BSON\Regex('^' . trim($_GET['search']), 'i');
+        $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
         $filter = ['$or' =>  [
             ['journal' => ['$regex' => $j]],
             ['issn' => $_GET['search']]

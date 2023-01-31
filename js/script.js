@@ -341,10 +341,7 @@ function getJournal(name) {
                     id: j._id['$oid']
                 })
             });
-            if (journals.length === 1) {
-                selectJournal(journals[0])
-                toastSuccess(lang('Journal ID added.', 'Journal-ID wurde hinzugefügt.'), lang('Journal found', 'Journal gefunden'))
-            } else if (journals.length === 0) {
+            if (journals.length === 0) {
                 SUGGEST.append('<tr><td colspan="3">' + lang('Journal not found in OSIRIS. Starting search in NLM catalogue ...', 'Journal nicht in OSIRIS gefunden. Starte Suche im NLM-Katalog ...') + '</tr></td>')
                 getJournalNLM(name)
                 window.location.replace('#journal-select')
@@ -363,12 +360,17 @@ function getJournal(name) {
                     var data = $('<td>')
                     data.append(`<h5 class="m-0">${j.journal}</h5>`)
                     data.append(`<span class="float-right">${j.publisher}</span>`)
-                    data.append(`<span class="text-muted">${j.issn.join(', ')}</span>`)
+                    data.append(`<span class="text-muted">ISSN: ${j.issn.join(', ')}</span>`)
                     row.append(data)
 
                     SUGGEST.append(row)
                 })
-                window.location.replace('#journal-select')
+                if (journals.length === 1) {
+                    selectJournal(journals[0])
+                    toastSuccess(lang('Journal ID added.', 'Journal-ID wurde hinzugefügt.'), lang('Journal found', 'Journal gefunden'))
+                } else {
+                    window.location.replace('#journal-select')
+                }
             }
             var row = $('<tr>')
             var button = $('<button class="btn">')
@@ -504,7 +506,7 @@ function getJournalNLM(name) {
                         var data = $('<td>')
                         data.append(`<h5 class="m-0">${j.journal}</h5>`)
                         data.append(`<span class="float-right">${j.publisher}</span>`)
-                        data.append(`<span class="text-muted">${j.issn.join(', ')}</span>`)
+                        data.append(`<span class="text-muted">ISSN: ${j.issn.join(', ')}</span>`)
                         row.append(data)
 
                         SUGGEST.append(row)
@@ -904,10 +906,15 @@ function fillForm(pub) {
         $('#epub').attr('checked', pub.epub).addClass('is-valid')
 
     if (pub.journal) {
-        // TODO: prefer ISSN
-        // var val = pub.issn
-        $('#journal-search').val(pub.journal)
-        getJournal(pub.journal)
+        // prefer ISSN to look journal up:
+        var j_val = pub.journal
+        if (pub.issn !== undefined && pub.issn.length !== 0) {
+            j_val = pub.issn.split(' ')
+            j_val = j_val[0]
+        }
+        console.log(j_val);
+        $('#journal-search').val(j_val)
+        getJournal(j_val)
     }
 
     $('.author-list').addClass('is-valid').find('.author').remove()
@@ -1055,7 +1062,7 @@ function addAuthor(event, editor = false) {
     }
     var data = el.val()
     console.log(data);
-    if ((event.type =='keypress' && event.keyCode == '13') || event.type =='click') {
+    if ((event.type == 'keypress' && event.keyCode == '13') || event.type == 'click') {
         event.preventDefault();
         const match = (SCIENTISTS.indexOf(data) != -1)
         var value = data.split(',')
