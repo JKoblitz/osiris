@@ -248,6 +248,9 @@ class LOM
     {
         $pos = $doc['iteration'] ?? 'once';
         $points = $this->matrix['misc'][$pos] ?? 0;
+        if ($pos !== 'once'){
+            $pos = 'frequently';
+        }
         return array(
             'type' => "misc>$pos",
             'id' => $doc['_id'],

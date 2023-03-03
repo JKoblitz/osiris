@@ -264,9 +264,28 @@ Route::post('/download', function () {
 
             echo '@' . ($bibentries[trim($doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $id . ',' . PHP_EOL;
 
-            if (isset($doc['title']) and ($doc['title'] != '')) echo '  Title = {' . $doc['title'] . '},' . PHP_EOL;
-            if (isset($doc['authors']) and ($doc['authors'] != '')) echo '  Author = {' . $Format->formatAuthors($doc['authors'], ', ') . '},' . PHP_EOL;
-            if (isset($doc['editors']) and ($doc['editor'] != '')) echo '  Editor = {' . $Format->formatEditors($doc['editors'], ', ') . '},' . PHP_EOL;
+
+            if (isset($doc['title']) and ($doc['title'] != '')) {
+                echo '  Title = {' . strip_tags($doc['title']) . '},' . PHP_EOL;
+            }
+            if (isset($doc['authors']) and ($doc['authors'] != '')) {
+                $authors = [];
+                foreach ($doc['authors'] as $a) {
+                    $author = $a['last'];
+                    if (!empty($a['first'])){
+                        $author .= ", ".$a['first'];
+                    }
+                    $authors[] = $author;
+                }
+                echo '  Author = {' . implode(' and ', $authors) . '},' . PHP_EOL;
+            }
+            if (isset($doc['editors']) and ($doc['editors'] != '')) {
+                $editors = [];
+                foreach ($doc['editors'] as $a) {
+                    $editors[] = abbreviateAuthor($a['last'], $a['first']);
+                }
+                echo '  Editor = {' . implode(' and ', $editors) . '},' . PHP_EOL;
+            }
             if (isset($doc['journal']) and ($doc['journal'] != '')) echo '  Journal = {' . $doc['journal'] . '},' . PHP_EOL;
             if (isset($doc['year']) and ($doc['year'] != '')) echo '  Year = {' . $doc['year'] . '},' . PHP_EOL;
             if (isset($doc['number']) and ($doc['number'] != '')) echo '  Number = {' . $doc['number'] . '},' . PHP_EOL;

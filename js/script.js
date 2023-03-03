@@ -367,7 +367,7 @@ function getJournal(name) {
                 })
                 if (journals.length === 1) {
                     selectJournal(journals[0])
-                    toastSuccess(lang('Journal ID added.', 'Journal-ID wurde hinzugefügt.'), lang('Journal found', 'Journal gefunden'))
+                    toastSuccess(lang('Journal <code class="code">'+journals[0].journal+'</code> selected.', 'Journal <code class="code">'+journals[0].journal+'</code> ausgewählt.'), lang('Journal found', 'Journal gefunden'))
                 } else {
                     window.location.replace('#journal-select')
                 }

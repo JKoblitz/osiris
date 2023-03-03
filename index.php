@@ -269,8 +269,11 @@ Route::post('/user/login', function () {
                 // try to connect the user with existing authors
                 $updateResult = $osiris->activities->updateMany(
                     [
-                        'authors.last' => $USER['last'],
-                        'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
+                        'authors' => [
+                            '$elemMatch' => ['last'=>$USER['last'], 'first' => new MongoDB\BSON\Regex('^' . $USER['first'][0])]
+                        ]
+                        // 'authors.$.last' => $USER['last'],
+                        // 'authors.$.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
                     ],
                     ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
                 );
@@ -299,10 +302,10 @@ Route::post('/user/login', function () {
             if ($auth["status"] == true) {
 
                 // check if user exists in our database
-                $USER = getUserFromId($_POST['username']);
+                $USER = getUserFromId(strtolower($_POST['username']));
                 if (empty($USER)) {
                     // create user from LDAP
-                    $USER = updateUser($_POST['username']);
+                    $USER = updateUser(strtolower($_POST['username']));
                     if (empty($USER)) {
                         die('Sorry, the user does not exist. Please contact system administrator!');
                     }
@@ -319,6 +322,7 @@ Route::post('/user/login', function () {
                     $n = $updateResult->getModifiedCount();
                     $msg .= "&new=$n";
                 }
+                $_SESSION['username'] = $USER['_id'];
 
                 $updateResult = $osiris->users->updateOne(
                     ['_id' => $_POST['username']],

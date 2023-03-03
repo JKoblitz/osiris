@@ -186,7 +186,7 @@ Route::post('/create', function () {
 
     // add information on creating process
     $values['created'] = date('Y-m-d');
-    $values['created_by'] = $_SESSION['username'];
+    $values['created_by'] = strtolower($_SESSION['username']);
 
     if (isset($values['doi']) && !empty($values['doi'])) {
         $doi_exist = $collection->findOne(['doi' => $values['doi']]);
@@ -229,8 +229,8 @@ Route::post('/create', function () {
         header("Location: " . $red . "?msg=add-success");
         die();
     }
-    include_once BASEPATH . "/php/format.php";
-    $result = $collection->findOne(['_id' => $id]);
+    // include_once BASEPATH . "/php/format.php";
+    // $result = $collection->findOne(['_id' => $id]);
     echo json_encode([
         'inserted' => $insertOneResult->getInsertedCount(),
         'id' => $id,
@@ -399,7 +399,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
 
     // add information on updating process
     $values['updated'] = date('Y-m-d');
-    $values['updated_by'] = $_SESSION['username'];
+    $values['updated_by'] = strtolower($_SESSION['username']);
 
     if (is_numeric($id)) {
         $id = intval($id);
@@ -410,6 +410,9 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['_id' => $id],
         ['$set' => $values]
     );
+    
+    cleanFields($id);
+    // die;
 
     // addUserActivity('update');
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {

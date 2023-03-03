@@ -90,7 +90,7 @@ $user_activity = isUserActivity($doc, $user);
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
                     <div class="content">
-                        <form action="/osiris/download" method="post">
+                        <form action="<?= ROOTPATH ?>/download" method="post">
 
                             <input type="hidden" name="filter[id]" value="<?= $id ?>">
 
@@ -174,7 +174,7 @@ $user_activity = isUserActivity($doc, $user);
             <?php } ?>
 
 
-            <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students'])) {
+            <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students', 'teaching'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
         <i class="far fa-book-copy"></i>
         ' . lang("Add a copy", "Kopie anlegen") .
@@ -274,7 +274,7 @@ $user_activity = isUserActivity($doc, $user);
                     <?php endif; ?>
                     <?php if (isset($doc['magazine'])) : ?>
                         <tr>
-                            <th class="key"><?=lang('Magazine', 'Magazin')?>:</th>
+                            <th class="key"><?= lang('Magazine', 'Magazin') ?>:</th>
                             <td>
                                 <em><?= $doc['magazine'] ?></em>
                             </td>
@@ -710,8 +710,8 @@ $user_activity = isUserActivity($doc, $user);
                     </a>
                 <?php } ?>
 
-            </div> 
-            <?php elseif ($locked) : ?>
+            </div>
+        <?php elseif ($locked) : ?>
             <div class="alert alert-danger mt-20 py-20">
 
                 <p class="mt-0">
@@ -734,9 +734,9 @@ $user_activity = isUserActivity($doc, $user);
                 <p class="mt-0">
                     <!-- <b>Info:</b> -->
                     <!-- <?= lang(
-                        'This activity is not in the current quarter, i.e. it may have already been reported. Deleting it is therefore no longer possible. But you can write to Controlling why the entry should be deleted and they will take care of it.',
-                        'Aktivitäten können problemlos gelöscht werden, solange sie sich im aktuellen Quartal befinden. Am Ende des Quartals werden alle Aktivitäten reportet, danach ist löschen nicht mehr einfach möglich.'
-                    ) ?> -->
+                                'This activity is not in the current quarter, i.e. it may have already been reported. Deleting it is therefore no longer possible. But you can write to Controlling why the entry should be deleted and they will take care of it.',
+                                'Aktivitäten können problemlos gelöscht werden, solange sie sich im aktuellen Quartal befinden. Am Ende des Quartals werden alle Aktivitäten reportet, danach ist löschen nicht mehr einfach möglich.'
+                            ) ?> -->
                 </p>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
@@ -756,21 +756,25 @@ $user_activity = isUserActivity($doc, $user);
 
                 <h2><?= ucfirst($role) ?></h2>
 
-                <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
-                    <div class="btn-toolbar mb-10">
-                        <?php if ($role == 'authors') {
-                            echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
+                <?php
+                // if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { 
+                ?>
+                <div class="btn-toolbar mb-10">
+                    <?php if ($role == 'authors') {
+                        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
                                 <i class="fa-regular fa-user-pen"></i>
                                 ' . lang("Edit authors", "Autorenliste bearbeiten") .
-                                '</a>';
-                        } else {
-                            echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
+                            '</a>';
+                    } else {
+                        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
                                     <i class="fa-regular fa-user-pen"></i>
                                     ' . lang("Edit editors", "Editorenliste bearbeiten") .
-                                '</a>';
-                        } ?>
-                    </div>
-                <?php } ?>
+                            '</a>';
+                    } ?>
+                </div>
+                <?php
+                //  } 
+                ?>
                 <table class="table">
                     <thead>
                         <tr>

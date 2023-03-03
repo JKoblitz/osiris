@@ -984,9 +984,10 @@ foreach ($cursor as $doc) {
     <div class="col-lg-12 col-xl-6">
         <div class="box h-full">
             <div class="chart content">
-                <h5 class="title text-center"><?= lang('All activities', 'Alle Aktivitäten') ?></h5>
+                <h5 class="title text-center">
+                    <?= lang('All activities in which '.$scientist['first'].' was involved', 'Alle Aktivitäten, an denen '.$scientist['first'].' beteiligt war') ?>    
+                </h5>
                 <canvas id="chart-activities" style="max-height: 35rem;"></canvas>
-
             </div>
         </div>
 
@@ -1112,7 +1113,8 @@ foreach ($cursor as $doc) {
 
             <div class="content mt-0">
                 <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn btn-osiris">
-                    <i class="far fa-book-bookmark mr-5"></i> <?= lang('All activities', 'Alle Aktivitäten ') ?>
+                    <i class="far fa-book-bookmark mr-5"></i> 
+                    <?= lang('All activities', 'Alle Aktivitäten ') ?>
                 </a>
             </div>
 

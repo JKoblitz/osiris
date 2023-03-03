@@ -18,7 +18,7 @@ $preset = $form['authors'] ?? array(
         'last' => $USER['last'],
         'first' => $USER['first'],
         'aoi' => true,
-        'user' => $USER['username']
+        'user' => strtolower($USER['username'])
     ]
 );
 

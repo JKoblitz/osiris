@@ -45,6 +45,89 @@ function is_ObjectID($id)
     return false;
 }
 
+
+function cleanFields($id)
+{
+    global $osiris;
+    $activities = $osiris->activities;
+    $fields = [
+        'article' => ['pubtype', 'year', 'month', 'day', 'journal', 'journal_id', 'issn', 'issue', 'epub', 'epub-delay', 'correction', 'pages', 'doi', 'pubmed', 'open_access', 'impact', 'volume'],
+        'preprint' => ['pubtype', 'year', 'month', 'day', 'journal', 'journal_id', 'issn', 'doi', 'pubmed', 'open_access'],
+        'magazine' => ['pubtype', 'year', 'month', 'day', 'magazine', 'link', 'doi', 'pubmed'],
+        'book' => ['pubtype', 'year', 'month', 'day', 'edition', 'volume', 'doi', 'pubmed', 'isbn', 'open_access', 'volume', 'publisher', 'city', 'series'],
+        'chapter' => ['pubtype', 'year', 'month', 'day', 'edition', 'volume', 'pages', 'book', 'publisher', 'city', 'editors', 'doi', 'pubmed', 'isbn', 'open_access', 'volume'],
+        'dissertation' => ['pubtype', 'year', 'month', 'day', 'doi', 'isbn', 'publisher', 'city'],
+        'others' => ['pubtype', 'year', 'month', 'day', 'doi', 'pubmed', 'doc_type'],
+        'students' => ['category', 'details', 'end', 'status', 'academic_title', 'affiliation', 'name', 'start'],
+        'guests' => ['category', 'details', 'end', 'name', 'affiliation', 'academic_title', 'start'],
+        'teaching' => ['sws', 'start', 'end', 'affiliation'],
+        'lecture' => ['lecture_type', 'invited_lecture', 'start', 'conference', 'location', 'doi'],
+        'poster' => ['start', 'end', 'conference', 'location', 'doi'],
+        'misc-once' => ['start', 'end', 'iteration', 'doi', 'location'],
+        'misc-annual' => ['start', 'end', 'iteration', 'doi', 'end-delay', 'location'],
+        'software' => ['software_type', 'software_venue', 'link', 'version', 'doi', 'start'],
+        'review' => ['role', 'journal', 'journal_id', 'start', 'user'],
+        'editorial' => ['role', 'journal', 'journal_id', 'start', 'user', 'end', 'editor_type', 'end-delay'],
+        'grant-rev' => ['role', 'title', 'review-type', 'review-type', 'start', 'user'],
+        'thesis-rev' => ['role', 'title', 'review-type', 'start', 'user']
+    ];
+    $general = [
+        "type", "_id", 'locked',
+        "year", "month",
+        "title", "authors",
+        "created", "created_by", "updated", "updated_by",
+        "comment", "editor-comment",
+        "files"
+    ];
+
+
+    $values = $osiris->activities->findOne(['_id' => $id]);
+
+    $type = $values['type'];
+    if ($type == 'publication') {
+        $type = $values['pubtype'];
+    } elseif ($type == 'review') {
+        $type = $values['role'];
+        if ($type == "Reviewer") {
+            $type = 'review';
+            $activities->updateOne(
+                ['_id' => $id],
+                ['$set' => ["role"=> 'review']]
+            );
+        }
+        if ($type == "Editor") {
+            $type = 'editorial';
+            $activities->updateOne(
+                ['_id' => $id],
+                ['$set' => ["role"=> 'editorial']]
+            );
+        }
+    } else if ($type == 'misc') {
+        $type = "misc-" + $values['iteration'];
+    } else if ($type == 'students') {
+        if (str_contains($values['category'], "thesis") || $values['category'] == 'doktorand:in') {
+            $type = "students";
+        } else {
+            $type = 'guests';
+        }
+    }
+
+    if (!array_key_exists($type, $fields)) return false;
+
+    foreach ($values as $key => $value) {
+        if (!in_array($key, $general) && !in_array($key, $fields[$type])){
+            // dump([$key, $value], true);
+            
+            $updateResult = $activities->updateOne(
+                ['_id' => $id],
+                ['$unset' => [$key => 1]]
+            );
+            // dump($updateResult->getModifiedCount());
+        }
+    }
+    return true;
+}
+
 function mongo_date($date)
 {
     $time = (new DateTime($date))->getTimestamp();
@@ -54,25 +137,43 @@ function mongo_date($date)
 function getUserFromName($last, $first)
 {
     global $osiris;
+    $first = trim($first);
+    if (strlen($first) == 1) $first .= ".";
+    
+    // $firstsplit = explode(' ', $first, 2);
+    // $firstregex = array('$regex' => '^'.$firstsplit[0], '$options' => 'i');
     // if (str_ends_with($first, '.')){
-    //     $first = new MongoDB\BSON\Regex('^' . $first[0] . '.*');
+        try {
+            $regex = new MongoDB\BSON\Regex('^' . $first[0]);
+        } catch (\Throwable $th) {
+           $regex = $first;
+        }
+        
     // }
     $user = $osiris->users->findOne([
         '$or' => [
-            ['last' => $last, 'first' => $first, 'names' => ['$exists' => false]],
+            ['last' => $last, 'first' => $regex],
             ['names' => "$last, $first"]
         ]
     ]);
+
+    // dump($osiris->users->find([
+    //     '$or' => [
+    //         ['last' => $last, 'first' => $first],
+    //         ['names' => "$last, $first"]
+    //     ]
+    // ])->toArray());
 
     if (empty($user)) return null;
     return $user['_id'];
 }
 
-function getUserFromId($user)
+function getUserFromId($user = null, $simple = false)
 {
     global $osiris;
     $USER = $osiris->users->findOne(['_id' => $user ?? $_SESSION['username']]);
     if (empty($USER)) return array();
+    if ($simple) return $USER;
     $USER['name'] = $USER['first'] . " " . $USER['last'];
     // $USER['name_formal'] = $USER['last'] . ", " . $USER['first'];
     $USER['first_abbr'] = "";
@@ -392,4 +493,20 @@ function get_reportable_activities($start, $end)
 
 function fieldDefinition(){
     
+}
+
+
+function getDeptFromAuthors($authors){
+    $result = [];
+    if ($authors instanceof MongoDB\Model\BSONArray) {
+        $authors = $authors->bsonSerialize();
+    }
+    $users = array_filter(array_column($authors, 'user'));
+    foreach ($users as $user) {
+        $user = getUserFromId($user);
+        if (empty($user) || empty($user['dept'])) continue;
+        if (in_array($user['dept'], $result)) continue;
+        $result[] = $user['dept'];
+    }
+    return $result;
 }

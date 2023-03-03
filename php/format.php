@@ -666,11 +666,11 @@ class Format
             $result .= " <i>$this->title</i>";
         }
         if (!empty($doc['affiliation'])) {
-            $result .= ", $doc[affiliation]";
+            $this->subtitle .= $doc["affiliation"];
         }
 
-        $result .= " (" . fromToDate($doc['start'], $doc['end'] ?? null) . ")";
-        $result .= ".";
+        $this->subtitle .= " (" . fromToDate($doc['start'], $doc['end'] ?? null) . ")";
+        $result .= ", $this->subtitle.";
         return $result;
     }
 
@@ -890,7 +890,7 @@ class Format
 
         $this->subtitle .= " ($doc[year])";
 
-        if ($this->usecase == 'web') {
+        if ($this->usecase == 'web' || $this->usecase == 'dsmz.de') {
             if (!empty($doc['doi'])) {
                 $result .= " DOI: <a target='_blank' href='https://doi.org/$doc[doi]'>https://doi.org/$doc[doi]</a>";
             }
