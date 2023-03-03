@@ -117,6 +117,45 @@ Route::get('/api/activities', function () {
     echo return_rest($result, count($result));
 });
 
+
+Route::get('/api/html', function () {
+    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/format.php";
+    $Format = new Format(true, 'dsmz.de');
+    $Format->full = true;
+    $Format->abbr_journal = true;
+
+    $result = [];
+    $docs = $osiris->activities->find([
+        'type' => 'publication', 'authors.aoi' => ['$in' => [true, 1, '1']],
+        'year'=> ['$gte' => 2023]
+    ]);
+
+
+    foreach ($docs as $i => $doc) {
+        if (isset($_GET['limit']) && $i >= $_GET['limit']) break;
+
+        $depts = getDeptFromAuthors($doc['authors']);
+
+
+        $link = null;
+        if (!empty($doc['doi'] ?? null)) {
+            $link = "https://dx.doi.org/" . $doc['doi'];
+        } elseif (!empty($doc['pubmed'] ?? null)) {
+            $link = "https://www.ncbi.nlm.nih.gov/pubmed/" . $doc['pubmed'];
+        }
+        $result[] = [
+            'id' => strval($doc['_id']),
+            'html' => $Format->format($doc),
+            'year' => $doc['year'] ?? null,
+            'departments' => $depts,
+            'link' => $link
+        ];
+    }
+
+    echo return_rest($result, count($result));
+});
+
 Route::get('/api/all-activities', function () {
     include_once BASEPATH . "/php/_db.php";
     include_once BASEPATH . "/php/format.php";
@@ -176,7 +215,7 @@ Route::get('/api/all-activities', function () {
                 for ($j = $startMon; $j <= $endMonth; $j = $j > 12 ? $j % 12 || 11 : $j + 1) {
                     $month = $j + 1;
                     $displayMonth = $month < 10 ? '0' + $month : $month;
-                    $datum['quarter'] .= " ". $displayMonth . "M" . $i . "Y ";
+                    $datum['quarter'] .= " " . $displayMonth . "M" . $i . "Y ";
                     // QUARTER:
                     $endQuarter = $i . "Q" . ceil($displayMonth / 3);
                 }
@@ -374,13 +413,13 @@ Route::get('/api/wos-starter', function () {
     foreach ($settings as $api) {
         if ($api['id'] == 'wos-starter') {
             $apikey = $api['key'];
-            
+
             if (empty($apikey)) {
                 die("API key is missing.");
             }
             // $filter = [];
             $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
-            $url .= "?issn=".$issn;
+            $url .= "?issn=" . $issn;
 
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_HTTPHEADER, [
@@ -394,7 +433,4 @@ Route::get('/api/wos-starter', function () {
             echo return_rest($result, count($result));
         }
     }
-
-
-    
 });
