@@ -138,6 +138,9 @@ foreach ($cursor as $doc) {
     }
 }
 
+
+$showcoins = (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? false));
+
 ?>
 
 
@@ -205,12 +208,12 @@ foreach ($cursor as $doc) {
                 <?php if (!$scientist['is_active']) { ?>
                     <br>
                     <span class="text-danger">
-                        <?= lang('INACTIVE', 'INAKTIV') ?>
+                        <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
                     </span>
                 <?php } ?>
 
             </h3>
-            <?php if (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? false)) { ?>
+            <?php if ($showcoins) { ?>
                 <p class="lead mt-0">
                     <i class="fad fa-lg fa-coin text-signal"></i>
                     <b id="lom-points"><?= $_lom ?></b>
@@ -888,8 +891,10 @@ foreach ($cursor as $doc) {
 
         </div>
     </div>
+    
     <div class="col-md-6 col-lg-3">
         <div class="box h-full">
+            <?php if ($showcoins) { ?>
             <div class="chart content text-center">
                 <h5 class="title">
                     <i class="fad fa-lg fa-coin text-signal"></i>
@@ -898,7 +903,6 @@ foreach ($cursor as $doc) {
                 <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
                 <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
             </div>
-        </div>
 
         <?php
         $data = [];
@@ -972,6 +976,8 @@ foreach ($cursor as $doc) {
             console.log(data);
             var myChart = new Chart(ctx, data);
         </script>
+            <?php } ?>
+        </div>
     </div>
 </div>
 

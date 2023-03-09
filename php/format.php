@@ -465,6 +465,7 @@ class Format
 
     function formatShort($doc, $link = true)
     {
+        $this->subtitle = "";
         // init formatting:
         $this->format($doc);
 
@@ -810,16 +811,6 @@ class Format
                     };
                     $this->subtitle .= " <i>$doc[book]</i>";
                 }
-                if (!empty($doc['book'])) {
-                    // CHICAGO: // Last, First. “Titel.” In Book, edited by First Last. City: Publisher, 2020.
-                    // APA 6: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). City: Publisher.
-                    // APA 7: Last, F., & Last, F. (2020). Title. In F. Last (Ed.), _Book_ (pp. 1–10). Publisher.
-                    $this->subtitle .= " In:";
-                    if (!empty($doc['editors'])) {
-                        $this->subtitle .= $this->formatEditors($doc['editors'], 'and') . " (eds).";
-                    };
-                    $this->subtitle .= " <i>$doc[book]</i>";
-                }
                 if (!empty($doc['edition']) || !empty($doc['pages']) || !empty($doc['volume'])) {
                     $ep = array();
                     if (!empty($doc['edition'])) {
@@ -846,7 +837,7 @@ class Format
                 }
                 if (!empty($doc['publisher'])) {
                     $result .= " $doc[publisher].";
-                    $this->subtitle .= " $doc[publisher].";
+                    // $this->subtitle .= " $doc[publisher].";
                 }
                 break;
             case 'dissertation':

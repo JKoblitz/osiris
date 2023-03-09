@@ -12,6 +12,7 @@ class Achievement
     public $lang = 'en';
     public $lang_g = 'en';
     private $self = false;
+    private $showcoins = true;
 
 
     function __construct($osiris)
@@ -28,18 +29,37 @@ class Achievement
     function initUser($username)
     {
         $this->username = $username;
+
+        // check if the user is the current user
         if ($username == ($_SESSION['username'] ?? '')) {
             $this->self = true;
         }
-        $this->userdata = $this->osiris->users->findOne(['_id' => $username]);
 
+        // find user in the database
+        $this->userdata = $this->osiris->users->findOne(['_id' => $username]);
+        if (empty($this->userdata)) return false;
+
+        // check if user disabled coins
+        $this->showcoins = $userdata['hide_coins'] ?? false;
+
+        // get all user achievements
         $achieved = $this->userdata['achievements'] ?? [];
 
         foreach ($achieved as $ac) {
+            // ignore falsely formatted achievement entries
             if (!isset($ac['id']) || !array_key_exists($ac['id'], $this->achievements)) continue;
+
+            // do not show coin-associated achievements if the user has disabled coins
+            if (!$this->showcoins && in_array($ac['id'], ['year-coins','pub-coins','coins'])) continue;
+
+            // add metainformation
             $ac['achievement'] = $this->achievements[$ac['id']];
+
+            // add to list of user achievements
             $this->userac[$ac['id']] = $ac;
         }
+
+        // save gender for correct title formatting
         if (($this->userdata['gender'] ?? 'n') == 'f') {
             $this->lang_g .= "_f";
         }
@@ -146,8 +166,17 @@ class Achievement
                             }
                         }
                         break;
+                    case 'pub-impact':
+                        $arr = array_column($activities, 'impact');
+                        if (!empty($arr)) $value = max($arr);
+                        break;
 
+                    case 'coins':
+                        if (!$this->showcoins) break;
+                        $value = array_sum(array_column($activities, 'coins'));
+                        break;
                     case 'year-coins':
+                        if (!$this->showcoins) break;
                         $lom_years = [];
                         foreach ($activities as $a) {
                             if (!isset($lom_years[$a['year']])) $lom_years[$a['year']] = 0;
@@ -156,20 +185,15 @@ class Achievement
                         
                         if (!empty($lom_years)) $value = max($lom_years);
                         break;
-                    case 'pub-impact':
-                        $arr = array_column($activities, 'impact');
-                        if (!empty($arr)) $value = max($arr);
-                        break;
                     case 'pub-coins':
+                        if (!$this->showcoins) break;
                         $array = array_filter($activities, function ($a) {
                             return $a['type'] == 'publication';
                         });
                         if (count(array_column($array, 'coins')) > 0)
                             $value = max(array_column($array, 'coins'));
                         break;
-                    case 'coins':
-                        $value = array_sum(array_column($activities, 'coins'));
-                        break;
+
                     case 'approved':
                         $approved = [];
                         if (!isset($this->userdata['approved'])) {

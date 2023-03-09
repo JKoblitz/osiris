@@ -43,7 +43,7 @@ $filter['$or'] =   array(
                 'end' => null,
                 '$or' => array(
                     ['type' => 'misc', 'iteration' => 'annual'],
-                    ['type' => 'review', 'role' =>  ['$in'=> ['Editor', 'editorial']]],
+                    ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
                 )
             ]
         )
@@ -107,7 +107,9 @@ foreach ($cursor as $doc) {
 }
 
 // dump($timeline, true);
+$showcoins = (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? false));
 ?>
+
 
 
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
@@ -137,8 +139,8 @@ foreach ($cursor as $doc) {
 
             <p>
                 <?= lang(
-                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the '.$Settings->affiliation.'). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
-                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der '.$Settings->affiliation.' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
+                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the ' . $Settings->affiliation . '). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
+                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der ' . $Settings->affiliation . ' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
                 ) ?>
             </p>
 
@@ -163,14 +165,16 @@ foreach ($cursor as $doc) {
                 echo $Settings->getDepartments($scientist['dept'])['name'];
                 ?>
             </h3>
-            <p class="lead mt-0">
-                <i class="fad fa-lg fa-coin text-signal"></i>
-                <b id="lom-points"></b>
-                Coins in <?= $YEAR ?>
-                <a href='#coins' class="text-muted">
-                    <i class="far fa-question-circle text-muted"></i>
-                </a>
-            </p>
+            <?php if ($showcoins) { ?>
+                <p class="lead mt-0">
+                    <i class="fad fa-lg fa-coin text-signal"></i>
+                    <b id="lom-points"></b>
+                    Coins in <?= $YEAR ?>
+                    <a href='#coins' class="text-muted">
+                        <i class="far fa-question-circle text-muted"></i>
+                    </a>
+                </p>
+            <?php } ?>
         </div>
         <div class="col">
 
@@ -212,39 +216,39 @@ foreach ($cursor as $doc) {
         </div>
     </div>
     <div class="d-flex">
-    <?php
-    if ($currentuser) {
-        $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
-        $approval_needed = array();
-
-        $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
-        $quarter_in_past = new DateTime() > $q_end;
-    ?>
-
-        <?php if (!$quarter_in_past) { ?>
-            <a href="#" class="btn disabled">
-                <i class="fas fa-check mr-5"></i>
-                <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
-            </a>
         <?php
+        if ($currentuser) {
+            $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+            $approval_needed = array();
 
-        } elseif ($approved) { ?>
-            <a href="#" class="btn disabled">
-                <i class="fas fa-check mr-5"></i>
-                <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
-            </a>
-        <?php } else { ?>
-            <a class="btn btn-lg btn-success" href="#approve">
-                <i class="fas fa-question mr-5"></i>
-                <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
-            </a>
+            $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');
+            $quarter_in_past = new DateTime() > $q_end;
+        ?>
+
+            <?php if (!$quarter_in_past) { ?>
+                <a href="#" class="btn disabled">
+                    <i class="fas fa-check mr-5"></i>
+                    <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
+                </a>
+            <?php
+
+            } elseif ($approved) { ?>
+                <a href="#" class="btn disabled">
+                    <i class="fas fa-check mr-5"></i>
+                    <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
+                </a>
+            <?php } else { ?>
+                <a class="btn btn-lg btn-success" href="#approve">
+                    <i class="fas fa-question mr-5"></i>
+                    <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
+                </a>
+            <?php } ?>
+
         <?php } ?>
-
-    <?php } ?>
-    <a target="_blank" href="<?= ROOTPATH ?>/docs/my-year" class="btn btn-tour ml-auto" id="tour">
-        <i class="far fa-lg fa-book-sparkles mr-5"></i>
-        <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
-    </a>
+        <a target="_blank" href="<?= ROOTPATH ?>/docs/my-year" class="btn btn-tour ml-auto" id="tour">
+            <i class="far fa-lg fa-book-sparkles mr-5"></i>
+            <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+        </a>
 
     </div>
 
@@ -563,7 +567,9 @@ foreach ($cursor as $doc) {
                                 </a>
                             <?php } ?>
                         </td>
-                        <td class='lom w-50'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
+                        <?php if ($showcoins) { ?>
+                            <td class='lom w-50'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
+                        <?php } ?>
                         </tr>
                     <?php } ?>
                 </tbody>

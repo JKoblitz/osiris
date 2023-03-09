@@ -417,17 +417,20 @@ Route::get('/activities/new', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/activities/beta', function () {
+
+Route::get('/activities/teaching', function () {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => lang("Add new", "Neu hinzufügen")]
+        ['name' => lang("Teaching", "Lehrveranstaltungen")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/add-activity-beta.php";
+    include BASEPATH . "/pages/teaching.php";
     include BASEPATH . "/footer.php";
 }, 'login');
+
+
 
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
