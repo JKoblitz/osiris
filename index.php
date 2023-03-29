@@ -229,8 +229,9 @@ Route::get('/user/login', function () {
     $breadcrumb = [
         ['name' => lang('User login', 'Login')]
     ];
-    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-        header("Location: " . ROOTPATH . "");
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true  && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]?msg=ali");
+        die;
     }
     include BASEPATH . "/header.php";
 
@@ -247,7 +248,8 @@ Route::post('/user/login', function () {
     $page = "userlogin";
     $msg = "?msg=welcome";
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
-        header("Location: " . ROOTPATH . "/?msg=ali");
+        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]?msg=ali");
+        die;
     }
     include BASEPATH . "/php/_login.php";
     include BASEPATH . "/php/_db.php";

@@ -82,6 +82,12 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $class = "danger";
             break;
 
+        case 'ali':
+            $header = '';
+            $text = lang("You are already logged in.", "Du bist bereits eingeloggt");
+            $class = "signal";
+            break;
+
         default:
             $text = str_replace("-", " ", $msg);
             break;

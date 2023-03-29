@@ -10,9 +10,9 @@ function login($username, $password, $readall = false)
     $ldap_port = 389;
 
     if ($readall === true) {
-        $base_dn = 'CN=bacmedia,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-        $password = 'TheH4mmer4ndThunder#?!'; // entsprechendes password
-        $dn = "bacmedia@dsmz.local";
+        $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+        $password = 'Euler.Crypto.Parsing?!'; 
+        $dn = "osiris@dsmz.local";
     } else {
         $dn = "$username@dsmz.local";
     }
@@ -76,9 +76,9 @@ function getUser($name)
     $ldap_address = "ldap://172.18.240.3";
     $ldap_port = 389;
 
-    $base_dn = 'CN=bacmedia,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-    $password = 'TheH4mmer4ndThunder#?!'; // entsprechendes password
-    $dn = "bacmedia@dsmz.local";
+    $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
+    $dn = "osiris@dsmz.local";
 
     $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
 
@@ -124,9 +124,9 @@ function getUsers()
     $ldap_address = "ldap://172.18.240.3";
     $ldap_port = 389;
 
-    $base_dn = 'CN=bacmedia,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-    $password = 'TheH4mmer4ndThunder#?!'; // entsprechendes password
-    $dn = "bacmedia@dsmz.local";
+    $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
+    $dn = "osiris@dsmz.local";
 
     $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
 
@@ -180,9 +180,9 @@ function getUserName($name)
     $ldap_address = "ldap://172.18.240.3";
     $ldap_port = 389;
 
-    $base_dn = 'CN=bacmedia,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-    $password = 'TheH4mmer4ndThunder#?!'; // entsprechendes password
-    $dn = "bacmedia@dsmz.local";
+    $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
+    $dn = "osiris@dsmz.local";
 
     $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
 
@@ -241,9 +241,9 @@ function relevantGroup($groups){
 //     $ldap_address = "ldap://172.18.240.3";
 //     $ldap_port = 389;
 
-//     $base_dn = 'CN=bacmedia,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-//     $password = 'TheH4mmer4ndThunder#?!'; // entsprechendes password
-//     $dn = "bacmedia@dsmz.local";
+//     $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+//     $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
+//     $dn = "osiris@dsmz.local";
    
 //     $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
 

@@ -107,7 +107,7 @@ foreach ($cursor as $doc) {
 }
 
 // dump($timeline, true);
-$showcoins = (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? false));
+$showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? false));
 ?>
 
 
@@ -485,7 +485,6 @@ $showcoins = (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? 
     <?php
     foreach ($groups as $col => $data) {
     ?>
-
 
         <div class="box box-<?= $col ?>" id="<?= $col ?>">
             <div class="content">

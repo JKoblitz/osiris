@@ -12,7 +12,7 @@ class Achievement
     public $lang = 'en';
     public $lang_g = 'en';
     private $self = false;
-    private $showcoins = true;
+    private $showcoins = false;
 
 
     function __construct($osiris)
@@ -38,19 +38,20 @@ class Achievement
         // find user in the database
         $this->userdata = $this->osiris->users->findOne(['_id' => $username]);
         if (empty($this->userdata)) return false;
-
-        // check if user disabled coins
-        $this->showcoins = $userdata['hide_coins'] ?? false;
-
         // get all user achievements
         $achieved = $this->userdata['achievements'] ?? [];
 
+        // check if user disabled coins
+        $this->showcoins = !($this->userdata['hide_coins'] ?? true);
+        if (!$this->showcoins){
+            // do not show coin-associated achievements if the user has disabled coins
+            unset($this->achievements['coins']);
+            unset($this->achievements['pub-coins']);
+            unset($this->achievements['year-coins']);
+        }
         foreach ($achieved as $ac) {
             // ignore falsely formatted achievement entries
             if (!isset($ac['id']) || !array_key_exists($ac['id'], $this->achievements)) continue;
-
-            // do not show coin-associated achievements if the user has disabled coins
-            if (!$this->showcoins && in_array($ac['id'], ['year-coins','pub-coins','coins'])) continue;
 
             // add metainformation
             $ac['achievement'] = $this->achievements[$ac['id']];
@@ -58,6 +59,7 @@ class Achievement
             // add to list of user achievements
             $this->userac[$ac['id']] = $ac;
         }
+
 
         // save gender for correct title formatting
         if (($this->userdata['gender'] ?? 'n') == 'f') {
@@ -267,7 +269,8 @@ class Achievement
             "1" => 0
         ];
         foreach ($this->userac as $id => $uac) {
-            $ac = $this->achievements[$uac['id']] ?? array();
+            if (!isset($this->achievements[$uac['id']])) continue;
+            $ac = $this->achievements[$uac['id']];
             $lvl = $uac['level'] ?? 1;
             if ($lvl == $ac['maxlvl']) $lvl = "max";
             if (!isset($levels[$lvl])) continue;

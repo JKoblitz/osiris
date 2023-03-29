@@ -139,7 +139,7 @@ foreach ($cursor as $doc) {
 }
 
 
-$showcoins = (!($scientist['hide_coins'] ?? false)  && !($USER['hide_coins'] ?? false));
+$showcoins = (!($scientist['hide_coins'] ?? true));
 
 ?>
 

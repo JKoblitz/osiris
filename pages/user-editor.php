@@ -202,7 +202,7 @@ dump($data, true);
             <div class="mt-10">
                 <span><?= lang('Show coins', 'Zeige Coins') ?>:</span>
                 <?php
-                $hide_coins = $data['hide_coins'] ?? false;
+                $hide_coins = $data['hide_coins'] ?? true;
                 ?>
 
                 <div class="custom-radio d-inline-block ml-10">
