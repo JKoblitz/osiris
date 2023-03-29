@@ -2,21 +2,29 @@
 <?php
 // apt-get install php-ldap
 
-function login($username, $password, $readall = false)
+if (!isset($Settings)) {
+    require_once BASEPATH . '/php/Settings.php';
+    global $Settings;
+    $Settings = new Settings();
+
+}
+
+function login($username, $password)
 {
+    global $Settings;
     $return = array("msg" => '', "success" => false);
 
-    $ldap_address = "ldap://172.18.240.3";
-    $ldap_port = 389;
-
-    if ($readall === true) {
-        $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-        $password = 'Euler.Crypto.Parsing?!'; 
-        $dn = "osiris@dsmz.local";
-    } else {
-        $dn = "$username@dsmz.local";
+    if (!isset($Settings->settings['ldap'])){
+        die ("LDAP Settings are missing in settings.json");
     }
-    $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $set = $Settings->settings['ldap'];
+
+    $ip = $set['ip'];
+    $ldap_address = "ldap://".$ip;
+    $ldap_port = $set['port'];
+
+    $dn = $username.$set['domain'];
+    $base_dn = $set['basedn']; // ldap rdn oder dn
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -25,7 +33,6 @@ function login($username, $password, $readall = false)
         // define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
         // Authentifizierung des Benutzers
-        // if ($bind = ldap_bind( $connect, $ldaprdn, $ldappass)) { // service account
         $bind = ldap_bind($connect, $dn, $password);
 
         if ($bind) {
@@ -38,26 +45,12 @@ function login($username, $password, $readall = false)
             $ldap_username = $result[0]['samaccountname'][0];
             $ldap_first_name = $result[0]['givenname'][0];
             $ldap_last_name = $result[0]['sn'][0];
-            // $ldap_status = $result[0]['useraccountcontrol'][0];
-
-            if ($readall === true) {
-                print_r($result[0]["memberof"]);
-            }
-
-            // // Prüfen ob Konto gesperrt ist
-            // if ($ldap_status == 512) {
-            // Nicht gesperrt
+            
             $_SESSION['username'] = $ldap_username;
             $_SESSION['name'] = $ldap_first_name . " " . $ldap_last_name;
             $_SESSION['loggedin'] = true;
 
             $return["status"] = true;
-            // } else {
-            //     // Gesperrt
-            //     $_SESSION['loggedin'] = false;
-            //     $return["status"] = false;
-            //     $return["msg"] = "User is blocked.";
-            // }
 
             ldap_close($connect);
         } else {
@@ -73,14 +66,20 @@ function login($username, $password, $readall = false)
 
 function getUser($name)
 {
-    $ldap_address = "ldap://172.18.240.3";
-    $ldap_port = 389;
+    global $Settings;
 
-    $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-    $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
-    $dn = "osiris@dsmz.local";
+    if (!isset($Settings->settings['ldap'])){
+        die ("LDAP Settings are missing in settings.json");
+    }
+    $set = $Settings->settings['ldap'];
 
-    $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $ip = $set['ip'];
+    $ldap_address = "ldap://".$ip;
+    $ldap_port = $set['port'];
+
+    $password = $set['password']; 
+    $dn = $set['user'].$set['domain'];
+    $base_dn = $set['basedn']; 
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -121,14 +120,20 @@ function getUser($name)
 
 function getUsers()
 {
-    $ldap_address = "ldap://172.18.240.3";
-    $ldap_port = 389;
+    global $Settings;
 
-    $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-    $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
-    $dn = "osiris@dsmz.local";
+    if (!isset($Settings->settings['ldap'])){
+        die ("LDAP Settings are missing in settings.json");
+    }
+    $set = $Settings->settings['ldap'];
 
-    $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
+    $ip = $set['ip'];
+    $ldap_address = "ldap://".$ip;
+    $ldap_port = $set['port'];
+
+    $password = $set['password']; 
+    $dn = $set['user'].$set['domain'];
+    $base_dn = $set['basedn']; 
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -175,112 +180,6 @@ function getGroups($v)
 }
 
 
-function getUserName($name)
-{
-    $ldap_address = "ldap://172.18.240.3";
-    $ldap_port = 389;
-
-    $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-    $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
-    $dn = "osiris@dsmz.local";
-
-    $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-
-    if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
-        // Verbindung erfolgreich
-        ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
-        // define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
-
-        // Authentifizierung des Benutzers
-        // if ($bind = ldap_bind( $connect, $ldaprdn, $ldappass)) { // service account
-        $bind = ldap_bind($connect, $dn, $password);
-
-        if ($bind) {
-            $result = array();
-
-            $fields = "(|(samaccountname=$name))";
-
-            $search = ldap_search($connect, $base_dn, $fields);
-            $user = ldap_get_entries($connect, $search);
-            if (empty($user)|| empty($user[0]['samaccountname'])) {
-                return 'User not found';
-            }
-
-            $user = $user[0];
-
-            $result['user'] = $user['samaccountname'][0];
-            $result['firstname'] = $user['givenname'][0];
-            $result['lastname'] = $user['sn'][0];
-            $groups = array_map('getGroups', $user['memberof']);
-            $result['groups'] = $groups;
-            $result['group'] = relevantGroup($groups);
-            var_dump($result);
-            ldap_close($connect);
-            return $result;
-        } else {
-            // Login fehlgeschlagen / Benutzer nicht vorhanden
-            return "Login fehlgeschlagen / Benutzer nicht vorhanden";
-        }
-    } else {
-        return "Verbindung zum Server fehlgeschlagen.";
-    }
-}
-
-function relevantGroup($groups){
-    $groups = array_reverse($groups);
-    $relevant = array('Verwaltung', 'Mutz', 'Patent', 'IT', 'Mios');
-    $irrelevant = array('AG-Loga', 'AG-Phagen-Phagomed-P2G', 'AG-Phagen-4Cure', 'AG-Phagen-Phagomed');
-    foreach ($groups as $group ) {
-        if (in_array($group, $irrelevant)) continue;
-        if (substr( $group, 0, 3 ) === "AG-" || in_array($group, $relevant)) return $group;
-    }
-    return 'unknown';
-}
-// function getKuratoren(){
-//     $ldap_address = "ldap://172.18.240.3";
-//     $ldap_port = 389;
-
-//     $base_dn = 'CN=osiris,OU=ServiceAccounts,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-//     $password = 'Euler.Crypto.Parsing?!'; // entsprechendes password
-//     $dn = "osiris@dsmz.local";
-   
-//     $base_dn = 'OU=Users,OU=DSMZ,DC=dsmz,DC=local'; // ldap rdn oder dn
-
-//     if ($connect = ldap_connect($ldap_address . ":". $ldap_port)) {
-//         // Verbindung erfolgreich
-//         ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
-//         ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
-//         // define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
-
-//         // Authentifizierung des Benutzers
-//         // if ($bind = ldap_bind( $connect, $ldaprdn, $ldappass)) { // service account
-//         $bind=ldap_bind($connect, $dn, $password);
-
-//         if ($bind) {
-//             $res = array();
-//             // $fields = "(&(objectClass=Group)(cn=Kuratoren))";
-//             $fields = "(&(objectClass=person)(objectClass=user))";
-
-//             $search = ldap_search($connect, $base_dn, $fields);
-//             $result = ldap_get_entries($connect, $search);
-//             echo "yo";
-            
-//             // $ldap_username = $result[0]['samaccountname'][0];
-//             foreach ($result as $entry) {
-//                 array_push($res, array($entry['samaccountname'][0], $entry['memberof']));
-//             }
-//             ldap_close($connect);
-//             return $res;
-//         } else {
-//             // Login fehlgeschlagen / Benutzer nicht vorhanden
-//             return "Login fehlgeschlagen / Benutzer nicht vorhanden";
-//         }
-//     } else {
-//        return "Verbindung zum Server fehlgeschlagen.";
-//     }
-// }
-
 
 function updateUser($username){
     $keys = [
@@ -318,5 +217,4 @@ function updateUser($username){
     $user['is_leader'] = str_contains($user['unit'], "leitung");
     $user['is_active'] = !str_contains($user['unit'], "verlassen");
     return $user;
-        // $collection->insertOne($user);
 }

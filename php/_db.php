@@ -13,11 +13,6 @@ $mongoDB = new MongoDB\Client(
     "mongodb://localhost:27017/$dbname?retryWrites=true&w=majority"
 );
 
-$config = ['username' => 'root', 'password' => 'Zees1ius', 'database' => 'osiris'];
-
-// global $arango;
-// $arango = new ArangoClient\ArangoClient($config);
-
 global $osiris;
 $osiris = $mongoDB->$dbname;
 
