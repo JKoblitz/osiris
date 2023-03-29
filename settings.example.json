@@ -2,7 +2,8 @@
     "ldap": {
         "ip": "100.10.100.0",
         "port": 389,
-        "dn": "osiris@domain.local",
+        "user": "osiris",
+        "domain": "@domain.local",
         "password": "ldap_password",
         "basedn": "OU=Users,OU=DSMZ,DC=dsmz,DC=local"
     },
@@ -12,20 +13,21 @@
         "password": "pw or null",
         "user": "user or null"
     },
-    "api": {
-        "orcid":{
-            "id": "orcid app id",
+    "api": [
+        {
+            "id": "orcid",
+            "app": "orcid app id",
             "key": "orcid secret key"
         },
-        "wos-starter": {
+        {
             "id": "wos-starter",
             "key": "wos starter key"
         },
-        "wos-journal.info": {
+        {
             "id": "wos-journal.info",
             "year": 2021
         }
-    },
+    ],
     "affiliation": {
         "id": "DSMZ",
         "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",

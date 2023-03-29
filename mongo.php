@@ -313,9 +313,12 @@ Route::post('/create-journal', function () {
     try {
         // try to get impact factor from WoS Journal info
         include_once BASEPATH . "/php/simple_html_dom.php";
-
-        $settings = file_get_contents(BASEPATH . "/apis.json");
-        $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
+ 
+        require_once BASEPATH . '/php/Settings.php';
+        $Settings = new Settings();
+        $settings = $Settings['api'];
+        // $settings = file_get_contents(BASEPATH . "/apis.json");
+        // $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
         foreach ($settings as $api) {
             if ($api['id'] == 'wos-journal.info') {
                 $YEAR = $api['year'] ?? 2021;

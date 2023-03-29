@@ -153,8 +153,8 @@ function getUsers()
             $search = ldap_search($connect, $base_dn, $fields);
             $result = ldap_get_entries($connect, $search);
             return $result;
-            $ldap_username = $result[0]['samaccountname'][0];
-            $ldap_last_name = $result[0]['cn'][0];
+            // $ldap_username = $result[0]['samaccountname'][0];
+            // $ldap_last_name = $result[0]['cn'][0];
 
 
             foreach ($result as $entry) {
@@ -181,7 +181,9 @@ function getGroups($v)
 
 
 
-function updateUser($username){
+function newUser($username){
+    global $Settings;
+
     $keys = [
         "_id" => "samaccountname",
         "username" => "samaccountname",
@@ -206,14 +208,15 @@ function updateUser($username){
     }
     // if (empty($user['last']) || str_contains($user['unit'], "Allgemeiner Account")) return array();
     $user['_id'] = strtolower(trim($user['_id']));
-    $user['is_admin'] = $user['username'] == 'juk20';
-    $user['dept'] = get_dept($user['unit']);
+    $user['is_admin'] = false;
+    $user['dept'] = $user['unit'];
+    if (!array_key_exists($user['dept'], $Settings->departments))
+        $user['dept']='';
+
     $user['academic_title'] = null;
     $user['orcid'] = null;
-    $user['is_controlling'] = $user['department'] == "Controller";
-    $user['is_scientist'] = in_array($user['dept'], [
-        "BI & DB", "Services", "MIG","MIOS", "BUG", "MuTZ", "Patente", "PFVI", "MÖD"
-    ]);
+    $user['is_controlling'] = $user['department'] == "Controlling";
+    $user['is_scientist'] = false;
     $user['is_leader'] = str_contains($user['unit'], "leitung");
     $user['is_active'] = !str_contains($user['unit'], "verlassen");
     return $user;

@@ -1,8 +1,17 @@
 <?php
+/*
+* This file is part of the OSIRIS package.
+*
+* (c) Julia Koblitz
+*
+* This package is Open Source Software. For the full copyright and license
+* information, please view the LICENSE file which was distributed with this
+* source code.
+*/
+
 session_start();
 
-
-
+// implement newer functions in case they don't exist
 if (!function_exists('str_contains')) {
     function str_contains($haystack, $needle)
     {
@@ -23,12 +32,15 @@ if (!function_exists('str_ends_with')) {
 }
 
 $sn = $_SERVER['SERVER_NAME'];
+// define root path dependent on the server name
 if ($sn == 'testserver' || $sn == 'localhost' || $sn == 'juk20-dev.dsmz.local') {
+    // subfolder in my test servers
     define('ROOTPATH', '/osiris');
 } else {
     define('ROOTPATH', '');
 }
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
+
 
 // Language settings and cookies
 if (!empty($_GET['language'])) {
@@ -43,37 +55,12 @@ if (!empty($_GET['language'])) {
     ]);
 }
 
-if (!empty($_GET['select-quarter'])) {
-    $_COOKIE['osiris-quarter'] = $_GET['select-quarter'];
-    $domain = ($_SERVER['HTTP_HOST'] != 'testserver') ? $_SERVER['HTTP_HOST'] : false;
-    setcookie('osiris-quarter', $_COOKIE['osiris-quarter'], [
-        'expires' => time() + 86400,
-        'path' => ROOTPATH . '/',
-        'domain' =>  $domain,
-        'httponly' => false,
-        'samesite' => 'Strict',
-    ]);
-}
-if (!empty($_GET['select-year'])) {
-    $_COOKIE['osiris-year'] = $_GET['select-year'];
-    $domain = ($_SERVER['HTTP_HOST'] != 'testserver') ? $_SERVER['HTTP_HOST'] : false;
-    setcookie('osiris-year', $_COOKIE['osiris-year'], [
-        'expires' => time() + 86400,
-        'path' => ROOTPATH . '/',
-        'domain' =>  $domain,
-        'httponly' => false,
-        'samesite' => 'Strict',
-    ]);
-}
-
 $year = date("Y");
 $month = date("n");
 $quarter = ceil($month / 3);
 define('CURRENTQUARTER', intval($quarter));
 define('CURRENTMONTH', intval($month));
 define('CURRENTYEAR', intval($year));
-define('SELECTEDQUARTER', intval($_COOKIE['osiris-quarter'] ?? CURRENTQUARTER));
-define('SELECTEDYEAR', intval($_COOKIE['osiris-year'] ?? CURRENTYEAR));
 
 if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
     // someone tries to switch users
@@ -84,7 +71,7 @@ if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
     // check if the user is allowed to do that
     $allowed = $osiris->users->count(['_id' => $username, 'maintenance' => $realusername]);
 
-    // change username if he is allowed
+    // change username if user is allowed
     if ($allowed == 1 || $realusername == $username) {
         $msg = "User switched!";
         $_SESSION['realuser'] = $realusername;
@@ -92,7 +79,7 @@ if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
         header("Location: ".ROOTPATH."/profile/$username");
     }
 
-    // do nothing if he is not allowed
+    // do nothing if user is not allowed
 }
 
 function lang($en, $de = null)
@@ -255,42 +242,13 @@ Route::post('/user/login', function () {
     include BASEPATH . "/php/_db.php";
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
-        // TODO: remove before live!
-        if ($_SERVER['SERVER_NAME'] == 'testserver' || $_POST['username'] == 'test') {
-
+        if ($_SERVER['SERVER_NAME'] == 'testserver') {
+            // on the test server: log in
             // check if user exists in our database
-            $USER = getUserFromId($_POST['username']);
-            if (empty($USER)) {
-                // create user from LDAP
-                $USER = updateUser($_POST['username']);
-                if (empty($USER)) {
-                    die('Sorry, the user does not exist. Please contact system administrator!');
-                }
-                $osiris->users->insertOne($USER);
-
-                // try to connect the user with existing authors
-                $updateResult = $osiris->activities->updateMany(
-                    [
-                        'authors' => [
-                            '$elemMatch' => ['last'=>$USER['last'], 'first' => new MongoDB\BSON\Regex('^' . $USER['first'][0])]
-                        ]
-                        // 'authors.$.last' => $USER['last'],
-                        // 'authors.$.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
-                    ],
-                    ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
-                );
-                $n = $updateResult->getModifiedCount();
-                $msg .= "&new=$n";
-            }
-
-            if ($_POST['username'] == "test") {
-                $_SESSION['username'] = "juk20";
-                $_SESSION['name'] = "Julia Koblitz";
-            } else {
-                $_SESSION['username'] = $_POST['username'];
-                $useracc = getUserFromId($_SESSION['username']);
-                $_SESSION['name'] = $useracc['displayname'];
-            }
+            $_SESSION['username'] = $_POST['username'];
+            $useracc = getUserFromId($_SESSION['username']);
+            $_SESSION['name'] = $useracc['displayname'];
+        
             $_SESSION['loggedin'] = true;
 
             if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
@@ -307,7 +265,7 @@ Route::post('/user/login', function () {
                 $USER = getUserFromId(strtolower($_POST['username']));
                 if (empty($USER)) {
                     // create user from LDAP
-                    $USER = updateUser(strtolower($_POST['username']));
+                    $USER = newUser(strtolower($_POST['username']));
                     if (empty($USER)) {
                         die('Sorry, the user does not exist. Please contact system administrator!');
                     }
@@ -1090,9 +1048,9 @@ include_once BASEPATH . "/mongo.php";
 
 include_once BASEPATH . "/export.php";
 
-if (isset($_SESSION['username']) && $_SESSION['username'] == 'juk20') {
-    include_once BASEPATH . "/test.php";
-}
+// if (isset($_SESSION['username']) && $_SESSION['username'] == 'juk20') {
+//     include_once BASEPATH . "/test.php";
+// }
 
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";
