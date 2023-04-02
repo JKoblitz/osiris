@@ -351,7 +351,7 @@ function getJournal(name) {
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
-                    button.html('<i class="fas fa-lg fa-check"></i>')
+                    button.html('<i class="fas fa-lg fa-check text-success"></i>')
                     button.on('click', function () {
                         selectJournal(j);
                     })
@@ -499,7 +499,7 @@ function getJournalAlex(name) {
                 var row = $('<tr>')
 
                 var button = $('<button class="btn" title="select">')
-                button.html('<i class="fas fa-lg fa-check"></i>')
+                button.html('<i class="fas fa-lg fa-check text-success"></i>')
                 button.on('click', function () {
                     selectJournal(j, true);
                 })
@@ -590,7 +590,7 @@ function getJournalNLM(name) {
                         var row = $('<tr>')
 
                         var button = $('<button class="btn" title="select">')
-                        button.html('<i class="fas fa-lg fa-check"></i>')
+                        button.html('<i class="fas fa-lg fa-check text-success"></i>')
                         button.on('click', function () {
                             selectJournal(j, true);
                         })
