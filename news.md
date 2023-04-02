@@ -1,5 +1,10 @@
 # Changelog
 
+## 02.04.23 
+- Das UI/UX-Design der Journale wurde verbessert
+- Es wird nun eine bessere API verwendet, um Journale abzufragen. [OpenAlex](https://docs.openalex.org/api-entities/venues) ist nicht nur deutlich schneller als NLM, es enthält auch mehr Journale und mehr Datenfelder. So muss OpenAccess jetzt nicht mehr zusätzlich abgefragt werden.
+
+
 ## 31.01.23
 
 - Die Datenbank wurde aufgeräumt: nicht mehr benötigte/gepflegte/gezeigte Datenfelder wurden entfernt. 

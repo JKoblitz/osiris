@@ -726,3 +726,30 @@ label.element-other::before {
 .w-800 {
     width: 80rem !important;
 }
+
+
+#journal-field {
+    position: relative;
+    padding: 1rem 2rem;
+    color: #464646;
+    background-color: white;
+    border: 1px solid #afafaf;
+    border-radius: 2pt;
+    text-decoration: none;
+    display: block;
+    /* transition: 0.5s ease transform; */
+    box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.05);
+}
+
+#journal-field:hover {
+    box-shadow: 0 0.3rem 0 rgba(0, 0, 0, 0.05);
+    /* transform: translateY(-0.3rem); */
+    color: var(--primary-color);
+}
+
+#journal-field.is-valid {
+    border-color: var(--success-color);
+    -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+    -webkit-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+    box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+  }

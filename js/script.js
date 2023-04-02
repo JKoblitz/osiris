@@ -343,7 +343,7 @@ function getJournal(name) {
             });
             if (journals.length === 0) {
                 SUGGEST.append('<tr><td colspan="3">' + lang('Journal not found in OSIRIS. Starting search in NLM catalogue ...', 'Journal nicht in OSIRIS gefunden. Starte Suche im NLM-Katalog ...') + '</tr></td>')
-                getJournalNLM(name)
+                getJournalAlex(name)
                 window.location.replace('#journal-select')
             } else {
                 journals.forEach((j) => {
@@ -367,7 +367,7 @@ function getJournal(name) {
                 })
                 if (journals.length === 1) {
                     selectJournal(journals[0])
-                    toastSuccess(lang('Journal <code class="code">'+journals[0].journal+'</code> selected.', 'Journal <code class="code">'+journals[0].journal+'</code> ausgewählt.'), lang('Journal found', 'Journal gefunden'))
+                    toastSuccess(lang('Journal <code class="code">' + journals[0].journal + '</code> selected.', 'Journal <code class="code">' + journals[0].journal + '</code> ausgewählt.'), lang('Journal found', 'Journal gefunden'))
                 } else {
                     window.location.replace('#journal-select')
                 }
@@ -376,9 +376,9 @@ function getJournal(name) {
             var button = $('<button class="btn">')
             button.html(lang('Search in NLM Catalog', 'Suche im NLM-Katalog'))
             button.on('click', function () {
-                getJournalNLM(name)
+                getJournalAlex(name)
             })
-            row.append($('<td>').append(button))
+            row.append($('<td colspan="3">').append(button))
             SUGGEST.append(row)
             // window.location.replace('#journal-select')
 
@@ -394,8 +394,9 @@ function getJournal(name) {
 
 function selectJournal(j, n = false) {
 
+    console.log(j);
+    var field = $('#selected-journal')
     if (n) {
-        console.log(j);
         $.ajax({
             type: "POST",
             data: {
@@ -411,11 +412,18 @@ function selectJournal(j, n = false) {
                     selectJournal(response, false)
                     return;
                 } else {
+
+                    field.empty()
+                    field.append(`<h5 class="m-0">${j.journal}</h5>`)
+                    field.append(`<span class="float-right">${j.publisher}</span>`)
+                    field.append(`<span class="text-muted">ISSN: ${j.issn.join(', ')}</span>`)
+
+
                     $('#journal_id').val(response.id['$oid'])
-                    $('#journal_rev_id').val(response.id['$oid'])
+                    // $('#journal_rev_id').val(response.id['$oid'])
                     $('#journal').val(j.journal)
-                    $('#journal-input').val(j.journal)
-                    $('#issn').val(j.issn.join(' '))
+                    // $('#journal-input').val(j.journal)
+                    // $('#issn').val(j.issn.join(' '))
                 }
             },
             error: function (response) {
@@ -424,13 +432,98 @@ function selectJournal(j, n = false) {
             }
         })
     } else {
+        field.empty()
+        field.append(`<h5 class="m-0">${j.journal}</h5>`)
+        field.append(`<span class="float-right">${j.publisher ?? ''}</span>`)
+        field.append(`<span class="text-muted">ISSN: ${j.issn.join(', ')}</span>`)
+
         $('#journal_id').val(j.id['$oid'] ?? j.id)
-        $('#journal_rev_id').val(j.id['$oid'] ?? j.id)
+        // $('#journal_rev_id').val(j.id['$oid'] ?? j.id)
         $('#journal').val(j.journal)
-        $('#journal-input').val(j.journal)
-        $('#issn').val(j.issn.join(' '))
+        // $('#journal-input').val(j.journal)
+        // $('#issn').val(j.issn.join(' '))
     }
     window.location.replace('#')
+}
+
+function getJournalAlex(name) {
+    //1664-462X
+    var url = 'https://api.openalex.org/sources'
+    const SUGGEST = $('#journal-suggest')
+    var data = {mailto:'juk20@dsmz.de'}
+    if (name.match(/\d{4}-?\d{3}[xX\d]/)) {
+        // issn search
+        url += '/issn:' + name
+    } else {
+        url += '?search=' + name
+        // show only results with ISSN
+        data['filter'] = 'has_issn:true'
+    }
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+        url: url,
+        success: function (result) {
+            console.log(result);
+            var journals = [];
+
+            if (result.results !== undefined){
+                // name search result (many entries)
+                result.results.forEach(j => {
+                    journals.push({
+                        journal: j.display_name,
+                        issn: j.issn,
+                        abbr: j.medlineta,
+                        publisher: j.host_organization_name,
+                        openalex: j.id,
+                        if: j.summary_stats['2yr_mean_citedness'],
+                        oa: j.is_oa
+                    })
+                });
+            } else if (result.display_name !== undefined){
+                // issn search result (only one entry)
+                j = result
+                journals.push({
+                    journal: j.display_name,
+                    issn: j.issn,
+                    abbr: j.abbreviated_title.replace('.', ''),
+                    publisher: j.host_organization_name,
+                    openalex: j.id,
+                    if: j.summary_stats['2yr_mean_citedness'],
+                    oa: j.is_oa
+                })
+            }
+
+            journals.forEach((j) => {
+                var row = $('<tr>')
+
+                var button = $('<button class="btn" title="select">')
+                button.html('<i class="fas fa-lg fa-check"></i>')
+                button.on('click', function () {
+                    selectJournal(j, true);
+                })
+                row.append($('<td class="w-50">').append(button))
+
+                var data = $('<td>')
+                data.append(`<h5 class="m-0">${j.journal}</h5>`)
+                data.append(`<span class="float-right">${j.publisher}</span>`)
+                data.append(`<span class="text-muted">ISSN: ${j.issn.join(', ')}</span>`)
+                row.append(data)
+
+                SUGGEST.append(row)
+            })
+            if (journals.length === 0) {
+                SUGGEST.append('<tr><td>' + lang('Journal not found in OpenAlex. Maybe you want to add a magazine article?', 'Journal nicht in OpenAlex gefunden. Wolltest du vielleicht einen Magazin-Artikel hinzufügen?') + '</tr></td>')
+            }
+
+            console.log(journals);
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('.loader').removeClass('show')
+        }
+    })
 }
 
 function getJournalNLM(name) {
@@ -444,7 +537,7 @@ function getJournalNLM(name) {
         retmode: 'json',
         usehistory: 'y'
     }
-    if (name.match(/\d{4}-?\d{4}/)) {
+    if (name.match(/\d{4}-?\d{3}[xX\d]/)) {
         // issn search
         data.term = name + ' AND (ncbijournals[filter])'
     }
@@ -915,6 +1008,8 @@ function fillForm(pub) {
         console.log(j_val);
         $('#journal-search').val(j_val)
         getJournal(j_val)
+
+        $('#journal-field').addClass('is-valid')
     }
 
     $('.author-list').addClass('is-valid').find('.author').remove()
@@ -1189,6 +1284,7 @@ function togglePubType(type) {
         'student-internship': 'guests',
         'reviewer': 'review',
         'editor': 'editorial',
+        "monograph": "book"
     }
     // if (type == "others") return;
     type = types[type] ?? type;
@@ -1348,7 +1444,9 @@ function verifyForm(event, form) {
                 //     else selector.addClass('is-invalid').removeClass('is-valid')
                 // })
                 correct = false;
-                errors.push(input.attr('name').replace('values[', '').replace(']', ''))
+                var name = input.attr('name').replace('values[', '').replace(']', '')
+                if (name == 'journal_id') return;
+                errors.push(name)
             } else {
                 selector.addClass('is-valid').removeClass('is-invalid');
             }

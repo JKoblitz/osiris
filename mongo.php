@@ -271,44 +271,44 @@ Route::post('/create-journal', function () {
     }
 
     // try to get oa information from DOAJ
-    $name = $values['journal'];
-    $oa = $values['oa'] ?? false;
+    // $name = $values['journal'];
+    // $oa = $values['oa'] ?? false;
     $issn = $values['issn'];
-    $query = [];
+    // $query = [];
     foreach ($issn as $n => $i) {
         if (empty($i)) {
             unset($values['issn'][$n]);
             continue;
         }
 
-        $query[] = "issn:" . $i;
+        // $query[] = "issn:" . $i;
     }
-    if ($oa === false && !empty($query)) {
-        $query = implode(' OR ', $query);
-        $url = "https://doaj.org/api/search/journals/" . $query;
-        $response = CallAPI('GET', $url);
-        $json = json_decode($response, true);
+    // if ($oa === false && !empty($query)) {
+    //     $query = implode(' OR ', $query);
+    //     $url = "https://doaj.org/api/search/journals/" . $query;
+    //     $response = CallAPI('GET', $url);
+    //     $json = json_decode($response, true);
 
-        if (!empty($json['results'] ?? null) && isset($json['results'][0]['bibjson'])) {
-            $n = count($json['results']);
-            $index = 0;
-            if ($n > 1) {
-                $compare_name = strtolower($name);
-                $compare_name = explode('(', $compare_name)[0];
-                $compare_name = trim($compare_name);
-                foreach ($json['results'] as $i => $res) {
-                    if (isset($res['bibjson']['is_replaced_by'])) continue;
-                    $index = $i;
-                    if (strtolower($res['bibjson']['title']) == $compare_name) {
-                        break;
-                    }
-                }
-            }
-            $r = $json['results'][$index]['bibjson'];
-            $oa = $r['oa_start'] ?? false;
-        }
-    }
-    $values['oa'] = $oa;
+    //     if (!empty($json['results'] ?? null) && isset($json['results'][0]['bibjson'])) {
+    //         $n = count($json['results']);
+    //         $index = 0;
+    //         if ($n > 1) {
+    //             $compare_name = strtolower($name);
+    //             $compare_name = explode('(', $compare_name)[0];
+    //             $compare_name = trim($compare_name);
+    //             foreach ($json['results'] as $i => $res) {
+    //                 if (isset($res['bibjson']['is_replaced_by'])) continue;
+    //                 $index = $i;
+    //                 if (strtolower($res['bibjson']['title']) == $compare_name) {
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         $r = $json['results'][$index]['bibjson'];
+    //         $oa = $r['oa_start'] ?? false;
+    //     }
+    // }
+    // $values['oa'] = $oa;
 
     try {
         // try to get impact factor from WoS Journal info

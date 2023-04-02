@@ -180,7 +180,7 @@ function val($index, $default = '')
             <button onclick="togglePubType('lecture')" class="btn btn-select text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?><?= lang('Lectures', 'Vorträge') ?></button>
             <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review-btn"><?= activity_icon('review', false) ?><?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
             <button onclick="togglePubType('teaching')" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?><?= lang('Teaching', 'Lehre') ?></button>
-            <!-- <a href="<?=ROOTPATH?>/activities/teaching" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></a> -->
+            <!-- <a href="<?= ROOTPATH ?>/activities/teaching" class="btn btn-select text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?></i><?= lang('Teaching', 'Lehre') ?></a> -->
             <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students-btn"><?= activity_icon('students', false) ?><?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
             <button onclick="togglePubType('software')" class="btn btn-select text-software" id="software-btn"><?= activity_icon('software', false) ?><?= lang('Software &amp; Data') ?></button>
             <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-btn"><?= activity_icon('misc', false) ?><?= lang('Miscellaneous', 'Sonstiges') ?></button>
@@ -538,17 +538,14 @@ function val($index, $default = '')
                     <div class="col-sm">
                         <label for="year" class="required element-time">Year</label>
                         <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" required value="<?= val('year') ?>">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="month" class="required ">Month</label>
                         <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" required value="<?= val('month') ?>">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="day" class="">Day</label>
                         <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= val('day') ?>">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
                 <div class="form-row row-eq-spacing" data-visible="students,guests">
@@ -670,8 +667,8 @@ function val($index, $default = '')
                     <div class="col-sm" data-visible="misc-once,misc-annual">
                         <label class="required" for="iteration"><?= lang('Iteration', 'Häufigkeit') ?></label>
                         <select name="values[iteration]" id="iteration" class="form-control" value="<?= val('iteration') ?>" onchange="togglePubType('misc-'+this.value)">
-                            <option value="once"><?=lang('once', 'einmalig')?></option>
-                            <option value="annual"><?=lang('continously', 'stetig')?></option>
+                            <option value="once"><?= lang('once', 'einmalig') ?></option>
+                            <option value="annual"><?= lang('continously', 'stetig') ?></option>
                         </select>
                     </div>
                     <div class="col-sm" data-visible="lecture,poster">
@@ -684,8 +681,30 @@ function val($index, $default = '')
                     </div>
                 </div>
 
+                <div class="" data-visible="article,preprint,review,editorial">
+                    <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
+                        <i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                    </a>
+                    <label for="journal" class="element-cat required">
+                        Journal
 
-                <div class="form-row row-eq-spacing" data-visible="article,preprint">
+                    </label>
+                    <a href="#journal-select" id="journal-field" class="alert mb-20 d-block">
+                        <!-- <a class="btn btn-link" ><i class="fas fa-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
+                        <span class="float-right text-primary"><i class="fas fa-edit"></i></span>
+
+                        <div id="selected-journal">
+                            <span class="title"><?= lang('No Journal selected', 'Kein Journal ausgewählt') ?></span>
+                        </div>
+
+                        <input type="hidden" class="form-control hidden" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required readonly>
+                        <input type="hidden" class="form-control hidden" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_id" required readonly>
+
+
+                    </a>
+                </div>
+                <!-- 
+                <div class="form-row row-eq-spacing" data-visible="article,preprint,review,editorial">
                     <div class="col-sm">
                         <label for="journal" class="element-cat required">
                             Journal
@@ -695,19 +714,16 @@ function val($index, $default = '')
                         </label>
                         <div class="input-group">
                             <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required readonly>
-                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                             <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Edit Journal', 'Bearbeite Journal') ?>">
                                 <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
                             </div>
                         </div>
 
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
 
                     <div class="col-sm">
                         <label for="journal_id" class="required">Journal ID</label>
                         <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_id" required readonly>
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
 
                     <div class="col-sm">
@@ -725,9 +741,8 @@ function val($index, $default = '')
                         ?>
 
                         <input type="text" class="form-control disabled" name="values[issn]" value="<?= $issn ?>" id="issn" readonly>
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-row row-eq-spacing" data-visible="magazine">
                     <div class="col-sm">
@@ -744,27 +759,22 @@ function val($index, $default = '')
                     <div class="col-sm" data-visible="article">
                         <label for="issue" class="element-other">Issue</label>
                         <input type="text" class="form-control" name="values[issue]" value="<?= val('issue') ?>" id="issue">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm" data-visible="book,chapter">
                         <label for="series" class="element-other"><?= lang('Series', 'Buchreihe') ?></label>
                         <input type="text" class="form-control" name="values[series]" value="<?= val('series') ?>" id="series">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm" data-visible="book,chapter">
                         <label for="edition" class="element-other">Edition</label>
                         <input type="number" class="form-control" name="values[edition]" value="<?= val('edition') ?>" id="edition">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="volume" class="element-other">Volume</label>
                         <input type="text" class="form-control" name="values[volume]" value="<?= val('volume') ?>" id="volume">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm" data-visible="article,chapter">
                         <label for="pages" class="element-other">Pages</label>
                         <input type="text" class="form-control" name="values[pages]" value="<?= val('pages') ?>" id="pages">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
 
@@ -773,7 +783,6 @@ function val($index, $default = '')
                     <div class="col-sm" data-visible="chapter">
                         <label for="book" class="required element-cat"><?= lang('Book title', 'Buchtitel') ?></label>
                         <input type="text" class="form-control" name="values[book]" value="<?= val('book') ?>" id="book" required>
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="publisher" class="element-other">
@@ -781,12 +790,10 @@ function val($index, $default = '')
                             <span data-visible="dissertation"><?= lang('University', 'Universität') ?></span>
                         </label>
                         <input type="text" class="form-control" name="values[publisher]" value="<?= val('publisher') ?>" id="publisher">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm">
                         <label for="city" class="element-other"><?= lang('Location', 'Ort') ?></label>
                         <input type="text" class="form-control" name="values[city]" value="<?= val('city') ?>" id="city">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                 </div>
 
@@ -817,11 +824,9 @@ function val($index, $default = '')
                         <label for="doi" class="element-link">DOI</label>
                         <?php if (empty($form)) { ?>
                             <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="doi">
-                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                         <?php } else { ?>
                             <div class="input-group">
                                 <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="doi">
-                                <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                                 <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI') ?>">
                                     <button class="btn" type="button" onclick="getPubData(event, this)"><i class="fas fa-rotate"></i></button>
                                     <span class="sr-only">
@@ -835,7 +840,6 @@ function val($index, $default = '')
                     <div class="col-sm" data-visible="article,preprint,magazine,book,chapter,others">
                         <label for="pubmed">Pubmed</label>
                         <input type="number" class="form-control" name="values[pubmed]" value="<?= val('pubmed') ?>" id="pubmed">
-                        <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                     </div>
                     <div class="col-sm" data-visible="book,chapter,dissertation">
                         <label for="isbn">ISBN</label>
@@ -873,38 +877,35 @@ function val($index, $default = '')
 
                 <div class="" data-visible="review,editorial,grant-rev,thesis-rev">
 
-                    <div class="form-row row-eq-spacing-sm">
-                        <div class="col-sm-3">
+                    <select class="form-control hidden" id="role-input" name="values[role]" required autocomplete="off" onchange="togglePubType(this.value)">
+                        <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
+                        <option value="review" <?= strtolower(val('role')) == 'review' ? 'selected' : '' ?>>Reviewer</option>
+                        <option value="editorial" <?= strtolower(val('role')) == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
+                        <option value="thesis-rev" <?= strtolower(val('role')) == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
+                        <option value="grant-rev" <?= strtolower(val('role')) == 'grant-rev' ? 'selected' : '' ?>><?= lang('Other review', 'Sonstiges Review') ?></option>
+                    </select>
+                    <div class="form-row row-eq-spacing-sm" data-visible="grant-rev,thesis-rev">
+                        <!-- <div class="col-sm-3">
                             <label class="required" for="role-input">
                                 <?= lang('Role', 'Rolle') ?>
                             </label>
-                            <select class="form-control" id="role-input" name="values[role]" required autocomplete="off" onchange="togglePubType(this.value)">
-                                <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option>
-                                <option value="review" <?= strtolower(val('role')) == 'review' ? 'selected' : '' ?>>Reviewer</option>
-                                <option value="editorial" <?= strtolower(val('role')) == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
-                                <option value="thesis-rev" <?= strtolower(val('role')) == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
-                                <option value="grant-rev" <?= strtolower(val('role')) == 'grant-rev' ? 'selected' : '' ?>><?=lang('Other review', 'Sonstiges Review')?></option>
-                            </select>
 
-                        </div>
-                        <div class="col-sm" data-visible="review,editorial">
+                        </div> -->
+                        <!-- <div class="col-sm" data-visible="review,editorial">
                             <label class="required element-title" for="journal-input">
                                 <?= lang('Journal') ?>
                             </label>
                             <div class="input-group">
                                 <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal-input" list="journal-list" required readonly>
-                                <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
                                 <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Edit Journal', 'Bearbeite Journal') ?>">
                                     <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
                                 </div>
                             </div>
-                            <!-- <input type="text" class="form-control" placeholder="Journal" id="journal-input" value="<?= val('journal') ?>" name="values[journal]" list="journal-list" required> -->
                         </div>
                         <div class="col-sm" data-visible="review,editorial">
                             <label for="journal_rev_id" class="required">Journal ID</label>
                             <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_rev_id" required readonly>
-                            <!-- <i class="fas fa-arrow-rotate-left" onclick="resetInput(this)"></i> -->
-                        </div>
+                        </div> -->
 
                         <div class="col-sm" data-visible="grant-rev,thesis-rev">
                             <label class="required element-title" for="title-input">
@@ -912,7 +913,7 @@ function val($index, $default = '')
                             </label>
                             <input type="text" class="form-control" id="title-input" value="<?= val('title') ?>" name="values[title]" required>
                         </div>
-                        
+
                         <div class="col-sm" data-visible="grant-rev">
                             <label class="element-cat" for="review-type">
                                 <?= lang('Type of review', 'Art des Review') ?>
@@ -963,25 +964,28 @@ function val($index, $default = '')
                                 </label>
                                 <input type="date" class="form-control" name="values[end]" id="end" value="<?= valueFromDateArray(val('end')) ?>">
                             </div>
+                        </div>
+
+                        <div class="form-row row-eq-spacing-sm">
                             <div class="col-sm">
                                 <label for="editor_type" class="element-cat">
                                     <?= lang('Details', 'Details') ?>
                                 </label>
                                 <input type="text" class="form-control" name="values[editor_type]" id="editor_type" value="<?= val('editor_type') ?>" placeholder="Guest Editor for Research Topic 'XY'">
                             </div>
-                                    
-                        <div class="col-sm-3">
-                            <label class="required element-author" for="username">
-                                <?= lang('Scientist', 'Wissenschaftler:in') ?>
-                            </label>
-                            <select class="form-control" id="username" name="values[user]" required autocomplete="off">
-                                <?php
-                                $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
-                                foreach ($userlist as $j) { ?>
-                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
+
+                            <div class="col-sm-3">
+                                <label class="required element-author" for="username">
+                                    <?= lang('Scientist', 'Wissenschaftler:in') ?>
+                                </label>
+                                <select class="form-control" id="username" name="values[user]" required autocomplete="off">
+                                    <?php
+                                    $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+                                    foreach ($userlist as $j) { ?>
+                                        <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>

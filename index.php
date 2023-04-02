@@ -149,6 +149,7 @@ Route::post('/lom', function () {
 });
 
 
+
 Route::get('/achievements/?([a-z0-9]*)', function ($user) {
     if (empty($user)) $user = $_SESSION['username'];
 
@@ -1048,14 +1049,42 @@ include_once BASEPATH . "/mongo.php";
 
 include_once BASEPATH . "/export.php";
 
-// if (isset($_SESSION['username']) && $_SESSION['username'] == 'juk20') {
-//     include_once BASEPATH . "/test.php";
-// }
-
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/components/$path.php";
 });
+
+
+
+// Route::get('/calculate-if', function () {
+//     include_once BASEPATH . "/php/_config.php";
+//     include BASEPATH . "/header.php";
+    
+//     $counts_by_year = '[{"year":2023,"works_count":1069,"cited_by_count":303430},{"year":2022,"works_count":4101,"cited_by_count":1108272},{"year":2021,"works_count":3778,"cited_by_count":1174045},{"year":2020,"works_count":3715,"cited_by_count":1074783},{"year":2019,"works_count":4085,"cited_by_count":948818},{"year":2018,"works_count":4060,"cited_by_count":898835},{"year":2017,"works_count":3927,"cited_by_count":844962},{"year":2016,"works_count":4166,"cited_by_count":829285},{"year":2015,"works_count":4252,"cited_by_count":822252},{"year":2014,"works_count":4195,"cited_by_count":819429},{"year":2013,"works_count":4302,"cited_by_count":806661},{"year":2012,"works_count":4401,"cited_by_count":744492}]';
+//     $counts_by_year = json_decode($counts_by_year, true);
+
+//     dump($counts_by_year, true);
+
+//     $publications = [];
+//     $citations = [];
+//     $if = [];
+
+//     foreach ($counts_by_year as $y) {
+//         $publications[$y['year']] = $y['works_count'];
+//         $citations[$y['year']] = $y['cited_by_count'];
+//     }
+//     foreach ($citations as $year => $cite) {
+//         if (isset($publications[$year-1]) && isset($publications[$year-2])){
+//             // if = c[y] / (p[y-1] + p[y-2])
+//             $if[$year] = $cite / ($publications[$year-1] + $publications[$year-2]);
+//         }
+//     }
+
+//     dump($if, true);
+
+
+//     include BASEPATH . "/footer.php";
+// });
 
 
 // Add a 404 not found route
