@@ -7,7 +7,7 @@ if (!isset($Settings)) {
     $Settings = new Settings();
 }
 
-$dbname = "osiris";
+$dbname = $Settings->settings['database']['dbname'] ?? "osiris";
 
 $mongoDB = new MongoDB\Client(
     "mongodb://localhost:27017/$dbname?retryWrites=true&w=majority"

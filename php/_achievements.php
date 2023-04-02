@@ -18,7 +18,11 @@ class Achievement
     function __construct($osiris)
     {
         $this->osiris = $osiris;
-        $achievements = $this->osiris->achievements->find()->toArray();
+        // $achievements = $this->osiris->achievements->find()->toArray();
+
+        $json = file_get_contents(BASEPATH . "/achievements.json");
+        $achievements = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+        
         foreach ($achievements as $ac) {
             $this->achievements[$ac['id']] = $ac;
         }

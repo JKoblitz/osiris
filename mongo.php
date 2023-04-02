@@ -622,8 +622,8 @@ Route::post('/approve', function () {
         echo "Quarter was not defined";
         die();
     }
-    $q = $_POST['quarter']; //SELECTEDYEAR . "Q" . SELECTEDQUARTER;
-
+    $q = $_POST['quarter']; 
+    
     $updateResult = $osiris->users->updateOne(
         ['_id' => $id],
         ['$push' => ["approved" => $q]]
