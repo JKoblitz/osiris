@@ -9,6 +9,8 @@
 * source code.
 */
 
+require_once 'CONFIG.php';
+
 session_start();
 
 // implement newer functions in case they don't exist
@@ -31,14 +33,7 @@ if (!function_exists('str_ends_with')) {
     }
 }
 
-$sn = $_SERVER['SERVER_NAME'];
-// define root path dependent on the server name
-if ($sn == 'testserver' || $sn == 'localhost' || $sn == 'juk20-dev.dsmz.local') {
-    // subfolder in my test servers
-    define('ROOTPATH', '/osiris');
-} else {
-    define('ROOTPATH', '');
-}
+
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
 
 
