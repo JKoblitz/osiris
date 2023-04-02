@@ -146,10 +146,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#31.01.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#02.04.23" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-01-31 10:00') ?>)
+                (<?= time_elapsed_string('2023-04-02 19:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->

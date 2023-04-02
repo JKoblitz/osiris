@@ -342,7 +342,7 @@ function getJournal(name) {
                 })
             });
             if (journals.length === 0) {
-                SUGGEST.append('<tr><td colspan="3">' + lang('Journal not found in OSIRIS. Starting search in NLM catalogue ...', 'Journal nicht in OSIRIS gefunden. Starte Suche im NLM-Katalog ...') + '</tr></td>')
+                SUGGEST.append('<tr><td colspan="3">' + lang('Journal not found in OSIRIS. Starting search in OpenAlex ...', 'Journal nicht in OSIRIS gefunden. Starte Suche im OpenAlex-Katalog ...') + '</tr></td>')
                 getJournalAlex(name)
                 window.location.replace('#journal-select')
             } else {
