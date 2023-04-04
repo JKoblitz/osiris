@@ -33,7 +33,7 @@ $user_activity = isUserActivity($doc, $user);
 
 <style>
     .key {
-        min-width: 10rem;
+        max-width: 16rem;
         text-align: left;
     }
 
@@ -231,47 +231,67 @@ $user_activity = isUserActivity($doc, $user);
 
                 <table class="w-full" id="detail-table">
 
-                    <?php if (isset($doc['journal'])) : ?>
+
+
+
+                    <?php if ($doc['type'] == 'teaching' && isset($doc['module_id'])) :
+                        $module = getConnected('teaching', $doc['module_id']);
+                    ?>
+                        <tr>
+                            <th class="key"><?= lang('Module', 'Modul') ?>:</th>
+                            <td>
+                                <a class="module" href="<?= ROOTPATH ?>/activities/teaching#<?= $doc['module_id'] ?>">
+
+                                    <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
+                                    <span class="text-muted"><?= $module['affiliation'] ?></span>
+
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
+
+
+                    <?php if (isset($doc['journal_id'])) :
+                        $journal = getConnected('journal', $doc['journal_id']);
+                    ?>
+
+                        <tr>
+                            <th class="key"><?= lang('Journal') ?>:</th>
+                            <td>
+                                <a class="module" href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
+
+                                    <h5 class="m-0"><?= $journal['journal'] ?></h5>
+                                    <span class="float-right text-muted"><?= $journal['publisher'] ?></span>
+                                    <span class="text-muted">ISSN: <?= print_list($journal['issn']) ?></span>
+
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php elseif (isset($doc['journal'])) : ?>
                         <tr>
                             <th class="key">Journal:</th>
                             <td>
                                 <em>
-                                    <?php if (isset($doc['journal_id'])) { ?>
-                                        <a href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
-                                            <?= $doc['journal'] ?>
-                                        </a>
-                                    <?php } else { ?>
-                                        <a href="<?= ROOTPATH ?>/journal/browse?q=<?= $doc['journal'] ?>">
-                                            <?= $doc['journal'] ?>
-                                        </a>
+                                    <a href="<?= ROOTPATH ?>/journal/browse?q=<?= $doc['journal'] ?>">
+                                        <?= $doc['journal'] ?>
+                                    </a>
 
-                                        <?php if ($user_activity) { ?>
-                                            <small class="text-danger d-block">
-                                                <i class="fas fa-exclamation-triangle"></i>
-                                                <?= lang(
-                                                    'Journal is not standardized. Please edit activity and update.',
-                                                    'Journal ist nicht standardisiert. Bitte Aktivität bearbeiten und korrigieren.'
-                                                ) ?>
-                                            </small>
-                                        <?php } ?>
+                                    <?php if ($user_activity) { ?>
+                                        <small class="text-danger d-block">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <?= lang(
+                                                'Journal is not standardized. Please edit activity and update.',
+                                                'Journal ist nicht standardisiert. Bitte Aktivität bearbeiten und korrigieren.'
+                                            ) ?>
+                                        </small>
                                     <?php } ?>
                                 </em>
-                                <span class="text-muted">
-                                    <?php
-                                    $issn = "";
-                                    if (!empty($doc['issn'] ?? null)) {
-                                        $issn = $doc['issn'];
-                                        try {
-                                            $issn = $issn->bsonSerialize();
-                                        } catch (\Throwable $th) {
-                                        }
-                                        if (is_array($issn)) $issn = implode(', ', $issn);
-                                        echo " (ISSN: $issn)";
-                                    } ?>
-                                </span>
                             </td>
                         </tr>
                     <?php endif; ?>
+
                     <?php if (isset($doc['magazine'])) : ?>
                         <tr>
                             <th class="key"><?= lang('Magazine', 'Magazin') ?>:</th>
@@ -448,9 +468,6 @@ $user_activity = isUserActivity($doc, $user);
 
 
 
-
-
-
                     <?php if ($doc['type'] == 'software') : ?>
                         <tr>
                             <th class="key">Software Type:</th>
@@ -468,22 +485,6 @@ $user_activity = isUserActivity($doc, $user);
                             <th class="key">Version:</th>
                             <td>
                                 <?= $doc['version'] ?? '' ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-                    <?php if ($doc['type'] == 'teaching') : ?>
-                        <tr>
-                            <th class="key">Einrichtung:</th>
-                            <td>
-                                <?= $doc['affiliation'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">SWS (Semesterwochenstunden):</th>
-                            <td>
-                                <?= $doc['sws'] ?? '' ?>
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -783,6 +784,9 @@ $user_activity = isUserActivity($doc, $user);
                             <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
                                 <th>Position</th>
                             <?php endif; ?>
+                            <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
+                                <th>SWS</th>
+                            <?php endif; ?>
                             <th>Username</th>
                         </tr>
                     </thead>
@@ -811,6 +815,11 @@ $user_activity = isUserActivity($doc, $user);
                                 <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
                                     <td>
                                         <?= $author['position'] ?? '' ?>
+                                    </td>
+                                <?php endif; ?>
+                                <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
+                                    <td>
+                                        <?= $author['sws'] ?? 0 ?>
                                     </td>
                                 <?php endif; ?>
                                 <td>

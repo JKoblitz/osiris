@@ -13,12 +13,12 @@ function commalist($array, $sep = "and")
 function abbreviateAuthor($last, $first, $reverse = true)
 {
     $fn = " ";
-    foreach (preg_split("/(\s| |-|\.)/u", ($first)) as $name) {
+    if ($first): foreach (preg_split("/(\s| |-|\.)/u", ($first)) as $name) {
         if (empty($name)) continue;
         // echo "<!--";
         // echo "-->";
         $fn .= "" . mb_substr($name, 0, 1) . ".";
-    }
+    } endif;
     if (empty(trim($fn))) return $last;
     if ($reverse) return $last . "," . $fn;
     return $fn . " " . $last;
@@ -550,9 +550,9 @@ class Format
                     $authors[] = "...";
                 continue;
             }
-            
+
             $author = abbreviateAuthor($a['last'], $a['first']);
-            
+
             if ($this->highlight === true) {
                 if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
             } else if ($this->highlight && $a['user'] == $this->highlight) {
@@ -661,13 +661,43 @@ class Format
     function format_teaching($doc)
     {
         $result = $this->formatAuthors($doc['authors']);
-        if (!empty($doc['title'])) {
 
-            $this->title = $doc['title'];
-            $result .= " <i>$this->title</i>";
-        }
-        if (!empty($doc['affiliation'])) {
-            $this->subtitle .= $doc["affiliation"];
+        if (isset($doc['module_id'])) {
+            // $module_id = new MongoDB\BSON\ObjectId($doc['module_id']);
+            // $module = $this->db->journal->findOne(['_id' => $doc]);
+            $module = getConnected('teaching', $doc['module_id']);
+
+            switch ($doc['category']) {
+                case "lecture":
+                    $this->title .= lang('Lecture', 'Vorlesung');
+                    break;
+                case "practical":
+                    $this->title .= lang('Practical course', 'Praktikum');
+                    break;
+                case "practical-lecture":
+                    $this->title .= lang('Lecture and practical course', 'Vorlesung und Praktikum');
+                    break;
+                case "seminar":
+                    $this->title .= lang('Seminar');
+                    break;
+                case "other":
+                default:
+                    $this->title .= lang('Other course', 'Sonstige Lehrveranstaltung');
+                    break;
+            }
+            $this->title .= lang(' for ', ' zu '). $module['module'] . ": <em>" . $module['title'] . "</em>";
+            $result .= $this->title;
+
+            $this->subtitle .= $module['affiliation'];
+        } else {
+            if (!empty($doc['title'])) {
+
+                $this->title = $doc['title'];
+                $result .= " <i>$this->title</i>";
+            }
+            if (!empty($doc['affiliation'])) {
+                $this->subtitle .= $doc["affiliation"];
+            }
         }
 
         $this->subtitle .= " (" . fromToDate($doc['start'], $doc['end'] ?? null) . ")";
@@ -961,8 +991,8 @@ class Format
                 }
                 break;
             case 'grant-rev':
-                if (isset($doc['review-type'])){
-                    $result .= $doc['review-type']. ": ";
+                if (isset($doc['review-type'])) {
+                    $result .= $doc['review-type'] . ": ";
                 } else {
                     $result .= lang("Reviewer of Grant Proposals: ", 'Begutachtung eines Forschungsantrages:');
                 }

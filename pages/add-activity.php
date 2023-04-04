@@ -24,8 +24,9 @@ $preset = $form['authors'] ?? array(
 
 $first = 1;
 $last = 1;
-if (!empty($form) && $form['type'] == 'publication' && !empty($form['authors'])) {
-    if (!is_array($form['authors'])) {
+$authorcount = 0;
+if (!empty($form) && !empty($form['authors'])) {
+    if ($form['authors'] instanceof MongoDB\Model\BSONArray) {
         $form['authors'] = $form['authors']->bsonSerialize();
     }
     if (is_array($form['authors'])) {
@@ -33,6 +34,7 @@ if (!empty($form) && $form['type'] == 'publication' && !empty($form['authors']))
         $first = $pos['first'] ?? 1;
         $last = $pos['last'] ?? 1;
     }
+    $authorcount = count($form['authors']);
 }
 
 $authors = "";
@@ -141,6 +143,117 @@ function val($index, $default = '')
 
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="teaching-select" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+
+            <label for="teaching-search"><?= lang('Search Modules by name or module number', 'Suche Module nach Name oder Modulnummer') ?></label>
+            <div class="input-group">
+                <input type="text" class="form-control" onchange="getTeaching(this.value)" list="teaching-list" id="teaching-search" value="<?= $form['module'] ?? '' ?>">
+                <div class="input-group-append">
+                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <table class="table table-simple">
+                <tbody id="teaching-suggest">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="sws-calc" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+
+            <h3 class="title"><?= lang('SWS Calculator', 'SWS-Rechner') ?></h3>
+
+
+            <div class="form-row row-eq-spacing-sm position-relative">
+                <div class="col">
+                    <div class="pr-20">
+                        <label for="per-semester"><?= lang('Hours in the whole semester', 'Anzahl Stunden im Semester') ?> (á 45 min)</label>
+                        <input type="number" name="per-semester" class="form-control" id="sws-semester">
+                    </div>
+                </div>
+                <div class="text-divider">OR</div>
+                <div class="col">
+                    <div class="pl-20">
+                        <label for="per-week"><?= lang('Hours per week', 'Anzahl Stunden pro Woche') ?> (á 45 min)</label>
+                        <input type="number" name="per-week" class="form-control" id="sws-week">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row row-eq-spacing-sm">
+                <div class="col-sm">
+                    <label for="supervisors"><?= lang('Count of supervisors', 'Anzahl der Betreuungspersonen in dieser Zeit') ?></label>
+                    <input type="number" class="form-control" id="sws-supervisors" name="supervisors">
+                </div>
+                <div class="col-sm">
+                    <label for=""></label>
+                    <div class="custom-switch">
+                        <input type="checkbox" id="sws-practical" value="1">
+                        <label for="sws-practical"><?= lang('Is practical course', 'Ist ein Praktikum') ?></label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-osiris" type="button" onclick="calcSWS()"><?= lang('Calculate', 'Berechnen') ?></button>
+
+            
+
+            <div id="" class="font-size-16 mt-20">
+                Result: <span class="highlight-text" id="sws-result"></span>
+                
+            <a href="https://humboldt-reloaded.uni-hohenheim.de/sws-beispielrechnung" target="_blank" rel="noopener noreferrer" class="link link-external float-right"><?=lang('Read more', 'Lies mehr')?></a>
+
+            </div>
+
+            <script>
+                function calcSWS(){
+                    const per_semester = $('#sws-semester').val()
+                    const per_week = $('#sws-week').val()
+                    const supervisors = $('#sws-supervisors').val()
+                    const practical = $('#sws-practical').prop('checked')
+
+                    var val = 'Error: missing fields'
+
+                    if (per_semester > 0){
+                        val = (parseFloat(per_semester)/14)
+                    } else if (per_week > 0){
+                        val = parseFloat(per_week)
+                    } else {
+                        $('#sws-result').html(val)
+                        return
+                    }
+
+                    if (supervisors > 1){
+                        val/= parseInt(supervisors)
+                    }
+
+                    if (practical){
+                        val *= 0.3
+                    }
+
+                    $('#sws-result').html(val.toFixed(1) + " SWS")
+
+                }
+            </script>
+
         </div>
     </div>
 </div>
@@ -450,7 +563,7 @@ function val($index, $default = '')
                 </div>
 
 
-                <div class="form-group lang-<?= lang('en', 'de') ?>" data-visible="article,preprint,magazine,book,chapter,lecture,poster,dissertation,others,misc-once,misc-annual,students,guests,teaching,software">
+                <div class="form-group lang-<?= lang('en', 'de') ?>" data-visible="article,preprint,magazine,book,chapter,lecture,poster,dissertation,others,misc-once,misc-annual,students,guests,software">
                     <label for="title" class="required element-title">
                         <span data-visible="article,preprint,magazine,book,chapter,dissertation,others,lecture,poster,software"><?= lang('Title', 'Titel') ?></span>
                         <span data-visible="misc-once,misc-annual,students,guests,teaching"><?= lang('Topic / Title / Description', 'Thema / Titel / Beschreibung') ?></span>
@@ -461,9 +574,143 @@ function val($index, $default = '')
                 </div>
 
 
-                <div class="form-group" data-visible="article,preprint,magazine,book,chapter,dissertation,others,lecture,poster,misc-once,misc-annual,students,guests,teaching,software">
+                <div class="" data-visible="teaching">
+                    <!-- <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
+                        <i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                    </a> -->
+                    <label for="teaching" class="element-cat required">
+                        <?= lang('Course for the following module', 'Veranstaltung zu folgendem Modul') ?>
+                    </label>
+                    <a href="#teaching-select" id="teaching-field" class="module">
+                        <span class="float-right text-primary"><i class="fas fa-edit"></i></span>
+
+                        <div id="selected-teaching">
+                            <?php if (!empty($form) && $form['type'] == 'teaching' && isset($form['module_id'])) :
+                                $module = getConnected('teaching', $form['module_id']);
+                            ?>
+                                <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
+                                <span class="text-muted"><?= $module['affiliation'] ?></span>
+                            <?php else : ?>
+                                <span class="title"><?= lang('No module selected', 'Kein Modul ausgewählt') ?></span>
+
+                            <?php endif; ?>
+                        </div>
+
+                        <input type="hidden" class="form-control hidden" name="values[title]" value="<?= val('title') ?>" id="module-title" required readonly>
+                        <input type="hidden" class="form-control hidden" name="values[module]" value="<?= val('module') ?>" id="module" required readonly>
+                        <input type="hidden" class="form-control hidden" name="values[module_id]" value="<?= val('module_id') ?>" id="module_id" required readonly>
+                    </a>
+
+                    <div class="">
+                        <table class="table table-simple table-sm">
+                            <thead>
+                                <tr>
+                                    <th><?= lang('Supervisor', 'Betreuer_in') ?></th>
+                                    <th>
+                                        <?= lang('SWS', 'Anteil in SWS') ?> (Semesterwochenstunden)
+                                        <a href="#sws-calc" class="btn btn-link"><i class="fad fa-lg fa-calculator-simple"></i></a>
+                                </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($form)) { ?>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control" id="username" name="values[authors][]" required autocomplete="off">
+                                                <?php
+                                                $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+                                                foreach ($userlist as $j) { ?>
+                                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['displayname'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="0" required>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="fas fa-trash-alt text-danger"></i></button>
+                                        </td>
+                                    </tr>
+                                <?php } else foreach ($form['authors'] ?? [] as $author) { ?>
+
+                                    <tr>
+                                        <td>
+                                            <select class="form-control" id="username" name="values[authors][]" required autocomplete="off">
+                                                <?php
+                                                $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+                                                foreach ($userlist as $j) { ?>
+                                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == $author['user'] ? 'selected' : '' ?>><?= $j['displayname'] ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="<?= $author['sws'] ?? 0 ?>" required>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="fas fa-trash-alt text-danger"></i></button>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <button class="btn text-primary" type="button" onclick="addSupervisor(this)"><i class="fas fa-plus"></i></button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <script>
+                            function removeRow(el) {
+                                // check if row is the only one left
+                                if ($(el).closest('tbody').find('tr').length > 1) {
+                                    $(el).closest('tr').remove()
+                                } else {
+                                    toastError(lang('At least one supervisor is needed.', 'Mindestens ein Betreuer muss angegeben werden.'))
+                                }
+                            }
+
+                            function addSupervisor(btn) {
+                                // just copy one table row
+                                var table = $(btn).closest('table').find('tbody')
+                                var el = table.find('tr').first().clone()
+                                table.append(el)
+                            }
+                        </script>
+                    </div>
+
+                    <div class="form-row row-eq-spacing">
+                        <div class="col-sm">
+                            <label for="teaching-cat" class="required element-cat"><?= lang('Category', 'Kategorie') ?></label>
+                            <select name="values[category]" id="teaching-cat" class="form-control" required>
+                                <option value="lecture" <?= val('category') == 'lecture' ? 'selected' : '' ?>><?= lang('Lecture', 'Vorlesung') ?></option>
+                                <option value="practical" <?= val('category') == 'practical' ? 'selected' : '' ?>><?= lang('Practical course', 'Praktikum') ?></option>
+                                <option value="practical-lecture" <?= val('category') == 'practical-lecture' ? 'selected' : '' ?>><?= lang('Lecture and practical course', 'Vorlesung und Praktikum') ?></option>
+                                <option value="seminar" <?= val('category') == 'seminar' ? 'selected' : '' ?>><?= lang('Seminar') ?></option>
+                                <option value="other" <?= val('category') == 'other' ? 'selected' : '' ?>><?= lang('Other', 'Sonstiges') ?></option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm">
+                            <label for="teaching-cat" class=""><?= lang('Fast select time', 'Schnellwahl Zeit') ?></label>
+
+                            <div class="btn-group d-flex">
+                                <button class="btn" type="button" onclick="selectSemester('SS', '<?= CURRENTYEAR - 1 ?>')">SS <?= CURRENTYEAR - 1 ?></button>
+                                <button class="btn" type="button" onclick="selectSemester('WS', '<?= CURRENTYEAR - 1 ?>')">WS <?= CURRENTYEAR - 1 ?></button>
+                                <button class="btn" type="button" onclick="selectSemester('SS', '<?= CURRENTYEAR ?>')">SS <?= CURRENTYEAR ?></button>
+                                <button class="btn" type="button" onclick="selectSemester('WS', '<?= CURRENTYEAR ?>')">WS <?= CURRENTYEAR ?></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group" data-visible="article,preprint,magazine,book,chapter,dissertation,others,lecture,poster,misc-once,misc-annual,students,guests,software">
                     <label for="author" class="element-author">
-                        <span data-visible="students,guests,teaching"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
+                        <span data-visible="students,guests"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
                         <span data-visible="article,preprint,magazine,book,dissertation,others,chapter,lecture,poster,misc-once,misc-annual,software"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
                         <a class="" href="#author-help"><i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
@@ -510,7 +757,7 @@ function val($index, $default = '')
                 </div>
 
 
-                <div class="form-row row-eq-spacing" data-visible="students,guests,teaching">
+                <div class="form-row row-eq-spacing" data-visible="students,guests">
                     <div class="col" data-visible="students,guests">
                         <label for="guest-name" class="required element-other">
                             <?= lang('Name of the', 'Name des') ?>
@@ -527,10 +774,6 @@ function val($index, $default = '')
                     <div class="col-sm-2" data-visible="students,guests">
                         <label for="guest-academic_title"><?= lang('Academ. title', 'Akadem. Titel') ?></label>
                         <input type="text" class="form-control" name="values[academic_title]" id="guest-academic_title" value="<?= val('academic_title') ?>">
-                    </div>
-                    <div class="col-sm-5" data-visible="teaching">
-                        <label for="teaching-sws" class="required"><?= lang('SWS (Semesterwochenstunden)') ?></label>
-                        <input type="number" step="0.1" class="form-control" name="values[sws]" id="teaching-sws" value="<?= val('sws') ?>" required>
                     </div>
                 </div>
 
@@ -689,60 +932,28 @@ function val($index, $default = '')
                         Journal
 
                     </label>
-                    <a href="#journal-select" id="journal-field" class="alert mb-20 d-block">
+                    <a href="#journal-select" id="journal-field" class="module">
                         <!-- <a class="btn btn-link" ><i class="fas fa-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
                         <span class="float-right text-primary"><i class="fas fa-edit"></i></span>
 
                         <div id="selected-journal">
-                            <span class="title"><?= lang('No Journal selected', 'Kein Journal ausgewählt') ?></span>
+                            <?php if (!empty($form) && isset($form['journal_id'])) :
+                                $journal = getConnected('journal', $form['journal_id']);
+                            ?>
+                                <h5 class="m-0"><?= $journal['journal'] ?></h5>
+                                <span class="float-right text-muted"><?= $journal['publisher'] ?></span>
+                                <span class="text-muted">ISSN: <?= print_list($journal['issn']) ?></span>
+                            <?php else : ?>
+                                <span class="title"><?= lang('No Journal selected', 'Kein Journal ausgewählt') ?></span>
+                            <?php endif; ?>
                         </div>
 
                         <input type="hidden" class="form-control hidden" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required readonly>
                         <input type="hidden" class="form-control hidden" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_id" required readonly>
 
-
                     </a>
                 </div>
-                <!-- 
-                <div class="form-row row-eq-spacing" data-visible="article,preprint,review,editorial">
-                    <div class="col-sm">
-                        <label for="journal" class="element-cat required">
-                            Journal
-                            <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank">
-                                <i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
-                            </a>
-                        </label>
-                        <div class="input-group">
-                            <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal" list="journal-list" required readonly>
-                            <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Edit Journal', 'Bearbeite Journal') ?>">
-                                <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
-                            </div>
-                        </div>
 
-                    </div>
-
-                    <div class="col-sm">
-                        <label for="journal_id" class="required">Journal ID</label>
-                        <input type="text" class="form-control disabled" name="values[journal_id]" value="<?= val('journal_id') ?>" id="journal_id" required readonly>
-                    </div>
-
-                    <div class="col-sm">
-                        <label for="issn" class="element-cat">ISSN (<?= lang('space-seperated', 'getrennt durch Leerzeichen') ?></label>
-                        <?php
-                        $issn = "";
-                        if (isset($form['issn'])) {
-                            $issn = $form['issn'];
-                            try {
-                                $issn = $issn->bsonSerialize();
-                            } catch (\Throwable $th) {
-                            }
-                            if (is_array($issn)) $issn = implode(' ', $issn);
-                        }
-                        ?>
-
-                        <input type="text" class="form-control disabled" name="values[issn]" value="<?= $issn ?>" id="issn" readonly>
-                    </div>
-                </div> -->
 
                 <div class="form-row row-eq-spacing" data-visible="magazine">
                     <div class="col-sm">
@@ -1009,7 +1220,7 @@ function val($index, $default = '')
                                                                                                                 } ?></textarea>
                     </div>
                 <?php } ?>
-                <?php if (!$copy && !empty($form)) { ?>
+                <?php if (!$copy && !empty($form) && $authorcount > 1) { ?>
                     <div class="alert alert-signal p-10 mb-10">
                         <div class="title">
                             <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>
@@ -1110,5 +1321,12 @@ function val($index, $default = '')
         togglePubType('<?= $_GET['type'] ?>');
     </script>
 <?php } ?>
+<?php if (isset($_GET['teaching'])) { ?>
+    <script>
+        togglePubType('teaching');
+        getTeaching('<?= $_GET['teaching'] ?>');
+    </script>
+<?php } ?>
+
 
 <script src="<?= ROOTPATH ?>/js/tour/add-activity.js"></script>

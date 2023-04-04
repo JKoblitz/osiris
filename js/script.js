@@ -359,7 +359,7 @@ function getJournal(name) {
 
                     var data = $('<td>')
                     data.append(`<h5 class="m-0">${j.journal}</h5>`)
-                    data.append(`<span class="float-right">${j.publisher}</span>`)
+                    data.append(`<span class="float-right text-muted">${j.publisher}</span>`)
                     data.append(`<span class="text-muted">ISSN: ${j.issn.join(', ')}</span>`)
                     row.append(data)
 
@@ -374,7 +374,7 @@ function getJournal(name) {
             }
             var row = $('<tr>')
             var button = $('<button class="btn">')
-            button.html(lang('Search in NLM Catalog', 'Suche im NLM-Katalog'))
+            button.html(lang('Search in OpenAlex Catalog', 'Suche im OpenAlex-Katalog'))
             button.on('click', function () {
                 getJournalAlex(name)
             })
@@ -450,7 +450,7 @@ function getJournalAlex(name) {
     //1664-462X
     var url = 'https://api.openalex.org/sources'
     const SUGGEST = $('#journal-suggest')
-    var data = {mailto:'juk20@dsmz.de'}
+    var data = { mailto: 'juk20@dsmz.de' }
     if (name.match(/\d{4}-?\d{3}[xX\d]/)) {
         // issn search
         url += '/issn:' + name
@@ -468,7 +468,7 @@ function getJournalAlex(name) {
             console.log(result);
             var journals = [];
 
-            if (result.results !== undefined){
+            if (result.results !== undefined) {
                 // name search result (many entries)
                 result.results.forEach(j => {
                     journals.push({
@@ -481,7 +481,7 @@ function getJournalAlex(name) {
                         oa: j.is_oa
                     })
                 });
-            } else if (result.display_name !== undefined){
+            } else if (result.display_name !== undefined) {
                 // issn search result (only one entry)
                 j = result
                 journals.push({
@@ -1179,51 +1179,6 @@ function removeAuthor(event, el) {
     affiliationCheck();
 }
 
-// function addRow2db(el) {
-//     var tr = $(el).closest('tr');
-//     //init data string
-//     var data = {};
-//     var correct = true
-//     // for each input in the TR
-//     tr.find(':input').each(function () {
-//         //retrieve field name and value from the DOM
-//         var input = $(this)
-//         var field = input.attr('name');
-//         if (input.attr('type') == 'checkbox') {
-//             if (input.prop('checked')) {
-//                 data[field] = 1;
-//             }
-//         } else {
-//             if (input.prop('required') && !$(this).val()) {
-//                 // toastError(lang('The field ' + field + ' is required.', 'Das Feld ' + field + ' wird benötigt.'))
-//                 input.addClass('is-invalid');
-//                 correct = false;
-//             }
-//             data[field] = input.val();
-//         }
-//     });
-//     console.log("addRow2db", data);
-//     if (correct && data.type !== undefined) {
-//         $.ajax({
-//             type: "POST",
-//             data: data,
-//             dataType: "html",
-//             url: ROOTPATH + '/ajax/' + data.type + '.php',
-//             success: function (response) {
-//                 if (response.startsWith('Error')) {
-//                     toastError(response)
-//                 } else {
-//                     // toastSuccess()
-//                     tr.before(response)
-//                 }
-//             },
-//             error: function (response) {
-//                 toastError(response.responseText)
-//                 $('.loader').removeClass('show')
-//             }
-//         })
-//     }
-// }
 
 function activeButtons(type) {
     $('.select-btns').find('.btn').removeClass('active')
@@ -1525,3 +1480,104 @@ function addToCart(el, id) {//.addClass('animate__flip')
     //     // animate__headShake
     // }, 1000)
 }
+
+
+function getTeaching(name) {
+    console.log(name);
+    const SUGGEST = $('#teaching-suggest')
+    SUGGEST.empty()
+    var url = ROOTPATH + '/api/teaching'
+    var data = {
+        search: name,
+        limit: 10
+    }
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+
+        url: url,
+        success: function (response) {
+            var teaching = [];
+            response.data.forEach(j => {
+
+                teaching.push({
+                    title: j.title,
+                    affiliation: j.affiliation,
+                    contact_person: j.contact_person,
+                    module: j.module,
+                    id: j._id['$oid']
+                })
+            });
+            if (teaching.length === 0) {
+                SUGGEST.append('<tr><td colspan="3">' + lang('Module not found in OSIRIS.', 'Modul nicht in OSIRIS gefunden.') + '</tr></td>')
+                SUGGEST.append('<tr><td colspan="3"><a href="' + ROOTPATH + '/activities/teaching#add-teaching" class="btn btn-osiris">' + lang('Add new module', 'Neues Modul anlegen') + '</a></tr></td>')
+                window.location.replace('#teaching-select')
+            } else {
+                teaching.forEach((j) => {
+                    console.log(j);
+                    var row = $('<tr>')
+
+                    var button = $('<button class="btn" title="select">')
+                    button.html('<i class="fas fa-lg fa-check text-success"></i>')
+                    button.on('click', function () {
+                        selectTeaching(j);
+                    })
+                    row.append($('<td class="w-50">').append(button))
+
+                    var data = $('<td>')
+                    data.append(`<h5 class="m-0"><span class="highlight-text" >${j.module}</span> ${j.title}</h5>`)
+                    data.append(`<span class="float-right">${j.contact_person}</span>`)
+                    data.append(`<span class="text-muted">${j.affiliation}</span>`)
+                    row.append(data)
+
+                    SUGGEST.append(row)
+                })
+                if (teaching.length === 1) {
+                    selectTeaching(teaching[0])
+                    toastSuccess(lang('Module <code class="code">' + teaching[0].title + '</code> selected.', 'Modul <code class="code">' + teaching[0].title + '</code> ausgewählt.'), lang('Module found', 'Modul gefunden'))
+                } else {
+                    window.location.replace('#teaching-select')
+                }
+            }
+
+
+            console.log(teaching);
+        },
+        error: function (response) {
+            toastError(response.responseText)
+            $('.loader').removeClass('show')
+        }
+    })
+}
+
+
+function selectTeaching(j) {
+
+    console.log(j);
+    var field = $('#selected-teaching')
+    field.empty()
+    field.append(`<h5 class="m-0"><span class="highlight-text" >${j.module}</span> ${j.title}</h5>`)
+    // field.append(`<span class="float-right">${j.contact_person}</span>`)
+    field.append(`<span class="text-muted">${j.affiliation}</span>`)
+
+    $('#module_id').val(j.id['$oid'] ?? j.id)
+    $('#module').val(j.module)
+    $('#module-title').val(j.title)
+
+    window.location.replace('#')
+}
+
+
+function selectSemester(sem, year){
+    year = parseInt(year)
+    var start = year + '-'
+    start += (sem == 'WS' ? '10-01' : '04-01')
+    $('#date_start').val(start)
+
+    var end = (sem == 'WS' ? year+1 : year) + '-'
+    end += (sem == 'WS' ? '03-31' : '09-30')
+    $('#students_end').val(end)
+}
+
+

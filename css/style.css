@@ -728,7 +728,7 @@ label.element-other::before {
 }
 
 
-#journal-field {
+.module {
     position: relative;
     padding: 1rem 2rem;
     color: #464646;
@@ -739,17 +739,30 @@ label.element-other::before {
     display: block;
     /* transition: 0.5s ease transform; */
     box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
 }
 
-#journal-field:hover {
+.module .title {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+a.module:hover {
     box-shadow: 0 0.3rem 0 rgba(0, 0, 0, 0.05);
     /* transform: translateY(-0.3rem); */
     color: var(--primary-color);
+    text-decoration: none;
 }
 
-#journal-field.is-valid {
+.module.is-valid {
     border-color: var(--success-color);
     -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
     -webkit-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
     box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
+  }
+
+  .highlight-text {
+    background: var(--color-warm-orange);
+    color: white;
+    padding: 0 .5rem;
   }

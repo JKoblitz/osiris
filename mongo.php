@@ -24,15 +24,22 @@ function validateValues($values)
             $i = 0;
             foreach ($value as $author) {
                 $author = explode(';', $author, 3);
-                $user = getUserFromName($author[0], $author[1]);
+                if (count($author) == 1){
+                    $user = $author[0];
+                    $temp = getUserFromId($user);
+                    $author = [$temp['last'], $temp['first'], true];
+                } else {
+                    $user = getUserFromName($author[0], $author[1]);
+                }
+                $vals = [
+                    'last' => $author[0],
+                    'first' => $author[1],
+                    'aoi' => $author[2],
+                    'user' => $user,
+                    'approved' => $user == $_SESSION['username']
+                ];
                 if ($key == "editors") {
-                    $values[$key][] = [
-                        'last' => $author[0],
-                        'first' => $author[1],
-                        'aoi' => $author[2],
-                        'user' => $user,
-                        'approved' => $user == $_SESSION['username']
-                    ];
+                    $values[$key][] = $vals;
                 } else {
                     if ($i < $first) {
                         $pos = 'first';
@@ -41,17 +48,16 @@ function validateValues($values)
                     } else {
                         $pos = 'middle';
                     }
-                    $values[$key][] = [
-                        'last' => $author[0],
-                        'first' => $author[1],
-                        'aoi' => $author[2],
-                        'position' => $pos,
-                        'user' => $user,
-                        'approved' => $user == $_SESSION['username']
-                    ];
+                    $vals['position'] = $pos;
+                    $values[$key][] = $vals;
                 }
                 $i++;
             }
+        } else if ($key == 'sws') {
+            foreach ($value as $i => $v) {
+               $values['authors'][$i]['sws'] = $v;
+            }
+            unset($values['sws']);
         } else if ($key == 'user') {
             $user = getUserFromId($value);
             $values["authors"] = [
@@ -238,6 +244,53 @@ Route::post('/create', function () {
     ]);
 });
 
+Route::post('/create-teaching', function () {
+    include_once BASEPATH . "/php/_db.php";
+    if (!isset($_POST['values'])) {
+        echo "no values given";
+        die;
+    }
+    $collection = $osiris->teaching;
+
+    $values = validateValues($_POST['values']);
+    // add information on creating process
+    $values['created'] = date('Y-m-d');
+    $values['created_by'] = strtolower($_SESSION['username']);
+
+    
+    // check if module already exists:
+    if (isset($values['module']) && !empty($values['module'])) {
+        $module_exist = $collection->findOne(['module' => $values['module']]);
+        if (!empty($module_exist)) {
+            echo json_encode([
+                'msg' => "module already existed",
+                'id' => $module_exist['_id'],
+                'journal' => $module_exist['journal'],
+                'module' => $module_exist['module'],
+            ]);
+            die;
+        }
+    } else {
+        echo json_encode([
+            'msg' => "Module must be given"
+        ]);
+        die;
+    }
+
+    $insertOneResult  = $collection->insertOne($values);
+    $id = $insertOneResult->getInsertedId();
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        $red = str_replace("*", $id, $_POST['redirect']);
+        header("Location: " . $red . "?msg=success");
+        die();
+    }
+
+    echo json_encode([
+        'inserted' => $insertOneResult->getInsertedCount(),
+        'id' => $id,
+    ]);
+});
 
 Route::post('/create-journal', function () {
     include_once BASEPATH . "/php/_db.php";

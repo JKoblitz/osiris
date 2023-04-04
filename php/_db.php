@@ -40,6 +40,17 @@ function is_ObjectID($id)
     return false;
 }
 
+function getConnected($type, $id){
+    global $osiris;
+    $id = new MongoDB\BSON\ObjectId($id);
+    if ($type == 'journal'){
+        return $osiris->journals->findOne(['_id' => $id]);
+    }
+    if ($type == 'teaching'){
+        return $osiris->teaching->findOne(['_id' => $id]);
+    }
+}
+
 
 function cleanFields($id)
 {
@@ -55,7 +66,7 @@ function cleanFields($id)
         'others' => ['pubtype', 'year', 'month', 'day', 'doi', 'pubmed', 'doc_type'],
         'students' => ['category', 'details', 'end', 'status', 'academic_title', 'affiliation', 'name', 'start'],
         'guests' => ['category', 'details', 'end', 'name', 'affiliation', 'academic_title', 'start'],
-        'teaching' => ['sws', 'start', 'end', 'affiliation'],
+        'teaching' => ['sws', 'start', 'end', 'affiliation', 'module', 'module_id', 'category'],
         'lecture' => ['lecture_type', 'invited_lecture', 'start', 'conference', 'location', 'doi'],
         'poster' => ['start', 'end', 'conference', 'location', 'doi'],
         'misc-once' => ['start', 'end', 'iteration', 'doi', 'location'],

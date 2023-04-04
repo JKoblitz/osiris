@@ -338,6 +338,21 @@ Route::get('/api/journal', function () {
     echo return_rest($result, count($result));
 });
 
+
+Route::get('/api/teaching', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['search'])) {
+        $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
+        $filter = ['$or' =>  [
+            ['title' => ['$regex' => $j]],
+            ['module' => $_GET['search']]
+        ]];
+    }
+    $result = $osiris->teaching->find($filter)->toArray();
+    echo return_rest($result, count($result));
+});
+
 Route::get('/api/journals', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";

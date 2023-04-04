@@ -265,6 +265,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="far fa-institution" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
                     </a>
+                    <a href="<?= ROOTPATH ?>/activities/teaching" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/teaching') ?>">
+                        <i class="far fa-chalkboard" aria-hidden="true"></i>
+                        <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
+                    </a>
 
                     <?php if ($USER['is_scientist']) { ?>
 

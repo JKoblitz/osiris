@@ -290,6 +290,13 @@ function endOfCurrentQuarter($as_string = false)
     return new DateTime($q);
 }
 
+function print_list($list){
+    if ($list instanceof MongoDB\Model\BSONArray) {
+        $list = $list->bsonSerialize();
+    }
+    return implode(', ', $list);
+}
+
 function dump($element, $as_json = false)
 {
     echo '<pre class="code">';
