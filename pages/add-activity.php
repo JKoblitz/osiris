@@ -272,10 +272,13 @@ function val($index, $default = '')
             <?= lang('Interactive tour', 'Interactive Tour') ?>
         </button>
         <!-- Create new activity -->
-        <h2 class="">
+        <h2 class="mb-0">
             <i class="icon-activity-plus"></i>
             <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
         </h2>
+
+        <a href="<?=ROOTPATH?>/activities/pubmed-search" class="link mb-10 d-block"><?=lang('Search in Pubmed', 'Suche in Pubmed')?></a>
+
         <form method="get" onsubmit="getPubData(event, this)">
             <div class="form-group">
                 <label for="doi"><?= lang('Search by DOI or Pubmed-ID', 'Suche über die DOI oder Pubmed-ID') ?>:</label>
@@ -1326,6 +1329,29 @@ function val($index, $default = '')
         togglePubType('teaching');
         getTeaching('<?= $_GET['teaching'] ?>');
     </script>
+<?php } ?>
+
+
+<?php if (isset($_GET['doi'])){ ?>
+
+<script>
+    var doi = '<?=$_GET['doi']?>'
+    console.log(doi);
+
+    $('#search-doi').val(doi);
+    getDOI(doi);
+
+</script>
+
+<?php } else if (isset($_GET['pubmed'])){ ?>
+
+<script>
+var pubmed_id = '<?=$_GET['pubmed']?>'
+
+$('#search-doi').val(pubmed_id);
+getPubmed(pubmed_id);
+
+</script>
 <?php } ?>
 
 

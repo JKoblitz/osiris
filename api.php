@@ -417,6 +417,45 @@ Route::get('/api/google', function () {
 });
 
 
+Route::get('/api/levenshtein', function () {
+    include(BASEPATH . '/php/_db.php');
+    include(BASEPATH . '/php/Levenshtein.php');
+    $levenshtein = new Levenshtein($osiris);
+
+    $result = [];
+
+    $pubmed = $_GET['pubmed'];
+    $title = $_GET['title'];
+
+    // $test pubmed
+    $test = $osiris->activities->findOne(['pubmed'=>$pubmed]);
+    if (!empty($test)){
+        $result = [
+            'similarity' => 1., 
+            'id' => strval($test['_id']), 
+            'title' => $test['title']
+        ];
+    }
+
+    $l = $levenshtein->findDuplicate($title);
+    $id = $l[0];
+    $sim = round($l[2], 1);
+    if ($sim < 50) $sim = 0;
+    $result = [
+        'similarity' => $sim, 
+        'id' => $id, 
+        'title' => $levenshtein->found
+    ];
+        
+
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    
+
+    echo json_encode($result);
+});
+
 
 // Route::get('/api/wos-starter', function () {
 

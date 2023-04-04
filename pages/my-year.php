@@ -253,6 +253,7 @@ $showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? f
     </div>
 
 
+
     <style>
         .table tbody tr:target,
         .table tbody tr.target {
@@ -583,6 +584,12 @@ $showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? f
                         <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)['name'] ?>
                     </a>
                     <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="fas fa-plus"></i></a>
+                    <?php if ($col == 'publication') { ?>
+                        <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
+                            <i class="fas fa-search-plus mr-5"></i>
+                            <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
+                        </a>
+                    <?php } ?>
 
                 <?php } ?>
 

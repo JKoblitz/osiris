@@ -387,6 +387,19 @@ Route::get('/activities/teaching', function () {
 }, 'login');
 
 
+Route::get('/activities/pubmed-search', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Search in Pubmed", "Suche in Pubmed")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/search.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";

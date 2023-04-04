@@ -6,6 +6,7 @@ class Levenshtein
 
     public $docs = array();
     private $osiris = null;
+    public $found = '';
 
     function __construct($osiris)
     {
@@ -46,6 +47,7 @@ class Levenshtein
                 $id = $key;
                 $sim = $s_new;
                 $percent = $p;
+                $this->found = $value;
             }
             if ($percent == 100) break;
         }
