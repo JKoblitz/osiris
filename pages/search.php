@@ -1,4 +1,4 @@
-<div class="">
+<div class="content">
 <h2 class="mb-0">
             <i class="icon-activity-plus"></i>
             <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>

@@ -1,3 +1,8 @@
+<style>
+    code.code{
+font-size: 1.4rem;
+    }
+</style>
 
         <div class='container'>
             <h1>OSIRIS</h1>

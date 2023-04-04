@@ -1,9 +1,27 @@
-# Changelog
+# Neuigkeiten
 
-## 02.04.23 
+## 04.04.23
+
+`Version 1.1`
+
+**Umstrukturierung der Lehre**
+- Lehrveranstaltungen wurden umstrukturiert
+- Module sind jetzt standardisiert
+- Jedes Modul hat eine einzigartige Modulnummer, über die es leicht gefunden werden kann
+- Einem Modul können Lehrveranstaltungen (z.B. Praktika, Vorlesungen, Seminare) hinzugefügt werden
+- (Es ist geplant, später auch noch Gäste zu Lehrveranstaltungen hinzuzufügen)
+
+**Neue Pubmed-Suche**
+- Pubmed kann nun nach Autor(en), Titel, Jahr und Affiliation [durchsucht werden](activities/pubmed-search?authors=Koblitz&year=2023)
+- Mittels der Levenshtein-Distanz wird die Wahrscheinlichkeit berechnen, ob es sich um ein Duplikat handelt oder nicht (nur basierend auf dem Titel)
+- Die neue Suche kann z.B. bei Publikationen in [Mein Jahr](scientist) gefunden werden
+
+**Verbesserungen bei Journalen**
 - Das UI/UX-Design der Journale wurde verbessert
 - Es wird nun eine bessere API verwendet, um Journale abzufragen. [OpenAlex](https://docs.openalex.org/api-entities/venues) ist nicht nur deutlich schneller als NLM, es enthält auch mehr Journale und mehr Datenfelder. So muss OpenAccess jetzt nicht mehr zusätzlich abgefragt werden.
 
+**Sonstiges**
+- Bearbeitungsnotizen sind nur noch verfügbar, wenn mehr als ein Autor beteiligt ist
 
 ## 31.01.23
 
@@ -33,6 +51,9 @@
 - Es wurde ein Bug gefixt, durch den beim Filtern nach Vorträgen in allen Aktivitäten auch bestimmte Studierende gezeigt wurden
 
 ## 02.01.23
+
+`Version 1.0`
+
 Über die Feiertage habe ich noch ein paar Features hinzugefügt und (nicht aufgeführt) ein paar Bugs entfernt:
 
 **Download von Aktivitäten**

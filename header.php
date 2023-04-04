@@ -106,7 +106,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
                 <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
-                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v1.0</span>
+                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v1.1</span>
             </a>
 
             <a href="<?= $Settings->affiliation_details['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
@@ -146,10 +146,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#02.04.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#04.04.23" class="btn btn-osiris">
                 <i class="fas fa-stars"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-04-02 19:00') ?>)
+                (<?= time_elapsed_string('2023-04-04 16:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->
