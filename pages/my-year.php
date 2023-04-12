@@ -107,7 +107,15 @@ foreach ($cursor as $doc) {
 }
 
 // dump($timeline, true);
-$showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? false));
+// $showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? false));
+$showcoins = ($scientist['show_coins'] ?? 'no');
+if ($showcoins == 'all'){
+    $showcoins = true;
+} elseif($showcoins == 'myself' && $currentuser){
+    $showcoins = true;
+} else {
+    $showcoins = false;
+}
 ?>
 
 

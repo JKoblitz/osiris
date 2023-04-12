@@ -200,18 +200,22 @@ dump($data, true);
 
 
             <div class="mt-10">
-                <span><?= lang('Show coins', 'Zeige Coins') ?>:</span>
+                <span><?= lang('Coin visibility', 'Sichtbarkeit der Coins') ?>:</span>
                 <?php
-                $hide_coins = $data['hide_coins'] ?? true;
+                $show_coins = $data['show_coins'] ?? 'none';
                 ?>
 
                 <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[hide_coins]" id="hide_coins-false" value="false" <?= $hide_coins ? '' : 'checked' ?>>
-                    <label for="hide_coins-false"><?= lang('Yes', 'Ja') ?></label>
+                    <input type="radio" name="values[show_coins]" id="show_coins-true" value="none" <?= $show_coins == 'none' ? 'checked' : '' ?>>
+                    <label for="show_coins-true"><?= lang('For nobody', 'Für niemanden') ?></label>
                 </div>
                 <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[hide_coins]" id="hide_coins-true" value="true" <?= $hide_coins ? 'checked' : '' ?>>
-                    <label for="hide_coins-true"><?= lang('No', 'Nein') ?></label>
+                    <input type="radio" name="values[show_coins]" id="show_coins-myself" value="myself" <?= $show_coins == 'myself' ? 'checked' : '' ?>>
+                    <label for="show_coins-myself"><?= lang('For myself', 'Für mich') ?></label>
+                </div>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="values[show_coins]" id="show_coins-all" value="all" <?= $show_coins == 'all' ? 'checked' : '' ?>>
+                    <label for="show_coins-all"><?= lang('For all', 'Für jeden') ?></label>
                 </div>
             </div>
 
@@ -237,10 +241,10 @@ dump($data, true);
             <div class="title">
                 <?= lang('Transfer the maintenance of your profile to someone else:', 'Übertrage die Pflege deines Profils an jemand anderes:') ?>
             </div>
-            
+
             <div class="form-group form-inline mb-0">
                 <label for="maintenance">Username:</label>
-            
+
                 <input type="text" list="user-list" name="values[maintenance]" id="maintenance" class="form-control" value="<?= $data['maintenance'] ?? '' ?>">
             </div>
 

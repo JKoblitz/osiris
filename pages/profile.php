@@ -139,8 +139,15 @@ foreach ($cursor as $doc) {
 }
 
 
-$showcoins = (!($scientist['hide_coins'] ?? true));
-
+// $showcoins = (!($scientist['hide_coins'] ?? true));
+$showcoins = ($scientist['show_coins'] ?? 'no');
+if ($showcoins == 'all'){
+    $showcoins = true;
+} elseif($showcoins == 'myself' && $currentuser){
+    $showcoins = true;
+} else {
+    $showcoins = false;
+}
 ?>
 
 

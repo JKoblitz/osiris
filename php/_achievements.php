@@ -22,7 +22,7 @@ class Achievement
 
         $json = file_get_contents(BASEPATH . "/achievements.json");
         $achievements = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
-        
+
         foreach ($achievements as $ac) {
             $this->achievements[$ac['id']] = $ac;
         }
@@ -46,8 +46,17 @@ class Achievement
         $achieved = $this->userdata['achievements'] ?? [];
 
         // check if user disabled coins
-        $this->showcoins = !($this->userdata['hide_coins'] ?? true);
-        if (!$this->showcoins){
+        // $this->showcoins = !($this->userdata['hide_coins'] ?? true);
+
+        $showcoins = ($this->userdata['show_coins'] ?? 'no');
+        if ($showcoins == 'all') {
+            $this->showcoins = true;
+        } elseif ($showcoins == 'myself' && $this->self) {
+            $this->showcoins = true;
+        } else {
+            $this->showcoins = false;
+        }
+        if (!$this->showcoins) {
             // do not show coin-associated achievements if the user has disabled coins
             unset($this->achievements['coins']);
             unset($this->achievements['pub-coins']);
@@ -188,7 +197,7 @@ class Achievement
                             if (!isset($lom_years[$a['year']])) $lom_years[$a['year']] = 0;
                             $lom_years[$a['year']] += $a['coins'];
                         }
-                        
+
                         if (!empty($lom_years)) $value = max($lom_years);
                         break;
                     case 'pub-coins':
