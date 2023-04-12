@@ -67,9 +67,8 @@ foreach ($activities as $doc) {
         $dept = $users[$username];
 
         if (!empty($dept)) {
-            $deptindex = $departments[$dept]['index'];
-            // dump([$username, $deptindex]);
-            // $departments[$dept]['count']++;
+            $deptindex = $departments[$dept]['index'] ?? null;
+            if (!isset($flare[$deptindex])) continue;
             $userindex = array_search($username, array_column($flare[$deptindex]['children'], 'abbr'));
             if ($userindex === false) {
                 $flare[$deptindex]['children'][] = [
@@ -95,16 +94,6 @@ foreach ($activities as $doc) {
 </h1>
 
 <form action="" method="get" class="form-row">
-    <!-- <div class="input-group"> -->
-    <!-- <div class="col-sm">
-        <label for="dept-select"><?= lang('Department', 'Abteilung') ?></label>
-        <select name="dept" id="dept-select" class="form-control ">
-            <option value=""><?= lang('All departments', 'Alle Abteilungen') ?></option>
-            <?php foreach ($departments as $dept => $vals) { ?>
-                <option value="<?= $dept ?>" <?= $dept == $filter_dept ? 'selected' : '' ?>><?= $vals['name'] ?></option>
-            <?php } ?>
-        </select>
-    </div> -->
     <div class="col-sm" style="max-width: 40rem;">
         <label for="year-input"><?= lang('Year', 'Jahr') ?></label>
         <input type="number" name="year" id="year-input" class="form-control " value="<?= empty($filter_year) ? '' : $filter_year ?>">

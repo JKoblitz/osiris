@@ -88,12 +88,21 @@ foreach ($activities as $doc) {
 
     $combinations = array_merge($combinations, combinations($authors));
 }
-
-uasort($labels, function ($a, $b) use ($scientist) {
-    if ($a['user'] == $scientist) return -1;
-    if ($a['dept'] > $b['dept']) return 1;
-    return 0; 
+$depts = $Settings->getDepartments();
+$depts = array_keys($depts);
+usort($depts, function ($a, $b) use ($selectedUser) {
+    if ($a == $selectedUser['dept']) return -1;
+    return 1;
 });
+
+uasort($labels, function ($a, $b) use ($depts){
+    $a = array_search($a['dept'], $depts);
+    $b = array_search($b['dept'], $depts);
+    if ($b === false) return -1;
+    if ($a === false) return 1;
+    return ($a < $b ? -1: 1);
+});
+
 $i = 0;
 foreach ($labels as $key => $val) {
     $labels[$key]['index'] = $i++;
@@ -115,7 +124,7 @@ foreach ($combinations as $c) {
 <!-- https://github.com/vivo-project/VIVO/blob/1dd2851e45f1fc10ecb9cadeab4d0db8eb83ca00/webapp/src/main/webapp/templates/freemarker/visualization/personlevel/coAuthorPersonLevelD3.ftl -->
 <script src="<?=ROOTPATH?>/js/d3.v4.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
-<script src="<?= ROOTPATH ?>/js/d3-chords.js"></script>
+<script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
 
 <script>
     var matrix = JSON.parse('<?= json_encode($matrix) ?>')
@@ -136,7 +145,7 @@ foreach ($combinations as $c) {
         links.push(link)
     })
 
-    Chords('#chord', matrix, labels, colors, data, links, false, true);
+    Chords('#chord', matrix, labels, colors, data, links, false, '<?=$labels[$scientist]['index']?>');
 
 
     // var SVG = d3.select("#legend")
