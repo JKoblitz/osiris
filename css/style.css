@@ -465,7 +465,7 @@ label.element-other::before {
 }
 
 
-.badge {
+.badge:not(.badge-pill) {
     border-radius: .4rem;
 }
 

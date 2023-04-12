@@ -18,6 +18,20 @@
         box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
         margin-left: .5rem;
     }
+
+    .user-role {
+        padding: .3rem 1rem;
+        background-color: white;
+        /* border-radius: 2rem; */
+        border: 1px solid var(--border-color);
+        display: inline-block;
+        -moz-box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        -webkit-box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+        margin-right: .5rem;
+        font-weight: 500;
+        font-size: 1.2rem;
+    }
 </style>
 
 <?php
@@ -141,9 +155,9 @@ foreach ($cursor as $doc) {
 
 // $showcoins = (!($scientist['hide_coins'] ?? true));
 $showcoins = ($scientist['show_coins'] ?? 'no');
-if ($showcoins == 'all'){
+if ($showcoins == 'all') {
     $showcoins = true;
-} elseif($showcoins == 'myself' && $currentuser){
+} elseif ($showcoins == 'myself' && $currentuser) {
     $showcoins = true;
 } else {
     $showcoins = false;
@@ -154,35 +168,15 @@ if ($showcoins == 'all'){
 
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-        <div class="modal-content w-400 mw-full">
+        <div class="modal-content w-600 mw-full">
             <a href="#" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
-            <h2 class="modal-title">
-                <i class="fad fa-lg fa-coin text-signal"></i>
-                Coins
-            </h2>
 
-            <h5>
-                <?= lang('What are coins?', 'Was sind Coins?') ?>
-            </h5>
-            <p class="">
-                <?= lang(
-                    "To put it simply, coins are a currency that currently doesn\'t earn you anything and doesn\'t really interest anyone. Unless you like to collect, then you\'re welcome.",
-                    'Um es kurz zu sagen, Coins sind eine Währung, die dir im Moment überhaupt nichts bringt und auch eigentlich niemanden interessiert. Außer du sammelst gern, dann gern geschehen.'
-                ) ?>
-            </p>
-
-            <h5>
-                <?= lang('How do I get them?', 'Wie bekomme ich sie?') ?>
-            </h5>
-
-            <p>
-                <?= lang(
-                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the ' . $Settings->affiliation . '). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
-                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der ' . $Settings->affiliation . ' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
-                ) ?>
-            </p>
+            </a>
+            <?php
+            include BASEPATH . "/components/what-are-coins.php";
+            ?>
 
         </div>
     </div>
@@ -212,14 +206,34 @@ if ($showcoins == 'all'){
                 echo $Settings->getDepartments($scientist['dept'])['name'];
                 ?>
 
-                <?php if (!$scientist['is_active']) { ?>
-                    <br>
-                    <span class="text-danger">
-                        <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
-                    </span>
-                <?php } ?>
 
             </h3>
+
+            <?php if (!($scientist['is_active'] ?? true)) { ?>
+                <span class="text-danger user-role">
+                    <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
+                </span>
+            <?php } else { ?>
+                <?php if ($scientist['is_admin'] ?? true) { ?>
+                    <span class="user-role">
+                        <?= lang('ADMIN') ?>
+                    </span>
+                <?php } elseif ($scientist['is_controlling']) { ?>
+                    <span class="user-role">
+                        <?= lang('EDITOR') ?>
+                    </span>
+                <?php } else { ?>
+                    <span class="user-role">
+                        <?= lang('USER') ?>
+                    </span>
+                <?php } ?>
+                <?php if ($scientist['is_scientist'] ?? true) { ?>
+                    <span class="user-role">
+                        <?= lang('Scientist', $scientist['gender'] == 'f' ? 'Wissenschaftlerin' : 'Wissenschaftler') ?>
+                    </span>
+                <?php } ?>
+            <?php } ?>
+
             <?php if ($showcoins) { ?>
                 <p class="lead mt-0">
                     <i class="fad fa-lg fa-coin text-signal"></i>
@@ -562,21 +576,17 @@ if ($showcoins == 'all'){
                     <?php } ?>
                     <tr>
                         <td><?= lang('Department', 'Abteilung') ?></td>
-                        <td><?= $Settings->getDepartments($scientist['dept'])['name'] ?></td>
+                        <td>
+                            <?= $Settings->getDepartments($scientist['dept'])['name'] ?? 'unknown' ?>
+                            <?php if ($scientist['is_leader'] ?? false) { ?>
+                                <br>
+                                <small class="text-osiris"><?= lang('Department head', 'Abteilungsleiter_in') ?></small>
+                            <?php } ?>
+
+
+                        </td>
                     </tr>
                     <!-- <tr>
-                        <td><?= lang('Achievements', 'Erfolge') ?></td>
-                        <td>
-                            <?php
-                            if (isset($scientist['achievements'])) {
-                                echo count($scientist['achievements']->bsonSerialize());
-                            } else {
-                                echo 0;
-                            }
-                            ?>
-                        </td>
-                    </tr> -->
-                    <tr>
                         <td><?= lang('Scientist', 'Wissenschaftler:in') ?></td>
                         <td><?= bool_icon($scientist['is_scientist'] ?? false) ?></td>
                     </tr>
@@ -587,7 +597,7 @@ if ($showcoins == 'all'){
                     <tr>
                         <td><?= lang('Active', 'Aktiv') ?></td>
                         <td><?= bool_icon($scientist['is_active'] ?? false) ?></td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
         </div>
@@ -898,91 +908,91 @@ if ($showcoins == 'all'){
 
         </div>
     </div>
-    
+
     <div class="col-md-6 col-lg-3">
         <div class="box h-full">
             <?php if ($showcoins) { ?>
-            <div class="chart content text-center">
-                <h5 class="title">
-                    <i class="fad fa-lg fa-coin text-signal"></i>
-                    <?= lang('Coins per Year', 'Coins pro Jahr') ?>
-                </h5>
-                <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
-                <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
-            </div>
+                <div class="chart content text-center">
+                    <h5 class="title">
+                        <i class="fad fa-lg fa-coin text-signal"></i>
+                        <?= lang('Coins per Year', 'Coins pro Jahr') ?>
+                    </h5>
+                    <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
+                    <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
+                </div>
 
-        <?php
-        $data = [];
-        $lastval = 0;
-        $labels = [];
-        foreach ($lom_years as $year => $val) {
-            $labels[] = $year;
-            $data[] = [$lastval, $val + $lastval];
-            $lastval = $val + $lastval;
-        }
-        // $labels[] = 'total';
-        // $data[] = $lastval;
-        ?>
+                <?php
+                $data = [];
+                $lastval = 0;
+                $labels = [];
+                foreach ($lom_years as $year => $val) {
+                    $labels[] = $year;
+                    $data[] = [$lastval, $val + $lastval];
+                    $lastval = $val + $lastval;
+                }
+                // $labels[] = 'total';
+                // $data[] = $lastval;
+                ?>
 
-        <script>
-            var ctx = document.getElementById('chart-coins')
-            var raw_data = JSON.parse('<?= json_encode($data) ?>');
-            var labels = JSON.parse('<?= json_encode($labels) ?>');
-            console.log(raw_data);
-            var colors = new Array(labels.length - 1);
-            colors.fill('#ECAF0095')
-            // colors[colors.length] = '#ECAF00'
-            console.log(colors);
-            var data = {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'coins',
-                        data: raw_data,
-                        backgroundColor: colors,
-                        borderWidth: 1,
-                        borderColor: '#464646',
-                        borderSkipped: false,
-                        // barPercentage: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: (data) => {
-                                    return data.parsed.y - data.parsed.x;
+                <script>
+                    var ctx = document.getElementById('chart-coins')
+                    var raw_data = JSON.parse('<?= json_encode($data) ?>');
+                    var labels = JSON.parse('<?= json_encode($labels) ?>');
+                    console.log(raw_data);
+                    var colors = new Array(labels.length - 1);
+                    colors.fill('#ECAF0095')
+                    // colors[colors.length] = '#ECAF00'
+                    console.log(colors);
+                    var data = {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'coins',
+                                data: raw_data,
+                                backgroundColor: colors,
+                                borderWidth: 1,
+                                borderColor: '#464646',
+                                borderSkipped: false,
+                                // barPercentage: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: (data) => {
+                                            return data.parsed.y - data.parsed.x;
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    display: false
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: lang('Years', 'Jahre')
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: lang('Coins (accumulated)', 'Coins (akkumuliert)')
+                                    }
                                 }
-                            }
-                        },
-                        legend: {
-                            display: false
-                        },
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: lang('Years', 'Jahre')
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: lang('Coins (accumulated)', 'Coins (akkumuliert)')
                             }
                         }
                     }
-                }
-            }
 
 
-            console.log(data);
-            var myChart = new Chart(ctx, data);
-        </script>
+                    console.log(data);
+                    var myChart = new Chart(ctx, data);
+                </script>
             <?php } ?>
         </div>
     </div>
@@ -998,7 +1008,7 @@ if ($showcoins == 'all'){
         <div class="box h-full">
             <div class="chart content">
                 <h5 class="title text-center">
-                    <?= lang('All activities in which '.$scientist['first'].' was involved', 'Alle Aktivitäten, an denen '.$scientist['first'].' beteiligt war') ?>    
+                    <?= lang('All activities in which ' . $scientist['first'] . ' was involved', 'Alle Aktivitäten, an denen ' . $scientist['first'] . ' beteiligt war') ?>
                 </h5>
                 <canvas id="chart-activities" style="max-height: 35rem;"></canvas>
             </div>
@@ -1126,7 +1136,7 @@ if ($showcoins == 'all'){
 
             <div class="content mt-0">
                 <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn btn-osiris">
-                    <i class="far fa-book-bookmark mr-5"></i> 
+                    <i class="far fa-book-bookmark mr-5"></i>
                     <?= lang('All activities', 'Alle Aktivitäten ') ?>
                 </a>
             </div>
