@@ -8,8 +8,12 @@
 * information, please view the LICENSE file which was distributed with this
 * source code.
 */
+if (file_exists('CONFIG.php')) {
+    require_once 'CONFIG.php';
+} else {
+    require_once 'CONFIG.default.php';
+}
 
-require_once 'CONFIG.php';
 
 session_start();
 
@@ -71,7 +75,7 @@ if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
         $msg = "User switched!";
         $_SESSION['realuser'] = $realusername;
         $_SESSION['username'] = $username;
-        header("Location: ".ROOTPATH."/profile/$username");
+        header("Location: " . ROOTPATH . "/profile/$username");
     }
 
     // do nothing if user is not allowed
@@ -244,7 +248,7 @@ Route::post('/user/login', function () {
             $_SESSION['username'] = $_POST['username'];
             $useracc = getUserFromId($_SESSION['username']);
             $_SESSION['name'] = $useracc['displayname'];
-        
+
             $_SESSION['loggedin'] = true;
 
             if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
@@ -271,7 +275,7 @@ Route::post('/user/login', function () {
                     $updateResult = $osiris->activities->updateMany(
                         [
                             'authors.last' => $USER['last'],
-                            'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
+                            'authors.first' => new Regex('^' . $USER['first'][0] . '.*')
                         ],
                         ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
                     );
@@ -373,6 +377,32 @@ Route::get('/activities/new', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::post('/activities/new', function () {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    $user = $_SESSION['username'];
+    global $form;
+    $form = $_POST['form'];
+    // dump($form);
+    $form = unserialize($form);
+    $copy = true;
+
+    $name = $form['title'] ?? $id;
+    if (strlen($name) > 20)
+        $name = mb_substr(strip_tags($name), 0, 20) . "&hellip;";
+    $name = ucfirst($form['type']) . ": " . $name;
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("New from Import", "Neu aus Import")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/add-activity.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 
 Route::get('/activities/teaching', function () {
     include_once BASEPATH . "/php/_config.php";
@@ -406,7 +436,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     $user = $_SESSION['username'];
 
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     $activity = $osiris->activities->findOne(['_id' => $id], ['projection' => ['file' => 0]]);
 
@@ -433,7 +463,7 @@ Route::get('/activities/files/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     $user = $_SESSION['username'];
 
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     $doc = $osiris->activities->findOne(['_id' => $id]);
 
@@ -461,7 +491,7 @@ Route::post('/activities/files/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     $user = $_SESSION['username'];
 
-    $mongoid = new MongoDB\BSON\ObjectId($id);
+    $mongoid = to_ObjectID($id);
 
     $activity = $osiris->activities->findOne(['_id' => $mongoid]);
 
@@ -489,7 +519,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)/file', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     $activity = $osiris->activities->findOne(['_id' => $id]);
 
@@ -510,7 +540,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
 
     $user = $_SESSION['username'];
-    $mongoid = new MongoDB\BSON\ObjectId($id);
+    $mongoid = to_ObjectID($id);
 
     global $form;
     $form = $osiris->activities->findOne(['_id' => $mongoid]);
@@ -541,7 +571,7 @@ Route::get('/activities/copy/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
 
     $user = $_SESSION['username'];
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     global $form;
     $form = $osiris->activities->findOne(['_id' => $id]);
@@ -562,7 +592,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     $user = $_SESSION['username'];
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
     if (($form['locked'] ?? false) && !$USER['is_controlling']) {
@@ -634,7 +664,7 @@ Route::post('/import/google', function () {
 
     if (isset($pub['Zeitschrift']) || isset($pub['Quelle'])) {
         $result['journal'] = $pub['Zeitschrift'] ?? $pub['Quelle'];
-        $j = new \MongoDB\BSON\Regex('^' . trim($result['journal']) . '$', 'i');
+        $j = new Regex('^' . trim($result['journal']) . '$', 'i');
         $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
         if (!empty($journal)) {
             $result['journal_id'] = strval($journal['_id']);
@@ -692,6 +722,20 @@ Route::post('/import/google', function () {
 });
 
 
+Route::post('/import/file', function () {
+    // if ($page == 'users') 
+    $breadcrumb = [
+        ['name' => lang('Import'), 'path' => '/import'],
+        ['name' => lang('From File', 'Aus Datei')]
+    ];
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/import-file.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 
 Route::get('/user/browse', function () {
     // if ($page == 'users') 
@@ -740,6 +784,11 @@ Route::get('/profile/?([a-z0-9]*)', function ($user) {
     $Format = new Format($user);
 
     $scientist = getUserFromId($user);
+    
+    if (empty($scientist)) {
+        header("Location: " . ROOTPATH . "/user/browse?msg=user-does-not-exist");
+        die;
+    }
     $name = $scientist['displayname'];
 
     $breadcrumb = [
@@ -913,7 +962,7 @@ Route::get('/journal/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
@@ -949,7 +998,7 @@ Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = to_ObjectID($id);
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
@@ -970,9 +1019,13 @@ Route::get('/user/edit/([a-z0-9]+)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
-    // $id = new MongoDB\BSON\ObjectId($id);
+    // $id = to_ObjectID($id);
 
     $data = getUserFromId($user);
+    if (empty($data)) {
+        header("Location: " . ROOTPATH . "/user/browse");
+        die;
+    }
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
         ['name' => $data['name'], 'path' => "/profile/$user"],
@@ -1067,7 +1120,7 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
 // Route::get('/calculate-if', function () {
 //     include_once BASEPATH . "/php/_config.php";
 //     include BASEPATH . "/header.php";
-    
+
 //     $counts_by_year = '[{"year":2023,"works_count":1069,"cited_by_count":303430},{"year":2022,"works_count":4101,"cited_by_count":1108272},{"year":2021,"works_count":3778,"cited_by_count":1174045},{"year":2020,"works_count":3715,"cited_by_count":1074783},{"year":2019,"works_count":4085,"cited_by_count":948818},{"year":2018,"works_count":4060,"cited_by_count":898835},{"year":2017,"works_count":3927,"cited_by_count":844962},{"year":2016,"works_count":4166,"cited_by_count":829285},{"year":2015,"works_count":4252,"cited_by_count":822252},{"year":2014,"works_count":4195,"cited_by_count":819429},{"year":2013,"works_count":4302,"cited_by_count":806661},{"year":2012,"works_count":4401,"cited_by_count":744492}]';
 //     $counts_by_year = json_decode($counts_by_year, true);
 

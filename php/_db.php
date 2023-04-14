@@ -1,5 +1,10 @@
 <?php
 require_once BASEPATH . '/vendor/autoload.php';
+use MongoDB\BSON\ObjectId;
+use MongoDB\Client;
+use MongoDB\BSON\Regex;
+use MongoDB\Model\BSONArray;
+
 require_once BASEPATH . '/php/format.php';
 
 if (!isset($Settings)) {
@@ -8,9 +13,11 @@ if (!isset($Settings)) {
 }
 
 $dbname = $Settings->settings['database']['dbname'] ?? "osiris";
+$address = $Settings->settings['database']['ip'] ?? "localhost";
+$port = $Settings->settings['database']['port'] ?? "27017";
 
-$mongoDB = new MongoDB\Client(
-    "mongodb://localhost:27017/$dbname?retryWrites=true&w=majority"
+$mongoDB = new Client(
+    "mongodb://$address:$port/$dbname?retryWrites=true&w=majority"
 );
 
 global $osiris;
@@ -32,6 +39,14 @@ if (!empty($_SESSION['username'])) {
     if (!isset($USER['display_activities'])) $USER['display_activities'] = 'web';
 }
 
+function to_ObjectID($id)
+{
+    if (is_ObjectID($id)) {
+        return new ObjectId($id);
+    }
+    return intval($id);
+}
+
 function is_ObjectID($id)
 {
     if (empty($id)) return false;
@@ -43,7 +58,7 @@ function is_ObjectID($id)
 
 function getConnected($type, $id){
     global $osiris;
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = new ObjectId($id);
     if ($type == 'journal'){
         return $osiris->journals->findOne(['_id' => $id]);
     }
@@ -135,11 +150,11 @@ function cleanFields($id)
     return true;
 }
 
-function mongo_date($date)
-{
-    $time = (new DateTime($date))->getTimestamp();
-    return new MongoDB\BSON\UTCDateTime($time * 1000);
-}
+// function mongo_date($date)
+// {
+//     $time = (new DateTime($date))->getTimestamp();
+//     return new MongoDB\BSON\UTCDateTime($time * 1000);
+// }
 
 function getUserFromName($last, $first)
 {
@@ -151,7 +166,7 @@ function getUserFromName($last, $first)
     // $firstregex = array('$regex' => '^'.$firstsplit[0], '$options' => 'i');
     // if (str_ends_with($first, '.')){
         try {
-            $regex = new MongoDB\BSON\Regex('^' . $first[0]);
+            $regex = new Regex('^' . $first[0]);
         } catch (\Throwable $th) {
            $regex = $first;
         }
@@ -222,7 +237,7 @@ function getActivity($id)
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
-        $id = new MongoDB\BSON\ObjectId($id);
+        $id = new ObjectId($id);
     }
     return $osiris->activities->findOne(['_id' => $id]);
 }
@@ -235,7 +250,7 @@ function getJournal($doc)
         if (is_numeric($id)) {
             $id = intval($id);
         } else {
-            $id = new MongoDB\BSON\ObjectId($id);
+            $id = new ObjectId($id);
         }
         $journal = $osiris->journals->findOne(['_id' => $id]);
         if (!empty($journal)) return $journal;
@@ -250,7 +265,7 @@ function getJournal($doc)
         if (!empty($journal)) return $journal;
     }
 
-    $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']), 'i');
+    $j = new Regex('^' . trim($doc['journal']), 'i');
     return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
 }
 
@@ -261,7 +276,7 @@ function impact_from_year($journal, $year = CURRENTYEAR)
 
     // get impact factors from journal
     $impact = $journal['impact'];
-    if ($impact instanceof MongoDB\Model\BSONArray) {
+    if ($impact instanceof BSONArray) {
         $impact = $impact->bsonSerialize();
     }
     // sort ascending by year
@@ -296,7 +311,7 @@ function latest_impact($journal)
     $last = null;
     if (!isset($journal['impact'])) return null;
     $impact = $journal['impact'];
-    if ($impact instanceof MongoDB\Model\BSONArray) {
+    if ($impact instanceof BSONArray) {
         $impact = $impact->bsonSerialize();
     }
     if (empty($impact)) return null;
@@ -308,12 +323,12 @@ function get_journal($doc)
 {
     global $osiris;
     if (isset($doc['journal_id']) && is_ObjectID($doc['journal_id'])) {
-        $id = new MongoDB\BSON\ObjectId($doc['journal_id']);
+        $id = new ObjectId($doc['journal_id']);
         return $osiris->journals->findOne(['_id' => $id]);
     } else if (isset($doc['issn']) && !empty($doc['issn'])) {
         return $osiris->journals->findOne(['issn' => ['$in' => $doc['issn']]]);
     } else if (isset($doc['journal']) && !empty($doc['journal'])) {
-        $j = new \MongoDB\BSON\Regex('^' . trim($doc['journal']) . '$', 'i');
+        $j = new Regex('^' . trim($doc['journal']) . '$', 'i');
         return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
     } else {
         return array();
@@ -505,7 +520,7 @@ function fieldDefinition(){
 
 function getDeptFromAuthors($authors){
     $result = [];
-    if ($authors instanceof MongoDB\Model\BSONArray) {
+    if ($authors instanceof BSONArray) {
         $authors = $authors->bsonSerialize();
     }
     $users = array_filter(array_column($authors, 'user'));
