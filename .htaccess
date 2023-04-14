@@ -1,17 +1,10 @@
-ErrorDocument 400 /osiris/error?error=400
-ErrorDocument 401 /osiris/error?error=401
-ErrorDocument 403 /osiris/error?error=403
-ErrorDocument 404 /osiris/error?error=404
-ErrorDocument 500 /osiris/error?error=500
-ErrorDocument 503 /osiris/error?error=503
-
 DirectoryIndex index.php
 
 # enable apache rewrite engine
 RewriteEngine on
 
 # set your rewrite base
-RewriteBase /osiris
+RewriteBase /
 
 # Deliver the folder or file directly if it exists on the server
 RewriteRule ^(css|img|js|uploads)($|/) - [L]
