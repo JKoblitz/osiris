@@ -130,7 +130,7 @@ customChordLayout = function () {
     return chord;
 };
 
-function Chords(selector, matrix, labels, colors, data, links, useGradient, highlightFirst) {
+function Chords(selector, matrix, labels, colors, data, links, useGradient, labelBold) {
     var margin = {
         left: 80,
         top: 80,
@@ -304,9 +304,9 @@ function Chords(selector, matrix, labels, colors, data, links, useGradient, high
                 (((d.startAngle + d.endAngle) / 2) > Math.PI ? "rotate(180)" : "");
         })
 
-    if (highlightFirst) {
+    if (labelBold) {
         outerLabels.style("font-weight", function (d) {
-            return d.index == 0 ? "bold" : null;
+            return d.index == labelBold ? "bold" : null;
         })
     }
 

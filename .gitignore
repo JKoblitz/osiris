@@ -1,5 +1,5 @@
-css/fontawesome
-css/
+css/fontawesome/*
+css/Rubik/*
 .data
 /vendor/
 *.old.php
@@ -10,12 +10,13 @@ js/Buttons-2.3.3/*
 js/DataTables-1.13.1/*
 js/DateTime-1.2.0/*
 js/JSZip-2.5.0/*
-js/SearchPanes-2.1.0/*
-js/Select-1.5.0/*
+# js/SearchPanes-2.1.0/*
+js/Select-1.5.0/css
 img/users/*
 apis.json
 scss
 
 settings.json
+CONFIG.php
 user_management.php
 Schulung.md
