@@ -1,6 +1,6 @@
 <div class="content">
 
-    <h3 class="title"><i class="far fa-books mr-5"></i>
+    <h3 class="title">
         <?= lang('Scientist overview (selected quarter)', 'Übersicht der Forschenden (ausgewähltes Quartal)') ?>
     </h3>
 

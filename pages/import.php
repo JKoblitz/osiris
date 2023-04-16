@@ -1,5 +1,5 @@
 <h1>
-    <i class="fad fa-upload text-osiris"></i>
+    <i class="far fa-upload text-osiris"></i>
     Import
 </h1>
 
@@ -92,7 +92,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                 <?php } else { ?>
                                     <button class="btn mt-5" onclick='addGoogleActivity("<?= $user ?>", "<?= $pub_id ?>")'>
                                         <i class="fas fa-plus"></i>
-                                        <?=lang('Add to database', 'Zur DB hinzufügen')?>
+                                        <?= lang('Add to database', 'Zur DB hinzufügen') ?>
                                     </button>
                                 <?php } ?>
 
@@ -250,16 +250,50 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
         </div>
     </div>
 
-<?php } ?> <!-- if empty(USER[googlescholar]) -->
+<?php } ?>
 
+
+
+
+
+<!-- 
 
 <div class="box box-signal">
     <div class="content">
         <h2 class="title">
             <?= lang('Import activities from file', 'Importiere Aktivitäten aus einer Datei') ?>
         </h2>
-        <p>
-            Sorry, aber dieses Feature ist noch in der Entwicklung. Geplant ist, dass man Dateien, die aus Programmen zur Literaturverwaltung (EndNote, Mendeley, Citavi, ...) exportiert wurden, in OSIRIS importieren kann. Beispielsweise als BibTex oder andere gängige Formate. Ist wie gesagt nur noch nicht implementiert.
-        </p>
+        <form action="<?=ROOTPATH?>/import/file" method="post" enctype="multipart/form-data">
+            <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+            <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
+                <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                <label for="file-input"><?= lang('Upload a BibTeX file', 'Lade eine BibTeX-Datei hoch') ?></label>
+                <br><small class="text-danger">Max. 16 MB.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="">Format:</label>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="format" id="format-bibtex" value="bibtex" checked="checked" >
+                    <label for="format-bibtex">BibTeX</label>
+                </div>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="format" id="format-nbib" value="nbib">
+                    <label for="format-nbib">NBIB (Pubmed)</label>
+                </div>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" name="format" id="format-ris" value="ris">
+                    <label for="format-ris">RIS</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary">
+                <i class="fas fa-upload"></i>
+                Upload
+            </button>
+        </form>
     </div>
 </div>
+ -->

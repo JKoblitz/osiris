@@ -8,10 +8,9 @@
         "basedn": "OU=Users,OU=DSMZ,DC=dsmz,DC=local"
     },
     "database": {
-        "dbname": "osiris",
+        "ip": "localhost",
         "port": 27017,
-        "password": "pw or null",
-        "user": "user or null"
+        "dbname": "osiris",
     },
     "api": [
         {

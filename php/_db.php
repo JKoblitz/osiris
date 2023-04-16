@@ -125,7 +125,7 @@ function cleanFields($id)
             );
         }
     } else if ($type == 'misc') {
-        $type = "misc-" + $values['iteration'];
+        $type = "misc-" . $values['iteration'];
     } else if ($type == 'students') {
         if (str_contains($values['category'], "thesis") || $values['category'] == 'doktorand:in') {
             $type = "students";

@@ -126,7 +126,6 @@
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
 <script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script>
 
 <script>

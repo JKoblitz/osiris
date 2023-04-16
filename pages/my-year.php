@@ -122,35 +122,13 @@ if ($showcoins == 'all'){
 
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-        <div class="modal-content w-400 mw-full">
+        <div class="modal-content w-600 mw-full">
             <a href="#" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
-            <h2 class="modal-title">
-                <i class="fad fa-lg fa-coin text-signal"></i>
-                Coins
-            </h2>
-
-            <h5>
-                <?= lang('What are coins?', 'Was sind Coins?') ?>
-            </h5>
-            <p class="">
-                <?= lang(
-                    "To put it simply, coins are a currency that currently doesn\'t earn you anything and doesn\'t really interest anyone. Unless you like to collect, then you\'re welcome.",
-                    'Um es kurz zu sagen, Coins sind eine Währung, die dir im Moment überhaupt nichts bringt und auch eigentlich niemanden interessiert. Außer du sammelst gern, dann gern geschehen.'
-                ) ?>
-            </p>
-
-            <h5>
-                <?= lang('How do I get them?', 'Wie bekomme ich sie?') ?>
-            </h5>
-
-            <p>
-                <?= lang(
-                    'Very simple: you add scientific activities to OSIRIS. Whenever you publish, present a poster, give a talk, or complete a review, OSIRIS gives you coins for it (as long as you were an author of the ' . $Settings->affiliation . '). If you want to find out how exactly the points are calculated, you hover over the coins of an activity. A tooltip will show you more information. For a publication, for example, it matters where you are in the list of authors (first/last or middle author) and how high the impact factor of the journal is.',
-                    'Ganz einfach: du fügst wissenschaftliche Aktivitäten zu OSIRIS hinzu. Wann immer du publizierst, ein Poster präsentierst, einen Vortrag hältst, oder ein Review abschließt, bekommst du von OSIRIS dafür Coins (solange du dabei Autor der ' . $Settings->affiliation . ' warst). Wenn du herausfinden möchstest, wie genau sich die Punkte berechnen, kannst du mit dem Cursor auf die Coins einer Aktivität gehen. Ein Tooltip zeigt dir dann mehr Informationen. Bei einer Publikation spielt beispielsweise eine Rolle, an welcher Stelle du in der Autorenliste stehst (Erst/Letzt oder Mittelautor) und wie hoch der Impact Factor des Journals ist.'
-                ) ?>
-            </p>
+           <?php
+            include BASEPATH . "/components/what-are-coins.php";
+           ?>
 
         </div>
     </div>
@@ -196,7 +174,7 @@ if ($showcoins == 'all'){
 
                         <div class="input-group-prepend">
                             <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                                <i class="fa-regular fa-calendar-day"></i>
+                                <i class="far fa-calendar-day"></i>
                             </div>
                         </div>
                         <select name="year" id="year" class="form-control">

@@ -419,7 +419,7 @@ if ($showcoins == 'all') {
             <div class="p-10 pb-0">
 
                 <label for="expertise" class="font-weight-bold">
-                    <i class="fa-regular fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?>
+                    <i class="far fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?>
                 </label>
             </div>
             <div class="p-10 pt-0">
@@ -472,7 +472,7 @@ if ($showcoins == 'all') {
         </script>
     <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
         <div class="mt-20" id="expertise">
-            <b><i class="fa-regular fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?></b>
+            <b><i class="far fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?></b>
 
             <?php foreach ($scientist['expertise'] ?? array() as $key) { ?>
                 <span class="expertise"><?= $key ?></span>
@@ -488,7 +488,7 @@ if ($showcoins == 'all') {
             <div class="content">
                 <?php if ($currentuser) { ?>
                     <a class="float-right" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>">
-                        <i class="far fa-edit fa-lg"></i>
+                        <i class="far fa-pen-to-square fa-lg"></i>
                     </a>
                 <?php } ?>
                 <h4 class="title"><?= lang('Details') ?></h4>
@@ -706,7 +706,7 @@ if ($showcoins == 'all') {
         <div class="box h-full">
             <div class="chart content text-center">
                 <h5 class="title mb-0">
-                    <i class="fad fa-file-lines text-primary"></i>
+                    <i class="far fa-file-lines text-primary"></i>
                     <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
                 </h5>
                 <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
@@ -832,7 +832,7 @@ if ($showcoins == 'all') {
         <div class="box h-full">
             <div class="chart content text-center">
                 <h5 class="title mb-0">
-                    <i class="fad fa-book-user text-primary"></i>
+                    <i class="far fa-book-user text-primary"></i>
                     <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
                 </h5>
                 <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
@@ -1011,6 +1011,10 @@ if ($showcoins == 'all') {
                     <?= lang('All activities in which ' . $scientist['first'] . ' was involved', 'Alle Aktivitäten, an denen ' . $scientist['first'] . ' beteiligt war') ?>
                 </h5>
                 <canvas id="chart-activities" style="max-height: 35rem;"></canvas>
+
+                <small class="text-muted">
+                    <?=lang('For multi-year activities, only the start date is relevant.', 'Bei mehrjährigen Aktivitäten wird nur das Startdatum gezählt.')?>
+                </small>
             </div>
         </div>
 

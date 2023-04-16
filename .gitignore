@@ -15,8 +15,12 @@ js/Select-1.5.0/css
 img/users/*
 apis.json
 scss
+*.OLD
+css/*zip
+.htaccess
 
 settings.json
 CONFIG.php
 user_management.php
 Schulung.md
+css/phosphoricons/Fonts/*

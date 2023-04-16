@@ -13,12 +13,13 @@ function commalist($array, $sep = "and")
 function abbreviateAuthor($last, $first, $reverse = true)
 {
     $fn = " ";
-    if ($first): foreach (preg_split("/(\s| |-|\.)/u", ($first)) as $name) {
-        if (empty($name)) continue;
-        // echo "<!--";
-        // echo "-->";
-        $fn .= "" . mb_substr($name, 0, 1) . ".";
-    } endif;
+    if ($first) : foreach (preg_split("/(\s| |-|\.)/u", ($first)) as $name) {
+            if (empty($name)) continue;
+            // echo "<!--";
+            // echo "-->";
+            $fn .= "" . mb_substr($name, 0, 1) . ".";
+        }
+    endif;
     if (empty(trim($fn))) return $last;
     if ($reverse) return $last . "," . $fn;
     return $fn . " " . $last;
@@ -435,17 +436,15 @@ class Format
             case 'publication':
                 $line = $this->format_publication($doc);
                 break;
-            case 'misc':
-                $line = $this->format_misc($doc);
-                break;
             case 'review':
                 $line = $this->format_review($doc);
                 break;
             case 'software':
                 $line = $this->format_software($doc);
                 break;
+            case 'misc':
             default:
-                $line = "";
+                $line = $this->format_misc($doc);
                 break;
         }
         if ($this->usecase == 'web' && isset($doc['files'])) {
@@ -685,7 +684,7 @@ class Format
                     $this->title .= lang('Other course', 'Sonstige Lehrveranstaltung');
                     break;
             }
-            $this->title .= lang(' for ', ' zu '). $module['module'] . ": <em>" . $module['title'] . "</em>";
+            $this->title .= lang(' for ', ' zu ') . $module['module'] . ": <em>" . $module['title'] . "</em>";
             $result .= $this->title;
 
             $this->subtitle .= $module['affiliation'];
