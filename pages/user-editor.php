@@ -1,5 +1,5 @@
 <h1>
-    <i class="fad fa-user-graduate"></i>
+    <i class="ph ph-regular ph-student"></i>
     <?= $data['name'] ?>
 </h1>
 <!-- 
@@ -66,7 +66,7 @@ dump($data, true);
             <?php } ?>
 
             <button class="btn btn-primary btn-sm ml-10" type="button" onclick="addName(event, this);">
-                <i class="fas fa-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
+                <i class="ph ph-regular ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
             </button>
         </div>
 

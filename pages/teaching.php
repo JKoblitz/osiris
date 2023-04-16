@@ -67,7 +67,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <button class="btn btn-primary" type="submit" id="submit-btn"><i class="fas fa-check"></i> <?= lang("Save", "Speichern") ?></button>
+                <button class="btn btn-primary" type="submit" id="submit-btn"><i class="ph ph-regular ph-check"></i> <?= lang("Save", "Speichern") ?></button>
 
             </form>
         </div>
@@ -77,15 +77,15 @@ function val($index, $default = '')
 
 <div class="content">
     <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
-        <i class="far fa-lg fa-book-sparkles mr-5"></i>
+        <i class="ph ph-regular ph-lg ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a> -->
 
     <h2 class="mt-0">
-        <i class="far fa-chalkboard text-osiris mr-5"></i>
+        <i class="ph ph-regular ph-chalkboard-simple text-osiris mr-5"></i>
         <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
     </h2>
-    <a href="#add-teaching"><i class="fas fa-plus"></i> Neues Modul anlegen</a>
+    <a href="#add-teaching"><i class="ph ph-regular ph-plus"></i> Neues Modul anlegen</a>
 </div>
 
 <div class="row row-eq-spacing-md">
@@ -110,8 +110,8 @@ function val($index, $default = '')
 
                     <div class="float-right ">
                         <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching btn-sm">
-                            <i class="far fa-lg fa-chalkboard-user"></i>
-                            <i class="fas fa-plus"></i>
+                            <i class="ph ph-regular ph-lg ph-chalkboard-simple-user"></i>
+                            <i class="ph ph-regular ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>
                     </div>

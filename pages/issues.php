@@ -177,11 +177,11 @@ foreach ($cursor as $doc) {
 ?>
 
 <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right" id="">
-    <i class="far fa-lg fa-book-sparkles mr-5"></i>
+    <i class="ph ph-regular ph-lg ph-question mr-5"></i>
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a>
 <h1>
-    <i class="fas fa-exclamation-triangle text-osiris"></i>
+    <i class="ph-fill ph-exclamation-triangle text-osiris"></i>
     <?= lang('Warnings', 'Warnungen') ?>
 </h1>
 
@@ -211,7 +211,7 @@ if (array_sum($a) === 0) {
 
     <div class="dropdown">
         <button class="btn mb-10 text-success" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-check"></i>
+            <i class="ph ph-regular ph-check"></i>
             <?= lang('Approve all', 'Alle bestätigen') ?>
         </button>
         <div class="dropdown-menu w-300" aria-labelledby="dropdown-1">
@@ -283,21 +283,21 @@ if (array_sum($a) === 0) {
                         <?php } ?>
                         <br>
                         <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
-                            <i class="fas fa-fw fa-check"></i>
+                            <i class="ph-fill ph-fw ph-check"></i>
                         </button>
                         <button class="btn btn-sm text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
-                            <i class="far fa-fw fa-handshake-slash"></i>
+                            <i class="ph ph-regular ph-fw ph-handshake-slash"></i>
                         </button>
                         <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
-                            <i class="fas fa-fw fa-xmark"></i>
+                            <i class="ph-fill ph-fw ph-xmark"></i>
                         </button>
                         <?php if (!($doc['locked'] ?? false)) { ?>
                             <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
-                                <i class="icon-activity-pen"></i>
+                                <i class="ph ph-regular ph-pencil-simple-line"></i>
                             </a>
                         <?php } ?>
                         <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
-                            <i class="icon-activity-search"></i>
+                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
                         </a>
                     </div>
                 </div>
@@ -337,7 +337,7 @@ if (array_sum($a) === 0) {
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[epub-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn btn-sm">
-                                <i class="fas fa-check"></i>
+                                <i class="ph ph-regular ph-check"></i>
                                 <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag später noch mal).') ?>
                             </button>
                         </form>
@@ -350,7 +350,7 @@ if (array_sum($a) === 0) {
                             <input type="date" class="form-control" value="<?= valueFromDateArray(["year" => $doc['year'], "month" => $doc['month'], "day" => $doc['day'] ?? 1]) ?>">
                             <div class="input-group-append">
                                 <button class="btn" type="button" onclick="todo()">
-                                    <i class="fas fa-xmark"></i>
+                                    <i class="ph-fill ph-xmark"></i>
                                     <?= lang('No longer Epub and officially issued under this date.', 'Kein Epub mehr und unter diesem Datum offiziell veröffentlicht.') ?>
                                 </button>
                             </div>
@@ -449,13 +449,13 @@ if (array_sum($a) === 0) {
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn btn-sm text-success">
-                                <i class="fas fa-check"></i>
+                                <i class="ph ph-regular ph-check"></i>
                                 <?= lang('Yes', 'Ja') ?>
                             </button>
                         </form>
 
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-danger">
-                            <i class="fas fa-xmark"></i>
+                            <i class="ph-fill ph-xmark"></i>
                             <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
                         </a>
 
@@ -493,7 +493,7 @@ if (array_sum($a) === 0) {
                     <?= $Format->format($doc); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
-                            <i class="fas fa-edit"></i>
+                            <i class="ph-fill ph-note-pencil"></i>
                             <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
                         </a>
                     </div>

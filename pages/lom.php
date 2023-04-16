@@ -41,7 +41,7 @@ function array_to_form($array, $level=2, $parents=array()){
 
 
 <h1>
-    <i class="fad fa-lg fa-coin text-signal"></i>
+    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
     LOM Punktematrix
 </h1>
 

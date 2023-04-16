@@ -89,7 +89,7 @@ foreach ($activities as $doc) {
 ?>
 
 <h1>
-    <i class="far fa-chart-network" aria-hidden="true"></i>
+    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
     <?= lang('Department overview', 'Abteilungs-Übersicht') ?>
 </h1>
 

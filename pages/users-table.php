@@ -1,5 +1,5 @@
 <h1 class="mt-0">
-    <i class="fad fa-user-graduate"></i>
+    <i class="ph ph-regular ph-student"></i>
     <?= lang('Users', 'Nutzer:innen') ?>
 </h1>
 <!-- <p class="text-muted">
@@ -108,7 +108,7 @@
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
                         <btn class="btn btn-link" type="button" onclick="editUser('<?= $username ?>')">
-                            <i class="fas fa-edit"></i>
+                            <i class="ph-fill ph-note-pencil"></i>
                         </btn>
                     </td>
                 <?php

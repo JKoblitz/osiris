@@ -155,11 +155,11 @@ function sortbuttons(string $colname)
     $get = currentGET(['order', 'asc']);
     // $get = $_SERVER['REQUEST_URI'] . $get;
     if ($order == $colname && $asc == 1) {
-        echo "<a href='$get&order=$colname&asc=0'><i class='fas fa-sort-up'></i></a>";
+        echo "<a href='$get&order=$colname&asc=0'><i class='ph-fill ph-sort-up'></i></a>";
     } elseif ($order == $colname && $asc == 0) {
-        echo "<a href='$get'><i class='fas fa-sort-down'></i></a>";
+        echo "<a href='$get'><i class='ph-fill ph-sort-down'></i></a>";
     } else {
-        echo "<a href='$get&order=$colname&asc=1'><i class='fas fa-sort'></i></a>";
+        echo "<a href='$get&order=$colname&asc=1'><i class='ph-fill ph-sort'></i></a>";
     }
 }
 
@@ -325,9 +325,9 @@ function dump($element, $as_json = false)
 function bool_icon($bool)
 {
     if ($bool) {
-        return '<i class="fas fa-check text-success"></i>';
+        return '<i class="ph ph-regular ph-check text-success"></i>';
     } else {
-        return '<i class="fas fa-xmark text-danger"></i>';
+        return '<i class="ph-fill ph-xmark text-danger"></i>';
     }
 }
 

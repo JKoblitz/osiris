@@ -8,35 +8,35 @@ $user = $user ?? $_SESSION['username'];
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
 
-<a class="btn btn-primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="fas fa-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
+<a class="btn btn-primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-regular ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
 
 <?php if ($page == 'activities' && $USER['is_scientist']) { ?>
     <h1 class='m-0'>
-        <i class="fa-regular fa-book-open"></i>
+        <i class="ph ph-regular ph-book-open"></i>
         <?= lang("All activities", "Alle Aktivitäten") ?>
     </h1>
     <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="fa-solid fa-circle-user"></i>
+        <i class="ph-fill ph-user-circle"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
 <?php
 } elseif (isset($_GET['user'])) { ?>
     <h1 class='m-0'>
-        <i class="icon-activity-user"></i>
+        <i class="ph ph-regular ph-folder-user"></i>
         <?= lang("Activities of $user", "Aktivitäten von $user") ?>
     </h1>
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="fa-solid fa-book-open"></i>
+        <i class="ph ph-regular ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } elseif ($page == 'my-activities') { ?>
     <h1 class='m-0'>
-        <i class="icon-activity-user"></i>
+        <i class="ph ph-regular ph-folder-user"></i>
         <?= lang("My activities", "Meine Aktivitäten") ?>
     </h1>
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="fa-solid fa-book-open"></i>
+        <i class="ph ph-regular ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } ?>

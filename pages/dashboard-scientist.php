@@ -192,7 +192,7 @@
 
                     <div class="mt-5 text-right">
                         <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn btn-sm">
-                            <i class="fas fa-plus"></i>
+                            <i class="ph ph-regular ph-plus"></i>
                             <?= lang('Add new', 'Neu anlegen') ?>
                         </a>
                     </div>
@@ -235,7 +235,7 @@
 
 <div class="content mt-0">
     <a href="<?= ROOTPATH ?>/activities" class="btn btn-select bg-white mr-20">
-        <i class="far fa-book-bookmark text-danger"></i>
+        <i class="ph ph-regular ph-book-bookmark text-danger"></i>
         <?= lang('View all activites', 'Zeige alle Aktivitäten') ?>
     </a>
 </div>

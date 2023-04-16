@@ -51,11 +51,11 @@ foreach ($preset_editors as $a) {
 $formaction = ROOTPATH . "/";
 if (!empty($form) && isset($form['_id']) && !$copy) {
     $formaction .= "update/" . $form['_id'];
-    $btntext = '<i class="fas fa-check"></i> ' . lang("Update", "Aktualisieren");
+    $btntext = '<i class="ph ph-regular ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
     $formaction .= "create";
-    $btntext = '<i class="fas fa-check"></i> ' . lang("Save", "Speichern");
+    $btntext = '<i class="ph ph-regular ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/activities/view/*";
 }
 
@@ -135,7 +135,7 @@ function val($index, $default = '')
             <div class="input-group">
                 <input type="text" class="form-control" onchange="getJournal(this.value)" list="journal-list" id="journal-search" value="<?= $form['journal'] ?? '' ?>">
                 <div class="input-group-append">
-                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="fas fa-search"></i></button>
+                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="ph ph-regular ph-magnifying-glass"></i></button>
                 </div>
             </div>
             <table class="table table-simple">
@@ -159,7 +159,7 @@ function val($index, $default = '')
             <div class="input-group">
                 <input type="text" class="form-control" onchange="getTeaching(this.value)" list="teaching-list" id="teaching-search" value="<?= $form['module'] ?? '' ?>">
                 <div class="input-group-append">
-                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="fas fa-search"></i></button>
+                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="ph ph-regular ph-magnifying-glass"></i></button>
                 </div>
             </div>
             <table class="table table-simple">
@@ -261,19 +261,19 @@ function val($index, $default = '')
 
 <div class="content">
     <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
-        <i class="far fa-lg fa-book-sparkles mr-5"></i>
+        <i class="ph ph-regular ph-lg ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a>
     <?php if (empty($form)) { ?>
 
 
         <button class="btn btn-tour float-right" id="tour">
-            <i class="far fa-lg fa-message-question mr-5"></i>
+            <i class="ph ph-regular ph-lg ph-message-question mr-5"></i>
             <?= lang('Interactive tour', 'Interactive Tour') ?>
         </button>
         <!-- Create new activity -->
         <h2 class="mb-0">
-            <i class="icon-activity-plus"></i>
+            <i class="ph ph-regular ph-folder-plus"></i>
             <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
         </h2>
 
@@ -285,7 +285,7 @@ function val($index, $default = '')
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                        <button class="btn btn-primary" type="submit"><i class="ph ph-regular ph-magnifying-glass"></i></button>
                     </div>
                 </div>
             </div>
@@ -321,7 +321,7 @@ function val($index, $default = '')
     <?php if (!empty($form)) { ?>
 
         <a href="#" class="text-decoration-none" onclick="$(this).next().slideToggle()">
-            <i class="fas fa-caret-down"></i>
+            <i class="ph-fill ph-caret-down"></i>
             <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
         </a>
         <div class="mb-20 select-btns" id="select-btns" style="display:none">
@@ -370,31 +370,31 @@ function val($index, $default = '')
             <?php } ?>
 
             <div class="mb-20 select-btns" data-visible="article,preprint,magazine,book,chapter,dissertation,others">
-                <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="article-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Journal article') ?></button>
-                <button onclick="togglePubType('magazine')" class="btn btn-select text-publication" id="magazine-btn"><i class="fa-regular fa-newspaper"></i> <?= lang('Magazine article') ?></button>
-                <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="fa-regular fa-book"></i> <?= lang('Book', 'Buch') ?></button>
-                <button onclick="togglePubType('chapter')" class="btn btn-select text-publication" id="chapter-btn"><i class="fa-regular fa-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
-                <button onclick="togglePubType('preprint')" class="btn btn-select text-publication" id="preprint-btn"><i class="fa-regular fa-file"></i> <?= lang('Preprint') ?></button>
-                <button onclick="togglePubType('dissertation')" class="btn btn-select text-publication" id="dissertation-btn"><i class="fa-regular fa-book-user"></i> <?= lang('Thesis') ?></button>
-                <button onclick="togglePubType('others')" class="btn btn-select text-publication" id="others-btn"><i class="fa-regular fa-memo-pad"></i> <?= lang('Others', 'Weitere') ?></button>
+                <button onclick="togglePubType('article')" class="btn btn-select text-publication" id="article-btn"><i class="ph ph-regular ph-file-text"></i> <?= lang('Journal article') ?></button>
+                <button onclick="togglePubType('magazine')" class="btn btn-select text-publication" id="magazine-btn"><i class="ph ph-regular ph-newspaper"></i> <?= lang('Magazine article') ?></button>
+                <button onclick="togglePubType('book')" class="btn btn-select text-publication" id="book-btn"><i class="ph ph-regular ph-book"></i> <?= lang('Book', 'Buch') ?></button>
+                <button onclick="togglePubType('chapter')" class="btn btn-select text-publication" id="chapter-btn"><i class="ph ph-regular ph-book-bookmark"></i> <?= lang('Book chapter', 'Buchkapitel') ?></button>
+                <button onclick="togglePubType('preprint')" class="btn btn-select text-publication" id="preprint-btn"><i class="ph ph-regular ph-file"></i> <?= lang('Preprint') ?></button>
+                <button onclick="togglePubType('dissertation')" class="btn btn-select text-publication" id="dissertation-btn"><i class="ph ph-regular ph-graduation-cap"></i> <?= lang('Thesis') ?></button>
+                <button onclick="togglePubType('others')" class="btn btn-select text-publication" id="others-btn"><i class="ph ph-regular ph-memo-pad"></i> <?= lang('Others', 'Weitere') ?></button>
 
             </div>
 
             <div class="mb-20 select-btns" data-visible="review,editorial,grant-rev,thesis-rev">
-                <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review2-btn"><i class="fa-regular fa-file-lines"></i> <?= lang('Paper review') ?></button>
-                <button onclick="togglePubType('editorial')" class="btn btn-select text-review" id="editorial-btn"><i class="fa-regular fa-book-open-cover"></i> <?= lang('Editorial board') ?></button>
-                <button onclick="togglePubType('thesis-rev')" class="btn btn-select text-review" id="thesis-rev-btn"><i class="fa-regular fa-graduation-cap"></i> <?= lang('Thesis review') ?></button>
-                <button onclick="togglePubType('grant-rev')" class="btn btn-select text-review" id="grant-rev-btn"><i class="fa-regular fa-file-magnifying-glass"></i> <?= lang('Other reviews', "Sonstiges Review") ?></button>
+                <button onclick="togglePubType('review')" class="btn btn-select text-review" id="review2-btn"><i class="ph ph-regular ph-file-text"></i> <?= lang('Paper review') ?></button>
+                <button onclick="togglePubType('editorial')" class="btn btn-select text-review" id="editorial-btn"><i class="ph ph-regular ph-book-open-cover"></i> <?= lang('Editorial board') ?></button>
+                <button onclick="togglePubType('thesis-rev')" class="btn btn-select text-review" id="thesis-rev-btn"><i class="ph ph-regular ph-graduation-cap"></i> <?= lang('Thesis review') ?></button>
+                <button onclick="togglePubType('grant-rev')" class="btn btn-select text-review" id="grant-rev-btn"><i class="ph ph-regular ph-file-magnifying-glass"></i> <?= lang('Other reviews', "Sonstiges Review") ?></button>
             </div>
 
             <div class="mb-20 select-btns" data-visible="misc-once,misc-annual">
-                <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-once-btn"><i class="fa-regular fa-calendar-day"></i> <?= lang('Once', 'Einmalig') ?></button>
-                <button onclick="togglePubType('misc-annual')" class="btn btn-select text-misc" id="misc-annual-btn"><i class="fa-regular fa-repeat"></i> <?= lang('Frequently', 'Stetig') ?></button>
+                <button onclick="togglePubType('misc-once')" class="btn btn-select text-misc" id="misc-once-btn"><i class="ph ph-regular ph-calendar-check"></i> <?= lang('Once', 'Einmalig') ?></button>
+                <button onclick="togglePubType('misc-annual')" class="btn btn-select text-misc" id="misc-annual-btn"><i class="ph ph-regular ph-repeat"></i> <?= lang('Frequently', 'Stetig') ?></button>
             </div>
 
             <div class="mb-20 select-btns" data-visible="students,guests">
-                <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students2-btn"><i class="fa-regular fa-user-graduate"></i> <?= lang('Theses', 'Abschlussarbeiten') ?></button>
-                <button onclick="togglePubType('guests')" class="btn btn-select text-students" id="guests-btn"><i class="fa-regular fa-user-tie"></i> <?= lang('Guests & interns', 'Gäste & Praktika') ?></button>
+                <button onclick="togglePubType('students')" class="btn btn-select text-students" id="students2-btn"><i class="ph ph-regular ph-student"></i> <?= lang('Theses', 'Abschlussarbeiten') ?></button>
+                <button onclick="togglePubType('guests')" class="btn btn-select text-students" id="guests-btn"><i class="ph ph-regular ph-user-tie"></i> <?= lang('Guests & interns', 'Gäste & Praktika') ?></button>
             </div>
 
             <div id="examples" class="mb-20">
@@ -579,13 +579,13 @@ function val($index, $default = '')
 
                 <div class="" data-visible="teaching">
                     <!-- <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
-                        <i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                        <i class="ph-fill ph-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
                     </a> -->
                     <label for="teaching" class="element-cat required">
                         <?= lang('Course for the following module', 'Veranstaltung zu folgendem Modul') ?>
                     </label>
                     <a href="#teaching-select" id="teaching-field" class="module">
-                        <span class="float-right text-primary"><i class="fas fa-edit"></i></span>
+                        <span class="float-right text-primary"><i class="ph-fill ph-note-pencil"></i></span>
 
                         <div id="selected-teaching">
                             <?php if (!empty($form) && $form['type'] == 'teaching' && isset($form['module_id'])) :
@@ -611,7 +611,7 @@ function val($index, $default = '')
                                     <th><?= lang('Supervisor', 'Betreuer_in') ?></th>
                                     <th>
                                         <?= lang('SWS', 'Anteil in SWS') ?> (Semesterwochenstunden)
-                                        <a href="#sws-calc" class="btn btn-link"><i class="fad fa-lg fa-calculator-simple"></i></a>
+                                        <a href="#sws-calc" class="btn btn-link"><i class="ph ph-regular ph-lg ph-calculator-simple"></i></a>
                                 </th>
                                     <th></th>
                                 </tr>
@@ -632,7 +632,7 @@ function val($index, $default = '')
                                             <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="0" required>
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="fas fa-trash-alt text-danger"></i></button>
+                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph-fill ph-trash-alt text-danger"></i></button>
                                         </td>
                                     </tr>
                                 <?php } else foreach ($form['authors'] ?? [] as $author) { ?>
@@ -651,7 +651,7 @@ function val($index, $default = '')
                                             <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="<?= $author['sws'] ?? 0 ?>" required>
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="fas fa-trash-alt text-danger"></i></button>
+                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph-fill ph-trash-alt text-danger"></i></button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -659,7 +659,7 @@ function val($index, $default = '')
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addSupervisor(this)"><i class="fas fa-plus"></i></button>
+                                        <button class="btn text-primary" type="button" onclick="addSupervisor(this)"><i class="ph ph-regular ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -716,7 +716,7 @@ function val($index, $default = '')
                         <span data-visible="students,guests"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
                         <span data-visible="article,preprint,magazine,book,dissertation,others,chapter,lecture,poster,misc-once,misc-annual,software"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
-                        <a class="" href="#author-help"><i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
+                        <a class="" href="#author-help"><i class="ph-fill ph-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
                     </label>
 
                     <div class="border" id="author-widget">
@@ -729,7 +729,7 @@ function val($index, $default = '')
                                 <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
-                                        <i class="fas fa-plus"></i>
+                                        <i class="ph ph-regular ph-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -750,7 +750,7 @@ function val($index, $default = '')
 
                 <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">
                     <h5 class="title">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="ph-fill ph-exclamation-circle"></i>
                         <?= lang('Attention: No ' . $Settings->affiliation . " authors added.", 'Achtung: Keine ' . $Settings->affiliation . '-Autoren angegeben.') ?>
                     </h5>
                     <?= lang(
@@ -929,15 +929,15 @@ function val($index, $default = '')
 
                 <div class="" data-visible="article,preprint,review,editorial">
                     <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
-                        <i class="fas fa-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                        <i class="ph-fill ph-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
                     </a>
                     <label for="journal" class="element-cat required">
                         Journal
 
                     </label>
                     <a href="#journal-select" id="journal-field" class="module">
-                        <!-- <a class="btn btn-link" ><i class="fas fa-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
-                        <span class="float-right text-primary"><i class="fas fa-edit"></i></span>
+                        <!-- <a class="btn btn-link" ><i class="ph-fill ph-note-pencil"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
+                        <span class="float-right text-primary"><i class="ph-fill ph-note-pencil"></i></span>
 
                         <div id="selected-journal">
                             <?php if (!empty($form) && isset($form['journal_id'])) :
@@ -1024,7 +1024,7 @@ function val($index, $default = '')
                                 <input type="text" placeholder="<?= lang('Add editor ...', 'Füge Editor hinzu ...') ?>" onkeypress="addAuthor(event, true);" id="add-editor" list="scientist-list">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event, true);">
-                                        <i class="fas fa-plus"></i>
+                                        <i class="ph ph-regular ph-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -1042,7 +1042,7 @@ function val($index, $default = '')
                             <div class="input-group">
                                 <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="doi">
                                 <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI') ?>">
-                                    <button class="btn" type="button" onclick="getPubData(event, this)"><i class="fas fa-rotate"></i></button>
+                                    <button class="btn" type="button" onclick="getPubData(event, this)"><i class="ph-fill ph-rotate"></i></button>
                                     <span class="sr-only">
                                         <?= lang('Retreive updated information via DOI', 'Aktualisiere die bibliographischen Daten via DOI') ?>
                                     </span>
@@ -1112,7 +1112,7 @@ function val($index, $default = '')
                             <div class="input-group">
                                 <input type="text" class="form-control disabled" name="values[journal]" value="<?= val('journal') ?>" id="journal-input" list="journal-list" required readonly>
                                 <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Edit Journal', 'Bearbeite Journal') ?>">
-                                    <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
+                                    <a class="btn" href="#journal-select"><i class="ph-fill ph-note-pencil"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -1208,7 +1208,7 @@ function val($index, $default = '')
                     <div class="form-group">
                         <a onclick="$(this).next().toggleClass('hidden')">
                             <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
-                                <i class="fas fa-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
+                                <i class="ph ph-regular ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
                             </label>
                         </a>
                         <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {

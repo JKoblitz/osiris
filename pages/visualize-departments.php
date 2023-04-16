@@ -79,7 +79,7 @@ foreach ($combinations as $c) {
 ?>
 
 <h1>
-    <i class="far fa-chart-network" aria-hidden="true"></i>
+    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
     <?= lang('Department network', 'Abteilungs-Netzwerk') ?>
 </h1>
 

@@ -236,11 +236,11 @@ if ($showcoins == 'all') {
 
             <?php if ($showcoins) { ?>
                 <p class="lead mt-0">
-                    <i class="fad fa-lg fa-coin text-signal"></i>
+                    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
                     <b id="lom-points"><?= $_lom ?></b>
                     Coins
                     <a href='#coins' class="text-muted">
-                        <i class="far fa-question-circle text-muted"></i>
+                        <i class="ph ph-regular ph-question-circle text-muted"></i>
                     </a>
                 </p>
             <?php } ?>
@@ -273,15 +273,15 @@ if ($showcoins == 'all') {
 
                 <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
-                        <i class="icon-activity-plus text-osiris fa-fw"></i>
+                        <i class="ph ph-regular ph-folder-plus text-osiris ph-fw"></i>
                         <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
                     </a>
                     <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
-                        <i class="icon-activity-user text-primary fa-fw"></i>
+                        <i class="ph ph-regular ph-folder-user text-primary ph-fw"></i>
                         <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
                     </a>
                     <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
-                        <i class="far fa-calendar text-success fa-fw"></i>
+                        <i class="ph ph-regular ph-calendar text-success ph-fw"></i>
                         <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
                     </a>
 
@@ -289,17 +289,17 @@ if ($showcoins == 'all') {
                 </div>
                 <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
-                        <i class="far fa-trophy text-signal fa-fw"></i>
+                        <i class="ph ph-regular ph-trophy text-signal ph-fw"></i>
                     </a>
 
                     <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
-                        <i class="far fa-chart-network text-osiris fa-fw"></i>
+                        <i class="ph ph-regular ph-graph text-osiris ph-fw"></i>
                     </a>
                 </div>
 
                 <div class="btn-group btn-group-lg">
                     <a class="btn btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                        <i class="far fa-user-pen text-muted fa-fw"></i>
+                        <i class="ph ph-regular ph-note-pencil text-muted ph-fw"></i>
                         <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                     </a>
                 </div>
@@ -374,21 +374,21 @@ if ($showcoins == 'all') {
     <?php } else { ?>
         <div class="btn-group btn-group-lg mt-15">
             <a class="btn" href="<?= ROOTPATH ?>/scientist/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of', 'Das Jahr ') . $scientist['first'] ?> ">
-                <i class="far fa-calendar text-success fa-fw"></i>
+                <i class="ph ph-regular ph-calendar text-success ph-fw"></i>
             </a>
             <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
-                <i class="icon-activity-user text-primary fa-fw"></i>
+                <i class="ph ph-regular ph-folder-user text-primary ph-fw"></i>
             </a>
             <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
-                <i class="far fa-chart-network text-danger fa-fw"></i>
+                <i class="ph ph-regular ph-graph text-danger ph-fw"></i>
             </a>
 
             <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
-                <i class="far fa-trophy text-signal fa-fw"></i>
+                <i class="ph ph-regular ph-trophy text-signal ph-fw"></i>
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                 <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                    <i class="far fa-user-pen text-muted fa-fw"></i>
+                    <i class="ph ph-regular ph-user-list text-muted ph-fw"></i>
                 </a>
             <?php } ?>
 
@@ -419,7 +419,7 @@ if ($showcoins == 'all') {
             <div class="p-10 pb-0">
 
                 <label for="expertise" class="font-weight-bold">
-                    <i class="far fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?>
+                    <i class="ph ph-regular ph-barbell text-osiris"></i> <?= lang('Expertise:') ?>
                 </label>
             </div>
             <div class="p-10 pt-0">
@@ -437,7 +437,7 @@ if ($showcoins == 'all') {
                     <?php } ?>
 
                     <button class="btn btn-sm" type="button" onclick="addName(event, this);">
-                        <i class="fas fa-plus"></i>
+                        <i class="ph ph-regular ph-plus"></i>
                     </button>
                     <br>
                     <button class="btn btn-primary" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
@@ -472,7 +472,7 @@ if ($showcoins == 'all') {
         </script>
     <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
         <div class="mt-20" id="expertise">
-            <b><i class="far fa-dumbbell text-osiris"></i> <?= lang('Expertise:') ?></b>
+            <b><i class="ph ph-regular ph-barbell text-osiris"></i> <?= lang('Expertise:') ?></b>
 
             <?php foreach ($scientist['expertise'] ?? array() as $key) { ?>
                 <span class="expertise"><?= $key ?></span>
@@ -488,7 +488,7 @@ if ($showcoins == 'all') {
             <div class="content">
                 <?php if ($currentuser) { ?>
                     <a class="float-right" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>">
-                        <i class="far fa-pen-to-square fa-lg"></i>
+                        <i class="ph ph-regular ph-note-pencil ph-lg"></i>
                     </a>
                 <?php } ?>
                 <h4 class="title"><?= lang('Details') ?></h4>
@@ -633,7 +633,7 @@ if ($showcoins == 'all') {
                             </td>
                             <td class="unbreakable w-25">
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="icon-activity-search"></i>
+                                    <i class="ph ph-regular ph-arrow-fat-line-right"></i>
                                 </a>
                             </td>
                         </tr>
@@ -643,7 +643,7 @@ if ($showcoins == 'all') {
 
             <div class="content mt-0">
                 <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>#type=publication" class="btn btn-osiris">
-                    <i class="far fa-book-bookmark mr-5"></i> <?= lang('All publications of ', 'Alle Publikationen von ') . $name ?>
+                    <i class="ph ph-regular ph-book-bookmark mr-5"></i> <?= lang('All publications of ', 'Alle Publikationen von ') . $name ?>
                 </a>
             </div>
 
@@ -706,7 +706,7 @@ if ($showcoins == 'all') {
         <div class="box h-full">
             <div class="chart content text-center">
                 <h5 class="title mb-0">
-                    <i class="far fa-file-lines text-primary"></i>
+                    <i class="ph ph-regular ph-file-text text-primary"></i>
                     <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
                 </h5>
                 <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
@@ -832,7 +832,7 @@ if ($showcoins == 'all') {
         <div class="box h-full">
             <div class="chart content text-center">
                 <h5 class="title mb-0">
-                    <i class="far fa-book-user text-primary"></i>
+                    <i class="ph ph-regular ph-graduation-cap text-primary"></i>
                     <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
                 </h5>
                 <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
@@ -914,7 +914,7 @@ if ($showcoins == 'all') {
             <?php if ($showcoins) { ?>
                 <div class="chart content text-center">
                     <h5 class="title">
-                        <i class="fad fa-lg fa-coin text-signal"></i>
+                        <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
                         <?= lang('Coins per Year', 'Coins pro Jahr') ?>
                     </h5>
                     <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
@@ -1130,7 +1130,7 @@ if ($showcoins == 'all') {
                             </td>
                             <td class="unbreakable w-25">
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="icon-activity-search"></i>
+                                    <i class="ph ph-regular ph-arrow-fat-line-right"></i>
                                 </a>
                             </td>
                         </tr>
@@ -1140,7 +1140,7 @@ if ($showcoins == 'all') {
 
             <div class="content mt-0">
                 <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn btn-osiris">
-                    <i class="far fa-book-bookmark mr-5"></i>
+                    <i class="ph ph-regular ph-book-bookmark mr-5"></i>
                     <?= lang('All activities', 'Alle Aktivitäten ') ?>
                 </a>
             </div>
@@ -1196,7 +1196,7 @@ if ($count > 0) {
                                 </td>
                                 <td class="unbreakable w-25">
                                     <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                        <i class="icon-activity-search"></i>
+                                        <i class="ph ph-regular ph-arrow-fat-line-right"></i>
                                     </a>
                                 </td>
                             </tr>

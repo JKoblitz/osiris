@@ -299,7 +299,7 @@ function activity_icon($doc, $tooltip = true)
     } else {
         $type = strtolower(trim($doc['type'] ?? ''));
     }
-    $icon = "<i class='far fa-lg text-misc fa-notdef'></i>";
+    $icon = "<i class='ph ph-regular ph-lg text-misc ph-notdef'></i>";
     switch ($type) {
         case 'publication':
             $pubtype = strtolower(trim($doc['pubtype'] ?? $type));
@@ -307,72 +307,72 @@ function activity_icon($doc, $tooltip = true)
                 case 'journal article':
                 case 'journal-article':
                 case 'article':
-                    $icon = "<i class='far fa-lg text-publication fa-file-lines'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-file-text'></i>";
                     break 2;
                 case 'magazine article':
                 case 'magazine':
-                    $icon = "<i class='far fa-lg text-publication fa-newspaper'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-newspaper'></i>";
                     break 2;
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
                 case 'book-editor':
                 case 'publication':
-                    $icon = "<i class='far fa-lg text-publication fa-book-bookmark'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-book-bookmark'></i>";
                     break 2;
                 case 'book':
-                    $icon = "<i class='far fa-lg text-publication fa-book'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-book'></i>";
                     break 2;
                 case 'dissertation':
-                    $icon = "<i class='far fa-lg text-publication fa-book-user'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-graduation-cap'></i>";
                     break 2;
                 case 'others':
-                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-notebook'></i>";
                     break 2;
                 default:
-                    $icon = "<i class='far fa-lg text-publication fa-memo-pad'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-notebook'></i>";
                     break 2;
             }
         case 'poster':
-            $icon = "<i class='far fa-lg text-poster fa-presentation-screen'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-poster ph-presentation-chart'></i>";
             break;
         case 'lecture':
-            $icon = "<i class='far fa-lg text-lecture fa-keynote'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-lecture ph-chalkboard-teacher'></i>";
             break;
         case 'review':
             switch (strtolower($doc['role'] ?? '')) {
                 case 'editorial':
                 case 'editor':
-                    $icon = "<i class='far fa-lg text-review fa-book-open-cover'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-review ph-exam'></i>";
                     break 2;
                 case 'grant-rev':
-                    $icon = "<i class='far fa-lg text-review fa-file-magnifying-glass'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-review ph-clipboard-text'></i>";
                     break 2;
                 case 'thesis-rev':
-                    $icon = "<i class='far fa-lg text-review fa-graduation-cap'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-review ph-graduation-cap'></i>";
                     break 2;
                 default:
-                    $icon = "<i class='far fa-lg text-review fa-file-lines'></i>";
+                    $icon = "<i class='ph ph-regular ph-lg text-review ph-article'></i>";
                     break 2;
             }
 
         case 'misc':
-            $icon = "<i class='far fa-lg text-misc fa-icons'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-misc ph-shapes'></i>";
             break;
         case 'students':
             $cat = strtolower(trim($doc['category'] ?? 'thesis'));
             if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
-                $icon = "<i class='far fa-lg text-students fa-user-graduate'></i>";
+                $icon = "<i class='ph ph-regular ph-lg text-students ph-student'></i>";
                 break;
             }
-            $icon = "<i class='far fa-lg text-students fa-user-tie'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-students ph-users'></i>";
             break;
 
         case 'teaching':
-            $icon = "<i class='far fa-lg text-teaching fa-chalkboard-user'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-teaching ph-chalkboard-simple'></i>";
             break;
         case 'software':
-            $icon = "<i class='far fa-lg text-software fa-desktop'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-software ph-desktop'></i>";
             break;
         default:
             break;
@@ -451,7 +451,7 @@ class Format
             foreach ($doc['files'] as $file) {
                 $icon = getFileIcon($file['filetype']);
                 $line .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'>
-                <i class='far fa-file fa-$icon'></i>
+                <i class='ph ph-regular ph-file ph-$icon'></i>
                 </a>";
             }
         }
@@ -523,7 +523,7 @@ class Format
             foreach ($doc['files'] as $file) {
                 $icon = getFileIcon($file['filetype']);
                 $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]' class='file-link'>
-                <i class='far fa-file fa-$icon'></i>
+                <i class='ph ph-regular ph-file ph-$icon'></i>
                 </a>";
             }
         }

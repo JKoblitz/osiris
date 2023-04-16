@@ -1,5 +1,5 @@
 <h2 class="title">
-    <i class="fad fa-lg fa-coin text-signal"></i>
+    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
     Coins
 </h2>
 

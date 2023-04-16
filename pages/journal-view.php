@@ -117,7 +117,7 @@
                     "targets": 1,
                     "data": "name",
                     "render": function(data, type, full, meta) {
-                        return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="icon-activity-search"></a>`;
+                        return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-regular ph-arrow-fat-line-right"></a>`;
                     }
                 },
             ],
@@ -206,7 +206,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
         <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
             <div class="dropdown with-arrow float-right mb-20">
                 <button class="btn btn-osiris" data-toggle="dropdown" type="button" id="dropdown-2" aria-haspopup="true" aria-expanded="false">
-                    <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="fas fa-angle-down ml-5" aria-hidden="true"></i>
+                    <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-2">
                     <div class="content">
@@ -220,7 +220,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
                                 <label for="if"><?= lang('Impact') ?></label>
                                 <input type="number" min="0" max="300" step="0.001" class="form-control" name="values[if]" id="if">
                             </div>
-                            <button class="btn btn-block"><i class="fas fa-check"></i> <?= lang('Add', 'Hinzuf.') ?></button>
+                            <button class="btn btn-block"><i class="ph ph-regular ph-check"></i> <?= lang('Add', 'Hinzuf.') ?></button>
                         </form>
                     </div>
                 </div>

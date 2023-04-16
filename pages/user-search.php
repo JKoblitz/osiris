@@ -10,22 +10,22 @@ $Format = new Format(true);
 <div class="content">
     <div class="btn-group float-right">
         <a href="<?= ROOTPATH ?>/activities/search" class="btn btn-osiris">
-            <i class="icon-activity-search"></i> <?= lang('Activities', 'Aktivitäten') ?>
+            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
         <a href="#" class="btn btn-osiris active">
-            <i class="far fa-user-graduate"></i> <?= lang('Users', 'Nutzer:innen') ?>
+            <i class="ph ph-regular ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
         </a>
     </div>
 
     <h1>
-        <i class="far fa-user-graduate text-osiris"></i>
+        <i class="ph ph-regular ph-student text-osiris"></i>
         <?= lang('Advanced user search', 'Erweiterte Nutzer-Suche') ?>
     </h1>
     <!-- <form action="#" method="get"> -->
 
     <div id="builder"></div>
 
-    <button class="btn btn-osiris" onclick="getResult()"><i class="fas fa-search"></i> <?= lang('Search', 'Suchen') ?></button>
+    <button class="btn btn-osiris" onclick="getResult()"><i class="ph ph-regular ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
 
     <pre id="result" class="code my-20"></pre>
 
@@ -148,11 +148,11 @@ $Format = new Format(true);
 
             'lang_code': lang('en', 'de'),
             'icons': {
-                add_group: 'fas fa-plus-circle',
-                add_rule: 'fas fa-plus',
-                remove_group: 'fas fa-xmark-circle',
-                remove_rule: 'fas fa-xmark',
-                error: 'fas fa-exclamation-triangle',
+                add_group: 'ph ph-regular ph-plus-circle',
+                add_rule: 'ph ph-regular ph-plus',
+                remove_group: 'ph-fill ph-xmark-circle',
+                remove_rule: 'ph-fill ph-xmark',
+                error: 'ph-fill ph-exclamation-triangle',
             },
             allow_empty: true,
             default_filter: 'is_active'

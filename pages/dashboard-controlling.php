@@ -17,7 +17,7 @@
                     <canvas id="overview-<?= $q ?>"></canvas>
                     <!-- <div class="text-right mt-5">
                         <button class="btn btn-sm" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
-                            <i class="fas fa-search-plus"></i> <?= lang('Activities') ?>
+                            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities') ?>
                         </button>
                     </div> -->
 
@@ -98,7 +98,7 @@
                     <canvas id="approved-<?= $q ?>"></canvas>
                     <div class="text-right mt-5">
                         <button class="btn btn-sm" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
-                            <i class="fas fa-search-plus"></i> <?= lang('Details') ?>
+                            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Details') ?>
                         </button>
                     </div>
 
@@ -206,7 +206,7 @@ $Format = new Format(true);
                     </td>
                     <td class="unbreakable">
                         <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="icon-activity-search"></i>
+                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
                         </a>
                     </td>
                 </tr>

@@ -44,7 +44,7 @@ const nextBtn = {
 }
 
 const cancelBtn = {
-    text: '<i class="fas fa-xmark"></i>',
+    text: '<i class="ph-bold fa-xmark"></i>',
     action: tour.cancel,
     classes: 'btn btn-danger'
 }

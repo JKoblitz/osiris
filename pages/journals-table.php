@@ -5,7 +5,7 @@
 
 
 <h2 class="mt-0">
-    <i class="far fa-book-open-cover text-osiris mr-5"></i>
+    <i class="ph ph-regular ph-book-open-cover text-osiris mr-5"></i>
    <?=lang('Journals', 'Journale')?>
 </h2>
 

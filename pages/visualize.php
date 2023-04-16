@@ -9,7 +9,7 @@ $selectedUser = $osiris->users->findone(['_id' => $scientist]);
 <div class="content">
 
     <h1>
-        <i class="far fa-chart-network" aria-hidden="true"></i>
+        <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
         <?= lang('Visualizations', 'Visualisierungen') ?>
     </h1>
 

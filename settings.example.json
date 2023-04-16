@@ -120,7 +120,7 @@
             "name": "Poster",
             "name_de": "Poster",
             "color": "#B61F29",
-            "icon": "presentation-screen",
+            "icon": "presentation-chart",
             "index": 2
         },
         {
@@ -128,7 +128,7 @@
             "name": "Lectures",
             "name_de": "Vorträge",
             "color": "#ECAF00",
-            "icon": "keynote",
+            "icon": "chalkboard-teacher",
             "index": 3
         },
         {
@@ -136,7 +136,7 @@
             "name": "Reviews & Editorial boards",
             "name_de": "Reviews & Editorial boards",
             "color": "#1FA138",
-            "icon": "book-open-cover",
+            "icon": "article",
             "index": 4
         },
         {
@@ -144,7 +144,7 @@
             "name": "Students & Guests",
             "name_de": "Studierende & Gäste",
             "color": "#5F272A",
-            "icon": "user-graduate",
+            "icon": "student",
             "index": 5
         },
         {
@@ -152,7 +152,7 @@
             "name": "Teaching",
             "name_de": "Lehre",
             "color": "#000000",
-            "icon": "chalkboard-user",
+            "icon": "chalkboard-simple",
             "index": 6
         },
         {
@@ -168,7 +168,7 @@
             "name": "Other activities",
             "name_de": "Sonstige Aktivitäten",
             "color": "#b3b3b3",
-            "icon": "icons",
+            "icon": "shapes",
             "index": 8
         }
     ]

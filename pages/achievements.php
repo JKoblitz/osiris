@@ -1,6 +1,6 @@
 <div class="content mt-0">
     <h1>
-        <i class="far fa-trophy text-signal"></i>
+        <i class="ph ph-regular ph-trophy text-signal"></i>
         <?= lang('Achievements', 'Errungenschaften') ?>
     </h1>
 

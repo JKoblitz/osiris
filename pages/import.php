@@ -1,5 +1,5 @@
 <h1>
-    <i class="far fa-upload text-osiris"></i>
+    <i class="ph ph-regular ph-upload text-osiris"></i>
     Import
 </h1>
 
@@ -86,12 +86,12 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
 
                                 <?php if ($sim >= 98) { ?>
                                     <!-- <button class="btn" disabled>
-                                    <i class="fas fa-plus"></i>
+                                    <i class="ph ph-regular ph-plus"></i>
                                     <?= lang('Adding duplicates is impossible.', 'de') ?>
                                 </button> -->
                                 <?php } else { ?>
                                     <button class="btn mt-5" onclick='addGoogleActivity("<?= $user ?>", "<?= $pub_id ?>")'>
-                                        <i class="fas fa-plus"></i>
+                                        <i class="ph ph-regular ph-plus"></i>
                                         <?= lang('Add to database', 'Zur DB hinzufügen') ?>
                                     </button>
                                 <?php } ?>
@@ -290,7 +290,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
             </div>
 
             <button class="btn btn-primary">
-                <i class="fas fa-upload"></i>
+                <i class="ph-fill ph-upload"></i>
                 Upload
             </button>
         </form>

@@ -153,11 +153,11 @@ if ($showcoins == 'all'){
             </h3>
             <?php if ($showcoins) { ?>
                 <p class="lead mt-0">
-                    <i class="fad fa-lg fa-coin text-signal"></i>
+                    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
                     <b id="lom-points"></b>
                     Coins in <?= $YEAR ?>
                     <a href='#coins' class="text-muted">
-                        <i class="far fa-question-circle text-muted"></i>
+                        <i class="ph ph-regular ph-question-circle text-muted"></i>
                     </a>
                 </p>
             <?php } ?>
@@ -174,7 +174,7 @@ if ($showcoins == 'all'){
 
                         <div class="input-group-prepend">
                             <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                                <i class="far fa-calendar-day"></i>
+                                <i class="ph ph-regular ph-calendar-check"></i>
                             </div>
                         </div>
                         <select name="year" id="year" class="form-control">
@@ -189,7 +189,7 @@ if ($showcoins == 'all'){
                             <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
                         </select>
                         <div class="input-group-append">
-                            <button class="btn btn-primary"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-primary"><i class="ph ph-regular ph-check"></i></button>
                         </div>
                     </div>
 
@@ -213,26 +213,26 @@ if ($showcoins == 'all'){
 
             <?php if (!$quarter_in_past) { ?>
                 <a href="#" class="btn disabled">
-                    <i class="fas fa-check mr-5"></i>
+                    <i class="ph ph-regular ph-check mr-5"></i>
                     <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
                 </a>
             <?php
 
             } elseif ($approved) { ?>
                 <a href="#" class="btn disabled">
-                    <i class="fas fa-check mr-5"></i>
+                    <i class="ph ph-regular ph-check mr-5"></i>
                     <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
                 </a>
             <?php } else { ?>
                 <a class="btn btn-lg btn-success" href="#approve">
-                    <i class="fas fa-question mr-5"></i>
+                    <i class="ph-fill ph-question mr-5"></i>
                     <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
                 </a>
             <?php } ?>
 
         <?php } ?>
         <a target="_blank" href="<?= ROOTPATH ?>/docs/my-year" class="btn btn-tour ml-auto" id="tour">
-            <i class="far fa-lg fa-book-sparkles mr-5"></i>
+            <i class="ph ph-regular ph-lg ph-question mr-5"></i>
             <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
         </a>
 
@@ -366,7 +366,7 @@ if ($showcoins == 'all'){
                 content: function() {
                     var icon = '';
                     if (typeInfo[d.type]) {
-                        icon = `<i class="fas fa-${typeInfo[d.type].icon}" style="color:${typeInfo[d.type].color}"></i>`
+                        icon = `<i class="ph-fill ph-${typeInfo[d.type].icon}" style="color:${typeInfo[d.type].color}"></i>`
                     }
                     return `${icon} ${d.title ?? 'No title available'}`
                 }
@@ -476,8 +476,8 @@ if ($showcoins == 'all'){
         <div class="box box-<?= $col ?>" id="<?= $col ?>">
             <div class="content">
                 <h4 class="title text-<?= $col ?>">
-                    <i class="far fa-fw fa-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
-                    <?= $Settings->getActivities($col)['name'] ?>
+                    <i class="ph ph-regular ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
+                    <?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
                 </h4>
             </div>
             <table class="table table-simple">
@@ -542,14 +542,14 @@ if ($showcoins == 'all'){
 
                         <td class="unbreakable w-50">
                             <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                <i class="icon-activity-search"></i>
+                                <i class="ph ph-regular ph-arrow-fat-line-right"></i>
                             </a>
                             <button class="btn btn-link btn-square" onclick="addToCart(this, '<?= $id ?>')">
-                                <i class="<?= (in_array($id, $cart)) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus' ?>"></i>
+                                <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-regular ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
                             </button>
                             <?php if ($currentuser) { ?>
                                 <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                                    <i class="icon-activity-pen"></i>
+                                    <i class="ph ph-regular ph-pencil-simple-line"></i>
                                 </a>
                             <?php } ?>
                         </td>
@@ -567,12 +567,12 @@ if ($showcoins == 'all'){
                     if ($col == "publication") $t = "article";
                 ?>
                     <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
-                        <i class="far fa-book-bookmark mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)['name'] ?>
+                        <i class="ph ph-regular ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
                     </a>
-                    <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="fas fa-plus"></i></a>
+                    <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-regular ph-plus"></i></a>
                     <?php if ($col == 'publication') { ?>
                         <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
-                            <i class="fas fa-search-plus mr-5"></i>
+                            <i class="ph ph-regular ph-magnifying-glass-plus mr-5"></i>
                             <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
                         </a>
                     <?php } ?>

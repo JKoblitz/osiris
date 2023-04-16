@@ -228,16 +228,16 @@ Route::get('/api/all-activities', function () {
 
         $datum['links'] =
             "<a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/view/$id'>
-                <i class='icon-activity-search'></i>
+                <i class='ph ph-regular ph-arrow-fat-line-right'></i>
             </a>";
         $useractivity = isUserActivity($doc, $user);
         if ($useractivity) {
             $datum['links'] .= " <a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/edit/$id'>
-                <i class='icon-activity-pen'></i>
+                <i class='ph ph-regular ph-pencil-simple-line'></i>
             </a>";
         }
         $datum['links'] .= "<button class='btn btn-link btn-square' onclick='addToCart(this, \"$id\")'>
-            <i class='" . (in_array($id, $cart) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus') . "'></i>
+            <i class='" . (in_array($id, $cart) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-regular ph-shopping-cart ph-shopping-cart-plus') . "'></i>
         </button>";
         $result[] = $datum;
     }

@@ -351,7 +351,7 @@ function getJournal(name) {
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
-                    button.html('<i class="fas fa-lg fa-check text-success"></i>')
+                    button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
                     button.on('click', function () {
                         selectJournal(j);
                     })
@@ -499,7 +499,7 @@ function getJournalAlex(name) {
                 var row = $('<tr>')
 
                 var button = $('<button class="btn" title="select">')
-                button.html('<i class="fas fa-lg fa-check text-success"></i>')
+                button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
                 button.on('click', function () {
                     selectJournal(j, true);
                 })
@@ -590,7 +590,7 @@ function getJournalNLM(name) {
                         var row = $('<tr>')
 
                         var button = $('<button class="btn" title="select">')
-                        button.html('<i class="fas fa-lg fa-check text-success"></i>')
+                        button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
                         button.on('click', function () {
                             selectJournal(j, true);
                         })
@@ -1473,7 +1473,7 @@ function addToCart(el, id) {//.addClass('animate__flip')
     if (el === null) {
         location.reload()
     } else {
-        $(el).find('i').toggleClass('fas').toggleClass('fal').toggleClass('text-success')
+        $(el).find('i').toggleClass('ph-fill').toggleClass('ph').toggleClass('text-success')
     }
     // setTimeout(function () {
     //     $(el).find('i').removeClass('animate__flip')
@@ -1519,7 +1519,7 @@ function getTeaching(name) {
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
-                    button.html('<i class="fas fa-lg fa-check text-success"></i>')
+                    button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
                     button.on('click', function () {
                         selectTeaching(j);
                     })
@@ -1663,7 +1663,7 @@ function displayPubMed(ids) {
                 tr.append(td)
                 tr.append(`
                     <td>
-                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn btn-link btn-large text-primary"><i class="fas fa-plus"></i></a>
+                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn btn-link btn-large text-primary"><i class="ph-bold fa-plus"></i></a>
                     </td>
                     `)
                 table.append(tr)

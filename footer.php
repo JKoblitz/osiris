@@ -5,7 +5,7 @@
 
 <div class="footer justify-content-between d-flex">
    <span>
-        Developed with <i class="far fa-heart"></i> in Helmstedt
+        <?=lang('Developed with', 'Entwickelt mit')?> <i class="ph ph-regular ph-heart" title="Für Leonie"></i> in Helmstedt
    </span>
    <a href="<?=ROOTPATH?>/license">License</a>
     <span>

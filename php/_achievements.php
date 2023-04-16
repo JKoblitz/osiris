@@ -316,7 +316,7 @@ class Achievement
         // foreach ($levels as $lvl => $value) {
         //     if ($value == 0) continue;
         //     echo "<a class='achievement colorless font-size-16 max-4 lvl$lvl mr-10' href='".ROOTPATH."/achievements/$this->username'>";
-        //     echo "<i class='fas fa-lg fa-trophy'></i> $value";
+        //     echo "<i class='ph-fill ph-lg ph-trophy'></i> $value";
         //     echo "</a>";
         // }
         // echo "</div>";

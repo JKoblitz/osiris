@@ -123,18 +123,21 @@ td.unbreakable {
 }
 
 .check-list li:before {
-    content: '\f0c8';
-    font-family: 'Font Awesome 6 Pro';
-    font-weight: 400;
+    content: '\ed1c';
+    font-family: 'Phosphor';
+    /* font-weight: 400; */
     display: block;
     position: absolute;
     color: var(--muted-color);
     left: 0;
     top: 0;
+    font-size: 1.25em;
+    line-height: 1em;
+    vertical-align: -0.15em;
 }
 
 .check-list li.checked::before {
-    content: '\f14a';
+    content: '\ea34';
     color: var(--success-color);
 }
 
@@ -233,11 +236,13 @@ strong {
 }
 
 .lom::before {
-    content: '\f85c';
-    font-family: "Font Awesome 6 Pro";
-    font-weight: 900;
+    content: '\ea5e';
+    font-family: "Phosphor";
     color: var(--signal-color);
     margin-right: .5rem;
+    font-size: 1.25em;
+    line-height: 1em;
+    vertical-align: -0.15em;
 }
 
 .lom span {
@@ -759,10 +764,33 @@ a.module:hover {
     -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
     -webkit-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
     box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
-  }
+}
 
-  .highlight-text {
+.highlight-text {
     background: var(--color-warm-orange);
     color: white;
     padding: 0 .5rem;
-  }
+}
+
+
+.navbar .btn-action::after {
+    font-family: "Phosphor";
+
+    font-size: 1.25em;
+    line-height: 1em;
+    vertical-align: -0.15em;
+    content: '\ebca';
+    width: 100%;
+}
+
+.breadcrumb li::before, .breadcrumb button::before {
+    font-family: "Phosphor";
+
+    font-size: 1.25em;
+    line-height: 1em;
+    vertical-align: -0.15em;
+    color: #878787;
+    content: '\ea00';
+    margin-left: 1rem;
+    margin-right: 1.5rem;
+}

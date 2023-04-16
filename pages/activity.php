@@ -80,13 +80,13 @@ $user_activity = isUserActivity($doc, $user);
     <div class="float-md-right">
         <div class="btn-group">
             <button class="btn " onclick="addToCart(this, '<?= $id ?>')">
-                <i class="<?= (in_array($id, $cart)) ? 'fas fa-cart-plus text-success' : 'far fa-cart-plus' ?>"></i>
+                <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-regular ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
                 <?= lang('Add to cart', 'Für Download sammeln') ?>
             </button>
             <div class=" dropdown with-arrow btn-group ">
                 <button class="btn" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
-                    <i class="far fa-download"></i> Download
-                    <i class="fas fa-angle-down ml-5" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-download"></i> Download
+                    <i class="ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
                     <div class="content">
@@ -168,7 +168,7 @@ $user_activity = isUserActivity($doc, $user);
         <div class="btn-toolbar mb-10">
             <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
                 <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
-                    <i class="icon-activity-pen"></i>
+                    <i class="ph ph-regular ph-pencil-simple-line"></i>
                     <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
                 </a>
             <?php } ?>
@@ -176,7 +176,7 @@ $user_activity = isUserActivity($doc, $user);
 
             <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students', 'teaching'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
-        <i class="far fa-book-copy"></i>
+        <i class="ph ph-regular ph-book-copy"></i>
         ' . lang("Add a copy", "Kopie anlegen") .
                     '</a>';
             }
@@ -186,7 +186,7 @@ $user_activity = isUserActivity($doc, $user);
             <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
                 <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
                     <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
-                        <i class="far fa-upload"></i>
+                        <i class="ph ph-regular ph-upload"></i>
                         <?= lang('Upload files', 'Dateien hochladen') ?>
                     </a>
                 <?php } ?>
@@ -280,7 +280,7 @@ $user_activity = isUserActivity($doc, $user);
 
                                     <?php if ($user_activity) { ?>
                                         <small class="text-danger d-block">
-                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <i class="ph-fill ph-exclamation-triangle"></i>
                                             <?= lang(
                                                 'Journal is not standardized. Please edit activity and update.',
                                                 'Journal ist nicht standardisiert. Bitte Aktivität bearbeiten und korrigieren.'
@@ -608,7 +608,7 @@ $user_activity = isUserActivity($doc, $user);
                                     <span class="text-signal"><?= lang('No files attached', 'Noch keine Dateien hochgeladen') ?></span>
                                 <?php endif; ?>
                                 <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn btn-sm">
-                                    <i class="fas fa-upload"></i>
+                                    <i class="ph-fill ph-upload"></i>
                                 </a>
                             </td>
                         </tr>
@@ -665,7 +665,7 @@ $user_activity = isUserActivity($doc, $user);
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
                     <button type="submit" class="btn text-danger">
-                        <i class="icon-activity-slash"></i>
+                        <i class="ph ph-regular ph-trash"></i>
                         <?= lang('Delete activity', 'Lösche Aktivität') ?>
                     </button>
                 </form>
@@ -683,7 +683,7 @@ $user_activity = isUserActivity($doc, $user);
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
                 <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Löschung&body=<?= $body ?>">
-                    <i class="far fa-envelope" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
                     <?= lang('Delete activity', 'Löschen beantragen') ?>
                 </a>
             </div> -->
@@ -700,13 +700,13 @@ $user_activity = isUserActivity($doc, $user);
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
                 <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
-                    <i class="far fa-envelope" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
                 <?php if (isset($doc['created_by'])) { ?>
 
                     <a class="btn text-danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf 'Änderung'&body=<?= $body ?>">
-                        <i class="far fa-envelope" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
                         <?= lang('Contact creator', 'Urheber kontaktieren') ?>
                     </a>
                 <?php } ?>
@@ -725,7 +725,7 @@ $user_activity = isUserActivity($doc, $user);
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
                 <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
-                    <i class="far fa-envelope" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
 
@@ -742,7 +742,7 @@ $user_activity = isUserActivity($doc, $user);
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
                     <button type="submit" class="btn text-danger">
-                        <i class="icon-activity-slash"></i>
+                        <i class="ph ph-regular ph-trash"></i>
                         <?= lang('Delete activity', 'Lösche Aktivität') ?>
                     </button>
                 </form>
@@ -763,12 +763,12 @@ $user_activity = isUserActivity($doc, $user);
                 <div class="btn-toolbar mb-10">
                     <?php if ($role == 'authors') {
                         echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
-                                <i class="fa-regular fa-user-pen"></i>
+                                <i class="ph ph-regular ph-user-list"></i>
                                 ' . lang("Edit authors", "Autorenliste bearbeiten") .
                             '</a>';
                     } else {
                         echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
-                                    <i class="fa-regular fa-user-pen"></i>
+                                    <i class="ph ph-regular ph-user-list"></i>
                                     ' . lang("Edit editors", "Editorenliste bearbeiten") .
                             '</a>';
                     } ?>

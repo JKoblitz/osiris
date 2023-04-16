@@ -40,7 +40,30 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         }
     </style>
 
-    <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" />
+<link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css"
+    />
+<link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css"
+    />
+    <style>
+        .ph, .ph ph-regular, .ph-fill {
+            font-size: 1.25em;
+line-height: 1em;
+vertical-align: -0.15em;
+        }
+
+        .sidebar-link.with-icon > .sidebar-icon, .sidebar-link.with-icon > i.ph {
+            font-size: 1.6em;
+        }
+    </style>
+    <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
+    <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
+    <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
@@ -147,7 +170,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </ul>
 
             <a href="<?= ROOTPATH ?>/news#04.04.23" class="btn btn-osiris">
-                <i class="fas fa-stars"></i>
+                <i class="ph-fill ph-sparkle"></i>
                 NEWS
                 (<?= time_elapsed_string('2023-04-04 16:00') ?>)
             </a>
@@ -161,7 +184,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <div class="cta">
                         <a href="<?= ROOTPATH ?>/" class="btn btn-osiris" style="border-radius:2rem">
-                            <i class="fa fa-right-to-bracket mr-10" aria-hidden="true"></i>
+                            <i class="fa ph-sign-in mr-10" aria-hidden="true"></i>
                             <?= lang('Log in') ?>
                         </a>
                     </div>
@@ -192,51 +215,51 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <div class="cta">
                         <a href="<?= ROOTPATH ?>/activities/new" class="btn btn-osiris <?= $pageactive('activities/new') ?>" style="border-radius:2rem">
-                            <i class="icon-activity-plus mr-10" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-folder-plus mr-10" aria-hidden="true"></i>
                             <?= lang('Add activity', 'Aktivität hinzuf.') ?>
                         </a>
                     </div>
 
                     <?php if ($USER['is_controlling']) { ?>
                         <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
-                            <i class="far fa-user-graduate" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-student" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
 
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                            <i class="far fa-chart-column" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-chart-column" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
 
                         <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
-                            <i class="far fa-coin" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-coin" aria-hidden="true"></i>
                             <?= lang('Coins') ?>
                         </a>
 
                     <?php } else { ?>
                         <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
-                            <i class="far fa-user-graduate" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-student" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('scientist') ?>">
-                            <i class="far fa-calendar" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-calendar" aria-hidden="true"></i>
                             <?= lang('My year', 'Mein Jahr') ?>
                         </a>
                     <?php } ?>
 
                     <?php if ($USER['is_scientist']) { ?>
                         <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-activities') ?>">
-                            <i class="icon-activity-user" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-folder-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
                         </a>
                     <?php } ?>
                     <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('visualize') ?>">
-                        <i class="far fa-chart-network" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
                         <?= lang('Visualizations', 'Visualisierung') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon mt-10">
-                        <i class="far fa-right-from-bracket" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-sign-out" aria-hidden="true"></i>
                         Logout
                     </a>
 
@@ -247,45 +270,45 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </div>
 
                     <a href="<?= ROOTPATH ?>/activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities') ?>">
-                        <i class="far fa-book-open" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-folders" aria-hidden="true"></i>
                         <?= lang('All activities', 'Alle Aktivitäten') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
-                        <i class="far fa-user-graduate" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-student" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/expertise" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('expertise') ?>">
-                        <i class="far fa-dumbbell" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-barbell" aria-hidden="true"></i>
                         <?= lang('Expertise search', 'Experten-Suche') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
-                        <i class="far fa-institution" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
                     </a>
                     <a href="<?= ROOTPATH ?>/activities/teaching" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/teaching') ?>">
-                        <i class="far fa-chalkboard" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-chalkboard-simple" aria-hidden="true"></i>
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
 
                     <?php if ($USER['is_scientist']) { ?>
 
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                            <i class="far fa-chart-line" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-chart-line" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
                     <?php } ?>
 
                     <a href="<?= ROOTPATH ?>/activities/search" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/search') ?>">
-                        <i class="icon-activity-search" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-magnifying-glass-plus" aria-hidden="true"></i>
                         <?= lang('Advanced search', 'Erweiterte Suche') ?>
                     </a>
 
 
                     <a href="<?= ROOTPATH ?>/import" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('import') ?>">
-                        <i class="far fa-upload" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-upload" aria-hidden="true"></i>
                         <?= lang('Import') ?>
                     </a>
 
@@ -295,12 +318,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </div>
 
                     <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
-                        <i class="far fa-download" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-download" aria-hidden="true"></i>
                         Download <?= lang('Activities', 'Aktivitäten') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/cart" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('cart') ?>">
-                        <i class="far fa-cart-arrow-down" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-shopping-cart" aria-hidden="true"></i>
                         <?= lang('Cart', 'Einkaufswagen') ?>
                         <?php
                         $cart = readCart();
@@ -319,7 +342,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?php if ($USER['is_controlling']) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
-                            <i class="far fa-file-chart-column" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-file-chart-column" aria-hidden="true"></i>
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
 
@@ -333,22 +356,22 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 </div>
 
                 <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
-                    <i class="far fa-message-pen" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-info" aria-hidden="true"></i>
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
 
                 <a href="<?= ROOTPATH ?>/docs" class="sidebar-link with-icon <?= $pageactive('docs') ?>">
-                    <i class="far fa-comment-question" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-question" aria-hidden="true"></i>
                     <?= lang('Documentation', 'Dokumentation') ?>
                 </a>
 
                 <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon">
-                    <i class="far fa-comments" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-chat-text" aria-hidden="true"></i>
                     <?= lang('Feedback') ?>
                 </a>
 
                 <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
-                    <i class="far fa-language" aria-hidden="true"></i>
+                    <i class="ph ph-regular ph-translate" aria-hidden="true"></i>
                     <?= lang('Deutsch', 'English') ?>
                 </a>
 

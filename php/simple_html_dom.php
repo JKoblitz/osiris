@@ -1159,13 +1159,13 @@ class simple_html_dom_node
 		// Look in the tag to see if there is a class or id specified that has
 		// a height or width attribute to it.
 
-		// Far future enhancement
+		// ph ph-regular future enhancement
 		// Look at all the parent tags of this image to see if they specify a
 		// class or id that has an img selector that specifies a height or width
 		// Note that in this case, the class or id will have the img subselector
 		// for it to apply to the image.
 
-		// ridiculously far future development
+		// ridiculously ph ph-regular future development
 		// If the class or id is specified in a SEPARATE css file thats not on
 		// the page, go get it and do what we were just doing for the ones on
 		// the page.

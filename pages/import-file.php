@@ -15,7 +15,7 @@ use \LibRIS\RISReader;
 ?>
 <!-- ONLY FOR POST!!! -->
 <h1>
-    <i class="far fa-upload text-osiris"></i>
+    <i class="ph ph-regular ph-upload text-osiris"></i>
     Import
 </h1>
 
@@ -51,7 +51,7 @@ use \LibRIS\RISReader;
             </div>
 
             <button class="btn btn-primary">
-                <i class="fas fa-upload"></i>
+                <i class="ph-fill ph-upload"></i>
                 Upload
             </button>
         </form>
@@ -170,7 +170,7 @@ if (isset($_FILES["file"])) {
                     <form action="<?=ROOTPATH?>/activities/new" method="post" target="_blank">
                 
                     <input type="hidden" name="form" value='<?=$dataString?>'>
-                <button class="btn"><i class="fas fa-plus"></i></button>
+                <button class="btn"><i class="ph ph-regular ph-plus"></i></button>
                 </form>
                    </td>
                 </tr>

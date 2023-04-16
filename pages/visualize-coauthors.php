@@ -8,7 +8,7 @@ $selectedUser = $osiris->users->findone(['_id' => $scientist]);
 
 
 <h1>
-    <i class="far fa-chart-network" aria-hidden="true"></i>
+    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
     <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
 </h1>
 
@@ -26,7 +26,7 @@ $selectedUser = $osiris->users->findone(['_id' => $scientist]);
     </div>
 </form>
 
-<a class="link" href="<?= ROOTPATH ?>/profile/<?= $scientist ?>"><i class="fas fa-user-graduate"></i>
+<a class="link" href="<?= ROOTPATH ?>/profile/<?= $scientist ?>"><i class="ph-fill ph-student"></i>
     <?= lang('View scientist page of ', 'Zeige die Übersichtsseite von ') ?>
     <?= $selectedUser['displayname'] ?>
 </a>

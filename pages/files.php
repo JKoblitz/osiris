@@ -98,14 +98,14 @@ $Format = new Format(false);
                         <td><?= $file['filename'] ?></td>
                         <td><?= $file['filetype'] ?></td>
                         <td>
-                            <a href="<?= $file['filepath'] ?>"><i class="fas fa-download"></i></a>
+                            <a href="<?= $file['filepath'] ?>"><i class="ph-fill ph-download"></i></a>
                         </td>
                         <td>
                             <form action="#" method="post">
                                 <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
 
                                 <button class="btn btn-link" type="submit">
-                                    <i class="fas fa-trash-alt text-danger"></i>
+                                    <i class="ph-fill ph-trash-alt text-danger"></i>
                                 </button>
                             </form>
                         </td>
@@ -134,7 +134,7 @@ $Format = new Format(false);
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>
             <button class="btn btn-primary">
-                <i class="fas fa-upload"></i>
+                <i class="ph-fill ph-upload"></i>
                 Upload
             </button>
         </form>

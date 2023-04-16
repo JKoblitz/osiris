@@ -8,7 +8,7 @@
 <div class="content">
 
     <h1>
-        <i class="fad fa-users"></i>
+        <i class="ph ph-regular ph-users"></i>
         <?php if ($role == 'authors') { ?>
         <?= lang('Edit authors', 'Bearbeite die Autoren') ?>
         <?php } else { ?>
@@ -33,7 +33,7 @@
                 <?php foreach ($form[$role] as $i => $author) { ?>
                     <tr>
                         <td>
-                            <i class="fas fa-grip-dots-vertical text-muted handle"></i>
+                            <i class="ph-fill ph-grip-dots-vertical text-muted handle"></i>
                         </td>
                         <td>
                             <input name="authors[<?= $i ?>][last]" type="text" class="form-control" value="<?= $author['last'] ?>" required>
@@ -64,7 +64,7 @@
                         <input name="authors[<?= $i ?>][approved]" type="hidden" class="form-control" value="<?= $author['approved'] ?? 0 ?>">
                         </td>
                         <td>
-                            <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i class="fas fa-trash-alt"></i></button>
+                            <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i class="ph-fill ph-trash-alt"></i></button>
                         </td>
                     </tr>
                 <?php } ?>
@@ -73,14 +73,14 @@
                 <tr id="last-row">
                     <td></td>
                     <td colspan="6">
-                        <button class="btn" type="button" onclick="addAuthorRow()"><i class="fas fa-plus"></i> <?= lang('Add author', 'Autor hinzufügen') ?></button>
+                        <button class="btn" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i> <?= lang('Add author', 'Autor hinzufügen') ?></button>
                     </td>
                 </tr>
             </tfoot>
 
         </table>
         <button class="btn btn-primary mt-20">
-            <i class="fas fa-check"></i>
+            <i class="ph ph-regular ph-check"></i>
             <?= lang('Submit', 'Bestätigen') ?>
         </button>
     </form>
@@ -102,13 +102,13 @@
     function addAuthorRow() {
         counter++;
         var tr = $('<tr>')
-        tr.append('<td><i class="fas fa-grip-dots-vertical text-muted handle"></i></td>')
+        tr.append('<td><i class="ph-fill ph-grip-dots-vertical text-muted handle"></i></td>')
         tr.append('<td><input name="authors[' + counter + '][last]" type="text" class="form-control" required></td>')
         tr.append('<td><input name="authors[' + counter + '][first]" type="text" class="form-control"></td>')
         tr.append('<td><select name="authors[' + counter + '][position]" class="form-control"><option value="first">first</option><option value="middle" selected>middle</option><option value="corresponding">corresponding</option><option value="last">last</option></select></td>')
         tr.append('<td><div class="custom-checkbox"><input type="checkbox" id="checkbox-' + counter + '" name="authors[' + counter + '][aoi]" value="1"><label for="checkbox-' + counter + '" class="blank"></label></div></td>')
         tr.append('<td> <input name="authors[' + counter + '][user]" type="text" class="form-control" list="user-list"></td>')
-        var btn = $('<button class="btn" type="button">').html('<i class="fas fa-trash-alt"></i>').on('click', function() {
+        var btn = $('<button class="btn" type="button">').html('<i class="ph-fill ph-trash-alt"></i>').on('click', function() {
             $(this).closest('tr').remove();
         });
         tr.append($('<td>').append(btn))

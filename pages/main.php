@@ -29,7 +29,7 @@
 
 <div class="tiles">
    <a class="tile tile-link" href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>">
-      <i class="fal fa-user-graduate tile-icon"></i>
+      <i class="fal ph-student tile-icon"></i>
       <?= lang('Go to your profile', 'Geh zu deinem Profil') ?>
    </a>
 </div>
