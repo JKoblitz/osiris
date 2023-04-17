@@ -152,7 +152,7 @@ $Format = new Format(true);
                 add_rule: 'ph ph-regular ph-plus',
                 remove_group: 'ph-fill ph-xmark-circle',
                 remove_rule: 'ph-fill ph-xmark',
-                error: 'ph-fill ph-exclamation-triangle',
+                error: 'ph-fill ph-warning',
             },
             allow_empty: true,
             default_filter: 'is_active'

@@ -181,7 +181,7 @@ foreach ($cursor as $doc) {
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a>
 <h1>
-    <i class="ph-fill ph-exclamation-triangle text-osiris"></i>
+    <i class="ph-fill ph-warning text-osiris"></i>
     <?= lang('Warnings', 'Warnungen') ?>
 </h1>
 

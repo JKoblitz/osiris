@@ -60,6 +60,7 @@ vertical-align: -0.15em;
         .sidebar-link.with-icon > .sidebar-icon, .sidebar-link.with-icon > i.ph {
             font-size: 1.6em;
         }
+
     </style>
     <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
@@ -215,7 +216,7 @@ vertical-align: -0.15em;
 
                     <div class="cta">
                         <a href="<?= ROOTPATH ?>/activities/new" class="btn btn-osiris <?= $pageactive('activities/new') ?>" style="border-radius:2rem">
-                            <i class="ph ph-regular ph-folder-plus mr-10" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-plus-circle mr-10" aria-hidden="true"></i>
                             <?= lang('Add activity', 'Aktivität hinzuf.') ?>
                         </a>
                     </div>

@@ -1,5 +1,13 @@
 # Neuigkeiten
 
+## 16.04.23
+
+<i class="ph ph-cake"></i>
+**Neue Icons wurden eingeführt**
+
+Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [PhosphorIcons](https://phosphoricons.com/) ersetzt. Die sind (genau wie OSIRIS) unter der Open Source-Lizenz MIT veröffentlicht.
+
+
 ## 04.04.23
 
 `Version 1.1`

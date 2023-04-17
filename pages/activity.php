@@ -280,7 +280,7 @@ $user_activity = isUserActivity($doc, $user);
 
                                     <?php if ($user_activity) { ?>
                                         <small class="text-danger d-block">
-                                            <i class="ph-fill ph-exclamation-triangle"></i>
+                                            <i class="ph-fill ph-warning"></i>
                                             <?= lang(
                                                 'Journal is not standardized. Please edit activity and update.',
                                                 'Journal ist nicht standardisiert. Bitte Aktivität bearbeiten und korrigieren.'

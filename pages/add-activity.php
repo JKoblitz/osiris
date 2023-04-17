@@ -273,7 +273,7 @@ function val($index, $default = '')
         </button>
         <!-- Create new activity -->
         <h2 class="mb-0">
-            <i class="ph ph-regular ph-folder-plus"></i>
+            <i class="ph ph-regular ph-plus-circle"></i>
             <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
         </h2>
 
@@ -750,7 +750,7 @@ function val($index, $default = '')
 
                 <div class="alert alert-signal mb-20 affiliation-warning" style="display: none;">
                     <h5 class="title">
-                        <i class="ph-fill ph-exclamation-circle"></i>
+                        <i class="ph ph-warning-circle"></i>
                         <?= lang('Attention: No ' . $Settings->affiliation . " authors added.", 'Achtung: Keine ' . $Settings->affiliation . '-Autoren angegeben.') ?>
                     </h5>
                     <?= lang(

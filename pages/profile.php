@@ -273,7 +273,7 @@ if ($showcoins == 'all') {
 
                 <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
-                        <i class="ph ph-regular ph-folder-plus text-osiris ph-fw"></i>
+                        <i class="ph ph-regular ph-plus-circle text-osiris ph-fw"></i>
                         <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
                     </a>
                     <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">

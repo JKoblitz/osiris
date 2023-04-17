@@ -1,6 +1,6 @@
 <div class="content">
 <h2 class="mb-0">
-            <i class="ph ph-regular ph-folder-plus"></i>
+            <i class="ph ph-regular ph-plus-circle"></i>
             <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
         </h2>
 
