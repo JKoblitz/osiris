@@ -424,7 +424,7 @@ if ($showcoins == 'all') {
             </div>
             <div class="p-10 pt-0">
 
-                <form action="<?= ROOTPATH ?>/update-user/<?= $user ?>" method="post">
+                <form action="<?= ROOTPATH ?>/update-user/<?= $user ?>" method="post" id="expertise-form">
                     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                     <?php foreach ($expertise as $n) { ?>
@@ -468,6 +468,17 @@ if ($showcoins == 'all') {
                 // $(el).prepend(group);
                 $(group).insertBefore(el);
             }
+
+            // function resizeInput() {
+            //     console.log(this);
+            //     var el = $(this) 
+            //     el.css('width', el.val().length+'ch')
+            // }
+            // var expertFields = $('#expertise-form').find('input:not([type=hidden])')
+            // expertFields.on('input', resizeInput)
+
+            // expertFields.each((n, el) => {resizeInput.call(el)})
+
         </script>
     <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
         <div class="mt-20" id="expertise">

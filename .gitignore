@@ -1,5 +1,4 @@
-css/fontawesome/*
-css/Rubik/*
+css/fontawesome
 .data
 /vendor/
 *.old.php

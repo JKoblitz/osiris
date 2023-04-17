@@ -271,6 +271,23 @@ vertical-align: -0.2em;
                         Logout
                     </a>
 
+                    <div class="sidebar-title">
+                        <?= lang('Modules', 'Module') ?>
+                    </div>
+
+
+                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
+                        <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
+                        <?= lang('Journals', 'Journale') ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/activities/teaching" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/teaching') ?>">
+                        <i class="ph ph-regular ph-chalkboard-simple" aria-hidden="true"></i>
+                        <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
+                        <i class="ph ph-regular ph-rocket-launch" aria-hidden="true"></i>
+                        <?= lang('Projects', 'Projekte') ?>
+                    </a>
 
 
                     <div class="sidebar-title">
@@ -290,15 +307,6 @@ vertical-align: -0.2em;
                     <a href="<?= ROOTPATH ?>/expertise" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('expertise') ?>">
                         <i class="ph ph-regular ph-barbell" aria-hidden="true"></i>
                         <?= lang('Expertise search', 'Experten-Suche') ?>
-                    </a>
-
-                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
-                        <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
-                        <?= lang('Journals', 'Journale') ?>
-                    </a>
-                    <a href="<?= ROOTPATH ?>/activities/teaching" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/teaching') ?>">
-                        <i class="ph ph-regular ph-chalkboard-simple" aria-hidden="true"></i>
-                        <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
 
                     <?php if ($USER['is_scientist']) { ?>
