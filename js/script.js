@@ -730,23 +730,25 @@ function getDOI(doi) {
             if (pub.author === undefined && pub.editor !== undefined) {
                 pub.author = pub.editor
             }
-            pub.author.forEach((a, i) => {
-                var aoi = false
-                a.affiliation.forEach(e => {
-                    if (e.name.includes(AFFILIATION)) {
-                        aoi = true
+            if (pub.author !== undefined){
+                pub.author.forEach((a, i) => {
+                    var aoi = false
+                    a.affiliation.forEach(e => {
+                        if (e.name.includes(AFFILIATION)) {
+                            aoi = true
+                        }
+                    })
+                    if (a.sequence == "first") {
+                        first = i + 1
                     }
-                })
-                if (a.sequence == "first") {
-                    first = i + 1
-                }
-                var name = {
-                    family: a.family,
-                    given: a.given,
-                    affiliation: aoi
-                }
-                authors.push(name)
-            });
+                    var name = {
+                        family: a.family,
+                        given: a.given,
+                        affiliation: aoi
+                    }
+                    authors.push(name)
+                });
+            }
             var issue = null
             if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
 
