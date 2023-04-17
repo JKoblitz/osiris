@@ -34,32 +34,32 @@
   
   .ph-2xs {
     font-size: 0.625em;
-    line-height: 0.1em;
+    /* line-height: 0.1em; */
     vertical-align: 0.225em; }
   
   .ph-xs {
     font-size: 0.75em;
-    line-height: 0.08333em;
+    /* line-height: 0.08333em; */
     vertical-align: 0.125em; }
   
   .ph-sm {
     font-size: 0.875em;
-    line-height: 0.07143em;
+    /* line-height: 0.07143em; */
     vertical-align: 0.05357em; }
   
   .ph-lg {
-    font-size: 1.25em;
-    line-height: 0.05em;
+    font-size: 1.5em;
+    /* line-height: 0.05em; */
     vertical-align: -0.075em; }
   
   .ph-xl {
     font-size: 1.5em;
-    line-height: 0.04167em;
+    /* line-height: 0.04167em; */
     vertical-align: -0.125em; }
   
   .ph-2xl {
     font-size: 2em;
-    line-height: 0.03125em;
+    /* line-height: 0.03125em; */
     vertical-align: -0.1875em; }
   
   .ph-fw {

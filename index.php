@@ -404,6 +404,18 @@ Route::post('/activities/new', function () {
 
 
 
+Route::get('/projects', function () {
+    include_once BASEPATH . "/php/_config.php";
+    // $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang("Projects", "Projekte")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/projects.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/activities/teaching', function () {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];

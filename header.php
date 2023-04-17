@@ -261,20 +261,26 @@ vertical-align: -0.2em;
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
                         </a>
                     <?php } ?>
-                    <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('visualize') ?>">
-                        <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
-                        <?= lang('Visualizations', 'Visualisierung') ?>
-                    </a>
 
-                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link with-icon mt-10">
+                    <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link  with-icon">
                         <i class="ph ph-regular ph-sign-out" aria-hidden="true"></i>
                         Logout
                     </a>
 
                     <div class="sidebar-title">
-                        <?= lang('Modules', 'Module') ?>
+                        <?= lang('Data', 'Daten') ?>
                     </div>
 
+
+                    <a href="<?= ROOTPATH ?>/activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities') ?>">
+                        <i class="ph ph-regular ph-folders" aria-hidden="true"></i>
+                        <?= lang('All activities', 'Alle Aktivitäten') ?>
+                    </a>
+                    
+                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
+                        <i class="ph ph-regular ph-student" aria-hidden="true"></i>
+                        <?= lang('Users', 'Nutzer:innen') ?>
+                    </a>
 
                     <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
                         <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
@@ -285,23 +291,28 @@ vertical-align: -0.2em;
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
                     <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
-                        <i class="ph ph-regular ph-rocket-launch" aria-hidden="true"></i>
+                        <i class="ph ph-regular ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
                     </a>
 
 
                     <div class="sidebar-title">
-                        <?= lang('Others', 'Weiteres') ?>
+                        <?= lang('Tools', 'Werkzeuge') ?>
                     </div>
-
-                    <a href="<?= ROOTPATH ?>/activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities') ?>">
-                        <i class="ph ph-regular ph-folders" aria-hidden="true"></i>
-                        <?= lang('All activities', 'Alle Aktivitäten') ?>
+                    <a href="<?= ROOTPATH ?>/activities/search" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/search') ?>">
+                        <i class="ph ph-regular ph-magnifying-glass-plus" aria-hidden="true"></i>
+                        <?= lang('Advanced search', 'Erweiterte Suche') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
-                        <i class="ph ph-regular ph-student" aria-hidden="true"></i>
-                        <?= lang('Users', 'Nutzer:innen') ?>
+                    <?php if ($USER['is_scientist']) { ?>
+                        <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
+                            <i class="ph ph-regular ph-chart-line" aria-hidden="true"></i>
+                            <?= lang('Dashboard') ?>
+                        </a>
+                    <?php } ?>
+                    <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('visualize') ?>">
+                        <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+                        <?= lang('Visualizations', 'Visualisierung') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/expertise" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('expertise') ?>">
@@ -309,33 +320,14 @@ vertical-align: -0.2em;
                         <?= lang('Expertise search', 'Experten-Suche') ?>
                     </a>
 
-                    <?php if ($USER['is_scientist']) { ?>
-
-                        <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                            <i class="ph ph-regular ph-chart-line" aria-hidden="true"></i>
-                            <?= lang('Dashboard') ?>
-                        </a>
-                    <?php } ?>
-
-                    <a href="<?= ROOTPATH ?>/activities/search" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/search') ?>">
-                        <i class="ph ph-regular ph-magnifying-glass-plus" aria-hidden="true"></i>
-                        <?= lang('Advanced search', 'Erweiterte Suche') ?>
-                    </a>
-
-
-                    <a href="<?= ROOTPATH ?>/import" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('import') ?>">
-                        <i class="ph ph-regular ph-upload" aria-hidden="true"></i>
-                        <?= lang('Import') ?>
-                    </a>
-
 
                     <div class="sidebar-title">
-                        <?= lang('Download') ?>
+                        <?= lang('Export &amp; Import') ?>
                     </div>
 
                     <a href="<?= ROOTPATH ?>/download" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('download') ?>">
                         <i class="ph ph-regular ph-download" aria-hidden="true"></i>
-                        Download <?= lang('Activities', 'Aktivitäten') ?>
+                        Export <?= lang('Activities', 'Aktivitäten') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/cart" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('cart') ?>">
@@ -352,6 +344,10 @@ vertical-align: -0.2em;
                                 0
                             </span>
                         <?php } ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/import" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('import') ?>">
+                        <i class="ph ph-regular ph-upload" aria-hidden="true"></i>
+                        <?= lang('Import') ?>
                     </a>
 
 

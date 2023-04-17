@@ -351,7 +351,7 @@ function getJournal(name) {
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
-                    button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
+                    button.html('<i class="ph ph-check text-success"></i>')
                     button.on('click', function () {
                         selectJournal(j);
                     })
@@ -499,7 +499,7 @@ function getJournalAlex(name) {
                 var row = $('<tr>')
 
                 var button = $('<button class="btn" title="select">')
-                button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
+                button.html('<i class="ph ph-check text-success"></i>')
                 button.on('click', function () {
                     selectJournal(j, true);
                 })
@@ -590,7 +590,7 @@ function getJournalNLM(name) {
                         var row = $('<tr>')
 
                         var button = $('<button class="btn" title="select">')
-                        button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
+                        button.html('<i class="ph ph-check text-success"></i>')
                         button.on('click', function () {
                             selectJournal(j, true);
                         })
@@ -1299,7 +1299,7 @@ function togglePubType(type) {
 function todo() {
     digidive.initStickyAlert({
         content: lang('Sorry, but this button does not work yet.', 'Sorry, aber der Knopf funktioniert noch nicht.'),
-        title: '<i class="fa-solid fa-face-shush fa-3x text-signal"></i>',
+        title: '<i class="ph ph-smiley-sad ph-3x text-signal"></i>',
         alertType: "",
         hasDismissButton: true
     })
@@ -1521,7 +1521,7 @@ function getTeaching(name) {
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
-                    button.html('<i class="ph-bold fa-lg fa-check text-success"></i>')
+                    button.html('<i class="ph ph-check text-success"></i>')
                     button.on('click', function () {
                         selectTeaching(j);
                     })
@@ -1665,7 +1665,7 @@ function displayPubMed(ids) {
                 tr.append(td)
                 tr.append(`
                     <td>
-                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn btn-link btn-large text-primary"><i class="ph-bold fa-plus"></i></a>
+                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn btn-link btn-large text-primary"><i class="ph ph-plus"></i></a>
                     </td>
                     `)
                 table.append(tr)
