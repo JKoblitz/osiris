@@ -82,9 +82,9 @@ $journals = [];
 $filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]], 'year' => ['$gte' => $Settings->startyear]];
 $options = ['sort' => ["year" => -1, "month" => -1, "day" => -1]];
 $cursor = $osiris->activities->find($filter, $options);
-$cursor = $cursor->toArray();
+$activities = $cursor->toArray();
 
-foreach ($cursor as $doc) {
+foreach ($activities as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
     // if ($doc['year'] < $Settings->startyear) continue;
 
@@ -299,7 +299,7 @@ if ($showcoins == 'all') {
 
                 <div class="btn-group btn-group-lg">
                     <a class="btn btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                        <i class="ph ph-regular ph-note-pencil text-muted ph-fw"></i>
+                        <i class="ph ph-regular ph-edit text-muted ph-fw"></i>
                         <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                     </a>
                 </div>
@@ -327,7 +327,7 @@ if ($showcoins == 'all') {
                     $Q = 4;
                     $Y -= 1;
                 }
-                $lastquarter = $Y . "Q" . $Q;;
+                $lastquarter = $Y . "Q" . $Q;
 
                 if (!in_array($lastquarter, $approvedQ)) { ?>
                     <div class="alert alert-muted mt-20">
@@ -388,7 +388,7 @@ if ($showcoins == 'all') {
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                 <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                    <i class="ph ph-regular ph-user-list text-muted ph-fw"></i>
+                    <i class="ph ph-regular ph-edit text-muted ph-fw"></i>
                 </a>
             <?php } ?>
 
@@ -443,7 +443,6 @@ if ($showcoins == 'all') {
                     <button class="btn btn-primary" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
                 </form>
             </div>
-            <!-- TODO: Anzeige, Suche -->
 
         </div>
 
@@ -586,332 +585,277 @@ if ($showcoins == 'all') {
 
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <td><?= lang('Scientist', 'Wissenschaftler:in') ?></td>
-                        <td><?= bool_icon($scientist['is_scientist'] ?? false) ?></td>
-                    </tr>
-                    <tr>
-                        <td><?= lang('Department head', 'Abteilungsleiter:in') ?></td>
-                        <td><?= bool_icon($scientist['is_leader'] ?? false) ?></td>
-                    </tr>
-                    <tr>
-                        <td><?= lang('Active', 'Aktiv') ?></td>
-                        <td><?= bool_icon($scientist['is_active'] ?? false) ?></td>
-                    </tr> -->
                 </tbody>
             </table>
         </div>
     </div>
     <div class="v-spacer d-md-none"></div>
 
-    <div class="col-lg-8">
-        <div class="box h-full">
-            <div class="content">
-                <h4 class="title"><?= lang('Latest publications', 'Neueste Publikationen') ?></h4>
+    <?php if (!empty($activities)) { ?>
+        <div class="col-lg-8">
+            <div class="box h-full">
+                <div class="content">
+                    <h4 class="title"><?= lang('Latest publications', 'Neueste Publikationen') ?></h4>
+                </div>
+                <table class="table table-simple">
+                    <tbody>
+                        <?php
+                        $i = 0;
+                        foreach ($activities as $doc) {
+                            if ($doc['type'] != 'publication') continue;
+                            if ($i++ >= 5) break;
+                            $id = $doc['_id'];
+
+                        ?>
+                            <tr id='tr-<?= $id ?>'>
+                                <td class="w-50"><?= activity_icon($doc); ?></td>
+                                <td>
+                                    <?php
+                                    if ($USER['display_activities'] == 'web') {
+                                        echo $Format->formatShort($doc);
+                                    } else {
+                                        echo $Format->format($doc);
+                                    }
+                                    ?>
+
+                                </td>
+                                <td class="unbreakable w-25">
+                                    <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                        <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+                <div class="content mt-0">
+                    <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>#type=publication" class="btn btn-osiris">
+                        <i class="ph ph-regular ph-book-bookmark mr-5"></i> <?= lang('All publications of ', 'Alle Publikationen von ') . $name ?>
+                    </a>
+                </div>
+
             </div>
-            <table class="table table-simple">
-                <tbody>
-                    <?php
-                    $i = 0;
-                    foreach ($cursor as $doc) {
-                        if ($doc['type'] != 'publication') continue;
-                        if ($i++ >= 5) break;
-                        $id = $doc['_id'];
-
-                    ?>
-                        <tr id='tr-<?= $id ?>'>
-                            <td class="w-50"><?= activity_icon($doc); ?></td>
-                            <td>
-                                <?php
-                                if ($USER['display_activities'] == 'web') {
-                                    echo $Format->formatShort($doc);
-                                } else {
-                                    echo $Format->format($doc);
-                                }
-                                ?>
-
-                            </td>
-                            <td class="unbreakable w-25">
-                                <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="ph ph-regular ph-arrow-fat-line-right"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-
-            <div class="content mt-0">
-                <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>#type=publication" class="btn btn-osiris">
-                    <i class="ph ph-regular ph-book-bookmark mr-5"></i> <?= lang('All publications of ', 'Alle Publikationen von ') . $name ?>
-                </a>
-            </div>
-
         </div>
-    </div>
+    <?php } ?>
 </div>
 
 <div class="row row-eq-spacing-md my-0">
 
-    <!-- <div class="col-lg-4">
-        <div class="box h-full">
-            <div class="chart content">
-                <h5 class="title text-center"><?= lang('Impact factors', 'Impact Factors') ?></h5>
-                <canvas id="chart-impact" style="max-height: 30rem;"></canvas>
+    <?php if (!empty($impacts)) { ?>
+        <div class="col-lg-6">
+            <div class="box h-full">
+                <div class="chart content text-center">
+                    <h5 class="title mb-0">
+                        <i class="ph ph-regular ph-file-text text-primary"></i>
+                        <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
+                    </h5>
+                    <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
+                    <canvas id="chart-impact" style="max-height: 30rem;"></canvas>
+                    <?php
+                    $x = [];
+                    $y = [];
+                    if (!empty($impacts)) {
+                        $max_impact = ceil(max($impacts));
 
-                <script>
-                    var ctx = document.getElementById('chart-impact')
-                    var raw_data = Object.values(<?= json_encode($impacts) ?>);
-                    console.log(raw_data);
-                    var data = {
-                        type: 'polarArea',
-                        options: {
-                            plugins: {
-                                title: {
-                                    display: false,
-                                    text: 'Chart'
+
+                        for ($i = 0; $i <= $max_impact; $i++) {
+                            $x[] = $i;
+                        }
+                        $y = array_fill(0, $max_impact, 0);
+
+                        foreach ($impacts as $val) {
+                            $imp = floor($val);
+                            $y[$imp]++;
+                        }
+                    }
+                    ?>
+
+                    <script>
+                        var ctx = document.getElementById('chart-impact')
+                        var labels = JSON.parse('<?= json_encode($x) ?>');
+                        var colors = [
+                            // '#83D0F595',
+                            '#006EB795',
+                            // '#13357A95',
+                            // '#00162595'
+                        ]
+                        var i = 0
+
+                        console.log(labels);
+                        var data = {
+                            type: 'bar',
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false,
+                                        position: 'bottom'
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            title: (items) => {
+                                                if (!items.length) {
+                                                    return '';
+                                                }
+                                                const item = items[0];
+                                                const x = item.parsed.x;
+                                                const min = x;
+                                                const max = x + 1;
+                                                return `IF: ${min} - ${max}`;
+                                            }
+                                        }
+                                    }
                                 },
-                                legend: {
-                                    display: false,
-                                }
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        type: 'linear',
+                                        ticks: {
+                                            stepSize: 1
+                                        },
+                                        stacked: true,
+                                        title: {
+                                            display: true,
+                                            text: lang('Impact factor', 'Impact factor')
+                                        },
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: lang('Number of publications', 'Anzahl Publikationen')
+                                        },
+                                        ticks: {
+                                            callback: function(value, index, ticks) {
+                                                // only show full numbers
+                                                if (Number.isInteger(value)) {
+                                                    return value
+                                                }
+                                                return "";
+                                            }
+                                        }
+                                    }
+                                },
                             },
-                            responsive: true,
-                        },
-                        data: {
-                            labels: <?= json_encode($journals) ?>,
-                            datasets: [{
-                                data: raw_data,
-                                // backgroundColor: '#006EB795',
-                                // borderColor: '#006EB7',
-                                borderWidth: 1,
-                                backgroundColor: [
-                                    '#83D0F595',
-                                    '#006EB795',
-                                    '#13357A95',
+                            data: {
+                                labels: JSON.parse('<?= json_encode($x) ?>'),
+                                datasets: [
+
+                                    <?php
+                                    // foreach ($quarters as $q => $data) {
+                                    //     $imp = [];
+                                    //     for ($i = 1; $i < $max_impact; $i++) {
+                                    //         $imp[] = $data['impacts'][$i] ?? 0;
+                                    //     }
+                                    ?> {
+                                        data: JSON.parse('<?= json_encode($y) ?>'),
+                                        backgroundColor: colors[i++],
+                                        borderWidth: 1,
+                                        borderColor: '#464646',
+                                        borderRadius: 4
+                                    },
+                                    <?php
+                                    //  } 
+                                    ?>
+
                                 ],
-                                borderColor: '#464646'
-                            }],
-
+                            }
                         }
-                    }
 
 
-                    console.log(data);
-                    var myChart = new Chart(ctx, data);
-                </script>
+                        console.log(data);
+                        var myChart = new Chart(ctx, data);
+                    </script>
+                </div>
             </div>
         </div>
-    </div> -->
-    <div class="col-lg-6">
-        <div class="box h-full">
-            <div class="chart content text-center">
-                <h5 class="title mb-0">
-                    <i class="ph ph-regular ph-file-text text-primary"></i>
-                    <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
-                </h5>
-                <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
-                <canvas id="chart-impact" style="max-height: 30rem;"></canvas>
-                <?php
-                $x = [];
-                $y = [];
-                if (!empty($impacts)) {
-                    $max_impact = ceil(max($impacts));
+    <?php } ?>
 
+    <?php if (array_sum($authors) > 0) { ?>
+        <div class="col-md-6 col-lg-3">
+            <div class="box h-full">
+                <div class="chart content text-center">
+                    <h5 class="title mb-0">
+                        <i class="ph ph-regular ph-graduation-cap text-primary"></i>
+                        <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
+                    </h5>
+                    <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
 
-                    for ($i = 0; $i <= $max_impact; $i++) {
-                        $x[] = $i;
+                    <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
+
+                    <?php
+                    $labels = array();
+                    $data = array();
+                    $colors = array();
+                    if ($authors['first'] !== 0) {
+                        $labels[] = lang("First author", "Erstautor");
+                        $data[] = $authors['first'];
+                        $colors[] = '#006EB795';
                     }
-                    $y = array_fill(0, $max_impact, 0);
-
-                    foreach ($impacts as $val) {
-                        $imp = floor($val);
-                        $y[$imp]++;
+                    if ($authors['last'] !== 0) {
+                        $labels[] = lang("Last author", "Letztautor");
+                        $data[] = $authors['last'];
+                        $colors[] = '#13357A95';
                     }
-                }
-                ?>
+                    if ($authors['middle'] !== 0) {
+                        $labels[] = lang("Middle author", "Mittelautor");
+                        $data[] = $authors['middle'];
+                        $colors[] = '#83D0F595';
+                    }
+                    if ($authors['editor'] !== 0) {
+                        $labels[] = lang("Editorship", "Editorenschaft");
+                        $data[] = $authors['editor'];
+                        $colors[] = '#13357A';
+                    }
+                    ?>
 
-                <script>
-                    var ctx = document.getElementById('chart-impact')
-                    var labels = JSON.parse('<?= json_encode($x) ?>');
-                    var colors = [
-                        // '#83D0F595',
-                        '#006EB795',
-                        // '#13357A95',
-                        // '#00162595'
-                    ]
-                    var i = 0
-
-                    console.log(labels);
-                    var data = {
-                        type: 'bar',
-                        options: {
-                            plugins: {
-                                legend: {
-                                    display: false,
-                                    position: 'bottom'
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        title: (items) => {
-                                            if (!items.length) {
-                                                return '';
-                                            }
-                                            const item = items[0];
-                                            const x = item.parsed.x;
-                                            const min = x;
-                                            const max = x + 1;
-                                            return `IF: ${min} - ${max}`;
-                                        }
-                                    }
-                                }
-                            },
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    type: 'linear',
-                                    ticks: {
-                                        stepSize: 1
-                                    },
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: lang('Impact factor', 'Impact factor')
-                                    },
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: lang('Number of publications', 'Anzahl Publikationen')
-                                    },
-                                    ticks: {
-                                        callback: function(value, index, ticks) {
-                                            // only show full numbers
-                                            if (Number.isInteger(value)) {
-                                                return value
-                                            }
-                                            return "";
-                                        }
-                                    }
-                                }
-                            },
-                        },
-                        data: {
-                            labels: JSON.parse('<?= json_encode($x) ?>'),
-                            datasets: [
-
-                                <?php
-                                // foreach ($quarters as $q => $data) {
-                                //     $imp = [];
-                                //     for ($i = 1; $i < $max_impact; $i++) {
-                                //         $imp[] = $data['impacts'][$i] ?? 0;
-                                //     }
-                                ?> {
-                                    data: JSON.parse('<?= json_encode($y) ?>'),
-                                    backgroundColor: colors[i++],
+                    <script>
+                        var ctx = document.getElementById('chart-authors')
+                        var myChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: <?= json_encode($labels) ?>,
+                                datasets: [{
+                                    label: '# of Scientists',
+                                    data: <?= json_encode($data) ?>,
+                                    backgroundColor: <?= json_encode($colors) ?>,
+                                    borderColor: '#464646', //'',
                                     borderWidth: 1,
-                                    borderColor: '#464646',
-                                    borderRadius: 4
-                                },
-                                <?php
-                                //  } 
-                                ?>
-
-                            ],
-                        }
-                    }
-
-
-                    console.log(data);
-                    var myChart = new Chart(ctx, data);
-                </script>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-lg-3">
-        <div class="box h-full">
-            <div class="chart content text-center">
-                <h5 class="title mb-0">
-                    <i class="ph ph-regular ph-graduation-cap text-primary"></i>
-                    <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
-                </h5>
-                <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
-
-                <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
-
-                <?php
-                $labels = array();
-                $data = array();
-                $colors = array();
-                if ($authors['first'] !== 0) {
-                    $labels[] = lang("First author", "Erstautor");
-                    $data[] = $authors['first'];
-                    $colors[] = '#006EB795';
-                }
-                if ($authors['last'] !== 0) {
-                    $labels[] = lang("Last author", "Letztautor");
-                    $data[] = $authors['last'];
-                    $colors[] = '#13357A95';
-                }
-                if ($authors['middle'] !== 0) {
-                    $labels[] = lang("Middle author", "Mittelautor");
-                    $data[] = $authors['middle'];
-                    $colors[] = '#83D0F595';
-                }
-                if ($authors['editor'] !== 0) {
-                    $labels[] = lang("Editorship", "Editorenschaft");
-                    $data[] = $authors['editor'];
-                    $colors[] = '#13357A';
-                }
-                ?>
-
-                <script>
-                    var ctx = document.getElementById('chart-authors')
-                    var myChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: <?= json_encode($labels) ?>,
-                            datasets: [{
-                                label: '# of Scientists',
-                                data: <?= json_encode($data) ?>,
-                                backgroundColor: <?= json_encode($colors) ?>,
-                                borderColor: '#464646', //'',
-                                borderWidth: 1,
-                            }]
-                        },
-                        plugins: [ChartDataLabels],
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    display: true,
-                                },
-                                title: {
-                                    display: false,
-                                    text: 'Scientists approvation'
-                                },
-                                datalabels: {
-                                    color: 'black',
-                                    // anchor: 'end',
-                                    // align: 'end',
-                                    // offset: 10,
-                                    font: {
-                                        size: 20
-                                    }
-                                }
+                                }]
                             },
-                        }
-                    });
-                </script>
+                            plugins: [ChartDataLabels],
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        display: true,
+                                    },
+                                    title: {
+                                        display: false,
+                                        text: 'Scientists approvation'
+                                    },
+                                    datalabels: {
+                                        color: 'black',
+                                        // anchor: 'end',
+                                        // align: 'end',
+                                        // offset: 10,
+                                        font: {
+                                            size: 20
+                                        }
+                                    }
+                                },
+                            }
+                        });
+                    </script>
+                </div>
             </div>
-
         </div>
-    </div>
+    <?php } ?>
 
-    <div class="col-md-6 col-lg-3">
-        <div class="box h-full">
-            <?php if ($showcoins) { ?>
+    <?php if ($showcoins) { ?>
+        <div class="col-md-6 col-lg-3">
+            <div class="box h-full">
                 <div class="chart content text-center">
                     <h5 class="title">
                         <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
@@ -993,180 +937,174 @@ if ($showcoins == 'all') {
                     console.log(data);
                     var myChart = new Chart(ctx, data);
                 </script>
-            <?php } ?>
-        </div>
-    </div>
-</div>
-
-
-
-
-
-
-<div class="row row-eq-spacing my-0">
-    <div class="col-lg-12 col-xl-6">
-        <div class="box h-full">
-            <div class="chart content">
-                <h5 class="title text-center">
-                    <?= lang('All activities in which ' . $scientist['first'] . ' was involved', 'Alle Aktivitäten, an denen ' . $scientist['first'] . ' beteiligt war') ?>
-                </h5>
-                <canvas id="chart-activities" style="max-height: 35rem;"></canvas>
-
-                <small class="text-muted">
-                    <?=lang('For multi-year activities, only the start date is relevant.', 'Bei mehrjährigen Aktivitäten wird nur das Startdatum gezählt.')?>
-                </small>
             </div>
         </div>
+    <?php } ?>
 
-        <script>
-            var ctx = document.getElementById('chart-activities')
-            var raw_data = Object.values(<?= json_encode($stats) ?>);
-            var years = JSON.parse('<?= json_encode($years) ?>')
-            console.log(raw_data);
-            var data = {
-                type: 'bar',
-                options: {
-                    plugins: {
-                        title: {
-                            display: false,
-                            text: 'All activities'
-                        },
-                        legend: {
-                            display: true,
-                        }
-                    },
-                    responsive: true,
-                    scales: {
-                        x: {
-                            stacked: true,
+    <?php if (!empty($stats)) { ?>
+        <div class="col-lg-12 col-xl-6">
+            <div class="box h-full">
+                <div class="chart content">
+                    <h5 class="title text-center">
+                        <?= lang('All activities in which ' . $scientist['first'] . ' was involved', 'Alle Aktivitäten, an denen ' . $scientist['first'] . ' beteiligt war') ?>
+                    </h5>
+                    <canvas id="chart-activities" style="max-height: 35rem;"></canvas>
+
+                    <small class="text-muted">
+                        <?= lang('For multi-year activities, only the start date is relevant.', 'Bei mehrjährigen Aktivitäten wird nur das Startdatum gezählt.') ?>
+                    </small>
+                </div>
+            </div>
+
+            <script>
+                var ctx = document.getElementById('chart-activities')
+                var raw_data = Object.values(<?= json_encode($stats) ?>);
+                var years = JSON.parse('<?= json_encode($years) ?>')
+                console.log(raw_data);
+                var data = {
+                    type: 'bar',
+                    options: {
+                        plugins: {
                             title: {
+                                display: false,
+                                text: 'All activities'
+                            },
+                            legend: {
                                 display: true,
-                                text: lang('Years', 'Jahre')
                             }
                         },
-                        y: {
-                            stacked: true,
-                            ticks: {
-                                callback: function(value, index, ticks) {
-                                    // only show full numbers
-                                    if (Number.isInteger(value)) {
-                                        return value
+                        responsive: true,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: lang('Years', 'Jahre')
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: {
+                                    callback: function(value, index, ticks) {
+                                        // only show full numbers
+                                        if (Number.isInteger(value)) {
+                                            return value
+                                        }
+                                        return "";
                                     }
-                                    return "";
+                                },
+                                title: {
+                                    display: true,
+                                    text: lang('Number of activities', 'Anzahl der Aktivitäten')
                                 }
-                            },
-                            title: {
-                                display: true,
-                                text: lang('Number of activities', 'Anzahl der Aktivitäten')
                             }
+                        },
+                        maintainAspectRatio: false,
+                        onClick: (e) => {
+                            const canvasPosition = Chart.helpers.getRelativePosition(e, activityChart);
+
+                            // Substitute the appropriate scale IDs
+                            const dataX = activityChart.scales.x.getValueForPixel(canvasPosition.x);
+                            const dataY = activityChart.scales.y.getValueForPixel(canvasPosition.y);
+                            console.log(years[dataX], dataY);
+                            window.location = ROOTPATH + "/scientist/<?= $user ?>?year=" + years[dataX]
                         }
                     },
-                    maintainAspectRatio: false,
-                    onClick: (e) => {
-                        const canvasPosition = Chart.helpers.getRelativePosition(e, activityChart);
-
-                        // Substitute the appropriate scale IDs
-                        const dataX = activityChart.scales.x.getValueForPixel(canvasPosition.x);
-                        const dataY = activityChart.scales.y.getValueForPixel(canvasPosition.y);
-                        console.log(years[dataX], dataY);
-                        window.location = ROOTPATH + "/scientist/<?= $user ?>?year=" + years[dataX]
-                    }
-                },
-                data: {
-                    labels: years,
-                    datasets: [
-                        <?php $n = 3;
-                        foreach ($groups as $group => $i) {
-                            $color = $Settings->getActivities($group)['color'];
-                            // $color = adjustBrightness($color, ($n--)*10);
-                        ?> {
-                                label: '<?= $Settings->getActivities($group)['name'] ?>',
-                                data: raw_data,
-                                parsing: {
-                                    yAxisKey: '<?= $group ?>'
+                    data: {
+                        labels: years,
+                        datasets: [
+                            <?php $n = 3;
+                            foreach ($groups as $group => $i) {
+                                $color = $Settings->getActivities($group)['color'];
+                                // $color = adjustBrightness($color, ($n--)*10);
+                            ?> {
+                                    label: '<?= $Settings->getActivities($group)['name'] ?>',
+                                    data: raw_data,
+                                    parsing: {
+                                        yAxisKey: '<?= $group ?>'
+                                    },
+                                    backgroundColor: '<?= $color ?>95',
+                                    borderColor: '#464646', //'<?= $color ?>',
+                                    borderWidth: 1
                                 },
-                                backgroundColor: '<?= $color ?>95',
-                                borderColor: '#464646', //'<?= $color ?>',
-                                borderWidth: 1
-                            },
-                        <?php } ?>
-                    ]
+                            <?php } ?>
+                        ]
+                    }
                 }
-            }
 
 
-            console.log(data);
-            var activityChart = new Chart(ctx, data);
-        </script>
-    </div>
-
-    <!-- <div class="v-spacer d-lg-none"></div> -->
-    <div class="col-lg-12 col-xl-6">
-        <div class="box h-full">
-            <div class="content">
-                <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
-            </div>
-            <table class="table table-simple">
-                <tbody>
-                    <?php
-                    $i = 0;
-                    foreach ($cursor as $doc) {
-                        if ($doc['type'] == 'publication') continue;
-                        if ($i++ > 5) break;
-                        $id = $doc['_id'];
-
-                    ?>
-                        <tr id='tr-<?= $id ?>'>
-                            <td class="w-50"><?= activity_icon($doc); ?></td>
-                            <td>
-                                <?php
-                                if ($USER['display_activities'] == 'web') {
-                                    echo $Format->formatShort($doc);
-                                } else {
-                                    echo $Format->format($doc);
-                                }
-                                ?>
-
-                            </td>
-                            <td class="unbreakable w-25">
-                                <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="ph ph-regular ph-arrow-fat-line-right"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-
-            <div class="content mt-0">
-                <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn btn-osiris">
-                    <i class="ph ph-regular ph-book-bookmark mr-5"></i>
-                    <?= lang('All activities', 'Alle Aktivitäten ') ?>
-                </a>
-            </div>
-
+                console.log(data);
+                var activityChart = new Chart(ctx, data);
+            </script>
         </div>
-    </div>
+    <?php } ?>
 
-</div>
+    <?php if (!empty($activities)) { ?>
+        <div class="col-lg-12 col-xl-6">
+            <div class="box h-full">
+                <div class="content">
+                    <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
+                </div>
+                <table class="table table-simple">
+                    <tbody>
+                        <?php
+                        $i = 0;
+                        foreach ($activities as $doc) {
+                            if ($doc['type'] == 'publication') continue;
+                            if ($i++ > 5) break;
+                            $id = $doc['_id'];
 
-<?php
-$filter = [
-    'authors.user' => "$user",
-    'end' => null,
-    '$or' => array(
-        ['type' => 'misc', 'iteration' => 'annual'],
-        ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
-    )
-];
+                        ?>
+                            <tr id='tr-<?= $id ?>'>
+                                <td class="w-50"><?= activity_icon($doc); ?></td>
+                                <td>
+                                    <?php
+                                    if ($USER['display_activities'] == 'web') {
+                                        echo $Format->formatShort($doc);
+                                    } else {
+                                        echo $Format->format($doc);
+                                    }
+                                    ?>
 
-$count = $osiris->activities->count($filter);
+                                </td>
+                                <td class="unbreakable w-25">
+                                    <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                        <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
 
-if ($count > 0) {
-    $cursor = $osiris->activities->find($filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1]]);
-?>
+                <div class="content mt-0">
+                    <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn btn-osiris">
+                        <i class="ph ph-regular ph-book-bookmark mr-5"></i>
+                        <?= lang('All activities', 'Alle Aktivitäten ') ?>
+                    </a>
+                </div>
 
-    <div class="row row-eq-spacing my-0">
+            </div>
+        </div>
+    <?php } ?>
+
+
+    <?php
+    $filter = [
+        'authors.user' => "$user",
+        'end' => null,
+        '$or' => array(
+            ['type' => 'misc', 'iteration' => 'annual'],
+            ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
+        )
+    ];
+
+    $count_memberships = $osiris->activities->count($filter);
+
+    if ($count_memberships > 0) {
+        $memberships = $osiris->activities->find($filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1]]);
+    ?>
+
         <div class="col-lg-12 col-xl-6">
             <div class="box h-full">
                 <div class="content">
@@ -1176,7 +1114,7 @@ if ($count > 0) {
                     <tbody>
                         <?php
                         $i = 0;
-                        foreach ($cursor as $doc) {
+                        foreach ($memberships as $doc) {
                             if ($doc['type'] == 'publication') continue;
                             // if ($i++ > 5) break;
                             $id = $doc['_id'];
@@ -1205,12 +1143,12 @@ if ($count > 0) {
                 </table>
             </div>
         </div>
-    </div>
 
+    <?php
+    } ?>
+
+</div>
 <?php
-}
-
-
 if (isset($_GET['verbose'])) {
     dump($scientist, true);
 }

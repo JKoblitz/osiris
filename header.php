@@ -61,6 +61,10 @@ vertical-align: -0.15em;
             font-size: 1.6em;
         }
 
+        .ph.ph-edit:before {
+            content: '\ec15';
+        }
+
     </style>
     <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
