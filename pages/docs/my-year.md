@@ -1,5 +1,5 @@
 
-# <i class="far fa-calendar text-osiris"></i> Mein Jahr
+# <i class="ph ph-calendar text-osiris"></i> Mein Jahr
 
 
 Der Zweck der Seite "Mein Jahr" ist es, die bis Ende 2022 in der DSMZ verwendeten Excel-Tabellen zur Abfrage der Forschungsaktivitäten abzulösen. Auf dieser Seite sollen alle Aktivitäten des vergangenen Quartals noch einmal überprüft und bestätigt werden. 
@@ -24,7 +24,7 @@ Diese Meldung ist der Startschuss für die quartalsweise Überprüfung. Zu diese
 
 Wenn du direkt auf "Mein Jahr" im Menü klickst, wird dir das aktuelle Quartal im aktuellen Jahr angezeigt. Das wird unter anderem dadurch deutlich, dass du das Quartal nicht bestätigen kannst, denn der Button dafür sieht so aus:
 
-<a href="#" class="btn disabled"><i class="fas fa-check mr-5"></i> Gewähltes Quartal ist noch nicht zu Ende.</a>
+<a href="#" class="btn disabled"><i class="ph ph-check mr-5"></i> Gewähltes Quartal ist noch nicht zu Ende.</a>
 
 Um nun das korrekte Quartal zu sehen, musst du es in folgendem Formular auswählen, welches du oben rechts auf der Seite findest:
 
@@ -36,7 +36,7 @@ Um nun das korrekte Quartal zu sehen, musst du es in folgendem Formular auswähl
         <div class="input-group">
             <div class="input-group-prepend">
                 <div class="input-group-text" data-toggle="tooltip" data-title="Wähle ein Quartal aus">
-                    <i class="fa-regular fa-calendar-day"></i>
+                    <i class="ph-regular ph-calendar-day"></i>
                 </div>
             </div>
             <select name="year" id="year" class="form-control">
@@ -55,7 +55,7 @@ Um nun das korrekte Quartal zu sehen, musst du es in folgendem Formular auswähl
                 <option value="4">Q4</option>
             </select>
             <div class="input-group-append">
-                <button class="btn btn-primary"><i class="fas fa-check"></i></button>
+                <button class="btn btn-primary"><i class="ph ph-check"></i></button>
             </div>
         </div>
         <p class="text-muted font-size-12 mt-0">
@@ -76,11 +76,11 @@ Jede Aktivität ist gleich dargestellt. Das führt zu einer verbesserten Übersi
 Aktivitäten, die nicht im ausgewählten Quartal gestartet sind, sind leicht ausgegraut. 
 Es folgt die standardmäßige Darstellung der Aktivitäten, die Nutzer:innen im Profil einstellen können. Dann folgen die im Folgenden beschriebenen drei Schaltflächen und die Anzahl an Coins, dir man für die Aktivität erhalten hat. Beim Hovern über die Coins gibt ein Tooltip weitere Informationen.
 
-<i class="icon-activity-search mr-10 fa-fw fa-lg text-primary"></i> Hier gelangt man zur Übersichtsseite der Aktivität, auf der alle Details dargestellt werden. Außerdem gibt es dort weitere Links zum Bearbeiten und Kopieren einer Aktivität, sowie zum Autoreneditor.
+<i class="ph ph-regular ph-arrow-fat-line-right mr-10 ph-fw ph-lg text-primary"></i> Hier gelangt man zur Übersichtsseite der Aktivität, auf der alle Details dargestellt werden. Außerdem gibt es dort weitere Links zum Bearbeiten und Kopieren einer Aktivität, sowie zum Autoreneditor.
 
-<i class="icon-activity-pen mr-10 fa-fw fa-lg text-primary"></i> Hier gelangt man direkt zur Bearbeitung einer Aktivität.
+<i class="ph ph-regular ph-pencil-simple-line mr-10 ph-fw ph-lg text-primary"></i> Hier gelangt man direkt zur Bearbeitung einer Aktivität.
 
-<i class="far fa-cart-plus mr-10 fa-fw fa-lg text-primary"></i> Mit diesem Knopf lässt sich die Aktivität zum Download-Korb hinzufügen, um sie mit anderen gesammelt herunterzuladen.
+<i class="ph ph-cart-plus mr-10 ph-fw ph-lg text-primary"></i> Mit diesem Knopf lässt sich die Aktivität zum Download-Korb hinzufügen, um sie mit anderen gesammelt herunterzuladen.
 
 Am Ende einer jeden Kategorie gibt es zwei weitere Knöpfe: Mit Klick auf den ersten kann man sich alle eigenen Aktivitäten der gewählten Kategorie anzeigen lassen. Mit Klick auf das Plus kann man direkt eine Aktivität der gewählten Kategorie hinzufügen. 
 
@@ -109,7 +109,7 @@ Mit Klick auf <a class="link">Review</a> kommst du direkt zur Seite mit allen Wa
 Nachdem du alle Aktivitäten überprüft und ggf. ergänzt, sowie alle Warnungen beseitigt hast, kannst du das Quartal bestätigen. Dazu klickst du auf den großen, grünen Button oben auf der Seite:
 
 <a class="btn btn-lg btn-success">
-    <i class="fas fa-question mr-5"></i>
+    <i class="ph ph-question mr-5"></i>
     Aktuelles Quartal freigeben
 </a>
 
@@ -127,13 +127,13 @@ Solltest du doch noch ungelöste Warnungen haben, werden diese im Fenster darges
         <tr><td class="px-0">
         Media<i>Dive</i>: the expert-curated cultivation media database
         <br>
-        <span class="badge badge-publication"><i class="far fa-lg text-publication fa-file-lines"></i> Journal article</span><a class="badge badge-danger filled ml-5" href="#t">Online ahead of print</a></td></tr><tr><td class="px-0">
+        <span class="badge badge-publication"><i class="ph ph-lg text-publication ph-file-lines"></i> Journal article</span><a class="badge badge-danger filled ml-5" href="#t">Online ahead of print</a></td></tr><tr><td class="px-0">
         MediaDive: The expert-curated cultivation media database
         <br>
-        <span class="badge badge-poster"><i class="far fa-lg text-poster fa-presentation-screen"></i> Poster</span><a class="badge badge-danger filled ml-5" href="#t">Überprüfung nötig</a></td></tr><tr><td class="px-0">
+        <span class="badge badge-poster"><i class="ph ph-lg text-poster ph-presentation-screen"></i> Poster</span><a class="badge badge-danger filled ml-5" href="#t">Überprüfung nötig</a></td></tr><tr><td class="px-0">
         Reviewer für  <i>Artificial Intelligence Review</i>. 
         <br>
-        <span class="badge badge-review"><i class="far fa-lg text-review fa-file-lines"></i> Peer-Review</span><a class="badge badge-danger filled ml-5" href="#t">Nicht-standardisiertes Journal</a></td></tr>
+        <span class="badge badge-review"><i class="ph ph-lg text-review ph-file-lines"></i> Peer-Review</span><a class="badge badge-danger filled ml-5" href="#t">Nicht-standardisiertes Journal</a></td></tr>
         </tbody></table>
     </div>
 </div>

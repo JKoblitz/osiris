@@ -299,7 +299,7 @@ function activity_icon($doc, $tooltip = true)
     } else {
         $type = strtolower(trim($doc['type'] ?? ''));
     }
-    $icon = "<i class='ph ph-regular ph-lg text-misc ph-notdef'></i>";
+    $icon = "<i class='ph ph-regular ph-lg text-misc ph-placeholder'></i>";
     switch ($type) {
         case 'publication':
             $pubtype = strtolower(trim($doc['pubtype'] ?? $type));
@@ -372,7 +372,7 @@ function activity_icon($doc, $tooltip = true)
             $icon = "<i class='ph ph-regular ph-lg text-teaching ph-chalkboard-simple'></i>";
             break;
         case 'software':
-            $icon = "<i class='ph ph-regular ph-lg text-software ph-desktop'></i>";
+            $icon = "<i class='ph ph-regular ph-lg text-software ph-desktop-tower'></i>";
             break;
         default:
             break;

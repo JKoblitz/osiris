@@ -52,9 +52,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     />
     <style>
         .ph, .ph ph-regular, .ph-fill {
-            font-size: 1.25em;
+            font-size: 1.5em;
 line-height: 1em;
-vertical-align: -0.15em;
+vertical-align: -0.2em;
         }
 
         .sidebar-link.with-icon > .sidebar-icon, .sidebar-link.with-icon > i.ph {
@@ -63,6 +63,9 @@ vertical-align: -0.15em;
 
         .ph.ph-edit:before {
             content: '\ec15';
+        }
+        .ph.ph-search:before {
+            content: '\ebdd';
         }
 
     </style>
@@ -174,10 +177,10 @@ vertical-align: -0.15em;
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#04.04.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/news#16.04.23" class="btn btn-osiris">
                 <i class="ph-fill ph-sparkle"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-04-04 16:00') ?>)
+                (<?= time_elapsed_string('2023-04-16 16:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->

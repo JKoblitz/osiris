@@ -376,8 +376,8 @@ $Format = new Format(true);
             'icons': {
                 add_group: 'ph ph-regular ph-plus-circle',
                 add_rule: 'ph ph-regular ph-plus',
-                remove_group: 'ph-fill ph-xmark-circle',
-                remove_rule: 'ph-fill ph-xmark',
+                remove_group: 'ph ph-regular ph-x-circle',
+                remove_rule: 'ph ph-regular ph-x',
                 error: 'ph-fill ph-warning',
             },
             allow_empty: true,

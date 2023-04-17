@@ -51,7 +51,7 @@ use \LibRIS\RISReader;
             </div>
 
             <button class="btn btn-primary">
-                <i class="ph-fill ph-upload"></i>
+                <i class="ph ph-upload"></i>
                 Upload
             </button>
         </form>

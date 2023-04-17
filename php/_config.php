@@ -327,7 +327,7 @@ function bool_icon($bool)
     if ($bool) {
         return '<i class="ph ph-regular ph-check text-success"></i>';
     } else {
-        return '<i class="ph-fill ph-xmark text-danger"></i>';
+        return '<i class="ph ph-regular ph-x text-danger"></i>';
     }
 }
 

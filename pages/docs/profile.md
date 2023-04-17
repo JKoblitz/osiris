@@ -25,22 +25,22 @@ Um jemandem Zugriff zu gewähren, logge dich in OSIRIS ein und gehe auf Profil b
 <div class="demo">
     <div class="btn-group btn-group-lg">
         <span class="btn" data-toggle="tooltip" data-title="Aktivität hinzufügen">
-            <i class="icon-activity-plus text-osiris fa-fw"></i>
+            <i class="icon-activity-plus text-osiris ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Mein Jahr">
-            <i class="far fa-calendar text-success fa-fw"></i>
+            <i class="ph ph-calendar text-success ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Meine Aktivitäten ">
-            <i class="icon-activity-user text-primary fa-fw"></i>
+            <i class="icon-activity-user text-primary ph-fw"></i>
         </span>
         <span class="btn active" data-toggle="tooltip" data-title="Bearbeite Profil">
-            <i class="far fa-user-pen text-muted fa-fw"></i>
+            <i class="ph ph-user-list text-muted ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Meine Errungenschaften">
-            <i class="far fa-trophy text-signal fa-fw"></i>
+            <i class="ph ph-trophy text-signal ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Mein Koautoren-Netzwerk">
-            <i class="far fa-chart-network text-osiris fa-fw"></i>
+            <i class="ph ph-chart-network text-osiris ph-fw"></i>
         </span>
     </div>
 </div>
@@ -84,19 +84,19 @@ Mit Klick auf "Update" bestätigst du die Änderungen.
             </a>
         </div>
         <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="far fa-user-graduate" aria-hidden="true"></i>
+            <i class="ph ph-user-graduate" aria-hidden="true"></i>
             Julia Koblitz </a>
         <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="far fa-calendar" aria-hidden="true"></i>
+            <i class="ph ph-calendar" aria-hidden="true"></i>
             Mein Jahr </a>
         <a class="sidebar-link sidebar-link-osiris with-icon ">
             <i class="icon-activity-user" aria-hidden="true"></i>
             Meine Aktivitäten </a>
         <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="far fa-chart-network" aria-hidden="true"></i>
+            <i class="ph ph-chart-network" aria-hidden="true"></i>
             Visualisierung </a>
         <a class="sidebar-link with-icon mt-10">
-            <i class="far fa-right-from-bracket" aria-hidden="true"></i>
+            <i class="ph ph-right-from-bracket" aria-hidden="true"></i>
             Logout
         </a>
         <div class="sidebar-title">

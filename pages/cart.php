@@ -35,7 +35,7 @@
                             <?= $Format->formatShort($doc) ?>
                         </td>
                         <td>
-                            <button class="btn btn-link btn-sm" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-regular ph-xmark"></i></button>
+                            <button class="btn btn-link btn-sm" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-regular ph-x"></i></button>
                         </td>
                     </tr>
                 <?php } ?>

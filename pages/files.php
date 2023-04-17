@@ -105,7 +105,7 @@ $Format = new Format(false);
                                 <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
 
                                 <button class="btn btn-link" type="submit">
-                                    <i class="ph-fill ph-trash-alt text-danger"></i>
+                                    <i class="ph-fill ph-trash text-danger"></i>
                                 </button>
                             </form>
                         </td>
@@ -134,7 +134,7 @@ $Format = new Format(false);
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>
             <button class="btn btn-primary">
-                <i class="ph-fill ph-upload"></i>
+                <i class="ph ph-upload"></i>
                 Upload
             </button>
         </form>

@@ -176,7 +176,7 @@ $user_activity = isUserActivity($doc, $user);
 
             <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students', 'teaching'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
-        <i class="ph ph-regular ph-book-copy"></i>
+        <i class="ph ph-regular ph-copy"></i>
         ' . lang("Add a copy", "Kopie anlegen") .
                     '</a>';
             }
@@ -608,7 +608,7 @@ $user_activity = isUserActivity($doc, $user);
                                     <span class="text-signal"><?= lang('No files attached', 'Noch keine Dateien hochgeladen') ?></span>
                                 <?php endif; ?>
                                 <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn btn-sm">
-                                    <i class="ph-fill ph-upload"></i>
+                                    <i class="ph ph-upload"></i>
                                 </a>
                             </td>
                         </tr>

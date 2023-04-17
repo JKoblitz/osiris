@@ -1,4 +1,4 @@
-# <i class="far fa-exclamation-triangle text-osiris"></i> Warnungen
+# <i class="ph ph-exclamation-triangle text-osiris"></i> Warnungen
 
 Um bekannte Fehlerquellen und Probleme zu vermeiden, führt OSIRIS im Hintergrund eine ganze Reihe von Logik-Checks durch. Sollten dabei Probleme gefunden werden, werden diese entweder automatisch behoben (sofern möglich) oder an die Nutzer:innen zurückgespielt. 
 
@@ -12,19 +12,19 @@ In deinem persönlichen Profil gibt es eine Infobox, die neben nützlichen Links
     <h5 class="title font-size-16 mt-0">Dies ist deine persönliche Profilseite.</h5>
     <div class="btn-group btn-group-lg">
         <span class="btn" data-toggle="tooltip" data-title="Aktivität hinzufügen">
-            <i class="icon-activity-plus text-osiris fa-fw"></i>
+            <i class="icon-activity-plus text-osiris ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Mein Jahr">
-            <i class="far fa-calendar text-success fa-fw"></i>
+            <i class="ph ph-calendar text-success ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Meine Aktivitäten ">
-            <i class="icon-activity-user text-primary fa-fw"></i>
+            <i class="icon-activity-user text-primary ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Bearbeite Profil">
-            <i class="far fa-user-pen text-muted fa-fw"></i>
+            <i class="ph ph-user-list text-muted ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Meine Errungenschaften">
-            <i class="far fa-trophy text-signal fa-fw"></i>
+            <i class="ph ph-trophy text-signal ph-fw"></i>
         </span>
     </div>
     <div class="alert alert-danger mt-20">
@@ -77,44 +77,44 @@ Die Warnmeldung sieht folgendermaßen aus:
     </p>
     <p>
         <span class="mr-20"><span data-toggle="tooltip" data-title="Journal article">
-            <i class="far fa-lg text-publication fa-file-lines"></i>
+            <i class="ph ph-lg text-publication ph-file-lines"></i>
         </span></span>
         <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
     </p>
     <div class="" id="approve-632da4672199cd3df8dbc166">
                                     Bitte bestätige (evtl. erneut), dass du Autor:in bist:                                                <br>
         <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
-            <i class="fas fa-fw fa-check"></i>
+            <i class="ph ph-check ph-fw"></i>
         </span>
         <span class="btn btn-sm text-signal" data-toggle="tooltip" data-title="Ja, aber ich war nicht der DSMZ angehörig">
-            <i class="far fa-fw fa-handshake-slash"></i>
+            <i class="ph ph-push-pin-slash ph-fw"></i>
         </span>
         <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Nein, das bin ich nicht">
-            <i class="fas fa-fw fa-xmark"></i>
+            <i class="ph ph-x ph-fw"></i>
         </span>
         <span class="btn btn-sm text-primary" data-toggle="tooltip" data-title="Aktivität bearbeiten">
-            <i class="icon-activity-pen"></i>
+            <i class="ph ph-regular ph-pencil-simple-line"></i>
         </span>
         <span class="btn btn-sm text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
-            <i class="icon-activity-search"></i>
+            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
         </span>
     </div>
 </div>
 
 Wie man sehen kann, befinden sich unter der Aktivität fünf Knöpfe: die ersten drei führen eine Aktion aus, die anderen beiden sind Links zu anderen Seiten. Bei allen Aktionen wird die Warnung gelöst und verschwindet somit von der Warnungs-Seite. Die Knöpfe tun im Detail folgendes:
 
-<i class="fas fa-fw fa-check text-success mr-10"></i> Hier kannst du die Aktivität bestätigen, wenn das tatsächlich deine Aktivität ist und du dabei Autor der DSMZ warst. Du erhältst Coins für die Aktivität und wirst im Reporting als DSMZ-Autor berichtet.
+<i class="ph ph-check ph-fw text-success mr-10"></i> Hier kannst du die Aktivität bestätigen, wenn das tatsächlich deine Aktivität ist und du dabei Autor der DSMZ warst. Du erhältst Coins für die Aktivität und wirst im Reporting als DSMZ-Autor berichtet.
 
-<i class="far fa-fw fa-handshake-slash text-signal mr-10"></i> Hiermit bestätigst du, dass es sich zwar um deine Aktivität handelt, du aber nicht Autor der DSMZ warst. Die Aktivität taucht in deinem Profil auf, du bekommst aber keine Coins dafür. 
+<i class="ph ph-push-pin-slash ph-fw text-signal mr-10"></i> Hiermit bestätigst du, dass es sich zwar um deine Aktivität handelt, du aber nicht Autor der DSMZ warst. Die Aktivität taucht in deinem Profil auf, du bekommst aber keine Coins dafür. 
 
-<i class="fas fa-fw fa-xmark text-danger mr-10"></i> Das bist du nicht. Hiermit entfernst du die Aktivität aus deinem Profil. 
+<i class="ph ph-x ph-fw text-danger mr-10"></i> Das bist du nicht. Hiermit entfernst du die Aktivität aus deinem Profil. 
 
-<i class="fa-fw icon-activity-pen text-primary mr-10"></i> Hier kannst du die Aktivität direkt bearbeiten, falls dir Unstimmigkeiten auffallen. Du musst sie nicht zusätzlich bestätigen, wenn du sie bearbeitest, wirst du selbst direkt abgehakt.
+<i class="ph-fw ph ph-regular ph-pencil-simple-line text-primary mr-10"></i> Hier kannst du die Aktivität direkt bearbeiten, falls dir Unstimmigkeiten auffallen. Du musst sie nicht zusätzlich bestätigen, wenn du sie bearbeitest, wirst du selbst direkt abgehakt.
 
-<i class="fa-fw icon-activity-search text-primary mr-10"></i> Zu guter Letzt kannst du dir hier die Aktivität ansehen. Dort findest du auch jede Menge weitere Informationen, sowie hilfreiche Links.
+<i class="ph-fw ph ph-regular ph-arrow-fat-line-right text-primary mr-10"></i> Zu guter Letzt kannst du dir hier die Aktivität ansehen. Dort findest du auch jede Menge weitere Informationen, sowie hilfreiche Links.
 
 
-Solltest du sehr viele Überprüfungen haben, kannst du auch alle auf einmal bestätigen. Dafür gibt es am Anfang der Liste dem Knopf <button class="btn btn-sm text-success"><i class="fas fa-check"></i>Alle bestätigen</button>. Tu dies aber bitte nur, wenn du sicher bist, dass sie korrekt hinzugefügt wurden und alle auch wirklich **deine Aktivitäten** sind. Du solltest wenigstens einmal über die Liste scrollen und schauen, ob sie dir bekannt vorkommen.
+Solltest du sehr viele Überprüfungen haben, kannst du auch alle auf einmal bestätigen. Dafür gibt es am Anfang der Liste dem Knopf <button class="btn btn-sm text-success"><i class="ph ph-check"></i>Alle bestätigen</button>. Tu dies aber bitte nur, wenn du sicher bist, dass sie korrekt hinzugefügt wurden und alle auch wirklich **deine Aktivitäten** sind. Du solltest wenigstens einmal über die Liste scrollen und schauen, ob sie dir bekannt vorkommen.
 
 
 ### Online ahead of print
@@ -136,17 +136,17 @@ Diese Warnung wird einmal im Quartal auftauchen, solltet ihr Mitglied in Gremien
     <b>Koblitz, J.</b> Mitglied in einem Gremium, von 18.01.2023 bis heute.                    
     <div class="alert alert-signal">
         <span class="btn btn-sm text-success">
-            <i class="fas fa-check"></i>
+            <i class="ph ph-check"></i>
             Ja                  
         </span>
         <span class="btn btn-sm text-danger">
-            <i class="fas fa-xmark"></i>
+            <i class="ph ph-x"></i>
             Nein (Bearbeiten)
         </span>
     </div>
 </div>
 
-Der <span class="btn btn-sm text-success"><i class="fas fa-check"></i> Ja</span>-Knopf wirkt dabei wie ein Snooze-Button, mit dem die Anzeige der Warnmeldung bis zum nächsten Quartal unterdrückt wird. Wenn ihr jedoch <span class="btn btn-sm text-danger"><i class="fas fa-xmark"></i> Nein</span> auswählt, werdet ihr auf die "Aktivität bearbeiten"-Seite weitergeleitet, wo ihr das Enddatum der Aktivität festlegen könnt.
+Der <span class="btn btn-sm text-success"><i class="ph ph-check"></i> Ja</span>-Knopf wirkt dabei wie ein Snooze-Button, mit dem die Anzeige der Warnmeldung bis zum nächsten Quartal unterdrückt wird. Wenn ihr jedoch <span class="btn btn-sm text-danger"><i class="ph ph-x"></i> Nein</span> auswählt, werdet ihr auf die "Aktivität bearbeiten"-Seite weitergeleitet, wo ihr das Enddatum der Aktivität festlegen könnt.
 
 
 ### Nicht-standardisiertes Journal
@@ -159,11 +159,11 @@ Andererseits entstehen solche Fehler, wenn über die **Import-Funktion** Publika
 <div class="demo">
     <b>Koblitz, J.</b> Reviewer für  <i>Artificial Intelligence Review</i>. September 2022.                    <div class="alert alert-signal" id="approve-632da4672199cd3df8dbc168">
         <span class="btn btn-sm text-primary">
-            <i class="fas fa-edit"></i>
+            <i class="ph ph-edit"></i>
             Aktivität bearbeiten
         </span>
     </div>
 </div>
 
-Tatsächlich gibt es nur einen Weg, dieses Problem zu lösen: ihr klickt auf  <span class="btn btn-sm text-primary"> <i class="fas fa-edit"></i> Aktivität bearbeiten</span> und editiert das Journal. Klickt dazu auf das Bearbeiten-Icon <i class="fas fa-edit"></i> neben dem Datenfald mit dem Journal und wählt ein Journal aus der Liste aus. Wie das im Detail funktioniert findet ihr  [hier](add-activities#das-journal-bearbeiten).
+Tatsächlich gibt es nur einen Weg, dieses Problem zu lösen: ihr klickt auf  <span class="btn btn-sm text-primary"> <i class="ph ph-edit"></i> Aktivität bearbeiten</span> und editiert das Journal. Klickt dazu auf das Bearbeiten-Icon <i class="ph ph-edit"></i> neben dem Datenfald mit dem Journal und wählt ein Journal aus der Liste aus. Wie das im Detail funktioniert findet ihr  [hier](add-activities#das-journal-bearbeiten).
 

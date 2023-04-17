@@ -157,7 +157,7 @@ if ($showcoins == 'all'){
                     <b id="lom-points"></b>
                     Coins in <?= $YEAR ?>
                     <a href='#coins' class="text-muted">
-                        <i class="ph ph-regular ph-question-circle text-muted"></i>
+                        <i class="ph ph-regular ph-question text-muted"></i>
                     </a>
                 </p>
             <?php } ?>

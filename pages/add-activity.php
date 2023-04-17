@@ -579,7 +579,7 @@ function val($index, $default = '')
 
                 <div class="" data-visible="teaching">
                     <!-- <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
-                        <i class="ph-fill ph-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                        <i class="ph-fill ph-question"></i> <?= lang('Help', 'Hilfe') ?>
                     </a> -->
                     <label for="teaching" class="element-cat required">
                         <?= lang('Course for the following module', 'Veranstaltung zu folgendem Modul') ?>
@@ -632,7 +632,7 @@ function val($index, $default = '')
                                             <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="0" required>
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph-fill ph-trash-alt text-danger"></i></button>
+                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph-fill ph-trash text-danger"></i></button>
                                         </td>
                                     </tr>
                                 <?php } else foreach ($form['authors'] ?? [] as $author) { ?>
@@ -651,7 +651,7 @@ function val($index, $default = '')
                                             <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="<?= $author['sws'] ?? 0 ?>" required>
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph-fill ph-trash-alt text-danger"></i></button>
+                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph-fill ph-trash text-danger"></i></button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -716,7 +716,7 @@ function val($index, $default = '')
                         <span data-visible="students,guests"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span>
                         <span data-visible="article,preprint,magazine,book,dissertation,others,chapter,lecture,poster,misc-once,misc-annual,software"><?= lang('Author(s)', 'Autor(en)') ?></span>
                         <?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?>
-                        <a class="" href="#author-help"><i class="ph-fill ph-question-circle"></i> <?= lang('Help', 'Hilfe') ?></a>
+                        <a class="" href="#author-help"><i class="ph-fill ph-question"></i> <?= lang('Help', 'Hilfe') ?></a>
                     </label>
 
                     <div class="border" id="author-widget">
@@ -929,7 +929,7 @@ function val($index, $default = '')
 
                 <div class="" data-visible="article,preprint,review,editorial">
                     <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
-                        <i class="ph-fill ph-question-circle"></i> <?= lang('Help', 'Hilfe') ?>
+                        <i class="ph-fill ph-question"></i> <?= lang('Help', 'Hilfe') ?>
                     </a>
                     <label for="journal" class="element-cat required">
                         Journal

@@ -2,67 +2,67 @@
     line-height: inherit;
 }
 
-.fa-1x {
+.ph-1x {
     font-size: 1em; }
   
-  .fa-2x {
+  .ph-2x {
     font-size: 2em; }
   
-  .fa-3x {
+  .ph-3x {
     font-size: 3em; }
   
-  .fa-4x {
+  .ph-4x {
     font-size: 4em; }
   
-  .fa-5x {
+  .ph-5x {
     font-size: 5em; }
   
-  .fa-6x {
+  .ph-6x {
     font-size: 6em; }
   
-  .fa-7x {
+  .ph-7x {
     font-size: 7em; }
   
-  .fa-8x {
+  .ph-8x {
     font-size: 8em; }
   
-  .fa-9x {
+  .ph-9x {
     font-size: 9em; }
   
-  .fa-10x {
+  .ph-10x {
     font-size: 10em; }
   
-  .fa-2xs {
+  .ph-2xs {
     font-size: 0.625em;
     line-height: 0.1em;
     vertical-align: 0.225em; }
   
-  .fa-xs {
+  .ph-xs {
     font-size: 0.75em;
     line-height: 0.08333em;
     vertical-align: 0.125em; }
   
-  .fa-sm {
+  .ph-sm {
     font-size: 0.875em;
     line-height: 0.07143em;
     vertical-align: 0.05357em; }
   
-  .fa-lg {
+  .ph-lg {
     font-size: 1.25em;
     line-height: 0.05em;
     vertical-align: -0.075em; }
   
-  .fa-xl {
+  .ph-xl {
     font-size: 1.5em;
     line-height: 0.04167em;
     vertical-align: -0.125em; }
   
-  .fa-2xl {
+  .ph-2xl {
     font-size: 2em;
     line-height: 0.03125em;
     vertical-align: -0.1875em; }
   
-  .fa-fw {
+  .ph-fw {
     text-align: center;
     width: 1.25em; }
   

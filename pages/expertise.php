@@ -36,7 +36,7 @@ $cursor = $osiris->users->aggregate([
 
     <div class="form-group with-icon">
         <input class="form-control mb-20" type="search" name="search" id="search" oninput="filterFAQ(this.value);" placeholder="Filter ...">
-        <i class="ph-fill ph-xmark" onclick="$(this).prev().val('');filterFAQ('')"></i>
+        <i class="ph ph-regular ph-x" onclick="$(this).prev().val('');filterFAQ('')"></i>
     </div>
 </div>
 

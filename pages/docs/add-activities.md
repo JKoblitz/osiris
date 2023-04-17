@@ -15,7 +15,7 @@ Am einfachsten ist es, eine Aktivität über eine DOI oder einer Pubmed-ID hinzu
             <input type="text" class="form-control" value="10.1093/nar/gkab961" name="doi"
                 id="search-doi">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                <button class="btn btn-primary" type="submit"><i class="ph ph-search"></i></button>
             </div>
         </div>
     </div>
@@ -41,14 +41,14 @@ Zur Auswahl wird auf die entsprechende Schaltfläche geklickt:
 
 <div class="demo">
     <div class="select-btns" id="select-btns">
-        <button class="btn btn-select text-publication" id="publication-btn"><i class="far fa-lg text-publication fa-book-bookmark"></i>Publikation</button>
-        <button class="btn btn-select text-poster" id="poster-btn"><i class="far fa-lg text-poster fa-presentation-screen"></i>Poster</button>
-        <button class="btn btn-select text-lecture" id="lecture-btn"><i class="far fa-lg text-lecture fa-keynote"></i>Vorträge</button>
-        <button class="btn btn-select text-review" id="review-btn"><i class="far fa-lg text-review fa-file-lines"></i>Reviews &amp; Editorials</button>
-        <button class="btn btn-select text-teaching" id="teaching-btn"><i class="far fa-lg text-teaching fa-chalkboard-user"></i>Lehre</button>
-        <button class="btn btn-select text-students" id="students-btn"><i class="far fa-lg text-students fa-user-graduate"></i>Studierende &amp; Gäste</button>
-        <button class="btn btn-select text-software" id="software-btn"><i class="far fa-lg text-software fa-desktop"></i>Software &amp; Data</button>
-        <button class="btn btn-select text-misc" id="misc-btn"><i class="far fa-lg text-misc fa-icons"></i>Misc</button>
+        <button class="btn btn-select text-publication" id="publication-btn"><i class="ph text-publication ph-book-bookmark"></i>Publikation</button>
+        <button class="btn btn-select text-poster" id="poster-btn"><i class="ph text-poster ph-presentation-chart"></i>Poster</button>
+        <button class="btn btn-select text-lecture" id="lecture-btn"><i class="ph text-lecture ph-chalkboard-teacher"></i>Vorträge</button>
+        <button class="btn btn-select text-review" id="review-btn"><i class="ph text-review ph-article"></i>Reviews &amp; Editorials</button>
+        <button class="btn btn-select text-teaching" id="teaching-btn"><i class="ph text-teaching ph-chalkboard-simple"></i>Lehre</button>
+        <button class="btn btn-select text-students" id="students-btn"><i class="ph text-students ph-student"></i>Studierende &amp; Gäste</button>
+        <button class="btn btn-select text-software" id="software-btn"><i class="ph text-software ph-desktop-tower"></i>Software &amp; Data</button>
+        <button class="btn btn-select text-misc" id="misc-btn"><i class="ph text-misc ph-shapes"></i>Misc</button>
     </div>
 </div>
 
@@ -108,7 +108,7 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
                 <input type="text" placeholder="Füge Autor hinzu ..." onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                 <div class="input-group-append">
                     <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
-                        <i class="fas fa-plus"></i>
+                        <i class="ph ph-plus"></i>
                     </button>
                 </div>
             </div>
@@ -123,7 +123,7 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
 </div>
 
 
-Um einen **Autor hinzuzufügen**, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. Bestätigen kannst du durch Drücken von <kbd>Enter</kbd> oder den <i class="fas fa-plus"></i>-Knopf. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
+Um einen **Autor hinzuzufügen**, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. Bestätigen kannst du durch Drücken von <kbd>Enter</kbd> oder den <i class="ph ph-plus"></i>-Knopf. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
 
 Um einen **Autor zu entfernen**, musst du auf das &times; hinter seinem Namen klicken.
 
@@ -140,7 +140,7 @@ Nachdem eine Aktivität hinzugefügt wurde, steht ein detaillierter Autoren-Edit
 <div class="demo">
     <h2>Authors</h2>
     <span class="btn btn-osiris active">
-        <i class="fa-regular fa-user-pen"></i>
+        <i class="ph-regular ph-user-list"></i>
         Autorenliste bearbeiten
     </span>
 </div>
@@ -165,7 +165,7 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
         <tbody id="author-detail-editor" class="ui-sortable">
             <tr>
                 <td>
-                    <i class="fas fa-grip-dots-vertical text-muted handle ui-sortable-handle"></i>
+                    <i class="ph ph-dots-six-vertical text-muted handle ui-sortable-handle"></i>
                 </td>
                 <td>
                     <input name="authors[0][last]" type="text" class="form-control" value="Becker">
@@ -193,12 +193,12 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 </td>
                 <td>
                     <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i
-                            class="fas fa-trash-alt"></i></button>
+                            class="ph ph-trash"></i></button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <i class="fas fa-grip-dots-vertical text-muted handle ui-sortable-handle"></i>
+                    <i class="ph ph-dots-six-vertical text-muted handle ui-sortable-handle"></i>
                 </td>
                 <td>
                     <input name="authors[1][last]" type="text" class="form-control" value="Kirstein">
@@ -226,12 +226,12 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 </td>
                 <td>
                     <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i
-                            class="fas fa-trash-alt"></i></button>
+                            class="ph ph-trash"></i></button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <i class="fas fa-grip-dots-vertical text-muted handle ui-sortable-handle"></i>
+                    <i class="ph ph-dots-six-vertical text-muted handle ui-sortable-handle"></i>
                 </td>
                 <td>
                     <input name="authors[3][last]" type="text" class="form-control" value="Koblitz">
@@ -259,12 +259,12 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 </td>
                 <td>
                     <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i
-                            class="fas fa-trash-alt"></i></button>
+                            class="ph ph-trash"></i></button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <i class="fas fa-grip-dots-vertical text-muted handle ui-sortable-handle"></i>
+                    <i class="ph ph-dots-six-vertical text-muted handle ui-sortable-handle"></i>
                 </td>
                 <td>
                     <input name="authors[4][last]" type="text" class="form-control" value="Buschen">
@@ -292,12 +292,12 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 </td>
                 <td>
                     <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i
-                            class="fas fa-trash-alt"></i></button>
+                            class="ph ph-trash"></i></button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <i class="fas fa-grip-dots-vertical text-muted handle ui-sortable-handle"></i>
+                    <i class="ph ph-dots-six-vertical text-muted handle ui-sortable-handle"></i>
                 </td>
                 <td>
                     <input name="authors[20][last]" type="text" class="form-control" value="Neumann-Schaal">
@@ -325,12 +325,12 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 </td>
                 <td>
                     <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i
-                            class="fas fa-trash-alt"></i></button>
+                            class="ph ph-trash"></i></button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <i class="fas fa-grip-dots-vertical text-muted handle ui-sortable-handle"></i>
+                    <i class="ph ph-dots-six-vertical text-muted handle ui-sortable-handle"></i>
                 </td>
                 <td>
                     <input name="authors[21][last]" type="text" class="form-control" value="Rabus">
@@ -358,7 +358,7 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 </td>
                 <td>
                     <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i
-                            class="fas fa-trash-alt"></i></button>
+                            class="ph ph-trash"></i></button>
                 </td>
             </tr>
         </tbody>
@@ -366,7 +366,7 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
             <tr id="last-row">
                 <td></td>
                 <td colspan="6">
-                    <button class="btn" type="button" onclick="addAuthorRow()"><i class="fas fa-plus"></i> Autor
+                    <button class="btn" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i> Autor
                         hinzufügen</button>
                 </td>
             </tr>
@@ -377,13 +377,13 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
         function addAuthorRow() {
             counter++;
             var tr = $('<tr>')
-            tr.append('<td><i class="fas fa-grip-dots-vertical text-muted handle"></i></td>')
+            tr.append('<td><i class="ph ph-dots-six-vertical text-muted handle"></i></td>')
             tr.append('<td><input name="authors[' + counter + '][last]" type="text" class="form-control"></td>')
             tr.append('<td><input name="authors[' + counter + '][first]" type="text" class="form-control"></td>')
             tr.append('<td><select name="authors[' + counter + '][position]" class="form-control"><option value="first">first</option><option value="middle" selected>middle</option><option value="corresponding">corresponding</option><option value="last">last</option></select></td>')
             tr.append('<td><div class="custom-checkbox"><input type="checkbox" id="checkbox-' + counter + '" name="authors[' + counter + '][aoi]" value="1"><label for="checkbox-' + counter + '" class="blank"></label></div></td>')
             tr.append('<td> <input name="authors[' + counter + '][user]" type="text" class="form-control" list="user-list"></td>')
-            var btn = $('<button class="btn" type="button">').html('<i class="fas fa-trash-alt"></i>').on('click', function() {
+            var btn = $('<button class="btn" type="button">').html('<i class="ph ph-trash"></i>').on('click', function() {
                 $(this).closest('tr').remove();
             });
             tr.append($('<td>').append(btn))
@@ -404,7 +404,7 @@ Die Position des Autors kann durch ein Dropdown-Menü ausgewählt werden. Auf di
 
 Es folgt eine Checkbox, in der angegeben wird, ob der Autor beim Zeitpunkt der Veröffentlichung Angehöriger der DSMZ war oder nicht. Im nächsten Feld kann der Nutzeraccount hinterlegt werden, mit dem dieser Autor verknüpft ist. Im oben gezeigten Beispiel ist zu sehen, dass man nicht der DSMZ zugehörig sein muss, um die Aktivitäten mit dem Nutzerprofil zu verknüpfen. Die zweite Erstautorin ist einem Nutzerkonto zugeordnet, war aber zum Zeitpunkt der Arbeit nicht bei der DSMZ angestellt. Die Aktivität ist mit ihrem Account verknüpft und wird in ihrem Profil dargestellt, sie wird jedoch im Report nicht als DSMZ-Autorin markiert und bekommt für die Aktivität keine Coins.
 
-Zu guter Letzt ist eine Schaltfläche zu sehen (<i class="fas fa-trash-alt"></i>), mit der ein Autor komplett gelöscht werden kann.
+Zu guter Letzt ist eine Schaltfläche zu sehen (<i class="ph ph-trash"></i>), mit der ein Autor komplett gelöscht werden kann.
 
 Am Fuß der Tabelle können über die Schaltfläche <span class="btn btn-sm">+ Autor hinzufügen</span> weitere Autoren der Tabelle hinzugefügt werden. Neue Zeilen mit Autoren haben die gleichen Funktionen wie oben gezeigt.
 
@@ -422,7 +422,7 @@ Aus Gründen der Standardisierung kann ein Journal nicht mehr als Freitext-Feld 
             <div class="input-group">
                 <input type="text" class="form-control disabled" name="values[journal]" value="mSystems" id="journal" list="journal-list" required="" readonly="" data-value="mSystems">
                 <div class="input-group-append" data-toggle="tooltip" data-title="Bearbeite Journal">
-                    <a class="btn" href="#journal-select"><i class="fas fa-edit"></i></a>
+                    <a class="btn" href="#journal-select"><i class="ph ph-edit"></i></a>
                 </div>
             </div>
         </div>
@@ -437,7 +437,7 @@ Aus Gründen der Standardisierung kann ein Journal nicht mehr als Freitext-Feld 
     </div>
 </div>
 
-Diese können nur durch Klick auf <span class="btn btn-sm"><i class="fas fa-edit"></i></span> bearbeitet werden. Dadurch öffnet sich folgendes Fenster, indem man mittels Namen oder ISSN nach einem Journal in OSIRIS suchen kann. 
+Diese können nur durch Klick auf <span class="btn btn-sm"><i class="ph ph-edit"></i></span> bearbeitet werden. Dadurch öffnet sich folgendes Fenster, indem man mittels Namen oder ISSN nach einem Journal in OSIRIS suchen kann. 
 Im folgenden Beispiel sind in OSIRIS zwei Journale vorhanden, die dem Suchterm entsprechen:
 
 <div class="demo" id="journal-select">
@@ -446,17 +446,17 @@ Im folgenden Beispiel sind in OSIRIS zwei Journale vorhanden, die dem Suchterm e
         <div class="input-group">
             <input type="text" class="form-control is-valid" list="journal-list" id="journal-search" value="Nucleic acid" data-value="Nucleic acid">
             <div class="input-group-append">
-                <button class="btn"><i class="fas fa-search"></i></button>
+                <button class="btn"><i class="ph ph-search"></i></button>
             </div>
         </div>
         <table class="table table-simple">
-            <tbody id="journal-suggest"><tr><td class="w-50"><button class="btn" title="select"><i class="fas fa-lg fa-check"></i></button></td><td><h5 class="m-0">Nucleic acid therapeutics</h5><span class="float-right">Mary Ann Liebert, Inc.</span><span class="text-muted">2159-3345, 2159-3337, 1545-4576</span></td></tr><tr><td class="w-50"><button class="btn" title="select"><i class="fas fa-lg fa-check"></i></button></td><td><h5 class="m-0">Nucleic acids research</h5><span class="float-right">Oxford University Press</span><span class="text-muted">1362-4962, 0305-1048</span></td></tr><tr><td><button class="btn">Suche im NLM-Katalog</button></td></tr></tbody>
+            <tbody id="journal-suggest"><tr><td class="w-50"><button class="btn" title="select"><i class="ph ph-check"></i></button></td><td><h5 class="m-0">Nucleic acid therapeutics</h5><span class="float-right">Mary Ann Liebert, Inc.</span><span class="text-muted">2159-3345, 2159-3337, 1545-4576</span></td></tr><tr><td class="w-50"><button class="btn" title="select"><i class="ph ph-check"></i></button></td><td><h5 class="m-0">Nucleic acids research</h5><span class="float-right">Oxford University Press</span><span class="text-muted">1362-4962, 0305-1048</span></td></tr><tr><td><button class="btn">Suche im NLM-Katalog</button></td></tr></tbody>
         </table>
     </div>
 <div class="text-muted text-center mt-10">Dieses Fenster ist aus technischen Gründen nicht funktional.</div>
 </div>
 
-Ein Journal kann ausgewählt werden, indem man auf den Haken <span class="btn btn-sm"><i class="fas fa-check"></i></span> klickt. Das Fenster schließt sich automatisch und die drei oben dargestellten Formularfelder werden automatisch ausgefüllt. 
+Ein Journal kann ausgewählt werden, indem man auf den Haken <span class="btn btn-sm"><i class="ph ph-check"></i></span> klickt. Das Fenster schließt sich automatisch und die drei oben dargestellten Formularfelder werden automatisch ausgefüllt. 
 
 Sollte das gesuchte Journal nicht in OSIRIS gefunden werden, kann man durch Klick auf <span class="btn btn-sm">Suche im NLM-Katalog</span> eine erweiterte Suche starten. Dabei werden alle bei NLM indizierten Journale durchsucht und vorgeschlagen. Hier wird ebenfalls wieder über den Haken bestätigt. Sollte das ausgewählte Journal bereits in OSIRIS vorhanden sein (möglicherweise unter einem etwas anderen Namen), wird das bereits vorhandene Journal ausgewählt. Der entsprechende Abgleich findet über die ISSN statt und du wirst darüber durch ein Pop-Up informiert.
 
@@ -468,16 +468,16 @@ Nachdem eine Aktivität hinzugefügt wurde, können Dokumente hinterlegt werden.
 <div class="demo">
 <h2 class="mt-0">Details</h2>
     <span class="btn btn-osiris mr-5">
-        <i class="icon-activity-pen"></i>
+        <i class="ph ph-regular ph-pencil-simple-line"></i>
         Aktivität bearbeiten            
     </span>
     <span class="btn btn-osiris active">
-        <i class="far fa-upload"></i>
+        <i class="ph ph-upload"></i>
         Dateien hochladen
     </span>
 </div>
 
-Auf der folgenden Seite findet sich ganz oben eine Übersicht zu der Aktivität, die man gerade bearbeitet. Es folgt eine Liste mit eventuell bereits vorhandenen Dateien, die an dieser Stelle auch heruntergeladen (<i class="fas fa-download text-primary"></i>) bzw. gelöscht  (<i class="fas fa-trash-alt text-danger"></i>) werden können. 
+Auf der folgenden Seite findet sich ganz oben eine Übersicht zu der Aktivität, die man gerade bearbeitet. Es folgt eine Liste mit eventuell bereits vorhandenen Dateien, die an dieser Stelle auch heruntergeladen (<i class="ph ph-download text-primary"></i>) bzw. gelöscht  (<i class="ph ph-trash text-danger"></i>) werden können. 
 
 Weiter unten findet sich ein Formular, mit dem neue Dokumente hochgeladen werden können. Diese dürfen eine Maximalgröße von 16 MB nicht überschreiten und sollten sich nach Möglichkeit in einem Standardformat befinden. Gute Beispiele sind PDF (bevorzugt), PPTX, XLSX, DOCX. 
 
@@ -499,7 +499,7 @@ Um eine Notiz zu hinterlassen, muss beim Hinzufügen bzw. Bearbeiten einer Aktiv
 <div class="demo">
     <a onclick="$(this).next().toggleClass('hidden')">
         <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
-            <i class="fas fa-plus"></i> Notiz (Nur sichtbar für Autoren und Admins)
+            <i class="ph ph-plus"></i> Notiz (Nur sichtbar für Autoren und Admins)
         </label>
     </a>
     <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"></textarea>
@@ -539,26 +539,26 @@ So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
     </p>
     <p>
         <span class="mr-20"><span data-toggle="tooltip" data-title="Journal article">
-            <i class="far fa-lg text-publication fa-file-lines"></i>
+            <i class="ph text-publication ph-file-lines"></i>
         </span></span>
         <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
     </p>
     <div class="" id="approve-632da4672199cd3df8dbc166">
     Bitte bestätige (evtl. erneut), dass du Autor:in bist:<br>
         <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
-            <i class="fas fa-fw fa-check"></i>
+            <i class="ph ph-fw ph-check"></i>
         </span>
         <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Ja, aber ich war nicht der DSMZ angehörig">
-            <i class="far fa-fw fa-handshake-slash"></i>
+            <i class="ph ph-fw ph-push-pin-slash"></i>
         </span>
         <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Nein, das bin ich nicht">
-            <i class="fas fa-fw fa-xmark"></i>
+            <i class="ph ph-fw ph-x"></i>
         </span>
         <span class="btn btn-sm text-primary ml-10" data-toggle="tooltip" data-title="Aktivität bearbeiten">
-            <i class="icon-activity-pen"></i>
+            <i class="ph ph-regular ph-pencil-simple-line"></i>
         </span>
         <span class="btn btn-sm text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
-            <i class="icon-activity-search"></i>
+            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
         </span>
     </div>
 </div>
@@ -579,15 +579,15 @@ Ich halte einen Vortrag auf einer Konferenz. Auf einem Minisymposium ein paar Wo
 <div class="demo">
     <h2 class="mt-0">Details</h2>
     <span class="btn btn-osiris mr-5">
-        <i class="icon-activity-pen"></i>
+        <i class="ph ph-regular ph-pencil-simple-line"></i>
         Aktivität bearbeiten            
     </span>
     <span class="btn btn-osiris mr-5 active">
-        <i class="far fa-book-copy"></i>
+        <i class="ph ph-copy"></i>
         Kopie anlegen            
     </span>
     <span class="btn btn-osiris">
-        <i class="far fa-upload"></i>
+        <i class="ph ph-upload"></i>
         Dateien hochladen
     </span>
 </div>

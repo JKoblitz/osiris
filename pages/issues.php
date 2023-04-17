@@ -283,13 +283,13 @@ if (array_sum($a) === 0) {
                         <?php } ?>
                         <br>
                         <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
-                            <i class="ph-fill ph-fw ph-check"></i>
+                            <i class="ph ph-regular ph-check ph-fw"></i>
                         </button>
                         <button class="btn btn-sm text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
-                            <i class="ph ph-regular ph-fw ph-handshake-slash"></i>
+                            <i class="ph ph-regular ph-push-pin-slash ph-fw"></i>
                         </button>
                         <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
-                            <i class="ph-fill ph-fw ph-xmark"></i>
+                            <i class="ph ph-regular ph-x ph-fw"></i>
                         </button>
                         <?php if (!($doc['locked'] ?? false)) { ?>
                             <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
@@ -350,7 +350,7 @@ if (array_sum($a) === 0) {
                             <input type="date" class="form-control" value="<?= valueFromDateArray(["year" => $doc['year'], "month" => $doc['month'], "day" => $doc['day'] ?? 1]) ?>">
                             <div class="input-group-append">
                                 <button class="btn" type="button" onclick="todo()">
-                                    <i class="ph-fill ph-xmark"></i>
+                                    <i class="ph ph-regular ph-x"></i>
                                     <?= lang('No longer Epub and officially issued under this date.', 'Kein Epub mehr und unter diesem Datum offiziell veröffentlicht.') ?>
                                 </button>
                             </div>
@@ -455,7 +455,7 @@ if (array_sum($a) === 0) {
                         </form>
 
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-danger">
-                            <i class="ph-fill ph-xmark"></i>
+                            <i class="ph ph-regular ph-x"></i>
                             <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
                         </a>
 
