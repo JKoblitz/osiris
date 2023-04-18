@@ -128,7 +128,7 @@ Route::get('/api/html', function () {
     $result = [];
     $docs = $osiris->activities->find([
         'type' => 'publication', 'authors.aoi' => ['$in' => [true, 1, '1']],
-        'year'=> ['$gte' => 2023]
+        'year' => ['$gte' => 2023]
     ]);
 
 
@@ -184,46 +184,57 @@ Route::get('/api/all-activities', function () {
     foreach ($cursor as $doc) {
         $id = $doc['_id'];
         $type = $doc['type'];
-        $q = getQuarter($doc);
-        $y = getYear($doc);
-        $quarter = $endQuarter = $y . "Q" . $q;
+        // $q = getQuarter($doc);
+        // $y = getYear($doc);
+        // $quarter = $endQuarter = $y . "Q" . $q;
 
+        $format_full = $Format->format($doc);
         if (($_GET['display_activities'] ?? 'web') == 'web') {
             $format = $Format->formatShort($doc);
         } else {
-            $format = $Format->format($doc);
+            $format = $format_full;
         }
 
-        $datum = [
-            'quarter' => $y . 'Q' . $q,
-            'type' => activity_icon($doc) . '<span class="hidden">' . $type . " " . activity_title($doc) . '</span>',
-            'activity' => $format,
-            'links' => ''
-        ];
+        $active = false;
+        $sm = $doc['month'];
+        $sy = $doc['year'];
+        $em = $sm;
+        $ey = $sy;
 
-
-        $datum['quarter'] .= '<span class="hidden"> ' . $doc['month'] . "M" . $doc['year'] . "Y";
         if (isset($doc['end']) && !empty($doc['end'])) {
-
             $em = $doc['end']['month'];
             $ey = $doc['end']['year'];
-            $sm = $doc['month'];
-            $sy = $doc['year'];
-            for ($i = $y; $i <= $ey; $i++) {
-                $endMonth = $i != $ey ? 11 : $em - 1;
-                $startMon = $i === $y ? $sm - 1 : 0;
-                for ($j = $startMon; $j <= $endMonth; $j = $j > 12 ? $j % 12 || 11 : $j + 1) {
-                    $month = $j + 1;
-                    $displayMonth = $month < 10 ? '0' + $month : $month;
-                    $datum['quarter'] .= " " . $displayMonth . "M" . $i . "Y ";
-                    // QUARTER:
-                    $endQuarter = $i . "Q" . ceil($displayMonth / 3);
-                }
-            }
+        } elseif (
+            (
+                ($doc['type'] == 'misc' && $doc['iteration'] == 'annual') ||
+                ($doc['type'] == 'review' && in_array($doc['role'], ['Editor', 'editorial']))
+            ) && empty($doc['end'])
+        ) {
+            $em = CURRENTMONTH;
+            $ey = CURRENTYEAR;
+            $active = true;
         }
-        $datum['quarter'] .= '</span>';
-        if ($quarter != $endQuarter) {
-            $datum['quarter'] .= "-" . $endQuarter;
+        $sq = $sy . 'Q' . ceil($sm / 3);
+        $eq = $ey . 'Q' . ceil($em / 3);
+
+        $datum = [
+            'quarter' => $sq,
+            'type' => activity_icon($doc) . '<span class="hidden">' . $type . " " . activity_title($doc) . '</span>',
+            'activity' => $format,
+            'links' => '',
+            'search-text' => $format_full,
+            'start' => $sy . '-' . ($sm < 10 ? '0' : '') . $sm . '-' . ($doc['day'] ?? '01'),
+            'end' => $ey . '-' . ($em < 10 ? '0' : '') . $em . '-' . ($doc['day'] ?? '01')
+        ];
+
+        if ($active) {
+            $datum['quarter'] .= ' - today';
+        } elseif ($sq != $eq) {
+            if ($sy == $ey) {
+                $datum['quarter'] .= ' - ' . 'Q' . ceil($em / 3);
+            } else {
+                $datum['quarter'] .= ' - ' . $eq;
+            }
         }
 
         $datum['links'] =
@@ -428,11 +439,11 @@ Route::get('/api/levenshtein', function () {
     $title = $_GET['title'];
 
     // $test pubmed
-    $test = $osiris->activities->findOne(['pubmed'=>$pubmed]);
-    if (!empty($test)){
+    $test = $osiris->activities->findOne(['pubmed' => $pubmed]);
+    if (!empty($test)) {
         $result = [
-            'similarity' => 1., 
-            'id' => strval($test['_id']), 
+            'similarity' => 1.,
+            'id' => strval($test['_id']),
             'title' => $test['title']
         ];
     }
@@ -442,16 +453,16 @@ Route::get('/api/levenshtein', function () {
     $sim = round($l[2], 1);
     if ($sim < 50) $sim = 0;
     $result = [
-        'similarity' => $sim, 
-        'id' => $id, 
+        'similarity' => $sim,
+        'id' => $id,
         'title' => $levenshtein->found
     ];
-        
+
 
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
-    
+
 
     echo json_encode($result);
 });

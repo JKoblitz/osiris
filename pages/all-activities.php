@@ -1,4 +1,3 @@
-
 <?php
 
 $user = $user ?? $_SESSION['username'];
@@ -17,7 +16,7 @@ $user = $user ?? $_SESSION['username'];
         <?= lang("All activities", "Alle Aktivitäten") ?>
     </h1>
     <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="ph-fill ph-user-circle"></i>
+        <i class="ph ph-student"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
 <?php
@@ -66,7 +65,7 @@ $user = $user ?? $_SESSION['username'];
     <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
     <div class="input-group-append">
-        <button class="btn" type="button" onclick="filtertime(true)">&times;</button>
+        <button class="btn" type="button" onclick="resetTime()">&times;</button>
     </div>
 </div>
 
@@ -119,7 +118,6 @@ $user = $user ?? $_SESSION['username'];
             columnDefs: [{
                     "targets": 0,
                     "data": "quarter",
-        // className: 'quarter'
                 },
                 {
                     targets: 1,
@@ -132,7 +130,25 @@ $user = $user ?? $_SESSION['username'];
                 {
                     targets: 3,
                     data: 'links',
-        className: 'unbreakable'
+                    className: 'unbreakable'
+                },
+                {
+                    targets: 4,
+                    data: 'search-text',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 5,
+                    data: 'start',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 6,
+                    data: 'end',
+                    searchable: true,
+                    visible: false,
                 }
             ],
             "order": [
@@ -196,35 +212,69 @@ $user = $user ?? $_SESSION['username'];
         }
     }
 
-    function filtertime(reset = false) {
-        if (reset) {
-            $("#from-month").val("")
-            $("#from-year").val("")
-            $("#to-month").val("")
-            $("#to-year").val("")
-            dataTable.columns(0).search("", true, false, true).draw();
-            writeHash({
-                time: null
-            })
-            return
-        }
+    let [fromMonth, fromYear, toMonth, toYear] = getFromToDate()
 
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var min = null,
+                max = null;
+
+            console.log([fromMonth, fromYear, toMonth, toYear])
+
+            if (fromMonth !== null && fromYear !== null)
+                min = new Date(fromYear, fromMonth - 1, 1, 0, 0, 0, 0);
+            if (toMonth !== null && toYear !== null)
+                max = new Date(toYear, toMonth - 1, 31, 0, 0, 0, 0);
+            // var max = maxDate.val();
+            // var date = new Date(data[5]);
+
+            var minDate = new Date(data[5]);
+            var maxDate = new Date(data[6]);
+
+            if (
+                (min === null && max === null) ||
+                (min === null && minDate <= max) ||
+                (min <= minDate && max === null) ||
+                (min < maxDate && minDate < max)) {
+                return true;
+} 
+
+            // if (
+            //     (min === null && max === null) ||
+            //     (min === null && minDate <= max) ||
+            //     (min <= minDate && max === null) ||
+            //     (min <= minDate && minDate <= max)
+            // ) {
+            //     return true;
+            // }
+            return false;
+        }
+    );
+
+    function getFromToDate() {
         var today = new Date();
         var fromMonth = $("#from-month").val()
+        if (fromMonth.length == 0) {
+            return [null, null, null, null];
+        }
+
+        var maxYear =  today.getFullYear()+1,
+            minYear = <?= $Settings->startyear ?>;
+
         if (fromMonth.length == 0 || parseInt(fromMonth) < 1 || parseInt(fromMonth) > 12) {
             fromMonth = 1
         }
         var fromYear = $("#from-year").val()
-        if (fromYear.length == 0 || parseInt(fromYear) < <?=$Settings->startyear?> || parseInt(fromYear) > today.getFullYear()) {
-            fromYear = <?=$Settings->startyear?>
+        if (fromYear.length == 0 || parseInt(fromYear) < minYear || parseInt(fromYear) > maxYear) {
+            fromYear = minYear
         }
         var toMonth = $("#to-month").val()
         if (toMonth.length == 0 || parseInt(toMonth) < 1 || parseInt(toMonth) > 12) {
             toMonth = 12
         }
         var toYear = $("#to-year").val()
-        if (toYear.length == 0 || parseInt(toYear) < <?=$Settings->startyear?> || parseInt(toYear) > today.getFullYear()) {
-            toYear = today.getFullYear()
+        if (toYear.length == 0 || parseInt(toYear) < minYear || parseInt(toYear) > maxYear) {
+            toYear = maxYear
         }
         // take care that from is not larger than to
         fromMonth = parseInt(fromMonth)
@@ -238,15 +288,49 @@ $user = $user ?? $_SESSION['username'];
             fromMonth = toMonth
         }
 
-        writeHash({
-            time: `${fromMonth},${fromYear},${toMonth},${toYear}`
-        })
-
         $("#from-month").val(fromMonth)
         $("#from-year").val(fromYear)
         $("#to-month").val(toMonth)
         $("#to-year").val(toYear)
 
+        writeHash({
+            time: `${fromMonth},${fromYear},${toMonth},${toYear}`
+        })
+
+        return [fromMonth, fromYear, toMonth, toYear];
+
+    }
+
+    function filtertime() {
+        [fromMonth, fromYear, toMonth, toYear] = getFromToDate()
+        dataTable.draw();
+    }
+
+    function resetTime() {
+        $("#from-month").val("")
+        $("#from-year").val("")
+        $("#to-month").val("")
+        $("#to-year").val("")
+        dataTable.draw();
+        writeHash({
+            time: null
+        })
+    }
+
+    function filtertime_(reset = false) {
+        if (reset) {
+            $("#from-month").val("")
+            $("#from-year").val("")
+            $("#to-month").val("")
+            $("#to-year").val("")
+            dataTable.columns(0).search("", true, false, true).draw();
+            writeHash({
+                time: null
+            })
+            return
+        }
+
+        let [fromMonth, fromYear, toMonth, toYear] = getFromToDate()
         var range = dateRange(fromMonth, fromYear, toMonth, toYear)
         console.log(range);
         regExSearch = ' (' + range.join('|') + ')';
@@ -271,5 +355,4 @@ $user = $user ?? $_SESSION['username'];
         }
         return dates;
     }
-    
 </script>

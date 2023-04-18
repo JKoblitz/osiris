@@ -229,7 +229,7 @@ if ($showcoins == 'all') {
                 <?php } ?>
                 <?php if ($scientist['is_scientist'] ?? true) { ?>
                     <span class="user-role">
-                        <?= lang('Scientist', $scientist['gender'] == 'f' ? 'Wissenschaftlerin' : 'Wissenschaftler') ?>
+                        <?= lang('Scientist', ($scientist['gender']??'m') == 'f' ? 'Wissenschaftlerin' : 'Wissenschaftler') ?>
                     </span>
                 <?php } ?>
             <?php } ?>

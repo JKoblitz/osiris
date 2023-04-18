@@ -1042,7 +1042,7 @@ function val($index, $default = '')
                             <div class="input-group">
                                 <input type="text" class="form-control" name="values[doi]" value="<?= val('doi') ?>" id="doi">
                                 <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI') ?>">
-                                    <button class="btn" type="button" onclick="getPubData(event, this)"><i class="ph ph-rotate"></i></button>
+                                    <button class="btn" type="button" onclick="getPubData(event, this)"><i class="ph ph-arrows-clockwise"></i></button>
                                     <span class="sr-only">
                                         <?= lang('Retreive updated information via DOI', 'Aktualisiere die bibliographischen Daten via DOI') ?>
                                     </span>

@@ -374,6 +374,9 @@ function activity_icon($doc, $tooltip = true)
         case 'software':
             $icon = "<i class='ph ph-regular ph-lg text-software ph-desktop-tower'></i>";
             break;
+        case 'award':
+            $icon = "<i class='ph ph-regular ph-lg text-award ph-certificate'></i>";
+            break;
         default:
             break;
     }
@@ -754,7 +757,8 @@ class Format
         $first = 1;
         $last = 1;
         $corresponding = false;
-        if (!empty($doc['authors']) && !is_array($doc['authors'])) {
+
+        if (!empty($doc['authors']) && $doc['authors'] instanceof BSONArray) {
             $doc['authors'] = $doc['authors']->bsonSerialize();
         }
         if (!empty($doc['authors']) && is_array($doc['authors'])) {
@@ -917,6 +921,7 @@ class Format
         }
         if (!empty($doc['epub'])) {
             $result .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
+            $this->subtitle .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
         }
 
         if ($this->usecase == 'web' && in_array($type, ['article', 'book', 'chapter'])) {

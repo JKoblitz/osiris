@@ -772,7 +772,7 @@ function getDOI(doi) {
                 isbn: pub['ISBN'],
                 city: pub['publisher-location'],
                 // open_access: pub.open_access,
-                epub: pub['published-print'] === undefined,
+                epub: (pub['published-print'] === undefined && pub['published-online'] === undefined),
             }
             fillForm(pubdata)
             $('.loader').removeClass('show')

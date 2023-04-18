@@ -229,8 +229,8 @@ vertical-align: -0.2em;
                     </div>
 
                     <?php if ($USER['is_controlling']) { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
-                            <i class="ph ph-regular ph-student" aria-hidden="true"></i>
+                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/'. $_SESSION['username']) ?>">
+                            <i class="ph ph-regular ph-user" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
 
@@ -245,7 +245,7 @@ vertical-align: -0.2em;
                         </a>
 
                     <?php } else { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
+                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/'. $_SESSION['username']) ?>">
                             <i class="ph ph-regular ph-student" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
@@ -277,12 +277,12 @@ vertical-align: -0.2em;
                         <?= lang('All activities', 'Alle Aktivitäten') ?>
                     </a>
                     
-                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
-                        <i class="ph ph-regular ph-student" aria-hidden="true"></i>
+                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('user/browse') ?>">
+                        <i class="ph ph-regular ph-users" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
+                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal/browse') ?>">
                         <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
                     </a>
