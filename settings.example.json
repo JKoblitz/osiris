@@ -1,17 +1,4 @@
 {
-    "ldap": {
-        "ip": "100.10.100.0",
-        "port": 389,
-        "user": "osiris",
-        "domain": "@domain.local",
-        "password": "ldap_password",
-        "basedn": "OU=Users,OU=DSMZ,DC=dsmz,DC=local"
-    },
-    "database": {
-        "ip": "localhost",
-        "port": 27017,
-        "dbname": "osiris",
-    },
     "api": [
         {
             "id": "orcid",

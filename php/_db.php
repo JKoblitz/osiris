@@ -1,5 +1,6 @@
 <?php
 require_once BASEPATH . '/vendor/autoload.php';
+
 use MongoDB\BSON\ObjectId;
 use MongoDB\Client;
 use MongoDB\BSON\Regex;
@@ -12,9 +13,15 @@ if (!isset($Settings)) {
     $Settings = new Settings();
 }
 
-$dbname = $Settings->settings['database']['dbname'] ?? "osiris";
-$address = $Settings->settings['database']['ip'] ?? "localhost";
-$port = $Settings->settings['database']['port'] ?? "27017";
+if (!defined('DB_DBNAME')) {
+    $dbname = $Settings->settings['database']['dbname'] ?? "osiris";
+    $address = $Settings->settings['database']['ip'] ?? "localhost";
+    $port = $Settings->settings['database']['port'] ?? "27017";
+} else {
+    $dbname = DB_DBNAME;
+    $address = DB_IP;
+    $port = DB_PORT;
+}
 
 $mongoDB = new Client(
     "mongodb://$address:$port/$dbname?retryWrites=true&w=majority"
@@ -56,13 +63,14 @@ function is_ObjectID($id)
     return false;
 }
 
-function getConnected($type, $id){
+function getConnected($type, $id)
+{
     global $osiris;
     $id = new ObjectId($id);
-    if ($type == 'journal'){
+    if ($type == 'journal') {
         return $osiris->journals->findOne(['_id' => $id]);
     }
-    if ($type == 'teaching'){
+    if ($type == 'teaching') {
         return $osiris->teaching->findOne(['_id' => $id]);
     }
 }
@@ -114,14 +122,14 @@ function cleanFields($id)
             $type = 'review';
             $activities->updateOne(
                 ['_id' => $id],
-                ['$set' => ["role"=> 'review']]
+                ['$set' => ["role" => 'review']]
             );
         }
         if ($type == "Editor") {
             $type = 'editorial';
             $activities->updateOne(
                 ['_id' => $id],
-                ['$set' => ["role"=> 'editorial']]
+                ['$set' => ["role" => 'editorial']]
             );
         }
     } else if ($type == 'misc') {
@@ -137,9 +145,9 @@ function cleanFields($id)
     if (!array_key_exists($type, $fields)) return false;
 
     foreach ($values as $key => $value) {
-        if (!in_array($key, $general) && !in_array($key, $fields[$type])){
+        if (!in_array($key, $general) && !in_array($key, $fields[$type])) {
             // dump([$key, $value], true);
-            
+
             $updateResult = $activities->updateOne(
                 ['_id' => $id],
                 ['$unset' => [$key => 1]]
@@ -161,16 +169,16 @@ function getUserFromName($last, $first)
     global $osiris;
     $first = trim($first);
     if (strlen($first) == 1) $first .= ".";
-    
+
     // $firstsplit = explode(' ', $first, 2);
     // $firstregex = array('$regex' => '^'.$firstsplit[0], '$options' => 'i');
     // if (str_ends_with($first, '.')){
-        try {
-            $regex = new Regex('^' . $first[0]);
-        } catch (\Throwable $th) {
-           $regex = $first;
-        }
-        
+    try {
+        $regex = new Regex('^' . $first[0]);
+    } catch (\Throwable $th) {
+        $regex = $first;
+    }
+
     // }
     $user = $osiris->users->findOne([
         '$or' => [
@@ -498,27 +506,28 @@ function get_reportable_activities($start, $end)
             if (isset($doc['epub']) && $doc['epub']) continue;
         }
 
-         // check if any of the authors is affiliated
-         $aoi_exists = false;
-         foreach ($doc['authors'] as $a) {
-             $aoi = boolval($a['aoi'] ?? false);
-             $aoi_exists = $aoi_exists || $aoi;
-         }
-         if (!$aoi_exists) continue;
+        // check if any of the authors is affiliated
+        $aoi_exists = false;
+        foreach ($doc['authors'] as $a) {
+            $aoi = boolval($a['aoi'] ?? false);
+            $aoi_exists = $aoi_exists || $aoi;
+        }
+        if (!$aoi_exists) continue;
 
-         $result[] = $doc;
+        $result[] = $doc;
     }
 
     return $result;
 }
 
 
-function fieldDefinition(){
-    
+function fieldDefinition()
+{
 }
 
 
-function getDeptFromAuthors($authors){
+function getDeptFromAuthors($authors)
+{
     $result = [];
     if ($authors instanceof BSONArray) {
         $authors = $authors->bsonSerialize();
