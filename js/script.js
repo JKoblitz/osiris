@@ -7,77 +7,64 @@ $(document).ready(function () {
     })
     SCIENTISTS = Object.values(scientists)
 
-    var authordiv = $('.author-list')
-    if (authordiv.length > 0) {
-
-        authordiv.sortable({
-            // handle: ".author",
-            // change: function( event, ui ) {}
-        });
-    }
-
-    $('.title-editor').each(function (el) {
-        var element = this;
-
-        var quill = new Quill(element, {
-            modules: {
-                toolbar: [
-                    ['italic', 'underline'],
-                    [{ script: 'super' }, { script: 'sub' }]
-                ]
-            },
-            formats: ['italic', 'underline', 'script', 'symbol'],
-            placeholder: '',
-            theme: 'snow' // or 'bubble'
-        });
-
-        quill.on('text-change', function (delta, oldDelta, source) {
-            var delta = quill.getContents()
-            console.log(delta);
-            var str = $(element).find('.ql-editor p').html()
-            console.log(str);
-            // var str = ""
-            // delta.ops.forEach(el => {
-            //     if (el.attributes !== undefined) {
-            //         // if (el.attributes.bold) str += "<b>";
-            //         if (el.attributes.italic) str += "<i>";
-            //         if (el.attributes.underline) str += "<u>";
-            //     }
-            //     str += el.insert;
-            //     if (el.attributes !== undefined) {
-            //         if (el.attributes.underline) str += "</u>";
-            //         if (el.attributes.italic) str += "</i>";
-            //         // if (el.attributes.bold) str += "</b>";
-            //     }
-            // });
-            // $('.add-form #title').val(str)
-            $(element).next().val(str)
-        });
-
-        // add additional symbol toolbar for greek letters
-        var additional = $('<span class="ql-formats">')
-        var symbols = ['α', 'β', 'π', 'Δ']
-        symbols.forEach(symbol => {
-            var btn = $('<button type="button" class="ql-symbol">')
-            btn.html(symbol)
-            btn.on('click', function () {
-                // $('.symbols').click(function(){
-                quill.focus();
-                var symbol = $(this).html();
-                var caretPosition = quill.getSelection(true);
-                quill.insertText(caretPosition, symbol);
-                // });
-            })
-            additional.append(btn)
-        });
-
-        $('.ql-toolbar').append(additional)
-    })
-    // if ($('.add-form #title-editor').length !== 0 ){
-
-    // }
-
 })
+
+function initQuill(element) {
+
+    var quill = new Quill(element, {
+        modules: {
+            toolbar: [
+                ['italic', 'underline'],
+                [{ script: 'super' }, { script: 'sub' }]
+            ]
+        },
+        formats: ['italic', 'underline', 'script', 'symbol'],
+        placeholder: '',
+        theme: 'snow' // or 'bubble'
+    });
+
+    quill.on('text-change', function (delta, oldDelta, source) {
+        var delta = quill.getContents()
+        console.log(delta);
+        var str = $(element).find('.ql-editor p').html()
+        console.log(str);
+        // var str = ""
+        // delta.ops.forEach(el => {
+        //     if (el.attributes !== undefined) {
+        //         // if (el.attributes.bold) str += "<b>";
+        //         if (el.attributes.italic) str += "<i>";
+        //         if (el.attributes.underline) str += "<u>";
+        //     }
+        //     str += el.insert;
+        //     if (el.attributes !== undefined) {
+        //         if (el.attributes.underline) str += "</u>";
+        //         if (el.attributes.italic) str += "</i>";
+        //         // if (el.attributes.bold) str += "</b>";
+        //     }
+        // });
+        // $('.add-form #title').val(str)
+        $(element).next().val(str)
+    });
+
+    // add additional symbol toolbar for greek letters
+    var additional = $('<span class="ql-formats">')
+    var symbols = ['α', 'β', 'π', 'Δ']
+    symbols.forEach(symbol => {
+        var btn = $('<button type="button" class="ql-symbol">')
+        btn.html(symbol)
+        btn.on('click', function () {
+            // $('.symbols').click(function(){
+            quill.focus();
+            var symbol = $(this).html();
+            var caretPosition = quill.getSelection(true);
+            quill.insertText(caretPosition, symbol);
+            // });
+        })
+        additional.append(btn)
+    });
+
+    $('.ql-toolbar').append(additional)
+}
 
 function readHash() {
     var hash = window.location.hash.substr(1);
@@ -300,6 +287,7 @@ function downloadCSVFile(csv_data) {
 }
 
 function getPublication(id) {
+    id = id.trim()
     $('.loader').addClass('show')
     if (/(10\.\d{4,5}\/[\S]+[^;,.\s])$/.test(id)) {
         id = id.match(/(10\.\d{4,5}\/[\S]+[^;,.\s])$/)[0]
@@ -690,7 +678,7 @@ function getPubmed(id) {
                 // open_access: pub.open_access,
                 epub: pub.pubstatus == 10,
             }
-            fillForm(pubdata)
+            toggleForm(pubdata)
             $('.loader').removeClass('show')
         },
         error: function (response) {
@@ -730,7 +718,7 @@ function getDOI(doi) {
             if (pub.author === undefined && pub.editor !== undefined) {
                 pub.author = pub.editor
             }
-            if (pub.author !== undefined){
+            if (pub.author !== undefined) {
                 pub.author.forEach((a, i) => {
                     var aoi = false
                     a.affiliation.forEach(e => {
@@ -774,7 +762,7 @@ function getDOI(doi) {
                 // open_access: pub.open_access,
                 epub: (pub['published-print'] === undefined && pub['published-online'] === undefined),
             }
-            fillForm(pubdata)
+            toggleForm(pubdata)
             $('.loader').removeClass('show')
         },
         error: function (response) {
@@ -897,67 +885,71 @@ function getDataciteDOI(doi) {
                 pubdata['day'] = dateSplit[2] ?? null
             }
 
-            fillForm(pubdata)
+            toggleForm(pubdata)
             $('.loader').removeClass('show')
         },
         error: function (response) {
-            toastError(response.responseText.errors.title)
+            toastError(response.responseText.errors.title ?? response.responseText)
             $('.loader').removeClass('show')
         }
     })
 }
-function fillForm(pub) {
-    console.log(pub);
+
+function toggleForm(pub) {
+
+    var selectedType = 'misc';
+
+    switch (pub.type.toLowerCase()) {
+        case 'journal-article':
+            selectedType = 'article';
+            break;
+        case 'magazine-article':
+            selectedType = 'magazine';
+            break;
+        case 'book-chapter':
+        case 'chapter':
+            selectedType = 'chapter';
+            pub.book = pub.journal;
+            delete pub.journal
+            break;
+        case 'book':
+            if (pub.editors !== undefined && pub.editors.length > 0 && pub.authors.length > 0) {
+                selectedType = 'chapter';
+            } else if (pub.editors !== undefined && pub.editors.length > 0) {
+                selectedType = 'editor';
+                pub.book = pub.journal;
+            } else {
+                selectedType = 'book';
+                pub.series = pub.journal;
+            }
+            delete pub.journal
+            break;
+        case 'software':
+        case 'dataset':
+        case 'report':
+            selectedType = 'software';
+            $('#software_type option[value="' + pub.type + '"]').prop("selected", true);
+            break;
+        // case 'book-chapter':
+        //     selectedType = 'chapter';
+        //     break;
+
+        default:
+            selectedType = pub.type;
+            break;
+    }
 
     if (UPDATE) {
         $('#publication-form').find('input:not(.hidden)').removeClass('is-valid')
     } else {
         $('#publication-form').find('input:not(.hidden):not([type=radio]):not([type=checkbox])').val('').removeClass('is-valid')
     }
-    // $('.affiliation-warning').show()
 
-    switch (pub.type.toLowerCase()) {
-        case 'journal-article':
-            togglePubType('article')
-            break;
-        case 'magazine-article':
-            togglePubType('magazine')
-            break;
-        case 'book-chapter':
-        case 'chapter':
-            togglePubType('chapter')
-            pub.book = pub.journal;
-            delete pub.journal
-            break;
-        case 'book':
-            if (pub.editors !== undefined && pub.editors.length > 0 && pub.authors.length > 0) {
-                togglePubType('chapter')
-            } else if (pub.editors !== undefined && pub.editors.length > 0) {
-                togglePubType('editor')
-                pub.book = pub.journal;
-            } else {
-                togglePubType('book')
-                pub.series = pub.journal;
-            }
-            delete pub.journal
-            console.log(pub);
-            break;
-        case 'software':
-        case 'dataset':
-        case 'report':
-            togglePubType('software')
-            $('#software_type option[value="' + pub.type + '"]').prop("selected", true);
-            break;
-        // case 'book-chapter':
-        //     togglePubType('chapter')
-        //     break;
+    togglePubType(selectedType, function () { fillForm(pub) })
+}
 
-        default:
-            togglePubType(pub.type)
-            break;
-    }
-    // $('#type').addClass('is-valid')
-    $('#pubtype').addClass('is-valid')
+function fillForm(pub) {
+    console.log(pub);
 
     if (pub.title !== undefined) {
         var title = pub.title.replace(/\s+/g, ' ')
@@ -1040,10 +1032,6 @@ function fillForm(pub) {
 
 function getPubData(event, form) {
     event.preventDefault();
-    // if (form !== null) {
-    //     param = $(form).serializeArray()
-    //     param = objectifyForm(param)
-    // }
     if ($('#search-doi').length !== 0) {
         var doi = $('#search-doi').val()
     } else {
@@ -1182,119 +1170,76 @@ function removeAuthor(event, el) {
 }
 
 
-function activeButtons(type) {
-    $('.select-btns').find('.btn').removeClass('active')
 
-    $('#' + type + '-btn').addClass('active')
-    switch (type) {
-        case 'publication':
-            $('#article-btn').addClass('active')
-            break;
-        case 'review':
-            $('#review2-btn').addClass('active')
-            break;
-        case 'misc':
-            $('#misc-once-btn').addClass('active')
-            break;
+// function togglePubType(type) {
+//     type = type.trim().toLowerCase().replace(' ', '-')
+//     var types = {
+//         "journal-article": "article",
+//         "magazine-article": "magazine",
+//         "book-chapter": "chapter",
+//         "publication": 'article',
+//         'doctoral-thesis': 'students',
+//         'master-thesis': 'students',
+//         'bachelor-thesis': 'students',
+//         'guest-scientist': 'guests',
+//         'lecture-internship': 'guests',
+//         'student-internship': 'guests',
+//         'reviewer': 'review',
+//         'editor': 'editorial',
+//         "monograph": "book"
+//     }
+//     // if (type == "others") return;
+//     type = types[type] ?? type;
+//     console.log(type);
 
-        case 'students':
-            $('#students2-btn').addClass('active')
-            break;
-        case 'guests':
-            $('#students-btn').addClass('active')
-            break;
-        case 'editorial':
-        case 'grant-rev':
-        case 'thesis-rev':
-            $('#review-btn').addClass('active')
-            break;
-        case 'misc-once':
-        case 'misc-annual':
-            $('#misc-btn').addClass('active')
-            break;
-        case 'article':
-        case 'magazine':
-        case 'book':
-        case 'chapter':
-        case 'preprint':
-        case 'dissertation':
-        case 'others':
-            $('#publication-btn').addClass('active')
-            break;
-        default:
-            break;
-    }
-}
+//     activeButtons(type)
+//     $('#type').val(type)
+//     var form = $('#publication-form')
 
-function togglePubType(type) {
-    type = type.trim().toLowerCase().replace(' ', '-')
-    var types = {
-        "journal-article": "article",
-        "magazine-article": "magazine",
-        "book-chapter": "chapter",
-        "publication": 'article',
-        'doctoral-thesis': 'students',
-        'master-thesis': 'students',
-        'bachelor-thesis': 'students',
-        'guest-scientist': 'guests',
-        'lecture-internship': 'guests',
-        'student-internship': 'guests',
-        'reviewer': 'review',
-        'editor': 'editorial',
-        "monograph": "book"
-    }
-    // if (type == "others") return;
-    type = types[type] ?? type;
-    console.log(type);
+//     var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others', 'dissertation']
+//     if (publications.includes(type)) {
+//         $('#pubtype option[value="' + type + '"]').prop("selected", true);
+//         $('#type').val('publication')
+//     }
+//     var reviews = ["review", "editorial", "grant-rev", "thesis-rev"]
+//     if (reviews.includes(type)) {
+//         $('#role-input option[value="' + type + '"]').prop("selected", true);
+//         $('#type').val('review')
+//     }
 
-    activeButtons(type)
-    $('#type').val(type)
-    var form = $('#publication-form')
+//     var miscs = ["misc", "misc-once", "misc-annual"]
+//     if (miscs.includes(type)) {
+//         var misc = type == "misc-annual" ? 'annual' : 'once'
+//         $('#iteration option[value="' + misc + '"]').prop("selected", true);
+//         $('#type').val('misc')
+//     }
 
-    var publications = ['article', 'book', 'chapter', 'preprint', 'magazine', 'others', 'dissertation']
-    if (publications.includes(type)) {
-        $('#pubtype option[value="' + type + '"]').prop("selected", true);
-        $('#type').val('publication')
-    }
-    var reviews = ["review", "editorial", "grant-rev", "thesis-rev"]
-    if (reviews.includes(type)) {
-        $('#role-input option[value="' + type + '"]').prop("selected", true);
-        $('#type').val('review')
-    }
+//     var students = ["students", "guests"]
+//     if (students.includes(type)) {
+//         $('#type').val('students')
+//     }
 
-    var miscs = ["misc", "misc-once", "misc-annual"]
-    if (miscs.includes(type)) {
-        var misc = type == "misc-annual" ? 'annual' : 'once'
-        $('#iteration option[value="' + misc + '"]').prop("selected", true);
-        $('#type').val('misc')
-    }
+//     var els = form.find('[data-visible]').hide()
+//         .find('input,select').attr('disabled', true)
 
-    var students = ["students", "guests"]
-    if (students.includes(type)) {
-        $('#type').val('students')
-    }
+//     els.each(function () {
+//         var el = $(this)
+//         var vis = el.closest('[data-visible]').attr('data-visible')
+//         if (vis.includes(type)) {
+//             // console.log(el.attr('name'), vis, el);
+//             el.attr('disabled', false)
+//         }
+//     })
 
-    var els = form.find('[data-visible]').hide()
-        .find('input,select').attr('disabled', true)
-
-    els.each(function () {
-        var el = $(this)
-        var vis = el.closest('[data-visible]').attr('data-visible')
-        if (vis.includes(type)) {
-            // console.log(el.attr('name'), vis, el);
-            el.attr('disabled', false)
-        }
-    })
-
-    form.find('[data-visible*=' + type + ']').show()
-    //     .find(':not([data-visible]),[data-visible*=' + type + ']')
-    //     .find('input,select').attr('disabled', false)
+//     form.find('[data-visible*=' + type + ']').show()
+//     //     .find(':not([data-visible]),[data-visible*=' + type + ']')
+//     //     .find('input,select').attr('disabled', false)
 
 
 
-    form.find('[data-visible*=' + type + '] > input, [data-visible*=' + type + '] > select').attr('disabled', false)
-    form.slideDown()
-}
+//     form.find('[data-visible*=' + type + '] > input, [data-visible*=' + type + '] > select').attr('disabled', false)
+//     form.slideDown()
+// }
 
 function todo() {
     digidive.initStickyAlert({
@@ -1411,12 +1356,14 @@ function verifyForm(event, form) {
     });
 
     // check if authors are defined
-    if ($('.author-list').find('.author').length === 0) {
-        $('#author-widget').addClass('is-invalid').removeClass('is-valid')
-        correct = false
-        errors.push("Authors")
-    } else {
-        $('#author-widget').addClass('is-valid').removeClass('is-invalid')
+    if ($('#author-widget').length > 0) {
+        if ($('.author-list').find('.author').length === 0) {
+            $('#author-widget').addClass('is-invalid').removeClass('is-valid')
+            correct = false
+            errors.push("Authors")
+        } else {
+            $('#author-widget').addClass('is-valid').removeClass('is-invalid')
+        }
     }
 
     if (correct) return true
@@ -1570,19 +1517,6 @@ function selectTeaching(j) {
     window.location.replace('#')
 }
 
-
-function selectSemester(sem, year) {
-    year = parseInt(year)
-    var start = year + '-'
-    start += (sem == 'WS' ? '10-01' : '04-01')
-    $('#date_start').val(start)
-
-    var end = (sem == 'WS' ? year + 1 : year) + '-'
-    end += (sem == 'WS' ? '03-31' : '09-30')
-    $('#students_end').val(end)
-}
-
-
 function searchPubMed(term) {
     var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     var data = {
@@ -1658,9 +1592,9 @@ function displayPubMed(ids) {
                         <small class='text-muted'>${item.fulljournalname} (${item.pubdate})</small>
                         `
                 )
-                var link = "pubmed="+item.uid
-                if (item.elocationid && item.elocationid.startsWith('doi:')){
-                    link = "doi="+item.elocationid.replace('doi:', '').trim()
+                var link = "pubmed=" + item.uid
+                if (item.elocationid && item.elocationid.startsWith('doi:')) {
+                    link = "doi=" + item.elocationid.replace('doi:', '').trim()
                 }
                 tr.append(td)
                 tr.append(`
@@ -1689,7 +1623,7 @@ function orderByAttr(a, b) {
     if (a === undefined) return -1
     if (b === undefined) return 1
     return a.localeCompare(b)
-  }
+}
 
 function checkDuplicate(id, title) {
     $.ajax({
@@ -1699,30 +1633,30 @@ function checkDuplicate(id, title) {
         url: ROOTPATH + '/api/levenshtein',
         success: function (result) {
             console.log(result);
-            const tr = $('tr#'+id)
+            const tr = $('tr#' + id)
             const td = tr.find('td:first-child')
             const tdlst = tr.find('td:last-child')
             var p = $('<p>')
             tr.attr('data-value', result.similarity)
-            
-           if (result.similarity > 98){
-            tr.addClass('row-muted')
+
+            if (result.similarity > 98) {
+                tr.addClass('row-muted')
                 p.addClass('text-danger')
 
                 p.html(
-                    lang('<b>Duplicate</b> of', 
-                    '<b>Duplikat</b> von')
+                    lang('<b>Duplicate</b> of',
+                        '<b>Duplikat</b> von')
                     + ` <a href="${ROOTPATH}/activities/view/${result.id}" class="colorless">${result.title}</a>`
-                    )
+                )
                 tdlst.empty()
-            } else if (result.similarity > 50){
+            } else if (result.similarity > 50) {
                 p.addClass('text-signal')
 
                 p.html(
                     lang('Might be duplicate of ', 'Vielleicht Duplikat von')
                     + ` (<b>${result.similarity}&nbsp;%</b>):</p>
                      <a href="${ROOTPATH}/activities/view/${result.id}" class="colorless">${result.title}</a>`
-                    )
+                )
                 // p.append('<p class="text-signal">'+lang('This might be a duplicate of the follwing publication', 'Dies könnte ein Duplikat der folgenden Publikation sein'))
             }
             td.append(p)

@@ -1,6 +1,6 @@
 <?php
 
-$Format = new Format(true);
+$Format = new Document(true);
 $form = $form ?? array();
 
 function val($index, $default = '')
@@ -92,12 +92,11 @@ function val($index, $default = '')
 
     <?php
     $modules = $osiris->teaching->find();
-    ?>
-    <?php foreach ($modules as $module) {
+    foreach ($modules as $module) {
         $contact = getUserFromId($module['contact_person'] ?? '', true);
     ?>
         <div class="col-md-6">
-            <div class="box" id="<?=$module['_id']?>">
+            <div class="box" id="<?= $module['_id'] ?>">
                 <div class="content">
                     <h5 class="mt-0">
                         <span class="highlight-text"><?= $module['module'] ?></span>
@@ -117,21 +116,23 @@ function val($index, $default = '')
                     </div>
                 </div>
                 <?php
-                    $activities = $osiris->activities->find(['module_id' => strval($module['_id'])]);
-                    if (!empty($activities)):
+                $activities = $osiris->activities->find(['module_id' => strval($module['_id'])]);
+                if (!empty($activities)) :
                 ?>
-                <hr>
-                <div class="content">
-                    
-                <?php foreach ($activities as $doc) : ?>
-                        <?=activity_icon($doc)?>
-                        <?=$Format->formatShort($doc)?>
-                    <?php endforeach; ?>
-                </div>
-                    
+                    <hr>
+                    <div class="content">
+
+                        <?php foreach ($activities as $doc) :
+                            $Format->setDocument($doc);
+                        ?>
+                            <?= $Format->activity_icon() ?>
+                            <?= $Format->formatShort() ?>
+                        <?php endforeach; ?>
+                    </div>
+
                 <?php endif; ?>
-                
-                
+
+
             </div>
         </div>
     <?php } ?>

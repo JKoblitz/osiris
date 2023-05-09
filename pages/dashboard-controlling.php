@@ -1,4 +1,3 @@
-
 <div class="content">
     <h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
 
@@ -155,10 +154,10 @@
 
 <?php
 
-$Format = new Format(true);
+$Format = new Document(true);
 ?>
 
-<h2><?=lang('Newly added activities', 'Zuletzt hinzugefügte Aktivitäten')?></h2>
+<h2><?= lang('Newly added activities', 'Zuletzt hinzugefügte Aktivitäten') ?></h2>
 <div class="mt-20">
 
     <table class="table dataTable" id="activity-table">
@@ -182,6 +181,7 @@ $Format = new Format(true);
             } else foreach ($cursor as $i => $doc) {
                 $id = $doc['_id'];
                 if ($i >= 30) break;
+                $Format->setDocument($doc);
             ?>
                 <tr class="" id="<?= $id ?>">
                     <td class="">
@@ -198,11 +198,11 @@ $Format = new Format(true);
                     </td>
                     <td class="text-center ">
                         <?php
-                        echo activity_icon($doc);
+                        echo $Format->activity_icon();
                         ?>
                     </td>
                     <td>
-                        <?php echo $Format->format($doc); ?>
+                        <?php echo $Format->format(); ?>
                     </td>
                     <td class="unbreakable">
                         <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">

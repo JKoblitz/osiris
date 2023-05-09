@@ -8,44 +8,79 @@ class Settings
     public $startyear = 2017;
     public $departments = array();
     public $activities = array();
-    public $apis = array();
+    public $errors = array();
 
     function __construct()
     {
-        $json = file_get_contents(BASEPATH . "/settings.json");
+
+        $file_name = BASEPATH . "/settings.json";
+        if (!file_exists($file_name)) {
+            $this->construct_default();
+        } else {
+            $this->construct($file_name);
+        }
+    }
+
+    function construct_default()
+    {
+        $this->construct(BASEPATH . "/settings.default.json");
+    }
+
+    function construct($file_name)
+    {
+        $json = file_get_contents($file_name);
+
         $this->settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
         if (!empty(json_last_error())) {
-            echo "You have an error in your <code>settings.json</code>: ";
-            die(json_last_error_msg() . PHP_EOL);
+            $this->errors[] = "You have an error in your <code>settings.json</code>: ";
+            $this->errors[] = (json_last_error_msg() . PHP_EOL);
+            $this->construct_default();
+            return;
         }
         if (empty($this->settings['affiliation'] ?? null) || empty($this->settings['affiliation']['id'] ?? null)) {
-            die('Error in Settings: affiliation cannot be empty.');
+            $this->errors[] = ('Affiliation cannot be empty.');
+            $this->construct_default();
+            return;
         }
         $this->affiliation = $this->settings['affiliation']['id'];
         $this->affiliation_details = $this->settings['affiliation'];
 
-        $this->startyear = $this->settings['startyear'] ?? 2017;
+        $this->startyear = intval($this->settings['startyear'] ?? 2017);
 
         if (empty($this->settings['departments'] ?? null)) {
-            die('Error in Settings: departments cannot be empty.');
+            $this->errors[] = ('Departments cannot be empty.');
+            $this->construct_default();
+            return;
         }
         foreach ($this->settings['departments'] as $val) {
-            if (!isset($val['id'])) die('Error in settings: departments needs an ID.');
+            if (!isset($val['id'])) {
+                $this->errors[] = ('Each department need an ID.');
+                $this->construct_default();
+                return;
+            }
             $this->departments[$val['id']] = $val;
         }
 
         if (empty($this->settings['activities'] ?? null)) {
-            die('Error in Settings: activities cannot be empty.');
+            $this->errors[] = ('Activities cannot be empty.');
+            $this->construct_default();
+            return;
         }
         foreach ($this->settings['activities'] as $val) {
-            if (!isset($val['id'])) die('Error in settings: activities needs an ID.');
+            if (!($val['display'] ?? true)) continue;
+            if (!isset($val['id'])) {
+                $this->errors[] = ('Each activitiy need an ID.');
+                $this->construct_default();
+                return;
+            }
+            if (!isset($val['subtypes'])) {
+                $this->errors[] = ('Each activitiy need at least one subtype.');
+                $this->construct_default();
+                return;
+            }
             $this->activities[$val['id']] = $val;
         }
-
-        $this->apis = $this->settings['api'] ?? [];
-
     }
-
 
     function getActivities($type = null)
     {
@@ -54,9 +89,48 @@ class Settings
 
         return $this->activities[$type] ?? [
             'name' => $type,
+            'name_de' => $type,
             'color' => '#cccccc',
-            'icon' => 'notdef'
+            'icon' => 'placeholder'
         ];
+    }
+
+    function title($type, $subtype = null)
+    {
+        $act = $this->getActivities($type);
+        if ($subtype === null)
+            return lang($act['name'], $act['name_de'] ?? $act['name']);
+
+        foreach ($act['subtypes'] as $st) {
+            if ($st['id'] == $subtype) {
+                return lang($st['name'], $st['name_de'] ?? $st['name']);
+            }
+        }
+    }
+
+    function icon($type, $subtype = null, $tooltip = true)
+    {
+        $act = $this->getActivities($type);
+        $icon = $act['icon'] ?? 'placeholder';
+
+        if ($subtype !== null) {
+            foreach ($act['subtypes'] as $st) {
+                if ($st['id'] == $subtype) {
+                    $icon = $st['icon'] ?? $icon;
+                    break;
+                }
+            }
+        }
+
+        $icon = "<i class='ph text-$type ph-$icon'></i>";
+        if ($tooltip) {
+            $name = $this->title($type);
+            return "<span data-toggle='tooltip' data-title='$name'>
+                $icon
+            </span>";
+        }
+
+        return $icon;
     }
 
 
@@ -69,7 +143,8 @@ class Settings
         ];
     }
 
-    function generateStyleSheet(){
+    function generateStyleSheet()
+    {
         $style = "";
 
         foreach ($this->departments as $val) {

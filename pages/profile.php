@@ -229,7 +229,7 @@ if ($showcoins == 'all') {
                 <?php } ?>
                 <?php if ($scientist['is_scientist'] ?? true) { ?>
                     <span class="user-role">
-                        <?= lang('Scientist', ($scientist['gender']??'m') == 'f' ? 'Wissenschaftlerin' : 'Wissenschaftler') ?>
+                        <?= lang('Scientist', ($scientist['gender'] ?? 'm') == 'f' ? 'Wissenschaftlerin' : 'Wissenschaftler') ?>
                     </span>
                 <?php } ?>
             <?php } ?>
@@ -478,7 +478,6 @@ if ($showcoins == 'all') {
             // expertFields.on('input', resizeInput)
 
             // expertFields.each((n, el) => {resizeInput.call(el)})
-
         </script>
     <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
         <div class="mt-20" id="expertise">
@@ -613,19 +612,22 @@ if ($showcoins == 'all') {
                         <?php
                         $i = 0;
                         foreach ($activities as $doc) {
+
                             if ($doc['type'] != 'publication') continue;
                             if ($i++ >= 5) break;
                             $id = $doc['_id'];
 
+                            $Format->setDocument($doc);
+
                         ?>
                             <tr id='tr-<?= $id ?>'>
-                                <td class="w-50"><?= activity_icon($doc); ?></td>
+                                <td class="w-50"><?= $Format->activity_icon($doc); ?></td>
                                 <td>
                                     <?php
                                     if ($USER['display_activities'] == 'web') {
-                                        echo $Format->formatShort($doc);
+                                        echo $Format->formatShort();
                                     } else {
-                                        echo $Format->format($doc);
+                                        echo $Format->format();
                                     }
                                     ?>
 
@@ -1064,16 +1066,17 @@ if ($showcoins == 'all') {
                             if ($doc['type'] == 'publication') continue;
                             if ($i++ > 5) break;
                             $id = $doc['_id'];
+                            $Format->setDocument($doc);
 
                         ?>
                             <tr id='tr-<?= $id ?>'>
-                                <td class="w-50"><?= activity_icon($doc); ?></td>
+                                <td class="w-50"><?= $Format->activity_icon(); ?></td>
                                 <td>
                                     <?php
                                     if ($USER['display_activities'] == 'web') {
-                                        echo $Format->formatShort($doc);
+                                        echo $Format->formatShort();
                                     } else {
-                                        echo $Format->format($doc);
+                                        echo $Format->format();
                                     }
                                     ?>
 
@@ -1130,15 +1133,16 @@ if ($showcoins == 'all') {
                             // if ($i++ > 5) break;
                             $id = $doc['_id'];
 
+                            $Format->setDocument($doc);
                         ?>
                             <tr id='tr-<?= $id ?>'>
-                                <td class="w-50"><?= activity_icon($doc); ?></td>
+                                <td class="w-50"><?= $Format->activity_icon(); ?></td>
                                 <td>
                                     <?php
                                     if ($USER['display_activities'] == 'web') {
-                                        echo $Format->formatShort($doc);
+                                        echo $Format->formatShort();
                                     } else {
-                                        echo $Format->format($doc);
+                                        echo $Format->format();
                                     }
                                     ?>
 

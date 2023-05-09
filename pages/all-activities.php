@@ -40,33 +40,45 @@ $user = $user ?? $_SESSION['username'];
     </a>
 <?php } ?>
 <br>
+<div class="btn-bar d-flex">
 
-<div class="mb-5 btn-group" id="select-btns">
-    <button onclick="filterDataTable(1, 'publication')" class="btn btn-select- text-publication" id="publication-btn"><?= activity_icon('publication', false) ?> <?= lang('Publication', "Publikationen") ?></button>
-    <button onclick="filterDataTable(1, 'poster')" class="btn btn-select- text-poster" id="poster-btn"><?= activity_icon('poster', false) ?> <?= lang('Posters', 'Poster') ?></button>
-    <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?> <?= lang('Lectures', 'Vorträge') ?></button>
-    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-review" id="review-btn"><?= activity_icon('review', false) ?> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
-    <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select- text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?> <?= lang('Teaching', 'Lehre') ?></button>
-    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-students" id="students-btn"><?= activity_icon('students', false) ?> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
-    <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-software" id="software-btn"><?= activity_icon('software', false) ?> <?= lang('Software') ?></button>
-    <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-misc" id="misc-btn"><?= activity_icon('misc', false) ?> <?= lang('Misc') ?></button>
-</div>
+    <div class="dropdown with-arrow mr-10" id="select-dropdown">
+        <button class="btn" data-toggle="dropdown" type="button" id="select-activity" aria-haspopup="true" aria-expanded="false">
+            <?= lang('Filter by type', 'Nach Typ filtern') ?>
+            <i class="ph ph-caret-down"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="select-activity">
+            <?php
+            foreach ($Settings->getActivities() as $id => $a) { ?>
+                <a data-type="<?= $id ?>" onclick="selectActivity(this, '<?= $id ?>')" class="item text-<?= $id ?>" id="<?= $id ?>-btn">
+                    <span class="mr-5"><?= $Settings->icon($id, null, false) ?> </span>
+                    <?= $Settings->title($id, null) ?>
+                </a>
+            <?php
+            }
+            ?>
+        </div>
+    </div>
 
-<div class="input-group mb-10 w-400 mw-full">
-    <div class="input-group-prepend">
-        <span class="input-group-text"><?= lang('From', 'Von') ?></span>
-    </div>
-    <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-    <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
-    <div class="input-group-prepend">
-        <span class="input-group-text"><?= lang('to', 'bis') ?></span>
-    </div>
-    <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-    <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
-    <div class="input-group-append">
-        <button class="btn" type="button" onclick="resetTime()">&times;</button>
+
+    <div class="input-group mb-10 w-400 mw-full d-md-inline-flex">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+        </div>
+        <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
+        <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><?= lang('to', 'bis') ?></span>
+        </div>
+        <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
+        <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+
+        <div class="input-group-append">
+            <button class="btn" type="button" onclick="resetTime()">&times;</button>
+        </div>
     </div>
+
 </div>
 
 <div class="mt-20">
@@ -87,8 +99,6 @@ $user = $user ?? $_SESSION['username'];
 </div>
 
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<!-- <script src="<?= ROOTPATH ?>/js/gridjs.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script> -->
 
 <script>
     $.extend($.fn.DataTable.ext.classes, {
@@ -167,7 +177,7 @@ $user = $user ?? $_SESSION['username'];
 
         var hash = readHash();
         if (hash.type !== undefined) {
-            filterDataTable(1, hash.type)
+            selectActivity(document.getElementById(hash.type+'-btn'), hash.type)
         }
 
         if (hash.time !== undefined) {
@@ -180,6 +190,39 @@ $user = $user ?? $_SESSION['username'];
         }
 
     });
+
+
+    function selectActivity(btn, activity) {
+
+        if ($(btn).hasClass('active')) {
+            writeHash({
+                type: null
+            })
+            $('#select-dropdown a.item').removeClass('active')
+            $('#select-activity')
+                .html(lang('Filter by type', 'Nach Typ filtern') + ' <i class="ph ph-caret-down"></i>')
+                .removeClass('active')
+
+            $('#select-dropdown')
+                .removeClass('show')
+            dataTable.columns(1).search("", true, false, true).draw();
+
+        } else {
+            writeHash({
+                type: activity
+            })
+            $('#select-dropdown a.item').removeClass('active')
+            $(btn).addClass('active')
+            $('#select-activity')
+                .html(btn.innerHTML)
+                .removeClass('active')
+
+            $('#select-dropdown')
+                .removeClass('show')
+            dataTable.columns(1).search(activity, true, false, true).draw();
+
+        }
+    }
 
     function filterDataTable(col, item) {
         if ($('#select-btns #' + item + '-btn').hasClass('active')) {
@@ -219,7 +262,7 @@ $user = $user ?? $_SESSION['username'];
             var min = null,
                 max = null;
 
-            console.log([fromMonth, fromYear, toMonth, toYear])
+            // console.log([fromMonth, fromYear, toMonth, toYear])
 
             if (fromMonth !== null && fromYear !== null)
                 min = new Date(fromYear, fromMonth - 1, 1, 0, 0, 0, 0);
@@ -237,7 +280,7 @@ $user = $user ?? $_SESSION['username'];
                 (min <= minDate && max === null) ||
                 (min < maxDate && minDate < max)) {
                 return true;
-} 
+            }
 
             // if (
             //     (min === null && max === null) ||
@@ -258,7 +301,7 @@ $user = $user ?? $_SESSION['username'];
             return [null, null, null, null];
         }
 
-        var maxYear =  today.getFullYear()+1,
+        var maxYear = today.getFullYear() + 1,
             minYear = <?= $Settings->startyear ?>;
 
         if (fromMonth.length == 0 || parseInt(fromMonth) < 1 || parseInt(fromMonth) > 12) {

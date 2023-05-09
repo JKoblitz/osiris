@@ -1,7 +1,6 @@
 <?php
+include_once BASEPATH . "/php/Modules.php";
 
-$Format = new Format(true);
-$Format->full = true;
 
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 $locked = $activity['locked'] ?? false;
@@ -29,12 +28,36 @@ if ($doc['type'] == 'publication' && isset($doc['journal'])) {
 }
 
 $user_activity = isUserActivity($doc, $user);
+
+
+$Format = new Document;
+
+$Format->setDocument($doc);
+
+
+if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
+    <div class="alert alert-signal">
+        <h3 class="title">
+            <?=lang('For the good practice: ', 'Für die gute Praxis:')?>
+        </h3>
+            <?=lang('Upload now all relevant files for this activity (e.g. as PDF) to have them available for documentation and exchange.', 
+            'Lade jetzt die relevanten Dateien (z.B. PDF) hoch, um sie für die Dokumentation parat zu haben.')?>
+            <i class="ph ph-smiley"></i>
+            <b><?=lang('Thank you!', 'Danke!')?></b>
+            <br>
+        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn">
+            <i class="ph ph-regular ph-upload"></i>
+            <?= lang('Upload files', 'Dateien hochladen') ?>
+        </a>
+    </div>
+<?php }
 ?>
 
 <style>
     .key {
-        max-width: 16rem;
+        /* min-width: 16rem; */
         text-align: left;
+        padding-right: 2rem !important;
     }
 
     #detail-table td,
@@ -53,26 +76,9 @@ $user_activity = isUserActivity($doc, $user);
         background-color: var(--signal-color-very-light);
     }
 
-    /* .table tr[class^="row-"]{
-        border-right-width: 5px;
-    } */
     .table tbody tr[class^="row-"]:hover {
         border-left-width: 5px;
     }
-
-    /* 
-    [data-dept]{
-        position: relative;
-        transform:scale(1,1);
-    }
-    [data-dept]:hover::before {
-        content: attr(data-dept);
-        position: absolute;
-        left: 0;
-        text-anchor: middle;
-        transform: rotate(270deg);
-
-    } */
 </style>
 
 <div class="content">
@@ -141,22 +147,20 @@ $user_activity = isUserActivity($doc, $user);
     </div>
 
     <h2>
-        <span class='mr-10'><?= activity_icon($doc, false) ?></span>
-        <?= activity_title($doc) ?>
+        <span class='mr-10'><?= $Format->activity_icon(false) ?></span>
+        <?= $Format->activity_title() ?>
     </h2>
 
     <p class="lead">
-        <?= $Format->formatShort($doc, $link = false) ?>
+        <?= $Format->formatShort($link = false) ?>
     </p>
 
     <h4><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h4>
 
     <p>
         <?php
-        $Format->abbr_journal = true;
-        echo $Format->format($doc);
+        echo $Format->format();
         ?>
-
     </p>
 </div>
 
@@ -174,7 +178,7 @@ $user_activity = isUserActivity($doc, $user);
             <?php } ?>
 
 
-            <?php if (in_array($doc['type'], ['poster', 'lecture', 'review', 'misc', 'students', 'teaching'])) {
+            <?php if (!in_array($doc['type'], ['publication'])) {
                 echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
         <i class="ph ph-regular ph-copy"></i>
         ' . lang("Add a copy", "Kopie anlegen") .
@@ -184,13 +188,10 @@ $user_activity = isUserActivity($doc, $user);
 
 
             <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
-                <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) { ?>
-                    <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
-                        <i class="ph ph-regular ph-upload"></i>
-                        <?= lang('Upload files', 'Dateien hochladen') ?>
-                    </a>
-                <?php } ?>
-
+                <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
+                    <i class="ph ph-regular ph-upload"></i>
+                    <?= lang('Upload files', 'Dateien hochladen') ?>
+                </a>
             <?php } ?>
 
 
@@ -198,400 +199,67 @@ $user_activity = isUserActivity($doc, $user);
 
         <div class="box mt-0">
             <div class="content">
-                <?php if (isset($Format->title)) : ?>
-                    <p class="lead mb-0">
-                        <!-- <span class="mr-10"><?= activity_icon($doc) ?></span> -->
-                        <?= $Format->title ?>
-                    </p>
-                <?php elseif ($doc['type'] == "review") : ?>
-                    <p class="lead mb-0">
-                        <!-- <span class="mr-10"><?= activity_icon($doc) ?></span> -->
-                        <?php
-                        switch (strtolower($doc['role'] ?? '')) {
-                            case 'editorial':
-                            case 'editor':
-                                echo "Editorial board";
-                                break;
-                            case 'grant-rev':
-                                echo "Grant proposal";
-                                break;
-                            case 'thesis-rev':
-                                echo "Thesis review";
-                                break;
-                            default:
-                                echo "Journal Review";
-                                break;
-                        }
-                        ?>
-                    </p>
-                <?php endif; ?>
                 <div class="mb-10">
-                    <?= activity_badge($doc) ?>
+                    <?= $Format->activity_badge() ?>
                 </div>
 
                 <table class="w-full" id="detail-table">
 
+                    <?php
+                    $selected = $Format->subtype['modules'] ?? array();
+                    $Modules = new Modules($doc);
+                    $Format->usecase = "list";
 
-
-
-                    <?php if ($doc['type'] == 'teaching' && isset($doc['module_id'])) :
-                        $module = getConnected('teaching', $doc['module_id']);
+                    foreach ($selected as $module) {
+                        if (str_ends_with($module, '*')) $module = str_replace('*', '', $module);
+                        if (in_array($module, ['authors', "editors", "semester-select"])) continue;
                     ?>
-                        <tr>
-                            <th class="key"><?= lang('Module', 'Modul') ?>:</th>
-                            <td>
-                                <a class="module" href="<?= ROOTPATH ?>/activities/teaching#<?= $doc['module_id'] ?>">
+                        <?php if ($module == 'teaching-course' && isset($doc['module_id'])) :
+                            $module = getConnected('teaching', $doc['module_id']);
+                        ?>
+                            <tr>
+                                <th class="key"><?= lang('Module', 'Modul') ?>:</th>
+                                <td>
+                                    <a class="module" href="<?= ROOTPATH ?>/activities/teaching#<?= $doc['module_id'] ?>">
 
-                                    <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
-                                    <span class="text-muted"><?= $module['affiliation'] ?></span>
+                                        <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
+                                        <span class="text-muted"><?= $module['affiliation'] ?></span>
 
-                                </a>
-                            </td>
-                        </tr>
-
-                    <?php endif; ?>
-
-
-                    <?php if (isset($doc['journal_id'])) :
-                        $journal = getConnected('journal', $doc['journal_id']);
-                    ?>
-
-                        <tr>
-                            <th class="key"><?= lang('Journal') ?>:</th>
-                            <td>
-                                <a class="module" href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
-
-                                    <h5 class="m-0"><?= $journal['journal'] ?></h5>
-                                    <span class="float-right text-muted"><?= $journal['publisher'] ?></span>
-                                    <span class="text-muted">ISSN: <?= print_list($journal['issn']) ?></span>
-
-                                </a>
-                            </td>
-                        </tr>
-
-                    <?php elseif (isset($doc['journal'])) : ?>
-                        <tr>
-                            <th class="key">Journal:</th>
-                            <td>
-                                <em>
-                                    <a href="<?= ROOTPATH ?>/journal/browse?q=<?= $doc['journal'] ?>">
-                                        <?= $doc['journal'] ?>
                                     </a>
-
-                                    <?php if ($user_activity) { ?>
-                                        <small class="text-danger d-block">
-                                            <i class="ph-fill ph-warning"></i>
-                                            <?= lang(
-                                                'Journal is not standardized. Please edit activity and update.',
-                                                'Journal ist nicht standardisiert. Bitte Aktivität bearbeiten und korrigieren.'
-                                            ) ?>
-                                        </small>
-                                    <?php } ?>
-                                </em>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-                    <?php if (isset($doc['magazine'])) : ?>
-                        <tr>
-                            <th class="key"><?= lang('Magazine', 'Magazin') ?>:</th>
-                            <td>
-                                <em><?= $doc['magazine'] ?></em>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-
-                    <?php if ($doc['type'] == 'lecture' && isset($doc['lecture_type'])) : ?>
-                        <tr>
-                            <th class="key"><?= lang('Type', 'Art') ?>:</th>
-                            <td>
-                                <?= $doc['lecture_type'] ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-                    <?php if ($doc['type'] == 'review' && isset($doc['editor_type'])) : ?>
-                        <tr>
-                            <th class="key"><?= lang('Details', 'Details') ?>:</th>
-                            <td>
-                                <?= $doc['editor_type'] ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-                    <?php if (isset($doc['start'])) : ?>
-                        <tr>
-                            <th class="key"><?= lang('Time frame', 'Zeitraum') ?>:</th>
-                            <td>
-                                <?= format_date($doc['start']) ?>
-                                <?php if (!empty($doc['end'] ?? null)) {
-                                    echo '-' . format_date($doc['end']);
-                                } ?>
-
-                            </td>
-                        </tr>
-                    <?php elseif (isset($doc['year'])) : ?>
-                        <tr>
-                            <th class="key"><?= lang('Date', 'Datum') ?>:</th>
-                            <td>
-                                <?= format_date($doc) ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-                    <?php if (isset($doc['doi']) && !empty($doc['doi'])) : ?>
-                        <tr>
-                            <th class="key">DOI:</th>
-                            <td>
-                                <a target='_blank' href='https://doi.org/<?= $doc['doi'] ?>'><?= $doc['doi'] ?></a>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php if (isset($doc['pubmed'])) : ?>
-                        <tr>
-                            <th class="key">PubMed:</th>
-                            <td>
-                                <a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/<?= $doc['pubmed'] ?>'><?= $doc['pubmed'] ?></a>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php if (isset($doc['link'])) : ?>
-                        <tr>
-                            <th class="key">Link:</th>
-                            <td>
-                                <a target='_blank' href='<?= $doc['link'] ?>'><?= $doc['link'] ?></a>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-
-
-                    <?php if ($doc['type'] == 'publication') : ?>
-
-                        <?php if ($doc['pubtype'] == 'article') : ?>
-                            <tr>
-                                <th class="key">Issue:</th>
-                                <td>
-                                    <?= $doc['issue'] ?? '' ?>
                                 </td>
                             </tr>
+
+
+
+                        <?php elseif ($module == 'journal' && isset($doc['journal_id'])) :
+                            $journal = getConnected('journal', $doc['journal_id']);
+                        ?>
+
                             <tr>
-                                <th class="key">Volume:</th>
+                                <th class="key"><?= lang('Journal') ?>:</th>
                                 <td>
-                                    <?= $doc['volume'] ?? '' ?>
+                                    <a class="module" href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
+
+                                        <h5 class="m-0"><?= $journal['journal'] ?></h5>
+                                        <span class="float-right text-muted"><?= $journal['publisher'] ?></span>
+                                        <span class="text-muted">
+                                            ISSN: <?= print_list($journal['issn']) ?>
+                                            <br>
+                                            Impact:
+                                            <?= $doc['impact'] ?? 'unknown' ?>
+                                        </span>
+                                    </a>
                                 </td>
                             </tr>
+                        <?php else : ?>
+
                             <tr>
-                                <th class="key">Pages:</th>
-                                <td>
-                                    <?= $doc['pages'] ?? '' ?>
-                                </td>
+                                <th class="key"><?= $Modules->get_name($module) ?>:</th>
+                                <td><?= $Format->get_field($module) ?></td>
                             </tr>
-                            <tr>
-                                <th class="key">Impact factor:</th>
-                                <td>
-                                    <?= $doc['impact'] ?? '' ?>
-                                </td>
-                            </tr>
+
                         <?php endif; ?>
-
-                        <?php if (isset($doc['book'])) : ?>
-                            <tr>
-                                <th class="key">Book title:</th>
-                                <td>
-                                    <?= $doc['book'] ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if (isset($doc['publisher'])) : ?>
-                            <tr>
-                                <th class="key">Publisher:</th>
-                                <td>
-                                    <?= $doc['publisher'] ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if (isset($doc['city'])) : ?>
-                            <tr>
-                                <th class="key">Location:</th>
-                                <td>
-                                    <?= $doc['city'] ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if (isset($doc['edition'])) : ?>
-                            <tr>
-                                <th class="key">Edition:</th>
-                                <td>
-                                    <?= $doc['edition'] ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if (isset($doc['isbn'])) : ?>
-                            <tr>
-                                <th class="key">ISBN:</th>
-                                <td>
-                                    <?= $doc['isbn'] ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                        <?php if (isset($doc['doc_type'])) : ?>
-                            <tr>
-                                <th class="key">Document type:</th>
-                                <td>
-                                    <?= $doc['doc_type'] ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endif; ?>
-
-
-
-
-
-
-                    <?php if ($doc['type'] == 'misc') : ?>
-                        <tr>
-                            <th class="key">Iteration:</th>
-                            <td>
-                                <?= $doc['iteration'] ?? '' ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-
-
-                    <?php if ($doc['type'] == 'software') : ?>
-                        <tr>
-                            <th class="key">Software Type:</th>
-                            <td>
-                                <?= $doc['software_type'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Publication venue:</th>
-                            <td>
-                                <?= $doc['software_venue'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Version:</th>
-                            <td>
-                                <?= $doc['version'] ?? '' ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-                    <?php if ($doc['type'] == 'students') : ?>
-                        <tr>
-                            <th class="key">Category:</th>
-                            <td>
-                                <?= $doc['category'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Status:</th>
-                            <td>
-                                <?= $doc['status'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Name:</th>
-                            <td>
-                                <?= $doc['name'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Academic Title:</th>
-                            <td>
-                                <?= $doc['academic_title'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Affiliation:</th>
-                            <td>
-                                <?= $doc['affiliation'] ?? '' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="key">Details:</th>
-                            <td>
-                                <?= $doc['details'] ?? '' ?>
-                            </td>
-                        </tr>
-
-                    <?php endif; ?>
-
-
-
-                    <?php if (isset($doc['conference'])) : ?>
-                        <tr>
-                            <th class="key">Conference:</th>
-                            <td>
-                                <?= $doc['conference'] ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php if (isset($doc['location'])) : ?>
-                        <tr>
-                            <th class="key">Location:</th>
-                            <td>
-                                <?= $doc['location'] ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
-
-                    <?php if (isset($doc['open_access'])) : ?>
-                        <tr>
-                            <th class="key">Open access:</th>
-                            <td>
-                                <?php if ($doc['open_access']) : ?>
-                                    <i class="icon-open-access text-success" title="Open Access"></i>
-                                    <?= lang('Yes', 'Ja') ?>
-                                    <!-- icon-open-access -->
-                                <?php else : ?>
-                                    <i class="icon-closed-access text-danger" title="Closed Access"></i>
-                                    <?= lang('No', 'Nein') ?>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php if (isset($doc['epub'])) : ?>
-                        <tr>
-                            <th class="key">Online ahead of print:</th>
-                            <td>
-                                <?= bool_icon($doc['epub']) ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php if (isset($doc['correction'])) : ?>
-                        <tr>
-                            <th class="key">Correction:</th>
-                            <td>
-                                <?= bool_icon($doc['correction']) ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                    <?php if (isset($doc['invited_lecture'])) : ?>
-                        <tr>
-                            <th class="key">Invited Lecture:</th>
-                            <td>
-                                <?= bool_icon($doc['invited_lecture']) ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-
+                    <?php } ?>
 
 
                     <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) : ?>

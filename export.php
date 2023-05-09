@@ -52,7 +52,7 @@ Route::post('/download', function () {
     error_reporting(E_ERROR | E_PARSE);
 
     require_once BASEPATH . '/php/_db.php';
-    require_once BASEPATH . '/php/format.php';
+    require_once BASEPATH . '/php/Document.php';
 
     $params = $_POST['filter'] ?? array();
 
@@ -68,7 +68,7 @@ Route::post('/download', function () {
             $highlight = true;
         }
     }
-    $Format = new Format($highlight, 'word');
+    $Format = new Document($highlight, 'word');
     $Format->full = true;
 
     $order = array(
@@ -208,8 +208,9 @@ Route::post('/download', function () {
                 $headers[] = $doc['type'];
                 $section->addTitle($Settings->getActivities($doc['type'])['name'], 1);
             }
+            $Format->setDocument($doc);
             $paragraph = $section->addTextRun();
-            $line = $Format->format($doc);
+            $line = $Format->format();
             $line = clean_comment_export($line, false);
             \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
         }
@@ -378,8 +379,8 @@ Route::post('/reports', function () {
     ini_set('display_errors', 0);
     
     require_once BASEPATH . '/php/_db.php';
-    require_once BASEPATH . '/php/format.php';
-    $Format = new Format(true, 'word');
+    require_once BASEPATH . '/php/Document.php';
+    $Format = new Document(true, 'word');
     $Format->full = true;
     $Format->abbr_journal = true;
 
@@ -643,11 +644,12 @@ Route::post('/reports', function () {
                             $cell->addText('Impact Factor', ['bold' => true, 'underline' => 'single'], $styleParagraphCenter);
                         }
                         foreach ($result['publication'][$cat][$D][$pubtype] as $doc) {
+                            $Format->setDocument($doc);
                             if ($pubtype == 'article') {
                                 $table->addRow();
                                 // in twip (1mm = 56,6928 twip)
                                 $cell = $table->addCell(9000);
-                                $line = $Format->format($doc);
+                                $line = $Format->format();
                                 // echo $line;
                                 // dump([$doc['dept'], $D]);
                                 $line = clean_comment_export($line);
@@ -666,7 +668,7 @@ Route::post('/reports', function () {
                                 $cell->addText($if, $styleTextBold, $styleParagraphCenter);
                             } else {
                                 $paragraph = $section->addTextRun();
-                                $line = $Format->format($doc);
+                                $line = $Format->format();
                                 // $line = clean_comment_export($line);
                                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
                             }
@@ -724,7 +726,8 @@ Route::post('/reports', function () {
             $section->addTitle($title, 2);
             foreach ($result[$type] as $i => $doc) {
                 $paragraph = $section->addTextRun();
-                $line = $Format->format($doc);
+                $Format->setDocument($doc);
+                $line = $Format->format();
                 // $line = clean_comment_export($line);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
             }

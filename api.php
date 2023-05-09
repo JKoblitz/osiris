@@ -99,15 +99,16 @@ Route::get('/api/activities', function () {
 
 
     if (isset($_GET['formatted']) && $_GET['formatted']) {
-        include_once BASEPATH . "/php/format.php";
+        include_once BASEPATH . "/php/Document.php";
         $table = [];
-        $Format = new Format(true, 'web');
+        $Format = new Document(true, 'web');
 
         foreach ($result as $doc) {
+            $Format->setDocument($doc);
             $table[] = [
                 'id' => strval($doc['_id']),
-                'activity' => $Format->format($doc),
-                'icon' => activity_icon($doc)
+                'activity' => $Format->format(),
+                'icon' =>$Format->activity_icon()
             ];
         }
 
@@ -120,10 +121,10 @@ Route::get('/api/activities', function () {
 
 Route::get('/api/html', function () {
     include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/format.php";
-    $Format = new Format(true, 'dsmz.de');
+    include_once BASEPATH . "/php/Document.php";
+    $Format = new Document(true, 'dsmz.de');
     $Format->full = true;
-    $Format->abbr_journal = true;
+    // $Format->abbr_journal = true;
 
     $result = [];
     $docs = $osiris->activities->find([
@@ -135,8 +136,8 @@ Route::get('/api/html', function () {
     foreach ($docs as $i => $doc) {
         if (isset($_GET['limit']) && $i >= $_GET['limit']) break;
 
+        $Format->setDocument($doc);
         $depts = getDeptFromAuthors($doc['authors']);
-
 
         $link = null;
         if (!empty($doc['doi'] ?? null)) {
@@ -144,9 +145,10 @@ Route::get('/api/html', function () {
         } elseif (!empty($doc['pubmed'] ?? null)) {
             $link = "https://www.ncbi.nlm.nih.gov/pubmed/" . $doc['pubmed'];
         }
+        
         $result[] = [
             'id' => strval($doc['_id']),
-            'html' => $Format->format($doc),
+            'html' => $Format->format(),
             'year' => $doc['year'] ?? null,
             'departments' => $depts,
             'link' => $link
@@ -158,7 +160,7 @@ Route::get('/api/html', function () {
 
 Route::get('/api/all-activities', function () {
     include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/format.php";
+    include_once BASEPATH . "/php/Document.php";
 
     header("Content-Type: application/json");
     header("Pragma: no-cache");
@@ -170,7 +172,7 @@ Route::get('/api/all-activities', function () {
     if ($page == 'my-activities') {
         $highlight = $user;
     }
-    $Format = new Format($highlight);
+    $Format = new Document($highlight);
 
     $filter = [];
     $result = [];
@@ -182,15 +184,17 @@ Route::get('/api/all-activities', function () {
     $cart = readCart();
 
     foreach ($cursor as $doc) {
+        
+        $Format->setDocument($doc);
         $id = $doc['_id'];
         $type = $doc['type'];
         // $q = getQuarter($doc);
         // $y = getYear($doc);
         // $quarter = $endQuarter = $y . "Q" . $q;
 
-        $format_full = $Format->format($doc);
+        $format_full = $Format->format();
         if (($_GET['display_activities'] ?? 'web') == 'web') {
-            $format = $Format->formatShort($doc);
+            $format = $Format->formatShort();
         } else {
             $format = $format_full;
         }
@@ -219,7 +223,7 @@ Route::get('/api/all-activities', function () {
 
         $datum = [
             'quarter' => $sq,
-            'type' => activity_icon($doc) . '<span class="hidden">' . $type . " " . activity_title($doc) . '</span>',
+            'type' =>$Format->activity_icon($doc) . '<span class="hidden">' . $type . " " . $Format->activity_title($doc) . '</span>',
             'activity' => $format,
             'links' => '',
             'search-text' => $format_full,

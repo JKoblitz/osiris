@@ -1,6 +1,6 @@
 <?php
 
-$Format = new Format($user);
+$Format = new Document($user);
 
 ?>
 
@@ -157,6 +157,8 @@ $issues = array(
 );
 
 foreach ($cursor as $doc) {
+    
+            $Format->setDocument($doc);
     $has_issues = has_issues($doc);
     if (in_array("approval", $has_issues)) {
         $issues['approval'][] = $doc;
@@ -232,6 +234,8 @@ if (array_sum($a) === 0) {
 
     <?php
     foreach ($issues['approval'] as $doc) {
+        
+            $Format->setDocument($doc);
         $id = $doc['_id'];
         $type = $doc['type'];
     ?>
@@ -272,8 +276,8 @@ if (array_sum($a) === 0) {
                         ?>
                     </p>
                     <p>
-                        <span class="mr-20"><?= activity_icon($doc); ?></span>
-                        <?= $Format->format($doc); ?>
+                        <span class="mr-20"><?=$Format->activity_icon($doc); ?></span>
+                        <?= $Format->format(); ?>
                     </p>
                     <div class='' id="approve-<?= $id ?>">
                         <?php if (isset($updated_by) && !empty($updated_by)) { ?>
@@ -320,13 +324,15 @@ if (array_sum($a) === 0) {
     <table class="table">
         <?php
         foreach ($issues['epub'] as $doc) {
+            
+            $Format->setDocument($doc);
             $id = $doc['_id'];
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-                <td class="w-50"><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc); ?>
+                    <?= $Format->format(); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <?= lang(
                             'This publication is marked as <q>Online ahead of print</q>. Is it still not officially published?',
@@ -376,13 +382,15 @@ if (array_sum($a) === 0) {
     <table class="table">
         <?php
         foreach ($issues['students'] as $doc) {
+            
+            $Format->setDocument($doc);
             $id = $doc['_id'];
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-                <td class="w-50"><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc); ?>
+                    <?= $Format->format(); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <?= lang(
                             "The Thesis of $doc[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
@@ -435,14 +443,16 @@ if (array_sum($a) === 0) {
     <table class="table">
         <?php
         foreach ($issues['openend'] as $doc) {
+            
+            $Format->setDocument($doc);
             $id = $doc['_id'];
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
             <tr id="tr-<?= $id ?>">
-                <td class="w-50"><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc); ?>
+                    <?= $Format->format(); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
 
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
@@ -483,14 +493,16 @@ if (array_sum($a) === 0) {
     <table class="table">
         <?php
         foreach ($issues['journal_id'] as $doc) {
+            
+            $Format->setDocument($doc);
             $id = $doc['_id'];
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
             <tr id="tr-<?= $id ?>">
-                <td class="w-50"><?= activity_icon($doc); ?></td>
+                <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
-                    <?= $Format->format($doc); ?>
+                    <?= $Format->format(); ?>
                     <div class='alert alert-signal' id="approve-<?= $id ?>">
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
                             <i class="ph-fill ph-note-pencil"></i>

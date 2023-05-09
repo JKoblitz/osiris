@@ -1,3 +1,4 @@
+
 <style>
     @media (min-width: 768px) {
         .row.row-eq-spacing-sm:not(.row-eq-spacing) {
@@ -18,7 +19,7 @@
         <?php
         $cart = readCart();
         if (!empty($cart)) {
-            $Format = new Format($_SESSION['username']);
+            $Format = new Document($_SESSION['username']);
         ?>
             <input type="hidden" name="cart" value="1">
             <p>
@@ -28,11 +29,14 @@
                 <?php foreach ($cart as $id) {
                     $mongo_id = new MongoDB\BSON\ObjectId($id);
                     $doc = $osiris->activities->findOne(['_id' => $mongo_id]);
+                    if (empty($doc)) continue;
+                    
+                    $Format->setDocument($doc);
                 ?>
                     <tr>
                         <td>
-                            <span class='mr-10'><?= activity_icon($doc) ?></span>
-                            <?= $Format->formatShort($doc) ?>
+                            <span class='mr-10'><?=$Format->activity_icon() ?></span>
+                            <?= $Format->formatShort() ?>
                         </td>
                         <td>
                             <button class="btn btn-link btn-sm" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-regular ph-x"></i></button>

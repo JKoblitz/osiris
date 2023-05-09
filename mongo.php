@@ -24,7 +24,7 @@ function validateValues($values)
             $i = 0;
             foreach ($value as $author) {
                 $author = explode(';', $author, 3);
-                if (count($author) == 1){
+                if (count($author) == 1) {
                     $user = $author[0];
                     $temp = getUserFromId($user);
                     $author = [$temp['last'], $temp['first'], true];
@@ -55,7 +55,7 @@ function validateValues($values)
             }
         } else if ($key == 'sws') {
             foreach ($value as $i => $v) {
-               $values['authors'][$i]['sws'] = $v;
+                $values['authors'][$i]['sws'] = $v;
             }
             unset($values['sws']);
         } else if ($key == 'user') {
@@ -174,13 +174,13 @@ Route::post('/create', function () {
         case 'poster':
             break;
         case 'publication':
-            $required = ['title', 'year', 'month'];
+            // $required = ['title', 'year', 'month'];
             break;
         case 'students':
-            $required = ['title', 'category', 'name', 'affiliation', 'start', 'end'];
+            // $required = ['title', 'category', 'name', 'affiliation', 'start', 'end'];
             break;
         case 'review':
-            $required = ['role', 'user'];
+            // $required = ['role', 'user'];
             break;
         default:
             // echo "unsupported collection";
@@ -235,7 +235,7 @@ Route::post('/create', function () {
         header("Location: " . $red . "?msg=add-success");
         die();
     }
-    // include_once BASEPATH . "/php/format.php";
+    // include_once BASEPATH . "/php/Document.php";
     // $result = $collection->findOne(['_id' => $id]);
     echo json_encode([
         'inserted' => $insertOneResult->getInsertedCount(),
@@ -257,7 +257,7 @@ Route::post('/create-teaching', function () {
     $values['created'] = date('Y-m-d');
     $values['created_by'] = strtolower($_SESSION['username']);
 
-    
+
     // check if module already exists:
     if (isset($values['module']) && !empty($values['module'])) {
         $module_exist = $collection->findOne(['module' => $values['module']]);
@@ -366,55 +366,49 @@ Route::post('/create-journal', function () {
     try {
         // try to get impact factor from WoS Journal info
         include_once BASEPATH . "/php/simple_html_dom.php";
- 
-        require_once BASEPATH . '/php/Settings.php';
-        $Settings = new Settings();
-        $settings = $Settings['api'];
+
+        // require_once BASEPATH . '/php/Settings.php';
+        // $Settings = new Settings();
+        // $settings = $Settings['api'];
         // $settings = file_get_contents(BASEPATH . "/apis.json");
         // $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
-        foreach ($settings as $api) {
-            if ($api['id'] == 'wos-journal.info') {
-                $YEAR = $api['year'] ?? 2021;
+        if (defined('WOS_JOURNAL_INFO') && !empty(WOS_JOURNAL_INFO)) {
+            $YEAR = WOS_JOURNAL_INFO ?? 2021;
 
-                $html = new simple_html_dom();
-                foreach ($values['issn'] as $i) {
-                    if (empty($i)) continue;
-                    $url = 'https://wos-journal.info/?jsearch=' . $i;
-                    $html->load_file($url);
-                    foreach ($html->find("div.row") as $row) {
-                        $el = $row->plaintext;
-                        if (preg_match('/Impact Factor \(IF\):\s+(\d+\.?\d*)/', $el, $match)) {
-                            $values['impact'] = [['year' => $YEAR, 'impact' => floatval($match[1])]];
-                            break 2;
-                        }
+            $html = new simple_html_dom();
+            foreach ($values['issn'] as $i) {
+                if (empty($i)) continue;
+                $url = 'https://wos-journal.info/?jsearch=' . $i;
+                $html->load_file($url);
+                foreach ($html->find("div.row") as $row) {
+                    $el = $row->plaintext;
+                    if (preg_match('/Impact Factor \(IF\):\s+(\d+\.?\d*)/', $el, $match)) {
+                        $values['impact'] = [['year' => $YEAR, 'impact' => floatval($match[1])]];
+                        break 2;
                     }
                 }
             }
+        }
 
-            if ($api['id'] == 'wos-starter') {
-                $apikey = $api['key'];
-                if (empty($apikey)) {
-                    continue;
-                }
-                foreach ($values['issn'] as $i) {
-                    if (empty($i)) continue;
+        if (defined('WOS_STARTER_KEY') && !empty(WOS_STARTER_KEY)) {
+            $apikey = WOS_STARTER_KEY;
+            foreach ($values['issn'] as $i) {
+                if (empty($i)) continue;
 
+                $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
+                $url .= "?issn=" . $i;
 
-                    $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
-                    $url .= "?issn=" . $i;
-
-                    $curl = curl_init();
-                    curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                        'Accept: application/json',
-                        "X-ApiKey: $apikey"
-                    ]);
-                    curl_setopt($curl, CURLOPT_URL, $url);
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                    $result = curl_exec($curl);
-                    $result = json_decode($result, true);
-                    if (!empty($result['hits'])) {
-                        $values['wos'] = $result['hits'][0];
-                    }
+                $curl = curl_init();
+                curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                    'Accept: application/json',
+                    "X-ApiKey: $apikey"
+                ]);
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                $result = curl_exec($curl);
+                $result = json_decode($result, true);
+                if (!empty($result['hits'])) {
+                    $values['wos'] = $result['hits'][0];
                 }
             }
         }
@@ -466,7 +460,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['_id' => $id],
         ['$set' => $values]
     );
-    
+
     cleanFields($id);
     // die;
 
@@ -675,8 +669,8 @@ Route::post('/approve', function () {
         echo "Quarter was not defined";
         die();
     }
-    $q = $_POST['quarter']; 
-    
+    $q = $_POST['quarter'];
+
     $updateResult = $osiris->users->updateOne(
         ['_id' => $id],
         ['$push' => ["approved" => $q]]

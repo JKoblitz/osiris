@@ -1,5 +1,5 @@
 <?php
-$Format = new Format(true);
+$Format = new Document(true);
 ?>
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">

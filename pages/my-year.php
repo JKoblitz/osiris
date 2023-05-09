@@ -68,7 +68,7 @@ foreach ($cursor as $doc) {
 
     // $doc['format'] = $format;
     $groups[$doc['type']][] = $doc;
-    $icon = activity_icon($doc, false);
+    $icon =$Format->activity_icon($doc, false);
 
     $date = getDateTime($doc['start'] ?? $doc);
 
@@ -490,6 +490,7 @@ if ($showcoins == 'all'){
                         $id = $doc['_id'];
                         $l = $LOM->lom($doc);
                         $_lom += $l['lom'];
+                        $Format->setDocument($doc);
 
                         if ($doc['year'] == $YEAR) {
                             $q = getQuarter($doc);
@@ -504,7 +505,7 @@ if ($showcoins == 'all'){
 
                         echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$id'>";
                         // echo "<td class='w-25'>";
-                        // echo activity_icon($doc);
+                        // echo$Format->activity_icon($doc);
                         // echo "</td>";
                         echo "<td class='quarter'>";
                         if (!empty($q)) echo "$q";
@@ -512,9 +513,9 @@ if ($showcoins == 'all'){
                         echo "<td>";
                         // echo $doc['format'];
                         if ($USER['display_activities'] == 'web') {
-                            echo $Format->formatShort($doc);
+                            echo $Format->formatShort();
                         } else {
-                            echo $Format->format($doc);
+                            echo $Format->format();
                         }
 
                         // show error messages, warnings and todos
@@ -524,7 +525,7 @@ if ($showcoins == 'all'){
                                 'type' => $col,
                                 'id' => $id,
                                 'title' => $Format->title,
-                                'badge' => activity_badge($doc),
+                                'badge' => $Format->activity_badge(),
                                 'tags' => $has_issues
                             );
                     ?>

@@ -2,11 +2,18 @@
 <?php
 // apt-get install php-ldap
 
+if (!defined(LDAP_IP)) {
+    if (file_exists('CONFIG.php')) {
+        require_once 'CONFIG.php';
+    } else {
+        require_once 'CONFIG.default.php';
+    }
+}
+
 if (!isset($Settings)) {
     require_once BASEPATH . '/php/Settings.php';
     global $Settings;
     $Settings = new Settings();
-
 }
 
 function login($username, $password)
@@ -14,17 +21,26 @@ function login($username, $password)
     global $Settings;
     $return = array("msg" => '', "success" => false);
 
-    if (!isset($Settings->settings['ldap'])){
-        die ("LDAP Settings are missing in settings.json");
+    if (!defined('LDAP_IP')) {
+        // LEGACY: try to read from settings.json
+        if (!isset($Settings->settings['ldap'])) {
+            die("LDAP Settings are missing. Please enter details in CONFIG.php");
+        }
+        $set = $Settings->settings['ldap'];
+        $ip = $set['ip'];
+        $ldap_port = $set['port'];
+        $dn = $username . $set['domain'];
+        $base_dn = $set['basedn']; // ldap rdn oder dn
+    } else {
+        $ip = LDAP_IP;
+        $ldap_port = LDAP_PORT;
+        $dn = $username . LDAP_DOMAIN;
+        $base_dn = LDAP_BASEDN;
     }
-    $set = $Settings->settings['ldap'];
 
-    $ip = $set['ip'];
-    $ldap_address = "ldap://".$ip;
-    $ldap_port = $set['port'];
+    $ldap_address = "ldap://" . $ip;
 
-    $dn = $username.$set['domain'];
-    $base_dn = $set['basedn']; // ldap rdn oder dn
+
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -45,7 +61,7 @@ function login($username, $password)
             $ldap_username = $result[0]['samaccountname'][0];
             $ldap_first_name = $result[0]['givenname'][0];
             $ldap_last_name = $result[0]['sn'][0];
-            
+
             $_SESSION['username'] = $ldap_username;
             $_SESSION['name'] = $ldap_first_name . " " . $ldap_last_name;
             $_SESSION['loggedin'] = true;
@@ -66,20 +82,27 @@ function login($username, $password)
 
 function getUser($name)
 {
-    global $Settings;
-
-    if (!isset($Settings->settings['ldap'])){
-        die ("LDAP Settings are missing in settings.json");
+    if (!defined('LDAP_IP')) {
+        global $Settings;
+        // LEGACY: try to read from settings.json
+        if (!isset($Settings->settings['ldap'])) {
+            die("LDAP Settings are missing. Please enter details in CONFIG.php");
+        }
+        $set = $Settings->settings['ldap'];
+        $ip = $set['ip'];
+        $ldap_port = $set['port'];
+        $password = $set['password'];
+        $dn = $set['user'] . $set['domain'];
+        $base_dn = $set['basedn'];
+    } else {
+        $ip = LDAP_IP;
+        $ldap_port = LDAP_PORT;
+        $dn = LDAP_USER . LDAP_DOMAIN;
+        $base_dn = LDAP_BASEDN;
+        $password = LDAP_PASSWORD;
     }
-    $set = $Settings->settings['ldap'];
 
-    $ip = $set['ip'];
-    $ldap_address = "ldap://".$ip;
-    $ldap_port = $set['port'];
-
-    $password = $set['password']; 
-    $dn = $set['user'].$set['domain'];
-    $base_dn = $set['basedn']; 
+    $ldap_address = "ldap://" . $ip;
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -120,20 +143,27 @@ function getUser($name)
 
 function getUsers()
 {
-    global $Settings;
-
-    if (!isset($Settings->settings['ldap'])){
-        die ("LDAP Settings are missing in settings.json");
+    if (!defined('LDAP_IP')) {
+        global $Settings;
+        // LEGACY: try to read from settings.json
+        if (!isset($Settings->settings['ldap'])) {
+            die("LDAP Settings are missing. Please enter details in CONFIG.php");
+        }
+        $set = $Settings->settings['ldap'];
+        $ip = $set['ip'];
+        $ldap_port = $set['port'];
+        $password = $set['password'];
+        $dn = $set['user'] . $set['domain'];
+        $base_dn = $set['basedn'];
+    } else {
+        $ip = LDAP_IP;
+        $ldap_port = LDAP_PORT;
+        $dn = LDAP_USER . LDAP_DOMAIN;
+        $base_dn = LDAP_BASEDN;
+        $password = LDAP_PASSWORD;
     }
-    $set = $Settings->settings['ldap'];
 
-    $ip = $set['ip'];
-    $ldap_address = "ldap://".$ip;
-    $ldap_port = $set['port'];
-
-    $password = $set['password']; 
-    $dn = $set['user'].$set['domain'];
-    $base_dn = $set['basedn']; 
+    $ldap_address = "ldap://" . $ip;
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -174,14 +204,15 @@ function getUsers()
 function getGroups($v)
 {
     $m = array();
-    if (preg_match ('/CN=([^,]+)[,$]/', $v, $matches))
-      return $matches[1];
+    if (preg_match('/CN=([^,]+)[,$]/', $v, $matches))
+        return $matches[1];
     return false;
 }
 
 
 
-function newUser($username){
+function newUser($username)
+{
     global $Settings;
 
     $keys = [
@@ -211,7 +242,7 @@ function newUser($username){
     $user['is_admin'] = false;
     $user['dept'] = $user['unit'];
     if (!array_key_exists($user['dept'], $Settings->departments))
-        $user['dept']='';
+        $user['dept'] = '';
 
     $user['academic_title'] = null;
     $user['orcid'] = null;

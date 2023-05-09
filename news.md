@@ -1,17 +1,19 @@
 # Neuigkeiten
 
-## 16.04.23
+## 28.04.23
+
+`Version 1.1`
+
+Ich habe mehrere kleinere Releases in einem großen zusammengeführt.
 
 <i class="ph ph-cake"></i>
 **Neue Icons wurden eingeführt**
 
-Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [PhosphorIcons](https://phosphoricons.com/) ersetzt. Die sind (genau wie OSIRIS) unter der Open Source-Lizenz MIT veröffentlicht.
+Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [Phosphor-Icons](https://phosphoricons.com/) ersetzt. Die sind (genau wie OSIRIS) unter der Open Source-Lizenz MIT veröffentlicht.
 
+Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr werdet euch aber sicher schnell daran gewöhnen.
 
-## 04.04.23
-
-`Version 1.1`
-
+<i class="ph ph-chalkboard-simple"></i>
 **Umstrukturierung der Lehre**
 - Lehrveranstaltungen wurden umstrukturiert
 - Module sind jetzt standardisiert
@@ -19,17 +21,47 @@ Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [
 - Einem Modul können Lehrveranstaltungen (z.B. Praktika, Vorlesungen, Seminare) hinzugefügt werden
 - (Es ist geplant, später auch noch Gäste zu Lehrveranstaltungen hinzuzufügen)
 
+
+<i class="ph ph-book-open-text"></i>
 **Neue Pubmed-Suche**
 - Pubmed kann nun nach Autor(en), Titel, Jahr und Affiliation [durchsucht werden](activities/pubmed-search?authors=Koblitz&year=2023)
 - Mittels der Levenshtein-Distanz wird die Wahrscheinlichkeit berechnen, ob es sich um ein Duplikat handelt oder nicht (nur basierend auf dem Titel)
 - Die neue Suche kann z.B. bei Publikationen in [Mein Jahr](scientist) gefunden werden
 
+
+<i class="ph ph-newspaper-clipping"></i>
 **Verbesserungen bei Journalen**
 - Das UI/UX-Design der Journale wurde verbessert
 - Es wird nun eine bessere API verwendet, um Journale abzufragen. [OpenAlex](https://docs.openalex.org/api-entities/venues) ist nicht nur deutlich schneller als NLM, es enthält auch mehr Journale und mehr Datenfelder. So muss OpenAccess jetzt nicht mehr zusätzlich abgefragt werden.
 
+
+<i class="ph ph-shapes"></i>
 **Sonstiges**
 - Bearbeitungsnotizen sind nur noch verfügbar, wenn mehr als ein Autor beteiligt ist
+- Nicht aktive Nutzer werden in der Expertise-Suche nicht mehr berücksichtigt
+- Preprints brauchen jetzt kein Journal mehr (was quatsch war). Stattdessen kann der Veröffentlichungsort (z.B. BioRxiv) in ein Freitextfeld eingetragen werden.
+- Die Seitennavigation wurde überarbeitet, sodass die wachsende Menge an Inhalten besser strukturiert ist.
+
+
+<i class="ph ph-stars"></i>
+**Maximale Flexibilität**
+- durch einige umfangreiche Umstellungen ist es nun kinderleicht, neue Aktivitätsarten hinzuzufügen, zu konfigurieren, formatieren und zu bearbeiten. Dafür sind jetzt nicht mal mehr Programmierkenntnisse erforderlich.
+- Die Konfiguration bei anderen Instituten wird auch bei neuen Updates nicht überschrieben, wodurch sie die maximale Flexibilität haben, OSIRIS nach ihren Wünschen zu gestalten.
+
+
+<div class="alert alert-danger">
+  <h3 class="title">
+    <i class="ph ph-warning"></i>
+    Achtung für alle anderen Institute! Breaking Changes!!!
+  </h3>
+  <ul class="list">
+    <li>Die Struktur der Einstellungen wurde verändert!</li>
+    <li>Für alle Einstellungen, die zuvor an <code class="code">settings.json</code> vorgenommen wurden, gibt es jetzt ein Admin-Dashboard.</li>
+    <li>Da die Datei <code class="code">settings.json</code> aus technischen Gründen jetzt extern sichtbar ist, wurden sicherheitsrelevante Einstellungen in die <code class="code">CONFIG.php</code> transferiert. Bitte schau dir die Datei <code class="code">CONFIG.default.php</code> an, um zu sehen, wie die neue Datei auszusehen hat. </li>
+    <li>Dafür sind Aktivitäten sind jetzt komplett konfigurierbar. Tutorials und Beispiele folgen demnächst auf <a href="https://osiris-app.de" target="_blank">der offiziellen Webseite</a>.</li>
+  </ul>
+</div>
+
 
 ## 31.01.23
 

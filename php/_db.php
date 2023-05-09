@@ -6,7 +6,7 @@ use MongoDB\Client;
 use MongoDB\BSON\Regex;
 use MongoDB\Model\BSONArray;
 
-require_once BASEPATH . '/php/format.php';
+require_once BASEPATH . '/php/Document.php';
 
 if (!isset($Settings)) {
     require_once BASEPATH . '/php/Settings.php';
@@ -29,6 +29,136 @@ $mongoDB = new Client(
 
 global $osiris;
 $osiris = $mongoDB->$dbname;
+
+global $dataModules;
+$dataModules =
+    [
+        "pubtype" => [
+            "pubtype",
+        ],
+        "title" => [
+            "title",
+        ],
+        "teaching" => [
+            "title",
+            "module",
+            "module_id",
+            "authors",
+            "category",
+        ],
+        "authors" => [
+            "authors"
+        ],
+        "person" => [
+            "name",
+            "affiliation",
+            "academic_title",
+        ],
+        "student" => [
+            "category",
+            "details",
+        ],
+        "guest" => [
+            "category",
+            "details",
+        ],
+        "date" => [
+            "year",
+            "month",
+            "day",
+        ],
+        "lecture" => [
+            "lecture_type",
+            "invited_lecture",
+        ],
+        "date-range" => [
+            "start",
+            "end",
+        ],
+        "software" => [
+            "software_venue",
+            "link",
+            "version",
+            "software_type",
+        ],
+        "misc" => [
+            "iteration",
+        ],
+        "conference" => [
+            "conference",
+            "location",
+        ],
+        "journal" => [
+            "journal",
+            "journal_id",
+        ],
+        "magazine" => [
+            "magazine",
+            "link",
+        ],
+        "chapter" => [
+            "book",
+        ],
+        "book-series" => [
+            "series",
+        ],
+        "edition" => [
+            "edition",
+        ],
+        "issue" => [
+            "issue",
+        ],
+        "volume-pages" => [
+            "volume",
+            "pages",
+        ],
+        "publisher" => [
+            "publisher",
+            "city",
+        ],
+        "university" => [
+            "publisher",
+            "city",
+        ],
+        "editor" => [
+            "editors"
+        ],
+        "doi" => [
+            "doi",
+        ],
+        "pubmed" => [
+            "pubmed",
+        ],
+        "isbn" => [
+            "isbn",
+        ],
+        "doctype" => [
+            "doc_type",
+        ],
+        "openaccess" => [
+            "open_access",
+        ],
+        "online-ahead-of-print" => [
+            "epub",
+        ],
+        "correction" => [
+            "correction",
+        ],
+        "scientist" => [
+            "role",
+            "user",
+        ],
+        "review-description" => [
+            "title",
+        ],
+        "review-type" => [
+            "review-type",
+        ],
+        "editorial" => [
+            "editor_type",
+        ]
+
+    ];
 
 global $USER;
 // $user = $_SESSION['username'] ?? null;
@@ -66,6 +196,7 @@ function is_ObjectID($id)
 function getConnected($type, $id)
 {
     global $osiris;
+    if (empty($id) || !is_ObjectID($id)) return []; 
     $id = new ObjectId($id);
     if ($type == 'journal') {
         return $osiris->journals->findOne(['_id' => $id]);
@@ -78,32 +209,25 @@ function getConnected($type, $id)
 
 function cleanFields($id)
 {
+    return true;
     global $osiris;
-    $activities = $osiris->activities;
-    $fields = [
-        'article' => ['pubtype', 'year', 'month', 'day', 'journal', 'journal_id', 'issn', 'issue', 'epub', 'epub-delay', 'correction', 'pages', 'doi', 'pubmed', 'open_access', 'impact', 'volume'],
-        'preprint' => ['pubtype', 'year', 'month', 'day', 'journal', 'journal_id', 'issn', 'doi', 'pubmed', 'open_access'],
-        'magazine' => ['pubtype', 'year', 'month', 'day', 'magazine', 'link', 'doi', 'pubmed'],
-        'book' => ['pubtype', 'year', 'month', 'day', 'edition', 'volume', 'doi', 'pubmed', 'isbn', 'open_access', 'volume', 'publisher', 'city', 'series'],
-        'chapter' => ['pubtype', 'year', 'month', 'day', 'edition', 'volume', 'pages', 'book', 'publisher', 'city', 'editors', 'doi', 'pubmed', 'isbn', 'open_access', 'volume'],
-        'dissertation' => ['pubtype', 'year', 'month', 'day', 'doi', 'isbn', 'publisher', 'city'],
-        'others' => ['pubtype', 'year', 'month', 'day', 'doi', 'pubmed', 'doc_type'],
-        'students' => ['category', 'details', 'end', 'status', 'academic_title', 'affiliation', 'name', 'start'],
-        'guests' => ['category', 'details', 'end', 'name', 'affiliation', 'academic_title', 'start'],
-        'teaching' => ['sws', 'start', 'end', 'affiliation', 'module', 'module_id', 'category'],
-        'lecture' => ['lecture_type', 'invited_lecture', 'start', 'conference', 'location', 'doi'],
-        'poster' => ['start', 'end', 'conference', 'location', 'doi'],
-        'misc-once' => ['start', 'end', 'iteration', 'doi', 'location'],
-        'misc-annual' => ['start', 'end', 'iteration', 'doi', 'end-delay', 'location'],
-        'software' => ['software_type', 'software_venue', 'link', 'version', 'doi', 'start'],
-        'review' => ['role', 'journal', 'journal_id', 'start', 'user'],
-        'editorial' => ['role', 'journal', 'journal_id', 'start', 'user', 'end', 'editor_type', 'end-delay'],
-        'grant-rev' => ['role', 'title', 'review-type', 'review-type', 'start', 'user'],
-        'thesis-rev' => ['role', 'title', 'review-type', 'start', 'user']
-    ];
+    global $Settings;
+    global $dataModules;
+
+    $fields = [];
+    foreach ($Settings->activities as $a) {
+        if (!$a['display']) continue;
+        foreach ($a['subtypes'] as $type) {
+            $fields[$type['id']] = [];
+            foreach ($type['modules'] as $m) {
+                if (isset($dataModules[$m]))
+                $fields[$type['id']] = $dataModules[$m];
+            }
+        }
+    }
     $general = [
         "type", "_id", 'locked',
-        "year", "month",
+        "year", "month", "day",
         "title", "authors",
         "created", "created_by", "updated", "updated_by",
         "comment", "editor-comment",
@@ -120,14 +244,14 @@ function cleanFields($id)
         $type = $values['role'];
         if ($type == "Reviewer") {
             $type = 'review';
-            $activities->updateOne(
+            $osiris->activities->updateOne(
                 ['_id' => $id],
                 ['$set' => ["role" => 'review']]
             );
         }
         if ($type == "Editor") {
             $type = 'editorial';
-            $activities->updateOne(
+            $osiris->activities->updateOne(
                 ['_id' => $id],
                 ['$set' => ["role" => 'editorial']]
             );
@@ -148,7 +272,7 @@ function cleanFields($id)
         if (!in_array($key, $general) && !in_array($key, $fields[$type])) {
             // dump([$key, $value], true);
 
-            $updateResult = $activities->updateOne(
+            $updateResult = $osiris->activities->updateOne(
                 ['_id' => $id],
                 ['$unset' => [$key => 1]]
             );
@@ -158,11 +282,6 @@ function cleanFields($id)
     return true;
 }
 
-// function mongo_date($date)
-// {
-//     $time = (new DateTime($date))->getTimestamp();
-//     return new MongoDB\BSON\UTCDateTime($time * 1000);
-// }
 
 function getUserFromName($last, $first)
 {
@@ -297,21 +416,6 @@ function impact_from_year($journal, $year = CURRENTYEAR)
         $if = $i['impact'];
     }
     return $if;
-
-
-    // if (empty($impact)) return $if;
-    // $last = end($impact)['impact'] ?? null;
-    // if (is_array($impact)) {
-    //     $impact = array_filter($impact, function ($a) use ($year) {
-    //         return $a['year'] == $year;
-    //     });
-    //     if (empty($impact)) {
-    //         $impact = $last;
-    //     } else {
-    //         $if = reset($impact)['impact'];
-    //     }
-    // }
-    // return $if;
 }
 
 function latest_impact($journal)
@@ -434,44 +538,6 @@ function isUserActivity($doc, $user)
 }
 
 
-// function addUserActivity($activity = 'create')
-// {
-//     global $osiris;
-//     return;
-//     $update = ['$push' => ['activity' => ['type' => $activity, 'date' => date("Y-m-d")]]];
-//     $u = $osiris->users->findone(['_id' => $_SESSION['username']]);
-//     $act = $u['activity'] ?? array();
-
-//     $uact = 0;
-//     foreach ($act as $a) {
-//         if (!isset($a['type'])) {
-//             $osiris->users->updateOne(
-//                 ['_id' => $_SESSION['username']],
-//                 ['$set' => ['activity' => [], 'achievements' => []]]
-//             );
-//             break;
-//         }
-//         if (($a['type'] ?? '') == $activity) {
-//             $uact++;
-//         }
-//     }
-
-//     if (empty($uact)) {
-//         $update['$push']['achievements'] = ['title' => "first-$activity", 'achieved' => date("d.m.Y")];
-//     } elseif ($uact === 9) {
-//         $update['$push']['achievements'] = ['title' => "10-$activity", 'achieved' => date("d.m.Y")];
-//     } elseif ($uact === 49) {
-//         $update['$push']['achievements'] = ['title' => "50-$activity", 'achieved' => date("d.m.Y")];
-//     }
-//     // dump($update, true);
-
-//     $osiris->users->updateOne(
-//         ['_id' => $_SESSION['username']],
-//         $update
-//     );
-// }
-
-
 function get_reportable_activities($start, $end)
 {
     global $osiris;
@@ -518,11 +584,6 @@ function get_reportable_activities($start, $end)
     }
 
     return $result;
-}
-
-
-function fieldDefinition()
-{
 }
 
 

@@ -55,6 +55,24 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $class = "success";
             break;
 
+        case 'settings-saved':
+            $text = lang("Settings saved", "Einstellungen gespeichert.");
+            // $text = lang("Thank you.", "Vielen Dank.");
+            $class = "success";
+            break;
+
+        case 'settings-resetted':
+            $text = lang("Settings resetted to the default values.", "Einstellungen wurden auf den Standard zurückgesetzt.");
+            // $text = lang("Thank you.", "Vielen Dank.");
+            $class = "success";
+            break;
+
+        case 'settings-replaced':
+            $text = lang("Settings replaced by uploaded file.", "Einstellungen wurden durch den Upload ersetzt.");
+            // $text = lang("Thank you.", "Vielen Dank.");
+            $class = "success";
+            break;
+
         case 'add-success':
             $header = lang("Success", "Erfolg");
             $text = lang("Data set was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
@@ -77,8 +95,10 @@ function printMsg($msg = null, $type = 'info', $header = "default")
 
         case 'locked':
             $header = lang("This activity is locked.", "Diese Aktivität ist gesperrt.");
-            $text = lang("You cannot edit this activity because of our reporting rules. Contact controlling if there are any issues.", 
-            "Du kannst diese Aktivität aufgrund unserer Report-Richtlinien nicht löschen. Kontaktiere das Controlling, falls dadurch irgendwelche Probleme entstehen.");
+            $text = lang(
+                "You cannot edit this activity because of our reporting rules. Contact controlling if there are any issues.",
+                "Du kannst diese Aktivität aufgrund unserer Report-Richtlinien nicht löschen. Kontaktiere das Controlling, falls dadurch irgendwelche Probleme entstehen."
+            );
             $class = "danger";
             break;
 
@@ -250,8 +270,7 @@ function CallAPI($method, $url, $data = [])
 {
     $curl = curl_init();
 
-    switch ($method)
-    {
+    switch ($method) {
         case "POST":
             curl_setopt($curl, CURLOPT_POST, 1);
 
@@ -290,11 +309,157 @@ function endOfCurrentQuarter($as_string = false)
     return new DateTime($q);
 }
 
-function print_list($list){
+function print_list($list)
+{
     if ($list instanceof MongoDB\Model\BSONArray) {
         $list = $list->bsonSerialize();
     }
     return implode(', ', $list);
+}
+
+
+function getDateTime($date)
+{
+    if ($date instanceof MongoDB\BSON\UTCDateTime) {
+        // MongoDB\BSON\UTCDateTime 
+        $d = $date->toDateTime();
+    } else if (isset($date['year'])) {
+        //date instanceof MongoDB\Model\BSONDocument
+        $d = new DateTime();
+        $d->setDate(
+            $date['year'],
+            $date['month'] ?? 1,
+            $date['day'] ?? 1
+        );
+    } else {
+        try {
+            $d = date_create($date);
+        } catch (TypeError $th) {
+            $d = null;
+        }
+    }
+    return $d;
+}
+
+
+
+function valueFromDateArray($date)
+{
+    // this function is used to generate a input:date-like string from arrays
+    if (empty($date) || !isset($date['year'])) return '';
+    $d = new DateTime();
+    $d->setDate(
+        $date['year'],
+        $date['month'] ?? 1,
+        $date['day'] ?? 1
+    );
+    return date_format($d, "Y-m-d");
+}
+
+function fromToDate($from, $to)
+{
+    if (empty($to) || $from == $to) {
+        return format_date($from);
+    }
+    // $to = date_create($to);
+    $from = format_date($from);
+    $to = format_date($to);
+
+    $f = explode('.', $from, 3);
+    $t = explode('.', $to, 3);
+
+    $from = $f[0] . ".";
+    if ($f[1] != $t[1] || $f[2] != $t[2]) {
+        $from .= $f[1] . ".";
+    }
+    if ($f[2] != $t[2]) {
+        $from .= $f[2];
+    }
+
+    return $from . '-' . $to;
+}
+
+function getYear($doc)
+{
+    if (isset($doc['year'])) return $doc['year'];
+    if (isset($doc['start'])) return $doc['start']['year'];
+    if (isset($doc['dates'])) {
+        if (isset($doc['dates'][0]['start'])) return $doc['dates'][0]['start']['year'];
+        if (isset($doc['dates']['start'])) return $doc['dates']['start']['year'];
+        // return $doc['start']['year'];
+    }
+}
+
+function getQuarter($time)
+{
+    // this function takey either the month, a date string, 
+    // or an date array and returns the quarter
+    if (empty($time)) {
+        return 0;
+    }
+    if (isset($time['month'])) {
+        return ceil($time['month'] / 3);
+    }
+    if (isset($time['start'])) {
+        $time = $time['start'];
+    }
+    if (isset($time['dates']) && !empty($time['dates'])) {
+        $time = reset($time['dates']);
+    }
+    if (is_int($time)) {
+        return ceil($time / 3);
+    }
+
+    try {
+        $date = getDateTime($time);
+        $month = date_format($date, 'n');
+    } catch (TypeError $th) {
+        $month = 1;
+    }
+
+    return ceil($month / 3);
+}
+
+function inQuarter($start, $end = null, $qarter = CURRENTQUARTER, $year = CURRENTYEAR)
+{
+    // check if time period in selected quarter
+    if (empty($end)) {
+        $end = $start;
+    }
+    $qstart = new DateTime($year . '-' . (3 * $qarter - 2) . '-1 00:00:00');
+    $qend = new DateTime($year . '-' . (3 * $qarter) . '-' . ($qarter == 1 || $qarter == 4 ? 31 : 30) . ' 23:59:59');
+
+    $start = new DateTime($start);
+    $end = new DateTime($end);
+    if ($start <= $qstart && $qstart <= $end) {
+        return true;
+    } elseif ($qstart <= $start && $start <= $qend) {
+        return true;
+    }
+    return false;
+}
+
+function inCurrentQuarter($year, $month)
+{
+    // check if time period in selected quarter
+    $qstart = new DateTime(CURRENTYEAR . '-' . (3 * CURRENTQUARTER - 2) . '-1 00:00:00');
+    $qend = new DateTime(CURRENTYEAR . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59');
+
+    $time = new DateTime();
+    $time->setDate($year, $month, 15);
+    if ($time <= $qstart && $qstart <= $time) {
+        return true;
+    } elseif ($qstart <= $time && $time <= $qend) {
+        return true;
+    }
+    return false;
+}
+
+function format_date($date)
+{
+    // dump($date);
+    $d = getDateTime($date);
+    return date_format($d, "d.m.Y");
 }
 
 function dump($element, $as_json = false)
