@@ -99,7 +99,7 @@ class Achievement
     {
         if ($this->username === null) return false;
         $activities = $this->osiris->activities->find(
-            ['authors' => ['$elemMatch' => ['user' => 'juk20', 'approved' => ['$in' => [true, 1, '1']]]]]
+            ['authors' => ['$elemMatch' => ['user' => $this->username, 'approved' => ['$in' => [true, 1, '1']]]]]
         )->toArray();
 
         if (empty($activities)) $types = [];
