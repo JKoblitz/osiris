@@ -98,8 +98,9 @@ class Achievement
     function checkAchievements()
     {
         if ($this->username === null) return false;
-        $activities = $this->osiris->activities->find(['authors.user' => $this->username])->toArray();
-
+        $activities = $this->osiris->activities->find(
+            ['authors' => ['$elemMatch' => ['user' => 'juk20', 'approved' => ['$in' => [true, 1, '1']]]]]
+        )->toArray();
 
         if (empty($activities)) $types = [];
         else {
