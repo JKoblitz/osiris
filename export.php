@@ -425,6 +425,7 @@ Route::post('/reports', function () {
         "MuTZ" => "Human Cell Biology",
         "PFVI" => "Plant Virology",
         "VI" => "Junior Research Group: VirusInteract",
+        "SPI" => "Science Policy and Internationalization",
     ];
     $countTables = [
         "autonom" => [],
