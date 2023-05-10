@@ -265,6 +265,21 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 </div>
             </div>
         </form>
+
+        <div class="alert alert-danger" id="id-exists" style="display:none;">
+            <h4 class="title">
+                <?= lang('Duplicate!', 'Duplikat!') ?>
+            </h4>
+            <p class="mt-10">
+            <?= lang(
+                'This DOI/Pubmed-ID already exists in the database!',
+                'Diese DOI/Pubmed-ID existiert bereits in der Datenbank!'
+            ) ?>
+            </p>
+            <a class="btn text-danger border-danger" href="link"><?=lang('View entry', 'Eintrag anschauen')?> <i class="ph ph-arrow-fat-line-right"></i></a>
+        </div>
+
+
         <div class="my-20 select-btns" id="select-btns">
             <?php
             foreach ($Settings->getActivities() as $id => $a) { ?>

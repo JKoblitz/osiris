@@ -288,17 +288,59 @@ function downloadCSVFile(csv_data) {
 
 function getPublication(id) {
     id = id.trim()
+    $('#id-exists').hide()
     $('.loader').addClass('show')
     if (/(10\.\d{4,5}\/[\S]+[^;,.\s])$/.test(id)) {
         id = id.match(/(10\.\d{4,5}\/[\S]+[^;,.\s])$/)[0]
-        getDOI(id)
+        if (!UPDATE) {
+            checkDuplicateID(id, 'doi')
+        } else {
+            getDOI(id)
+        }
     } else if (/^(\d{7,8})$/.test(id)) {
-        getPubmed(id)
+        if (!UPDATE) {
+            checkDuplicateID(id, 'pubmed')
+        } else {
+            getPubmed(id)
+        }
     } else {
         toastError('This is neither DOI nor Pubmed-ID. Sorry.');
         $('.loader').removeClass('show')
         return
     }
+}
+
+function checkDuplicateID(id, type = 'doi') {
+    $.ajax({
+        type: "GET",
+        data: { id: id, type: type },
+        dataType: "html",
+        url: ROOTPATH + "/check-duplicate",
+        success: function (data) {
+            console.log(data);
+            if (data == 'true') {
+                // toastError(
+                //     lang(
+                //         'This DOI/Pubmed-ID already exists in the database!',
+                //         'Diese DOI/Pubmed-ID existiert bereits in der Datenbank!'
+                //     ))
+                $('#id-exists').show()
+                    .find('a')
+                    .attr('href', ROOTPATH+'/activities/'+type+'/'+id)
+                $('.loader').removeClass('show')
+            } else {
+                if (type == 'doi') 
+                    getDOI(id);
+                if (type == 'pubmed')
+                    getPubmed(id);
+            }
+            // toastSuccess(data)
+        },
+        error: function (response) {
+            console.log(response.responseText)
+            toastError(response.responseText)
+        }
+    })
 }
 
 function getJournal(name) {
@@ -889,7 +931,8 @@ function getDataciteDOI(doi) {
             $('.loader').removeClass('show')
         },
         error: function (response) {
-            toastError(response.responseText.errors.title ?? response.responseText)
+
+            toastError('Ressource was not found in DataCite.')
             $('.loader').removeClass('show')
         }
     })

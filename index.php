@@ -443,7 +443,17 @@ Route::get('/activities/pubmed-search', function () {
 }, 'login');
 
 
+Route::get('/activities/(doi|pubmed)/(.*)', function ($type, $identifier) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
 
+    $form = $osiris->activities->findOne([$type => $identifier]);
+    if (!empty($form)){
+        $id = strval($form['_id']);
+        header("Location: " . ROOTPATH . "/activities/view/$id");
+    }
+    echo "$type $identifier not found.";
+});
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
@@ -1239,6 +1249,17 @@ include_once BASEPATH . "/export.php";
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/components/$path.php";
+});
+
+Route::get('/check-duplicate', function () {
+    include_once BASEPATH . "/php/_db.php";
+
+    if (!isset($_GET['type']) || !isset($_GET['id'])) die ('false');
+    if ($_GET['type'] != 'doi' && $_GET['type'] != 'pubmed') die ('false');
+    
+    $form = $osiris->activities->findOne([$_GET['type'] => $_GET['id']]);
+    if (empty($form)) die ('false');
+    echo 'true';
 });
 
 Route::get('/settings', function () {

@@ -892,3 +892,24 @@ a.module:hover {
 .dropdown-menu .item.active {
     border: 1px solid var(--border-color);
 }
+
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.border-osiris {
+    border-color: var(--color-warm-orange) !important;
+}
+
+.border-danger {
+    border-color: var(--danger-color) !important;
+}
+
+.border-success {
+    border-color: var(--success-color) !important;
+}
+
+.border-warning {
+    border-color: var(--warning-color) !important;
+}
