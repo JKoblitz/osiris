@@ -26,7 +26,7 @@ if (!empty($time) && $time != 'undefined') {
         $time = explode(',', $time);
     }
     if (count($time) !== 4 || array_sum($time) <= 0) {
-        echo "Time is invalid.";
+        // echo "Time is invalid.";
         $time = ['', '', '', ''];
     } else {
         $startyear = intval($time[1]);

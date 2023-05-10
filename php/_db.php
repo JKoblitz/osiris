@@ -196,7 +196,7 @@ function is_ObjectID($id)
 function getConnected($type, $id)
 {
     global $osiris;
-    if (empty($id) || !is_ObjectID($id)) return []; 
+    if (empty($id) || !is_ObjectID($id)) return [];
     $id = new ObjectId($id);
     if ($type == 'journal') {
         return $osiris->journals->findOne(['_id' => $id]);
@@ -221,7 +221,7 @@ function cleanFields($id)
             $fields[$type['id']] = [];
             foreach ($type['modules'] as $m) {
                 if (isset($dataModules[$m]))
-                $fields[$type['id']] = $dataModules[$m];
+                    $fields[$type['id']] = $dataModules[$m];
             }
         }
     }
@@ -367,6 +367,11 @@ function getActivity($id)
         $id = new ObjectId($id);
     }
     return $osiris->activities->findOne(['_id' => $id]);
+}
+
+function getJournalName($doc){
+    $journal = getJournal($doc);
+    return ucname($journal['journal'] ?? '');
 }
 
 function getJournal($doc)
@@ -537,6 +542,19 @@ function isUserActivity($doc, $user)
     return false;
 }
 
+function ucname($name)
+{
+    include BASEPATH . "/php/stopwords.php";
+    $result = "";
+    $words = explode(" ", $name);
+    foreach ($words as $word) {
+        if (!ctype_lower($word) || in_array($word, $stopwords))
+            $result .= " " . $word;
+        else
+            $result .= " " . ucfirst($word);
+    }
+    return trim($result);
+}
 
 function get_reportable_activities($start, $end)
 {
@@ -549,7 +567,7 @@ function get_reportable_activities($start, $end)
     $starttime = getDateTime($start . ' 00:00:00');
     $endtime = getDateTime($end . ' 23:59:59');
 
-    $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
+    $options = ['sort' => ["year" => 1, "month" => 1, "day" => 1, "start.day" => 1]];
     $filter = [
         'year' => ['$gte' => $startyear, '$lte' => $endyear],
     ];

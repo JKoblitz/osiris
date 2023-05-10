@@ -516,7 +516,7 @@ if ($showcoins == 'all') {
                         <td><?= lang('Academic title', 'Akademischer Titel') ?></td>
                         <td><?= $scientist['academic_title'] ?? '' ?></td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td><?= lang('Gender', 'Geschlecht') ?></td>
                         <td><?php
                             $genders = [
@@ -528,7 +528,7 @@ if ($showcoins == 'all') {
                             echo $genders[$scientist['gender'] ?? 'n'];
                             ?>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>Email</td>
                         <td><?= $scientist['mail'] ?? '' ?></td>

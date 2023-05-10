@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * WARNING: THIS SCRIPT IS NOT USED ANY MORE
+ * AND IS JUST KEPT AS REFERENCE !!!
+ */
+
 // helper functions
 
 function commalist($array, $sep = "and")

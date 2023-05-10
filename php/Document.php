@@ -27,6 +27,10 @@ class Document extends Settings
 
     public function setDocument($doc)
     {
+        if (!is_array($doc)) {
+            $doc = iterator_to_array($doc);
+        }
+        // dump(($doc));
         $this->doc = $doc;
         $this->getActivityType();
     }
@@ -195,6 +199,7 @@ class Document extends Settings
 
     function formatAuthors($raw_authors)
     {
+        $this->appendix = '';
         if (empty($raw_authors)) return '';
         $n = 0;
         $authors = array();
@@ -203,16 +208,16 @@ class Document extends Settings
         $last = 1;
         $corresponding = false;
 
-        if (!empty($raw_authors) && $raw_authors instanceof BSONArray) {
+        if (!empty($raw_authors) && $raw_authors instanceof MongoDB\Model\BSONArray) {
             $raw_authors = $raw_authors->bsonSerialize();
         }
         if (!empty($raw_authors) && is_array($raw_authors)) {
             $pos = array_count_values(array_column($raw_authors, 'position'));
+            // dump($pos);
             $first = $pos['first'] ?? 1;
             $last = $pos['last'] ?? 1;
             $corresponding = array_key_exists('corresponding', $pos);
         }
-        // dump($raw_authors);
         foreach ($raw_authors as $n => $a) {
 
             if (!$this->full) {
@@ -225,11 +230,6 @@ class Document extends Settings
                 }
                 $authors[] = $author;
             } else {
-                // if (!$this->full && $n++ >= 10 && ($a['aoi'] ?? 0) == 0) {
-                //     if (end($authors) != '...')
-                //         $authors[] = "...";
-                //     continue;
-                // }
 
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
 
@@ -255,7 +255,10 @@ class Document extends Settings
         }
 
         if ($first > 1) {
-            $this->appendix .= " <sup>#</sup> Shared first authors";
+            if ($this->type['id'] == 'poster' || $this->type['id'] == 'lecture')
+                $this->appendix .= " <sup>#</sup> Presenting authors";
+            else
+                $this->appendix .= " <sup>#</sup> Shared first authors";
         }
         if ($last > 1) {
             $this->appendix .= " <sup>*</sup> Shared last authors";
@@ -266,10 +269,9 @@ class Document extends Settings
 
         $append = "";
         $separator = 'and';
-        if (!$this->full && $n > 10 && end($authors) == '...') {
+        if (!$this->full && $n > 9) {
             $append = " et al.";
             $separator = ", ";
-            array_pop($authors);
         }
         return Document::commalist($authors, $separator) . $append;
     }
@@ -567,6 +569,18 @@ class Document extends Settings
                 return $this->getVal('version');
             case "volume": // ["volume"],
                 return $this->getVal('volume');
+            case "volume-issue-pages": // ["volume"],
+                $val = '';
+                if (!empty($this->getVal('volume'))) {
+                    $val .= " " . $this->getVal('volume');
+                }
+                if (!empty($this->getVal('issue'))) {
+                    $val .= "(" . $this->getVal('issue') . ')';
+                }
+                if (!empty($this->getVal('pages'))) {
+                    $val .= ": " . $this->getVal('pages');
+                }
+                return $val;
             default:
                 return '';
         }
@@ -579,7 +593,8 @@ class Document extends Settings
         $template = $this->subtype['template']['print'] ?? $template;
 
         $line = $this->template($template);
-        $line .= $this->get_field('file-icons');
+        if ($this->usecase == 'web')
+            $line .= $this->get_field('file-icons');
 
         if (!empty($this->appendix)) {
             $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
@@ -637,7 +652,11 @@ class Document extends Settings
 
         $line = preg_replace('/\(\s*\)/', '', $line);
         $line = preg_replace('/\s+[,]+/', ',', $line);
+        $line = preg_replace('/([?!,])\.+/', '$1', $line);
         $line = preg_replace('/,\s\./', '.', $line);
+        $line = preg_replace('/\s\./', '.', $line);
+        $line = preg_replace('/\.+/', '.', $line);
+        $line = preg_replace('/\(:\s*/', '(', $line);
         $line = preg_replace('/\s+/', ' ', $line);
 
         return $line;

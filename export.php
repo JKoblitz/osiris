@@ -145,7 +145,7 @@ Route::post('/download', function () {
                         )],
                         ['$or' => array(
                             ['type' => 'misc', 'iteration' => 'annual'],
-                            ['type' => 'review', 'role' =>  ['$in'=> ['Editor', 'editorial']]],
+                            ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
                         )]
                     )
                 ],
@@ -273,8 +273,8 @@ Route::post('/download', function () {
                 $authors = [];
                 foreach ($doc['authors'] as $a) {
                     $author = $a['last'];
-                    if (!empty($a['first'])){
-                        $author .= ", ".$a['first'];
+                    if (!empty($a['first'])) {
+                        $author .= ", " . $a['first'];
                     }
                     $authors[] = $author;
                 }
@@ -375,14 +375,14 @@ function clean_comment_export($subject, $front_addition_text = '')
 
 Route::post('/reports', function () {
     // hide errors! otherwise they will break the word document
-    error_reporting(E_ERROR);
-    ini_set('display_errors', 0);
-    
+    // error_reporting(E_ERROR);
+    // ini_set('display_errors', 0);
+
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/Document.php';
     $Format = new Document(true, 'word');
     $Format->full = true;
-    $Format->abbr_journal = true;
+    // $Format->abbr_journal = true;
 
     // prepare user dict with all departments
     $users_cursor = $osiris->users->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
@@ -403,7 +403,7 @@ Route::post('/reports', function () {
     // ];
     // $cursor = $collection->find($filter, $options);
 
-    $cursor = get_reportable_activities( $_POST['start'], $_POST['end']);
+    $cursor = get_reportable_activities($_POST['start'], $_POST['end']);
 
     $result = [
         'publication' => [],
@@ -411,7 +411,8 @@ Route::post('/reports', function () {
         'poster' => [],
         'review' => [],
         'misc' => [],
-        'students' => []
+        'students' => [],
+        'śoftware' => []
     ];
 
     $depts = [
@@ -458,9 +459,10 @@ Route::post('/reports', function () {
 
             foreach ($doc['authors'] as $a) {
                 $aoi = boolval($a['aoi'] ?? false);
+                $pos = $a['position'] ?? 'middle';
                 // $aoi_exists = $aoi_exists || $aoi;
                 if ($aoi) {
-                    if ($a['position'] == 'first' || $a['position'] == 'last') {
+                    if ($pos == 'first' || $pos == 'last') {
                         $cat = 'autonom';
                         // break;
                     }
@@ -485,7 +487,7 @@ Route::post('/reports', function () {
                 }
             }
 
-            if (isset($doc['pubtype']) && in_array($doc['pubtype'], ['magazine'])) {
+            if (isset($doc['pubtype']) && in_array($doc['pubtype'], ['magazine', 'other', 'preprint'])) {
                 foreach ($dept as $d => $v) {
                     if (array_key_exists($d, $depts)) {
                         if (!array_key_exists($d, $countTables['transfer'])) {
@@ -504,10 +506,27 @@ Route::post('/reports', function () {
 
             $result[$doc['type']][$cat][$D][$doc['pubtype'] ?? 'article'][] = $doc;
         } else if ($doc['type'] == 'review') {
-            if ($doc['role'] == "Editorial") {
-                $doc['type'] = 'editorial';
+            switch (strtolower($doc['role'] ?? $doc['subtype'] ?? '')) {
+                case 'editorial':
+                case 'editor':
+                    $type = "editorial";
+                    break;
+                case 'grant-rev':
+                    $type = "misc";
+                    break;
+                case 'thesis-rev':
+                    $type = "misc";
+                    break;
+                default:
+                    $type = 'review';
+                    break;
             }
-            $result[$doc['type']][$doc['journal']][] = getTitleLastname($doc['authors'][0]['user'] ?? '');
+            if (isset($doc['journal'])) {
+                $journal = getJournalName($doc);
+                if (!empty($journal))
+                    $result[$type][$journal][] = getTitleLastname($doc['authors'][0]['user'] ?? '');
+            } else
+                $result['misc'][] = $doc;
         } else {
 
             $dept = [];
@@ -651,7 +670,7 @@ Route::post('/reports', function () {
                                 // in twip (1mm = 56,6928 twip)
                                 $cell = $table->addCell(9000);
                                 $line = $Format->format();
-                                // echo $line;
+                                // echo $line ."<br>";
                                 // dump([$doc['dept'], $D]);
                                 $line = clean_comment_export($line);
                                 \PhpOffice\PhpWord\Shared\Html::addHtml($cell, $line, false, false);
@@ -691,13 +710,13 @@ Route::post('/reports', function () {
         $cell = $table->addCell(5000, $styleCell);
         $cell->addText("Department", $styleTextBold, $styleParagraphCenter);
         $cell = $table->addCell(1500, $styleCell);
-        $n = array_sum(array_column($countTables['transfer'], 'chapter'));
+        $n = array_sum(array_column($countTables['transfer'], 'magazine'));
         $cell->addText("Non-Refereed contributions (total: $n)", $styleTextBold, $styleParagraphCenter);
         $cell = $table->addCell(1500, $styleCell);
-        $n = array_sum(array_column($countTables['transfer'], 'article'));
+        $n = array_sum(array_column($countTables['transfer'], 'lecture'));
         $cell->addText("Lectures (total: $n)", $styleTextBold, $styleParagraphCenter);
         $cell = $table->addCell(1500, $styleCell);
-        $n = array_sum(array_column($countTables['transfer'], 'article'));
+        $n = array_sum(array_column($countTables['transfer'], 'poster'));
         $cell->addText("Posters (total: $n)", $styleTextBold, $styleParagraphCenter);
 
         foreach ($depts as $dept_short => $dept_name) {
@@ -718,25 +737,29 @@ Route::post('/reports', function () {
     $section->addTextRun();
 
     foreach ([
-        "lecture" => "Lectures",
-        "poster" => "Posters",
-        "misc" => "Other activities"
-    ] as $type => $title) {
-
-        if (!empty($result[$type])) {
+        "Lectures" => ["lecture"],
+        "Posters" => ["poster"],
+        "Other activities" => ["misc", "software", "awards"]
+    ] as $title => $types) {
+        $empty = true;
+        foreach ($types as $type) {
+            if (!empty($result[$type] ?? [])) $empty = false;
+        }
+        if (!$empty) {
             $section->addTitle($title, 2);
-            foreach ($result[$type] as $i => $doc) {
-                $paragraph = $section->addTextRun();
-                $Format->setDocument($doc);
-                $line = $Format->format();
-                // $line = clean_comment_export($line);
-                \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+            foreach ($types as $type) {
+                foreach ($result[$type] ?? [] as $i => $doc) {
+                    $paragraph = $section->addTextRun();
+                    $Format->setDocument($doc);
+                    $line = $Format->format();
+                    $line = clean_comment_export($line, false);
+                    \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
+                }
             }
         }
     }
 
     $section->addTitle('Editorial Boards of Scientific Journals and Reviewing for Scientific Journals', 2);
-
 
     foreach ([
         "editorial" => "Editorial Board of Journals:",
@@ -747,9 +770,10 @@ Route::post('/reports', function () {
             $paragraph = $section->addTextRun()->addText($title, ['underline' => 'single']);
 
             $data = $result[$type];
-            asort($data);
+            ksort($data);
 
             foreach ($data as $journal => $authors) {
+
                 $paragraph = $section->addTextRun();
 
                 $authors = array_unique($authors);
@@ -763,7 +787,7 @@ Route::post('/reports', function () {
     }
 
 
-    if (false) {
+    if (true) {
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
         $objWriter->save('.data/report.html');
         include_once '.data/report.html';
