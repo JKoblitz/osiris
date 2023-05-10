@@ -286,35 +286,29 @@ function cleanFields($id)
 function getUserFromName($last, $first)
 {
     global $osiris;
+    $last = trim($last);
     $first = trim($first);
     if (strlen($first) == 1) $first .= ".";
 
-    // $firstsplit = explode(' ', $first, 2);
-    // $firstregex = array('$regex' => '^'.$firstsplit[0], '$options' => 'i');
-    // if (str_ends_with($first, '.')){
     try {
         $regex = new Regex('^' . $first[0]);
+        $user = $osiris->users->findOne([
+            '$or' => [
+                ['last' => $last, 'first' => $regex],
+                ['names' => "$last, $first"]
+            ]
+        ]);
     } catch (\Throwable $th) {
-        $regex = $first;
+        $user = $osiris->users->findOne([
+            '$or' => [
+                ['last' => $last, 'first' => $first],
+                ['names' => "$last, $first"]
+            ]
+        ]);
     }
 
-    // }
-    $user = $osiris->users->findOne([
-        '$or' => [
-            ['last' => $last, 'first' => $regex],
-            ['names' => "$last, $first"]
-        ]
-    ]);
-
-    // dump($osiris->users->find([
-    //     '$or' => [
-    //         ['last' => $last, 'first' => $first],
-    //         ['names' => "$last, $first"]
-    //     ]
-    // ])->toArray());
-
     if (empty($user)) return null;
-    return $user['_id'];
+    return strval($user['_id']);
 }
 
 function getUserFromId($user = null, $simple = false)
@@ -369,7 +363,8 @@ function getActivity($id)
     return $osiris->activities->findOne(['_id' => $id]);
 }
 
-function getJournalName($doc){
+function getJournalName($doc)
+{
     $journal = getJournal($doc);
     return ucname($journal['journal'] ?? '');
 }
