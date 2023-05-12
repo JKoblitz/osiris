@@ -913,3 +913,24 @@ a.module:hover {
 .border-warning {
     border-color: var(--warning-color) !important;
 }
+
+
+.form-row.row-eq-spacing, 
+.row.row-eq-spacing {
+    padding: 0;
+    margin: 0 -1rem;
+}
+
+.form-row.row-eq-spacing > [class^="col"],
+.row.row-eq-spacing > [class^="col"] {
+    padding: 1rem !important;
+    align-self: baseline;
+}
+
+
+.date-picker-wrapper {
+    z-index: 10;
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+}

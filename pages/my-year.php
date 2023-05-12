@@ -519,7 +519,7 @@ if ($showcoins == 'all'){
                         }
 
                         // show error messages, warnings and todos
-                        $has_issues = has_issues($doc);
+                        $has_issues = $Format->has_issues();
                         if ($currentuser && !empty($has_issues)) {
                             $approval_needed[] = array(
                                 'type' => $col,

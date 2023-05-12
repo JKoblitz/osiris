@@ -257,7 +257,7 @@ class Modules
         ],
     );
 
-    function __construct($form = array())
+    function __construct($form = array(), $copy = false)
     {
         global $USER;
         global $osiris;
@@ -265,7 +265,7 @@ class Modules
 
         $this->user = $_SESSION['username'] ?? '';
 
-        $copy = $copy ?? false;
+        $this->copy = $copy ?? false;
         $preset = $form['authors'] ?? array(
             [
                 'last' => $USER['last'],
@@ -317,7 +317,7 @@ class Modules
             </div>";
     }
 
-    
+
     function get_name($module)
     {
         if (!isset($this->all_modules[$module]['name'])) return ucfirst($module);
@@ -352,9 +352,9 @@ class Modules
         }
     }
 
-    function print_module($module, $req=false)
+    function print_module($module, $req = false)
     {
-        if (str_ends_with($module, '*')){
+        if (str_ends_with($module, '*')) {
             $module = str_replace('*', '', $module);
             $req = true;
         }
@@ -364,12 +364,12 @@ class Modules
 ?>
                 <div class="data-module col-12" data-module="title">
                     <div class="lang-<?= lang('en', 'de') ?>">
-                        <label for="title" class="<?=$required?> element-title">
+                        <label for="title" class="<?= $required ?> element-title">
                             <?= lang('Title / Topic / Description', 'Titel / Thema / Beschreibung') ?>
                         </label>
 
                         <div class="form-group title-editor"><?= $this->form['title'] ?? '' ?></div>
-                        <input type="text" class="form-control hidden" name="values[title]" id="title" <?=$required?> value="<?= $this->val('title') ?>">
+                        <input type="text" class="form-control hidden" name="values[title]" id="title" <?= $required ?> value="<?= $this->val('title') ?>">
                     </div>
                 </div>
             <?php
@@ -379,7 +379,7 @@ class Modules
             ?>
                 <div class="hidden data-module col-12" data-module="pubtype">
                     <!-- not visible, is selected via subtype buttons -->
-                    <select class="form-control" name="values[pubtype]" id="pubtype" readonly <?=$required?>>
+                    <select class="form-control" name="values[pubtype]" id="pubtype" readonly <?= $required ?>>
                         <option value="article">Journal article (refereed)</option>
                         <option value="book"><?= lang('Book', 'Buch') ?></option>
                         <option value="chapter"><?= lang('Book chapter', 'Buchkapitel') ?></option>
@@ -396,14 +396,14 @@ class Modules
             case "teaching-course":
             ?>
                 <div class="data-module col-12" data-module="teaching-course">
-                    <label for="teaching" class="element-cat <?=$required?>">
+                    <label for="teaching" class="element-cat <?= $required ?>">
                         <?= lang('Course for the following module', 'Veranstaltung zu folgendem Modul') ?>
                     </label>
                     <a href="#teaching-select" id="teaching-field" class="module">
                         <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
 
                         <div id="selected-teaching">
-                            <?php if (!empty($this->form) && $this->form['type'] == 'teaching' && isset($this->form['module_id'])) :
+                            <?php if (!empty($this->form) && isset($this->form['module_id'])) :
                                 $module = getConnected('teaching', $this->form['module_id']);
                             ?>
                                 <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
@@ -414,9 +414,9 @@ class Modules
                             <?php endif; ?>
                         </div>
 
-                        <input type="hidden" class="form-control hidden" name="values[title]" value="<?= $this->val('title') ?>" id="module-title" <?=$required?> readonly>
-                        <input type="hidden" class="form-control hidden" name="values[module]" value="<?= $this->val('module') ?>" id="module" <?=$required?> readonly>
-                        <input type="hidden" class="form-control hidden" name="values[module_id]" value="<?= $this->val('module_id') ?>" id="module_id" <?=$required?> readonly>
+                        <input type="hidden" class="form-control hidden" name="values[title]" value="<?= $this->val('title') ?>" id="module-title" <?= $required ?> readonly>
+                        <input type="hidden" class="form-control hidden" name="values[module]" value="<?= $this->val('module') ?>" id="module" <?= $required ?> readonly>
+                        <input type="hidden" class="form-control hidden" name="values[module_id]" value="<?= $this->val('module_id') ?>" id="module_id" <?= $required ?> readonly>
                     </a>
                 </div>
             <?php
@@ -508,8 +508,8 @@ class Modules
             case "teaching-category":
             ?>
                 <div class="data-module col-sm-6" data-module="teaching-category">
-                    <label for="teaching-cat" class="<?=$required?> element-cat"><?= lang('Category', 'Kategorie') ?></label>
-                    <select name="values[category]" id="teaching-cat" class="form-control" <?=$required?>>
+                    <label for="teaching-cat" class="<?= $required ?> element-cat"><?= lang('Category', 'Kategorie') ?></label>
+                    <select name="values[category]" id="teaching-cat" class="form-control" <?= $required ?>>
                         <option value="lecture" <?= $this->val('category') == 'lecture' ? 'selected' : '' ?>><?= lang('Lecture', 'Vorlesung') ?></option>
                         <option value="practical" <?= $this->val('category') == 'practical' ? 'selected' : '' ?>><?= lang('Practical course', 'Praktikum') ?></option>
                         <option value="practical-lecture" <?= $this->val('category') == 'practical-lecture' ? 'selected' : '' ?>><?= lang('Lecture and practical course', 'Vorlesung und Praktikum') ?></option>
@@ -551,7 +551,7 @@ class Modules
             ?>
                 <div class="data-module col-12" data-module="authors">
                     <a class="float-right" href="#author-help"><i class="ph ph-question" style="line-height:0;"></i> <?= lang('Help', 'Hilfe') ?></a>
-                    <label for="author" class="element-author <?=$required?>">
+                    <label for="author" class="element-author <?= $required ?>">
                         <!-- <span data-visible="students,guests"><?= lang('Responsible scientist', 'Verantwortliche Person') ?></span> -->
                         <?= lang('Author(s) / Responsible person', 'Autor(en) / Verantwortliche Person') ?>
                         <small class="text-muted"><?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?></small>
@@ -602,15 +602,15 @@ class Modules
             ?>
                 <div class="data-module col-12 row" data-module="person">
                     <div class="col-sm-5">
-                        <label for="guest-name" class="<?=$required?> element-other">
+                        <label for="guest-name" class="<?= $required ?> element-other">
                             <?= lang('Name of the student', 'Name des Studierenden') ?>
                             <?= lang('(last name, given name)', '(Nachname, Vorname)') ?>
                         </label>
-                        <input type="text" class="form-control" name="values[name]" id="guest-name" <?=$required?> value="<?= $this->val('name') ?>">
+                        <input type="text" class="form-control" name="values[name]" id="guest-name" <?= $required ?> value="<?= $this->val('name') ?>">
                     </div>
                     <div class="col-sm-5">
-                        <label for="guest-affiliation" class="<?=$required?> element-other"><?= lang('Affiliation (Name, City, Country)', 'Einrichtung (Name, Ort, Land)') ?></label>
-                        <input type="text" class="form-control" name="values[affiliation]" id="guest-affiliation" <?=$required?> value="<?= $this->val('affiliation') ?>">
+                        <label for="guest-affiliation" class="<?= $required ?> element-other"><?= lang('Affiliation (Name, City, Country)', 'Einrichtung (Name, Ort, Land)') ?></label>
+                        <input type="text" class="form-control" name="values[affiliation]" id="guest-affiliation" <?= $required ?> value="<?= $this->val('affiliation') ?>">
                     </div>
                     <div class="col-sm-2">
                         <label for="guest-academic_title"><?= lang('Academ. title', 'Akadem. Titel') ?></label>
@@ -623,8 +623,8 @@ class Modules
             case "student-category":
             ?>
                 <div class="data-module col-sm-6" data-module="student-category">
-                    <label for="category-students" class="<?=$required?> element-cat"><?= lang('Category', 'Kategorie') ?></label>
-                    <select name="values[category]" id="category-students" class="form-control" <?=$required?>>
+                    <label for="category-students" class="<?= $required ?> element-cat"><?= lang('Category', 'Kategorie') ?></label>
+                    <select name="values[category]" id="category-students" class="form-control" <?= $required ?>>
                         <option value="doctoral thesis" <?= $this->val('category') == 'doctoral thesis' ? 'selected' : '' ?>><?= lang('Doctoral Thesis', 'Doktorand:in') ?></option>
                         <option value="master thesis" <?= $this->val('category') == 'master thesis' ? 'selected' : '' ?>><?= lang('Master Thesis', 'Master-Thesis') ?></option>
                         <option value="bachelor thesis" <?= $this->val('category') == 'bachelor thesis' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelor-Thesis') ?></option>
@@ -636,7 +636,7 @@ class Modules
             case "status":
             ?>
                 <div class="data-module col-sm-6" data-module="status" style="align-self: center;">
-                <label for="status" class="<?=$required?>">Status</label>
+                    <label for="status" class="<?= $required ?>">Status</label>
                     <div id="end-question">
                         <div class="custom-radio d-inline-block">
                             <input type="radio" name="values[status]" id="status-in-progress" value="in progress" checked="checked" value="1">
@@ -660,8 +660,8 @@ class Modules
             case "guest":
             ?>
                 <div class="data-module col-sm-6" data-module="guest">
-                    <label for="category-guest" class="<?=$required?> element-cat"><?= lang('Category', 'Kategorie') ?></label>
-                    <select name="values[category]" id="category-guest" class="form-control" <?=$required?>>
+                    <label for="category-guest" class="<?= $required ?> element-cat"><?= lang('Category', 'Kategorie') ?></label>
+                    <select name="values[category]" id="category-guest" class="form-control" <?= $required ?>>
                         <option value="guest scientist" <?= $this->val('category') == 'guest scientist' ? 'selected' : '' ?>><?= lang('Guest Scientist', 'Gastwissenschaftler:in') ?></option>
                         <option value="lecture internship" <?= $this->val('category') == 'lecture internship' ? 'selected' : '' ?>><?= lang('Lecture Internship', 'Pflichtpraktikum im Rahmen des Studium') ?></option>
                         <option value="student internship" <?= $this->val('category') == 'student internship' ? 'selected' : '' ?>><?= lang('Student Internship', 'Schülerpraktikum') ?></option>
@@ -674,10 +674,10 @@ class Modules
             case "details":
             ?>
                 <div class="data-module col-sm-6" data-module="details">
-                    <label for="details" class="<?=$required?>">
+                    <label for="details" class="<?= $required ?>">
                         <?= lang('Details') ?>
                     </label>
-                    <input type="text" class="form-control" name="values[details]" id="details" <?=$required?> value="<?= $this->val('details') ?>">
+                    <input type="text" class="form-control" name="values[details]" id="details" <?= $required ?> value="<?= $this->val('details') ?>">
                 </div>
             <?php
                 break;
@@ -686,12 +686,12 @@ class Modules
             ?>
                 <div class="data-module col-12 row" data-module="date">
                     <div class="col-sm">
-                        <label for="year" class="<?=$required?> element-time">Year</label>
-                        <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" <?=$required?> value="<?= $this->val('year') ?>">
+                        <label for="year" class="<?= $required ?> element-time">Year</label>
+                        <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" <?= $required ?> value="<?= $this->val('year') ?>">
                     </div>
                     <div class="col-sm">
-                        <label for="month" class="<?=$required?> element-time">Month</label>
-                        <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" <?=$required?> value="<?= $this->val('month') ?>">
+                        <label for="month" class="<?= $required ?> element-time">Month</label>
+                        <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" <?= $required ?> value="<?= $this->val('month') ?>">
                     </div>
                     <div class="col-sm">
                         <label for="day" class="element-time">Day</label>
@@ -704,7 +704,7 @@ class Modules
             case "lecture-type":
             ?>
                 <div class="data-module col-sm-6" data-module="lecture-type">
-                    <label class="<?=$required?> element-cat" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
+                    <label class="<?= $required ?> element-cat" for="lecture_type"><?= lang('Type of lecture', 'Art des Vortrages') ?></label>
                     <select name="values[lecture_type]" id="lecture_type" class="form-control" autocomplete="off">
                         <option value="short" <?= $this->val('lecture_type') == 'short' ? 'selected' : '' ?>><?= lang('short', 'kurz') ?> (15-25 min.)</option>
                         <option value="long" <?= $this->val('lecture_type') == 'long' ? 'selected' : '' ?>><?= lang('long', 'lang') ?> (> 30 min.)</option>
@@ -717,8 +717,8 @@ class Modules
             case "lecture-invited":
             ?>
                 <div class="data-module col-sm-6" data-module="lecture-invited">
-                    <label class="<?=$required?>" for="lecture_type"><?= lang('Invited lecture') ?></label>
-                    <select name="values[invited_lecture]" id="invited_lecture" class="form-control" autocomplete="off" <?=$required?>>
+                    <label class="<?= $required ?>" for="lecture_type"><?= lang('Invited lecture') ?></label>
+                    <select name="values[invited_lecture]" id="invited_lecture" class="form-control" autocomplete="off" <?= $required ?>>
                         <option value="0" <?= $this->val('invited_lecture', false) ? '' : 'selected' ?>><?= lang('No', 'Nein') ?></option>
                         <option value="1" <?= $this->val('invited_lecture', false) ? 'selected' : '' ?>><?= lang('Yes', 'Ja') ?></option>
                     </select>
@@ -727,40 +727,154 @@ class Modules
                 break;
 
             case "date-range":
+                // $ui_id = rand(1000, 9999);
             ?>
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range">
-                    <label class="<?=$required?> element-time" for="date_start">
+                    <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>
-                        <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty if only one day', 'Ende leer lassen, falls es nur ein Tag ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span>
+                        <!-- <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty if only one day', 'Ende leer lassen, falls es nur ein Tag ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span> -->
+                        <button class="btn btn-sm" id="daterange-toggle-btn" type="button" onclick="rebuild_datepicker(this);"><?= lang('Multiple days', 'Mehrtägig') ?></button>
+
                     </label>
-                    <div class="input-group">
-                        <input type="date" class="form-control" name="values[start]" id="date_start" <?=$required?> value="<?= valueFromDateArray($this->val('start')) ?>">
-                        <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
+                    <div class="input-group" id="date-range-picker">
+                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>" readonly>
+                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>" readonly>
                     </div>
+                    <script>
+                        var SINGLE = <?= empty($this->val('end')) ? 'false' : 'true' ?>;
+                        var dateRange = {
+                            // format: 'DD.MM.YYYY',
+                            separator: lang(' to ', ' bis '),
+                            autoClose: true,
+                            singleDate: SINGLE,
+	                        singleMonth: SINGLE,
+                            monthSelect: true,
+                            yearSelect: true,
+                            startOfWeek: 'monday',
+                            getValue: function() {
+                                if (SINGLE) return $('#date_start').val();
+                                if ($('#date_start').val() && $('#date_end').val())
+                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_end').val();
+                                else if ($('#date_start').val())
+                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_start').val();
+                                else
+                                    return '';
+                            },
+                            setValue: function(s, s1, s2) {
+                                $('#date_start').val(s1);
+                                if (SINGLE) return;
+                                $('#date_end').val(s2);
+                            }
+                        }
+
+                        // $("#date_start")
+                        //     .dateRangePicker(dateRange)
+                        rebuild_datepicker(document.getElementById('daterange-toggle-btn'))
+
+                        function rebuild_datepicker(btn) {
+                            SINGLE = !SINGLE
+                            if ($('#date-range-picker').data('dateRangePicker'))
+                                $('#date-range-picker').data('dateRangePicker').destroy()
+                            dateRange.singleDate = SINGLE;
+	                        dateRange.singleMonth= SINGLE;
+                            $("#date_end").attr('readonly', SINGLE)
+                            if (SINGLE) {
+                                $("#date_end").val('').addClass('disabled')
+                                $(btn).html(lang('One day', 'Eintägig'))
+                            } else {
+                                $("#date_end").val($("#date_start").val()).removeClass('disabled')
+                                $(btn).html(lang('Multiple days', 'Mehrtägig'))
+                            }
+                            $("#date-range-picker").dateRangePicker(dateRange)
+
+                        }
+                    </script>
                 </div>
             <?php
                 break;
 
             case "date-range-ongoing":
             ?>
-                <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
-                    <label class="<?=$required?> element-time" for="date_start">
+                <div class="data-module col-sm-8 col-md-6" data-module="date-range">
+                    <label class="<?= $required ?> element-time" for="date_start">
+                        <?= lang('Date range', "Zeitraum") ?>
+                        <button class="btn btn-sm" id="ongoing-toggle-btn" type="button" onclick="rebuild_ongoing_datepicker(this);">
+                            <?= lang('Ongoing', 'Fortlaufend') ?>
+                        </button>
+
+                    </label>
+                    <div class="input-group" id="date-range-ongoing-picker">
+                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>" readonly>
+                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>" readonly>
+                    </div>
+                    <script>
+                        var SINGLE = <?= empty($this->val('end')) ? 'false' : 'true' ?>;
+
+                        var dateRange = {
+                            separator: lang(' to ', ' bis '),
+                            autoClose: true,
+                            singleDate: SINGLE,
+                            singleMonth: SINGLE,
+                            monthSelect: true,
+                            yearSelect: true,
+                            startOfWeek: 'monday',
+                            getValue: function() {
+                                if (SINGLE) return $('#date_start').val();
+                                if ($('#date_start').val() && $('#date_end').val())
+                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_end').val();
+                                else if ($('#date_start').val())
+                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_start').val();
+                                else
+                                    return '';
+                            },
+                            setValue: function(s, s1, s2) {
+                                $('#date_start').val(s1);
+                                if (SINGLE) return;
+                                $('#date_end').val(s2);
+                            },
+                        }
+
+                        // $("#date_start")
+                        //     .dateRangePicker(dateRange)
+                        rebuild_ongoing_datepicker(document.getElementById('ongoing-toggle-btn'))
+
+                        function rebuild_ongoing_datepicker(btn = null) {
+                            SINGLE = !SINGLE
+                            if ($('#date-range-ongoing-picker').data('dateRangePicker'))
+                                $('#date-range-ongoing-picker').data('dateRangePicker').destroy()
+                            dateRange.singleDate = SINGLE;
+	                        dateRange.singleMonth= SINGLE;
+                            $("#date_end").attr('readonly', SINGLE)
+                            if (SINGLE) {
+                                $("#date_end").val(lang('ongoing', 'fortlaufend')).addClass('disabled')
+                                if (btn !== null) $(btn).html(lang('Ongoing', 'Fortlaufend'))
+                            } else {
+                                $("#date_end").val($("#date_start").val()).removeClass('disabled')
+                                if (btn !== null) $(btn).html(lang('Finished', 'Abgeschlossen'))
+                            }
+                            $("#date-range-ongoing-picker").dateRangePicker(dateRange)
+
+                        }
+                    </script>
+                </div>
+                <!-- <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
+                    <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>
                         <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty ongoing activity', 'Ende leer lassen, falls es eine laufende Aktivität ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span>
                     </label>
                     <div class="input-group">
-                        <input type="date" class="form-control" name="values[start]" id="date_start" <?=$required?> value="<?= valueFromDateArray($this->val('start')) ?>">
+                        <input type="date" class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
                         <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
                     </div>
-                </div>
+                </div> -->
             <?php
                 break;
 
             case "software-venue":
             ?>
                 <div class="data-module col-sm-4" data-module="software-venue">
-                    <label class="element-other <?=$required?>" for="software_venue"><?= lang('Publication venue, e.g. GitHub, Zenodo ...', 'Ort der Veröffentlichung, z.B. GitHub, Zenodo ...') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[software_venue]" id="software_venue" value="<?= $this->val('software_venue') ?>">
+                    <label class="element-other <?= $required ?>" for="software_venue"><?= lang('Publication venue, e.g. GitHub, Zenodo ...', 'Ort der Veröffentlichung, z.B. GitHub, Zenodo ...') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[software_venue]" id="software_venue" value="<?= $this->val('software_venue') ?>">
                 </div>
             <?php
                 break;
@@ -768,8 +882,8 @@ class Modules
             case "software-link":
             ?>
                 <div class="data-module col-sm-6" data-module="software-link">
-                    <label class="element-link <?=$required?>" for="software_link"><?= lang('Complete link to the software/database', 'Kompletter Link zur Software/Datenbank') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[link]" id="software_link" value="<?= $this->val('link') ?>">
+                    <label class="element-link <?= $required ?>" for="software_link"><?= lang('Complete link to the software/database', 'Kompletter Link zur Software/Datenbank') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[link]" id="software_link" value="<?= $this->val('link') ?>">
                 </div>
             <?php
                 break;
@@ -777,8 +891,8 @@ class Modules
             case "version":
             ?>
                 <div class="data-module col-sm-2" data-module="version">
-                    <label class="element-other <?=$required?>" for="software_version"><?= lang('Version') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[version]" id="software_version" value="<?= $this->val('version') ?>">
+                    <label class="element-other <?= $required ?>" for="software_version"><?= lang('Version') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[version]" id="software_version" value="<?= $this->val('version') ?>">
                 </div>
             <?php
                 break;
@@ -786,8 +900,8 @@ class Modules
             case "software-type":
             ?>
                 <div class="data-module col-sm-4" data-module="software-type">
-                    <label class="element-cat <?=$required?>" for="software_type"><?= lang('Type of software', 'Art der Software') ?></label>
-                    <select name="values[software_type]" id="software_type" class="form-control" <?=$required?>>
+                    <label class="element-cat <?= $required ?>" for="software_type"><?= lang('Type of software', 'Art der Software') ?></label>
+                    <select name="values[software_type]" id="software_type" class="form-control" <?= $required ?>>
                         <option value="" <?= empty($this->val('software_type')) ? 'selected' : '' ?>>Not specified</option>
                         <option value="software" <?= $this->val('software_type') == 'software' ? 'selected' : '' ?>>Computer Software</option>
                         <option value="database" <?= $this->val('software_type') == 'database' ? 'selected' : '' ?>>Database</option>
@@ -802,8 +916,8 @@ class Modules
             case "iteration":
             ?>
                 <div class="data-module col-sm-4 hidden" data-module="misc">
-                    <label class="<?=$required?>" for="iteration"><?= lang('Iteration', 'Häufigkeit') ?></label>
-                    <select name="values[iteration]" id="iteration" class="form-control" <?=$required?> value="<?= $this->val('iteration') ?>" onchange="togglePubType('misc-'+this.value)">
+                    <label class="<?= $required ?>" for="iteration"><?= lang('Iteration', 'Häufigkeit') ?></label>
+                    <select name="values[iteration]" id="iteration" class="form-control" <?= $required ?> value="<?= $this->val('iteration') ?>" onchange="togglePubType('misc-'+this.value)">
                         <option value="once"><?= lang('once', 'einmalig') ?></option>
                         <option value="annual"><?= lang('continously', 'stetig') ?></option>
                     </select>
@@ -814,8 +928,8 @@ class Modules
             case "conference":
             ?>
                 <div class="data-module col-sm-6" data-module="conference">
-                    <label for="conference" class="element-other <?=$required?>"><?= lang('Conference', 'Konferenz') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[conference]" id="conference" list="conference-list" placeholder="VAAM 2022" value="<?= $this->val('conference') ?>">
+                    <label for="conference" class="element-other <?= $required ?>"><?= lang('Conference', 'Konferenz') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[conference]" id="conference" list="conference-list" placeholder="VAAM 2022" value="<?= $this->val('conference') ?>">
                 </div>
             <?php
                 break;
@@ -823,8 +937,8 @@ class Modules
             case "location":
             ?>
                 <div class="data-module col-sm-6" data-module="location">
-                    <label for="location" class="element-other <?=$required?>"><?= lang('Location', 'Ort') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[location]" id="location" placeholder="Berlin, Germany" value="<?= $this->val('location') ?>">
+                    <label for="location" class="element-other <?= $required ?>"><?= lang('Location', 'Ort') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[location]" id="location" placeholder="Berlin, Germany" value="<?= $this->val('location') ?>">
                 </div>
             <?php
                 break;
@@ -832,10 +946,10 @@ class Modules
             case "journal":
             ?>
                 <div class="data-module col-12" data-module="journal">
-                    <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="<?=$required?> float-right">
+                    <a href="<?= ROOTPATH ?>/docs/add-activities#das-journal-bearbeiten" target="_blank" class="<?= $required ?> float-right">
                         <i class="ph ph-question"></i> <?= lang('Help', 'Hilfe') ?>
                     </a>
-                    <label for="journal" class="element-cat <?=$required?>">Journal</label>
+                    <label for="journal" class="element-cat <?= $required ?>">Journal</label>
                     <a href="#journal-select" id="journal-field" class="module">
                         <!-- <a class="btn btn-link" ><i class="ph ph-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
                         <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
@@ -852,8 +966,8 @@ class Modules
                             <?php endif; ?>
                         </div>
 
-                        <input type="hidden" class="form-control hidden" name="values[journal]" value="<?= $this->val('journal') ?>" id="journal" list="journal-list" <?=$required?> readonly>
-                        <input type="hidden" class="form-control hidden" name="values[journal_id]" value="<?= $this->val('journal_id') ?>" id="journal_id" <?=$required?> readonly>
+                        <input type="hidden" class="form-control hidden" name="values[journal]" value="<?= $this->val('journal') ?>" id="journal" list="journal-list" <?= $required ?> readonly>
+                        <input type="hidden" class="form-control hidden" name="values[journal_id]" value="<?= $this->val('journal_id') ?>" id="journal_id" <?= $required ?> readonly>
 
                     </a>
                 </div>
@@ -863,8 +977,8 @@ class Modules
             case "magazine":
             ?>
                 <div class="data-module col-sm-6" data-module="magazine">
-                    <label for="magazine" class="element-cat <?=$required?>"><?= lang('Magazine / Venue', 'Zeitschrift / Veröffentlichungsort') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[magazine]" value="<?= $this->val('magazine') ?>" id="magazine">
+                    <label for="magazine" class="element-cat <?= $required ?>"><?= lang('Magazine / Venue', 'Zeitschrift / Veröffentlichungsort') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[magazine]" value="<?= $this->val('magazine') ?>" id="magazine">
                 </div>
             <?php
                 break;
@@ -872,8 +986,8 @@ class Modules
             case "link":
             ?>
                 <div class="data-module col-sm-6" data-module="link">
-                    <label for="link" class="element-link <?=$required?>">Link</label>
-                    <input type="text" class="form-control" <?=$required?> name="values[link]" value="<?= $this->val('link') ?>" id="link">
+                    <label for="link" class="element-link <?= $required ?>">Link</label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[link]" value="<?= $this->val('link') ?>" id="link">
                 </div>
             <?php
                 break;
@@ -881,8 +995,8 @@ class Modules
             case "book-title":
             ?>
                 <div class="data-module col-12" data-module="book-title">
-                    <label for="book" class="<?=$required?> element-cat"><?= lang('Book title', 'Buchtitel') ?></label>
-                    <input type="text" class="form-control" name="values[book]" value="<?= $this->val('book') ?>" id="book" <?=$required?>>
+                    <label for="book" class="<?= $required ?> element-cat"><?= lang('Book title', 'Buchtitel') ?></label>
+                    <input type="text" class="form-control" name="values[book]" value="<?= $this->val('book') ?>" id="book" <?= $required ?>>
                 </div>
             <?php
                 break;
@@ -890,8 +1004,8 @@ class Modules
             case "book-series":
             ?>
                 <div class="data-module col-12" data-module="book-series">
-                    <label for="series" class="element-other <?=$required?>"><?= lang('Series', 'Buchreihe') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[series]" value="<?= $this->val('series') ?>" id="series">
+                    <label for="series" class="element-other <?= $required ?>"><?= lang('Series', 'Buchreihe') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[series]" value="<?= $this->val('series') ?>" id="series">
                 </div>
             <?php
                 break;
@@ -899,8 +1013,8 @@ class Modules
             case "edition":
             ?>
                 <div class="data-module col-sm-4" data-module="edition">
-                    <label for="edition" class="element-other <?=$required?>">Edition</label>
-                    <input type="number" class="form-control" <?=$required?> name="values[edition]" value="<?= $this->val('edition') ?>" id="edition">
+                    <label for="edition" class="element-other <?= $required ?>">Edition</label>
+                    <input type="number" class="form-control" <?= $required ?> name="values[edition]" value="<?= $this->val('edition') ?>" id="edition">
                 </div>
             <?php
                 break;
@@ -908,8 +1022,8 @@ class Modules
             case "issue":
             ?>
                 <div class="data-module col-sm-4" data-module="issue">
-                    <label for="issue" class="element-other <?=$required?>">Issue</label>
-                    <input type="text" class="form-control" <?=$required?> name="values[issue]" value="<?= $this->val('issue') ?>" id="issue">
+                    <label for="issue" class="element-other <?= $required ?>">Issue</label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[issue]" value="<?= $this->val('issue') ?>" id="issue">
                 </div>
             <?php
                 break;
@@ -917,8 +1031,8 @@ class Modules
             case "volume":
             ?>
                 <div class="data-module col-sm-4" data-module="volume">
-                    <label for="volume" class="element-other <?=$required?>">Volume</label>
-                    <input type="text" class="form-control" <?=$required?> name="values[volume]" value="<?= $this->val('volume') ?>" id="volume">
+                    <label for="volume" class="element-other <?= $required ?>">Volume</label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[volume]" value="<?= $this->val('volume') ?>" id="volume">
                 </div>
             <?php
                 break;
@@ -926,8 +1040,8 @@ class Modules
             case "pages":
             ?>
                 <div class="data-module col-sm-4" data-module="pages">
-                    <label for="pages" class="element-other <?=$required?>">Pages</label>
-                    <input type="text" class="form-control" <?=$required?> name="values[pages]" value="<?= $this->val('pages') ?>" id="pages">
+                    <label for="pages" class="element-other <?= $required ?>">Pages</label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[pages]" value="<?= $this->val('pages') ?>" id="pages">
                 </div>
             <?php
                 break;
@@ -935,10 +1049,10 @@ class Modules
             case "publisher":
             ?>
                 <div class="data-module col-sm-6" data-module="publisher">
-                    <label for="publisher" class="element-other <?=$required?>">
+                    <label for="publisher" class="element-other <?= $required ?>">
                         <?= lang('Publisher', 'Verlag') ?>
                     </label>
-                    <input type="text" class="form-control" <?=$required?> name="values[publisher]" value="<?= $this->val('publisher') ?>" id="publisher">
+                    <input type="text" class="form-control" <?= $required ?> name="values[publisher]" value="<?= $this->val('publisher') ?>" id="publisher">
                 </div>
             <?php
                 break;
@@ -946,10 +1060,10 @@ class Modules
             case "university":
             ?>
                 <div class="data-module col-sm-6" data-module="university">
-                    <label for="publisher" class="element-other <?=$required?>">
+                    <label for="publisher" class="element-other <?= $required ?>">
                         <?= lang('University', 'Universität') ?>
                     </label>
-                    <input type="text" class="form-control" <?=$required?> name="values[publisher]" value="<?= $this->val('publisher') ?>" id="publisher">
+                    <input type="text" class="form-control" <?= $required ?> name="values[publisher]" value="<?= $this->val('publisher') ?>" id="publisher">
                 </div>
             <?php
                 break;
@@ -957,8 +1071,8 @@ class Modules
             case "city":
             ?>
                 <div class="data-module col-sm-6" data-module="city">
-                    <label for="city" class="element-other <?=$required?>"><?= lang('Location (City, Country)', 'Ort (Stadt, Land)') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[city]" value="<?= $this->val('city') ?>" id="city">
+                    <label for="city" class="element-other <?= $required ?>"><?= lang('Location (City, Country)', 'Ort (Stadt, Land)') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[city]" value="<?= $this->val('city') ?>" id="city">
                 </div>
             <?php
                 break;
@@ -966,7 +1080,7 @@ class Modules
             case "editor":
             ?>
                 <div class="data-module col-12" data-module="editor">
-                    <label for="editor" class="<?=$required?> element-author"><?= lang('Editor(s) (in correct order)', 'Herausgeber (in korrekter Reihenfolge)') ?></label>
+                    <label for="editor" class="<?= $required ?> element-author"><?= lang('Editor(s) (in correct order)', 'Herausgeber (in korrekter Reihenfolge)') ?></label>
                     <div class="border" id="editor-widget">
                         <div class="author-list p-10" id="editor-list">
                             <?= $this->editors ?>
@@ -989,12 +1103,12 @@ class Modules
             case "doi":
             ?>
                 <div class="data-module col-sm-6" data-module="doi">
-                    <label for="doi" class="element-link <?=$required?>">DOI</label>
+                    <label for="doi" class="element-link <?= $required ?>">DOI</label>
                     <?php if (empty($this->form)) { ?>
-                        <input type="text" class="form-control" <?=$required?> name="values[doi]" value="<?= $this->val('doi') ?>" id="doi">
+                        <input type="text" class="form-control" <?= $required ?> name="values[doi]" value="<?= $this->val('doi') ?>" id="doi">
                     <?php } else { ?>
                         <div class="input-group">
-                            <input type="text" class="form-control" <?=$required?> name="values[doi]" value="<?= $this->val('doi') ?>" id="doi">
+                            <input type="text" class="form-control" <?= $required ?> name="values[doi]" value="<?= $this->val('doi') ?>" id="doi">
                             <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Retreive updated information via DOI', 'Aktualisiere die Daten via DOI') ?>">
                                 <button class="btn" type="button" onclick="getPubData(event, this)"><i class="ph ph-arrows-clockwise"></i></button>
                                 <span class="sr-only">
@@ -1010,8 +1124,8 @@ class Modules
             case "pubmed":
             ?>
                 <div class="data-module col-sm-6" data-module="pubmed">
-                    <label for="pubmed" class="<?=$required?>">Pubmed</label>
-                    <input type="number" class="form-control" <?=$required?> name="values[pubmed]" value="<?= $this->val('pubmed') ?>" id="pubmed">
+                    <label for="pubmed" class="<?= $required ?>">Pubmed</label>
+                    <input type="number" class="form-control" <?= $required ?> name="values[pubmed]" value="<?= $this->val('pubmed') ?>" id="pubmed">
                 </div>
             <?php
                 break;
@@ -1019,8 +1133,8 @@ class Modules
             case "isbn":
             ?>
                 <div class="data-module col-sm-6" data-module="isbn">
-                    <label for="isbn" class="<?=$required?>">ISBN</label>
-                    <input type="text" class="form-control" <?=$required?> name="values[isbn]" value="<?= $this->val('isbn') ?>" id="isbn">
+                    <label for="isbn" class="<?= $required ?>">ISBN</label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[isbn]" value="<?= $this->val('isbn') ?>" id="isbn">
                 </div>
             <?php
                 break;
@@ -1028,8 +1142,8 @@ class Modules
             case "doctype":
             ?>
                 <div class="data-module col-sm-6" data-module="doctype">
-                    <label for="doc_type" class="<?=$required?>"><?= lang('Document type', 'Dokumententyp') ?></label>
-                    <input type="text" class="form-control" <?=$required?> name="values[doc_type]" value="<?= $this->val('doc_type') ?>" id="doctype" placeholder="Report">
+                    <label for="doc_type" class="<?= $required ?>"><?= lang('Document type', 'Dokumententyp') ?></label>
+                    <input type="text" class="form-control" <?= $required ?> name="values[doc_type]" value="<?= $this->val('doc_type') ?>" id="doctype" placeholder="Report">
                 </div>
             <?php
                 break;
@@ -1074,7 +1188,7 @@ class Modules
             case "scientist":
             ?>
                 <div class="data-module col-sm-4" data-module="scientist">
-                    <select class="form-control hidden" id="role-input" name="values[role]" <?=$required?> autocomplete="off" onchange="togglePubType(this.value)">
+                    <select class="form-control hidden" id="role-input" name="values[role]" <?= $required ?> autocomplete="off" onchange="togglePubType(this.value)">
                         <!-- <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option> -->
                         <option value="review" <?= strtolower($this->val('role')) == 'review' ? 'selected' : '' ?>>Reviewer</option>
                         <option value="editorial" <?= strtolower($this->val('role')) == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
@@ -1083,10 +1197,10 @@ class Modules
                     </select>
 
 
-                    <label class="<?=$required?> element-author" for="username">
+                    <label class="<?= $required ?> element-author" for="username">
                         <?= lang('Scientist', 'Wissenschaftler:in') ?>
                     </label>
-                    <select class="form-control" id="username" name="values[user]" <?=$required?> autocomplete="off">
+                    <select class="form-control" id="username" name="values[user]" <?= $required ?> autocomplete="off">
                         <?php
                         foreach ($this->userlist as $j) { ?>
                             <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($this->form['user'] ?? $this->user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
@@ -1099,10 +1213,10 @@ class Modules
             case "review-description":
             ?>
                 <div class="data-module col-sm-8" data-module="review-description">
-                    <label class="<?=$required?> element-title" for="title-input">
+                    <label class="<?= $required ?> element-title" for="title-input">
                         <?= lang('Title/Description/Details', 'Titel/Beschreibung/Details') ?>
                     </label>
-                    <input type="text" class="form-control" id="title-input" value="<?= $this->val('title') ?>" name="values[title]" <?=$required?>>
+                    <input type="text" class="form-control" id="title-input" value="<?= $this->val('title') ?>" name="values[title]" <?= $required ?>>
                 </div>
             <?php
                 break;
@@ -1110,10 +1224,10 @@ class Modules
             case "review-type":
             ?>
                 <div class="data-module col-sm-8" data-module="review-type">
-                    <label class="element-cat <?=$required?>" for="review-type">
+                    <label class="element-cat <?= $required ?>" for="review-type">
                         <?= lang('Type of review', 'Art des Review') ?>
                     </label>
-                    <input type="text" class="form-control" id="review-type" value="<?= $this->val('review-type', 'Begutachtung eines Forschungsantrages') ?>" name="values[review-type]" <?=$required?>>
+                    <input type="text" class="form-control" id="review-type" value="<?= $this->val('review-type', 'Begutachtung eines Forschungsantrages') ?>" name="values[review-type]" <?= $required ?>>
                 </div>
             <?php
                 break;
@@ -1121,10 +1235,10 @@ class Modules
             case "editorial":
             ?>
                 <div class="data-module col-sm-6" data-module="editorial">
-                    <label for="editor_type" class="element-cat <?=$required?>">
+                    <label for="editor_type" class="element-cat <?= $required ?>">
                         <?= lang('Details', 'Details') ?>
                     </label>
-                    <input type="text" class="form-control" <?=$required?> name="values[editor_type]" id="editor_type" value="<?= $this->val('editor_type') ?>" placeholder="Guest Editor for Research Topic 'XY'">
+                    <input type="text" class="form-control" <?= $required ?> name="values[editor_type]" id="editor_type" value="<?= $this->val('editor_type') ?>" placeholder="Guest Editor for Research Topic 'XY'">
                 </div>
             <?php
                 break;

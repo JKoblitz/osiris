@@ -72,6 +72,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
     <!-- Quill (rich-text editor) -->
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?=ROOTPATH?>/css/daterangepicker.min.css">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
     <?php
@@ -290,7 +291,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="ph ph-regular ph-chalkboard-simple" aria-hidden="true"></i>
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
-                    <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
+                    <a href="<?= ROOTPATH ?>/activities/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
                         <i class="ph ph-regular ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
                     </a>

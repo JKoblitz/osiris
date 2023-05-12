@@ -404,19 +404,6 @@ Route::post('/activities/new', function () {
 }, 'login');
 
 
-
-Route::get('/projects', function () {
-    include_once BASEPATH . "/php/_config.php";
-    // $user = $_SESSION['username'];
-    $breadcrumb = [
-        ['name' => lang("Projects", "Projekte")]
-    ];
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/projects.php";
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-
 Route::get('/activities/teaching', function () {
     include_once BASEPATH . "/php/_config.php";
     $user = $_SESSION['username'];
@@ -426,6 +413,18 @@ Route::get('/activities/teaching', function () {
     ];
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/teaching.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/activities/projects', function () {
+    include_once BASEPATH . "/php/_config.php";
+    $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Projects", "Projekte")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/projects.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -1285,7 +1284,7 @@ Route::get('/get-modules', function () {
         $form = $osiris->activities->findOne(['_id' => $mongoid]);
     }
 
-    $Modules = new Modules($form);
+    $Modules = new Modules($form, $_GET['copy']??false);
     if (isset($_GET['modules'])) {
         $Modules->print_modules($_GET['modules']);
     } else {

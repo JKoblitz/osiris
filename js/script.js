@@ -7,6 +7,10 @@ $(document).ready(function () {
     })
     SCIENTISTS = Object.values(scientists)
 
+    $('.title-editor').each(function (el) {
+        var element = this;
+        initQuill(element)
+    })
 })
 
 function initQuill(element) {

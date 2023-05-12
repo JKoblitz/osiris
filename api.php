@@ -210,8 +210,8 @@ Route::get('/api/all-activities', function () {
             $ey = $doc['end']['year'];
         } elseif (
             (
-                ($doc['type'] == 'misc' && $doc['iteration'] == 'annual') ||
-                ($doc['type'] == 'review' && in_array($doc['role'], ['Editor', 'editorial']))
+                ($doc['type'] == 'misc' && ($doc['subtype'] ?? $doc['iteration']) == 'annual') ||
+                ($doc['type'] == 'review' && in_array($doc['subtype'] ?? $doc['role'], ['Editor', 'editorial', 'editor']))
             ) && empty($doc['end'])
         ) {
             $em = CURRENTMONTH;
@@ -297,7 +297,7 @@ Route::get('/api/reviews', function () {
                 "Reviews" => []
             ];
         }
-        switch (strtolower($doc['role'] ?? 'review')) {
+        switch (strtolower($doc['subtype'] ?? $doc['role'] ?? 'review')) {
             case 'editor':
             case 'editorial':
                 $reviews[$doc['user']]['Editor']++;
@@ -365,6 +365,20 @@ Route::get('/api/teaching', function () {
         ]];
     }
     $result = $osiris->teaching->find($filter)->toArray();
+    echo return_rest($result, count($result));
+});
+
+Route::get('/api/projects', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['search'])) {
+        $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
+        $filter = ['$or' =>  [
+            ['title' => ['$regex' => $j]],
+            ['id' => $_GET['search']]
+        ]];
+    }
+    $result = $osiris->projects->find($filter)->toArray();
     echo return_rest($result, count($result));
 });
 

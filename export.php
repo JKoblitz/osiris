@@ -263,7 +263,7 @@ Route::post('/download', function () {
             }
             $ids[] = $id;
 
-            echo '@' . ($bibentries[trim($doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $id . ',' . PHP_EOL;
+            echo '@' . ($bibentries[trim($doc['subtype'] ?? $doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $id . ',' . PHP_EOL;
 
 
             if (isset($doc['title']) and ($doc['title'] != '')) {
@@ -351,7 +351,7 @@ function clean_comment_export($subject, $front_addition_text = '')
     $subject = str_replace("### ###", "###", $subject);
 
     // Remove nbsp
-    $subject = str_replace("&nbsp;", ' ', $subject);
+    // $subject = str_replace("&nbsp;", ' ', $subject);
 
     // Remove double spaces 
     $subject = preg_replace('!\s+!', ' ', $subject);
@@ -375,15 +375,14 @@ function clean_comment_export($subject, $front_addition_text = '')
 
 Route::post('/reports', function () {
     // hide errors! otherwise they will break the word document
-    // error_reporting(E_ERROR);
-    // ini_set('display_errors', 0);
+    error_reporting(E_ERROR);
+    ini_set('display_errors', 0);
 
     require_once BASEPATH . '/php/_db.php';
     require_once BASEPATH . '/php/Document.php';
     $Format = new Document(true, 'word');
     $Format->full = true;
-    // $Format->abbr_journal = true;
-
+    
     // prepare user dict with all departments
     $users_cursor = $osiris->users->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
     $users = array();
@@ -391,18 +390,7 @@ Route::post('/reports', function () {
         $users[$u['_id']] = $u['dept'];
     }
 
-    // select data
-    // $startyear = intval(explode('-', $_POST['start'], 2)[0]);
-    // $endyear = intval(explode('-', $_POST['end'], 2)[0]);
-
-    // $collection = $osiris->activities;
-    // $options = ['sort' => ["type" => 1, "year" => 1, "month" => 1]];
-
-    // $filter = [
-    //     'year' => ['$gte' => $startyear, '$lte' => $endyear],
-    // ];
-    // $cursor = $collection->find($filter, $options);
-
+    // select reportable data
     $cursor = get_reportable_activities($_POST['start'], $_POST['end']);
 
     $result = [
@@ -434,33 +422,20 @@ Route::post('/reports', function () {
         "transfer" => []
     ];
 
-    // $start = getDateTime($_POST['start'] . ' 00:00:00');
-    // $end = getDateTime($_POST['end'] . ' 23:59:59');
     foreach ($cursor as $doc) {
-        // $ds = getDateTime($doc['start'] ?? $doc);
-        // if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
-        // else $de = $ds;
-        // if (($ds <= $start && $start <= $de) || ($start <= $ds && $ds <= $end)) {
-        //     // pass
-        //     // dump($doc['_id']);
-        // } else {
-        //     // dump($doc['_id']);
-        //     continue;
-        // }
-
+        $Format->setDocument($doc);
+        $doc['format'] = $Format->format();
         $doc['file'] = "";
-        // $aoi_exists = false;
+        
         if ($doc['type'] == 'publication') {
             // get the category of research
             $cat = 'collab';
             // get the departments
             $dept = [];
-            // if (isset($doc['epub']) && $doc['epub']) continue;
 
             foreach ($doc['authors'] as $a) {
                 $aoi = boolval($a['aoi'] ?? false);
                 $pos = $a['position'] ?? 'middle';
-                // $aoi_exists = $aoi_exists || $aoi;
                 if ($aoi) {
                     if ($pos == 'first' || $pos == 'last') {
                         $cat = 'autonom';
@@ -472,22 +447,21 @@ Route::post('/reports', function () {
                 }
             }
 
-            // if (!$aoi_exists) continue;
-
             $dept = array_count_values($dept);
 
-            if (isset($doc['pubtype']) && in_array($doc['pubtype'], ['chapter', 'article'])) {
+            $pubtype = $doc['subtype'] ?? $doc['pubtype'] ?? 'article';
+            if (!empty($pubtype) && in_array($pubtype, ['chapter', 'article'])) {
                 foreach ($dept as $d => $v) {
                     if (array_key_exists($d, $depts)) {
                         if (!array_key_exists($d, $countTables[$cat])) {
                             $countTables[$cat][$d] = ["chapter" => 0, "article" => 0];
                         }
-                        $countTables[$cat][$d][$doc['pubtype']] += 1;
+                        $countTables[$cat][$d][$pubtype] += 1;
                     }
                 }
             }
 
-            if (isset($doc['pubtype']) && in_array($doc['pubtype'], ['magazine', 'other', 'preprint'])) {
+            if (!empty($pubtype) && in_array($pubtype, ['magazine', 'other', 'preprint'])) {
                 foreach ($dept as $d => $v) {
                     if (array_key_exists($d, $depts)) {
                         if (!array_key_exists($d, $countTables['transfer'])) {
@@ -504,9 +478,9 @@ Route::post('/reports', function () {
             else if (array_key_exists('PFVI', $dept)) $D = "PFVI";
             else $D = "MIOS";
 
-            $result[$doc['type']][$cat][$D][$doc['pubtype'] ?? 'article'][] = $doc;
+            $result[$doc['type']][$cat][$D][$pubtype][] = $doc;
         } else if ($doc['type'] == 'review') {
-            switch (strtolower($doc['role'] ?? $doc['subtype'] ?? '')) {
+            switch (strtolower($doc['subtype'] ?? $doc['role'] ?? '')) {
                 case 'editorial':
                 case 'editor':
                     $type = "editorial";
@@ -560,10 +534,6 @@ Route::post('/reports', function () {
         }
     }
 
-    // dump($countTables, true);
-    // dump($result);
-    // die;
-
     // Creating the new document...
     \PhpOffice\PhpWord\Settings::setZipClass(\PhpOffice\PhpWord\Settings::PCLZIP);
     \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
@@ -594,8 +564,7 @@ Route::post('/reports', function () {
     $styleTextBold = ['bold' => true];
     $styleParagraph =  ['spaceBefore' => 0, 'spaceAfter' => 0];
     $styleParagraphCenter =  ['spaceBefore' => 0, 'spaceAfter' => 0, 'align' => 'center'];
-    // $cellBold = $styleTextBold;
-    // $cellNormal = [, 'valign'=>'center']
+    
     // Adding an empty Section to the document...
     $section = $phpWord->addSection();
 
@@ -603,7 +572,6 @@ Route::post('/reports', function () {
     $section->addTitle("Science and Services", 1);
 
     // publications
-
     foreach ([
         "autonom" => "Autonomous Research",
         "collab" => "Collaborative Research"
@@ -664,12 +632,12 @@ Route::post('/reports', function () {
                             $cell->addText('Impact Factor', ['bold' => true, 'underline' => 'single'], $styleParagraphCenter);
                         }
                         foreach ($result['publication'][$cat][$D][$pubtype] as $doc) {
-                            $Format->setDocument($doc);
+                            $line = $doc['format'];
                             if ($pubtype == 'article') {
                                 $table->addRow();
                                 // in twip (1mm = 56,6928 twip)
                                 $cell = $table->addCell(9000);
-                                $line = $Format->format();
+
                                 // echo $line ."<br>";
                                 // dump([$doc['dept'], $D]);
                                 $line = clean_comment_export($line);
@@ -688,7 +656,6 @@ Route::post('/reports', function () {
                                 $cell->addText($if, $styleTextBold, $styleParagraphCenter);
                             } else {
                                 $paragraph = $section->addTextRun();
-                                $line = $Format->format();
                                 // $line = clean_comment_export($line);
                                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
                             }
@@ -750,8 +717,7 @@ Route::post('/reports', function () {
             foreach ($types as $type) {
                 foreach ($result[$type] ?? [] as $i => $doc) {
                     $paragraph = $section->addTextRun();
-                    $Format->setDocument($doc);
-                    $line = $Format->format();
+                    $line = $doc['format']; 
                     $line = clean_comment_export($line, false);
                     \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
                 }

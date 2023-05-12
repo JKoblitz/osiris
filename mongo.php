@@ -34,7 +34,7 @@ function validateValues($values)
                 $vals = [
                     'last' => $author[0],
                     'first' => $author[1],
-                    'aoi' => $author[2],
+                    'aoi' => boolval($author[2]),
                     'user' => $user,
                     'approved' => $user == $_SESSION['username']
                 ];
@@ -93,15 +93,19 @@ function validateValues($values)
         } else if ($key === 'epub-delay' || $key === 'end-delay') {
             // will be converted otherwise
             $values[$key] = endOfCurrentQuarter(true);
-        } else if ($key == 'start' || $key == 'end' || DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
-            // $values[$key] = mongo_date($value);
-            $values[$key] = valiDate($value);
-            if (!isset($values['year']) && isset($values[$key]['year'])) {
-                $values['year'] = $values[$key]['year'];
+        } else if ($key == 'start' || $key == 'end') {
+            if (DateTime::createFromFormat('Y-m-d', $value) !== FALSE){
+                $values[$key] = valiDate($value);
+                if (!isset($values['year']) && isset($values[$key]['year'])) {
+                    $values['year'] = $values[$key]['year'];
+                }
+                if (!isset($values['month']) && isset($values[$key]['month'])) {
+                    $values['month'] = $values[$key]['month'];
+                }
+            } else {
+                $values[$key] = null;
             }
-            if (!isset($values['month']) && isset($values[$key]['month'])) {
-                $values['month'] = $values[$key]['month'];
-            }
+            
         } else if (is_numeric($value)) {
             // dump($key);
             // dump($value);

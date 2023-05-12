@@ -37,8 +37,13 @@ function val($index, $default = '')
 $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 ?>
+
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/moment.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/jquery.daterangepicker.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
+
+<script src="<?= ROOTPATH ?>/js/add-activity.js"></script>
 
 
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
@@ -271,12 +276,12 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <?= lang('Duplicate!', 'Duplikat!') ?>
             </h4>
             <p class="mt-10">
-            <?= lang(
-                'This DOI/Pubmed-ID already exists in the database!',
-                'Diese DOI/Pubmed-ID existiert bereits in der Datenbank!'
-            ) ?>
+                <?= lang(
+                    'This DOI/Pubmed-ID already exists in the database!',
+                    'Diese DOI/Pubmed-ID existiert bereits in der Datenbank!'
+                ) ?>
             </p>
-            <a class="btn text-danger border-danger" href="link"><?=lang('View entry', 'Eintrag anschauen')?> <i class="ph ph-arrow-fat-line-right"></i></a>
+            <a class="btn text-danger border-danger" href="link"><?= lang('View entry', 'Eintrag anschauen') ?> <i class="ph ph-arrow-fat-line-right"></i></a>
         </div>
 
 
@@ -481,47 +486,32 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 <script>
     let UPDATE = false;
     let ID = null;
+    let COPY = false;
 </script>
-
-<script src="<?= ROOTPATH ?>/js/add-activity.js"></script>
 
 <?php if (!empty($form)) {
 
-    $t = $form['type'];
-    if ($t == 'publication') $t = $form['pubtype'];
-    if ($t == 'students') $t = $form['category'] ?? 'doctoral thesis';
-    if ($t == 'review') $t = $form['role'] ?? 'review';
-    if ($t == 'misc') $t = 'misc-' . ($form['iteration'] ?? 'once');
-    // dump($t);
+    if (isset($form['subtype'])) $t = $form['subtype'];
+    else {
+        $t = $form['type'];
+        if ($t == 'publication') $t = $form['pubtype'];
+        if ($t == 'students') $t = $form['category'] ?? 'doctoral thesis';
+        if ($t == 'review') $t = $form['role'] ?? 'review';
+        if ($t == 'misc') $t = 'misc-' . ($form['iteration'] ?? 'once');
+    }
 ?>
+
     <script>
         UPDATE = true
         ID = '<?= $form['_id'] ?>'
 
+        <?php if ($copy) { ?>
+            COPY = true;
+        <?php } ?>
+
         $(document).ready(function() {
             togglePubType('<?= $t ?>');
 
-            // $('input').each(function(el) {
-            //     el = $(this)
-            //     if (!isEmpty(el.val()))
-            //         el.attr("data-value", el.val())
-            // })
-
-
-            // $('[data-value]').on("update blur", function() {
-            //     var el = $(this)
-            //     var old = el.attr("data-value").trim()
-            //     var name = el.attr('name')
-            //     if (old !== undefined) {
-            //         if (old != el.val().trim() && !el.hasClass("is-valid")) {
-            //             el.addClass("is-valid")
-            //             el.next().removeClass('hidden')
-            //         } else if (old == el.val().trim() && el.hasClass("is-valid")) {
-            //             el.removeClass("is-valid")
-            //             el.next().addClass('hidden')
-            //         }
-            //     }
-            // })
         })
     </script>
 

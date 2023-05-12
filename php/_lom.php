@@ -84,7 +84,7 @@ class LOM
             'lom' => 0
         );
         $type = "non-refereed";
-        $pubtype = strtolower(trim($doc['pubtype']));
+        $pubtype = strtolower(trim($doc['subtype'] ?? $doc['pubtype']));
         if ($pubtype == "article" || $pubtype == "journal-article" || $pubtype == 'journal article') {
             $type = "refereed";
         } elseif ($pubtype == "book" || $pubtype == "chapter") {
@@ -218,7 +218,8 @@ class LOM
 
     function review($doc)
     {
-        if ($doc['role'] == "Editor") {
+        $role = strtolower($doc['subtype'] ?? $doc['role']);
+        if ($role == "editor" || $role == 'editorial') {
             $pos = "editorial";
             $points = $this->matrix[$pos] ?? 0;
 
@@ -262,7 +263,7 @@ class LOM
 
     function students($doc)
     {
-        $cat = strtolower(trim($doc['category'] ?? 'thesis'));
+        $cat = strtolower(trim($doc['subtype'] ?? $doc['category'] ?? 'thesis'));
         if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
             $cat = "thesis";
         } else {

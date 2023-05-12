@@ -338,18 +338,6 @@ function getTitleLastname($user)
     return $n;
 }
 
-function getUserAuthor($authors, $user)
-{
-    if (!is_array($authors)) {
-        // it is most likely a MongoDB BSON
-        $authors = $authors->bsonSerialize();
-    }
-    $author = array_filter($authors, function ($author) use ($user) {
-        return $author['user'] == $user;
-    });
-    if (empty($author)) return array();
-    return reset($author);
-}
 
 function getActivity($id)
 {
@@ -470,58 +458,6 @@ function get_impact($doc, $year = null)
     }
     return impact_from_year($journal, $year);
 }
-
-function is_approved($document, $user)
-{
-    if (!isset($document['authors'])) return true;
-    $authors = $document['authors'];
-    if (isset($document['editors'])) {
-        $editors = $document['editors'];
-        if (!is_array($authors)) {
-            $authors = $authors->bsonSerialize();
-        }
-        if (!is_array($editors)) {
-            $editors = $editors->bsonSerialize();
-        }
-        $authors = array_merge($authors, $editors);
-    }
-    return getUserAuthor($authors, $user)['approved'] ?? false;
-}
-
-function has_issues($doc, $user = null)
-{
-    if ($user === null) $user = $_SESSION['username'];
-    $issues = array();
-
-    if (!is_approved($doc, $user)) $issues[] = "approval";
-
-    $epub = ($doc['epub'] ?? false);
-    // $doc['epub-delay'] = "2022-08-01";
-    if ($epub && isset($doc['epub-delay'])) {
-        if (new DateTime() < new DateTime($doc['epub-delay'])) {
-            $epub = false;
-        }
-    }
-    if ($epub) $issues[] = "epub";
-    if ($doc['type'] == "students" && isset($doc['status']) && $doc['status'] == 'in progress' && new DateTime() > getDateTime($doc['end'])) $issues[] = "students";
-
-    if ((($doc['type'] == 'misc' && $doc['iteration'] == 'annual') || ($doc['type'] == 'review' && in_array($doc['role'], ['Editor', 'editorial']))) && is_null($doc['end'])) {
-        if (isset($doc['end-delay'])) {
-            if (new DateTime() > new DateTime($doc['end-delay'])) {
-                $issues[] = "openend";
-            }
-        } else {
-            $issues[] = "openend";
-        }
-    }
-
-    if (isset($doc['journal']) && (!isset($doc['journal_id']) || empty($doc['journal_id']))) {
-        $issues[] = 'journal_id';
-    }
-
-    return $issues;
-}
-
 
 function isUserActivity($doc, $user)
 {

@@ -11,6 +11,8 @@ class Document extends Settings
     private $highlight = true;
     private $appendix = '';
 
+    private $modules = array();
+
     public $title = "";
     public $subtitle = "";
     public $usecase = "web";
@@ -33,6 +35,11 @@ class Document extends Settings
         // dump(($doc));
         $this->doc = $doc;
         $this->getActivityType();
+
+        $this->modules = [];
+        foreach ($this->subtype['modules'] as $m) {
+            $this->modules[] = str_replace('*', '', $m);
+        }
     }
 
 
@@ -97,7 +104,7 @@ class Document extends Settings
             $subtype = $type;
             switch ($type) {
                 case 'publication':
-                    $subtype = strtolower(trim($this->doc['pubtype'] ?? $this->doc['subtype'] ?? $type));
+                    $subtype = strtolower(trim($this->doc['pubtype'] ?? $type));
                     switch ($subtype) {
                         case 'journal article':
                         case 'journal-article':
@@ -116,7 +123,7 @@ class Document extends Settings
                             break 2;
                     }
                 case 'review':
-                    switch (strtolower($this->doc['role'] ?? $this->doc['subtype'] ?? '')) {
+                    switch (strtolower($this->doc['role'] ?? '')) {
                         case 'editorial':
                         case 'editor':
                             $subtype = "editorial";
@@ -133,13 +140,13 @@ class Document extends Settings
                     }
 
                 case 'misc':
-                    $subtype = $this->doc['iteration'] ?? $this->doc['subtype'] ?? '';
+                    $subtype = $this->doc['iteration'] ?? '';
                     if ($subtype == 'once' || $subtype == 'annual') {
                         $subtype = "misc-" . $subtype;
                     }
                     break;
                 case 'students':
-                    $cat = strtolower(trim($this->doc['category'] ?? $this->doc['subtype'] ?? 'thesis'));
+                    $cat = strtolower(trim($this->doc['category'] ?? 'thesis'));
                     if (str_contains($cat, "thesis") || $cat == 'doktorand:in' || $cat == 'students') {
                         $subtype = "students";
                         break;
@@ -184,17 +191,19 @@ class Document extends Settings
 
     private static function abbreviateAuthor($last, $first, $reverse = true)
     {
-        $fn = " ";
-        if ($first) : foreach (preg_split("/(\s| |-|\.)/u", ($first)) as $name) {
-                if (empty($name)) continue;
-                // echo "<!--";
-                // echo "-->";
-                $fn .= "" . mb_substr($name, 0, 1) . ".";
+        $fn = "";
+        if ($first) :
+            foreach (preg_split("/(\s+| |-|\.)/u", $first, -1, PREG_SPLIT_DELIM_CAPTURE) as $name) {
+                if (empty($name) || $name == '.' || $name == ' ') continue;
+                if ($name == '-') 
+                    $fn .= '-';
+                else
+                    $fn .= "" . mb_substr($name, 0, 1) . ".";
             }
         endif;
         if (empty(trim($fn))) return $last;
-        if ($reverse) return $last . "," . $fn;
-        return $fn . " " . $last;
+        if ($reverse) return $last . ",&nbsp;" . $fn;
+        return $fn . "&nbsp;" . $last;
     }
 
     function formatAuthors($raw_authors)
@@ -350,6 +359,72 @@ class Document extends Settings
     }
 
 
+    function getUserAuthor($authors, $user)
+    {
+        if ($authors instanceof MongoDB\Model\BSONArray) {
+            $authors = $authors->bsonSerialize();
+        }
+        $author = array_filter($authors, function ($author) use ($user) {
+            return $author['user'] == $user;
+        });
+        if (empty($author)) return array();
+        return reset($author);
+    }
+
+    function is_approved($user)
+    {
+        if (!isset($this->doc['authors'])) return true;
+        $authors = $this->doc['authors'];
+        if (isset($this->doc['editors'])) {
+            $editors = $this->doc['editors'];
+            if (!is_array($authors)) {
+                $authors = $authors->bsonSerialize();
+            }
+            if (!is_array($editors)) {
+                $editors = $editors->bsonSerialize();
+            }
+            $authors = array_merge($authors, $editors);
+        }
+        return $this->getUserAuthor($authors, $user)['approved'] ?? false;
+    }
+
+
+    function has_issues($user = null)
+    {
+        if ($user === null) $user = $_SESSION['username'];
+        $issues = array();
+        $type = $this->type['id'];
+        $subtype = $this->subtype['id'];
+
+        if (!$this->is_approved($user)) $issues[] = "approval";
+
+        // check EPUB issue
+        $epub = ($this->doc['epub'] ?? false);
+        // set epub to false if user has delayed the warning
+        if ($epub && isset($this->doc['epub-delay'])) {
+            if (new DateTime() < new DateTime($this->doc['epub-delay'])) {
+                $epub = false;
+            }
+        }
+        if ($epub) $issues[] = "epub";
+
+        // CHECK student status issue
+        if ($type == "students" && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
+
+        // check ongoing reminder
+        if (in_array('date-range-ongoing', $this->modules) && is_null($this->doc['end'])) {
+            if (!isset($this->doc['end-delay']) || (new DateTime() > new DateTime($this->doc['end-delay']))) {
+                $issues[] = "openend";
+            }
+        }
+
+        // check if journal is standardized
+        if (isset($this->doc['journal']) && (!isset($this->doc['journal_id']) || empty($this->doc['journal_id']))) {
+            $issues[] = 'journal_id';
+        }
+
+        return $issues;
+    }
 
     public static function translateCategory($cat)
     {
@@ -558,9 +633,15 @@ class Document extends Settings
             case "teaching-course": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
                     $m = getConnected('teaching', $this->getVal('module_id'));
-                    return $m['title'];
+                    return $m['module'] . ': ' . $m['title'];
                 }
                 return $this->getVal('title');
+            case "teaching-course-short": // ["title", "module", "module_id"],
+                if (isset($this->doc['module_id'])) {
+                    $m = getConnected('teaching', $this->getVal('module_id'));
+                    return $m['module'];
+                }
+                return 'Unknown';
             case "title": // ["title"],
                 return $this->getVal('title');
             case "university": // ["publisher"],
@@ -654,6 +735,7 @@ class Document extends Settings
         $line = preg_replace('/\s+[,]+/', ',', $line);
         $line = preg_replace('/([?!,])\.+/', '$1', $line);
         $line = preg_replace('/,\s\./', '.', $line);
+        $line = preg_replace('/,\s:/', ',', $line);
         $line = preg_replace('/\s\./', '.', $line);
         $line = preg_replace('/\.+/', '.', $line);
         $line = preg_replace('/\(:\s*/', '(', $line);

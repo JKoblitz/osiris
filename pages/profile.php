@@ -146,7 +146,8 @@ foreach ($activities as $doc) {
     $stats[$year][$type] += 1;
 
     if ($currentuser) {
-        if (has_issues($doc)) {
+        $Format->setDocument($doc);
+        if ($Format->has_issues()) {
             $issues++;
         }
     }

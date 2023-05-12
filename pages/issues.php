@@ -158,8 +158,8 @@ $issues = array(
 
 foreach ($cursor as $doc) {
     
-            $Format->setDocument($doc);
-    $has_issues = has_issues($doc);
+    $Format->setDocument($doc);
+    $has_issues = $Format->has_issues();
     if (in_array("approval", $has_issues)) {
         $issues['approval'][] = $doc;
     }

@@ -68,7 +68,7 @@ function togglePubType(type, callback = () => { }) {
     } else {
         for (const key in SETTINGS.activities) {
             SELECTED_TYPE = SETTINGS.activities[key];
-            console.log(SELECTED_TYPE);
+            // console.log(SELECTED_TYPE);
             // if ((SELECTED_TYPE.display ?? true) && SELECTED_TYPE.subtypes !== undefined)
             //     SELECTED_SUBTYPE = SELECTED_TYPE.subtypes.find(x => x.id == type)
             // if (SELECTED_SUBTYPE !== undefined && SELECTED_SUBTYPE !== null) {
@@ -87,7 +87,7 @@ function togglePubType(type, callback = () => { }) {
         return
     }
     const SELECTED_MODULES = SELECTED_SUBTYPE.modules
-    console.log(SELECTED_MODULES);
+    console.log(SELECTED_SUBTYPE);
 
     $('#type').val(SELECTED_TYPE.id)
     $('#subtype').val(SELECTED_SUBTYPE.id)
@@ -111,7 +111,8 @@ function togglePubType(type, callback = () => { }) {
         url: ROOTPATH + "/get-modules",
         data: {
             id: ID,
-            modules: SELECTED_MODULES
+            modules: SELECTED_MODULES,
+            copy: COPY ?? false
         },
         dataType: "html",
         success: function (response) {

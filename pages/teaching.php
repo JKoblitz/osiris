@@ -85,7 +85,10 @@ function val($index, $default = '')
         <i class="ph ph-regular ph-chalkboard-simple text-osiris mr-5"></i>
         <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
     </h2>
-    <a href="#add-teaching"><i class="ph ph-regular ph-plus"></i> Neues Modul anlegen</a>
+    <a href="#add-teaching">
+        <i class="ph ph-regular ph-plus"></i> 
+        <?=lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen')?>
+    </a>
 </div>
 
 <div class="row row-eq-spacing-md">

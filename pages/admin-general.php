@@ -1,6 +1,27 @@
 <?php
 $affiliation = $Settings->affiliation_details;
 
+// transform activities to new format
+$Format = new Document();
+
+$N = 0;
+$activities = $osiris->activities->find([]);
+foreach ($activities as $doc) {
+    if (isset($doc['subtype'])) continue;
+
+    $Format->setDocument($doc);
+    $subtype = $Format->subtype['id'];
+
+    $updateResult = $osiris->activities->updateOne(
+        ['_id' => $doc['_id']],
+        ['$set' => ["subtype" => $subtype]]
+    );
+    $N += $updateResult->getModifiedCount();
+}
+
+if ($N > 0) {
+    echo "$N activities were transformed into the new format.";
+}
 ?>
 
 <form action="#" method="post" id="modules-form" enctype="multipart/form-data">
@@ -52,13 +73,13 @@ $affiliation = $Settings->affiliation_details;
                 <br><small class="text-danger">Max. 2 MB.</small>
             </div>
 
-    <button class="btn btn-success">
-        <i class="ph ph-floppy-disk"></i>
-        Save
-    </button>
+            <button class="btn btn-success">
+                <i class="ph ph-floppy-disk"></i>
+                Save
+            </button>
         </div>
 
-        
+
 
     </div>
 
