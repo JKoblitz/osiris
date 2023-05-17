@@ -964,13 +964,6 @@ Route::get('/admin/(activities|departments|general)', function ($page) {
     ];
 
     include BASEPATH . "/header.php";
-?>
-    <div class="btn-bar">
-        <a href="<?= ROOTPATH ?>/admin/general" class="btn <?= $page == 'general' ? 'active btn-primary' : '' ?>"><?= lang('General', 'Allgemein') ?></a>
-        <a href="<?= ROOTPATH ?>/admin/activities" class="btn <?= $page == 'activities' ? 'active btn-primary' : '' ?>"><?= lang('Activities', 'Aktivitäten') ?></a>
-        <a href="<?= ROOTPATH ?>/admin/departments" class="btn <?= $page == 'departments' ? 'active btn-primary' : '' ?>"><?= lang('Departments', 'Abteilungen') ?></a>
-    </div>
-<?php
     include BASEPATH . "/pages/admin-$page.php";
     include BASEPATH . "/footer.php";
 }, 'login');

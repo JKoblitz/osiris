@@ -24,6 +24,13 @@ if ($N > 0) {
 }
 ?>
 
+
+<div class="btn-bar">
+    <a href="<?= ROOTPATH ?>/admin/general" class="btn active btn-primary"><?= lang('General', 'Allgemein') ?></a>
+    <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
+    <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
+</div>
+
 <form action="#" method="post" id="modules-form" enctype="multipart/form-data">
 
 

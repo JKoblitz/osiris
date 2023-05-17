@@ -496,6 +496,12 @@ function bool_icon($bool)
     }
 }
 
+function flatten(array $array) {
+    $return = array();
+    array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+    return $return;
+}
+
 function time_elapsed_string($datetime, $full = false, $type = 'str')
 {
     $now = new DateTime;

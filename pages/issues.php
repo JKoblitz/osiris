@@ -15,7 +15,7 @@ $Format = new Document($user);
 <div class="modal" id="why-approval" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a href="#/" class="close" role="button" aria-label="Close">
+            <a href="#close-modal" class="close" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="title"><?= lang(
@@ -53,7 +53,7 @@ $Format = new Document($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#/" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@ $Format = new Document($user);
 <div class="modal" id="why-epub" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a href="#/" class="close" role="button" aria-label="Close">
+            <a href="#close-modal" class="close" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="title"><?= lang('Why do I have to review Epubs?', 'Warum muss ich Epubs reviewen?') ?></h5>
@@ -103,7 +103,7 @@ $Format = new Document($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#/" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -112,7 +112,7 @@ $Format = new Document($user);
 <div class="modal" id="why-students" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a href="#/" class="close" role="button" aria-label="Close">
+            <a href="#close-modal" class="close" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="title"><?= lang('Why do I have to review theses?', 'Warum muss ich Abschlussarbeiten überprüfen?') ?></h5>
@@ -134,7 +134,7 @@ $Format = new Document($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#/" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>

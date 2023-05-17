@@ -1,15 +1,15 @@
 <?php
 $departments = $Settings->getDepartments();
 
+
 if (isset($_GET['type']) && isset($_GET['type']['id'])) {
     $dept = $_GET['type'];
     $id = $dept['id'];
-    $departments[$id] =
-        [
-            "id" => $id,
-            "color" => $dept['color'] ?? '#000000',
-            "name" => $dept['name']
-        ];
+    $departments[$id] = [
+        "id" => $id,
+        "color" => $dept['color'] ?? '#000000',
+        "name" => $dept['name']
+    ];
 }
 
 ?>
@@ -22,7 +22,7 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
 <div class="modal" id="add-type" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a href="#/" class="close" role="button" aria-label="Close">
+            <a href="#close-modal" class="close" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="title">
@@ -30,13 +30,14 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
             </h5>
 
             <form action="#" method="get">
-                <div class="form-group">
-                    <label for="id" class="required element-time">ID (<?= lang('Abbreviation', 'Abkürzung') ?>)</label>
-                    <input type="text" class="form-control" name="type[id]" required>
-                </div>
                 <div class="row row-eq-spacing">
+
+                    <div class="col-sm-3">
+                        <label for="id" class="required element-time">ID (<?= lang('Abbreviation', 'Abkürzung') ?>)</label>
+                        <input type="text" class="form-control" name="type[id]" required>
+                    </div>
                     <div class="col-sm-2">
-                        <label for="name_de" class="">Color</label>
+                        <label for="name_de" class=""><?= lang('Color', 'Farbe') ?></label>
                         <input type="color" class="form-control" name="type[color]" required>
                     </div>
                     <div class="col-sm">
@@ -44,18 +45,26 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
                         <input type="text" class="form-control" name="type[name]" required>
                     </div>
                 </div>
-                <button class="btn">Submit</button>
+                <button class="btn"><?= lang('Save', 'Speichern') ?></button>
             </form>
 
             <div class="text-right mt-20">
-                <a href="#/" class="btn mr-5" role="button">Close</a>
+                <a href="#close-modal" class="btn mr-5" role="button"><?= lang('Close', 'Schließen') ?></a>
             </div>
         </div>
     </div>
 </div>
 
+
+<div class="btn-bar">
+    <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
+    <a href="<?= ROOTPATH ?>/admin/departments" class="btn active btn-primary"><?= lang('Departments', 'Abteilungen') ?></a>
+    <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
+</div>
+
 <form action="#" method="post" id="modules-form">
     <?php foreach ($departments as $t => $dept) {
+        $member = $osiris->users->count(['dept' => $t]);
         $color = $dept['color'] ?? '';
     ?>
 
@@ -64,7 +73,11 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
                 <?= $dept['id'] ?>: <?= $dept['name'] ?>
                 <a class="btn btn-link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
                 <a class="btn btn-link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
-                <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
+                <?php if ($member == 0) { ?>
+                    <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
+                <?php } else { ?>
+                    <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/user/search#{"$and":[{"dept":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete department: $member users associated.", "Kann Abt. nicht löschen: $member Nutzer zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
+                <?php } ?>
             </h2>
 
             <div class="content">
@@ -73,7 +86,7 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
                 <div class="row row-eq-spacing">
                     <div class="col-sm-2">
                         <label for="icon" class="required">ID</label>
-                        <input type="text" class="form-control" name="departments[<?= $t ?>][id]" required value="<?= $dept['id'] ?>">
+                        <input type="text" class="form-control disabled" name="departments[<?= $t ?>][id]" required value="<?= $dept['id'] ?>" readonly>
                     </div>
                     <div class="col-sm-2">
                         <label for="name_de" class="">Color</label>
