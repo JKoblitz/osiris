@@ -189,7 +189,7 @@ class Document extends Settings
         return $str . " $sep " . end($array);
     }
 
-    private static function abbreviateAuthor($last, $first, $reverse = true)
+    public static function abbreviateAuthor($last, $first, $reverse = true, $space='&nbsp;')
     {
         $fn = "";
         if ($first) :
@@ -202,8 +202,8 @@ class Document extends Settings
             }
         endif;
         if (empty(trim($fn))) return $last;
-        if ($reverse) return $last . ",&nbsp;" . $fn;
-        return $fn . "&nbsp;" . $last;
+        if ($reverse) return $last . ",".$space . $fn;
+        return $fn . $space . $last;
     }
 
     function formatAuthors($raw_authors)
@@ -447,6 +447,10 @@ class Document extends Settings
                 return lang('Practical course', 'Praktikum');
             case 'practical-lecture':
                 return lang('Lecture and practical course', 'Vorlesung und Praktikum');
+            case 'lecture-seminar':
+                return lang('Lecture and seminar', 'Vorlesung und Seminar');
+            case 'lecture-practical-seminar':
+                return lang('Lecture, seminar, practical course', 'Vorlesung, Seminar und Praktikum');
             case 'seminar':
                 return lang('Seminar');
             case 'other':
@@ -732,6 +736,7 @@ class Document extends Settings
         $line = strtr($template, $vars);
 
         $line = preg_replace('/\(\s*\)/', '', $line);
+        $line = preg_replace('/\[\s*\]/', '', $line);
         $line = preg_replace('/\s+[,]+/', ',', $line);
         $line = preg_replace('/([?!,])\.+/', '$1', $line);
         $line = preg_replace('/,\s\./', '.', $line);
@@ -740,6 +745,7 @@ class Document extends Settings
         $line = preg_replace('/\.+/', '.', $line);
         $line = preg_replace('/\(:\s*/', '(', $line);
         $line = preg_replace('/\s+/', ' ', $line);
+        $line = preg_replace('/,\s*$/', '', $line);
 
         return $line;
     }

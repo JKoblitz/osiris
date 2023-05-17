@@ -18,11 +18,10 @@ function val($index, $default = '')
 
 
 
-
 <div class="modal" id="add-teaching" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
 
@@ -86,15 +85,15 @@ function val($index, $default = '')
         <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
     </h2>
     <a href="#add-teaching">
-        <i class="ph ph-regular ph-plus"></i> 
-        <?=lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen')?>
+        <i class="ph ph-regular ph-plus"></i>
+        <?= lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen') ?>
     </a>
 </div>
 
 <div class="row row-eq-spacing-md">
 
     <?php
-    $modules = $osiris->teaching->find();
+    $modules = $osiris->teaching->find([], ['sort'=>['module'=>1]]);
     foreach ($modules as $module) {
         $contact = getUserFromId($module['contact_person'] ?? '', true);
     ?>
@@ -111,8 +110,11 @@ function val($index, $default = '')
                     <a class="" href="<?= ROOTPATH ?>/profile/<?= $module['contact_person'] ?? '' ?>"><?= $contact['displayname'] ?? '' ?></a>
 
                     <div class="float-right ">
+                        <a href="#add-teaching" class="btn text-teaching btn-sm" onclick="$('#module').val('<?= $module['module'] ?>');">
+                            <i class="ph ph-regular ph-edit"></i>
+                            <span class="sr-only"><?= lang('Edit course', 'Veranstaltung bearbeiten') ?></span>
+                        </a>
                         <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching btn-sm">
-                            <i class="ph ph-regular ph-lg ph-chalkboard-simple-user"></i>
                             <i class="ph ph-regular ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>

@@ -5,6 +5,7 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\Client;
 use MongoDB\BSON\Regex;
 use MongoDB\Model\BSONArray;
+use MongoDB\Model\BSONDocument;
 
 require_once BASEPATH . '/php/Document.php';
 
@@ -499,18 +500,41 @@ function get_reportable_activities($start, $end)
     $endtime = getDateTime($end . ' 23:59:59');
 
     $options = ['sort' => ["year" => 1, "month" => 1, "day" => 1, "start.day" => 1]];
-    $filter = [
-        'year' => ['$gte' => $startyear, '$lte' => $endyear],
-    ];
+    $filter = [];
+
+    $filter['$or'] =   array(
+        [
+            "start.year" => array('$lte' => $startyear),
+            '$and' => array(
+                ['$or' => array(
+                    ['end.year' => array('$gte' => $endyear)],
+                    ['end' => null]
+                )],
+                ['$or' => array(
+                    ['type' => 'misc', 'subtype' => 'misc-annual'],
+                    ['type' => 'review', 'subtype' =>  'editorial'],
+                )]
+            )
+        ],
+        [
+            'year' => ['$gte' => $startyear, '$lte' => $endyear],
+        ]
+    );
     $cursor = $osiris->activities->find($filter, $options);
 
     foreach ($cursor as $doc) {
-
+// dump($doc['title'] ?? '');
         // check if time of activity ist in the correct time range
         $ds = getDateTime($doc['start'] ?? $doc);
         if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
-        else $de = $ds;
-        if (($ds <= $starttime && $starttime <= $de) || ($starttime <= $ds && $ds <= $endtime)) {
+        elseif (in_array($doc['subtype'], ['misc-annual', 'editorial']) && is_null($doc['end'])) {
+            $end = $endtime;
+        } else $de = $ds;
+
+        if(($de  >= $starttime) && ($endtime >= $ds)) {
+            //overlap
+        // echo "overlap";
+        // if (($ds <= $starttime && $starttime <= $de) || ($starttime <= $ds && $ds <= $endtime)) {
         } else {
             continue;
         }
@@ -542,6 +566,13 @@ function getDeptFromAuthors($authors)
     if ($authors instanceof BSONArray) {
         $authors = $authors->bsonSerialize();
     }
+    if ($authors instanceof BSONDocument){
+        $authors = iterator_to_array($authors);
+    }
+    $authors = array_filter($authors, function($a){
+        return boolval($a['aoi']??false);
+    });
+    if (empty($authors)) return [];
     $users = array_filter(array_column($authors, 'user'));
     foreach ($users as $user) {
         $user = getUserFromId($user);

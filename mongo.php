@@ -23,6 +23,11 @@ function validateValues($values)
             $values[$key] = array();
             $i = 0;
             foreach ($value as $author) {
+                if (is_array($author)) {
+                    $author['approved'] = ($author['user'] ?? '') == $_SESSION['username'];
+                    $values[$key][] = $author;
+                    continue;
+                }
                 $author = explode(';', $author, 3);
                 if (count($author) == 1) {
                     $user = $author[0];
@@ -94,7 +99,7 @@ function validateValues($values)
             // will be converted otherwise
             $values[$key] = endOfCurrentQuarter(true);
         } else if ($key == 'start' || $key == 'end') {
-            if (DateTime::createFromFormat('Y-m-d', $value) !== FALSE){
+            if (DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
                 $values[$key] = valiDate($value);
                 if (!isset($values['year']) && isset($values[$key]['year'])) {
                     $values['year'] = $values[$key]['year'];
@@ -105,7 +110,6 @@ function validateValues($values)
             } else {
                 $values[$key] = null;
             }
-            
         } else if (is_numeric($value)) {
             // dump($key);
             // dump($value);
@@ -266,12 +270,22 @@ Route::post('/create-teaching', function () {
     if (isset($values['module']) && !empty($values['module'])) {
         $module_exist = $collection->findOne(['module' => $values['module']]);
         if (!empty($module_exist)) {
-            echo json_encode([
-                'msg' => "module already existed",
-                'id' => $module_exist['_id'],
-                'journal' => $module_exist['journal'],
-                'module' => $module_exist['module'],
-            ]);
+
+            $updateResult = $collection->updateOne(
+                ['_id' => $module_exist['_id']],
+                ['$set' => $values]
+            );
+            // echo json_encode([
+            //     'msg' => "module already existed",
+            //     'id' => $module_exist['_id'],
+            //     'journal' => $module_exist['journal'],
+            //     'module' => $module_exist['module'],
+            // ]);
+            if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+                $red = str_replace("*", $id, $_POST['redirect']);
+                header("Location: " . $red . "?msg=updated");
+                die();
+            }
             die;
         }
     } else {

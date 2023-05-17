@@ -49,7 +49,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="modal-title">
@@ -99,7 +99,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 <div class="modal" id="journal-select" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
 
@@ -130,7 +130,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 <div class="modal" id="teaching-select" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
 
@@ -154,7 +154,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 <div class="modal" id="sws-calc" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
             <div class="content">
@@ -311,7 +311,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
     <?php if (!empty($form)) { ?>
 
-        <a href="#" class="text-decoration-none" onclick="$(this).next().slideToggle()">
+        <a href="#close-modal" class="text-decoration-none" onclick="$(this).next().slideToggle()">
             <i class="ph ph-caret-down"></i>
             <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
         </a>
@@ -428,7 +428,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                                                                                                                 } ?></textarea>
                     </div>
                 <?php } ?>
-                <?php if (!$copy && !empty($form) && count($form['authors']) > 1) { ?>
+                <?php if (!$copy && !empty($form) && (count($form['authors']) > 1 || ($form['authors'][0]['user'] ?? '') != $_SESSION['username'])) { ?>
                     <div class="alert alert-signal p-10 mb-10">
                         <div class="title">
                             <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>

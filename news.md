@@ -1,49 +1,72 @@
 # Neuigkeiten
 
-## 28.04.23
+## 12.05.23
 
 `Version 1.1`
 
 Ich habe mehrere kleinere Releases in einem großen zusammengeführt.
 
-<i class="ph ph-cake"></i>
+<i class="ph ph-cake text-osiris"></i>
 **Neue Icons wurden eingeführt**
 
 Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [Phosphor-Icons](https://phosphoricons.com/) ersetzt. Die sind (genau wie OSIRIS) unter der Open Source-Lizenz MIT veröffentlicht.
 
 Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr werdet euch aber sicher schnell daran gewöhnen.
 
-<i class="ph ph-chalkboard-simple"></i>
+<i class="ph ph-plus-circle text-osiris"></i>
+**Verbesserungen beim Hinzufügen der Aktivitäten**
+- Viele Module wurden umstrukturiert und verbessert
+- Ein neuer Date-Picker für Zeiträume erleichtert (hoffentlich) die Bedienung
+- Journale und Lehrveranstaltungen haben ein komplett neues UI/UX und lassen sich jetzt (hoffentlich) besser bedienen
+- Wenn eine DOI oder Pubmed-ID eingegeben wird, wird nun sofort überprüft, ob diese bereits in der Datenbank vorhanden ist (danke an Markus für das Feedback)
+- Bearbeitungsnotizen sind nur noch verfügbar, wenn mehr als ein Autor beteiligt ist
+- Preprints brauchen jetzt kein Journal mehr (was quatsch war). Stattdessen kann der Veröffentlichungsort (z.B. BioRxiv) in ein Freitextfeld eingetragen werden.
+- Ein Fehler wurde behoben, durch den sich das Interface aufhängen konnte, wenn die DOI nicht gefunden wurde
+- Ein Fehler wurde behoben, durch den OSIRIS sich 'verschluckt' hat, wenn Autoren-Vornamen mit einem Sonderzeichen beginnen
+
+<i class="ph ph-chalkboard-simple text-osiris"></i>
 **Umstrukturierung der Lehre**
-- Lehrveranstaltungen wurden umstrukturiert
-- Module sind jetzt standardisiert
+- Lehrveranstaltungen sind jetzt standardisiert
 - Jedes Modul hat eine einzigartige Modulnummer, über die es leicht gefunden werden kann
+- Es kann für jede Person einzeln der Anteil der SWS angegeben werden (nur bei affilierten Personen notwendig)
+- Ein SWS-Rechner wurde hinzugefügt
 - Einem Modul können Lehrveranstaltungen (z.B. Praktika, Vorlesungen, Seminare) hinzugefügt werden
-- (Es ist geplant, später auch noch Gäste zu Lehrveranstaltungen hinzuzufügen)
+- Gäste, die wegen einer Lehrveranstaltung hier sind (i.e. Studenten), können ebenfalls mit dem Modul verknüpft werden
 
 
-<i class="ph ph-book-open-text"></i>
+<i class="ph ph-book-open-text text-osiris"></i>
 **Neue Pubmed-Suche**
 - Pubmed kann nun nach Autor(en), Titel, Jahr und Affiliation [durchsucht werden](activities/pubmed-search?authors=Koblitz&year=2023)
-- Mittels der Levenshtein-Distanz wird die Wahrscheinlichkeit berechnen, ob es sich um ein Duplikat handelt oder nicht (nur basierend auf dem Titel)
+- Mittels der Levenshtein-Distanz wird die Wahrscheinlichkeit berechnet, ob es sich um ein Duplikat handelt oder nicht (nur basierend auf dem Titel)
 - Die neue Suche kann z.B. bei Publikationen in [Mein Jahr](scientist) gefunden werden
 
 
-<i class="ph ph-newspaper-clipping"></i>
+<i class="ph ph-newspaper-clipping text-osiris"></i>
 **Verbesserungen bei Journalen**
 - Das UI/UX-Design der Journale wurde verbessert
 - Es wird nun eine bessere API verwendet, um Journale abzufragen. [OpenAlex](https://docs.openalex.org/api-entities/venues) ist nicht nur deutlich schneller als NLM, es enthält auch mehr Journale und mehr Datenfelder. So muss OpenAccess jetzt nicht mehr zusätzlich abgefragt werden.
 
+<i class="ph ph-sparkle text-osiris"></i>
+**Verbesserungen bei den Aktivitäten**
+- Als Beta-Feature wurden Awards eingeführt. Falls ihr dort Datenfelder vermisst, meldet euch bitte bei mir.
+- Die Filter-Funktionen in Alle Aktivitäten wurden verbessert
+  - Laufende Aktivitäten werden jetzt auch bei der Zeitraum-Suche berücksichtigt
+  - Autoren, die sich hinter et al. verstecken, werden jetzt auch bei der Suche berücksichtigt
+  - Der mittlerweile sehr viel Platz fressende Aktivitätenfilter wurde in ein Dropdown gepackt
+  - Es wurde die Möglichkeit hinzugefügt, nach Abteilung zu filtern und Epubs (Online ahead of print) auszuschließen
 
-<i class="ph ph-shapes"></i>
+<i class="ph ph-shapes text-osiris"></i>
 **Sonstiges**
-- Bearbeitungsnotizen sind nur noch verfügbar, wenn mehr als ein Autor beteiligt ist
 - Nicht aktive Nutzer werden in der Expertise-Suche nicht mehr berücksichtigt
-- Preprints brauchen jetzt kein Journal mehr (was quatsch war). Stattdessen kann der Veröffentlichungsort (z.B. BioRxiv) in ein Freitextfeld eingetragen werden.
+- Widgets auf der Profilseite sind nur noch sichtbar, wenn sie Daten enthalten
+- Coins müssen jetzt aktiv eingeschaltet werden (drei Zustände: nicht sichtbar, für mich sichtbar, für alle sichtbar)
 - Die Seitennavigation wurde überarbeitet, sodass die wachsende Menge an Inhalten besser strukturiert ist.
+- Viele Verbesserungen am Report (geschützte Leerzeichen, Bindestrich-Abk., Software und versch. Reviews berücksichtigt, Alphabetische Sortierung)
+- Es wurden weitere Filter und Links bei der Abteilungsvisualisierung hinzugefügt
+- Man erhält nur noch Erfolge für Aktivitäten, die man bereits bestätigt hat
 
 
-<i class="ph ph-stars"></i>
+<i class="ph ph-hammer text-osiris"></i>
 **Maximale Flexibilität**
 - durch einige umfangreiche Umstellungen ist es nun kinderleicht, neue Aktivitätsarten hinzuzufügen, zu konfigurieren, formatieren und zu bearbeiten. Dafür sind jetzt nicht mal mehr Programmierkenntnisse erforderlich.
 - Die Konfiguration bei anderen Instituten wird auch bei neuen Updates nicht überschrieben, wodurch sie die maximale Flexibilität haben, OSIRIS nach ihren Wünschen zu gestalten.
@@ -58,7 +81,7 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
     <li>Die Struktur der Einstellungen wurde verändert!</li>
     <li>Für alle Einstellungen, die zuvor an <code class="code">settings.json</code> vorgenommen wurden, gibt es jetzt ein Admin-Dashboard.</li>
     <li>Da die Datei <code class="code">settings.json</code> aus technischen Gründen jetzt extern sichtbar ist, wurden sicherheitsrelevante Einstellungen in die <code class="code">CONFIG.php</code> transferiert. Bitte schau dir die Datei <code class="code">CONFIG.default.php</code> an, um zu sehen, wie die neue Datei auszusehen hat. </li>
-    <li>Dafür sind Aktivitäten sind jetzt komplett konfigurierbar. Tutorials und Beispiele folgen demnächst auf <a href="https://osiris-app.de" target="_blank">der offiziellen Webseite</a>.</li>
+    <li>Dafür sind Aktivitäten jetzt komplett konfigurierbar. Tutorials und Beispiele folgen demnächst auf <a href="https://osiris-app.de" target="_blank">der offiziellen Webseite</a>.</li>
   </ul>
 </div>
 

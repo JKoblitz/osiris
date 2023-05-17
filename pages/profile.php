@@ -170,7 +170,7 @@ if ($showcoins == 'all') {
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content w-600 mw-full">
-            <a href="#" class="btn float-right" role="button" aria-label="Close">
+            <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
 
@@ -490,10 +490,9 @@ if ($showcoins == 'all') {
         </div>
 
     <?php } ?>
-</div>
 
 <div class="row row-eq-spacing my-0">
-    <div class="col-lg-4">
+    <div class="profile-widget col-lg-4">
         <div class="box h-full">
             <div class="content">
                 <?php if ($currentuser) { ?>
@@ -600,10 +599,9 @@ if ($showcoins == 'all') {
             </table>
         </div>
     </div>
-    <div class="v-spacer d-md-none"></div>
 
     <?php if (!empty($activities)) { ?>
-        <div class="col-lg-8">
+        <div class="profile-widget col-lg-8">
             <div class="box h-full">
                 <div class="content">
                     <h4 class="title"><?= lang('Latest publications', 'Neueste Publikationen') ?></h4>
@@ -652,12 +650,9 @@ if ($showcoins == 'all') {
             </div>
         </div>
     <?php } ?>
-</div>
-
-<div class="row row-eq-spacing-md my-0">
 
     <?php if (!empty($impacts)) { ?>
-        <div class="col-lg-6">
+        <div class="profile-widget col-lg-6">
             <div class="box h-full">
                 <div class="chart content text-center">
                     <h5 class="title mb-0">
@@ -786,7 +781,7 @@ if ($showcoins == 'all') {
     <?php } ?>
 
     <?php if (array_sum($authors) > 0) { ?>
-        <div class="col-md-6 col-lg-3">
+        <div class="profile-widget col-md-6 col-lg-3">
             <div class="box h-full">
                 <div class="chart content text-center">
                     <h5 class="title mb-0">
@@ -868,7 +863,7 @@ if ($showcoins == 'all') {
     <?php } ?>
 
     <?php if ($showcoins) { ?>
-        <div class="col-md-6 col-lg-3">
+        <div class="profile-widget col-md-6 col-lg-3">
             <div class="box h-full">
                 <div class="chart content text-center">
                     <h5 class="title">
@@ -956,7 +951,7 @@ if ($showcoins == 'all') {
     <?php } ?>
 
     <?php if (!empty($stats)) { ?>
-        <div class="col-lg-12 col-xl-6">
+        <div class="profile-widget col-lg-12 col-xl-6">
             <div class="box h-full">
                 <div class="chart content">
                     <h5 class="title text-center">
@@ -1054,7 +1049,7 @@ if ($showcoins == 'all') {
     <?php } ?>
 
     <?php if (!empty($activities)) { ?>
-        <div class="col-lg-12 col-xl-6">
+        <div class="profile-widget col-lg-12 col-xl-6">
             <div class="box h-full">
                 <div class="content">
                     <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
@@ -1120,7 +1115,7 @@ if ($showcoins == 'all') {
         $memberships = $osiris->activities->find($filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1]]);
     ?>
 
-        <div class="col-lg-12 col-xl-6">
+        <div class="profile-widget col-lg-12 col-xl-6">
             <div class="box h-full">
                 <div class="content">
                     <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
@@ -1169,3 +1164,5 @@ if (isset($_GET['verbose'])) {
     dump($scientist, true);
 }
 ?>
+
+</div>

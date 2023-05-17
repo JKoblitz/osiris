@@ -117,7 +117,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <div class="modal" id="the-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" >
                         <span aria-hidden="true">&times;</span>
                     </a>
                     <h5 class="modal-title" id="modal-title"></h5>
@@ -160,7 +160,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                                 echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . '/">Home</a></li>';
                                 foreach ($breadcrumb as $crumb) {
                                     if (!isset($crumb['path'])) {
-                                        echo '<li class="breadcrumb-item active" aria-current="page"><a href="#">' . $crumb['name'] . '</a></li>';
+                                        echo '<li class="breadcrumb-item active" aria-current="page"><a href="#close-modal">' . $crumb['name'] . '</a></li>';
                                     } else {
                                         echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . $crumb['path'] . '">' . $crumb['name'] . '</a></li>';
                                     }
@@ -173,10 +173,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/new-stuff#16.04.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/new-stuff#12.05.23" class="btn btn-osiris">
                 <i class="ph-fill ph-sparkle"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-04-16 16:00') ?>)
+                (<?= time_elapsed_string('2023-05-12 13:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->
@@ -230,7 +230,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         </a>
 
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                            <i class="ph ph-regular ph-chart-column" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-chart-line" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
 
@@ -355,7 +355,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?php if ($USER['is_controlling']) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
-                            <i class="ph ph-regular ph-file-chart-column" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-file-chart-line" aria-hidden="true"></i>
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
 

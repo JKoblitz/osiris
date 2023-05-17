@@ -40,8 +40,7 @@ $user = $user ?? $_SESSION['username'];
     </a>
 <?php } ?>
 <br>
-<div class="btn-bar d-flex">
-
+<div class="btn-bar d-md-flex align-items-baseline">
     <div class="dropdown with-arrow mr-10" id="select-dropdown">
         <button class="btn" data-toggle="dropdown" type="button" id="select-activity" aria-haspopup="true" aria-expanded="false">
             <?= lang('Filter by type', 'Nach Typ filtern') ?>
@@ -50,19 +49,55 @@ $user = $user ?? $_SESSION['username'];
         <div class="dropdown-menu" aria-labelledby="select-activity">
             <?php
             foreach ($Settings->getActivities() as $id => $a) { ?>
-                <a data-type="<?= $id ?>" onclick="selectActivity(this, '<?= $id ?>')" class="item text-<?= $id ?>" id="<?= $id ?>-btn">
-                    <span class="mr-5"><?= $Settings->icon($id, null, false) ?> </span>
-                    <?= $Settings->title($id, null) ?>
+                <a data-type="<?= $id ?>" onclick="selectActivity(this, '<?= $id ?>')" class="item" id="<?= $id ?>-btn">
+                    <span class="text-<?= $id ?>">
+                        <span class="mr-5"><?= $Settings->icon($id, null, false) ?> </span>
+                        <?= $Settings->title($id, null) ?>
+                    </span>
                 </a>
             <?php
             }
             ?>
+            
+            <!-- <a data-type="" onclick="selectActivity(this, null)" class="item">
+                <span class="text-">
+                    <span class="mr-5"><i class="ph ph-x-circle"></i></span>
+                    <?=lang('Remove filter', 'Filter entfernen')?>
+                </span>
+            </a> -->
         </div>
     </div>
 
+    <?php if ($page != 'my-activities') { ?>
+        <div class="dropdown with-arrow mr-10" id="dept-dropdown">
+            <button class="btn" data-toggle="dropdown" type="button" id="select-department" aria-haspopup="true" aria-expanded="false">
+                <?= lang('Filter by dept', 'Nach Abt. filtern') ?>
+                <i class="ph ph-caret-down"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="select-department">
+                <?php
+                foreach ($Settings->getDepartments() as $id => $a) { ?>
+                    <a data-type="<?= $id ?>" onclick="selectDepartment(this, '<?= $id ?>')" class="item" id="<?= $id ?>-btn">
+                        <span class="text-<?= $id ?>"><?= $id ?></span>
+                    </a>
+                <?php
+                }
+                ?>
+<!--                 
+            <a data-type="" onclick="selectDepartment(this, null)" class="item">
+                <span class="text-">
+                    <span class="mr-5"><i class="ph ph-x-circle"></i></span>
+                    <?=lang('Remove filter', 'Filter entfernen')?>
+                </span>
+            </a> -->
+            </div>
+        </div>
+    <?php } ?>
 
 
-    <div class="input-group mb-10 w-400 mw-full d-md-inline-flex">
+
+
+    <div class="input-group mb-10 w-400 mw-full d-md-inline-flex mr-10">
         <div class="input-group-prepend">
             <span class="input-group-text"><?= lang('From', 'Von') ?></span>
         </div>
@@ -79,6 +114,11 @@ $user = $user ?? $_SESSION['username'];
         </div>
     </div>
 
+
+    <div class="custom-switch">
+        <input type="checkbox" id="epub-switch" value="" onchange="filterEpub(this)">
+        <label for="epub-switch"><?= lang('without Epub', 'ohne Epub') ?></label>
+    </div>
 </div>
 
 <div class="mt-20">
@@ -101,6 +141,7 @@ $user = $user ?? $_SESSION['username'];
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
 
 <script>
+    const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
     $.extend($.fn.DataTable.ext.classes, {
         sPaging: "pagination mt-10 ",
         sPageFirst: "direction ",
@@ -159,6 +200,18 @@ $user = $user ?? $_SESSION['username'];
                     data: 'end',
                     searchable: true,
                     visible: false,
+                },
+                {
+                    targets: 7,
+                    data: 'departments',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 8,
+                    data: 'epub',
+                    searchable: true,
+                    visible: false,
                 }
             ],
             "order": [
@@ -177,7 +230,10 @@ $user = $user ?? $_SESSION['username'];
 
         var hash = readHash();
         if (hash.type !== undefined) {
-            selectActivity(document.getElementById(hash.type+'-btn'), hash.type)
+            selectActivity(document.getElementById(hash.type + '-btn'), hash.type)
+        }
+        if (hash.dept !== undefined) {
+            selectDepartment(document.getElementById(hash.dept + '-btn'), hash.dept)
         }
 
         if (hash.time !== undefined) {
@@ -192,15 +248,23 @@ $user = $user ?? $_SESSION['username'];
     });
 
 
-    function selectActivity(btn, activity) {
+    function filterEpub() {
+        if ($('#epub-switch').prop('checked')) {
+            dataTable.columns(8).search("false", true, false, true).draw();
+        } else {
+            dataTable.columns(8).search("", true, false, true).draw();
+        }
+    }
 
-        if ($(btn).hasClass('active')) {
+    function selectActivity(btn, activity = null) {
+
+        if ($(btn).hasClass('active') || activity === null) {
             writeHash({
                 type: null
             })
             $('#select-dropdown a.item').removeClass('active')
             $('#select-activity')
-                .html(lang('Filter by type', 'Nach Typ filtern') + ' <i class="ph ph-caret-down"></i>')
+                .html(lang('Filter by type', 'Nach Typ filtern') + CARET_DOWN)
                 .removeClass('active')
 
             $('#select-dropdown')
@@ -214,12 +278,45 @@ $user = $user ?? $_SESSION['username'];
             $('#select-dropdown a.item').removeClass('active')
             $(btn).addClass('active')
             $('#select-activity')
-                .html(btn.innerHTML)
+                .html(btn.innerHTML + CARET_DOWN)
                 .removeClass('active')
 
             $('#select-dropdown')
                 .removeClass('show')
             dataTable.columns(1).search(activity, true, false, true).draw();
+
+        }
+    }
+
+
+    function selectDepartment(btn, department = null) {
+
+        if ($(btn).hasClass('active') || department === null) {
+            writeHash({
+                dept: null
+            })
+            $('#dept-dropdown a.item').removeClass('active')
+            $('#select-department')
+                .html(lang('Filter by dept', 'Nach Abt. filtern') + CARET_DOWN)
+                .removeClass('active')
+
+            $('#dept-dropdown')
+                .removeClass('show')
+            dataTable.columns(7).search("", true, false, true).draw();
+
+        } else {
+            writeHash({
+                dept: department
+            })
+            $('#dept-dropdown a.item').removeClass('active')
+            $(btn).addClass('active')
+            $('#select-department')
+                .html(btn.innerHTML + CARET_DOWN)
+                .removeClass('active')
+
+            $('#dept-dropdown')
+                .removeClass('show')
+            dataTable.columns(7).search(department, true, false, true).draw();
 
         }
     }
@@ -262,14 +359,10 @@ $user = $user ?? $_SESSION['username'];
             var min = null,
                 max = null;
 
-            // console.log([fromMonth, fromYear, toMonth, toYear])
-
             if (fromMonth !== null && fromYear !== null)
                 min = new Date(fromYear, fromMonth - 1, 1, 0, 0, 0, 0);
             if (toMonth !== null && toYear !== null)
                 max = new Date(toYear, toMonth - 1, 31, 0, 0, 0, 0);
-            // var max = maxDate.val();
-            // var date = new Date(data[5]);
 
             var minDate = new Date(data[5]);
             var maxDate = new Date(data[6]);
@@ -282,14 +375,6 @@ $user = $user ?? $_SESSION['username'];
                 return true;
             }
 
-            // if (
-            //     (min === null && max === null) ||
-            //     (min === null && minDate <= max) ||
-            //     (min <= minDate && max === null) ||
-            //     (min <= minDate && minDate <= max)
-            // ) {
-            //     return true;
-            // }
             return false;
         }
     );

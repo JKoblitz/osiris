@@ -8,6 +8,7 @@ class Modules
     private $copy = false;
     private $authors = "";
     private $editors = "";
+    private $preset = array();
     private $first = 1;
     private $last = 1;
     private $authorcount = 0;
@@ -266,7 +267,9 @@ class Modules
         $this->user = $_SESSION['username'] ?? '';
 
         $this->copy = $copy ?? false;
-        $preset = $form['authors'] ?? array(
+        $this->preset = $form['authors'] ?? array();
+        if (empty($this->preset) || count($this->preset) === 0) 
+            $this->preset = array(
             [
                 'last' => $USER['last'],
                 'first' => $USER['first'],
@@ -286,7 +289,7 @@ class Modules
             }
             $this->authorcount = count($form['authors']);
         }
-        foreach ($preset as $a) {
+        foreach ($this->preset as $a) {
             $this->authors .= $this->authorForm($a, false);
         }
 
@@ -295,7 +298,7 @@ class Modules
             $this->editors .= $this->authorForm($a, true);
         }
 
-        $this->userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+        $this->userlist = $osiris->users->find([], ['sort' => ["last" => 1]])->toArray();
     }
 
     private function val($index, $default = '')
@@ -425,52 +428,46 @@ class Modules
             case "supervisor":
             ?>
                 <div class="data-module col-12" data-module="supervisor">
-                    <div class="module p-0 mt-20">
+                    <label for="supervisor" class="<?= $required ?>"><?= lang('Supervisor', 'Betreuer_in') ?></label>
+                    <div class="module p-0">
                         <table class="table table-simple table-sm">
                             <thead>
                                 <tr>
-                                    <th><?= lang('Supervisor', 'Betreuer_in') ?></th>
+
+                                    <th><?= lang('Last name', 'Nachname') ?></th>
+                                    <th><?= lang('First name', 'Vorname') ?></th>
+                                    <th><?= lang('Affiliated', 'Affiliert') ?></th>
+                                    <th>Username</th>
+                                    <th><?= lang('SWS', 'Anteil in SWS') ?></th>
                                     <th>
-                                        <?= lang('SWS', 'Anteil in SWS') ?> (Semesterwochenstunden)
                                         <a href="#sws-calc" class="btn btn-link"><i class="ph ph-regular ph-calculator"></i></a>
                                     </th>
-                                    <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php if (empty($this->form)) { ?>
+                            <tbody id="supervisors">
+                                <?php foreach ($this->preset ?? [] as $i => $author) { ?>
                                     <tr>
                                         <td>
-                                            <select class="form-control" id="username" name="values[authors][]" autocomplete="off">
-                                                <?php
-                                                foreach ($this->userlist as $j) { ?>
-                                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($this->form['user'] ?? $this->user) ? 'selected' : '' ?>><?= $j['displayname'] ?></option>
-                                                <?php } ?>
-                                            </select>
+                                            <input name="values[authors][<?= $i ?>][last]" type="text" class="form-control" value="<?= $author['last'] ?>" required>
                                         </td>
                                         <td>
-                                            <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="0">
+                                            <input name="values[authors][<?= $i ?>][first]" type="text" class="form-control" value="<?= $author['first'] ?>">
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph ph-trash text-danger"></i></button>
+                                            <div class="custom-checkbox">
+                                                <input type="checkbox" id="checkbox-<?= $i ?>" name="values[authors][<?= $i ?>][aoi]" value="1" <?= (($author['aoi'] ?? 0) == '1' ? 'checked' : '') ?>>
+                                                <label for="checkbox-<?= $i ?>" class="blank"></label>
+                                            </div>
                                         </td>
-                                    </tr>
-                                <?php } else foreach ($this->form['authors'] ?? [] as $author) { ?>
+                                        <td>
+                                            <input name="values[authors][<?= $i ?>][user]" type="text" class="form-control" list="user-list" value="<?= $author['user'] ?>">
+                                        </td>
 
-                                    <tr>
                                         <td>
-                                            <select class="form-control" id="username" name="values[authors][]" autocomplete="off">
-                                                <?php
-                                                foreach ($this->userlist as $j) { ?>
-                                                    <option value="<?= $j['_id'] ?>" <?= $j['_id'] == $author['user'] ? 'selected' : '' ?>><?= $j['displayname'] ?></option>
-                                                <?php } ?>
-                                            </select>
+                                            <input type="number" step="0.1" class="form-control" name="values[authors][<?= $i ?>][sws]" id="teaching-sws" value="<?= $author['sws'] ?? 0 ?>">
                                         </td>
                                         <td>
-                                            <input type="number" step="0.1" class="form-control" name="values[sws][]" id="teaching-sws" value="<?= $author['sws'] ?? 0 ?>">
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-link" type="button" onclick="removeRow(this)"><i class="ph ph-trash text-danger"></i></button>
+                                            <button class="btn text-danger" type="button" onclick="removeRow(this)"><i class="ph ph-trash"></i></button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -478,7 +475,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addSupervisor(this)"><i class="ph ph-regular ph-plus"></i></button>
+                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -494,13 +491,38 @@ class Modules
                             }
                         }
 
-                        function addSupervisor(btn) {
-                            // just copy one table row
-                            var table = $(btn).closest('table').find('tbody')
-                            var el = table.find('tr').first().clone()
-                            table.append(el)
+                        var counter = <?= $i ?>;
+
+                        function addAuthorRow() {
+                            counter++;
+                            var tr = $('<tr>')
+                            tr.append('<td><input name="values[authors][' + counter + '][last]" type="text" class="form-control" required></td>')
+                            tr.append('<td><input name="values[authors][' + counter + '][first]" type="text" class="form-control"></td>')
+                            tr.append('<td><div class="custom-checkbox"><input type="checkbox" id="checkbox-' + counter + '" name="values[authors][' + counter + '][aoi]" value="1"><label for="checkbox-' + counter + '" class="blank"></label></div></td>')
+                            tr.append('<td> <input name="values[authors][' + counter + '][user]" type="text" class="form-control" list="user-list"></td>')
+                            tr.append('<td><input type="number" step="0.1" class="form-control" name="values[authors][' + counter + '][sws]" id="teaching-sws" value="0"></td>')
+                            var btn = $('<button class="btn" type="button">').html('<i class="ph ph-trash"></i>').on('click', function() {
+                                $(this).closest('tr').remove();
+                            });
+                            tr.append($('<td>').append(btn))
+                            $('#supervisors').append(tr)
                         }
+
+                        // function addSupervisor(btn) {
+                        //     // just copy one table row
+                        //     var table = $(btn).closest('table').find('tbody')
+                        //     var el = table.find('tr').first().clone()
+                        //     table.append(el)
+                        // }
                     </script>
+
+                    <datalist id="user-list">
+                        <?php
+                        foreach ($this->userlist as $s) { ?>
+                            <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
+                        <?php } ?>
+                    </datalist>
+
                 </div>
             <?php
                 break;
@@ -513,6 +535,8 @@ class Modules
                         <option value="lecture" <?= $this->val('category') == 'lecture' ? 'selected' : '' ?>><?= lang('Lecture', 'Vorlesung') ?></option>
                         <option value="practical" <?= $this->val('category') == 'practical' ? 'selected' : '' ?>><?= lang('Practical course', 'Praktikum') ?></option>
                         <option value="practical-lecture" <?= $this->val('category') == 'practical-lecture' ? 'selected' : '' ?>><?= lang('Lecture and practical course', 'Vorlesung und Praktikum') ?></option>
+                        <option value="lecture-seminar" <?= $this->val('category') == 'lecture-seminar' ? 'selected' : '' ?>><?= lang('Lecture and seminar', 'Vorlesung und Seminar') ?></option>
+                        <option value="lecture-practical-seminar" <?= $this->val('category') == 'lecture-practical-seminar' ? 'selected' : '' ?>><?= lang('Lecture, seminar, practical course', 'Vorlesung, Seminar und Praktikum') ?></option>
                         <option value="seminar" <?= $this->val('category') == 'seminar' ? 'selected' : '' ?>><?= lang('Seminar') ?></option>
                         <option value="other" <?= $this->val('category') == 'other' ? 'selected' : '' ?>><?= lang('Other', 'Sonstiges') ?></option>
                     </select>
@@ -737,26 +761,28 @@ class Modules
 
                     </label>
                     <div class="input-group" id="date-range-picker">
-                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>" readonly>
-                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>" readonly>
+                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?>>
+                        <input class="form-control" name="values[end]" id="date_end">
                     </div>
                     <script>
-                        var SINGLE = <?= empty($this->val('end')) ? 'false' : 'true' ?>;
+                        var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
+                        // console.log(SINGLE);
                         var dateRange = {
                             // format: 'DD.MM.YYYY',
-                            separator: lang(' to ', ' bis '),
+                            separator: ' to ',
                             autoClose: true,
                             singleDate: SINGLE,
-	                        singleMonth: SINGLE,
+                            singleMonth: SINGLE,
                             monthSelect: true,
                             yearSelect: true,
                             startOfWeek: 'monday',
                             getValue: function() {
                                 if (SINGLE) return $('#date_start').val();
+
                                 if ($('#date_start').val() && $('#date_end').val())
-                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_end').val();
+                                    return $('#date_start').val() + ' to ' + $('#date_end').val();
                                 else if ($('#date_start').val())
-                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_start').val();
+                                    return $('#date_start').val() + ' to ' + $('#date_start').val();
                                 else
                                     return '';
                             },
@@ -771,12 +797,20 @@ class Modules
                         //     .dateRangePicker(dateRange)
                         rebuild_datepicker(document.getElementById('daterange-toggle-btn'))
 
+                        <?php if (!empty($this->form)) { ?>
+                            $('#date-range-picker').data('dateRangePicker')
+                                .setStart('<?= valueFromDateArray($this->val('start')) ?>')
+                                .setEnd('<?= valueFromDateArray($this->val('end')) ?>');
+
+                        <?php } ?>
+
                         function rebuild_datepicker(btn) {
-                            SINGLE = !SINGLE
-                            if ($('#date-range-picker').data('dateRangePicker'))
+                            if ($('#date-range-picker').data('dateRangePicker')) {
                                 $('#date-range-picker').data('dateRangePicker').destroy()
+                                SINGLE = !SINGLE
+                            }
                             dateRange.singleDate = SINGLE;
-	                        dateRange.singleMonth= SINGLE;
+                            dateRange.singleMonth = SINGLE;
                             $("#date_end").attr('readonly', SINGLE)
                             if (SINGLE) {
                                 $("#date_end").val('').addClass('disabled')
@@ -786,7 +820,6 @@ class Modules
                                 $(btn).html(lang('Multiple days', 'Mehrtägig'))
                             }
                             $("#date-range-picker").dateRangePicker(dateRange)
-
                         }
                     </script>
                 </div>
@@ -804,14 +837,14 @@ class Modules
 
                     </label>
                     <div class="input-group" id="date-range-ongoing-picker">
-                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>" readonly>
-                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>" readonly>
+                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
+                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
                     </div>
                     <script>
-                        var SINGLE = <?= empty($this->val('end')) ? 'false' : 'true' ?>;
+                        var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
 
                         var dateRange = {
-                            separator: lang(' to ', ' bis '),
+                            separator: ' to ',
                             autoClose: true,
                             singleDate: SINGLE,
                             singleMonth: SINGLE,
@@ -821,9 +854,9 @@ class Modules
                             getValue: function() {
                                 if (SINGLE) return $('#date_start').val();
                                 if ($('#date_start').val() && $('#date_end').val())
-                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_end').val();
+                                    return $('#date_start').val() + ' to ' + $('#date_end').val();
                                 else if ($('#date_start').val())
-                                    return $('#date_start').val() + lang(' to ', ' bis ') + $('#date_start').val();
+                                    return $('#date_start').val() + ' to ' + $('#date_start').val();
                                 else
                                     return '';
                             },
@@ -838,12 +871,20 @@ class Modules
                         //     .dateRangePicker(dateRange)
                         rebuild_ongoing_datepicker(document.getElementById('ongoing-toggle-btn'))
 
+                        <?php if (!empty($this->form)) { ?>
+                            $('#date-range-ongoing-picker').data('dateRangePicker')
+                                .setStart('<?= valueFromDateArray($this->val('start')) ?>')
+                                .setEnd('<?= valueFromDateArray($this->val('end')) ?>');
+
+                        <?php } ?>
+
                         function rebuild_ongoing_datepicker(btn = null) {
-                            SINGLE = !SINGLE
-                            if ($('#date-range-ongoing-picker').data('dateRangePicker'))
+                            if ($('#date-range-ongoing-picker').data('dateRangePicker')) {
                                 $('#date-range-ongoing-picker').data('dateRangePicker').destroy()
+                                SINGLE = !SINGLE
+                            }
                             dateRange.singleDate = SINGLE;
-	                        dateRange.singleMonth= SINGLE;
+                            dateRange.singleMonth = SINGLE;
                             $("#date_end").attr('readonly', SINGLE)
                             if (SINGLE) {
                                 $("#date_end").val(lang('ongoing', 'fortlaufend')).addClass('disabled')

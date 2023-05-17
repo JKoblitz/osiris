@@ -76,7 +76,7 @@ foreach ($activities as $doc) {
         } else {
             $name = $osiris->users->findone(['_id' => $aut['user']]);
             if (empty($name)) continue;
-            $abbr_name = abbreviateAuthor($name['last'], $name['first']);
+            $abbr_name = Document::abbreviateAuthor($name['last'], $name['first'], true, ' ');
             $labels[$id] = [
                 'name' => $abbr_name,
                 'id' => $id,

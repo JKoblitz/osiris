@@ -34,6 +34,8 @@ $Format = new Document;
 
 $Format->setDocument($doc);
 
+// dump(getDeptFromAuthors($doc['authors']));
+
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <div class="alert alert-signal">

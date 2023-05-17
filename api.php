@@ -186,6 +186,8 @@ Route::get('/api/all-activities', function () {
     foreach ($cursor as $doc) {
         
         $Format->setDocument($doc);
+
+        $depts = getDeptFromAuthors($doc['authors']);
         $id = $doc['_id'];
         $type = $doc['type'];
         // $q = getQuarter($doc);
@@ -200,8 +202,8 @@ Route::get('/api/all-activities', function () {
         }
 
         $active = false;
-        $sm = $doc['month'];
-        $sy = $doc['year'];
+        $sm = intval($doc['month']);
+        $sy = intval($doc['year']);
         $em = $sm;
         $ey = $sy;
 
@@ -228,7 +230,9 @@ Route::get('/api/all-activities', function () {
             'links' => '',
             'search-text' => $format_full,
             'start' => $sy . '-' . ($sm < 10 ? '0' : '') . $sm . '-' . ($doc['day'] ?? '01'),
-            'end' => $ey . '-' . ($em < 10 ? '0' : '') . $em . '-' . ($doc['day'] ?? '01')
+            'end' => $ey . '-' . ($em < 10 ? '0' : '') . $em . '-' . ($doc['day'] ?? '01'),
+            'departments' => implode(', ', $depts),
+            'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true': 'false')
         ];
 
         if ($active) {

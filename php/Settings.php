@@ -150,28 +150,28 @@ class Settings
         foreach ($this->departments as $val) {
             $style .= "
             .text-$val[id] {
-                color: $val[color];
+                color: $val[color] !important;
             }
             .row-$val[id] {
-                border-left: 3px solid $val[color];
+                border-left: 3px solid $val[color] !important;
             }
             .badge-$val[id] {
-                color:  $val[color];
-                border-color:  $val[color];
+                color:  $val[color] !important;
+                border-color:  $val[color] !important;
             }
             ";
         }
         foreach ($this->activities as $val) {
             $style .= "
             .text-$val[id] {
-                color: $val[color];
+                color: $val[color] !important;
             }
             .box-$val[id] {
-                border-left: 4px solid  $val[color];
+                border-left: 4px solid $val[color] !important;
             }
             .badge-$val[id] {
-                color:  $val[color];
-                border-color:  $val[color];
+                color:  $val[color] !important;
+                border-color:  $val[color] !important;
             }
             ";
         }

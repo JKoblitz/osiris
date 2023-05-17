@@ -8,7 +8,7 @@ $Format = new Document(true);
 
 <div class="content">
     <div class="btn-group float-right">
-        <a href="#" class="btn btn-osiris active">
+        <a href="#close-modal" class="btn btn-osiris active">
             <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
         <a href="<?= ROOTPATH ?>/user/search" class="btn btn-osiris">

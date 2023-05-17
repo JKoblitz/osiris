@@ -179,7 +179,7 @@
 			$menu = $('<ul></ul>');
 
 			if ($.ui.menu.prototype.options.items === undefined) {
-				menuItemWrapper = {start: '<li><a href="#">', end: '</a></li>'};
+				menuItemWrapper = {start: '<li><a href="#close-modal">', end: '</a></li>'};
 			} else {
 				menuItemWrapper = {start: '<li><div>', end: '</div></li>'};
 			}

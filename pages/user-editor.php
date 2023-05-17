@@ -43,7 +43,7 @@ dump($data, true);
     if (!isset($data['names'])) {
         $names = [
             $data['formalname'],
-            abbreviateAuthor($data['last'], $data['first'])
+            Document::abbreviateAuthor($data['last'], $data['first'], true, ' ')
         ];
     } else {
         $names = $data['names'];

@@ -310,6 +310,10 @@ strong {
     border-left-width: 5px;
 }
 
+a.link::after {
+    font-family: "Phosphor";
+    content: '\e95c';
+  }
 
 .lom {
     font-weight: bold;
@@ -934,3 +938,18 @@ a.module:hover {
     -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
+
+.data-module {
+    max-width: 100%;
+    flex-grow: 1;
+}
+
+.profile-widget {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    flex-grow: 1;
+}
+
+/* .profile-widget > .box {
+    padding: 1rem;
+} */

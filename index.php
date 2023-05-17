@@ -1059,6 +1059,7 @@ Route::get('/visualize/(\w*)', function ($page) {
     ];
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/Document.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/visualize-$page.php";
     include BASEPATH . "/footer.php";
@@ -1153,6 +1154,7 @@ Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
 Route::get('/user/edit/([a-z0-9]+)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/Document.php";
 
     // $id = to_ObjectID($id);
 
