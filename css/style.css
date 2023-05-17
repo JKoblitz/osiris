@@ -919,14 +919,14 @@ a.module:hover {
 }
 
 
-.form-row.row-eq-spacing, 
-.row.row-eq-spacing {
+.content > .form-row.row-eq-spacing, 
+.content > .row.row-eq-spacing {
     padding: 0;
     margin: 0 -1rem;
 }
 
-.form-row.row-eq-spacing > [class^="col"],
-.row.row-eq-spacing > [class^="col"] {
+.content > .form-row.row-eq-spacing > [class^="col"],
+.content > .row.row-eq-spacing > [class^="col"] {
     padding: 1rem !important;
     align-self: baseline;
 }
