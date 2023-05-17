@@ -1,19 +1,4 @@
 {
-    "api": [
-        {
-            "id": "orcid",
-            "app": "orcid app id",
-            "key": "orcid secret key"
-        },
-        {
-            "id": "wos-starter",
-            "key": "wos starter key"
-        },
-        {
-            "id": "wos-journal.info",
-            "year": 2021
-        }
-    ],
     "affiliation": {
         "id": "DSMZ",
         "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",
@@ -121,9 +106,9 @@
                         "correction"
                     ],
                     "template": {
-                        "print": "{authors} ({year}) {title}. <i>{journal-abbr}</i> {volume}({issue}): {pages}. {doi} {online-ahead-of-print} {openaccess}",
+                        "print": "{authors} ({year}) {title}. <i>{journal-abbr}</i> {volume-issue-pages}. {doi} {online-ahead-of-print} {openaccess}",
                         "title": "{title}",
-                        "subtitle": "{authors}<br> <i>{journal-abbr}</i> {volume}({issue}): {pages} ({year}) {online-ahead-of-print} {openaccess}"
+                        "subtitle": "{authors}<br> <i>{journal-abbr}</i> {volume-issue-pages} ({year}) {online-ahead-of-print} {openaccess}"
                     }
                 },
                 "magazine": {
@@ -201,7 +186,7 @@
                 },
                 "preprint": {
                     "id": "preprint",
-                    "icon": "file-text",
+                    "icon": "paper-plane-tilt",
                     "name": "Preprint",
                     "name_de": "Preprint",
                     "modules": [
@@ -402,31 +387,28 @@
             "name": "Students & Guests",
             "name_de": "Studierende & G\u00e4ste",
             "subtypes": {
-                "theses": {
-                    "id": "theses",
-                    "icon": "graduation-cap",
-                    "name": "Theses",
-                    "name_de": "Abschlussarbeiten",
-                    "modules": [
-                        "title*",
-                        "authors*",
-                        "person*",
-                        "student-category",
-                        "details",
-                        "status*",
-                        "date-range*"
-                    ],
-                    "template": {
-                        "print": "{person}, {affiliation}. {title}; {category} ({details}), {date-range} ({status}), betreut von {authors}",
-                        "title": "{person}, {affiliation}. <i>{title}</i>",
-                        "subtitle": "betreut von {authors}<br> {category} ({details}), {date-range} ({status})"
-                    }
-                },
                 "students": {
                     "id": "students",
                     "icon": "student",
                     "name": "Students",
                     "name_de": "Studenten",
+                    "modules": [
+                        "teaching-course*",
+                        "person*",
+                        "authors*",
+                        "date-range*"
+                    ],
+                    "template": {
+                        "print": "{person}, {affiliation}.  <i>{teaching-course}</i>, Pflichtpraktikum im Rahmen des Studiums, {date-range}, betreut von {authors}",
+                        "title": "{person}, {affiliation}.  <i>{teaching-course}</i>",
+                        "subtitle": "betreut von {authors}<br> Pflichtpraktikum im Rahmen des Studiums, {date-range} ({status})"
+                    }
+                },
+                "theses": {
+                    "id": "theses",
+                    "icon": "graduation-cap",
+                    "name": "Theses",
+                    "name_de": "Abschlussarbeiten",
                     "modules": [
                         "title*",
                         "authors*",
@@ -452,13 +434,13 @@
                         "authors*",
                         "person*",
                         "details",
-                        "guest",
+                        "guest*",
                         "date-range*"
                     ],
                     "template": {
-                        "print": "{person}, {affiliation}. {title}; {category}",
+                        "print": "{person}, {affiliation}. {title}. {guest} ({date-range})",
                         "title": "{person}, {affiliation}. <i>{title}</i>",
-                        "subtitle": "betreut von {authors} ({date-range})"
+                        "subtitle": "betreut von {authors}<br>{guest} ({date-range})"
                     }
                 }
             }
@@ -483,8 +465,8 @@
                         "date-range*"
                     ],
                     "template": {
-                        "print": "{supervisor} {teaching-category}: <i>{teaching-course}</i>. {date-range}.",
-                        "title": "{teaching-category}: <i>{teaching-course}</i>",
+                        "print": "{supervisor} {teaching-category} - <i>{teaching-course}</i>. {date-range}.",
+                        "title": "{teaching-category} - {teaching-course}",
                         "subtitle": "{supervisor} ({date-range}) "
                     }
                 }
@@ -561,7 +543,7 @@
                     "modules": [
                         "title*",
                         "authors*",
-                        "date*",
+                        "date-range*",
                         "iteration",
                         "location",
                         "doi"

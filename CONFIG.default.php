@@ -15,11 +15,8 @@ define("LDAP_PASSWORD", "ldap_password");
 define("LDAP_BASEDN", "OU=Users,OU=DSMZ,DC=dsmz,DC=local");
 
 // define DB connection
-define("DB_IP", "localhost");
-define("DB_PORT", 27017);
-define("DB_DBNAME", "osiris");
-define("DB_PASSWORD", "example_pw");
-define("DB_USER", "example_user");
+define("DB_NAME", "osiris");
+define("DB_STRING", "mongodb://localhost:27017/" . DB_NAME . "?retryWrites=true&w=majority");
 
 // define API keys
 define("WOS_STARTER_KEY", "wos starter key");
