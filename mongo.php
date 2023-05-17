@@ -479,7 +479,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['$set' => $values]
     );
 
-    cleanFields($id);
+    // cleanFields($id);
     // die;
 
     // addUserActivity('update');

@@ -116,7 +116,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="title">
-                <?= lang('Add category', 'Kategorie hinzufügen') ?>
+                <?= lang('Add activity type', 'Aktivitätstyp hinzufügen') ?>
             </h5>
 
             <form action="#" method="get">
@@ -138,10 +138,6 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                     <div class="col-sm-2">
                         <label for="icon" class="required">Icon</label>
                         <input type="text" class="form-control" name="subtype[icon]" required>
-                    </div>
-                    <div class="col-sm-2">
-                        <label for="name_de" class="">Color</label>
-                        <input type="color" class="form-control" name="subtype[color]">
                     </div>
                     <div class="col-sm">
                         <label for="name" class="required ">Name (en)</label>

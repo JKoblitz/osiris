@@ -14,19 +14,17 @@ if (!isset($Settings)) {
     $Settings = new Settings();
 }
 
-if (!defined('DB_DBNAME')) {
-    $dbname = $Settings->settings['database']['dbname'] ?? "osiris";
-    $address = $Settings->settings['database']['ip'] ?? "localhost";
-    $port = $Settings->settings['database']['port'] ?? "27017";
-} else {
-    $dbname = DB_DBNAME;
-    $address = DB_IP;
-    $port = DB_PORT;
+if (!defined('DB_STRING')) {
+    // $dbname = $Settings->settings['database']['dbname'] ?? "osiris";
+    // $address = $Settings->settings['database']['ip'] ?? "localhost";
+    // $port = $Settings->settings['database']['port'] ?? "27017";
+    die("DB settings are missing in the CONFIG.php file. Add the DB_STRING constant as defined in the config documentation.");
 }
 
-$mongoDB = new Client(
-    "mongodb://$address:$port/$dbname?retryWrites=true&w=majority"
-);
+$dbname = 'osiris';
+if (defined('DB_NAME') && !empty(DB_NAME)) $dbname = DB_NAME;
+
+$mongoDB = new Client(DB_STRING);
 
 global $osiris;
 $osiris = $mongoDB->$dbname;
@@ -170,8 +168,9 @@ if (!empty($_SESSION['username'])) {
 
     // set standard values
     if (!isset($USER['is_controlling'])) $USER['is_controlling'] = false;
-    // if (!isset($USER['is_admin'])) ;
-    $USER['is_admin'] = $_SESSION['username'] == ADMIN;
+    
+    $USER['is_admin'] = ($_SESSION['username'] == ADMIN || $USER['is_admin'] ?? false);
+    
     if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
     if (!isset($USER['is_leader'])) $USER['is_leader'] = false;
     if (!isset($USER['display_activities'])) $USER['display_activities'] = 'web';
@@ -523,7 +522,7 @@ function get_reportable_activities($start, $end)
     $cursor = $osiris->activities->find($filter, $options);
 
     foreach ($cursor as $doc) {
-// dump($doc['title'] ?? '');
+        // dump($doc['title'] ?? '');
         // check if time of activity ist in the correct time range
         $ds = getDateTime($doc['start'] ?? $doc);
         if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
@@ -531,10 +530,10 @@ function get_reportable_activities($start, $end)
             $end = $endtime;
         } else $de = $ds;
 
-        if(($de  >= $starttime) && ($endtime >= $ds)) {
+        if (($de  >= $starttime) && ($endtime >= $ds)) {
             //overlap
-        // echo "overlap";
-        // if (($ds <= $starttime && $starttime <= $de) || ($starttime <= $ds && $ds <= $endtime)) {
+            // echo "overlap";
+            // if (($ds <= $starttime && $starttime <= $de) || ($starttime <= $ds && $ds <= $endtime)) {
         } else {
             continue;
         }
@@ -566,11 +565,11 @@ function getDeptFromAuthors($authors)
     if ($authors instanceof BSONArray) {
         $authors = $authors->bsonSerialize();
     }
-    if ($authors instanceof BSONDocument){
+    if ($authors instanceof BSONDocument) {
         $authors = iterator_to_array($authors);
     }
-    $authors = array_filter($authors, function($a){
-        return boolval($a['aoi']??false);
+    $authors = array_filter($authors, function ($a) {
+        return boolval($a['aoi'] ?? false);
     });
     if (empty($authors)) return [];
     $users = array_filter(array_column($authors, 'user'));
