@@ -409,7 +409,7 @@ function digidiveOnDOMContentLoaded() {
                     if (parentModal.classList.contains("show")) {
                         parentModal.classList.remove("show");
                     } else {
-                        window.location.hash = "#";
+                        window.location.hash = "#close-modal";
                     }
                 }
             }
@@ -560,7 +560,7 @@ function digidiveOnDOMContentLoaded() {
                         if (elem) {
                             if (elem.classList.contains("modal")) {
                                 if (!elem.getAttribute("data-esc-dismissal-disabled")) {
-                                    window.location.hash = "#";
+                                    window.location.hash = "#close-modal";
                                     event.preventDefault();
                                 }
                             }

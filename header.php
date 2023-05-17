@@ -89,7 +89,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     </script>
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/shepherd.css" />
-    <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
+    <script src="<?= ROOTPATH ?>/js/digidive.js?v=2"></script>
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
 
     <!-- <link rel="stylesheet" href="shepherd.js/dist/css/shepherd.css"/> -->
@@ -101,7 +101,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 </head>
 
 <body>
-    <!-- Modals go here -->
     <div class="loader">
         <span></span>
     </div>
@@ -160,7 +159,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                                 echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . '/">Home</a></li>';
                                 foreach ($breadcrumb as $crumb) {
                                     if (!isset($crumb['path'])) {
-                                        echo '<li class="breadcrumb-item active" aria-current="page"><a href="#close-modal">' . $crumb['name'] . '</a></li>';
+                                        echo '<li class="breadcrumb-item active" aria-current="page"><a href="#">' . $crumb['name'] . '</a></li>';
                                     } else {
                                         echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . $crumb['path'] . '">' . $crumb['name'] . '</a></li>';
                                     }
