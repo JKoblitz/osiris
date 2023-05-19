@@ -568,6 +568,7 @@ class Document extends Settings
             case "lecture-type": // ["lecture_type"],
                 return $this->getVal('lecture_type');
             case "link": // ["link"],
+            case "software-link": // ["link"],
                 $val = $this->getVal('link');
                 return "<a target='_blank' href='$val'>$val</a>";
             case "location": // ["location"],
@@ -608,8 +609,6 @@ class Document extends Settings
                 return '';
             case "subtype":
                 return $this->activity_title();
-            case "software-link": // ["link"],
-                return $this->getVal('link');
             case "software-type": // ["software_type"],
                 $val = $this->getVal('software_type');
                 switch ($val) {

@@ -42,28 +42,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css" />
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css" />
-    <style>
-        .ph,
-        .ph ph-regular,
-        .ph-fill {
-            font-size: 1.5em;
-            line-height: 1em;
-            vertical-align: -0.2em;
-        }
-
-        .sidebar-link.with-icon>.sidebar-icon,
-        .sidebar-link.with-icon>i.ph {
-            font-size: 1.6em;
-        }
-
-        .ph.ph-edit:before {
-            content: '\ec15';
-        }
-
-        .ph.ph-search:before {
-            content: '\ebdd';
-        }
-    </style>
+    
     <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->

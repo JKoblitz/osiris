@@ -21,6 +21,11 @@ class Modules
             "name" => "Authors",
             "name_de" => "Autoren"
         ],
+        "author-table" => [
+            "fields" => ["authors"],
+            "name" => "Authors",
+            "name_de" => "Autoren"
+        ],
         "book-series" => [
             "fields" => ["series"],
             "name" => "Book-Series",
@@ -268,15 +273,15 @@ class Modules
 
         $this->copy = $copy ?? false;
         $this->preset = $form['authors'] ?? array();
-        if (empty($this->preset) || count($this->preset) === 0) 
+        if (empty($this->preset) || count($this->preset) === 0)
             $this->preset = array(
-            [
-                'last' => $USER['last'],
-                'first' => $USER['first'],
-                'aoi' => true,
-                'user' => strtolower($USER['username'])
-            ]
-        );
+                [
+                    'last' => $USER['last'],
+                    'first' => $USER['first'],
+                    'aoi' => true,
+                    'user' => strtolower($USER['username'])
+                ]
+            );
 
         if (!empty($form) && !empty($form['authors'])) {
             if ($form['authors'] instanceof MongoDB\Model\BSONArray) {
@@ -364,6 +369,7 @@ class Modules
         $required = ($req ? "required" : "");
         switch ($module) {
             case "title":
+                $id = rand(1000, 9999);
 ?>
                 <div class="data-module col-12" data-module="title">
                     <div class="lang-<?= lang('en', 'de') ?>">
@@ -371,10 +377,13 @@ class Modules
                             <?= lang('Title / Topic / Description', 'Titel / Thema / Beschreibung') ?>
                         </label>
 
-                        <div class="form-group title-editor"><?= $this->form['title'] ?? '' ?></div>
+                        <div class="form-group title-editor" id="title-editor-<?= $id ?>"><?= $this->form['title'] ?? '' ?></div>
                         <input type="text" class="form-control hidden" name="values[title]" id="title" <?= $required ?> value="<?= $this->val('title') ?>">
                     </div>
                 </div>
+                <script>
+                    initQuill(document.getElementById('title-editor-<?= $id ?>'));
+                </script>
             <?php
                 break;
 
@@ -424,6 +433,140 @@ class Modules
                 </div>
             <?php
                 break;
+            case "author-table":
+            ?>
+                <div class="data-module col-12" data-module="author-table">
+                    <label for="authors" class="<?= $required ?>"><?= lang('Author(s)', 'Autor(en)') ?></label>
+                    <div class="module p-0">
+                        <table class="table table-simple table-sm">
+                            <thead>
+                                <tr>
+                                    <th><label for="user">Username</label></th>
+                                    <th><label for="last" class="required"><?= lang('Last name', 'Nachname') ?></label></th>
+                                    <th><label for="first" class="required"><?= lang('First name', 'Vorname') ?></label></th>
+                                    <th><label for="position"><?= lang('Position', 'Position') ?></label></th>
+                                    <th><label for="aoi"><?= lang('Affiliated', 'Affiliert') ?></label></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="authors">
+                                <?php foreach ($this->preset ?? [] as $i => $author) { 
+                                    if (!isset($author['position'])) $author['position'] = 'middle';
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <input data-type="user" name="values[authors][<?= $i ?>][user]" type="text" class="form-control" list="user-list" value="<?= $author['user'] ?>" onchange="selectUsername(this)">
+                                        </td>
+                                        <td>
+                                            <input data-type="last" name="values[authors][<?= $i ?>][last]" type="text" class="form-control" value="<?= $author['last'] ?>" required>
+                                        </td>
+                                        <td>
+                                            <input data-type="first" name="values[authors][<?= $i ?>][first]" type="text" class="form-control" value="<?= $author['first'] ?>">
+                                        </td>
+                                        <td>
+                                            <select name="values[authors][<?= $i ?>][position]" class="form-control">
+                                                <option value="first" <?= ($author['position'] == 'first' ? 'selected' : '') ?>>first</option>
+                                                <option value="middle" <?= ($author['position'] == 'middle' ? 'selected' : '') ?>>middle</option>
+                                                <option value="corresponding" <?= ($author['position'] == 'corresponding' ? 'selected' : '') ?>>corresponding</option>
+                                                <option value="last" <?= ($author['position'] == 'last' ? 'selected' : '') ?>>last</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div class="custom-checkbox">
+                                                <input data-type="aoi" type="checkbox" id="checkbox-<?= $i ?>" name="values[authors][<?= $i ?>][aoi]" value="1" <?= (($author['aoi'] ?? 0) == '1' ? 'checked' : '') ?>>
+                                                <label for="checkbox-<?= $i ?>" class="blank"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn text-danger" type="button" onclick="removeAuthorRow(this)"><i class="ph ph-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i></button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <script>
+                        function removeAuthorRow(el) {
+                            // check if row is the only one left
+                            if ($(el).closest('tbody').find('tr').length > 1) {
+                                $(el).closest('tr').remove()
+                            } else {
+                                toastError(lang('At least one author is needed.', 'Mindestens ein Autor muss angegeben werden.'))
+                            }
+                        }
+
+                        function selectUsername(el) {
+                            let username = el.value
+                            let user = $('#user-list option[value=' + username + ']')
+                            if (!user || user === undefined || user.length === 0) return;
+
+                            console.log(user);
+                            let name = user.html()
+                            name = name.replace(/\(.+\)/, '');
+                            name = name.split(', ')
+                            if (name.length !== 2) return;
+
+                            let tr = $(el).closest('tr')
+                            console.log(tr);
+                            tr.find('[data-type=last]').val(name[0])
+                            tr.find('[data-type=first]').val(name[1])
+                            tr.find('[data-type=aoi]').prop('checked', true)
+                        }
+
+                        var counter = <?= $i ?>;
+
+                        function addAuthorRow(data = {}) {
+                            if (data !== {} && data.last !== undefined && data.first !== undefined) {
+                                // data.first = data.first.replace(/\s/g, ' ') 
+                                let firstname = data.first.replace(/\s.*$/, '')
+                                let name = data.last + ', ' + firstname
+                                let user = $('#user-list option:contains(' + name + ')')
+                                if (user && user !== undefined && user.length !== 0) {
+                                    data.user = user.val()
+                                }
+                                console.log(data);
+                            }
+                            counter++;
+                            const POSITIONS = ['first', 'middle', 'corresponding', 'last']
+                            var pos = data.position ?? 'middle';
+                            if (!POSITIONS.includes(pos)) pos = 'middle';
+
+                            var tr = $('<tr>')
+                            tr.append('<td><input data-type="user" name="values[authors][' + counter + '][user]" type="text" class="form-control" list="user-list" value="' + (data.user ?? '') + '" onchange="selectUsername(this)"></td>')
+                            tr.append('<td><input data-type="last" name="values[authors][' + counter + '][last]" type="text" class="form-control" required value="' + (data.last ?? '') + '"></td>')
+                            tr.append('<td><input data-type="first" name="values[authors][' + counter + '][first]" type="text" class="form-control" value="' + (data.first ?? '') + '"></td>')
+
+                            var select = $('<select data-type="position" name="values[authors][' + counter + '][position]" class="form-control">');
+                            POSITIONS.forEach(p => {
+                                select.append('<option value="' + p + '" ' + (pos == p ? 'selected' : '') + '>' + p + '</option>')
+                            });
+                            tr.append($('<td>').append(select))
+                            tr.append('<td><div class="custom-checkbox"><input data-type="aoi" type="checkbox" id="checkbox-' + counter + '" name="values[authors][' + counter + '][aoi]" value="1" ' + (data.aoi == true ? 'checked' : '') + '><label for="checkbox-' + counter + '" class="blank"></label></div></td>')
+                            var btn = $('<button class="btn text-danger" type="button">').html('<i class="ph ph-trash"></i>').on('click', function() {
+                                $(this).closest('tr').remove();
+                            });
+                            tr.append($('<td>').append(btn))
+                            $('#authors').append(tr)
+                        }
+                    </script>
+
+                    <datalist id="user-list">
+                        <?php
+                        foreach ($this->userlist as $s) { ?>
+                            <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
+                        <?php } ?>
+                    </datalist>
+
+                </div>
+            <?php
+                break;
 
             case "supervisor":
             ?>
@@ -467,7 +610,7 @@ class Modules
                                             <input type="number" step="0.1" class="form-control" name="values[authors][<?= $i ?>][sws]" id="teaching-sws" value="<?= $author['sws'] ?? 0 ?>">
                                         </td>
                                         <td>
-                                            <button class="btn text-danger" type="button" onclick="removeRow(this)"><i class="ph ph-trash"></i></button>
+                                            <button class="btn text-danger" type="button" onclick="removeSupervisorRow(this)"><i class="ph ph-trash"></i></button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -475,14 +618,14 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i></button>
+                                        <button class="btn text-primary" type="button" onclick="addSupervisorRow()"><i class="ph ph-regular ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
                     <script>
-                        function removeRow(el) {
+                        function removeSupervisorRow(el) {
                             // check if row is the only one left
                             if ($(el).closest('tbody').find('tr').length > 1) {
                                 $(el).closest('tr').remove()
@@ -493,7 +636,7 @@ class Modules
 
                         var counter = <?= $i ?>;
 
-                        function addAuthorRow() {
+                        function addSupervisorRow() {
                             counter++;
                             var tr = $('<tr>')
                             tr.append('<td><input name="values[authors][' + counter + '][last]" type="text" class="form-control" required></td>')
@@ -507,13 +650,6 @@ class Modules
                             tr.append($('<td>').append(btn))
                             $('#supervisors').append(tr)
                         }
-
-                        // function addSupervisor(btn) {
-                        //     // just copy one table row
-                        //     var table = $(btn).closest('table').find('tbody')
-                        //     var el = table.find('tr').first().clone()
-                        //     table.append(el)
-                        // }
                     </script>
 
                     <datalist id="user-list">

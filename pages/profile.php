@@ -330,7 +330,7 @@ if ($showcoins == 'all') {
                 }
                 $lastquarter = $Y . "Q" . $Q;
 
-                if (!in_array($lastquarter, $approvedQ)) { ?>
+                if ($scientist['is_scientist'] && !in_array($lastquarter, $approvedQ)) { ?>
                     <div class="alert alert-muted mt-20">
 
                         <div class="title">

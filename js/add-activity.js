@@ -121,7 +121,7 @@ function togglePubType(type, callback = () => { }) {
             // if (SELECTED_MODULES.includes('title')) {
             $('.title-editor').each(function (el) {
                 var element = this;
-                initQuill(element)
+                // initQuill(element)
 
 
                 var authordiv = $('.author-list')

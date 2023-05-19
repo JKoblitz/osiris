@@ -7,10 +7,10 @@ $(document).ready(function () {
     })
     SCIENTISTS = Object.values(scientists)
 
-    $('.title-editor').each(function (el) {
-        var element = this;
-        initQuill(element)
-    })
+    // $('.title-editor').each(function (el) {
+    //     var element = this;
+    //     initQuill(element)
+    // })
 })
 
 function initQuill(element) {
@@ -330,10 +330,10 @@ function checkDuplicateID(id, type = 'doi') {
                 //     ))
                 $('#id-exists').show()
                     .find('a')
-                    .attr('href', ROOTPATH+'/activities/'+type+'/'+id)
+                    .attr('href', ROOTPATH + '/activities/' + type + '/' + id)
                 $('.loader').removeClass('show')
             } else {
-                if (type == 'doi') 
+                if (type == 'doi')
                     getDOI(id);
                 if (type == 'pubmed')
                     getPubmed(id);
@@ -689,9 +689,13 @@ function getPubmed(id) {
             var editors = [];
             pub.authors.forEach((a, i) => {
                 var name = a.name.split(' ', 2)
+                var pos = 'middle'
+                if (i == 0) pos = 'first'
+                else if (i==pub.authors.length-1) pos='last'
                 name = {
                     family: name[0],
-                    given: name[1].split('').join(' ')
+                    given: name[1].split('').join(' '),
+                    position: pos
                 }
                 if (a.authtype == "Author") {
                     authors.push(name)
@@ -775,10 +779,14 @@ function getDOI(doi) {
                     if (a.sequence == "first") {
                         first = i + 1
                     }
+                    var pos = a.sequence ?? 'middle';
+                    if (i === 0) pos = 'first'
+                    else if (i == pub.author.length-1) pos = 'last'
                     var name = {
-                        family: a.family,
+                        family: a.family ?? a.name,
                         given: a.given,
-                        affiliation: aoi
+                        affiliation: aoi,
+                        position: pos
                     }
                     authors.push(name)
                 });
@@ -895,10 +903,15 @@ function getDataciteDOI(doi) {
                 if (a.sequence == "first") {
                     first = i + 1
                 }
+                var pos = a.sequence ?? 'middle'
+                if (i === 0) pos = 'first'
+                else if (i == pub.creator.length-1) pos = 'last'
+                console.log(pos);
                 var name = {
                     family: a.familyName,
                     given: a.givenName,
-                    affiliation: aoi
+                    affiliation: aoi,
+                    position: pos
                 }
                 authors.push(name)
             });
@@ -1053,24 +1066,38 @@ function fillForm(pub) {
         $('#journal-field').addClass('is-valid')
     }
 
-    $('.author-list').addClass('is-valid').find('.author').remove()
-
     var aff_undef = false
-    pub.authors.forEach(function (d, i) {
-        if (d.affiliation === undefined) {
-            aff_undef = true
-        }
-        addAuthorDiv(d.family, d.given, d.affiliation ?? false)
-    })
-    if (pub.editors !== undefined) {
-        pub.editors.forEach(function (d, i) {
-            addAuthorDiv(d.family, d.given, d.affiliation ?? false, true)
+    if ($('#authors').length > 0) {
+        $('#authors').find('tr').remove()
+        $('#authors').closest('.module').addClass('is-valid')
+        pub.authors.forEach(function (d, i) {
+            if (d.affiliation === undefined) {
+                aff_undef = true
+            }
+            addAuthorRow({ last: d.family, first: d.given, aoi: d.affiliation ?? false, position: d.position??'middle'})
         })
     }
-    if (aff_undef)
-        toastWarning('Not all affiliations could be parsed automatically. Please click on every ' + AFFILIATION + ' author to mark them.')
 
-    affiliationCheck();
+    if ($('.author-list').length > 0) {
+
+        $('.author-list').addClass('is-valid').find('.author').remove()
+
+        pub.authors.forEach(function (d, i) {
+            if (d.affiliation === undefined) {
+                aff_undef = true
+            }
+            addAuthorDiv(d.family, d.given, d.affiliation ?? false)
+        })
+        if (pub.editors !== undefined) {
+            pub.editors.forEach(function (d, i) {
+                addAuthorDiv(d.family, d.given, d.affiliation ?? false, true)
+            })
+        }
+        if (aff_undef)
+            toastWarning('Not all affiliations could be parsed automatically. Please click on every ' + AFFILIATION + ' author to mark them.')
+
+        affiliationCheck();
+    }
 
     toastSuccess('Bibliographic data were updated.')
 

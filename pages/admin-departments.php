@@ -8,7 +8,8 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
     $departments[$id] = [
         "id" => $id,
         "color" => $dept['color'] ?? '#000000',
-        "name" => $dept['name']
+        "name" => $dept['name'],
+        "new" => true
     ];
 }
 
@@ -68,7 +69,7 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
         $color = $dept['color'] ?? '';
     ?>
 
-        <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>">
+        <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>; <?=isset($dept['new']) ?'opacity:.8;font-style:italic;':''?>">
             <h2 class="header" style="background-color:<?= $color ?>20">
                 <?= $dept['id'] ?>: <?= $dept['name'] ?>
                 <a class="btn btn-link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>

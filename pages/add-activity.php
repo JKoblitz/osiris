@@ -43,7 +43,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 <script src="<?= ROOTPATH ?>/js/jquery.daterangepicker.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
-<script src="<?= ROOTPATH ?>/js/add-activity.js"></script>
+<script src="<?= ROOTPATH ?>/js/add-activity.js?v=2"></script>
 
 
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
