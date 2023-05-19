@@ -413,31 +413,25 @@ Am Fuß der Tabelle können über die Schaltfläche <span class="btn btn-sm">+ A
 
 Journale sind bei <span class="text-publication">Journalartikeln</span> und <span class="text-review">Reviews &amp; Editorials</span> relevant. 
 
-Aus Gründen der Standardisierung kann ein Journal nicht mehr als Freitext-Feld eingetragen werden. Stattdessen sind folgende geschützte Formularfelder zu finden:
+Aus Gründen der Standardisierung kann ein Journal nicht als Freitext-Feld eingetragen werden. Stattdessen ist folgendes Modul zu finden:
 
 <div class="demo">
-    <div class="form-row row-eq-spacing" data-visible="article,preprint" style="">
-        <div class="col-sm">
-            <label for="journal" class="element-cat required">Journal</label>
-            <div class="input-group">
-                <input type="text" class="form-control disabled" name="values[journal]" value="mSystems" id="journal" list="journal-list" required="" readonly="" data-value="mSystems">
-                <div class="input-group-append" data-toggle="tooltip" data-title="Bearbeite Journal">
-                    <a class="btn" href="#journal-select"><i class="ph ph-edit"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm">
-            <label for="journal_id" class="element-cat required">Journal ID</label>
-            <input type="text" class="form-control disabled" name="values[journal_id]" value="638f62000d695c5938287574" id="journal_id" required="" readonly="" data-value="638f62000d695c5938287574">
-        </div>
-        <div class="col-sm">
-            <label for="issn" class="element-cat">ISSN (getrennt durch Leerzeichen</label>
-            <input type="text" class="form-control disabled" name="values[issn]" value="2379-5077 2379-5077" id="issn" readonly="" data-value="2379-5077 2379-5077">
-        </div>
+    <div class="data-module col-12" data-module="journal">
+        <a href="/osiris/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
+            <i class="ph ph-question"></i> Hilfe                    </a>
+        <label for="journal" class="element-cat required">Journal</label>
+        <a href="#journal-select" id="journal-field" class="module">
+            <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+            <div id="selected-journal">
+                <span class="title">Kein Journal ausgewählt</span>
+                                        </div>
+            <input type="hidden" class="form-control hidden" name="values[journal]" value="" id="journal" list="journal-list" required="" readonly="">
+            <input type="hidden" class="form-control hidden" name="values[journal_id]" value="" id="journal_id" required="" readonly="">
+        </a>
     </div>
 </div>
 
-Diese können nur durch Klick auf <span class="btn btn-sm"><i class="ph ph-edit"></i></span> bearbeitet werden. Dadurch öffnet sich folgendes Fenster, indem man mittels Namen oder ISSN nach einem Journal in OSIRIS suchen kann. 
+Um das Journal zu bearbeiten, reicht ein Klick in dieses Feld. Dadurch öffnet sich folgendes Fenster, indem man mittels Namen oder (bevorzugt) ISSN nach einem Journal in OSIRIS suchen kann. 
 Im folgenden Beispiel sind in OSIRIS zwei Journale vorhanden, die dem Suchterm entsprechen:
 
 <div class="demo" id="journal-select">
@@ -456,9 +450,23 @@ Im folgenden Beispiel sind in OSIRIS zwei Journale vorhanden, die dem Suchterm e
 <div class="text-muted text-center mt-10">Dieses Fenster ist aus technischen Gründen nicht funktional.</div>
 </div>
 
-Ein Journal kann ausgewählt werden, indem man auf den Haken <span class="btn btn-sm"><i class="ph ph-check"></i></span> klickt. Das Fenster schließt sich automatisch und die drei oben dargestellten Formularfelder werden automatisch ausgefüllt. 
+Ein Journal kann ausgewählt werden, indem man auf den Haken <span class="btn btn-sm"><i class="ph ph-check"></i></span> klickt. Das Fenster schließt sich automatisch und das Modul wird ausgefüllt. Das sieht dann wie folgt aus:
 
-Sollte das gesuchte Journal nicht in OSIRIS gefunden werden, kann man durch Klick auf <span class="btn btn-sm">Suche im NLM-Katalog</span> eine erweiterte Suche starten. Dabei werden alle bei NLM indizierten Journale durchsucht und vorgeschlagen. Hier wird ebenfalls wieder über den Haken bestätigt. Sollte das ausgewählte Journal bereits in OSIRIS vorhanden sein (möglicherweise unter einem etwas anderen Namen), wird das bereits vorhandene Journal ausgewählt. Der entsprechende Abgleich findet über die ISSN statt und du wirst darüber durch ein Pop-Up informiert.
+<div class="demo">
+    <div class="data-module col-12" data-module="journal">
+        <a href="/osiris/docs/add-activities#das-journal-bearbeiten" target="_blank" class="required float-right">
+            <i class="ph ph-question"></i> Hilfe                    </a>
+        <label for="journal" class="element-cat required">Journal</label>
+        <a href="#journal-select" id="journal-field" class="module">
+            <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+            <div id="selected-journal"><h5 class="m-0">Nucleic acids research</h5><span class="float-right">Oxford University Press</span><span class="text-muted">ISSN: 1362-4962, 0305-1048</span></div>
+            <input type="hidden" class="form-control hidden" name="values[journal]" value="Nucleic acids research" id="journal" list="journal-list" required="" readonly="">
+            <input type="hidden" class="form-control hidden" name="values[journal_id]" value="6364d154f7323cdc82531a01" id="journal_id" required="" readonly="">
+        </a>
+    </div>
+</div>
+
+Sollte das gesuchte Journal nicht in OSIRIS gefunden werden, kann man durch Klick auf <span class="btn btn-sm">Suche im NLM-Katalog</span> eine erweiterte Suche starten. Dabei werden alle bei NLM indizierten Journale durchsucht und vorgeschlagen. Hier wird ebenfalls wieder über den Haken bestätigt. Sollte das ausgewählte Journal bereits in OSIRIS vorhanden sein (möglicherweise unter einem etwas anderen Namen), wird das bereits vorhandene Journal ausgewählt. Der entsprechende Abgleich findet über die ISSN statt und du wirst darüber durch ein Pop-Up informiert. Sollte das Journal noch unbekannt sein, fragt OSIRIS alle Informationen dazu von externen Services ab. **Dieser Prozess kann einen Moment dauern**, bitte warte also, bis das Modul ausgefüllt wurde.
 
 ## Erweiterte Funktionen
 

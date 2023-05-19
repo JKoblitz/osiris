@@ -46,10 +46,16 @@ function chart(selector, data) {
     .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.8 : 0.5) : 0)
     .attr("pointer-events", d => arcVisible(d.current) ? "auto" : "none")
 
-    .attr("d", d => arc(d.current));
+    .attr("d", d => arc(d.current))
+    .style("cursor", "pointer")
+    .on('click', function (e, d) {
+      console.log(d);
+      if (d.data.link !== undefined) {
+        window.location.href = d.data.link;
+      }
+    });
 
   path.filter(d => d.children)
-    .style("cursor", "pointer")
     .on("click", clicked);
 
   // path.append("title")
@@ -85,7 +91,7 @@ function chart(selector, data) {
   }
 
   const label = g.append("g")
-    .attr("pointer-events", "none")
+    // .attr("pointer-events", "none")
     .attr("text-anchor", "middle")
     .style("user-select", "none")
     .selectAll("text")
@@ -94,7 +100,23 @@ function chart(selector, data) {
     .attr("dy", "0.35em")
     .attr("fill-opacity", d => +labelVisible(d.current))
     .attr("transform", d => labelTransform(d.current))
-    .text(d => d.data.name);
+    .text(d => d.data.name)
+
+
+  //   if (links) {
+  //     function chord_click() {
+  //         return function (g, i) {
+  //             if (links[i]) {
+  //                 window.location.href = links[i];
+  //             }
+  //         };
+  //     }
+
+  //     outerArcs
+  //         .on('click', chord_click())
+  //         .style('cursor', (d, i) => links[i] ? 'pointer' : null)
+  // }
+
 
   const parent = g.append("circle")
     .datum(root)

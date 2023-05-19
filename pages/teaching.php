@@ -1,6 +1,6 @@
 <?php
 
-$Format = new Format(true);
+$Format = new Document(true);
 $form = $form ?? array();
 
 function val($index, $default = '')
@@ -18,11 +18,10 @@ function val($index, $default = '')
 
 
 
-
 <div class="modal" id="add-teaching" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" href="#" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
 
@@ -85,19 +84,21 @@ function val($index, $default = '')
         <i class="ph ph-regular ph-chalkboard-simple text-osiris mr-5"></i>
         <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
     </h2>
-    <a href="#add-teaching"><i class="ph ph-regular ph-plus"></i> Neues Modul anlegen</a>
+    <a href="#add-teaching">
+        <i class="ph ph-regular ph-plus"></i>
+        <?= lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen') ?>
+    </a>
 </div>
 
 <div class="row row-eq-spacing-md">
 
     <?php
-    $modules = $osiris->teaching->find();
-    ?>
-    <?php foreach ($modules as $module) {
+    $modules = $osiris->teaching->find([], ['sort'=>['module'=>1]]);
+    foreach ($modules as $module) {
         $contact = getUserFromId($module['contact_person'] ?? '', true);
     ?>
         <div class="col-md-6">
-            <div class="box" id="<?=$module['_id']?>">
+            <div class="box" id="<?= $module['_id'] ?>">
                 <div class="content">
                     <h5 class="mt-0">
                         <span class="highlight-text"><?= $module['module'] ?></span>
@@ -109,29 +110,34 @@ function val($index, $default = '')
                     <a class="" href="<?= ROOTPATH ?>/profile/<?= $module['contact_person'] ?? '' ?>"><?= $contact['displayname'] ?? '' ?></a>
 
                     <div class="float-right ">
+                        <a href="#add-teaching" class="btn text-teaching btn-sm" onclick="$('#module').val('<?= $module['module'] ?>');">
+                            <i class="ph ph-regular ph-edit"></i>
+                            <span class="sr-only"><?= lang('Edit course', 'Veranstaltung bearbeiten') ?></span>
+                        </a>
                         <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching btn-sm">
-                            <i class="ph ph-regular ph-lg ph-chalkboard-simple-user"></i>
                             <i class="ph ph-regular ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>
                     </div>
                 </div>
                 <?php
-                    $activities = $osiris->activities->find(['module_id' => strval($module['_id'])]);
-                    if (!empty($activities)):
+                $activities = $osiris->activities->find(['module_id' => strval($module['_id'])]);
+                if (!empty($activities)) :
                 ?>
-                <hr>
-                <div class="content">
-                    
-                <?php foreach ($activities as $doc) : ?>
-                        <?=activity_icon($doc)?>
-                        <?=$Format->formatShort($doc)?>
-                    <?php endforeach; ?>
-                </div>
-                    
+                    <hr>
+                    <div class="content">
+
+                        <?php foreach ($activities as $doc) :
+                            $Format->setDocument($doc);
+                        ?>
+                            <?= $Format->activity_icon() ?>
+                            <?= $Format->formatShort() ?>
+                        <?php endforeach; ?>
+                    </div>
+
                 <?php endif; ?>
-                
-                
+
+
             </div>
         </div>
     <?php } ?>

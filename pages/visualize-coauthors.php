@@ -60,21 +60,23 @@ $combinations = [];
 
 $activities = $osiris->activities->find(['authors.user' => "$scientist", 'type' => 'publication']);
 $activities = $activities->toArray();
+// dump($activities, true);
 $N = count($activities);
 
 foreach ($activities as $doc) {
     $authors = [];
     foreach ($doc['authors'] as $aut) {
-        if (!($aut['aoi'] ?? false) || empty($aut['user'])) continue;
+        if (empty($aut['user'])) continue;
+        //!($aut['aoi'] ?? false) || 
 
         $id = $aut['user'];
         if (array_key_exists($id, $labels)) {
-            $name = $labels[$id]['name'];
+            // $name = $labels[$id]['name'];
             $labels[$id]['count']++;
         } else {
             $name = $osiris->users->findone(['_id' => $aut['user']]);
             if (empty($name)) continue;
-            $abbr_name = abbreviateAuthor($name['last'], $name['first']);
+            $abbr_name = Document::abbreviateAuthor($name['last'], $name['first'], true, ' ');
             $labels[$id] = [
                 'name' => $abbr_name,
                 'id' => $id,

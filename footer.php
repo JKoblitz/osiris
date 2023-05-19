@@ -11,10 +11,10 @@
     <span>
         &copy; Julia Koblitz 2022
     </span>
-    <!-- <a href="#">Imprint</a>
-    <a href="#">Privacy Statement</a>
-    <a href="#">Copyright &amp; License</a>
-    <a href="#">Sitemap</a> -->
+    <!-- <a href="#close-modal">Imprint</a>
+    <a href="#close-modal">Privacy Statement</a>
+    <a href="#close-modal">Copyright &amp; License</a>
+    <a href="#close-modal">Sitemap</a> -->
 </div>
 </footer>
 </div>

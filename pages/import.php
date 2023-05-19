@@ -5,7 +5,7 @@
 
 
 <?php
-$Format = new Format();
+$Format = new Document();
 
 if (!empty($USER['google_scholar'] ?? null)) { ?>
 
@@ -66,7 +66,9 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
 
                                 <?php if (!empty($id) && $sim > 50) {
                                     $activity = getActivity($id);
-                                    $dupl = $Format->formatShort($activity);
+
+                                    $Format->setDocument($activity);
+                                    $dupl = $Format->formatShort();
                                     if ($sim >= 98) $alert = 'danger';
                                     else $alert = 'signal';
                                 ?>
@@ -263,7 +265,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
         <h2 class="title">
             <?= lang('Import activities from file', 'Importiere Aktivitäten aus einer Datei') ?>
         </h2>
-        <form action="<?=ROOTPATH?>/import/file" method="post" enctype="multipart/form-data">
+        <form action="<?= ROOTPATH ?>/import/file" method="post" enctype="multipart/form-data">
             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
             <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                 <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">

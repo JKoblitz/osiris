@@ -1,71 +1,110 @@
+
+.ph,
+.ph ph-regular,
+.ph-fill {
+    font-size: 1.5em;
+    line-height: 1em;
+    vertical-align: -0.2em;
+}
+
+.sidebar-link.with-icon>.sidebar-icon,
+.sidebar-link.with-icon>i.ph {
+    font-size: 1.6em;
+}
+
+.ph.ph-edit:before {
+    content: '\ec15';
+}
+
+.ph.ph-search:before {
+    content: '\ebdd';
+}
+
 .fa, .fas, .fa-solid, .far, .fa-regular, .fal, .fa-light, .fat, .fa-thin, .fad, .fa-duotone, .fab, .fa-brands, .ph, .ph-fill {
     line-height: inherit;
 }
 
 .ph-1x {
-    font-size: 1em; }
-  
-  .ph-2x {
-    font-size: 2em; }
-  
-  .ph-3x {
-    font-size: 3em; }
-  
-  .ph-4x {
-    font-size: 4em; }
-  
-  .ph-5x {
-    font-size: 5em; }
-  
-  .ph-6x {
-    font-size: 6em; }
-  
-  .ph-7x {
-    font-size: 7em; }
-  
-  .ph-8x {
-    font-size: 8em; }
-  
-  .ph-9x {
-    font-size: 9em; }
-  
-  .ph-10x {
-    font-size: 10em; }
-  
-  .ph-2xs {
+    font-size: 1em;
+}
+
+.ph-2x {
+    font-size: 2em;
+}
+
+.ph-3x {
+    font-size: 3em;
+}
+
+.ph-4x {
+    font-size: 4em;
+}
+
+.ph-5x {
+    font-size: 5em;
+}
+
+.ph-6x {
+    font-size: 6em;
+}
+
+.ph-7x {
+    font-size: 7em;
+}
+
+.ph-8x {
+    font-size: 8em;
+}
+
+.ph-9x {
+    font-size: 9em;
+}
+
+.ph-10x {
+    font-size: 10em;
+}
+
+.ph-2xs {
     font-size: 0.625em;
     /* line-height: 0.1em; */
-    vertical-align: 0.225em; }
-  
-  .ph-xs {
+    vertical-align: 0.225em;
+}
+
+.ph-xs {
     font-size: 0.75em;
     /* line-height: 0.08333em; */
-    vertical-align: 0.125em; }
-  
-  .ph-sm {
+    vertical-align: 0.125em;
+}
+
+.ph-sm {
     font-size: 0.875em;
     /* line-height: 0.07143em; */
-    vertical-align: 0.05357em; }
-  
-  .ph-lg {
+    vertical-align: 0.05357em;
+}
+
+.ph-lg {
     font-size: 1.5em;
     /* line-height: 0.05em; */
-    vertical-align: -0.075em; }
-  
-  .ph-xl {
+    vertical-align: -0.075em;
+}
+
+.ph-xl {
     font-size: 1.5em;
     /* line-height: 0.04167em; */
-    vertical-align: -0.125em; }
-  
-  .ph-2xl {
+    vertical-align: -0.125em;
+}
+
+.ph-2xl {
     font-size: 2em;
     /* line-height: 0.03125em; */
-    vertical-align: -0.1875em; }
-  
-  .ph-fw {
+    vertical-align: -0.1875em;
+}
+
+.ph-fw {
     text-align: center;
-    width: 1.25em; }
-  
+    width: 1.25em;
+}
+
 
 img.profile-img {
     max-width: 10rem;
@@ -145,6 +184,22 @@ blockquote {
     margin-left: .6rem;
     color: var(--danger-color-dark);
 }
+
+
+.author.required {
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.author.required::before {
+    content: '\e987';
+    /* content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0iIzAwMDAwMCIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0yMTQuODYsMTgwLjEyYTgsOCwwLDAsMS0xMSwyLjc0TDEzNiwxNDIuMTNWMjE2YTgsOCwwLDAsMS0xNiwwVjE0Mi4xM0w1Mi4xMiwxODIuODZhOCw4LDAsMSwxLTguMjMtMTMuNzJMMTEyLjQ1LDEyOCw0My44OSw4Ni44NmE4LDgsMCwxLDEsOC4yMy0xMy43MkwxMjAsMTEzLjg3VjQwYTgsOCwwLDAsMSwxNiwwdjczLjg3bDY3Ljg4LTQwLjczYTgsOCwwLDEsMSw4LjIzLDEzLjcyTDE0My41NSwxMjhsNjguNTYsNDEuMTRBOCw4LDAsMCwxLDIxNC44NiwxODAuMTJaIj48L3BhdGg+PC9zdmc+'); */
+    font-size: 1.2rem;
+    font-family: 'Phosphor';
+    font-weight: 600;
+    margin-right: .6rem;
+}
+
 
 .nav-pills div {
     display: inline-block;
@@ -294,6 +349,10 @@ strong {
     border-left-width: 5px;
 }
 
+a.link::after {
+    font-family: "Phosphor";
+    content: '\e95c';
+}
 
 .lom {
     font-weight: bold;
@@ -809,7 +868,7 @@ label.element-other::before {
     display: block;
     /* transition: 0.5s ease transform; */
     box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
 }
 
 .module .title {
@@ -848,6 +907,10 @@ a.module:hover {
     width: 100%;
 }
 
+.navbar-brand img {
+    height: 8rem;
+}
+
 .breadcrumb li::before, .breadcrumb button::before {
     font-family: "Phosphor";
 
@@ -859,3 +922,74 @@ a.module:hover {
     margin-left: 1rem;
     margin-right: 1.5rem;
 }
+
+.dropdown-menu .item {
+    color: var(--muted-color);
+    cursor: pointer;
+}
+
+.dropdown-menu .item:hover, .dropdown-menu .item.active {
+    color: #464646;
+    background-color: #f3f3f3;
+}
+
+.dropdown-menu .item.active {
+    border: 1px solid var(--border-color);
+}
+
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.border-osiris {
+    border-color: var(--color-warm-orange) !important;
+}
+
+.border-danger {
+    border-color: var(--danger-color) !important;
+}
+
+.border-success {
+    border-color: var(--success-color) !important;
+}
+
+.border-warning {
+    border-color: var(--warning-color) !important;
+}
+
+
+.content>.form-row.row-eq-spacing,
+.content>.row.row-eq-spacing {
+    padding: 0;
+    margin: 0 -1rem;
+}
+
+.content>.form-row.row-eq-spacing>[class^="col"],
+.content>.row.row-eq-spacing>[class^="col"] {
+    padding: 1rem !important;
+    align-self: baseline;
+}
+
+
+.date-picker-wrapper {
+    z-index: 10;
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+}
+
+.data-module {
+    max-width: 100%;
+    flex-grow: 1;
+}
+
+.profile-widget {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    flex-grow: 1;
+}
+
+/* .profile-widget > .box {
+    padding: 1rem;
+} */

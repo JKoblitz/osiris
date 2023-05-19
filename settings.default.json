@@ -1,0 +1,579 @@
+{
+    "affiliation": {
+        "id": "DSMZ",
+        "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",
+        "link": "https://www.dsmz.de/",
+        "logo": "dsmz.svg"
+    },
+    "startyear": 2017,
+    "departments": [
+        {
+            "id": "MIOS",
+            "color": "#d31e25",
+            "name": "Mikroorganismen"
+        },
+        {
+            "id": "BIDB",
+            "color": "#5db5b7",
+            "name": "Bioinformatik & Datenbanken"
+        },
+        {
+            "id": "MIG",
+            "color": "#d2691e",
+            "name": "Mikrobielle Genomforschung"
+        },
+        {
+            "id": "BUG",
+            "color": "#8a3f64",
+            "name": "Bio\u00f6konomie und Gesundheitsforschung"
+        },
+        {
+            "id": "MuTZ",
+            "color": "#31407b",
+            "name": "Menschliche & Tierische Zellkulturen"
+        },
+        {
+            "id": "PFVI",
+            "color": "#369e4b",
+            "name": "Pflanzenviren"
+        },
+        {
+            "id": "M\u00d6D",
+            "color": "#d1c02b",
+            "name": "Mikrobielle \u00d6kologie"
+        },
+        {
+            "id": "Services",
+            "color": "#4f2e39",
+            "name": "Services"
+        },
+        {
+            "id": "NFG",
+            "color": "#5F272A",
+            "name": "Nachwuchsforschungsgruppen"
+        },
+        {
+            "id": "Patente",
+            "color": "#5F272A",
+            "name": "Patente"
+        },
+        {
+            "id": "IT",
+            "color": "#afafaf",
+            "name": "IT"
+        },
+        {
+            "id": "Verwaltung",
+            "color": "#afafaf",
+            "name": "Verwaltung"
+        },
+        {
+            "id": "PuK",
+            "color": "#afafaf",
+            "name": "Presse und Kommunikation"
+        },
+        {
+            "id": "SPI",
+            "color": "#f08080",
+            "name": "Science Policy und Internationalisierung"
+        }
+    ],
+    "activities": {
+        "publication": {
+            "id": "publication",
+            "icon": "book-bookmark",
+            "color": "#006eb7",
+            "name": "Publications",
+            "name_de": "Publikationen",
+            "subtypes": {
+                "article": {
+                    "id": "article",
+                    "icon": "file-text",
+                    "name": "Journal Article",
+                    "name_de": "Journal Article",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "journal*",
+                        "issue",
+                        "volume",
+                        "pages",
+                        "doi",
+                        "pubmed",
+                        "openaccess",
+                        "online-ahead-of-print",
+                        "correction"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) {title}. <i>{journal-abbr}</i> {volume-issue-pages}. {doi} {online-ahead-of-print} {openaccess}",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> <i>{journal-abbr}</i> {volume-issue-pages} ({year}) {online-ahead-of-print} {openaccess}"
+                    }
+                },
+                "magazine": {
+                    "id": "magazine",
+                    "icon": "newspaper",
+                    "name": "Non-Refereed",
+                    "name_de": "Non-refereed",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "magazine*",
+                        "link",
+                        "doi",
+                        "pubmed"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) {title}. <i>{magazine}</i> {link}",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> <i>{magazine}</i> ({year})"
+                    }
+                },
+                "book": {
+                    "id": "book",
+                    "icon": "book",
+                    "name": "Book",
+                    "name_de": "Buch",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "book-series",
+                        "edition",
+                        "volume",
+                        "pages",
+                        "publisher",
+                        "city",
+                        "doi",
+                        "pubmed",
+                        "isbn",
+                        "openaccess"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) <i>{title}</i> {book-series}. {publisher}. {doi}",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> {book-series}. {publisher}. ({year})"
+                    }
+                },
+                "chapter": {
+                    "id": "chapter",
+                    "icon": "book-bookmark",
+                    "name": "Book chapter",
+                    "name_de": "Buchkapitel",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "edition",
+                        "volume",
+                        "pages",
+                        "book-title*",
+                        "publisher",
+                        "city",
+                        "editor",
+                        "doi",
+                        "pubmed",
+                        "isbn",
+                        "openaccess"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) {title}. In: {editor} (eds). <i>{book-title}</i> ({edition}th ed., pp. {pages}) {city}: {publisher}. {doi}",
+                        "title": "{title}. In: <i>{book-title}</i> ",
+                        "subtitle": "{authors}<br> {editor} (eds). ({edition} ed., pp. {pages}) {city}: {publisher} ({year})"
+                    }
+                },
+                "preprint": {
+                    "id": "preprint",
+                    "icon": "paper-plane-tilt",
+                    "name": "Preprint",
+                    "name_de": "Preprint",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "doi",
+                        "pubmed",
+                        "magazine*",
+                        "link"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) {title} <i>{magazine}</i> [Preprint] {doi}",
+                        "title": "{title} [Preprint]",
+                        "subtitle": "{authors}<br> <i>{magazine}</i> ({year})"
+                    }
+                },
+                "dissertation": {
+                    "id": "dissertation",
+                    "icon": "graduation-cap",
+                    "name": "Thesis",
+                    "name_de": "Abschlussarbeit",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "university*",
+                        "city*",
+                        "doi",
+                        "pubmed",
+                        "isbn",
+                        "openaccess"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) {title} (Dissertation) {university}, {city}. {doi}",
+                        "title": "{title} [Dissertation]",
+                        "subtitle": "{authors}, {university}, {city} ({year})"
+                    }
+                },
+                "others": {
+                    "id": "others",
+                    "icon": "notebook",
+                    "name": "Other publication",
+                    "name_de": "Weitere Publikationen",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "doi",
+                        "pubmed",
+                        "doctype*"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) {title} [{doctype}] {doi}",
+                        "title": "{title} [{doctype}]",
+                        "subtitle": "{authors} ({year})"
+                    }
+                }
+            }
+        },
+        "poster": {
+            "id": "poster",
+            "icon": "presentation-chart",
+            "color": "#b61f29",
+            "name": "Poster",
+            "name_de": "Poster",
+            "subtypes": {
+                "poster": {
+                    "id": "poster",
+                    "icon": "presentation-chart",
+                    "name": "Poster",
+                    "name_de": "Poster",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date-range*",
+                        "conference*",
+                        "location",
+                        "doi"
+                    ],
+                    "template": {
+                        "print": "{authors} {title}. {conference}, {location} ({date-range}).",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> {conference}, {location} ({date-range})"
+                    }
+                }
+            }
+        },
+        "lecture": {
+            "id": "lecture",
+            "icon": "chalkboard-teacher",
+            "color": "#ecaf00",
+            "name": "Lectures",
+            "name_de": "Vortr\u00e4ge",
+            "subtypes": {
+                "lecture": {
+                    "id": "lecture",
+                    "icon": "chalkboard-teacher",
+                    "name": "Lecture",
+                    "name_de": "Vortrag",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date-range*",
+                        "lecture-type*",
+                        "lecture-invited",
+                        "conference*",
+                        "location",
+                        "doi"
+                    ],
+                    "template": {
+                        "print": "{authors} {title}. {conference}, {location}. {date-range}. ({lecture-invited}: {lecture-type})",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> {conference}, {location}. {date-range}, {lecture-invited}: {lecture-type}"
+                    }
+                }
+            }
+        },
+        "review": {
+            "id": "review",
+            "icon": "article",
+            "color": "#1fa138",
+            "name": "Reviews & Editorials",
+            "name_de": "Reviews & Editorials",
+            "subtypes": {
+                "review": {
+                    "id": "review",
+                    "icon": "article",
+                    "name": "Peer-Review",
+                    "name_de": "Peer-Review",
+                    "modules": [
+                        "date*",
+                        "journal*",
+                        "scientist*"
+                    ],
+                    "template": {
+                        "print": "{scientist} Reviewer f\u00fcr <i>{journal}</i>. {month} {year}.",
+                        "title": "Reviewer f\u00fcr <i>{journal}</i>.",
+                        "subtitle": "{scientist} ({month} {year})"
+                    }
+                },
+                "editorial": {
+                    "id": "editorial",
+                    "icon": "user-list",
+                    "name": "Editorial board",
+                    "name_de": "Editorenschaft",
+                    "modules": [
+                        "date-range-ongoing*",
+                        "journal*",
+                        "scientist*",
+                        "editorial"
+                    ],
+                    "template": {
+                        "print": "{authors} Mitglied des Editorial Board von <i>{journal}</i> ({editorial}). {date-range-ongoing}.",
+                        "title": "Mitglied des Editorial Board von <i>{journal}</i> ({editorial})",
+                        "subtitle": "{authors} ({date-range-ongoing})"
+                    }
+                },
+                "thesis-rev": {
+                    "id": "thesis-rev",
+                    "icon": "graduation-cap",
+                    "name": "Thesis review",
+                    "name_de": "Review einer Abschlussarbeit",
+                    "modules": [
+                        "date*",
+                        "title*",
+                        "scientist*"
+                    ],
+                    "template": {
+                        "print": "{authors} Begutachtung einer Doktorarbeit: <i>{title}</i>. {month} {year}.",
+                        "title": "Begutachtung einer Doktorarbeit: <i>{title}</i>",
+                        "subtitle": "{authors} ({month} {year})"
+                    }
+                },
+                "grant-rev": {
+                    "id": "grant-rev",
+                    "icon": "clipboard-text",
+                    "name": "Other review",
+                    "name_de": "Sonstiges Review",
+                    "modules": [
+                        "date*",
+                        "title*",
+                        "scientist*",
+                        "review-type*"
+                    ],
+                    "template": {
+                        "print": "{authors} {review-type|Begutachtung eines Forschungsantrages}: <i>{title}</i>. {month} {year}.",
+                        "title": "{review-type|Begutachtung eines Forschungsantrages}: <i>{title}</i>",
+                        "subtitle": "{authors} ({month} {year})"
+                    }
+                }
+            }
+        },
+        "students": {
+            "id": "students",
+            "icon": "student",
+            "color": "#5f272a",
+            "name": "Students & Guests",
+            "name_de": "Studierende & G\u00e4ste",
+            "subtypes": {
+                "students": {
+                    "id": "students",
+                    "icon": "student",
+                    "name": "Students",
+                    "name_de": "Studenten",
+                    "modules": [
+                        "teaching-course*",
+                        "person*",
+                        "authors*",
+                        "date-range*"
+                    ],
+                    "template": {
+                        "print": "{person}, {affiliation}.  <i>{teaching-course}</i>, Pflichtpraktikum im Rahmen des Studiums, {date-range}, betreut von {authors}",
+                        "title": "{person}, {affiliation}.  <i>{teaching-course}</i>",
+                        "subtitle": "betreut von {authors}<br> Pflichtpraktikum im Rahmen des Studiums, {date-range} ({status})"
+                    }
+                },
+                "theses": {
+                    "id": "theses",
+                    "icon": "graduation-cap",
+                    "name": "Theses",
+                    "name_de": "Abschlussarbeiten",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "person*",
+                        "student-category",
+                        "details",
+                        "status*",
+                        "date-range*"
+                    ],
+                    "template": {
+                        "print": "{person}, {affiliation}. {title}; {category} ({details}), {date-range} ({status}), betreut von {authors}",
+                        "title": "{person}, {affiliation}. <i>{title}</i>",
+                        "subtitle": "betreut von {authors}<br> {category} ({details}), {date-range} ({status})"
+                    }
+                },
+                "guests": {
+                    "id": "guests",
+                    "icon": "users",
+                    "name": "Guests",
+                    "name_de": "G\u00e4ste",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "person*",
+                        "details",
+                        "guest*",
+                        "date-range*"
+                    ],
+                    "template": {
+                        "print": "{person}, {affiliation}. {title}. {guest} ({date-range})",
+                        "title": "{person}, {affiliation}. <i>{title}</i>",
+                        "subtitle": "betreut von {authors}<br>{guest} ({date-range})"
+                    }
+                }
+            }
+        },
+        "teaching": {
+            "id": "teaching",
+            "icon": "chalkboard-simple",
+            "color": "#000000",
+            "name": "Teaching",
+            "name_de": "Lehre",
+            "subtypes": {
+                "teaching": {
+                    "id": "teaching",
+                    "icon": "chalkboard-simple",
+                    "name": "Teaching",
+                    "name_de": "Lehre",
+                    "modules": [
+                        "teaching-course*",
+                        "teaching-category*",
+                        "supervisor*",
+                        "semester-select",
+                        "date-range*"
+                    ],
+                    "template": {
+                        "print": "{supervisor} {teaching-category} - <i>{teaching-course}</i>. {date-range}.",
+                        "title": "{teaching-category} - {teaching-course}",
+                        "subtitle": "{supervisor} ({date-range}) "
+                    }
+                }
+            }
+        },
+        "software": {
+            "id": "software",
+            "icon": "desktop-tower",
+            "color": "#9a499c",
+            "name": "Software & Data",
+            "name_de": "Software & Daten",
+            "subtypes": {
+                "software": {
+                    "id": "software",
+                    "icon": "desktop-tower",
+                    "name": "Software & Data",
+                    "name_de": "Software & Daten",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date*",
+                        "software-venue",
+                        "software-link",
+                        "version",
+                        "software-type*",
+                        "doi"
+                    ],
+                    "template": {
+                        "print": "{authors} ({year}) <i>{title} (Version {version})</i> [{software-type}]. {software-venue}. {link}",
+                        "title": "{title} (Version {version})",
+                        "subtitle": "{authors}<br> {software-type} ({year}), {software-venue}"
+                    }
+                }
+            }
+        },
+        "award": {
+            "id": "award",
+            "icon": "certificate",
+            "color": "#008080",
+            "name": "Awards",
+            "name_de": "Awards",
+            "subtypes": {
+                "award": {
+                    "id": "award",
+                    "icon": "certificate",
+                    "name": "Award",
+                    "name_de": "Award",
+                    "modules": [
+                        "title*",
+                        "scientist*",
+                        "date*",
+                        "details"
+                    ],
+                    "template": {
+                        "print": "{scientist}: {title} ({details}), {date}.",
+                        "title": "{title}",
+                        "subtitle": "{scientist}<br> {details} ({date})"
+                    }
+                }
+            }
+        },
+        "misc": {
+            "id": "misc",
+            "icon": "shapes",
+            "color": "#b3b3b3",
+            "name": "Miscellaneous",
+            "name_de": "Sonstiges",
+            "subtypes": {
+                "misc-once": {
+                    "id": "misc-once",
+                    "icon": "calendar-check",
+                    "name": "Once",
+                    "name_de": "Einmalig",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date-range*",
+                        "iteration",
+                        "location",
+                        "doi"
+                    ],
+                    "template": {
+                        "print": "{authors} {title}, {date}, {location}",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> {location} ({date})"
+                    }
+                },
+                "misc-annual": {
+                    "id": "misc-annual",
+                    "icon": "repeat",
+                    "name": "Repeated",
+                    "name_de": "H\u00e4ufig",
+                    "modules": [
+                        "title*",
+                        "authors*",
+                        "date-range-ongoing",
+                        "iteration",
+                        "location",
+                        "doi"
+                    ],
+                    "template": {
+                        "print": "{authors} {title}, {date-range-ongoing}, {location}",
+                        "title": "{title}",
+                        "subtitle": "{authors}<br> {location} ({date-range-ongoing})"
+                    }
+                }
+            }
+        }
+    }
+}

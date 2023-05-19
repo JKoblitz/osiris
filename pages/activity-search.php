@@ -1,5 +1,5 @@
 <?php
-$Format = new Format(true);
+$Format = new Document(true);
 ?>
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
@@ -8,7 +8,7 @@ $Format = new Format(true);
 
 <div class="content">
     <div class="btn-group float-right">
-        <a href="#" class="btn btn-osiris active">
+        <a href="#close-modal" class="btn btn-osiris active">
             <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
         <a href="<?= ROOTPATH ?>/user/search" class="btn btn-osiris">
@@ -38,15 +38,34 @@ $Format = new Format(true);
         </tbody>
     </table>
 
+<?php
+$activities = $Settings->getActivities();
+$types = array_keys($activities);
+$subtypes = array_map(function($a){
+    return array_column($a['subtypes'], 'id');
+}, $activities);
+
+$subtypes = flatten($subtypes);
+?>
+
     <script>
         // var mongo = $('#builder').queryBuilder('getMongo');
+        const types = JSON.parse('<?=json_encode($types)?>')
+        const subtypes = JSON.parse('<?=json_encode($subtypes)?>')
         var mongoQuery = $('#builder').queryBuilder({
             filters: [{
                     id: 'type',
+                    label: lang('Category', 'Kategorie'),
+                    type: 'string',
+                    input: 'select',
+                    values: types
+                },
+                {
+                    id: 'subtype',
                     label: lang('Type', 'Typ'),
                     type: 'string',
                     input: 'select',
-                    values: ['publication', 'poster', 'lecture', 'review', 'students']
+                    values: subtypes
                 },
                 {
                     id: 'title',

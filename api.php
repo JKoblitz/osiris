@@ -99,15 +99,16 @@ Route::get('/api/activities', function () {
 
 
     if (isset($_GET['formatted']) && $_GET['formatted']) {
-        include_once BASEPATH . "/php/format.php";
+        include_once BASEPATH . "/php/Document.php";
         $table = [];
-        $Format = new Format(true, 'web');
+        $Format = new Document(true, 'web');
 
         foreach ($result as $doc) {
+            $Format->setDocument($doc);
             $table[] = [
                 'id' => strval($doc['_id']),
-                'activity' => $Format->format($doc),
-                'icon' => activity_icon($doc)
+                'activity' => $Format->format(),
+                'icon' =>$Format->activity_icon()
             ];
         }
 
@@ -120,23 +121,23 @@ Route::get('/api/activities', function () {
 
 Route::get('/api/html', function () {
     include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/format.php";
-    $Format = new Format(true, 'dsmz.de');
+    include_once BASEPATH . "/php/Document.php";
+    $Format = new Document(true, 'dsmz.de');
     $Format->full = true;
-    $Format->abbr_journal = true;
+    // $Format->abbr_journal = true;
 
     $result = [];
     $docs = $osiris->activities->find([
         'type' => 'publication', 'authors.aoi' => ['$in' => [true, 1, '1']],
-        'year'=> ['$gte' => 2023]
+        'year' => ['$gte' => 2023]
     ]);
 
 
     foreach ($docs as $i => $doc) {
         if (isset($_GET['limit']) && $i >= $_GET['limit']) break;
 
+        $Format->setDocument($doc);
         $depts = getDeptFromAuthors($doc['authors']);
-
 
         $link = null;
         if (!empty($doc['doi'] ?? null)) {
@@ -144,9 +145,10 @@ Route::get('/api/html', function () {
         } elseif (!empty($doc['pubmed'] ?? null)) {
             $link = "https://www.ncbi.nlm.nih.gov/pubmed/" . $doc['pubmed'];
         }
+        
         $result[] = [
             'id' => strval($doc['_id']),
-            'html' => $Format->format($doc),
+            'html' => $Format->format(),
             'year' => $doc['year'] ?? null,
             'departments' => $depts,
             'link' => $link
@@ -158,7 +160,7 @@ Route::get('/api/html', function () {
 
 Route::get('/api/all-activities', function () {
     include_once BASEPATH . "/php/_db.php";
-    include_once BASEPATH . "/php/format.php";
+    include_once BASEPATH . "/php/Document.php";
 
     header("Content-Type: application/json");
     header("Pragma: no-cache");
@@ -170,7 +172,7 @@ Route::get('/api/all-activities', function () {
     if ($page == 'my-activities') {
         $highlight = $user;
     }
-    $Format = new Format($highlight);
+    $Format = new Document($highlight);
 
     $filter = [];
     $result = [];
@@ -182,48 +184,65 @@ Route::get('/api/all-activities', function () {
     $cart = readCart();
 
     foreach ($cursor as $doc) {
+        
+        $Format->setDocument($doc);
+
+        $depts = getDeptFromAuthors($doc['authors']);
         $id = $doc['_id'];
         $type = $doc['type'];
-        $q = getQuarter($doc);
-        $y = getYear($doc);
-        $quarter = $endQuarter = $y . "Q" . $q;
+        // $q = getQuarter($doc);
+        // $y = getYear($doc);
+        // $quarter = $endQuarter = $y . "Q" . $q;
 
+        $format_full = $Format->format();
         if (($_GET['display_activities'] ?? 'web') == 'web') {
-            $format = $Format->formatShort($doc);
+            $format = $Format->formatShort();
         } else {
-            $format = $Format->format($doc);
+            $format = $format_full;
         }
 
-        $datum = [
-            'quarter' => $y . 'Q' . $q,
-            'type' => activity_icon($doc) . '<span class="hidden">' . $type . " " . activity_title($doc) . '</span>',
-            'activity' => $format,
-            'links' => ''
-        ];
+        $active = false;
+        $sm = intval($doc['month']);
+        $sy = intval($doc['year']);
+        $em = $sm;
+        $ey = $sy;
 
-
-        $datum['quarter'] .= '<span class="hidden"> ' . $doc['month'] . "M" . $doc['year'] . "Y";
         if (isset($doc['end']) && !empty($doc['end'])) {
-
             $em = $doc['end']['month'];
             $ey = $doc['end']['year'];
-            $sm = $doc['month'];
-            $sy = $doc['year'];
-            for ($i = $y; $i <= $ey; $i++) {
-                $endMonth = $i != $ey ? 11 : $em - 1;
-                $startMon = $i === $y ? $sm - 1 : 0;
-                for ($j = $startMon; $j <= $endMonth; $j = $j > 12 ? $j % 12 || 11 : $j + 1) {
-                    $month = $j + 1;
-                    $displayMonth = $month < 10 ? '0' + $month : $month;
-                    $datum['quarter'] .= " " . $displayMonth . "M" . $i . "Y ";
-                    // QUARTER:
-                    $endQuarter = $i . "Q" . ceil($displayMonth / 3);
-                }
-            }
+        } elseif (
+            (
+                ($doc['type'] == 'misc' && ($doc['subtype'] ?? $doc['iteration']) == 'annual') ||
+                ($doc['type'] == 'review' && in_array($doc['subtype'] ?? $doc['role'], ['Editor', 'editorial', 'editor']))
+            ) && empty($doc['end'])
+        ) {
+            $em = CURRENTMONTH;
+            $ey = CURRENTYEAR;
+            $active = true;
         }
-        $datum['quarter'] .= '</span>';
-        if ($quarter != $endQuarter) {
-            $datum['quarter'] .= "-" . $endQuarter;
+        $sq = $sy . 'Q' . ceil($sm / 3);
+        $eq = $ey . 'Q' . ceil($em / 3);
+
+        $datum = [
+            'quarter' => $sq,
+            'type' =>$Format->activity_icon($doc) . '<span class="hidden">' . $type . " " . $Format->activity_title($doc) . '</span>',
+            'activity' => $format,
+            'links' => '',
+            'search-text' => $format_full,
+            'start' => $sy . '-' . ($sm < 10 ? '0' : '') . $sm . '-' . ($doc['day'] ?? '01'),
+            'end' => $ey . '-' . ($em < 10 ? '0' : '') . $em . '-' . ($doc['day'] ?? '01'),
+            'departments' => implode(', ', $depts),
+            'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true': 'false')
+        ];
+
+        if ($active) {
+            $datum['quarter'] .= ' - today';
+        } elseif ($sq != $eq) {
+            if ($sy == $ey) {
+                $datum['quarter'] .= ' - ' . 'Q' . ceil($em / 3);
+            } else {
+                $datum['quarter'] .= ' - ' . $eq;
+            }
         }
 
         $datum['links'] =
@@ -282,7 +301,7 @@ Route::get('/api/reviews', function () {
                 "Reviews" => []
             ];
         }
-        switch (strtolower($doc['role'] ?? 'review')) {
+        switch (strtolower($doc['subtype'] ?? $doc['role'] ?? 'review')) {
             case 'editor':
             case 'editorial':
                 $reviews[$doc['user']]['Editor']++;
@@ -350,6 +369,20 @@ Route::get('/api/teaching', function () {
         ]];
     }
     $result = $osiris->teaching->find($filter)->toArray();
+    echo return_rest($result, count($result));
+});
+
+Route::get('/api/projects', function () {
+    include_once BASEPATH . "/php/_db.php";
+    $filter = [];
+    if (isset($_GET['search'])) {
+        $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
+        $filter = ['$or' =>  [
+            ['title' => ['$regex' => $j]],
+            ['id' => $_GET['search']]
+        ]];
+    }
+    $result = $osiris->projects->find($filter)->toArray();
     echo return_rest($result, count($result));
 });
 
@@ -428,11 +461,11 @@ Route::get('/api/levenshtein', function () {
     $title = $_GET['title'];
 
     // $test pubmed
-    $test = $osiris->activities->findOne(['pubmed'=>$pubmed]);
-    if (!empty($test)){
+    $test = $osiris->activities->findOne(['pubmed' => $pubmed]);
+    if (!empty($test)) {
         $result = [
-            'similarity' => 1., 
-            'id' => strval($test['_id']), 
+            'similarity' => 1.,
+            'id' => strval($test['_id']),
             'title' => $test['title']
         ];
     }
@@ -442,16 +475,16 @@ Route::get('/api/levenshtein', function () {
     $sim = round($l[2], 1);
     if ($sim < 50) $sim = 0;
     $result = [
-        'similarity' => $sim, 
-        'id' => $id, 
+        'similarity' => $sim,
+        'id' => $id,
         'title' => $levenshtein->found
     ];
-        
+
 
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
-    
+
 
     echo json_encode($result);
 });

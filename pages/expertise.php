@@ -1,11 +1,10 @@
 <?php
 
-// $osiris->users->distinct('expertise')
-
 $cursor = $osiris->users->aggregate([
     [
         '$match' => [
-            'expertise' => ['$exists' => true]
+            'expertise' => ['$exists' => true],
+            'is_active' => true
         ]
     ],
     ['$project' => ['expertise' => 1, 'displayname' => 1, 'dept' => 1]],
@@ -17,11 +16,6 @@ $cursor = $osiris->users->aggregate([
             'users' => ['$push' => '$$ROOT']
         ]
     ],
-    // [
-    //     '$match'=> [
-    //         'count'=> [ '$gte'=> 2 ]
-    //     ]
-    // ],
     ['$sort' => ['count' => -1]],
     // [ '$limit' => 100 ]
 ]);

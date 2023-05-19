@@ -1,7 +1,7 @@
 <?php
 require_once BASEPATH . '/vendor/autoload.php';
-require_once BASEPATH . '/php/format.php';
-$Format = new Format();
+require_once BASEPATH . '/php/Document.php';
+$Format = new Document();
 
 use RenanBr\BibTexParser\Exception\ExceptionInterface;
 use RenanBr\BibTexParser\Exception\ParserException;
@@ -160,19 +160,20 @@ if (isset($_FILES["file"])) {
                 }
 
                 $dataString = str_replace("'", "\'", serialize($entry));
+                $Format->setDocument($entry);
             ?>
                 <tr>
 
-                   <td>
-                   <?= $Format->formatShort($entry, false) ?>
-                   </td>
-                   <td>
-                    <form action="<?=ROOTPATH?>/activities/new" method="post" target="_blank">
-                
-                    <input type="hidden" name="form" value='<?=$dataString?>'>
-                <button class="btn"><i class="ph ph-regular ph-plus"></i></button>
-                </form>
-                   </td>
+                    <td>
+                        <?= $Format->formatShort(false) ?>
+                    </td>
+                    <td>
+                        <form action="<?= ROOTPATH ?>/activities/new" method="post" target="_blank">
+
+                            <input type="hidden" name="form" value='<?= $dataString ?>'>
+                            <button class="btn"><i class="ph ph-regular ph-plus"></i></button>
+                        </form>
+                    </td>
                 </tr>
             <?php
             }

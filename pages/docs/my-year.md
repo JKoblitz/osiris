@@ -24,7 +24,7 @@ Diese Meldung ist der Startschuss für die quartalsweise Überprüfung. Zu diese
 
 Wenn du direkt auf "Mein Jahr" im Menü klickst, wird dir das aktuelle Quartal im aktuellen Jahr angezeigt. Das wird unter anderem dadurch deutlich, dass du das Quartal nicht bestätigen kannst, denn der Button dafür sieht so aus:
 
-<a href="#" class="btn disabled"><i class="ph ph-check mr-5"></i> Gewähltes Quartal ist noch nicht zu Ende.</a>
+<a href="#close-modal" class="btn disabled"><i class="ph ph-check mr-5"></i> Gewähltes Quartal ist noch nicht zu Ende.</a>
 
 Um nun das korrekte Quartal zu sehen, musst du es in folgendem Formular auswählen, welches du oben rechts auf der Seite findest:
 
@@ -118,7 +118,7 @@ Solltest du doch noch ungelöste Warnungen haben, werden diese im Fenster darges
 
 <div class="demo">
     <div class="modal-content w-600 mw-full" style="border: 2px solid var(--success-color);">
-        <a href="#" class="btn float-right" role="button" aria-label="Close">
+        <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
             <span aria-hidden="true">×</span>
         </a>
         <h5 class="title text-success">Quartal 4 freigeben</h5>
@@ -145,7 +145,7 @@ Wenn du alle Probleme beseitigst, sieht das Fenster so aus:
 
 <div class="demo">
 <div class="modal-content w-600 mw-full" style="border: 2px solid var(--success-color);">
-    <a href="#" class="btn float-right" role="button" aria-label="Close">
+    <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
         <span aria-hidden="true">×</span>
     </a>
     <h5 class="title text-success">Quartal 4 freigeben</h5>

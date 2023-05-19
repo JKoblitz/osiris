@@ -43,7 +43,7 @@ dump($data, true);
     if (!isset($data['names'])) {
         $names = [
             $data['formalname'],
-            abbreviateAuthor($data['last'], $data['first'])
+            Document::abbreviateAuthor($data['last'], $data['first'], true, ' ')
         ];
     } else {
         $names = $data['names'];
@@ -164,13 +164,21 @@ dump($data, true);
 
         <div class="form-group custom-checkbox ml-10  <?= ($USER['is_admin'] || $USER['is_controlling']) ? ' d-inline-block ' : 'd-none' ?>">
             <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_controlling">Is Controlling</label>
+            <label for="is_controlling">Is Editor</label>
         </div>
 
         <div class="form-group custom-checkbox ml-10  <?= ($USER['is_admin'] || $USER['is_controlling']) ? ' d-inline-block ' : 'd-none' ?>">
             <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?>>
             <label for="is_leader">Is Leader</label>
         </div>
+
+        <?php if ($USER['is_admin']) { ?>
+            <div class="form-group custom-checkbox ml-10 d-inline-block">
+                <input type="checkbox" id="is_admin" value="1" name="values[is_admin]" <?= ($data['is_admin'] ?? false) ? 'checked' : '' ?>>
+                <label for="is_admin">Is Admin</label>
+            </div>
+        <?php } ?>
+
 
     </div>
 

@@ -1,4 +1,3 @@
-
 <?php
 
 $user = $user ?? $_SESSION['username'];
@@ -17,7 +16,7 @@ $user = $user ?? $_SESSION['username'];
         <?= lang("All activities", "Alle Aktivitäten") ?>
     </h1>
     <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="ph-fill ph-user-circle"></i>
+        <i class="ph ph-student"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
 <?php
@@ -41,32 +40,84 @@ $user = $user ?? $_SESSION['username'];
     </a>
 <?php } ?>
 <br>
-
-<div class="mb-5 btn-group" id="select-btns">
-    <button onclick="filterDataTable(1, 'publication')" class="btn btn-select- text-publication" id="publication-btn"><?= activity_icon('publication', false) ?> <?= lang('Publication', "Publikationen") ?></button>
-    <button onclick="filterDataTable(1, 'poster')" class="btn btn-select- text-poster" id="poster-btn"><?= activity_icon('poster', false) ?> <?= lang('Posters', 'Poster') ?></button>
-    <button onclick="filterDataTable(1, 'lecture')" class="btn btn-select- text-lecture" id="lecture-btn"><?= activity_icon('lecture', false) ?> <?= lang('Lectures', 'Vorträge') ?></button>
-    <button onclick="filterDataTable(1, 'review')" class="btn btn-select- text-review" id="review-btn"><?= activity_icon('review', false) ?> <?= lang('Reviews &amp; editorials', 'Reviews &amp; Editorials') ?></button>
-    <button onclick="filterDataTable(1, 'teaching')" class="btn btn-select- text-teaching" id="teaching-btn"><?= activity_icon('teaching', false) ?> <?= lang('Teaching', 'Lehre') ?></button>
-    <button onclick="filterDataTable(1, 'students')" class="btn btn-select- text-students" id="students-btn"><?= activity_icon('students', false) ?> <?= lang('Students &amp; Guests', 'Studierende &amp; Gäste') ?></button>
-    <button onclick="filterDataTable(1, 'software')" class="btn btn-select- text-software" id="software-btn"><?= activity_icon('software', false) ?> <?= lang('Software') ?></button>
-    <button onclick="filterDataTable(1, 'misc')" class="btn btn-select- text-misc" id="misc-btn"><?= activity_icon('misc', false) ?> <?= lang('Misc') ?></button>
-</div>
-
-<div class="input-group mb-10 w-400 mw-full">
-    <div class="input-group-prepend">
-        <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+<div class="btn-bar d-md-flex align-items-baseline">
+    <div class="dropdown with-arrow mr-10" id="select-dropdown">
+        <button class="btn" data-toggle="dropdown" type="button" id="select-activity" aria-haspopup="true" aria-expanded="false">
+            <?= lang('Filter by type', 'Nach Typ filtern') ?>
+            <i class="ph ph-caret-down"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="select-activity">
+            <?php
+            foreach ($Settings->getActivities() as $id => $a) { ?>
+                <a data-type="<?= $id ?>" onclick="selectActivity(this, '<?= $id ?>')" class="item" id="<?= $id ?>-btn">
+                    <span class="text-<?= $id ?>">
+                        <span class="mr-5"><?= $Settings->icon($id, null, false) ?> </span>
+                        <?= $Settings->title($id, null) ?>
+                    </span>
+                </a>
+            <?php
+            }
+            ?>
+            
+            <!-- <a data-type="" onclick="selectActivity(this, null)" class="item">
+                <span class="text-">
+                    <span class="mr-5"><i class="ph ph-x-circle"></i></span>
+                    <?=lang('Remove filter', 'Filter entfernen')?>
+                </span>
+            </a> -->
+        </div>
     </div>
-    <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-    <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
-    <div class="input-group-prepend">
-        <span class="input-group-text"><?= lang('to', 'bis') ?></span>
-    </div>
-    <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-    <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
-    <div class="input-group-append">
-        <button class="btn" type="button" onclick="filtertime(true)">&times;</button>
+    <?php if ($page != 'my-activities') { ?>
+        <div class="dropdown with-arrow mr-10" id="dept-dropdown">
+            <button class="btn" data-toggle="dropdown" type="button" id="select-department" aria-haspopup="true" aria-expanded="false">
+                <?= lang('Filter by dept', 'Nach Abt. filtern') ?>
+                <i class="ph ph-caret-down"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="select-department">
+                <?php
+                foreach ($Settings->getDepartments() as $id => $a) { ?>
+                    <a data-type="<?= $id ?>" onclick="selectDepartment(this, '<?= $id ?>')" class="item" id="<?= $id ?>-btn">
+                        <span class="text-<?= $id ?>"><?= $id ?></span>
+                    </a>
+                <?php
+                }
+                ?>
+<!--                 
+            <a data-type="" onclick="selectDepartment(this, null)" class="item">
+                <span class="text-">
+                    <span class="mr-5"><i class="ph ph-x-circle"></i></span>
+                    <?=lang('Remove filter', 'Filter entfernen')?>
+                </span>
+            </a> -->
+            </div>
+        </div>
+    <?php } ?>
+
+
+
+
+    <div class="input-group mb-10 w-400 mw-full d-md-inline-flex mr-10">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+        </div>
+        <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
+        <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><?= lang('to', 'bis') ?></span>
+        </div>
+        <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
+        <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+
+        <div class="input-group-append">
+            <button class="btn" type="button" onclick="resetTime()">&times;</button>
+        </div>
+    </div>
+
+
+    <div class="custom-switch">
+        <input type="checkbox" id="epub-switch" value="" onchange="filterEpub(this)">
+        <label for="epub-switch"><?= lang('without Epub', 'ohne Epub') ?></label>
     </div>
 </div>
 
@@ -88,10 +139,9 @@ $user = $user ?? $_SESSION['username'];
 </div>
 
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<!-- <script src="<?= ROOTPATH ?>/js/gridjs.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script> -->
 
 <script>
+    const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
     $.extend($.fn.DataTable.ext.classes, {
         sPaging: "pagination mt-10 ",
         sPageFirst: "direction ",
@@ -119,7 +169,6 @@ $user = $user ?? $_SESSION['username'];
             columnDefs: [{
                     "targets": 0,
                     "data": "quarter",
-        // className: 'quarter'
                 },
                 {
                     targets: 1,
@@ -132,7 +181,37 @@ $user = $user ?? $_SESSION['username'];
                 {
                     targets: 3,
                     data: 'links',
-        className: 'unbreakable'
+                    className: 'unbreakable'
+                },
+                {
+                    targets: 4,
+                    data: 'search-text',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 5,
+                    data: 'start',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 6,
+                    data: 'end',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 7,
+                    data: 'departments',
+                    searchable: true,
+                    visible: false,
+                },
+                {
+                    targets: 8,
+                    data: 'epub',
+                    searchable: true,
+                    visible: false,
                 }
             ],
             "order": [
@@ -151,7 +230,10 @@ $user = $user ?? $_SESSION['username'];
 
         var hash = readHash();
         if (hash.type !== undefined) {
-            filterDataTable(1, hash.type)
+            selectActivity(document.getElementById(hash.type + '-btn'), hash.type)
+        }
+        if (hash.dept !== undefined) {
+            selectDepartment(document.getElementById(hash.dept + '-btn'), hash.dept)
         }
 
         if (hash.time !== undefined) {
@@ -164,6 +246,80 @@ $user = $user ?? $_SESSION['username'];
         }
 
     });
+
+
+    function filterEpub() {
+        if ($('#epub-switch').prop('checked')) {
+            dataTable.columns(8).search("false", true, false, true).draw();
+        } else {
+            dataTable.columns(8).search("", true, false, true).draw();
+        }
+    }
+
+    function selectActivity(btn, activity = null) {
+
+        if ($(btn).hasClass('active') || activity === null) {
+            writeHash({
+                type: null
+            })
+            $('#select-dropdown a.item').removeClass('active')
+            $('#select-activity')
+                .html(lang('Filter by type', 'Nach Typ filtern') + CARET_DOWN)
+                .removeClass('active')
+
+            $('#select-dropdown')
+                .removeClass('show')
+            dataTable.columns(1).search("", true, false, true).draw();
+
+        } else {
+            writeHash({
+                type: activity
+            })
+            $('#select-dropdown a.item').removeClass('active')
+            $(btn).addClass('active')
+            $('#select-activity')
+                .html(btn.innerHTML + CARET_DOWN)
+                .removeClass('active')
+
+            $('#select-dropdown')
+                .removeClass('show')
+            dataTable.columns(1).search(activity, true, false, true).draw();
+
+        }
+    }
+
+
+    function selectDepartment(btn, department = null) {
+
+        if ($(btn).hasClass('active') || department === null) {
+            writeHash({
+                dept: null
+            })
+            $('#dept-dropdown a.item').removeClass('active')
+            $('#select-department')
+                .html(lang('Filter by dept', 'Nach Abt. filtern') + CARET_DOWN)
+                .removeClass('active')
+
+            $('#dept-dropdown')
+                .removeClass('show')
+            dataTable.columns(7).search("", true, false, true).draw();
+
+        } else {
+            writeHash({
+                dept: department
+            })
+            $('#dept-dropdown a.item').removeClass('active')
+            $(btn).addClass('active')
+            $('#select-department')
+                .html(btn.innerHTML + CARET_DOWN)
+                .removeClass('active')
+
+            $('#dept-dropdown')
+                .removeClass('show')
+            dataTable.columns(7).search(department, true, false, true).draw();
+
+        }
+    }
 
     function filterDataTable(col, item) {
         if ($('#select-btns #' + item + '-btn').hasClass('active')) {
@@ -196,35 +352,57 @@ $user = $user ?? $_SESSION['username'];
         }
     }
 
-    function filtertime(reset = false) {
-        if (reset) {
-            $("#from-month").val("")
-            $("#from-year").val("")
-            $("#to-month").val("")
-            $("#to-year").val("")
-            dataTable.columns(0).search("", true, false, true).draw();
-            writeHash({
-                time: null
-            })
-            return
-        }
+    let [fromMonth, fromYear, toMonth, toYear] = getFromToDate()
 
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var min = null,
+                max = null;
+
+            if (fromMonth !== null && fromYear !== null)
+                min = new Date(fromYear, fromMonth - 1, 1, 0, 0, 0, 0);
+            if (toMonth !== null && toYear !== null)
+                max = new Date(toYear, toMonth - 1, 31, 0, 0, 0, 0);
+
+            var minDate = new Date(data[5]);
+            var maxDate = new Date(data[6]);
+
+            if (
+                (min === null && max === null) ||
+                (min === null && minDate <= max) ||
+                (min <= minDate && max === null) ||
+                (min < maxDate && minDate < max)) {
+                return true;
+            }
+
+            return false;
+        }
+    );
+
+    function getFromToDate() {
         var today = new Date();
         var fromMonth = $("#from-month").val()
+        if (fromMonth.length == 0) {
+            return [null, null, null, null];
+        }
+
+        var maxYear = today.getFullYear() + 1,
+            minYear = <?= $Settings->startyear ?>;
+
         if (fromMonth.length == 0 || parseInt(fromMonth) < 1 || parseInt(fromMonth) > 12) {
             fromMonth = 1
         }
         var fromYear = $("#from-year").val()
-        if (fromYear.length == 0 || parseInt(fromYear) < <?=$Settings->startyear?> || parseInt(fromYear) > today.getFullYear()) {
-            fromYear = <?=$Settings->startyear?>
+        if (fromYear.length == 0 || parseInt(fromYear) < minYear || parseInt(fromYear) > maxYear) {
+            fromYear = minYear
         }
         var toMonth = $("#to-month").val()
         if (toMonth.length == 0 || parseInt(toMonth) < 1 || parseInt(toMonth) > 12) {
             toMonth = 12
         }
         var toYear = $("#to-year").val()
-        if (toYear.length == 0 || parseInt(toYear) < <?=$Settings->startyear?> || parseInt(toYear) > today.getFullYear()) {
-            toYear = today.getFullYear()
+        if (toYear.length == 0 || parseInt(toYear) < minYear || parseInt(toYear) > maxYear) {
+            toYear = maxYear
         }
         // take care that from is not larger than to
         fromMonth = parseInt(fromMonth)
@@ -238,15 +416,49 @@ $user = $user ?? $_SESSION['username'];
             fromMonth = toMonth
         }
 
-        writeHash({
-            time: `${fromMonth},${fromYear},${toMonth},${toYear}`
-        })
-
         $("#from-month").val(fromMonth)
         $("#from-year").val(fromYear)
         $("#to-month").val(toMonth)
         $("#to-year").val(toYear)
 
+        writeHash({
+            time: `${fromMonth},${fromYear},${toMonth},${toYear}`
+        })
+
+        return [fromMonth, fromYear, toMonth, toYear];
+
+    }
+
+    function filtertime() {
+        [fromMonth, fromYear, toMonth, toYear] = getFromToDate()
+        dataTable.draw();
+    }
+
+    function resetTime() {
+        $("#from-month").val("")
+        $("#from-year").val("")
+        $("#to-month").val("")
+        $("#to-year").val("")
+        dataTable.draw();
+        writeHash({
+            time: null
+        })
+    }
+
+    function filtertime_(reset = false) {
+        if (reset) {
+            $("#from-month").val("")
+            $("#from-year").val("")
+            $("#to-month").val("")
+            $("#to-year").val("")
+            dataTable.columns(0).search("", true, false, true).draw();
+            writeHash({
+                time: null
+            })
+            return
+        }
+
+        let [fromMonth, fromYear, toMonth, toYear] = getFromToDate()
         var range = dateRange(fromMonth, fromYear, toMonth, toYear)
         console.log(range);
         regExSearch = ' (' + range.join('|') + ')';
@@ -271,5 +483,4 @@ $user = $user ?? $_SESSION['username'];
         }
         return dates;
     }
-    
 </script>

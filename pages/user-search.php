@@ -1,5 +1,5 @@
 <?php
-$Format = new Format(true);
+$Format = new Document(true);
 ?>
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
@@ -12,7 +12,7 @@ $Format = new Format(true);
         <a href="<?= ROOTPATH ?>/activities/search" class="btn btn-osiris">
             <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
-        <a href="#" class="btn btn-osiris active">
+        <a href="#close-modal" class="btn btn-osiris active">
             <i class="ph ph-regular ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
         </a>
     </div>

@@ -78,12 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $doc = $osiris->activities->findOne(['_id' => $mongoid]);
     $files = $doc['files'] ?? array();
 }
-$Format = new Format(false);
+$Format = new Document(false);
+$Format->setDocument($doc);
 ?>
 
 <p class="lead">
-    <span class="mr-10"><?=activity_icon($doc)?></span>
-    <?php echo $Format->formatShort($doc); ?>
+    <span class="mr-10"><?=$Format->activity_icon()?></span>
+    <?php echo $Format->formatShort(); ?>
 </p>
 
 <div class="box">
@@ -98,14 +99,14 @@ $Format = new Format(false);
                         <td><?= $file['filename'] ?></td>
                         <td><?= $file['filetype'] ?></td>
                         <td>
-                            <a href="<?= $file['filepath'] ?>"><i class="ph-fill ph-download"></i></a>
+                            <a href="<?= $file['filepath'] ?>"><i class="ph ph-download"></i></a>
                         </td>
                         <td>
                             <form action="#" method="post">
                                 <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
 
                                 <button class="btn btn-link" type="submit">
-                                    <i class="ph-fill ph-trash text-danger"></i>
+                                    <i class="ph ph-trash text-danger"></i>
                                 </button>
                             </form>
                         </td>
@@ -124,7 +125,7 @@ $Format = new Format(false);
 <div class="box">
     <div class="content">
         <div class="title">
-            <?= lang('Add new document', 'Füge Dokument hinzu') ?>
+            <?= lang('Add new file', 'Füge Datei hinzu') ?>
         </div>
         <form action="#" method="post" enctype="multipart/form-data">
             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">

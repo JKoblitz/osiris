@@ -33,7 +33,7 @@
                 <?php foreach ($form[$role] as $i => $author) { ?>
                     <tr>
                         <td>
-                            <i class="ph-fill ph-dots-six-vertical text-muted handle"></i>
+                            <i class="ph ph-dots-six-vertical text-muted handle"></i>
                         </td>
                         <td>
                             <input name="authors[<?= $i ?>][last]" type="text" class="form-control" value="<?= $author['last'] ?>" required>
@@ -64,7 +64,7 @@
                         <input name="authors[<?= $i ?>][approved]" type="hidden" class="form-control" value="<?= $author['approved'] ?? 0 ?>">
                         </td>
                         <td>
-                            <button class="btn" type="button" onclick="$(this).closest('tr').remove()"><i class="ph-fill ph-trash"></i></button>
+                            <button class="btn text-danger" type="button" onclick="$(this).closest('tr').remove()"><i class="ph ph-trash"></i></button>
                         </td>
                     </tr>
                 <?php } ?>
@@ -102,13 +102,13 @@
     function addAuthorRow() {
         counter++;
         var tr = $('<tr>')
-        tr.append('<td><i class="ph-fill ph-dots-six-vertical text-muted handle"></i></td>')
+        tr.append('<td><i class="ph ph-dots-six-vertical text-muted handle"></i></td>')
         tr.append('<td><input name="authors[' + counter + '][last]" type="text" class="form-control" required></td>')
         tr.append('<td><input name="authors[' + counter + '][first]" type="text" class="form-control"></td>')
         tr.append('<td><select name="authors[' + counter + '][position]" class="form-control"><option value="first">first</option><option value="middle" selected>middle</option><option value="corresponding">corresponding</option><option value="last">last</option></select></td>')
         tr.append('<td><div class="custom-checkbox"><input type="checkbox" id="checkbox-' + counter + '" name="authors[' + counter + '][aoi]" value="1"><label for="checkbox-' + counter + '" class="blank"></label></div></td>')
         tr.append('<td> <input name="authors[' + counter + '][user]" type="text" class="form-control" list="user-list"></td>')
-        var btn = $('<button class="btn" type="button">').html('<i class="ph-fill ph-trash"></i>').on('click', function() {
+        var btn = $('<button class="btn" type="button">').html('<i class="ph ph-trash"></i>').on('click', function() {
             $(this).closest('tr').remove();
         });
         tr.append($('<td>').append(btn))

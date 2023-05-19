@@ -40,35 +40,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         }
     </style>
 
-<link
-      rel="stylesheet"
-      type="text/css"
-      href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css"
-    />
-<link
-      rel="stylesheet"
-      type="text/css"
-      href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css"
-    />
-    <style>
-        .ph, .ph ph-regular, .ph-fill {
-            font-size: 1.5em;
-line-height: 1em;
-vertical-align: -0.2em;
-        }
-
-        .sidebar-link.with-icon > .sidebar-icon, .sidebar-link.with-icon > i.ph {
-            font-size: 1.6em;
-        }
-
-        .ph.ph-edit:before {
-            content: '\ec15';
-        }
-        .ph.ph-search:before {
-            content: '\ebdd';
-        }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css" />
+    
     <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
@@ -77,6 +51,7 @@ vertical-align: -0.2em;
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
     <!-- Quill (rich-text editor) -->
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?=ROOTPATH?>/css/daterangepicker.min.css">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
     <?php
@@ -93,7 +68,7 @@ vertical-align: -0.2em;
     </script>
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/shepherd.css" />
-    <script src="<?= ROOTPATH ?>/js/digidive.js"></script>
+    <script src="<?= ROOTPATH ?>/js/digidive.js?v=2"></script>
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
 
     <!-- <link rel="stylesheet" href="shepherd.js/dist/css/shepherd.css"/> -->
@@ -105,7 +80,6 @@ vertical-align: -0.2em;
 </head>
 
 <body>
-    <!-- Modals go here -->
     <div class="loader">
         <span></span>
     </div>
@@ -121,7 +95,7 @@ vertical-align: -0.2em;
         <div class="modal" id="the-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" >
                         <span aria-hidden="true">&times;</span>
                     </a>
                     <h5 class="modal-title" id="modal-title"></h5>
@@ -177,10 +151,10 @@ vertical-align: -0.2em;
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/news#16.04.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/new-stuff#12.05.23" class="btn btn-osiris">
                 <i class="ph-fill ph-sparkle"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-04-16 16:00') ?>)
+                (<?= time_elapsed_string('2023-05-12 13:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->
@@ -212,7 +186,6 @@ vertical-align: -0.2em;
                                 <?php } ?>
                             </select>
                         </form>
-
                     <?php } ?>
 
 
@@ -229,13 +202,13 @@ vertical-align: -0.2em;
                     </div>
 
                     <?php if ($USER['is_controlling']) { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
-                            <i class="ph ph-regular ph-student" aria-hidden="true"></i>
+                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/' . $_SESSION['username']) ?>">
+                            <i class="ph ph-regular ph-user" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
 
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                            <i class="ph ph-regular ph-chart-column" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-chart-line" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
 
@@ -245,7 +218,7 @@ vertical-align: -0.2em;
                         </a>
 
                     <?php } else { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('') ?>">
+                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/' . $_SESSION['username']) ?>">
                             <i class="ph ph-regular ph-student" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
@@ -259,6 +232,12 @@ vertical-align: -0.2em;
                         <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-activities') ?>">
                             <i class="ph ph-regular ph-folder-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
+                        </a>
+                    <?php } ?>
+                    <?php if ($USER['is_admin']) { ?>
+                        <a href="<?= ROOTPATH ?>/admin/general" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin') ?>">
+                            <i class="ph ph-regular ph-gear" aria-hidden="true"></i>
+                            <?= lang('Admin Dashboard') ?>
                         </a>
                     <?php } ?>
 
@@ -276,13 +255,13 @@ vertical-align: -0.2em;
                         <i class="ph ph-regular ph-folders" aria-hidden="true"></i>
                         <?= lang('All activities', 'Alle Aktivitäten') ?>
                     </a>
-                    
-                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('users') ?>">
-                        <i class="ph ph-regular ph-student" aria-hidden="true"></i>
+
+                    <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('user/browse') ?>">
+                        <i class="ph ph-regular ph-users" aria-hidden="true"></i>
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
 
-                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
+                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal/browse') ?>">
                         <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
                     </a>
@@ -290,7 +269,7 @@ vertical-align: -0.2em;
                         <i class="ph ph-regular ph-chalkboard-simple" aria-hidden="true"></i>
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
-                    <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
+                    <a href="<?= ROOTPATH ?>/activities/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
                         <i class="ph ph-regular ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
                     </a>
@@ -317,7 +296,7 @@ vertical-align: -0.2em;
 
                     <a href="<?= ROOTPATH ?>/expertise" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('expertise') ?>">
                         <i class="ph ph-regular ph-barbell" aria-hidden="true"></i>
-                        <?= lang('Expertise search', 'Experten-Suche') ?>
+                        <?= lang('Expertise search', 'Expertise-Suche') ?>
                     </a>
 
 
@@ -354,7 +333,7 @@ vertical-align: -0.2em;
                     <?php if ($USER['is_controlling']) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
-                            <i class="ph ph-regular ph-file-chart-column" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-file-chart-line" aria-hidden="true"></i>
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
 
@@ -367,7 +346,7 @@ vertical-align: -0.2em;
                     OSIRIS
                 </div>
 
-                <a href="<?= ROOTPATH ?>/news" class="sidebar-link with-icon <?= $pageactive('news') ?>">
+                <a href="<?= ROOTPATH ?>/new-stuff" class="sidebar-link with-icon <?= $pageactive('news') ?>">
                     <i class="ph ph-regular ph-info" aria-hidden="true"></i>
                     <?= lang('About &amp; news', 'Über OSIRIS &amp; News') ?>
                 </a>
@@ -377,9 +356,13 @@ vertical-align: -0.2em;
                     <?= lang('Documentation', 'Dokumentation') ?>
                 </a>
 
-                <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon">
+                <!-- <a href="mailto:julia.koblitz@dsmz.de?subject=OSIRIS Feedback" class="sidebar-link with-icon">
                     <i class="ph ph-regular ph-chat-text" aria-hidden="true"></i>
                     <?= lang('Feedback') ?>
+                </a> -->
+                <a href="https://github.com/JKoblitz/osiris/issues" target="_blank" class="sidebar-link with-icon">
+                    <i class="ph ph-regular ph-chat-text" aria-hidden="true"></i>
+                    <?= lang('Report an issue', "Problem melden") ?>
                 </a>
 
                 <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="sidebar-link with-icon">
@@ -396,5 +379,16 @@ vertical-align: -0.2em;
                 <?php
                 if (function_exists('printMsg') && isset($_GET['msg'])) {
                     printMsg();
+                }
+
+                if (isset($USER['is_admin']) && $USER['is_admin'] && isset($Settings->errors) && !empty($Settings->errors)) {
+                ?>
+                <div class="alert alert-danger mb-20">
+                    <h3 class="title">There are errors in your settings:</h3>
+                    <?=implode('<br>', $Settings->errors)?>
+                    <br>
+                    Default settings are used. Go to the <a href="<?=ROOTPATH?>/admin/general">Admin Dashboard</a> to fix this.
+                </div>
+                <?php
                 }
                 ?>

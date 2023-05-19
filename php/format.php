@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * WARNING: THIS SCRIPT IS NOT USED ANY MORE
+ * AND IS JUST KEPT AS REFERENCE !!!
+ */
+
 // helper functions
 
 function commalist($array, $sep = "and")
@@ -25,179 +30,7 @@ function abbreviateAuthor($last, $first, $reverse = true)
     return $fn . " " . $last;
 }
 
-function authorForm($a, $is_editor = false)
-{
-    $name = $is_editor ? 'editors' : 'authors';
-    $aoi = $a['aoi'] ?? false;
-    return "<div class='author " . ($aoi ? 'author-aoi' : '') . "' ondblclick='toggleAffiliation(this);'>
-        $a[last], $a[first]<input type='hidden' name='values[$name][]' value='$a[last];$a[first];$aoi'>
-        <a onclick='removeAuthor(event, this);'>&times;</a>
-        </div>";
-}
 
-
-function getDateTime($date)
-{
-    if ($date instanceof MongoDB\BSON\UTCDateTime) {
-        // MongoDB\BSON\UTCDateTime 
-        $d = $date->toDateTime();
-    } else if (isset($date['year'])) {
-        //date instanceof MongoDB\Model\BSONDocument
-        $d = new DateTime();
-        $d->setDate(
-            $date['year'],
-            $date['month'] ?? 1,
-            $date['day'] ?? 1
-        );
-    } else {
-        try {
-            $d = date_create($date);
-        } catch (TypeError $th) {
-            $d = null;
-        }
-    }
-    return $d;
-}
-
-function format_date($date)
-{
-    // dump($date);
-    $d = getDateTime($date);
-    return date_format($d, "d.m.Y");
-}
-
-function valueFromDateArray($date)
-{
-    // this function is used to generate a input:date-like string from arrays
-    if (empty($date) || !isset($date['year'])) return '';
-    $d = new DateTime();
-    $d->setDate(
-        $date['year'],
-        $date['month'] ?? 1,
-        $date['day'] ?? 1
-    );
-    return date_format($d, "Y-m-d");
-}
-
-function fromToDate($from, $to)
-{
-    if (empty($to) || $from == $to) {
-        return format_date($from);
-    }
-    // $to = date_create($to);
-    $from = format_date($from);
-    $to = format_date($to);
-
-    $f = explode('.', $from, 3);
-    $t = explode('.', $to, 3);
-
-    $from = $f[0] . ".";
-    if ($f[1] != $t[1] || $f[2] != $t[2]) {
-        $from .= $f[1] . ".";
-    }
-    if ($f[2] != $t[2]) {
-        $from .= $f[2];
-    }
-
-    return $from . '-' . $to;
-}
-
-function getYear($doc)
-{
-    if (isset($doc['year'])) return $doc['year'];
-    if (isset($doc['start'])) return $doc['start']['year'];
-    if (isset($doc['dates'])) {
-        if (isset($doc['dates'][0]['start'])) return $doc['dates'][0]['start']['year'];
-        if (isset($doc['dates']['start'])) return $doc['dates']['start']['year'];
-        // return $doc['start']['year'];
-    }
-}
-
-function getQuarter($time)
-{
-    // this function takey either the month, a date string, 
-    // or an date array and returns the quarter
-    if (empty($time)) {
-        return 0;
-    }
-    if (isset($time['month'])) {
-        return ceil($time['month'] / 3);
-    }
-    if (isset($time['start'])) {
-        $time = $time['start'];
-    }
-    if (isset($time['dates']) && !empty($time['dates'])) {
-        $time = reset($time['dates']);
-    }
-    if (is_int($time)) {
-        return ceil($time / 3);
-    }
-
-    try {
-        $date = getDateTime($time);
-        $month = date_format($date, 'n');
-    } catch (TypeError $th) {
-        $month = 1;
-    }
-
-    return ceil($month / 3);
-}
-
-function inQuarter($start, $end = null, $qarter = CURRENTQUARTER, $year = CURRENTYEAR)
-{
-    // check if time period in selected quarter
-    if (empty($end)) {
-        $end = $start;
-    }
-    $qstart = new DateTime($year . '-' . (3 * $qarter - 2) . '-1 00:00:00');
-    $qend = new DateTime($year . '-' . (3 * $qarter) . '-' . ($qarter == 1 || $qarter == 4 ? 31 : 30) . ' 23:59:59');
-
-    $start = new DateTime($start);
-    $end = new DateTime($end);
-    if ($start <= $qstart && $qstart <= $end) {
-        return true;
-    } elseif ($qstart <= $start && $start <= $qend) {
-        return true;
-    }
-    return false;
-}
-
-function inCurrentQuarter($year, $month)
-{
-    // check if time period in selected quarter
-    $qstart = new DateTime(CURRENTYEAR . '-' . (3 * CURRENTQUARTER - 2) . '-1 00:00:00');
-    $qend = new DateTime(CURRENTYEAR . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59');
-
-    $time = new DateTime();
-    $time->setDate($year, $month, 15);
-    if ($time <= $qstart && $qstart <= $time) {
-        return true;
-    } elseif ($qstart <= $time && $time <= $qend) {
-        return true;
-    }
-    return false;
-}
-
-function format_month($month)
-{
-    if (empty($month)) return '';
-    $month = intval($month);
-    $array = [
-        1 => lang("January", "Januar"),
-        2 => lang("February", "Februar"),
-        3 => lang("March", "März"),
-        4 => lang("April"),
-        5 => lang("May", "Mai"),
-        6 => lang("June", "Juni"),
-        7 => lang("July", "Juli"),
-        8 => lang("August"),
-        9 => lang("September"),
-        10 => lang("October", "Oktober"),
-        11 => lang("November"),
-        12 => lang("December", "Dezember")
-    ];
-    return $array[$month];
-}
 
 
 function activity_title($doc)
@@ -210,35 +43,36 @@ function activity_title($doc)
     $name = "Undefined";
     switch ($type) {
         case 'publication':
-            $pubtype = strtolower(trim($doc['pubtype'] ?? $type));
+            $pubtype = strtolower(trim($doc['pubtype'] ?? $doc['subtype'] ?? $type));
             switch ($pubtype) {
                 case 'journal article':
                 case 'journal-article':
                 case 'article':
-                    $name = "Journal article";
+                    $name = "Journal Article";
                     break 2;
                 case 'magazine article':
                 case 'magazine':
-                    $name = "Magazine article";
+                    $name = lang('Non-Refereed');
                     break 2;
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
-                    $name = "Book chapter";
+                    $name = lang('Book chapter', 'Buchkapitel');
                     break 2;
                 case 'book-editor':
                 case 'publication':
-                    $name = "Book";
+                    $name = lang('Book', 'Buch');
                     break 2;
                 case 'book':
-                    $name = "Book";
+                    $name = lang('Book', 'Buch');
+                    break 2;
+                case 'preprint':
+                    $name = lang('Preprint');
                     break 2;
                 case 'dissertation':
-                    $name = "Dissertation";
+                    $name = lang('Thesis');
                     break 2;
                 case 'others':
-                    $name = lang('Others', 'Weiteres');
-                    break 2;
                 default:
                     $name = lang('Others', 'Weiteres');
                     break 2;
@@ -250,7 +84,7 @@ function activity_title($doc)
             $name = "Lecture";
             break;
         case 'review':
-            switch (strtolower($doc['role'] ?? '')) {
+            switch (strtolower($doc['role'] ?? $doc['subtype'] ?? '')) {
                 case 'editorial':
                 case 'editor':
                     $name = "Editorial board";
@@ -267,16 +101,23 @@ function activity_title($doc)
             }
 
         case 'misc':
-            $iteration = $doc['iteration'] ?? 'once';
-            $name = "Miscellaneous ($iteration)";
+            
+            $subtype = $doc['iteration'] ?? $doc['subtype'] ?? '';
+            if ($subtype == 'once' || $subtype == 'misc-once') {
+                $name = lang('Once', 'Einmalig');
+            } elseif ($subtype == 'annual' || $subtype == 'misc-annual') {
+                $name = lang('Frequently', 'Stetig');
+            } else {
+                $name = lang("Other", "Sonstiges");
+            }
             break;
         case 'students':
-            $cat = strtolower(trim($doc['category'] ?? 'thesis'));
-            if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
-                $name = "Students (Theses)";
+            $cat = strtolower(trim($doc['category'] ?? $doc['subtype'] ?? 'thesis'));
+            if (str_contains($cat, "thesis") || $cat == 'doktorand:in' || $cat == 'students') {
+                $name = lang('Theses', 'Abschlussarbeiten');
                 break;
             }
-            $name = "Guests";
+            $name = lang('Guests & interns', 'Gäste & Praktika');
             break;
 
         case 'teaching':
@@ -292,87 +133,98 @@ function activity_title($doc)
     return $name;
 }
 
-function activity_icon($doc, $tooltip = true)
+function$Format->activity_icon($doc, $tooltip = true)
 {
     if (is_string($doc)) {
         $type = strtolower(trim($doc));
     } else {
-        $type = strtolower(trim($doc['type'] ?? ''));
+        $type = strtolower(trim($doc['type'] ?? $doc['subtype'] ?? ''));
     }
-    $icon = "<i class='ph ph-regular ph-lg text-misc ph-placeholder'></i>";
+    $icon = "<i class='ph ph-regular text-misc ph-placeholder'></i>";
     switch ($type) {
         case 'publication':
-            $pubtype = strtolower(trim($doc['pubtype'] ?? $type));
+            $pubtype = strtolower(trim($doc['pubtype'] ?? $doc['subtype'] ?? $type));
             switch ($pubtype) {
                 case 'journal article':
                 case 'journal-article':
                 case 'article':
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-file-text'></i>";
+                    $icon = "<i class='ph ph-regular text-publication ph-file-text'></i>";
                     break 2;
                 case 'magazine article':
                 case 'magazine':
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-newspaper'></i>";
+                    $icon = "<i class='ph ph-regular text-publication ph-newspaper'></i>";
                     break 2;
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
                 case 'book-editor':
                 case 'publication':
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-book-bookmark'></i>";
+                    $icon = "<i class='ph ph-regular text-publication ph-book-bookmark'></i>";
                     break 2;
                 case 'book':
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-book'></i>";
+                    $icon = "<i class='ph ph-regular text-publication ph-book'></i>";
+                    break 2;
+                case 'preprint':
+                    $icon = "<i class='ph ph-regular text-publication ph-file-text'></i>";
                     break 2;
                 case 'dissertation':
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-graduation-cap'></i>";
+                    $icon = "<i class='ph ph-regular text-publication ph-graduation-cap'></i>";
                     break 2;
                 case 'others':
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-notebook'></i>";
-                    break 2;
                 default:
-                    $icon = "<i class='ph ph-regular ph-lg text-publication ph-notebook'></i>";
+                    $icon = "<i class='ph ph-regular text-publication ph-notebook'></i>";
                     break 2;
             }
         case 'poster':
-            $icon = "<i class='ph ph-regular ph-lg text-poster ph-presentation-chart'></i>";
+            $icon = "<i class='ph ph-regular text-poster ph-presentation-chart'></i>";
             break;
         case 'lecture':
-            $icon = "<i class='ph ph-regular ph-lg text-lecture ph-chalkboard-teacher'></i>";
+            $icon = "<i class='ph ph-regular text-lecture ph-chalkboard-teacher'></i>";
             break;
         case 'review':
-            switch (strtolower($doc['role'] ?? '')) {
+            switch (strtolower($doc['role'] ?? $doc['subtype'] ?? '')) {
                 case 'editorial':
                 case 'editor':
-                    $icon = "<i class='ph ph-regular ph-lg text-review ph-exam'></i>";
+                    $icon = "<i class='ph ph-regular text-review ph-user-list'></i>";
                     break 2;
                 case 'grant-rev':
-                    $icon = "<i class='ph ph-regular ph-lg text-review ph-clipboard-text'></i>";
+                    $icon = "<i class='ph ph-regular text-review ph-clipboard-text'></i>";
                     break 2;
                 case 'thesis-rev':
-                    $icon = "<i class='ph ph-regular ph-lg text-review ph-graduation-cap'></i>";
+                    $icon = "<i class='ph ph-regular text-review ph-graduation-cap'></i>";
                     break 2;
                 default:
-                    $icon = "<i class='ph ph-regular ph-lg text-review ph-article'></i>";
+                    $icon = "<i class='ph ph-regular text-review ph-article'></i>";
                     break 2;
             }
 
         case 'misc':
-            $icon = "<i class='ph ph-regular ph-lg text-misc ph-shapes'></i>";
+            $subtype = $doc['iteration'] ?? $doc['subtype'] ?? '';
+            if ($subtype == 'once' || $subtype == 'misc-once') {
+                $icon = "<i class='ph ph-regular text-misc ph-calendar-check'></i>";
+            } elseif ($subtype == 'annual' || $subtype == 'misc-annual') {
+                $icon = "<i class='ph ph-regular text-misc ph-repeat'></i>";
+            } else {
+                $icon = "<i class='ph ph-regular text-misc ph-shapes'></i>";
+            }
             break;
         case 'students':
-            $cat = strtolower(trim($doc['category'] ?? 'thesis'));
-            if (str_contains($cat, "thesis") || $cat == 'doktorand:in') {
-                $icon = "<i class='ph ph-regular ph-lg text-students ph-student'></i>";
+            $cat = strtolower(trim($doc['category'] ?? $doc['subtype'] ?? 'thesis'));
+            if (str_contains($cat, "thesis") || $cat == 'doktorand:in' || $cat == 'students') {
+                $icon = "<i class='ph ph-regular text-students ph-student'></i>";
                 break;
             }
-            $icon = "<i class='ph ph-regular ph-lg text-students ph-users'></i>";
+            $icon = "<i class='ph ph-regular text-students ph-users'></i>";
             break;
 
         case 'teaching':
-            $icon = "<i class='ph ph-regular ph-lg text-teaching ph-chalkboard-simple'></i>";
+            $icon = "<i class='ph ph-regular text-teaching ph-chalkboard-simple'></i>";
             break;
         case 'software':
-            $icon = "<i class='ph ph-regular ph-lg text-software ph-desktop-tower'></i>";
+            $icon = "<i class='ph ph-regular text-software ph-desktop-tower'></i>";
+            break;
+        case 'award':
+            $icon = "<i class='ph ph-regular text-award ph-certificate'></i>";
             break;
         default:
             break;
@@ -390,7 +242,7 @@ function activity_icon($doc, $tooltip = true)
 function activity_badge($doc)
 {
     $name = activity_title($doc);
-    $icon = activity_icon($doc, false);
+    $icon =$Format->activity_icon($doc, false);
     return "<span class='badge badge-$doc[type]'>$icon $name</span>";
 }
 
@@ -509,7 +361,7 @@ class Format
                 break;
         }
 
-        // $icon = activity_icon($doc);
+        // $icon =$Format->activity_icon($doc);
         if ($link) {
             $id = strval($doc['_id']);
             $line = "
@@ -754,7 +606,8 @@ class Format
         $first = 1;
         $last = 1;
         $corresponding = false;
-        if (!empty($doc['authors']) && !is_array($doc['authors'])) {
+
+        if (!empty($doc['authors']) && $doc['authors'] instanceof BSONArray) {
             $doc['authors'] = $doc['authors']->bsonSerialize();
         }
         if (!empty($doc['authors']) && is_array($doc['authors'])) {
@@ -917,6 +770,7 @@ class Format
         }
         if (!empty($doc['epub'])) {
             $result .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
+            $this->subtitle .= " <span style='color:#B61F29;'>[Online ahead of print]</span>";
         }
 
         if ($this->usecase == 'web' && in_array($type, ['article', 'book', 'chapter'])) {
@@ -952,7 +806,7 @@ class Format
             $result .= " $this->title, ";
         }
 
-        if ($doc['iteration'] == "annual") {
+        if ($doc['iteration']??'' == "annual") {
             $start = format_date($doc['start']);
             if (empty($doc['end'])) {
                 $end = lang('today', "heute");

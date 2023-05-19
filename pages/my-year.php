@@ -42,8 +42,8 @@ $filter['$or'] =   array(
             [
                 'end' => null,
                 '$or' => array(
-                    ['type' => 'misc', 'iteration' => 'annual'],
-                    ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
+                    ['type' => 'misc', 'subtype' => 'annual'],
+                    ['type' => 'review', 'subtype' =>  'editorial'],
                 )
             ]
         )
@@ -68,7 +68,7 @@ foreach ($cursor as $doc) {
 
     // $doc['format'] = $format;
     $groups[$doc['type']][] = $doc;
-    $icon = activity_icon($doc, false);
+    $icon =$Format->activity_icon($doc, false);
 
     $date = getDateTime($doc['start'] ?? $doc);
 
@@ -123,7 +123,7 @@ if ($showcoins == 'all'){
 <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content w-600 mw-full">
-            <a href="#" class="btn float-right" role="button" aria-label="Close">
+            <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
            <?php
@@ -212,14 +212,14 @@ if ($showcoins == 'all'){
         ?>
 
             <?php if (!$quarter_in_past) { ?>
-                <a href="#" class="btn disabled">
+                <a href="#close-modal" class="btn disabled">
                     <i class="ph ph-regular ph-check mr-5"></i>
                     <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
                 </a>
             <?php
 
             } elseif ($approved) { ?>
-                <a href="#" class="btn disabled">
+                <a href="#close-modal" class="btn disabled">
                     <i class="ph ph-regular ph-check mr-5"></i>
                     <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
                 </a>
@@ -490,6 +490,7 @@ if ($showcoins == 'all'){
                         $id = $doc['_id'];
                         $l = $LOM->lom($doc);
                         $_lom += $l['lom'];
+                        $Format->setDocument($doc);
 
                         if ($doc['year'] == $YEAR) {
                             $q = getQuarter($doc);
@@ -504,7 +505,7 @@ if ($showcoins == 'all'){
 
                         echo "<tr class='" . (!$in_quarter ? 'row-muted' : '') . "' id='tr-$id'>";
                         // echo "<td class='w-25'>";
-                        // echo activity_icon($doc);
+                        // echo$Format->activity_icon($doc);
                         // echo "</td>";
                         echo "<td class='quarter'>";
                         if (!empty($q)) echo "$q";
@@ -512,19 +513,19 @@ if ($showcoins == 'all'){
                         echo "<td>";
                         // echo $doc['format'];
                         if ($USER['display_activities'] == 'web') {
-                            echo $Format->formatShort($doc);
+                            echo $Format->formatShort();
                         } else {
-                            echo $Format->format($doc);
+                            echo $Format->format();
                         }
 
                         // show error messages, warnings and todos
-                        $has_issues = has_issues($doc);
+                        $has_issues = $Format->has_issues();
                         if ($currentuser && !empty($has_issues)) {
                             $approval_needed[] = array(
                                 'type' => $col,
                                 'id' => $id,
                                 'title' => $Format->title,
-                                'badge' => activity_badge($doc),
+                                'badge' => $Format->activity_badge(),
                                 'tags' => $has_issues
                             );
                     ?>
@@ -594,7 +595,7 @@ if ($showcoins == 'all'){
         <div class="modal modal-lg" id="approve" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content w-600 mw-full" style="border: 2px solid var(--success-color);">
-                    <a href="#" class="btn float-right" role="button" aria-label="Close">
+                    <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </a>
                     <h5 class="title text-success"><?= lang("Approve quarter $QUARTER", "Quartal $QUARTER freigeben") ?></h5>
