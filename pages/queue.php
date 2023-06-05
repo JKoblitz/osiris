@@ -1,0 +1,150 @@
+<?php
+
+$Format = new Document();
+
+?>
+
+<style>
+    .box:target {
+        -moz-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+        -webkit-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+        box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+    }
+
+    .box.duplicate {
+        color: var(--muted-color);
+        opacity: 0.7;
+        border-color: var(--danger-color);
+        position: relative;
+        padding-top: 2rem;
+    }
+
+    .box.duplicate::before {
+        content: 'DUPLICATE';
+        font-size: small;
+        font-weight: bold;
+        display: block;
+        position: absolute;
+        top: 1rem;
+        color: white;
+        background: var(--danger-color);
+        padding: 0 .5rem;
+        padding-left: 2.2rem;
+    }
+</style>
+
+<!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right" id="">
+    <i class="ph ph-regular ph-lg ph-question mr-5"></i>
+    <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+</a> -->
+<h1>
+    <i class="ph ph-queue text-osiris"></i>
+    <?= lang('Queue', 'Warteschlange') ?>
+</h1>
+
+<?php
+if ($n_queue == 0) {
+    echo "<p>" . lang(
+        "No items in your queue.",
+        "Keine Elemente in der Warteschlange."
+    ) . "</p>";
+} else { ?>
+    <?php
+    foreach ($queue as $doc) {
+
+        $Format->setDocument($doc);
+        $id = $doc['_id'];
+        $type = $doc['type'];
+    ?>
+
+        <div id="tr-<?= $id ?>">
+            <div class="box mt-0 <?= isset($doc['duplicate']) ? 'duplicate' : '' ?>" id="<?= $id ?>">
+                <div class="content my-10">
+
+                    <p>
+                        <span class="mr-20"><?= $Format->activity_icon($doc); ?></span>
+                        <?= $Format->format(); ?>
+                    </p>
+                    <div class='' id="approve-<?= $id ?>">
+                        <?php if (isset($doc['duplicate'])) { ?>
+                            <button class="btn btn-danger mr-10" onclick="_queue('<?= $id ?>', false)" data-toggle="tooltip" data-title="<?= lang('It is a duplicate: remove from queue.', 'Es ist ein Duplikat: aus der Warteschlange entfernen.') ?>">
+                                <i class="ph ph-regular ph-x ph-fw"></i>
+                            </button>
+                            <button class="btn text-success" onclick="_queue('<?= $id ?>', true)" data-toggle="tooltip" data-title="<?= lang('No duplicate: Accept and add to the database.', 'Kein Duplikat: akzeptieren und zur Datenbank hinzufügen.') ?>">
+                                <i class="ph ph-regular ph-check ph-fw"></i>
+                            </button>
+                            <a target="_self" href="<?= ROOTPATH ?>/activities/new?doi=<?= $doc['doi'] ?>" class="btn text-primary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
+                                <i class="ph ph-regular ph-pencil-simple-line"></i>
+                            </a>
+                        <?php } else { ?>
+                            <button class="btn btn-success mr-10" onclick="_queue('<?= $id ?>', true)" data-toggle="tooltip" data-title="<?= lang('Accept and add to the database.', 'Akzeptieren und zur Datenbank hinzufügen.') ?>">
+                                <i class="ph ph-regular ph-check ph-fw"></i>
+                            </button>
+                            <button class="btn text-danger" onclick="_queue('<?= $id ?>', false)" data-toggle="tooltip" data-title="<?= lang('Decline and remove from queue.', 'Ablehnen und aus der Warteschlange entfernen.') ?>">
+                                <i class="ph ph-regular ph-x ph-fw"></i>
+                            </button>
+                            <a target="_self" href="<?= ROOTPATH ?>/activities/new?doi=<?= $doc['doi'] ?>" class="btn text-primary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
+                                <i class="ph ph-regular ph-pencil-simple-line"></i>
+                            </a>
+                        <?php } ?>
+                    </div>
+                    <?php if (isset($doc['duplicate'])) {
+                        $duplicate = $osiris->activities->findOne(['_id' => $doc['duplicate']]);
+                    ?>
+                        <p class="text-danger">
+                            <?= lang('Possible duplicate of ', 'Mögliches Duplikat von ') ?>
+                            <a class="link colorless font-weight-bold" href="<?= ROOTPATH ?>/activities/view/<?= $doc['duplicate'] ?>" target="_blank" rel="noopener noreferrer"><?= $duplicate['title'] ?? 'Activity' ?></a>
+                        </p>
+                    <?php } ?>
+
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+<?php } ?>
+
+
+<script>
+    function _queue(id, accept = true) {
+        $('.loader').addClass('show')
+        $.ajax({
+            type: "POST",
+            // data: {
+            //     accept: approval
+            // },
+            dataType: "html",
+            url: ROOTPATH + '/queue/' + (accept ? 'accept' : 'decline') + '/' + id,
+            success: function(response) {
+                console.log(response);
+                $('.loader').removeClass('show')
+
+                // if (approval == 3) {
+                if (accept) {
+                    $('#tr-' + id).empty()
+                    var p = $('<p>')
+                    p.html(lang('Added new activity: ', 'Neue Aktivität hinzugefügt: ') )
+                    var a = $('<a>')
+                    a.attr('href', ROOTPATH + '/activities/view/' + response)
+                    a.attr('target', '_blank')
+                    a.html(response)
+                    p.append(a)
+                    $('#tr-' + id).append(p)
+                    toastSuccess(
+                        lang('Added new activity to the database.', 'Neue Aktivität zur Datenbank hinzugefügt.'),
+                        lang('Accepted', 'Akzeptiert')
+                    )
+                } else {
+                    $('#tr-' + id).remove()
+                    toastSuccess(
+                        lang('Activity has not been added to the database.','Aktivität wurde nicht zur Datenbank hinzugefügt.'),
+                        lang('Declined', 'Abgelehnt')
+                    )
+                }
+            },
+            error: function(response) {
+                $('.loader').removeClass('show')
+                toastError(response.responseText)
+            }
+        })
+    }
+</script>

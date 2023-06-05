@@ -130,6 +130,64 @@ Route::get('/issues', function () {
     include BASEPATH . "/footer.php";
 });
 
+Route::get('/queue/(user|editor)', function ($role) {
+    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+    $user = $_SESSION['username'];
+    if ($role == 'editor' && ($USER['is_controlling'] || $USER['is_admin'])){
+        $filter = ['declined' => ['$ne' => true]];
+    } else {
+        $filter = ['authors.user' => $user, 'declined' => ['$ne' => true]];
+    }
+    $n_queue = $osiris->queue->count($filter);
+    $queue = $osiris->queue->find($filter, ['sort' => ['duplicate' => 1]]);
+
+    $breadcrumb = [
+        ['name' => lang('Queue', 'Warteschlange')]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/queue.php";
+    include BASEPATH . "/footer.php";
+});
+
+
+Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
+    // include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/_db.php";
+
+    $mongo_id = to_ObjectID($id);
+
+    if ($type == 'accept') {
+
+        $new = $osiris->queue->findOne(['_id' => $mongo_id]);
+        unset($new['_id']);
+        foreach ($new['authors'] ?? array() as $i => $a) {
+            if ($a['user']?? '' == $_SESSION['username']){
+                $new['authors'][$i]['approved'] = true;
+            }
+        }
+        $new['created'] = date('Y-m-d');
+        $new['created_by'] = $_SESSION['username'];
+
+        $insertOneResult = $osiris->activities->insertOne($new);
+        $new_id = $insertOneResult->getInsertedId();
+
+        $osiris->queue->deleteOne(['_id' => $mongo_id]);
+        echo $new_id;
+    } else {
+        $osiris->queue->updateOne(
+            ['_id' => $mongo_id],
+            [
+                '$set' => [
+                    'declined' => true, 'declined_by' => $_SESSION['username']
+                ]
+            ]
+
+        );
+    }
+});
+
 Route::get('/lom', function () {
 
     $breadcrumb = [
@@ -447,7 +505,7 @@ Route::get('/activities/(doi|pubmed)/(.*)', function ($type, $identifier) {
     include_once BASEPATH . "/php/_db.php";
 
     $form = $osiris->activities->findOne([$type => $identifier]);
-    if (!empty($form)){
+    if (!empty($form)) {
         $id = strval($form['_id']);
         header("Location: " . ROOTPATH . "/activities/view/$id");
     }
@@ -1248,26 +1306,75 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
 Route::get('/check-duplicate', function () {
     include_once BASEPATH . "/php/_db.php";
 
-    if (!isset($_GET['type']) || !isset($_GET['id'])) die ('false');
-    if ($_GET['type'] != 'doi' && $_GET['type'] != 'pubmed') die ('false');
-    
+    if (!isset($_GET['type']) || !isset($_GET['id'])) die('false');
+    if ($_GET['type'] != 'doi' && $_GET['type'] != 'pubmed') die('false');
+
     $form = $osiris->activities->findOne([$_GET['type'] => $_GET['id']]);
-    if (empty($form)) die ('false');
+    if (empty($form)) die('false');
     echo 'true';
 });
 
 Route::get('/settings', function () {
     include_once BASEPATH . "/php/_db.php";
-    
+
     $file_name = BASEPATH . "/settings.json";
     if (!file_exists($file_name)) {
-       $file_name = BASEPATH . "/settings.default.json";
-    } 
+        $file_name = BASEPATH . "/settings.default.json";
+    }
     $json = file_get_contents($file_name);
     echo $json;
-    // $settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
-        
+    // $settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);  
 });
+
+
+// Route::get('/discover', function () {
+//     include_once BASEPATH . "/php/_db.php";
+
+//     // user must be set
+//     if (!isset($_GET['user']) || empty($_GET['user'])) die('user not set');
+
+//     // get user account
+//     $user = getUserFromId($_GET['user']);
+
+//     // if openalex id is not set: nothing to do
+//     if (empty($user['openalex'])) die ('openalex not set');
+
+//     // if checked within 3 days: nothing to do
+//     if (isset($user['openalex-check']) && strtotime($user['openalex-check']) < strtotime('-3 days')) die ('time delayed');
+
+
+//     $openalex = $user['openalex'];
+//     $url = 'https://api.openalex.org/works?filter=author.id:' . $openalex . '&mailto=juk20@dsmz.de';
+
+//     $ch = curl_init($url);
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//     $response = curl_exec($ch);
+//     $http = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+//     if ($http != 200) die('fetch not possible');
+
+//     // go through all results
+//     $json = json_decode($response, TRUE);
+//     $results = array();
+
+//     foreach ($json['results'] as $entry) {
+//         // check if doi is already in database
+//         if (empty($entry['doi'] ?? null)) continue;
+//         preg_match('/(10\.\d{4,5}\/[\S]+[^;,.\s])$/', $entry['doi'], $doi);
+
+//         if ($osiris->activities->count(['doi'=>$doi[0]]) > 0) continue;
+
+//         $results[] = $entry;
+//     }
+
+//     header("Content-Type: application/json");
+//     header("Pragma: no-cache");
+//     header("Expires: 0");
+//     echo (json_encode($results));
+
+// });
+
+
 
 Route::get('/get-modules', function () {
     include_once BASEPATH . "/php/_db.php";
@@ -1279,7 +1386,7 @@ Route::get('/get-modules', function () {
         $form = $osiris->activities->findOne(['_id' => $mongoid]);
     }
 
-    $Modules = new Modules($form, $_GET['copy']??false);
+    $Modules = new Modules($form, $_GET['copy'] ?? false);
     if (isset($_GET['modules'])) {
         $Modules->print_modules($_GET['modules']);
     } else {

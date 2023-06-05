@@ -208,6 +208,9 @@ Route::post('/create', function () {
             header("Location: " . ROOTPATH . "/activities/view/$doi_exist[_id]?msg=DOI+already+exists");
             die;
         }
+
+        // make sure that there is no duplicate entry in the queue
+        $osiris->queue->deleteOne(['doi' => $values['doi']]);
     }
     if (isset($values['pubmed']) && !empty($values['pubmed'])) {
         $pubmed_exist = $collection->findOne(['pubmed' => $values['pubmed']]);
@@ -215,6 +218,8 @@ Route::post('/create', function () {
             header("Location: " . ROOTPATH . "/activities/view/$pubmed_exist[_id]?msg=Pubmed-ID+already+exists");
             die;
         }
+        // make sure that there is no duplicate entry in the queue
+        $osiris->queue->deleteOne(['pubmed' => $values['pubmed']]);
     }
 
 
@@ -479,6 +484,14 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['$set' => $values]
     );
 
+    if (isset($values['doi']) && !empty($values['doi'])) {
+        // make sure that there is no duplicate entry in the queue
+        $osiris->queue->deleteOne(['doi' => $values['doi']]);
+    }
+    if (isset($values['pubmed']) && !empty($values['pubmed'])) {
+        // make sure that there is no duplicate entry in the queue
+        $osiris->queue->deleteOne(['pubmed' => $values['pubmed']]);
+    }
     // cleanFields($id);
     // die;
 

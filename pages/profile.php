@@ -316,6 +316,20 @@ if ($showcoins == 'all') {
                     </div>
                 <?php } ?>
 
+                <?php 
+                $queue = $osiris->queue->count(['authors.user'=>$user, 'duplicate'=>['$exists'=>false]]);
+                if ($queue !== 0) { ?>
+                    <div class="alert alert-success mt-20">
+                        <a class="link text-success" href='<?= ROOTPATH ?>/queue/user'>
+                            <?= lang(
+                                "We found $queue new " . ($queue == 1 ? 'activity' : 'activities') . " for you. Review them now.",
+                                "Wir haben $queue " . ($queue == 1 ? 'Aktivität' : 'Aktivitäten') . " von dir gefunden. Überprüfe sie jetzt."
+                            ) ?>
+                        </a>
+                    </div>
+                <?php } ?>
+
+
                 <?php
                 $approvedQ = array();
                 if (isset($scientist['approved'])) {

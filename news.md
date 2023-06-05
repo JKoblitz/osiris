@@ -1,5 +1,13 @@
 # Neuigkeiten
 
+## 05.06.23
+
+<i class="ph ph-queue text-osiris"></i>
+**Neues Feature: Warteschlange**
+
+OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob es neue Publikationen für die Institution gibt. Wenn für dich neue Publikationen gefunden wurden, erhältst du einen Hinweis auf deiner Startseite.
+
+
 ## 12.05.23
 
 `Version 1.1`

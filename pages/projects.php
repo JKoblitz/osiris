@@ -49,9 +49,13 @@ function val($index, $default = '')
                                 <?= lang('Full title of the project', 'Voller Titel des Projekts') ?>
                             </label>
 
-                            <div class="form-group title-editor"><?= $form['title'] ?? '' ?></div>
+                            <div class="form-group title-editor" id="title-editor"><?= $form['title'] ?? '' ?></div>
                             <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= val('title') ?>">
                         </div>
+                        
+                <script>
+                    initQuill(document.getElementById('title-editor'));
+                </script>
                     </div>
 
                     <div class="col-sm-4">

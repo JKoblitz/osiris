@@ -151,10 +151,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/new-stuff#12.05.23" class="btn btn-osiris">
+            <a href="<?= ROOTPATH ?>/new-stuff#05.06.23" class="btn btn-osiris">
                 <i class="ph-fill ph-sparkle"></i>
                 NEWS
-                (<?= time_elapsed_string('2023-05-12 13:00') ?>)
+                (<?= time_elapsed_string('2023-06-05 7:00') ?>)
             </a>
         </nav>
         <!-- Sidebar start -->
@@ -166,7 +166,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <div class="cta">
                         <a href="<?= ROOTPATH ?>/" class="btn btn-osiris" style="border-radius:2rem">
-                            <i class="fa ph-sign-in mr-10" aria-hidden="true"></i>
+                            <i class="ph ph-sign-in mr-10" aria-hidden="true"></i>
                             <?= lang('Log in') ?>
                         </a>
                     </div>
@@ -211,6 +211,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="ph ph-regular ph-chart-line" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
+                        <?php
+                            $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
+                        ?>
+                        
+                        <a href="<?= ROOTPATH ?>/queue/editor" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('queue/editor') ?>">
+                            <i class="ph ph-regular ph-queue" aria-hidden="true"></i>
+                            <?= lang('Queue', 'Warteschlange') ?>
+                            <span class="badge badge-primary badge-pill ml-10" id="cart-counter">
+                                <?= $n_queue ?>
+                            </span>
+                        </a>
+
 
                         <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
                             <i class="ph ph-regular ph-coin" aria-hidden="true"></i>

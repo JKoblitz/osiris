@@ -226,7 +226,8 @@ if ($showcoins == 'all'){
             <?php } else { ?>
                 <a class="btn btn-lg btn-success" href="#approve">
                     <i class="ph-fill ph-question mr-5"></i>
-                    <?= lang('Approve current quarter', 'Aktuelles Quartal freigeben') ?>
+                    <?= lang('Approve selected quarter', 'Ausgewähltes Quartal freigeben') ?>
+                    (<?=$YEAR.'Q'.$QUARTER?>)
                 </a>
             <?php } ?>
 
