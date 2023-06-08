@@ -333,7 +333,7 @@ Route::post('/user/login', function () {
                     $updateResult = $osiris->activities->updateMany(
                         [
                             'authors.last' => $USER['last'],
-                            'authors.first' => new Regex('^' . $USER['first'][0] . '.*')
+                            'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
                         ],
                         ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
                     );
@@ -744,7 +744,7 @@ Route::post('/import/google', function () {
 
     if (isset($pub['Zeitschrift']) || isset($pub['Quelle'])) {
         $result['journal'] = $pub['Zeitschrift'] ?? $pub['Quelle'];
-        $j = new Regex('^' . trim($result['journal']) . '$', 'i');
+        $j = new MongoDB\BSON\Regex('^' . trim($result['journal']) . '$', 'i');
         $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
         if (!empty($journal)) {
             $result['journal_id'] = strval($journal['_id']);

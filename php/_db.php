@@ -291,7 +291,7 @@ function getUserFromName($last, $first)
     if (strlen($first) == 1) $first .= ".";
 
     try {
-        $regex = new Regex('^' . $first[0]);
+        $regex = new MongoDB\BSON\Regex('^' . $first[0]);
         $user = $osiris->users->findOne([
             '$or' => [
                 ['last' => $last, 'first' => $regex],
@@ -380,7 +380,7 @@ function getJournal($doc)
         if (!empty($journal)) return $journal;
     }
 
-    $j = new Regex('^' . trim($doc['journal']), 'i');
+    $j = new MongoDB\BSON\Regex('^' . trim($doc['journal']), 'i');
     return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
 }
 
@@ -428,7 +428,7 @@ function get_journal($doc)
     } else if (isset($doc['issn']) && !empty($doc['issn'])) {
         return $osiris->journals->findOne(['issn' => ['$in' => $doc['issn']]]);
     } else if (isset($doc['journal']) && !empty($doc['journal'])) {
-        $j = new Regex('^' . trim($doc['journal']) . '$', 'i');
+        $j = new MongoDB\BSON\Regex('^' . trim($doc['journal']) . '$', 'i');
         return $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
     } else {
         return array();
