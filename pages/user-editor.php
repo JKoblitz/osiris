@@ -133,11 +133,6 @@ dump($data, true);
     </div>
 
     <div class="form-row row-eq-spacing-sm">
-
-    <!-- <div class="col-sm">
-            <label for="openalex"><a href="https://explore.openalex.org/" target="_blank" rel="noopener noreferrer"> OpenAlex-ID</a></label>
-            <input type="text" name="values[openalex]" id="openalex" class="form-control" value="<?= $data['openalex'] ?? '' ?>" placeholder="A3103919426">
-        </div> -->
         <div class="col-sm">
             <label for="researchgate">ResearchGate Handle</label>
             <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
@@ -149,10 +144,6 @@ dump($data, true);
                 <?= lang('Not the URL! Only the bold part: https://scholar.google.com/citations?user=<b>2G1YzvwAAAAJ</b>&hl=de ', 'Nicht die URL! Nur der fettgedruckte Teil: https://scholar.google.com/citations?user=<b>2G1YzvwAAAAJ</b>&hl=de') ?>
             </small>
         </div>
-        <!-- <div class="col-sm">
-            <label for="webpage">Personal web page</label>
-            <input type="text" name="values[webpage]" id="webpage" class="form-control" value="<?= $data['webpage'] ?? '' ?>">
-        </div> -->
     </div>
 
     <div>

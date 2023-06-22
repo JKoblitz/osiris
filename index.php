@@ -14,7 +14,6 @@ if (file_exists('CONFIG.php')) {
     require_once 'CONFIG.default.php';
 }
 
-
 session_start();
 
 // implement newer functions in case they don't exist
@@ -98,6 +97,12 @@ Route::get('/', function () {
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
+        if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
+            echo "<a class='' href='" . ROOTPATH . "/auth/new-user'>" . lang(
+                'New user',
+                'Neuer Nutzer'
+            ) . "</a>";
+        }
         include BASEPATH . "/footer.php";
     } elseif ($USER['is_controlling']) {
         $path = ROOTPATH . "/dashboard";
@@ -109,6 +114,12 @@ Route::get('/', function () {
         header("Location: $path");
     }
 });
+
+
+if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
+    require_once 'addons/auth/index.php';
+}
+
 Route::get('/dashboard', function () {
     include_once BASEPATH . "/php/_db.php";
     include BASEPATH . "/header.php";
@@ -134,7 +145,7 @@ Route::get('/queue/(user|editor)', function ($role) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     $user = $_SESSION['username'];
-    if ($role == 'editor' && ($USER['is_controlling'] || $USER['is_admin'])){
+    if ($role == 'editor' && ($USER['is_controlling'] || $USER['is_admin'])) {
         $filter = ['declined' => ['$ne' => true]];
     } else {
         $filter = ['authors.user' => $user, 'declined' => ['$ne' => true]];
@@ -163,7 +174,7 @@ Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
         $new = $osiris->queue->findOne(['_id' => $mongo_id]);
         unset($new['_id']);
         foreach ($new['authors'] ?? array() as $i => $a) {
-            if ($a['user']?? '' == $_SESSION['username']){
+            if ($a['user'] ?? '' == $_SESSION['username']) {
                 $new['authors'][$i]['approved'] = true;
             }
         }
@@ -284,6 +295,13 @@ Route::get('/user/login', function () {
         echo (lang("You need to be logged in to see this page.", "Du musst eingeloggt sein, um diese Seite zu sehen."));
     }
     include BASEPATH . "/pages/userlogin.php";
+    if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
+
+        echo "<a class='' href='" . BASEPATH . "/auth/new-user'>" . lang(
+            'New user',
+            'Neuer Nutzer'
+        ) . "</a>";
+    }
     include BASEPATH . "/footer.php";
 });
 
@@ -296,7 +314,12 @@ Route::post('/user/login', function () {
         header("Location: " . ROOTPATH . "/profile/$_SESSION[username]?msg=ali");
         die;
     }
-    include BASEPATH . "/php/_login.php";
+
+    if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
+        require_once 'addons/auth/_login.php';
+    } else {
+        include BASEPATH . "/php/_login.php";
+    }
     include BASEPATH . "/php/_db.php";
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -341,6 +364,7 @@ Route::post('/user/login', function () {
                     $msg .= "&new=$n";
                 }
                 $_SESSION['username'] = $USER['_id'];
+                $_SESSION['name'] = $USER['displayname'];
 
                 $updateResult = $osiris->users->updateOne(
                     ['_id' => $_POST['username']],
@@ -1326,6 +1350,7 @@ Route::get('/settings', function () {
     // $settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);  
 });
 
+include_once 'user_management.php';
 
 // Route::get('/discover', function () {
 //     include_once BASEPATH . "/php/_db.php";

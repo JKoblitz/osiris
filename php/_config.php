@@ -55,18 +55,22 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $class = "success";
             break;
 
+        case 'account-created':
+            $text = lang("Account has been created. Please log in.", "Der Account wurde erstellt. Bitte logge dich ein.");
+            // $text = lang("Thank you.", "Vielen Dank.");
+            $class = "success";
+            break;
+
         case 'settings-saved':
             $text = lang("Settings saved", "Einstellungen gespeichert.");
             // $text = lang("Thank you.", "Vielen Dank.");
             $class = "success";
             break;
-
         case 'settings-resetted':
             $text = lang("Settings resetted to the default values.", "Einstellungen wurden auf den Standard zurückgesetzt.");
             // $text = lang("Thank you.", "Vielen Dank.");
             $class = "success";
             break;
-
         case 'settings-replaced':
             $text = lang("Settings replaced by uploaded file.", "Einstellungen wurden durch den Upload ersetzt.");
             // $text = lang("Thank you.", "Vielen Dank.");

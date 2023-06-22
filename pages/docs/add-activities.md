@@ -85,7 +85,10 @@ Der Titel kann über einen Rich-Text-Editor bearbeitet und formatiert werden. Da
         <span style="">Titel</span>
     </label>
     <div class="form-group title-editor"></div>
-    <input type="text" class="form-control hidden" name="values[title]" id="title" required="" value="">   
+    <input type="text" class="form-control hidden" name="values[title]" id="title" required="" value="">  
+    <script>
+        initQuill(document.getElementById('title-editor'));
+    </script> 
 </div>
 
 ### Autoren bearbeiten

@@ -121,6 +121,8 @@ function getUser($name)
 
             $search = ldap_search($connect, $base_dn, $fields);
             $result = ldap_get_entries($connect, $search);
+            // dump(ldap_get_dn($connect, ldap_first_entry($connect, $search)));
+            // dump(ldap_first_entry($connect, $search))['uid'];
             return $result;
             $ldap_username = $result[0]['samaccountname'][0];
             $ldap_last_name = $result[0]['cn'][0];

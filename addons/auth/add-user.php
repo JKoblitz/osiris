@@ -1,0 +1,113 @@
+<?php
+$data = $_POST['values'] ?? [];
+?>
+
+<h1>
+    <?=lang('Create new user', 'Nutzer anlegen')?>
+</h1>
+
+<form action="#" method="post">
+
+    <div class="form-row row-eq-spacing-sm">
+        <div class="col">
+            <label class="required" for="username">Username </label>
+            <input class="form-control" type="text" id="username" name="username" required>
+        </div>
+        <div class="col">
+            <label class="required" for="password">Password</label>
+            <input class="form-control" type="password" id="password" name="password" required>
+        </div>
+    </div>
+
+
+    <div class="form-row row-eq-spacing-sm">
+        <div class="col-sm-2">
+            <?php
+                $title = $data['academic_title'] ?? '';
+            ?>
+            
+            <label for="academic_title">Title</label>
+            <select name="values[academic_title]" id="academic_title" class="form-control">
+                <option value="" <?= $title == '' ? 'selected' : '' ?>></option>
+                <option value="Dr." <?= $title == 'Dr.' ? 'selected' : '' ?>>Dr.</option>
+                <option value="Prof. Dr." <?= $title == 'Prof. Dr.' ? 'selected' : '' ?>>Prof. Dr.</option>
+                <option value="PD Dr." <?= $title == 'PD Dr.' ? 'selected' : '' ?>>PD Dr.</option>
+                <option value="Prof." <?= $title == 'Prof.' ? 'selected' : '' ?>>Prof.</option>
+                <option value="PD" <?= $title == 'PD' ? 'selected' : '' ?>>PD</option>
+                <!-- <option value="Prof. Dr." <?= $title == 'Prof. Dr.' ? 'selected' : '' ?>>Prof. Dr.</option> -->
+            </select>
+        </div>
+        <div class="col-sm">
+            <label class="required" for="first"><?= lang('First name', 'Vorname') ?></label>
+            <input type="text" name="values[first]" id="first" class="form-control" value="<?= $data['first'] ?? '' ?>" required>
+        </div>
+        <div class="col-sm">
+            <label class="required" for="last"><?= lang('Last name', 'Nachname') ?></label>
+            <input type="text" name="values[last]" id="last" class="form-control" value="<?= $data['last'] ?? '' ?>" required>
+        </div>
+    </div>
+
+
+
+    <div class="form-row row-eq-spacing-sm">
+        <div class="col-sm">
+            <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
+            <select name="values[dept]" id="dept" class="form-control">
+                <option value="">Unknown</option>
+                <?php
+                $dept = $data['dept'] ?? '';
+                foreach ($Settings->getDepartments() as $d => $dept) { ?>
+                    <option value="<?= $d ?>" <?= $dept == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="col-sm">
+            <label for="telephone"><?= lang('Telephone', 'Telefon') ?></label>
+            <input type="text" name="values[telephone]" id="telephone" class="form-control" value="<?= $data['telephone'] ?? '' ?>">
+        </div>
+        <div class="col-sm">
+            <label for="mail" class="required">Mail</label>
+            <input type="text" name="values[mail]" id="mail" class="form-control" value="<?= $data['mail'] ?? '' ?>" required>
+        </div>
+
+    </div>
+
+
+
+    <div class="form-group">
+        <span><?= lang('Gender', 'Geschlecht') ?>:</span>
+        <?php
+        $gender = $data['gender'] ?? 'n';
+        ?>
+
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-m" value="m" <?= $gender == 'm' ? 'checked' : '' ?>>
+            <label for="gender-m"><?= lang('Male', 'Männlich') ?></label>
+        </div>
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-f" value="f" <?= $gender == 'f' ? 'checked' : '' ?>>
+            <label for="gender-f"><?= lang('Female', 'Weiblich') ?></label>
+        </div>
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-d" value="d" <?= $gender == 'd' ? 'checked' : '' ?>>
+            <label for="gender-d"><?= lang('Non-binary', 'Divers') ?></label>
+        </div>
+        <div class="custom-radio d-inline-block ml-10">
+            <input type="radio" name="values[gender]" id="gender-n" value="n" <?= $gender == 'n' ? 'checked' : '' ?>>
+            <label for="gender-n"><?= lang('Not specified', 'Nicht angegeben') ?></label>
+        </div>
+
+    </div>
+
+    
+    <div>
+        <div class="form-group custom-checkbox d-inline-block ml-10">
+            <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
+            <label for="is_scientist"><?=lang('I am a scientist', 'Ich bin Wissenschaftler_in')?></label>
+        </div>
+
+    </div>
+
+
+    <button type="submit" class="btn">Submit</button>
+</form>

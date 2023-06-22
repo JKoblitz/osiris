@@ -6,6 +6,8 @@ define('ROOTPATH', '');
 // define ADMIN user name
 define('ADMIN', 'juk20');
 
+// if you do not use LDAP, change the following to 'AUTH'
+define('USER_MANAGEMENT', 'LDAP');
 // define LDAP connection
 define("LDAP_IP", "100.10.100.0");
 define("LDAP_PORT", 389);

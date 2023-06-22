@@ -101,11 +101,13 @@ function validateValues($values)
         } else if ($key == 'start' || $key == 'end') {
             if (DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
                 $values[$key] = valiDate($value);
-                if (!isset($values['year']) && isset($values[$key]['year'])) {
-                    $values['year'] = $values[$key]['year'];
-                }
-                if (!isset($values['month']) && isset($values[$key]['month'])) {
-                    $values['month'] = $values[$key]['month'];
+                if ($key == 'start'){
+                    if (!isset($values['year']) && isset($values[$key]['year'])) {
+                        $values['year'] = $values[$key]['year'];
+                    }
+                    if (!isset($values['month']) && isset($values[$key]['month'])) {
+                        $values['month'] = $values[$key]['month'];
+                    }
                 }
             } else {
                 $values[$key] = null;

@@ -110,7 +110,7 @@ Nachdem du alle Aktivitäten überprüft und ggf. ergänzt, sowie alle Warnungen
 
 <a class="btn btn-lg btn-success">
     <i class="ph ph-question mr-5"></i>
-    Aktuelles Quartal freigeben
+    Ausgewähltes Quartal freigeben
 </a>
 
 Daraufhin öffnet sich ein Fenster, in dem du noch einmal bestätigen musst, dass du das Quartal tatsächlich überprüft hast.
