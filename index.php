@@ -97,12 +97,6 @@ Route::get('/', function () {
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
-        if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
-            echo "<a class='' href='" . ROOTPATH . "/auth/new-user'>" . lang(
-                'New user',
-                'Neuer Nutzer'
-            ) . "</a>";
-        }
         include BASEPATH . "/footer.php";
     } elseif ($USER['is_controlling']) {
         $path = ROOTPATH . "/dashboard";
@@ -295,13 +289,6 @@ Route::get('/user/login', function () {
         echo (lang("You need to be logged in to see this page.", "Du musst eingeloggt sein, um diese Seite zu sehen."));
     }
     include BASEPATH . "/pages/userlogin.php";
-    if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
-
-        echo "<a class='' href='" . BASEPATH . "/auth/new-user'>" . lang(
-            'New user',
-            'Neuer Nutzer'
-        ) . "</a>";
-    }
     include BASEPATH . "/footer.php";
 });
 
