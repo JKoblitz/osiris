@@ -215,7 +215,7 @@ if ($showcoins == 'all') {
                     <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
                 </span>
             <?php } else { ?>
-                <?php if ($scientist['is_admin'] ?? true) { ?>
+                <?php if ($scientist['is_admin'] ?? false) { ?>
                     <span class="user-role">
                         <?= lang('ADMIN') ?>
                     </span>

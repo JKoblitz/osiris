@@ -212,7 +212,7 @@ Route::post('/lom', function () {
 
 
 
-Route::get('/achievements/?([a-z0-9]*)', function ($user) {
+Route::get('/achievements/?(.*)', function ($user) {
     if (empty($user)) $user = $_SESSION['username'];
 
     include_once BASEPATH . "/php/_config.php";
@@ -865,7 +865,7 @@ Route::get('/expertise', function () {
     include BASEPATH . "/footer.php";
 });
 
-Route::get('/profile/?([a-z0-9]*)', function ($user) {
+Route::get('/profile/?(.*)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
@@ -894,7 +894,7 @@ Route::get('/profile/?([a-z0-9]*)', function ($user) {
 }, 'login');
 
 
-Route::get('/scientist/?([a-z0-9]*)', function ($user) {
+Route::get('/scientist/?(.*)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 

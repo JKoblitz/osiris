@@ -54,7 +54,7 @@
         <th><?= lang('First name', 'Vorname') ?></th>
         <th><?= lang('Dept', 'Abteilung') ?></th>
         <th><?= lang('Phone', 'Telefon') ?></th>
-        <th><?= lang('Comment', 'Kommentar') ?></th>
+        <!-- <th><?= lang('Comment', 'Kommentar') ?></th> -->
         <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
         <th><?= lang('Active', 'Aktiv') ?></th>
         <th><?= lang('Leader', 'Leiter:in') ?></th>
@@ -68,7 +68,7 @@
     <tbody>
 
         <?php
-        $result = $osiris->users->find(['is_active'=>true])->toArray();
+        $result = $osiris->users->find()->toArray();
 
         foreach ($result as $document) {
             $username = strval($document['_id']);
@@ -84,26 +84,26 @@
                 <td><a href="<?= ROOTPATH ?>/profile/<?= $username ?>"><?= $username ?></a></td>
                 <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
                 <td><?= $document['first'] ?></td>
-                <td class="text-<?= $document['dept'] ?>">
-                    <?php if ($document['is_leader']) { ?>
-                        <strong><?= $document['dept'] ?></strong>
+                <td class="text-<?= $document['dept'] ?? '' ?>">
+                    <?php if ($document['is_leader'] ?? false) { ?>
+                        <strong><?= $document['dept'] ?? '' ?></strong>
                     <?php } else { ?>
-                        <?= $document['dept'] ?>
+                        <?= $document['dept'] ?? '' ?>
                     <?php } ?>
 
                 </td>
                 <td><?php
-                    if (!empty($document['telephone'])) {
+                    if (!empty($document['telephone'] ?? '')) {
                         $ph = str_replace('+49', '0', $document['telephone']);
                         $ph = preg_replace('/^0531-?/', '', $ph);
                         $ph = preg_replace('/^2616-?/', '', $ph);
                         echo $ph;
                     }
                     ?></td>
-                <td><?= $document['unit'] ?></td>
-                <td><?= bool_icon($document['is_scientist'] ?? false) ?> <span class="hidden"><?= $document['is_scientist'] ?></span></td>
-                <td><?= bool_icon($document['is_active'] ?? false) ?> <span class="hidden"><?= $document['is_active'] ?></span></td>
-                <td><?= bool_icon($document['is_leader'] ?? false) ?> <span class="hidden"><?= $document['is_leader'] ?></span></td>
+                <!-- <td><?= $document['unit'] ?? '' ?></td> -->
+                <td><?= bool_icon($document['is_scientist'] ?? false) ?> <span class="hidden"><?= $document['is_scientist'] ?? '0' ?></span></td>
+                <td><?= ($document['is_active'] ?? false) ? 'yes' : 'no' ?></td>
+                <td><?= bool_icon($document['is_leader'] ?? false) ?> <span class="hidden"><?= $document['is_leader'] ?? '0' ?></span></td>
                 <td><?= $document['gender'] ?? 'n' ?></td>
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
@@ -153,7 +153,11 @@
             dom: 'frtipP',
             searchPanes: {
                 initCollapsed: true,
-                columns: [4, 7, 8, 9, 10]
+                columns: [4, 6, 7, 8, 9],
+                preSelect: [{
+                    column: 7,
+                    rows: ['yes']
+                }]
             },
 
             columnDefs: [{
@@ -163,22 +167,19 @@
                     visible: true
                 },
                 {
-                    targets: [4, 7],
+                    targets: [4, 6],
                     searchable: true,
                     visible: true
                 },
                 {
-                    targets: [9, 10],
+                    targets: [8, 9],
                     searchable: true,
                     visible: false
-                }, 
+                },
                 {
-                    targets: [8],
+                    targets: [7],
                     searchable: true,
                     visible: false,
-                    searchPanes: {
-                        preSelect: ['1']
-                    }
                 },
             ],
             "order": [

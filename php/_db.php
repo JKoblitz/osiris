@@ -169,8 +169,8 @@ if (!empty($_SESSION['username'])) {
     // set standard values
     if (!isset($USER['is_controlling'])) $USER['is_controlling'] = false;
     
-    $USER['is_admin'] = ($_SESSION['username'] == ADMIN || $USER['is_admin'] ?? false);
-    
+    $USER['is_admin'] = ($_SESSION['username'] === ADMIN || ($USER['is_admin'] ?? false));
+
     if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
     if (!isset($USER['is_leader'])) $USER['is_leader'] = false;
     if (!isset($USER['display_activities'])) $USER['display_activities'] = 'web';
