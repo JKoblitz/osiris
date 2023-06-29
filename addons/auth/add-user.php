@@ -3,7 +3,7 @@ $data = $_POST['values'] ?? [];
 ?>
 
 <h1>
-    <?=lang('Create new user', 'Nutzer anlegen')?>
+    <?= lang('Create new user', 'Nutzer anlegen') ?>
 </h1>
 
 <form action="#" method="post">
@@ -23,9 +23,9 @@ $data = $_POST['values'] ?? [];
     <div class="form-row row-eq-spacing-sm">
         <div class="col-sm-2">
             <?php
-                $title = $data['academic_title'] ?? '';
+            $title = $data['academic_title'] ?? '';
             ?>
-            
+
             <label for="academic_title">Title</label>
             <select name="values[academic_title]" id="academic_title" class="form-control">
                 <option value="" <?= $title == '' ? 'selected' : '' ?>></option>
@@ -99,14 +99,38 @@ $data = $_POST['values'] ?? [];
 
     </div>
 
-    
+
     <div>
         <div class="form-group custom-checkbox d-inline-block ml-10">
             <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_scientist"><?=lang('I am a scientist', 'Ich bin Wissenschaftler_in')?></label>
+            <label for="is_scientist"><?= lang('I am a scientist', 'Ich bin Wissenschaftler_in') ?></label>
         </div>
 
     </div>
+
+    <?php
+    if ($Settings->affiliation === 'LISI') {
+    ?>
+        <div class="alert alert-signal mb-20">
+            <div class="title">
+                Demo
+            </div>
+
+            <?= lang('
+            This OSIRIS instance is a demo with the fictional institute LISI. 
+            The use of this app and therefore the provision of personal data is voluntary. 
+            By using this site, you agree to our <a href="/impress" class="">privacy</a> policy.
+            User accounts will be deleted by the admin after an unspecified amount of time. If you want me to actively delete your data, contact me.
+            ', '
+            Bei dieser OSIRIS-Instanz handelt es sich um eine Demo mit dem fiktiven Institut LISI. 
+            Die Nutzung dieser App und somit auch der Bereitstellung von personenbezogenen Daten ist freiwillig. 
+            Wenn du diese Seite nutzt, stimmst du damit unseren Richtlinien zum <a href="/impress" class="">Datenschutz</a> zu.
+            Nutzeraccounts werden nach unbestimmter Zeit vom Admin gelöscht. Wenn ihr möchtet, dass ich eure Daten aktiv lösche, meldet euch bei mir.
+            ') ?>
+        </div>
+    <?php
+    }
+    ?>
 
 
     <button type="submit" class="btn">Submit</button>

@@ -2,6 +2,7 @@
 include_once BASEPATH . "/php/Modules.php";
 
 
+
 $doc = json_decode(json_encode($activity->getArrayCopy()), true);
 $locked = $activity['locked'] ?? false;
 
@@ -14,18 +15,9 @@ if ($doc['type'] == 'publication' && isset($doc['journal'])) {
             ['$unset' => ['journal_id' => '']]
         );
     }
-
-    $if = get_impact($doc);
-    // update impact if necessary
-    if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])) {
-        // dump($if);
-        $osiris->activities->updateOne(
-            ['_id' => $activity['_id']],
-            ['$set' => ['impact' => $if]]
-        );
-        $doc['impact'] = $if;
-    }
 }
+renderActivities(['_id' =>  $activity['_id']]);
+
 
 $user_activity = isUserActivity($doc, $user);
 
@@ -33,8 +25,6 @@ $user_activity = isUserActivity($doc, $user);
 $Format = new Document;
 
 $Format->setDocument($doc);
-
-// dump(getDeptFromAuthors($doc['authors']));
 
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>

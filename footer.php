@@ -7,7 +7,8 @@
    <span>
         <?=lang('Developed with', 'Entwickelt mit')?> <i class="ph ph-regular ph-heart" title="Für Leonie"></i> in Helmstedt
    </span>
-   <a href="<?=ROOTPATH?>/license">License</a>
+   <a href="<?=ROOTPATH?>/license"><?=lang('License', 'Lizenz')?></a>
+   <a href="<?=ROOTPATH?>/impress"><?=lang('Impress', 'Impressum')?></a>
     <span>
         &copy; Julia Koblitz 2022
     </span>

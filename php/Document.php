@@ -476,6 +476,8 @@ class Document extends Settings
                 return $this->getVal('series');
             case "book-title": // ["book"],
                 return $this->getVal('book');
+            case "category": // ["category"],
+                return $this->translateCategory($this->getVal('category'));
             case "city": // ["city"],
                 return $this->getVal('city');
             case "conference": // ["conference"],

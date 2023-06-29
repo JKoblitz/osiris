@@ -177,6 +177,7 @@ Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
 
         $insertOneResult = $osiris->activities->insertOne($new);
         $new_id = $insertOneResult->getInsertedId();
+        renderActivities(['_id' => $new_id]);
 
         $osiris->queue->deleteOne(['_id' => $mongo_id]);
         echo $new_id;
@@ -800,6 +801,8 @@ Route::post('/import/google', function () {
     $insertOneResult  = $osiris->activities->insertOne($result);
     $id = $insertOneResult->getInsertedId();
     $result['_id'] = $id;
+    renderActivities(['_id' => $id]);
+
     $Format = new Document();
     $Format->setDocument($doc);
 
@@ -1337,7 +1340,7 @@ Route::get('/settings', function () {
     // $settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);  
 });
 
-include_once 'user_management.php';
+// include_once 'user_management.php';
 
 // Route::get('/discover', function () {
 //     include_once BASEPATH . "/php/_db.php";
@@ -1408,6 +1411,38 @@ Route::get('/get-modules', function () {
 
 
 
+Route::get('/test', function () {
+    include_once BASEPATH . "/php/_db.php";
+
+    $filter = [
+        "type" => "students",
+        "subtype" => "students",
+        "category" => ['$in'=>["doctoral thesis", 'master thesis', 'bachelor thesis']]
+    ];
+
+    $updateResult = $osiris->activities->updateMany(
+        $filter,
+        ['$set' => ["subtype" => 'theses']]
+    );
+    echo $updateResult->getModifiedCount();
+
+    $filter = [
+        "type" => "students",
+        "subtype" => "guests",
+        "category" => ['$in'=>['lecture internship']]
+    ];
+
+    $updateResult = $osiris->activities->updateMany(
+        $filter,
+        ['$set' => ["subtype" => 'students']]
+    );
+    echo $updateResult->getModifiedCount();
+
+    renderActivities();
+});
+
+
+
 // Route::get('/calculate-if', function () {
 //     include_once BASEPATH . "/php/_config.php";
 //     include BASEPATH . "/header.php";
@@ -1437,6 +1472,14 @@ Route::get('/get-modules', function () {
 
 //     include BASEPATH . "/footer.php";
 // });
+
+
+Route::get('/impress', function () {
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/impressum.html";
+    include BASEPATH . "/footer.php";
+});
+
 
 
 // Add a 404 not found route

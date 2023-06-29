@@ -521,7 +521,7 @@ function getJournalAlex(name) {
                 journals.push({
                     journal: j.display_name,
                     issn: j.issn,
-                    abbr: j.abbreviated_title.replace('.', ''),
+                    abbr: (j.abbreviated_title ?? '').replace('.', ''),
                     publisher: j.host_organization_name,
                     openalex: j.id,
                     if: j.summary_stats['2yr_mean_citedness'],

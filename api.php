@@ -108,7 +108,7 @@ Route::get('/api/activities', function () {
             $table[] = [
                 'id' => strval($doc['_id']),
                 'activity' => $Format->format(),
-                'icon' =>$Format->activity_icon()
+                'icon' => $Format->activity_icon()
             ];
         }
 
@@ -136,8 +136,11 @@ Route::get('/api/html', function () {
     foreach ($docs as $i => $doc) {
         if (isset($_GET['limit']) && $i >= $_GET['limit']) break;
 
-        $Format->setDocument($doc);
-        $depts = getDeptFromAuthors($doc['authors']);
+        if (isset($doc['rendered'])) {
+            $rendered = $doc['rendered'];
+        } else {
+            $rendered = renderActivities(['_id' => $id]);
+        }
 
         $link = null;
         if (!empty($doc['doi'] ?? null)) {
@@ -145,12 +148,12 @@ Route::get('/api/html', function () {
         } elseif (!empty($doc['pubmed'] ?? null)) {
             $link = "https://www.ncbi.nlm.nih.gov/pubmed/" . $doc['pubmed'];
         }
-        
+
         $result[] = [
             'id' => strval($doc['_id']),
-            'html' => $Format->format(),
+            'html' => $rendered['print'],
             'year' => $doc['year'] ?? null,
-            'departments' => $depts,
+            'departments' => $rendered['depts'],
             'link' => $link
         ];
     }
@@ -172,7 +175,7 @@ Route::get('/api/all-activities', function () {
     if ($page == 'my-activities') {
         $highlight = $user;
     }
-    $Format = new Document($highlight);
+    // $Format = new Document($highlight);
 
     $filter = [];
     $result = [];
@@ -182,21 +185,22 @@ Route::get('/api/all-activities', function () {
     }
     $cursor = $osiris->activities->find($filter);
     $cart = readCart();
-
     foreach ($cursor as $doc) {
-        
-        $Format->setDocument($doc);
-
-        $depts = getDeptFromAuthors($doc['authors']);
         $id = $doc['_id'];
-        $type = $doc['type'];
-        // $q = getQuarter($doc);
-        // $y = getYear($doc);
-        // $quarter = $endQuarter = $y . "Q" . $q;
+        if (isset($doc['rendered'])) {
+            $rendered = $doc['rendered'];
+        } else {
+            $rendered = renderActivities(['_id' => $id]);
+        }
 
-        $format_full = $Format->format();
+        $depts = $rendered['depts'];
+        if ($depts instanceof MongoDB\Model\BSONArray ) {
+            $depts = $depts->bsonSerialize();
+        }
+        $type = $doc['type'];
+        $format_full = $rendered['print'];
         if (($_GET['display_activities'] ?? 'web') == 'web') {
-            $format = $Format->formatShort();
+            $format = $rendered['web'];
         } else {
             $format = $format_full;
         }
@@ -225,14 +229,14 @@ Route::get('/api/all-activities', function () {
 
         $datum = [
             'quarter' => $sq,
-            'type' =>$Format->activity_icon($doc) . '<span class="hidden">' . $type . " " . $Format->activity_title($doc) . '</span>',
+            'type' => $rendered['icon'] . '<span class="hidden">' . $type . " " . $rendered['title'] . '</span>',
             'activity' => $format,
             'links' => '',
             'search-text' => $format_full,
             'start' => $sy . '-' . ($sm < 10 ? '0' : '') . $sm . '-' . ($doc['day'] ?? '01'),
             'end' => $ey . '-' . ($em < 10 ? '0' : '') . $em . '-' . ($doc['day'] ?? '01'),
             'departments' => implode(', ', $depts),
-            'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true': 'false')
+            'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true' : 'false')
         ];
 
         if ($active) {

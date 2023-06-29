@@ -168,7 +168,7 @@ if (!empty($_SESSION['username'])) {
 
     // set standard values
     if (!isset($USER['is_controlling'])) $USER['is_controlling'] = false;
-    
+
     $USER['is_admin'] = ($_SESSION['username'] === ADMIN || ($USER['is_admin'] ?? false));
 
     if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
@@ -391,7 +391,7 @@ function impact_from_year($journal, $year = CURRENTYEAR)
 
     // get impact factors from journal
     $impact = $journal['impact'];
-    if ($impact instanceof BSONArray) {
+    if ($impact instanceof MongoDB\Model\BSONArray) {
         $impact = $impact->bsonSerialize();
     }
     // sort ascending by year
@@ -411,7 +411,7 @@ function latest_impact($journal)
     $last = null;
     if (!isset($journal['impact'])) return null;
     $impact = $journal['impact'];
-    if ($impact instanceof BSONArray) {
+    if ($impact instanceof MongoDB\Model\BSONArray) {
         $impact = $impact->bsonSerialize();
     }
     if (empty($impact)) return null;
@@ -580,4 +580,38 @@ function getDeptFromAuthors($authors)
         $result[] = $user['dept'];
     }
     return $result;
+}
+
+function renderActivities($filter = [])
+{
+    global $osiris;
+    $Format = new Document(true);
+    $cursor = $osiris->activities->find($filter);
+    foreach ($cursor as $doc) {
+        $id = $doc['_id'];
+        $Format->setDocument($doc);
+        $rendered = [
+            'print' => $Format->format(),
+            'web' => $Format->formatShort(),
+            'depts' => getDeptFromAuthors($doc['authors']),
+            'icon' => $Format->activity_icon(),
+            'title' => $Format->activity_title(),
+        ];
+        $values = ['rendered' => $rendered];
+
+        if ($doc['type'] == 'publication' && isset($doc['journal'])) {
+            // update impact if necessary
+            $if = get_impact($doc);
+            if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])) {
+                $values['impact'] = $if;
+            }
+        }
+
+        $osiris->activities->updateOne(
+            ['_id' => $id],
+            ['$set' => $values]
+        );
+    }
+    // return last element in case that only one id has been rendered
+    return $rendered;
 }

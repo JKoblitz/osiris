@@ -243,6 +243,8 @@ Route::post('/create', function () {
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
+    renderActivities(['_id' => $id]);
+
     // addUserActivity('create');
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
@@ -485,6 +487,8 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['_id' => $id],
         ['$set' => $values]
     );
+
+    renderActivities(['_id' => $id]);
 
     if (isset($values['doi']) && !empty($values['doi'])) {
         // make sure that there is no duplicate entry in the queue

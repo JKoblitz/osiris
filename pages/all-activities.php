@@ -166,6 +166,7 @@ $user = $user ?? $_SESSION['username'];
                 },
                 dataSrc: 'data'
             },
+            deferRender: true,
             columnDefs: [{
                     "targets": 0,
                     "data": "quarter",
