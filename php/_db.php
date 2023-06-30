@@ -587,6 +587,13 @@ function renderActivities($filter = [])
     global $osiris;
     $Format = new Document(true);
     $cursor = $osiris->activities->find($filter);
+    $rendered = [
+        'print' => '',
+        'web' => '',
+        'depts' => '',
+        'icon' => '',
+        'title' => '',
+    ];
     foreach ($cursor as $doc) {
         $id = $doc['_id'];
         $Format->setDocument($doc);
