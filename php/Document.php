@@ -189,20 +189,20 @@ class Document extends Settings
         return $str . " $sep " . end($array);
     }
 
-    public static function abbreviateAuthor($last, $first, $reverse = true, $space='&nbsp;')
+    public static function abbreviateAuthor($last, $first, $reverse = true, $space = '&nbsp;')
     {
         $fn = "";
         if ($first) :
             foreach (preg_split("/(\s+| |-|\.)/u", $first, -1, PREG_SPLIT_DELIM_CAPTURE) as $name) {
                 if (empty($name) || $name == '.' || $name == ' ') continue;
-                if ($name == '-') 
+                if ($name == '-')
                     $fn .= '-';
                 else
                     $fn .= "" . mb_substr($name, 0, 1) . ".";
             }
         endif;
         if (empty(trim($fn))) return $last;
-        if ($reverse) return $last . ",".$space . $fn;
+        if ($reverse) return $last . "," . $space . $fn;
         return $fn . $space . $last;
     }
 
@@ -449,6 +449,8 @@ class Document extends Settings
                 return lang('Lecture and practical course', 'Vorlesung und Praktikum');
             case 'lecture-seminar':
                 return lang('Lecture and seminar', 'Vorlesung und Seminar');
+            case 'practical-seminar':
+                return lang('Practical course and seminar', 'Praktikum und Seminar');
             case 'lecture-practical-seminar':
                 return lang('Lecture, seminar, practical course', 'Vorlesung, Seminar und Praktikum');
             case 'seminar':

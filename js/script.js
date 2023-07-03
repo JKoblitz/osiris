@@ -993,7 +993,9 @@ function toggleForm(pub) {
         // case 'book-chapter':
         //     selectedType = 'chapter';
         //     break;
-
+        case 'posted-content':
+            selectedType = 'preprint'
+            break
         default:
             selectedType = pub.type;
             break;

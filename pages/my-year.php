@@ -19,16 +19,12 @@ $_lom = 0;
 
 // $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
 
-$groups = [
-    'publication' => [],
-    'poster' => [],
-    'lecture' => [],
-    'review' => [],
-    "teaching" => [],
-    "students" => [],
-    "software" => [],
-    "misc" => [],
-];
+
+$groups = [];
+foreach ($Settings->activities as $key => $value) {
+    $groups[$value['id']] = [];
+}
+
 
 $timeline = [];
 $timelineGroups = [];
