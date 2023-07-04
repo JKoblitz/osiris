@@ -304,6 +304,10 @@ function CallAPI($method, $url, $data = [])
     return $result;
 }
 
+function redirect($url){
+    header("Location: " . ROOTPATH . $url);
+}
+
 function endOfCurrentQuarter($as_string = false)
 {
     $q = CURRENTYEAR . '-' . (3 * CURRENTQUARTER) . '-' . (CURRENTQUARTER == 1 || CURRENTQUARTER == 4 ? 31 : 30) . ' 23:59:59';

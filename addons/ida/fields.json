@@ -1,0 +1,181 @@
+{
+    "da_pva_2011+pva_pub_ge": {
+        "name": "Alle Publikationen ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "$or": [
+                { "authors.aoi": true },
+                { "editors.aoi": true }
+            ]
+        }
+    },
+    "da_pva_2011+pva_pub_zs": {
+        "name": "Zeitschriftenbeiträge ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": {"$in": ["article", "magazine"]},
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_re": {
+        "name": "Referierte Zeitschriftenbeiträge ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_mo": {
+        "name": "Monografien ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "book",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    
+    "da_pva_2011+pva_pub_re": {
+        "name": "Referierte Zeitschriftenbeiträge ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_wpr": {
+        "name": "Working Papers / Reports ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "others",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_sb": {
+        "name": "Beiträge in Sammelbänden ohne OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "chapter",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+
+
+    "da_pva_2011+pva_pub_oa_ge_nm": {
+        "name": "Alle Publikationen (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "$or": [
+                { "authors.aoi": true },
+                { "editors.aoi": true }
+            ]
+        }
+    },
+    "da_pva_2011+pva_pub_oa_zs_nm": {
+        "name": "Zeitschriftenbeiträge (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "subtype": {"$in": ["article", "magazine"]},
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_dre_nm": {
+        "name": "Referierte Zeitschriftenbeiträge (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_mo_nm": {
+        "name": "Monografien (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "subtype": "book",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_re_nm": {
+        "name": "Referierte Zeitschriftenbeiträge (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_wpr_nm": {
+        "name": "Working Papers / Reports (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "subtype": "others",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_sb_nm": {
+        "name": "Beiträge in Sammelbänden (OA ohne Einteilung)",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "subtype": "chapter",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+
+
+    
+    "da_pva_2011+pva_pub_hrfz": {
+        "name": "Herausgeberschaften",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "editors.aoi": true
+        }
+    },
+    "da_pva_2011+pva_pub_oa_hrfz": {
+        "name": "Herausgeberschaften: OA",
+        "filter": {
+            "year": 2022,
+            "type": "publication",
+            "open_access": true,
+            "editors.aoi": true
+        }
+    }
+}
