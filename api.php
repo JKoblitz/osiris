@@ -149,13 +149,14 @@ Route::get('/api/html', function () {
             $link = "https://www.ncbi.nlm.nih.gov/pubmed/" . $doc['pubmed'];
         }
 
-        $result[] = [
+        $entry = [
             'id' => strval($doc['_id']),
             'html' => $rendered['print'],
             'year' => $doc['year'] ?? null,
             'departments' => $rendered['depts'],
             'link' => $link
         ];
+        $result[] = $entry;
     }
 
     echo return_rest($result, count($result));

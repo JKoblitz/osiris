@@ -77,6 +77,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <script src="<?= ROOTPATH ?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
     <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
 
+
+    <?php if (isset($additionalHead)) { echo $additionalHead; } ?>
+    
 </head>
 
 <body>

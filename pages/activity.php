@@ -2,31 +2,6 @@
 include_once BASEPATH . "/php/Modules.php";
 
 
-
-$doc = json_decode(json_encode($activity->getArrayCopy()), true);
-$locked = $activity['locked'] ?? false;
-
-if ($doc['type'] == 'publication' && isset($doc['journal'])) {
-    // fix old journal_ids
-    if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])) {
-        $doc['journal_id'] = null;
-        $osiris->activities->updateOne(
-            ['_id' => $activity['_id']],
-            ['$unset' => ['journal_id' => '']]
-        );
-    }
-}
-renderActivities(['_id' =>  $activity['_id']]);
-
-
-$user_activity = isUserActivity($doc, $user);
-
-
-$Format = new Document;
-
-$Format->setDocument($doc);
-
-
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <div class="alert alert-signal">
         <h3 class="title">
