@@ -173,7 +173,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <table class="w-full" id="detail-table">
 
                     <?php
-                    $selected = $Format->subtype['modules'] ?? array();
+                    $selected = $Format->subtypeArr['modules'] ?? array();
                     $Modules = new Modules($doc);
                     $Format->usecase = "list";
 

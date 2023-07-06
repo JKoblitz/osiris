@@ -156,6 +156,11 @@ class Modules
             "name" => "Open-Access",
             "name_de" => "Open-Access"
         ],
+        "openaccess-status" => [
+            "fields" => ["open_access"],
+            "name" => "Open-Access",
+            "name_de" => "Open-Access"
+        ],
         "pages" => [
             "fields" => ["pages"],
             "name" => "Pages",
@@ -450,9 +455,9 @@ class Modules
                                 </tr>
                             </thead>
                             <tbody id="authors">
-                                <?php foreach ($this->preset ?? [] as $i => $author) { 
+                                <?php foreach ($this->preset ?? [] as $i => $author) {
                                     if (!isset($author['position'])) $author['position'] = 'middle';
-                                    ?>
+                                ?>
                                     <tr>
                                         <td>
                                             <input data-type="user" name="values[authors][<?= $i ?>][user]" type="text" class="form-control" list="user-list" value="<?= $author['user'] ?>" onchange="selectUsername(this)">
@@ -1337,6 +1342,24 @@ class Modules
                         <input type="radio" id="open_access" value="true" name="values[open_access]" <?= $this->val('open_access', false) ? 'checked' : '' ?>>
                         <label for="open_access"><i class="icon-open-access text-success"></i> Open access</label>
                     </div>
+                </div>
+            <?php
+                break;
+
+            case "openaccess-status":
+                $status = $this->val('oa_status', false);
+                if (!$status) $status = $this->val('open_access', false) ? 'open' : 'closed';
+            ?>
+                <!-- oa_status -->
+                <div class="data-module col-3" data-module="openaccess-status">
+                    <select class="form-control" id="oa_status" name="values[oa_status]" <?= $required ?> autocomplete="off">
+                        <option value="closed" <?= $status == 'closed' ? 'selected' : '' ?>>Closed Access</option>
+                        <option value="open" <?= $status == 'open' ? 'selected' : '' ?>>Open Access (<?= lang('unknown status', 'Unbekannter Status') ?>)</option>
+                        <option value="gold" <?= $status == 'gold' ? 'selected' : '' ?>>Open Access (Gold)</option>
+                        <option value="green" <?= $status == 'green' ? 'selected' : '' ?>>Open Access (Green)</option>
+                        <option value="hybrid" <?= $status == 'hybrid' ? 'selected' : '' ?>>Open Access (Hybrid)</option>
+                        <option value="bronze" <?= $status == 'bronze' ? 'selected' : '' ?>>Open Access (Bronze)</option>
+                    </select>
                 </div>
             <?php
                 break;

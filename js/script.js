@@ -691,7 +691,7 @@ function getPubmed(id) {
                 var name = a.name.split(' ', 2)
                 var pos = 'middle'
                 if (i == 0) pos = 'first'
-                else if (i==pub.authors.length-1) pos='last'
+                else if (i == pub.authors.length - 1) pos = 'last'
                 name = {
                     family: name[0],
                     given: name[1].split('').join(' '),
@@ -781,7 +781,7 @@ function getDOI(doi) {
                     }
                     var pos = a.sequence ?? 'middle';
                     if (i === 0) pos = 'first'
-                    else if (i == pub.author.length-1) pos = 'last'
+                    else if (i == pub.author.length - 1) pos = 'last'
                     var name = {
                         family: a.family ?? a.name,
                         given: a.given,
@@ -815,6 +815,106 @@ function getDOI(doi) {
                 city: pub['publisher-location'],
                 // open_access: pub.open_access,
                 epub: (pub['published-print'] === undefined && pub['published-online'] === undefined),
+            }
+            toggleForm(pubdata)
+            getOpenAccessStatus(doi)
+            $('.loader').removeClass('show')
+        },
+        error: function (response) {
+            // toastError(response.responseText)
+            $('.loader').removeClass('show')
+            toastWarning('DOI was not found in CrossRef. I am looking in DataCite now.')
+            getDataciteDOI(doi)
+        }
+    })
+}
+
+
+function getOpenAccessStatus(doi) {
+    var url = 'https://api.openalex.org/works'
+    var data = { mailto: 'juk20@dsmz.de' }
+    url += '/https://doi.org/' + doi
+    
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+        url: url,
+        success: function (pub) {
+            fillOpenAccess(pub.open_access.oa_status ?? false)
+        }
+    })
+}
+
+function getOpenAlexDOI(doi) {
+    var url = 'https://api.openalex.org/works'
+    var data = { mailto: 'juk20@dsmz.de' }
+    url += '/https://doi.org/' + doi
+    
+    $.ajax({
+        type: "GET",
+        data: data,
+        dataType: "json",
+        url: url,
+        success: function (pub) {
+            // var pub = data
+            console.log(pub);
+
+            var date = pub.publication_date.split('-')
+
+
+            var authors = [];
+            // var editors = [];
+            var first = 1
+            if (pub.authorships === undefined && pub.editor !== undefined) {
+                pub.authorships = pub.editor
+            }
+            if (pub.authorships !== undefined) {
+                pub.authorships.forEach((a, i) => {
+                    var aoi = false
+                    a.institutions.forEach(e => {
+                        if (e.display_name.includes(AFFILIATION)) {
+                            aoi = true
+                        }
+                    })
+                    var pos = a.author_position ?? 'middle';
+                    if (pos == "first") {
+                        first = i + 1
+                    } else if (i == pub.authorships.length - 1) pos = 'last'
+                    var name = {
+                        family: a.author.display_name,
+                        given: '',
+                        affiliation: aoi,
+                        position: pos
+                    }
+                    authors.push(name)
+                });
+            }
+            
+            var journal = pub.primary_location
+            var pages = pub.biblio.first_page
+            if (pub.biblio.last_page) pages += '-'+pub.biblio.last_page
+            var pubdata = {
+                title: pub.title,
+                first_authors: first,
+                authors: authors,
+                year: date[0],
+                month: date[1] ?? null,
+                day: date[2] ?? null,
+                type: pub.type,
+                journal: journal.source.display_name,
+                issn: (journal.source.issn ?? []).join(' '),
+                issue: pub.biblio.issue,
+                volume: pub.biblio.volume,
+                pages: pages,
+                doi: doi,
+                // pubmed: null,
+                // edition: pub.edition,
+                // publisher: pub['publisher'] ?? pub['publisher-name'],
+                // isbn: pub['isbn'],
+                // city: pub['publisher-location'],
+                open_access: pub.open_access.oa_status,
+                epub: (journal.version !== 'publishedVersion'),
             }
             toggleForm(pubdata)
             $('.loader').removeClass('show')
@@ -905,7 +1005,7 @@ function getDataciteDOI(doi) {
                 }
                 var pos = a.sequence ?? 'middle'
                 if (i === 0) pos = 'first'
-                else if (i == pub.creator.length-1) pos = 'last'
+                else if (i == pub.creator.length - 1) pos = 'last'
                 console.log(pos);
                 var name = {
                     family: a.familyName,
@@ -1042,7 +1142,8 @@ function fillForm(pub) {
         'software_venue',
         'software_version',
         'date_start',
-        'software_doi'
+        'software_doi',
+        'open_access'
     ]
 
     elements.forEach(element => {
@@ -1054,6 +1155,10 @@ function fillForm(pub) {
     if (pub.epub !== undefined && (!UPDATE || !pub.epub || !pub.epub.length))
         $('#epub').attr('checked', pub.epub).addClass('is-valid')
 
+
+    if (pub.open_access !== undefined) {
+        fillOpenAccess(pub.open_access)
+    }
     if (pub.journal) {
         // prefer ISSN to look journal up:
         var j_val = pub.journal
@@ -1076,7 +1181,7 @@ function fillForm(pub) {
             if (d.affiliation === undefined) {
                 aff_undef = true
             }
-            addAuthorRow({ last: d.family, first: d.given, aoi: d.affiliation ?? false, position: d.position??'middle'})
+            addAuthorRow({ last: d.family, first: d.given, aoi: d.affiliation ?? false, position: d.position ?? 'middle' })
         })
     }
 
@@ -1105,6 +1210,18 @@ function fillForm(pub) {
 
 }
 
+function fillOpenAccess(oa){
+    if (oa === false || oa == 'closed'){
+        $('#open_access-0').attr('checked', true)
+        $('#oa_status option[value=closed]').attr('selected', true)
+    } else {
+        if (oa === true) oa = 'open'
+        console.log(oa);
+        $('#open_access').attr('checked', true)
+        $('#oa_status option[value='+oa+']').attr('selected', true)
+    }
+    $('#oa_status').addClass('is-valid')
+}
 
 function getPubData(event, form) {
     event.preventDefault();

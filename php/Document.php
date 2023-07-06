@@ -133,10 +133,10 @@ class Document extends Settings
                     "@type" => 'Book',
                     "name" => $d['book'] ?? null
                 ];
-                if (isset($d['editors'])){
+                if (isset($d['editors'])) {
                     $book['editor'] = Schema::authors($d['editors']);
                 }
-                
+
                 if (isset($d['isbn']))
                     $book['isbn'] = $d['isbn'];
                 if (isset($d['pages']))
@@ -162,7 +162,7 @@ class Document extends Settings
                 break;
         }
         $this->schema['@graph'][] = $main;
-        
+
         $s = '<script type="application/ld+json">';
         $s .= json_encode($this->schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $s .= '</script>';
@@ -762,11 +762,15 @@ class Document extends Settings
                     return "<span style='color:#B61F29;'>[Online ahead of print]</span>";
                 else return '';
             case "openaccess": // ["open_access"],
+            case "openaccess-status": // ["open_access"],
+                $status = $this->getVal('oa_status', 'Unknown Status');
                 if (!empty($this->getVal('open_access', false))) {
-                    return '<i class="icon-open-access text-success" title="Open Access"></i>';
+                    $oa = '<i class="icon-open-access text-success" title="Open Access (' . $status . ')"></i>';
                 } else {
-                    return '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
+                    $oa = '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
                 }
+                if ($this->usecase == 'list') return $oa . " ". $status;
+                return $oa;
             case "pages": // ["pages"],
                 return $this->getVal('pages');
             case "person": // ["name", "affiliation", "academic_title"],
