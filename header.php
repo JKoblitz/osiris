@@ -9,8 +9,12 @@ foreach ($breadcrumb as $crumb) {
 }
 $pagetitle = implode(' | ', array_reverse($pagetitle));
 
-$lasturl = explode("/", $_SERVER['REQUEST_URI']);
-$page = $page ?? end($lasturl);
+$uri = $_SERVER['REQUEST_URI'];
+// $uri = str_replace(ROOTPATH."/", '', $uri, 1);
+$uri = substr_replace($uri, '', 0, strlen(ROOTPATH."/"));
+$lasturl = explode("/", $uri);
+// dump($lasturl);
+$page =  $page ?? $lasturl[0]; //end($lasturl);
 $pageactive = function ($p) use ($page, $breadcrumb) {
     if ($page == $p) return "active";
     $uri = explode('?', $_SERVER['REQUEST_URI'], 2)[0];
@@ -342,13 +346,17 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <?php if ($USER['is_controlling']) { ?>
+                    <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
-                            <i class="ph ph-regular ph-file-chart-line" aria-hidden="true"></i>
+                            <i class="ph ph-regular ph-printer" aria-hidden="true"></i>
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
 
+                        <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
+                            <i class="ph ph-regular ph-clipboard-text" aria-hidden="true"></i>
+                            <?= lang('IDA-Integration') ?>
+                        </a> 
                     <?php } ?>
 
 

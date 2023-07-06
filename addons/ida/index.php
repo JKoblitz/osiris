@@ -78,6 +78,13 @@ Route::get('/ida/dashboard', function () {
 
 
 
+Route::post('/ida/update-institute', function () {
+    if (!isset($_POST['institute'])) die ('No institute selected');
+    $_SESSION['ida-institute_id'] = $_POST['institute'];
+    redirect('/ida/dashboard');
+});
+
+
 Route::get('/ida/formular/(\d+)', function ($formular_id) {
     require_once IDA_PATH . "/php/IDA.php";
 
@@ -93,7 +100,13 @@ Route::get('/ida/formular/(\d+)', function ($formular_id) {
 
     $formular = $IDA->formular($formular_id);
     include BASEPATH . "/header.php";
-    include IDA_PATH . "/pages/ida-formular.php";
+
+    if (!empty($IDA->msg)){
+        printMsg($IDA->msg, 'error');
+    }
+    if (!empty($formular)){
+        include IDA_PATH . "/pages/ida-formular.php";
+    }
 
     dump($formular, true);
 

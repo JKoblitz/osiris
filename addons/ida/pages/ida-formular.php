@@ -7,9 +7,6 @@ $steps = array_column($formular['steps'], null, 'id');
 $json = file_get_contents(IDA_PATH . "/fields.json");
 $myFields = json_decode($json, true);
 
-dump(json_last_error());
-// dump($json);
-
 // assign fields to steps
 foreach ($formular['custom_fields'] as $field) {
     $steps[$field['step_id']]['fields'][$field['id']] = $field;
@@ -21,16 +18,26 @@ foreach ($formular['custom_field_values'] as $value) {
 
 ?>
 
+<style>
+    .table tr.irrelevant {
+        display: none;
+    }
+
+    .table.show-all tr.irrelevant {
+        display: table-row;
+    }
+</style>
+
 <h1>
     <?= $formular['custom_fields'][0]['formular_short_title'] ?>
 </h1>
 <?php foreach ($steps as $step_id => $step) { ?>
-    <h2><?= $step['short_title']['de'] ?></h2>
+    <h2><?= $step['short_title']['de'] ?? 'unknown title' ?></h2>
 
     <?php
     $fields = $step['fields'];
     uasort($fields, function ($a, $b) {
-        if ($a['step_tile_id'] == $b['step_tile_id']){
+        if ($a['step_tile_id'] == $b['step_tile_id']) {
             return $a['position'] < $b['position'] ? -1 : 1;
         }
         return ($a['step_tile_id'] < $b['step_tile_id'] ? -1 : 1);
@@ -38,42 +45,41 @@ foreach ($formular['custom_field_values'] as $value) {
 
     ?>
 
-
+    <div class="custom-switch">
+        <input type="checkbox" id="switch-<?= $step_id ?>" value="" onchange="$(this).parent().next().toggleClass('show-all')">
+        <label for="switch-<?= $step_id ?>">Zeige alle Felder</label>
+    </div>
     <table class="table">
-        <?php 
-            $last_title = '';
-            foreach ($fields as $field) {
+        <?php
+        $last_title = '';
+        foreach ($fields as $field) {
 
             $label = [];
             if (!empty($field['step_tile_id'])) {
                 $label = $IDA->label($field, $tiles[$field['step_tile_id']]);
             } else {
-                if (!empty($field['title']['de']))
-                    $label[] = strip_tags($field['title']['de']);
-                if (!empty($field['description']['de']))
-                    $label[] = strip_tags($field['description']['de']);
-                $label = implode('<br>', $label);
+                $label = $IDA->label($field, null);
             }
 
             $val = "n.d.";
-            if (array_key_exists($field['name'], $myFields)){
+            if (array_key_exists($field['name'], $myFields)) {
                 $f = $myFields[$field['name']];
                 $val = $osiris->activities->count($f['filter']);
-            } 
+            }
         ?>
-            <tr class="<?=($val == 'n.d.' ? 'row-muted': 'text-success')?>">
+            <tr class="<?= ($val == 'n.d.' ? 'irrelevant' : 'text-success') ?>">
                 <td><?= $label ?></td>
                 <td><?= $field['name'] ?></td>
                 <td><?= $field['typecast'] ?></td>
                 <td><?= $field['value']['value'] ?? '-' ?></td>
-                <td><?=$val?></td>
+                <td><?= $val ?></td>
             </tr>
-             <!-- <tr>
+            <!-- <tr>
                <td>
               <?php
-                    
-                    dump($field, true);
-                                ?>
+
+                dump($field, true);
+                ?>
                </td>
                 
             </tr> -->
@@ -84,32 +90,4 @@ foreach ($formular['custom_field_values'] as $value) {
     <?php
     // dump($step, true);
     ?>
-<?php }
-
-// $step_tiles = array_column($formular["step_tiles"], null, "id");
-die;
-?>
-
-
-
-<table class="table">
-    <tbody>
-
-        <?php foreach ($fields as $i => $field) {
-            if (empty($field['step_tile_id'])) {
-                // dump($field);
-                continue;
-            }
-
-            $label = $IDA::ida_label($field, $step_tiles[$field['step_tile_id']])
-        ?>
-            <tr>
-                <td><?= $label ?></td>
-                <td><?= $field['name'] ?></td>
-                <td><?= $field['typecast'] ?></td>
-            </tr>
-        <?php } ?>
-
-    </tbody>
-
-</table>
+<?php } ?>
