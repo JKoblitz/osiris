@@ -28,3 +28,6 @@ define("WOS_JOURNAL_INFO", 2021);
 // not needed right now, but planned in the future
 define("ORCID_APP_ID", null);
 define("ORCID_SECRET_KEY", null);
+
+// activate IDA integration here
+define("IDA_INTEGRATION", false);
