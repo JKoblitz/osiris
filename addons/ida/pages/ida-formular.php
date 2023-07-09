@@ -12,9 +12,17 @@ foreach ($formular['custom_fields'] as $field) {
     $steps[$field['step_id']]['fields'][$field['id']] = $field;
 }
 
-foreach ($formular['custom_field_values'] as $value) {
-    $steps[$value['step_id']]['fields'][$value['custom_field_id']]['value'] = $value;
-}
+// foreach ($formular['values'] as $value) {
+//     $steps[$value['step_id']]['fields'][$value['custom_field_id']]['value'] = $value;
+// }
+
+
+// foreach ($formular['previous_values'] as $key => $value) {
+//     $steps[$value['step_id']]['fields'][$key]['previous_value'] = $value;
+// }
+
+$current = $formular['values'];
+$previous = $formular['previous_values'];
 
 ?>
 
@@ -31,6 +39,13 @@ foreach ($formular['custom_field_values'] as $value) {
 <h1>
     <?= $formular['custom_fields'][0]['formular_short_title'] ?>
 </h1>
+<?php if ($IDA->state !== 'submitted') { ?>
+    <button class="btn" onclick="ida_send_block_values(null)">
+        Formular an IDA senden
+    </button>
+<?php } else { ?>
+    <em class="text-muted">--submitted--</em>
+<?php } ?>
 <?php foreach ($steps as $step_id => $step) { ?>
     <h2><?= $step['short_title']['de'] ?? 'unknown title' ?></h2>
 
@@ -46,10 +61,28 @@ foreach ($formular['custom_field_values'] as $value) {
     ?>
 
     <div class="custom-switch">
-        <input type="checkbox" id="switch-<?= $step_id ?>" value="" onchange="$(this).parent().next().toggleClass('show-all')">
+        <input type="checkbox" id="switch-<?= $step_id ?>" value="" onchange="$('#step-<?= $step_id ?>').toggleClass('show-all')">
         <label for="switch-<?= $step_id ?>">Zeige alle Felder</label>
     </div>
-    <table class="table">
+
+    <table class="table" id="step-<?= $step_id ?>">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>IDA <small>(Vorjahr)</small></th>
+                <th>IDA</th>
+                <th>OSIRIS</th>
+                <th>
+                    <?php if ($IDA->state !== 'submitted') { ?>
+                        <button class="btn" onclick="ida_send_block_values('<?= $step_id ?>')">
+                            Block senden
+                        </button>
+                    <?php } else { ?>
+                        <em class="text-muted">--submitted--</em>
+                    <?php } ?>
+                </th>
+            </tr>
+        </thead>
         <?php
         $last_title = '';
         foreach ($fields as $field) {
@@ -64,30 +97,74 @@ foreach ($formular['custom_field_values'] as $value) {
             $val = "n.d.";
             if (array_key_exists($field['name'], $myFields)) {
                 $f = $myFields[$field['name']];
-                $val = $osiris->activities->count($f['filter']);
+                $filter = $f['filter'];
+                $filter['year'] = 2022;
+                $val = $osiris->activities->count($filter);
             }
         ?>
             <tr class="<?= ($val == 'n.d.' ? 'irrelevant' : 'text-success') ?>">
-                <td><?= $label ?></td>
-                <td><?= $field['name'] ?></td>
-                <td><?= $field['typecast'] ?></td>
-                <td><?= $field['value']['value'] ?? '-' ?></td>
+                <td>
+                    <?= $label ?>
+                    <br>
+                    <small class="code text-muted"><?= $field['name'] ?> (<?=str_replace('type', '',  $field['typecast']) ?>)</small>
+                </td>
+                <td><?= $previous[$field['name']] ?? '-' ?></td>
+                <td id="ida-<?= $field['id'] ?>"><?= $current[$field['name']] ?? '-' ?></td>
                 <td><?= $val ?></td>
-            </tr>
-            <!-- <tr>
-               <td>
-              <?php
+                <td>
+                    <?php if ($IDA->state !== 'submitted') { ?>
+                        <?php if ($val != 'n.d.') { ?>
+                            <button class="btn send-btn" onclick="ida_send_value(
+                        '<?= $IDA->dataset_id ?>', '<?= $field['id'] ?>', '<?= $val ?>', '<?= $_SESSION['ida-mail'] ?>', '<?= $_SESSION['ida-token'] ?>'
+                        )">
+                                Send
+                            </button>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <em class="text-muted">--submitted--</em>
+                    <?php } ?>
 
-                dump($field, true);
-                ?>
-               </td>
-                
-            </tr> -->
+
+                </td>
+            </tr>
         <?php } ?>
 
     </table>
 
-    <?php
-    // dump($step, true);
-    ?>
+
 <?php } ?>
+
+
+<script>
+    function ida_send_value(dataset_id, field_id, value, email, token) {
+        /* Send the data using post */
+        console.log(field_id);
+        var url = "https://mainly.api.ida.leibniz-gemeinschaft.de/incoming/applications/" + dataset_id + "/custom_field_values"
+        $.ajax({
+            url: url,
+            type: "post",
+            data: {
+                custom_field_value: {
+                    value: value,
+                },
+                custom_field_id: field_id
+            },
+            headers: {
+                "X-USER-EMAIL": email,
+                "X-USER-TOKEN": token
+            }
+        }).done(function(data) {
+            $("#ida-" + field_id).html(data.value);
+        }).fail(function() {
+            console.log("Fehler beim Übertragen");
+        });
+    }
+    /* Function for mass transfer of values of a specific block (formular, step etc.) */
+    function ida_send_block_values(step_id) {
+        if (step_id === null)
+            $('.send-btn').click();
+        else
+            $("#step-" + step_id + ' .send-btn').click();
+
+    }
+</script>

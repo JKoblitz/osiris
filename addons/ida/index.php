@@ -1,6 +1,7 @@
 <?php
 define('IDA_PATH', BASEPATH . '/addons/ida');
 
+
 Route::get('/ida/auth', function () {
     include BASEPATH . "/header.php";
     include IDA_PATH . "/pages/ida-login.php";
@@ -23,19 +24,6 @@ Route::post('/ida/auth', function () {
 
 
 
-// Route::get('/ida/(fields)', function ($fun) {
-//     require_once IDA_PATH . "/php/IDA.php";
-
-//     $IDA = new IDA();
-
-//     $result = $IDA->$fun();
-//     dump($result, true);
-
-//     dump($_SESSION['ida-token']);
-// }, 'login');
-
-
-
 Route::get('/ida/dashboard', function () {
     require_once IDA_PATH . "/php/IDA.php";
 
@@ -54,25 +42,6 @@ Route::get('/ida/dashboard', function () {
 
     include BASEPATH . "/header.php";
     include IDA_PATH . "/pages/ida-dashboard.php";
-
-    dump($dashboard, true);
-
-    // $updateResult = $osiris->activities->updateMany(
-    //     [
-    //         'authors.aoi' => ['$in' => ['1', 1, "true"]]
-    //     ],
-    //     ['$set' => ["authors.$.aoi" => true]]
-    // );
-    // echo $updateResult->getModifiedCount();
-    // $updateResult = $osiris->activities->updateMany(
-    //     [
-    //         'authors.aoi' => ['$in' => ['0', 0, "false", ""]]
-    //     ],
-    //     ['$set' => ["authors.$.aoi" => false]]
-    // );
-    // echo "<br>";
-    // echo $updateResult->getModifiedCount();
-
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -107,8 +76,6 @@ Route::get('/ida/formular/(\d+)', function ($formular_id) {
     if (!empty($formular)){
         include IDA_PATH . "/pages/ida-formular.php";
     }
-
-    dump($formular, true);
 
     include BASEPATH . "/footer.php";
 }, 'login');

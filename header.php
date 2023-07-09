@@ -11,7 +11,7 @@ $pagetitle = implode(' | ', array_reverse($pagetitle));
 
 $uri = $_SERVER['REQUEST_URI'];
 // $uri = str_replace(ROOTPATH."/", '', $uri, 1);
-$uri = substr_replace($uri, '', 0, strlen(ROOTPATH."/"));
+$uri = substr_replace($uri, '', 0, strlen(ROOTPATH . "/"));
 $lasturl = explode("/", $uri);
 // dump($lasturl);
 $page =  $page ?? $lasturl[0]; //end($lasturl);
@@ -46,7 +46,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css" />
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css" />
-    
+
     <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
@@ -55,7 +55,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
     <!-- Quill (rich-text editor) -->
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?=ROOTPATH?>/css/daterangepicker.min.css">
+    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/daterangepicker.min.css">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/style.css?<?= filemtime(BASEPATH . '/css/style.css') ?>">
     <?php
@@ -99,7 +99,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <div class="modal" id="the-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" >
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </a>
                     <h5 class="modal-title" id="modal-title"></h5>
@@ -216,9 +216,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Dashboard') ?>
                         </a>
                         <?php
-                            $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
+                        $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
                         ?>
-                        
+
                         <a href="<?= ROOTPATH ?>/queue/editor" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('queue/editor') ?>">
                             <i class="ph ph-regular ph-queue" aria-hidden="true"></i>
                             <?= lang('Queue', 'Warteschlange') ?>
@@ -352,11 +352,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="ph ph-regular ph-printer" aria-hidden="true"></i>
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
+                        
+                        <?php if (IDA_INTEGRATION) { ?>
+                            <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
+                                <i class="ph ph-regular ph-clipboard-text" aria-hidden="true"></i>
+                                <?= lang('IDA-Integration') ?>
+                            </a>
+                        <?php } ?>
 
-                        <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
-                            <i class="ph ph-regular ph-clipboard-text" aria-hidden="true"></i>
-                            <?= lang('IDA-Integration') ?>
-                        </a> 
                     <?php } ?>
 
 
@@ -403,12 +406,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                 if (isset($USER['is_admin']) && $USER['is_admin'] && isset($Settings->errors) && !empty($Settings->errors)) {
                 ?>
-                <div class="alert alert-danger mb-20">
-                    <h3 class="title">There are errors in your settings:</h3>
-                    <?=implode('<br>', $Settings->errors)?>
-                    <br>
-                    Default settings are used. Go to the <a href="<?=ROOTPATH?>/admin/general">Admin Dashboard</a> to fix this.
-                </div>
+                    <div class="alert alert-danger mb-20">
+                        <h3 class="title">There are errors in your settings:</h3>
+                        <?= implode('<br>', $Settings->errors) ?>
+                        <br>
+                        Default settings are used. Go to the <a href="<?= ROOTPATH ?>/admin/general">Admin Dashboard</a> to fix this.
+                    </div>
                 <?php
                 }
                 ?>

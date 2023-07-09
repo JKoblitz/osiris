@@ -8,10 +8,13 @@ class IDA
     private $mail = null;
     public $institute_id = null;
     public $institutes = [];
+    public $dataset_id = null;
     private $base_url = "https://mainly.api.ida.leibniz-gemeinschaft.de";
 
     public $user = [];
     public $last_title = '';
+    public $year = 2020;
+    public $state = '';
 
     function __construct($email = null, $password = null)
     {
@@ -28,6 +31,14 @@ class IDA
         } else {
             $this->msg = 'Unauthorized';
         }
+
+        if (!isset($_SESSION["ida-year"])) {
+            // Year-Suggestion: previous year (jan-nov) or current year (in dec)
+            $_SESSION["ida-year"] = (date("n") > 11 ? date("Y") : date("Y") - 1);
+        }
+
+        $this->year = $_SESSION["ida-year"];
+
 
         //         $this->base_url."/incoming/formulars";
         // $this->base_url."/incoming/formulars/".$formular_url."/applications";
@@ -93,7 +104,7 @@ class IDA
     function dashboard()
     {
 
-        $url = "/incoming/institutions/25/dashboard_items";
+        $url = "/incoming/institutions/" . $this->institute_id . "/dashboard_items";
         $result = $this->request($url);
 
         return $result[0] ?? false;
@@ -112,27 +123,42 @@ class IDA
 
         if (empty($result['applications'])) {
             // no dataset available?
-            // $result['steps'] = [];
-            // $result['custom_field_values'] = [];
-
-
-            // $url = "/incoming/formulars/".$id."/steps";
-            // $result['steps'] = $this->request($url, 'GET');
-            // dump($result['steps']);
             $this->msg = "Fehler: Das Formular muss in IDA mindestens einmal geöffnet werden, da sonst keine Daten vorhanden sind.";
             return [];
+        }
+        $app = $result['applications'][0];
+        $this->dataset_id = $app["id"];
+        $dataset_slug = $app["slug"];
+        $formular_url = $app["formular_url"];
+        $this->state = $app["state"];
+
+
+        $url = "/incoming/formulars/" . $id . "/applications/" . $this->dataset_id . "/steps";
+        $result['steps'] = $this->request($url, 'GET');
+
+        $url = "/incoming/applications/" . $this->dataset_id . "/custom_field_values";
+        $current = $this->request($url, 'GET');
+        $result['values'] = array_column($current, "value", "custom_field_name");
+
+        $url = "/incoming/formulars/" . $formular_url . "/applications/" . $dataset_slug . "/previous";
+        $previous = $this->request($url, 'GET');
+
+        if (empty($previous) || !isset($previous[0]["id"])) {
+            // Indicate non-existing previous datasets
+            $result['previous_values'] = [];
         } else {
-            $dataset_id = $result['applications'][0]["id"];
-
-            $url = "/incoming/formulars/" . $id . "/applications/" . $dataset_id . "/steps";
-            $result['steps'] = $this->request($url, 'GET');
-
-            $url = "/incoming/applications/" . $dataset_id . "/custom_field_values";
-            $result['custom_field_values'] = $this->request($url, 'GET');
+            $previous_dataset_id = $previous[0]["id"];
+            // $previous_dataset_slug = $previous["slug"];
+            $url = "/incoming/applications/" . $previous_dataset_id . "/custom_field_values";
+            $previous = $this->request($url, 'GET');
+            if (!empty($previous))
+                $result['previous_values'] = array_column($previous, "value", "custom_field_name");
         }
 
+        // dump( $result['values']);
+        // dump( $result['previous_values']);
+        // die;
 
-        if (isset($result['error'])) return ($result['error']);
         return $result;
     }
 

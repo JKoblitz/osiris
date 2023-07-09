@@ -10,6 +10,7 @@
 */
 if (file_exists('CONFIG.php')) {
     require_once 'CONFIG.php';
+    require_once 'CONFIG.fallback.php';
 } else {
     require_once 'CONFIG.default.php';
 }
@@ -1311,9 +1312,9 @@ include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";
 include_once BASEPATH . "/export.php";
 
-
-include_once BASEPATH . "/addons/ida/index.php";
-
+if (IDA_INTEGRATION){
+    include_once BASEPATH . "/addons/ida/index.php";
+}
 
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";
