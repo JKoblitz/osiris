@@ -12,13 +12,19 @@ if (!defined('ADMIN'))
 if (!defined('USER_MANAGEMENT'))
     define('USER_MANAGEMENT', 'LDAP');
 // define LDAP connection
-if (USER_MANAGEMENT == 'LDAP' && !defined('LDAP_IP')) {
-    define("LDAP_IP", "100.10.100.0");
-    define("LDAP_PORT", 389);
-    define("LDAP_USER", "osiris");
-    define("LDAP_DOMAIN", "@domain.local");
-    define("LDAP_PASSWORD", "ldap_password");
-    define("LDAP_BASEDN", "OU=Users,OU=DSMZ,DC=dsmz,DC=local");
+if (USER_MANAGEMENT == 'LDAP') {
+    if (!defined('LDAP_IP'))
+        define("LDAP_IP", "100.10.100.0");
+    if (!defined('LDAP_PORT'))
+        define("LDAP_PORT", 389);
+    if (!defined('LDAP_USER'))
+        define("LDAP_USER", "osiris");
+    if (!defined('LDAP_DOMAIN'))
+        define("LDAP_DOMAIN", "@domain.local");
+    if (!defined('LDAP_PASSWORD'))
+        define("LDAP_PASSWORD", "ldap_password");
+    if (!defined('LDAP_BASEDN'))
+        define("LDAP_BASEDN", "OU=Users,OU=DSMZ,DC=dsmz,DC=local");
 }
 // define DB connection
 if (!defined('DB_NAME'))
