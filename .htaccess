@@ -4,7 +4,7 @@ DirectoryIndex index.php
 RewriteEngine on
 
 # set your rewrite base
-RewriteBase /osiris
+RewriteBase /
 
 # Deliver the folder or file directly if it exists on the server
 RewriteRule ^(css|img|js|uploads|settings.json)($|/) - [L]
