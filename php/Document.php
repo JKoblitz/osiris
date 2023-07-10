@@ -1,6 +1,7 @@
 <?php
 require_once "Settings.php";
 require_once "Schema.php";
+require_once "Country.php";
 
 class Document extends Settings
 {
@@ -769,7 +770,7 @@ class Document extends Settings
                 } else {
                     $oa = '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
                 }
-                if ($this->usecase == 'list') return $oa . " ". $status;
+                if ($this->usecase == 'list') return $oa . " " . $status;
                 return $oa;
             case "pages": // ["pages"],
                 return $this->getVal('pages');
@@ -837,6 +838,23 @@ class Document extends Settings
                 return $this->getVal('version');
             case "volume": // ["volume"],
                 return $this->getVal('volume');
+            case "country":
+            case "nationality":
+                $code = $this->getVal('country');
+                return Country::get($code);
+            case "gender":
+                switch ($this->getVal('gender')) {
+                    case 'f':
+                        return lang('female', 'weiblich');
+                    case 'm':
+                        return lang('male', 'männlich');
+                    case 'd':
+                        return lang('non-binary', 'divers');
+                    case '-':
+                        return lang('not specified', 'keine Angabe');
+                    default:
+                        return '';
+                }
             case "volume-issue-pages": // ["volume"],
                 $val = '';
                 if (!empty($this->getVal('volume'))) {
@@ -850,7 +868,7 @@ class Document extends Settings
                 }
                 return $val;
             default:
-                return '';
+                return $this->getVal($module);
         }
     }
 

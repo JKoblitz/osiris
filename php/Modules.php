@@ -1,6 +1,7 @@
 <?php
 include_once "_config.php";
 include_once "_db.php";
+include_once "Country.php";
 
 class Modules
 {
@@ -100,6 +101,26 @@ class Modules
             "fields" => ["category"],
             "name" => "Category",
             "name_de" => "Kategorie"
+        ],
+        "gender" => [
+            "fields" => ["gender"],
+            "name" => "Gender",
+            "name_de" => "Geschlecht"
+        ],
+        "nationality" => [
+            "fields" => ["country"],
+            "name" => "Nationality",
+            "name_de" => "Nationalität"
+        ],
+        "country" => [
+            "fields" => ["country"],
+            "name" => "Country",
+            "name_de" => "Land"
+        ],
+        "abstract" => [
+            "fields" => ["abstract"],
+            "name" => "Abstract",
+            "name_de" => "Abstract"
         ],
         "isbn" => [
             "fields" => ["isbn"],
@@ -372,10 +393,52 @@ class Modules
             $req = true;
         }
         $required = ($req ? "required" : "");
+        $m = $this->all_modules[$module] ?? '';
+        $label = lang($m['name'], $m['name_de'] ?? $m['name']);
         switch ($module) {
+            case 'gender':
+                $val = $this->val('gender');
+?>
+                <div class="data-module col-sm-6" data-module="teaching-gender">
+                    <label for="teaching-cat" class="<?= $required ?> element-cat"><?= $label ?></label>
+                    <select name="values[gender]" id="teaching-cat" class="form-control" <?= $required ?>>
+                        <option value="" <?= empty($val) ? 'selected' : '' ?>><?= lang('unknown', 'unbekannt') ?></option>
+                        <option value="f" <?= $val == 'f' ? 'selected' : '' ?>><?= lang('female', 'weiblich') ?></option>
+                        <option value="m" <?= $val == 'm' ? 'selected' : '' ?>><?= lang('male', 'männlich') ?></option>
+                        <option value="d" <?= $val == 'd' ? 'selected' : '' ?>><?= lang('non-binary', 'divers') ?></option>
+                        <option value="-" <?= $val == '-' ? 'selected' : '' ?>><?= lang('not specified', 'keine Angabe') ?></option>
+                    </select>
+                </div>
+            <?php
+                break;
+            case 'nationality':
+            case 'country':
+                $val = $this->val('country');
+            ?>
+                <div class="data-module col-sm-6" data-module="country">
+                    <label for="country" class="<?= $required ?> element-cat">
+                        <?= $label ?>
+                    </label>
+                    <select name="values[country]" id="country" class="form-control" <?= $required ?>>
+                        <option value="" <?= empty($val) ? 'selected' : '' ?>><?= lang('unknown', 'unbekannt') ?></option>
+                        <?php foreach (Country::$ALL as $code => $country) { ?>
+                            <option value="<?= $code ?>" <?= $val == $code ? 'selected' : '' ?>><?= $country ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php
+                break;
+            case 'abstract':
+            ?>
+                <div class="data-module col-sm-12" data-module="abstract">
+                    <label for="abstract" class="<?= $required ?> element-cat"><?= lang('Abstract', 'Abstract') ?></label>
+                    <textarea name="values[abstract]" id="abstract" cols="30" rows="5" class="form-control"><?= $this->val('abstract') ?></textarea>
+                </div>
+            <?php
+                break;
             case "title":
                 $id = rand(1000, 9999);
-?>
+            ?>
                 <div class="data-module col-12" data-module="title">
                     <div class="lang-<?= lang('en', 'de') ?>">
                         <label for="title" class="<?= $required ?> element-title">

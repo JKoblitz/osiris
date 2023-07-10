@@ -809,6 +809,7 @@ function getDOI(doi) {
                 pages: pub.page,
                 doi: pub.DOI,
                 // pubmed: null,
+                abstract: (pub.abstract ?? '').replace(/<[^>]*>?/gm, ''),
                 // edition: pub.edition,
                 publisher: pub['publisher'] ?? pub['publisher-name'],
                 isbn: pub['ISBN'],
@@ -1143,7 +1144,8 @@ function fillForm(pub) {
         'software_version',
         'date_start',
         'software_doi',
-        'open_access'
+        'open_access',
+        'abstract'
     ]
 
     elements.forEach(element => {
