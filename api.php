@@ -39,52 +39,10 @@ function return_rest($data, $count = 0, $status = 200)
     return json_encode($result, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 }
 
-/**
- * @apiDefine error404 Error 404
- */
 
 /**
- * @apiDefine Medium Media endpoints
- *
- * The following endpoints consider media information.
- * You can request a list of all media, the whole medium recipe containing
- * all solutions, the molecular composition of a medium, or all strains
- * that grow on the medium.
+ * Internally used API end points
  */
-
-/**
- * @api {get} /media All media
- * @apiName GetAllMedia
- * @apiGroup Medium
- * 
- * @apiParam {Integer} [limit] Max. number of results
- * @apiParam {Integer} [offset] Offset of results
- *
- * @apiSampleRequest https://osiris.dsmz.de/download/publications
- * 
- * @apiSuccess {String} id Unique ID of the medium.
- * @apiSuccess {String} name  Name of the medium.
- * @apiSuccess {Boolean} complex_medium True if the medium is complex
- * @apiSuccess {String} source Collection where the medium originates from 
- * @apiSuccess {String} link Original URL
- * @apiSuccess {Float} min_pH Min. final pH
- * @apiSuccess {Float} max_pH Max final pH
- * @apiSuccess {String} reference URL for original reference (if available)
- * @apiSuccess {String} description Description or additional information (if available)
- * @apiSuccessExample {json} Example data:
- * [
-    {
-        "id": "1",
-        "name": "TEST"
-    },
-    ...
-]
- */
-// Route::get('/api/publications', function () {
-//     $result = array();
-//     echo return_rest($result, count($result));
-// });
-
 
 Route::get('/api/activities', function () {
     include_once BASEPATH . "/php/_db.php";
@@ -495,34 +453,47 @@ Route::get('/api/levenshtein', function () {
 });
 
 
-// Route::get('/api/wos-starter', function () {
+/**
+ * Official interface API endpoints
+ */
 
-//     if (!isset($_GET['issn'])) die("no issn given");
-//     $issn = $_GET['issn'];
+/**
+ * @apiDefine error404 Error 404
+ */
 
-//     $settings = file_get_contents(BASEPATH . "/apis.json");
-//     $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
-//     foreach ($settings as $api) {
-//         if ($api['id'] == 'wos-starter') {
-//             $apikey = $api['key'];
+/**
+ * @apiDefine Activity endpoints
+ *
+ * The following endpoints are used for querying activities.
+ */
 
-//             if (empty($apikey)) {
-//                 die("API key is missing.");
-//             }
-//             // $filter = [];
-//             $url = "https://api.clarivate.com/apis/wos-starter/v1/journals";
-//             $url .= "?issn=" . $issn;
+/**
+ * @api {get} /media All media
+ * @apiName GetAllMedia
+ * @apiGroup Medium
+ * 
+ * @apiParam {Integer} [limit] Max. number of results
+ * @apiParam {Integer} [offset] Offset of results
+ *
+ * @apiSampleRequest /download/publications
+ * 
+ * @apiSuccess {String} id Unique ID of the medium.
+ * @apiSuccess {String} name  Name of the medium.
+ * @apiSuccess {Boolean} complex_medium True if the medium is complex
+ * @apiSuccess {String} source Collection where the medium originates from 
+ * @apiSuccess {String} link Original URL
+ * @apiSuccess {Float} min_pH Min. final pH
+ * @apiSuccess {Float} max_pH Max final pH
+ * @apiSuccess {String} reference URL for original reference (if available)
+ * @apiSuccess {String} description Description or additional information (if available)
+ * @apiSuccessExample {json} Example data:
+ * {
+        "id": "1",
+        "name": "TEST"
+    }
+ */
+Route::get('/data/activities', function () {
+    $result = array();
+    echo return_rest($result, count($result));
+});
 
-//             $curl = curl_init();
-//             curl_setopt($curl, CURLOPT_HTTPHEADER, [
-//                 'Accept: application/json',
-//                 "X-ApiKey: $apikey"
-//             ]);
-//             curl_setopt($curl, CURLOPT_URL, $url);
-//             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-//             $result = curl_exec($curl);
-//             $result = json_decode($result, true);
-//             echo return_rest($result, count($result));
-//         }
-//     }
-// });
