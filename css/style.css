@@ -1,4 +1,3 @@
-
 .ph,
 .ph ph-regular,
 .ph-fill {
@@ -993,3 +992,21 @@ a.module:hover {
 /* .profile-widget > .box {
     padding: 1rem;
 } */
+
+
+@media print {
+    .page-wrapper>.sidebar, 
+    .page-wrapper>.navbar, 
+    .sidebar-overlay,
+    .page-footer {
+        display: none;
+    }
+
+    .content-wrapper, .section {
+        background-color: white;
+    }
+
+    body {
+        color: black;
+    }
+}

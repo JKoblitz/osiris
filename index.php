@@ -15,6 +15,7 @@ use PHPMailer\PHPMailer\Exception;
 
 if (file_exists('CONFIG.php')) {
     require_once 'CONFIG.php';
+    require_once 'CONFIG.fallback.php';
 } else {
     require_once 'CONFIG.default.php';
 }
@@ -534,11 +535,28 @@ Route::get('/activities/(doi|pubmed)/(.*)', function ($type, $identifier) {
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
+
     $user = $_SESSION['username'];
-
     $id = to_ObjectID($id);
-
     $activity = $osiris->activities->findOne(['_id' => $id], ['projection' => ['file' => 0]]);
+
+    $doc = json_decode(json_encode($activity->getArrayCopy()), true);
+    $locked = $activity['locked'] ?? false;
+    if ($doc['type'] == 'publication' && isset($doc['journal'])) {
+        // fix old journal_ids
+        if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])) {
+            $doc['journal_id'] = null;
+            $osiris->activities->updateOne(
+                ['_id' => $activity['_id']],
+                ['$unset' => ['journal_id' => '']]
+            );
+        }
+    }
+    renderActivities(['_id' =>  $activity['_id']]);
+    $user_activity = isUserActivity($doc, $user);
+
+    $Format = new Document;
+    $Format->setDocument($doc);
 
     $name = $activity['title'] ?? $id;
     if (strlen($name) > 20)
@@ -548,7 +566,11 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
         ['name' => $name]
     ];
+    if ($Format->hasSchema()){
+        $additionalHead = $Format->schema();
+    }
     include BASEPATH . "/header.php";
+
     if (empty($activity)) {
         echo "Activity not found!";
     } else {
@@ -1224,7 +1246,7 @@ Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
 
 
 
-Route::get('/user/edit/([a-z0-9]+)', function ($user) {
+Route::get('/user/edit/(.*)', function ($user) {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
     include_once BASEPATH . "/php/Document.php";
@@ -1317,8 +1339,11 @@ Route::get('/user/logout', function () {
 
 include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";
-
 include_once BASEPATH . "/export.php";
+
+if (IDA_INTEGRATION){
+    include_once BASEPATH . "/addons/ida/index.php";
+}
 
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include_once BASEPATH . "/php/_db.php";

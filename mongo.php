@@ -89,6 +89,8 @@ function validateValues($values)
             $values[$key] = false;
         } else if ($key == 'invited_lecture' || $key == 'open_access') {
             $values[$key] = boolval($value);
+        } else if ($key == 'oa_status') {
+            $values['open_access'] = $value != 'closed';
         } else if (in_array($key, ['aoi', 'epub', 'correction'])) {
             // dump($value);
             // $values[$key] = boolval($value);
@@ -513,7 +515,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
 });
 
 
-Route::post('/update-user/([A-Za-z0-9]*)', function ($id) {
+Route::post('/update-user/(.*)', function ($id) {
     include_once BASEPATH . "/php/_db.php";
     if (!isset($_POST['values'])) {
         echo "no values given";

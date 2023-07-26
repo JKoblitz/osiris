@@ -10,7 +10,7 @@ foreach ($activities as $doc) {
     if (isset($doc['subtype'])) continue;
 
     $Format->setDocument($doc);
-    $subtype = $Format->subtype['id'];
+    $subtype = $Format->subtypeArr['id'];
 
     $updateResult = $osiris->activities->updateOne(
         ['_id' => $doc['_id']],

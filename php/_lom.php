@@ -284,7 +284,7 @@ class LOM
 
         $points = $this->matrix['teaching'] ?? 0;
         $author = $this->get_author($doc);
-        $sws = $author['sws'] ?? 0;
+        $sws = floatval($author['sws'] ?? 0);
         // $sws = $doc['sws'];
         return  array(
             'type' => "teaching",

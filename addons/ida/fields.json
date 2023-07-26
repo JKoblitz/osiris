@@ -1,0 +1,345 @@
+{
+    "da_pva_2011+pva_pub_ge": {
+        "name": "Alle Publikationen ohne OA",
+        "filter": {
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "authors.aoi": true
+        }
+    },
+    "da_pva_2011+pva_pub_zs": {
+        "name": "Zeitschriftenbeiträge ohne OA",
+        "filter": {
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": {"$in": ["article", "magazine"]},
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_re": {
+        "name": "Referierte Zeitschriftenbeiträge ohne OA",
+        "filter": {
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_mo": {
+        "name": "Monografien ohne OA",
+        "filter": {
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "book",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_wpr": {
+        "name": "Working Papers / Reports ohne OA",
+        "filter": {
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "others",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_sb": {
+        "name": "Beiträge in Sammelbänden ohne OA",
+        "filter": {
+            "type": "publication",
+            "open_access": {"$ne": true},
+            "subtype": "chapter",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+
+
+    "da_pva_2011+pva_pub_oa_ge_nm": {
+        "name": "Alle Publikationen (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "$or": [
+                 {"oa_status": {"$exists": false}},
+                 {"oa_status": {"$nin": ["gold", "green"]}}
+             ],
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_zs_nm": {
+        "name": "Zeitschriftenbeiträge (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+           "$or": [
+                {"oa_status": {"$exists": false}},
+                {"oa_status": {"$nin": ["gold", "green"]}}
+            ],
+            "subtype": {"$in": ["article", "magazine"]},
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_dre_nm": {
+        "name": "Referierte Zeitschriftenbeiträge (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+           "$or": [
+                {"oa_status": {"$exists": false}},
+                {"oa_status": {"$nin": ["gold", "green"]}}
+            ],
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_mo_nm": {
+        "name": "Monografien (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+           "$or": [
+                {"oa_status": {"$exists": false}},
+                {"oa_status": {"$nin": ["gold", "green"]}}
+            ],
+            "subtype": "book",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_re_nm": {
+        "name": "Referierte Zeitschriftenbeiträge (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+           "$or": [
+                {"oa_status": {"$exists": false}},
+                {"oa_status": {"$nin": ["gold", "green", "closed"]}}
+            ],
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_wpr_nm": {
+        "name": "Working Papers / Reports (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+           "$or": [
+                {"oa_status": {"$exists": false}},
+                {"oa_status": {"$nin": ["gold", "green", "closed"]}}
+            ],
+            "subtype": "others",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_sb_nm": {
+        "name": "Beiträge in Sammelbänden (OA ohne Einteilung)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+           "$or": [
+                {"oa_status": {"$exists": false}},
+                {"oa_status": {"$nin": ["gold", "green"]}}
+            ],
+            "subtype": "chapter",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+
+
+
+
+    "da_pva_2011+pva_pub_oa_ge_gold": {
+        "name": "Alle Publikationen (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_zs_gold": {
+        "name": "Zeitschriftenbeiträge (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "subtype": {"$in": ["article", "magazine"]},
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_dre_gold": {
+        "name": "Referierte Zeitschriftenbeiträge (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_mo_gold": {
+        "name": "Monografien (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "subtype": "book",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_re_gold": {
+        "name": "Referierte Zeitschriftenbeiträge (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_wpr_gold": {
+        "name": "Working Papers / Reports (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "subtype": "others",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_sb_gold": {
+        "name": "Beiträge in Sammelbänden (OA Gold)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "gold",
+            "subtype": "chapter",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+
+
+
+
+    "da_pva_2011+pva_pub_oa_ge_green": {
+        "name": "Alle Publikationen (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_zs_green": {
+        "name": "Zeitschriftenbeiträge (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "subtype": {"$in": ["article", "magazine"]},
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_dre_green": {
+        "name": "Referierte Zeitschriftenbeiträge (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_mo_green": {
+        "name": "Monografien (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "subtype": "book",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_re_green": {
+        "name": "Referierte Zeitschriftenbeiträge (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "subtype": "article",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_wpr_green": {
+        "name": "Working Papers / Reports (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "subtype": "others",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+    "da_pva_2011+pva_pub_oa_sb_green": {
+        "name": "Beiträge in Sammelbänden (OA green)",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "oa_status": "green",
+            "subtype": "chapter",
+            "authors.aoi": true,
+            "epub": {"$ne": true}
+        }
+    },
+
+
+    
+    "da_pva_2011+pva_pub_hrfz": {
+        "name": "Herausgeberschaften",
+        "filter": {
+            "type": "publication",
+            "editors.aoi": true
+        }
+    },
+    "da_pva_2011+pva_pub_oa_hrfz": {
+        "name": "Herausgeberschaften: OA",
+        "filter": {
+            "type": "publication",
+            "open_access": true,
+            "editors.aoi": true
+        }
+    },
+
+
+    "da_bl_ehu_2012+lhb_sgsw_sose_in": {
+        "name": "SWS Sommersemester - Inland",
+        "filter": {
+            "type": "teaching"
+        }
+    }
+}

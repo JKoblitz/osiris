@@ -1,6 +1,7 @@
 <?php
 include_once "_config.php";
 include_once "_db.php";
+include_once "Country.php";
 
 class Modules
 {
@@ -101,6 +102,26 @@ class Modules
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
+        "gender" => [
+            "fields" => ["gender"],
+            "name" => "Gender",
+            "name_de" => "Geschlecht"
+        ],
+        "nationality" => [
+            "fields" => ["country"],
+            "name" => "Nationality",
+            "name_de" => "Nationalität"
+        ],
+        "country" => [
+            "fields" => ["country"],
+            "name" => "Country",
+            "name_de" => "Land"
+        ],
+        "abstract" => [
+            "fields" => ["abstract"],
+            "name" => "Abstract",
+            "name_de" => "Abstract"
+        ],
         "isbn" => [
             "fields" => ["isbn"],
             "name" => "ISBN",
@@ -152,6 +173,11 @@ class Modules
             "name_de" => "Online Ahead Of Print"
         ],
         "openaccess" => [
+            "fields" => ["open_access"],
+            "name" => "Open-Access",
+            "name_de" => "Open-Access"
+        ],
+        "openaccess-status" => [
             "fields" => ["open_access"],
             "name" => "Open-Access",
             "name_de" => "Open-Access"
@@ -367,10 +393,52 @@ class Modules
             $req = true;
         }
         $required = ($req ? "required" : "");
+        $m = $this->all_modules[$module] ?? '';
+        $label = lang($m['name'], $m['name_de'] ?? $m['name']);
         switch ($module) {
+            case 'gender':
+                $val = $this->val('gender');
+?>
+                <div class="data-module col-sm-6" data-module="teaching-gender">
+                    <label for="teaching-cat" class="<?= $required ?> element-cat"><?= $label ?></label>
+                    <select name="values[gender]" id="teaching-cat" class="form-control" <?= $required ?>>
+                        <option value="" <?= empty($val) ? 'selected' : '' ?>><?= lang('unknown', 'unbekannt') ?></option>
+                        <option value="f" <?= $val == 'f' ? 'selected' : '' ?>><?= lang('female', 'weiblich') ?></option>
+                        <option value="m" <?= $val == 'm' ? 'selected' : '' ?>><?= lang('male', 'männlich') ?></option>
+                        <option value="d" <?= $val == 'd' ? 'selected' : '' ?>><?= lang('non-binary', 'divers') ?></option>
+                        <option value="-" <?= $val == '-' ? 'selected' : '' ?>><?= lang('not specified', 'keine Angabe') ?></option>
+                    </select>
+                </div>
+            <?php
+                break;
+            case 'nationality':
+            case 'country':
+                $val = $this->val('country');
+            ?>
+                <div class="data-module col-sm-6" data-module="country">
+                    <label for="country" class="<?= $required ?> element-cat">
+                        <?= $label ?>
+                    </label>
+                    <select name="values[country]" id="country" class="form-control" <?= $required ?>>
+                        <option value="" <?= empty($val) ? 'selected' : '' ?>><?= lang('unknown', 'unbekannt') ?></option>
+                        <?php foreach (Country::$ALL as $code => $country) { ?>
+                            <option value="<?= $code ?>" <?= $val == $code ? 'selected' : '' ?>><?= $country ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php
+                break;
+            case 'abstract':
+            ?>
+                <div class="data-module col-sm-12" data-module="abstract">
+                    <label for="abstract" class="<?= $required ?> element-cat"><?= lang('Abstract', 'Abstract') ?></label>
+                    <textarea name="values[abstract]" id="abstract" cols="30" rows="5" class="form-control"><?= $this->val('abstract') ?></textarea>
+                </div>
+            <?php
+                break;
             case "title":
                 $id = rand(1000, 9999);
-?>
+            ?>
                 <div class="data-module col-12" data-module="title">
                     <div class="lang-<?= lang('en', 'de') ?>">
                         <label for="title" class="<?= $required ?> element-title">
@@ -450,9 +518,9 @@ class Modules
                                 </tr>
                             </thead>
                             <tbody id="authors">
-                                <?php foreach ($this->preset ?? [] as $i => $author) { 
+                                <?php foreach ($this->preset ?? [] as $i => $author) {
                                     if (!isset($author['position'])) $author['position'] = 'middle';
-                                    ?>
+                                ?>
                                     <tr>
                                         <td>
                                             <input data-type="user" name="values[authors][<?= $i ?>][user]" type="text" class="form-control" list="user-list" value="<?= $author['user'] ?>" onchange="selectUsername(this)">
@@ -671,6 +739,7 @@ class Modules
                         <option value="lecture" <?= $this->val('category') == 'lecture' ? 'selected' : '' ?>><?= lang('Lecture', 'Vorlesung') ?></option>
                         <option value="practical" <?= $this->val('category') == 'practical' ? 'selected' : '' ?>><?= lang('Practical course', 'Praktikum') ?></option>
                         <option value="practical-lecture" <?= $this->val('category') == 'practical-lecture' ? 'selected' : '' ?>><?= lang('Lecture and practical course', 'Vorlesung und Praktikum') ?></option>
+                        <option value="practical-seminar" <?= $this->val('category') == 'practical-seminar' ? 'selected' : '' ?>><?= lang('Practical course and seminar', 'Praktikum und Seminar') ?></option>
                         <option value="lecture-seminar" <?= $this->val('category') == 'lecture-seminar' ? 'selected' : '' ?>><?= lang('Lecture and seminar', 'Vorlesung und Seminar') ?></option>
                         <option value="lecture-practical-seminar" <?= $this->val('category') == 'lecture-practical-seminar' ? 'selected' : '' ?>><?= lang('Lecture, seminar, practical course', 'Vorlesung, Seminar und Praktikum') ?></option>
                         <option value="seminar" <?= $this->val('category') == 'seminar' ? 'selected' : '' ?>><?= lang('Seminar') ?></option>
@@ -1336,6 +1405,24 @@ class Modules
                         <input type="radio" id="open_access" value="true" name="values[open_access]" <?= $this->val('open_access', false) ? 'checked' : '' ?>>
                         <label for="open_access"><i class="icon-open-access text-success"></i> Open access</label>
                     </div>
+                </div>
+            <?php
+                break;
+
+            case "openaccess-status":
+                $status = $this->val('oa_status', false);
+                if (!$status) $status = $this->val('open_access', false) ? 'open' : 'closed';
+            ?>
+                <!-- oa_status -->
+                <div class="data-module col-3" data-module="openaccess-status">
+                    <select class="form-control" id="oa_status" name="values[oa_status]" <?= $required ?> autocomplete="off">
+                        <option value="closed" <?= $status == 'closed' ? 'selected' : '' ?>>Closed Access</option>
+                        <option value="open" <?= $status == 'open' ? 'selected' : '' ?>>Open Access (<?= lang('unknown status', 'Unbekannter Status') ?>)</option>
+                        <option value="gold" <?= $status == 'gold' ? 'selected' : '' ?>>Open Access (Gold)</option>
+                        <option value="green" <?= $status == 'green' ? 'selected' : '' ?>>Open Access (Green)</option>
+                        <option value="hybrid" <?= $status == 'hybrid' ? 'selected' : '' ?>>Open Access (Hybrid)</option>
+                        <option value="bronze" <?= $status == 'bronze' ? 'selected' : '' ?>>Open Access (Bronze)</option>
+                    </select>
                 </div>
             <?php
                 break;

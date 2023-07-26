@@ -1,12 +1,16 @@
 <?php
 require_once "Settings.php";
+require_once "Schema.php";
+require_once "Country.php";
 
 class Document extends Settings
 {
 
     public $doc = array();
-    public $type = array();
-    public $subtype = array();
+    public $type = "";
+    public $subtype = "";
+    public $typeArr = array();
+    public $subtypeArr = array();
 
     private $highlight = true;
     private $appendix = '';
@@ -18,6 +22,8 @@ class Document extends Settings
     public $usecase = "web";
     public $full = false;
 
+    private $schemaType = null;
+    public $schema = [];
 
 
     function __construct($highlight = true, $usecase = 'web')
@@ -35,28 +41,198 @@ class Document extends Settings
         // dump(($doc));
         $this->doc = $doc;
         $this->getActivityType();
+        $this->initSchema();
 
         $this->modules = [];
-        foreach ($this->subtype['modules'] as $m) {
+        foreach ($this->subtypeArr['modules'] as $m) {
             $this->modules[] = str_replace('*', '', $m);
         }
     }
 
+    public function schema()
+    {
+        if (!$this->hasSchema()) return "";
+        $this->schema = [
+            "@context" => "https://schema.org",
+            "@graph" => []
+        ];
 
+        // shorten the expressions
+        $d = $this->doc;
+
+        $main = [
+            "@id" => "#record",
+            "@type" => $this->schemaType,
+            "name" => $d['title'],
+            "author" => Schema::authors($d['authors']),
+            "datePublished" => Schema::date($d),
+            "identifier" => [],
+        ];
+        if (isset($d['doi']))
+            $main['identifier'][] = Schema::identifier("DOI", $d['doi']);
+        if (isset($d['pubmed']))
+            $main['identifier'][] = Schema::identifier("Pubmed-ID", $d['pubmed']);
+        if (isset($d['isbn']))
+            $main['identifier'][] = Schema::identifier("ISBN", $d['isbn']);
+
+
+        switch ($this->schemaType) {
+            case 'ScholarlyArticle':
+                if (isset($d['pages']))
+                    $main['pagination'] = $d['pages'];
+
+                $main["isPartOf"] = [];
+                if (isset($d['issue'])) {
+                    $main['isPartOf'][] = ['@id' => '#issue'];
+                    $issue = Schema::issue($d['issue']);
+                    if (isset($d['volume'])) {
+                        $issue['isPartOf'] = ['@id' => '#volume'];
+                    }
+                    $this->schema['@graph'][] = $issue;
+                }
+
+                if (isset($d['volume'])) {
+                    $main['isPartOf'][] = ['@id' => '#volume'];
+                    $volume = [
+                        "@id" => "#volume",
+                        "@type" => "PublicationVolume",
+                        "volumeNumber" => $d['volume'],
+                        "datePublished" => Schema::date($d),
+                    ];
+                    $this->schema['@graph'][] = $volume;
+                }
+
+                if (isset($d['journal_id'])) {
+                    $j = getConnected('journal', $d['journal_id']);
+                    if (!empty($j)) {
+                        $journal = Schema::journal($j);
+                        if (!empty($d['volume'])) {
+                            $journal['hasPart'] = ['@id' => "#volume"];
+                        }
+                        $this->schema['@graph'][] = $journal;
+                        $main['isPartOf'][] = ['@id' => '#journal'];
+                    }
+                }
+                break;
+
+            case "Thesis":
+                $main['sourceOrganization'] = Schema::organisation($d['publisher'], $d['city'] ?? null);
+                break;
+
+            case "Book":
+                if (isset($d['isbn']))
+                    $main['isbn'] = $d['isbn'];
+                if (isset($d['pages']))
+                    $main['numberOfPages'] = $d['pages'];
+                if (isset($d['publisher']))
+                    $main['publisher'] = Schema::organisation($d['publisher'], $d['city'] ?? null);
+                break;
+
+            case "Chapter":
+                $book = [
+                    "@id" => "#book",
+                    "@type" => 'Book',
+                    "name" => $d['book'] ?? null
+                ];
+                if (isset($d['editors'])) {
+                    $book['editor'] = Schema::authors($d['editors']);
+                }
+
+                if (isset($d['isbn']))
+                    $book['isbn'] = $d['isbn'];
+                if (isset($d['pages']))
+                    $book['numberOfPages'] = $d['pages'];
+                if (isset($d['publisher']))
+                    $book['publisher'] = Schema::organisation($d['publisher'], $d['city'] ?? null);
+                $this->schema['@graph'][] = $book;
+
+                $main['isPartOf'] = "#book";
+                if (isset($d['pages']))
+                    $main['pagination'] = $d['pages'];
+                break;
+
+            case "Poster":
+            case "PresentationDigitalDocument":
+                $event = Schema::event($d);
+                $event['@id'] = '#conference';
+                $this->schema['@graph'][] = $event;
+                $main['releasedEvent'] = ['@id' => '#conference'];
+                break;
+
+            default:
+                break;
+        }
+        $this->schema['@graph'][] = $main;
+
+        $s = '<script type="application/ld+json">';
+        $s .= json_encode($this->schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $s .= '</script>';
+        return $s;
+    }
+
+    public function hasSchema()
+    {
+        return $this->schemaType !== null;
+    }
+
+    private function initSchema()
+    {
+        $this->schemaType = null;
+        switch ($this->type) {
+            case 'publication':
+                switch ($this->subtype) {
+                    case 'article':
+                    case 'magazine':
+                    case 'preprint':
+                        $this->schemaType = "ScholarlyArticle";
+                        return;
+                    case 'thesis':
+                        $this->schemaType = "Thesis";
+                        return;
+                    case 'book':
+                        $this->schemaType = "Book";
+                        return;
+                    case 'chapter':
+                        $this->schemaType = "Chapter";
+                        return;
+                    default:
+                        return;
+                }
+            case 'poster':
+                $this->schemaType = "Poster";
+                return;
+            case 'lecture':
+                $this->schemaType = "PresentationDigitalDocument";
+                return;
+                // case 'project':
+                //     $this->schemaType = "ResearchProject";
+                //     return;
+
+            default:
+                break;
+        }
+    }
+
+    public function print_schema()
+    {
+        echo '<script type="application/ld+json">';
+        echo json_encode($this->schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        echo '</script>';
+    }
 
     function activity_icon($tooltip = true)
     {
         $icon = 'placeholder';
 
-        if (!empty($this->subtype) && isset($this->subtype['icon'])) {
-            $icon = $this->subtype['icon'];
-        } elseif (!empty($this->type) && isset($this->type['icon'])) {
-            $icon = $this->type['icon'];
+        if (!empty($this->subtypeArr) && isset($this->subtypeArr['icon'])) {
+            $icon = $this->subtypeArr['icon'];
+        } elseif (!empty($this->typeArr) && isset($this->typeArr['icon'])) {
+            $icon = $this->typeArr['icon'];
         }
-        if (empty($this->type)) {
+        if (empty($this->typeArr)) {
             return "<i class='ph text-danger ph-warning'></i>";
         }
-        $type = $this->type['id'];
+        $type = $this->typeArr['id'];
         $icon = "<i class='ph text-$type ph-$icon'></i>";
         if ($tooltip) {
             $name = $this->activity_title();
@@ -72,15 +248,15 @@ class Document extends Settings
     function activity_title()
     {
         $name = lang("Other", "Sonstiges");
-        if (!empty($this->subtype) && isset($this->subtype['name'])) {
+        if (!empty($this->subtypeArr) && isset($this->subtypeArr['name'])) {
             $name = lang(
-                $this->subtype['name'],
-                $this->subtype['name_de'] ?? $this->subtype['name']
+                $this->subtypeArr['name'],
+                $this->subtypeArr['name_de'] ?? $this->subtypeArr['name']
             );
-        } elseif (!empty($this->type) && isset($this->type['name'])) {
+        } elseif (!empty($this->typeArr) && isset($this->typeArr['name'])) {
             $name = lang(
-                $this->type['name'],
-                $this->type['name_de'] ?? $this->type['name']
+                $this->typeArr['name'],
+                $this->typeArr['name_de'] ?? $this->typeArr['name']
             );
         } else {
             return "ERROR: doc is not defined!";
@@ -95,8 +271,8 @@ class Document extends Settings
         } else {
             $type = strtolower(trim($this->doc['type'] ?? $this->doc['subtype'] ?? ''));
         }
-
-        $this->type = $this->activities[$type];
+        $this->type = $type;
+        $this->typeArr = $this->activities[$type];
 
         if (!isset($this->activities[$type])) return;
         if (!isset($this->doc['subtype'])) {
@@ -160,13 +336,14 @@ class Document extends Settings
             $subtype = $this->doc['subtype'];
         }
 
-        if (isset($this->type['subtypes'][$subtype])) {
-            $this->subtype = $this->type['subtypes'][$subtype];
+        $this->subtype = $subtype;
+        if (isset($this->typeArr['subtypes'][$subtype])) {
+            $this->subtypeArr = $this->typeArr['subtypes'][$subtype];
             return;
         }
-        foreach ($this->type['subtypes'] as $st) {
+        foreach ($this->typeArr['subtypes'] as $st) {
             if ($st['id'] == $subtype) {
-                $this->subtype = $st;
+                $this->subtypeArr = $st;
                 return;
             }
         }
@@ -189,20 +366,20 @@ class Document extends Settings
         return $str . " $sep " . end($array);
     }
 
-    public static function abbreviateAuthor($last, $first, $reverse = true, $space='&nbsp;')
+    public static function abbreviateAuthor($last, $first, $reverse = true, $space = '&nbsp;')
     {
         $fn = "";
         if ($first) :
             foreach (preg_split("/(\s+| |-|\.)/u", $first, -1, PREG_SPLIT_DELIM_CAPTURE) as $name) {
                 if (empty($name) || $name == '.' || $name == ' ') continue;
-                if ($name == '-') 
+                if ($name == '-')
                     $fn .= '-';
                 else
                     $fn .= "" . mb_substr($name, 0, 1) . ".";
             }
         endif;
         if (empty(trim($fn))) return $last;
-        if ($reverse) return $last . ",".$space . $fn;
+        if ($reverse) return $last . "," . $space . $fn;
         return $fn . $space . $last;
     }
 
@@ -264,7 +441,7 @@ class Document extends Settings
         }
 
         if ($first > 1) {
-            if ($this->type['id'] == 'poster' || $this->type['id'] == 'lecture')
+            if ($this->typeArr['id'] == 'poster' || $this->typeArr['id'] == 'lecture')
                 $this->appendix .= " <sup>#</sup> Presenting authors";
             else
                 $this->appendix .= " <sup>#</sup> Shared first authors";
@@ -393,8 +570,8 @@ class Document extends Settings
     {
         if ($user === null) $user = $_SESSION['username'];
         $issues = array();
-        $type = $this->type['id'];
-        $subtype = $this->subtype['id'];
+        $type = $this->typeArr['id'];
+        $subtypeArr = $this->subtypeArr['id'];
 
         if (!$this->is_approved($user)) $issues[] = "approval";
 
@@ -449,6 +626,8 @@ class Document extends Settings
                 return lang('Lecture and practical course', 'Vorlesung und Praktikum');
             case 'lecture-seminar':
                 return lang('Lecture and seminar', 'Vorlesung und Seminar');
+            case 'practical-seminar':
+                return lang('Practical course and seminar', 'Praktikum und Seminar');
             case 'lecture-practical-seminar':
                 return lang('Lecture, seminar, practical course', 'Vorlesung, Seminar und Praktikum');
             case 'seminar':
@@ -584,11 +763,15 @@ class Document extends Settings
                     return "<span style='color:#B61F29;'>[Online ahead of print]</span>";
                 else return '';
             case "openaccess": // ["open_access"],
+            case "openaccess-status": // ["open_access"],
+                $status = $this->getVal('oa_status', 'Unknown Status');
                 if (!empty($this->getVal('open_access', false))) {
-                    return '<i class="icon-open-access text-success" title="Open Access"></i>';
+                    $oa = '<i class="icon-open-access text-success" title="Open Access (' . $status . ')"></i>';
                 } else {
-                    return '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
+                    $oa = '<i class="icon-closed-access text-danger" title="Closed Access"></i>';
                 }
+                if ($this->usecase == 'list') return $oa . " " . $status;
+                return $oa;
             case "pages": // ["pages"],
                 return $this->getVal('pages');
             case "person": // ["name", "affiliation", "academic_title"],
@@ -655,6 +838,23 @@ class Document extends Settings
                 return $this->getVal('version');
             case "volume": // ["volume"],
                 return $this->getVal('volume');
+            case "country":
+            case "nationality":
+                $code = $this->getVal('country');
+                return Country::get($code);
+            case "gender":
+                switch ($this->getVal('gender')) {
+                    case 'f':
+                        return lang('female', 'weiblich');
+                    case 'm':
+                        return lang('male', 'männlich');
+                    case 'd':
+                        return lang('non-binary', 'divers');
+                    case '-':
+                        return lang('not specified', 'keine Angabe');
+                    default:
+                        return '';
+                }
             case "volume-issue-pages": // ["volume"],
                 $val = '';
                 if (!empty($this->getVal('volume'))) {
@@ -668,7 +868,7 @@ class Document extends Settings
                 }
                 return $val;
             default:
-                return '';
+                return $this->getVal($module);
         }
     }
 
@@ -676,7 +876,7 @@ class Document extends Settings
     {
         $this->full = true;
         $template = '{title}';
-        $template = $this->subtype['template']['print'] ?? $template;
+        $template = $this->subtypeArr['template']['print'] ?? $template;
 
         $line = $this->template($template);
         if ($this->usecase == 'web')
@@ -692,7 +892,7 @@ class Document extends Settings
     {
         $this->full = false;
         $line = "";
-        $template = $this->subtype['template']['title'] ?? '{title}';
+        $template = $this->subtypeArr['template']['title'] ?? '{title}';
         $title = $this->template($template);
 
         if ($link) {
@@ -703,7 +903,7 @@ class Document extends Settings
         }
 
 
-        $template = $this->subtype['template']['subtitle'] ?? '{authors}';
+        $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
         $line .= "<br><small class='text-muted d-block'>";
         $line .= $this->template($template);
         $line .= $this->get_field('file-icons');

@@ -175,7 +175,7 @@ class Settings
             }
             ";
         }
-
+        $style = preg_replace('/\s+/', ' ', $style);
         return "<style>$style</style>";
     }
 }

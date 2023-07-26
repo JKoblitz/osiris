@@ -53,16 +53,13 @@ $LOM = new LOM($user, $osiris);
 $_lom = 0;
 
 $stats = [];
-$groups = [
-    'publication' => 0,
-    'poster' => 0,
-    'lecture' => 0,
-    'review' => 0,
-    "teaching" => 0,
-    "students" => 0,
-    "software" => 0,
-    "misc" => 0,
-];
+
+
+$groups = [];
+foreach ($Settings->activities as $key => $value) {
+    $groups[$value['id']] = 0;
+}
+
 
 $authors = ["first" => 0, "last" => 0, 'middle' => 0, 'editor' => 0];
 
