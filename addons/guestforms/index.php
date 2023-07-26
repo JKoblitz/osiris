@@ -1,6 +1,6 @@
 <?php
 
-Route::get('/guests', function () {
+Route::get('/guests/?', function () {
     include_once BASEPATH . "/php/_config.php";
     include_once BASEPATH . "/php/_db.php";
 
