@@ -73,7 +73,7 @@ Route::post('/guests/save', function () {
         die;
     }
     $values = validateValues($_POST['values']);
-// dump($_POST);
+    // dump($_POST);
     if (!isset($values['id'])) {
         echo "no id given";
         die;
@@ -85,21 +85,32 @@ Route::post('/guests/save', function () {
     $values['created_by'] = strtolower($_SESSION['username']);
 
     // check if check boxes are checked
-    $values['general'] = $values['general'] ?? false;
-    $values['data_security'] = $values['data_security'] ?? false;
-    $values['data_protection'] = $values['data_protection'] ?? false;
-    $values['safety_instruction'] = $values['safety_instruction'] ?? false;
+    $values['legal']['general'] = $values['legal']['general'] ?? false;
+    $values['legal']['data_security'] = $values['legal']['data_security'] ?? false;
+    $values['legal']['data_protection'] = $values['legal']['data_protection'] ?? false;
+    $values['legal']['safety_instruction'] = $values['legal']['safety_instruction'] ?? false;
 
-    // check if module already exists:
-    $module_exist = $collection->findOne(['id' => $id]);
-    if (!empty($module_exist)) {
-        $id = $module_exist['id'];
+
+    // add supervisor information
+    $supervisor = getUserFromId($values['user']);
+    if (empty($supervisor)) die('Supervisor does not exist');
+    $values['supervisor'] = [
+        "user" => $supervisor['_id'],
+        "name" => $supervisor['displayname']
+    ];
+
+    unset($values['user']);
+
+    // check if guest already exists:
+    $guest_exist = $collection->findOne(['id' => $id]);
+    if (!empty($guest_exist)) {
+        $id = $guest_exist['id'];
         $collection->updateOne(
             ['id' => $id],
             ['$set' => $values]
         );
 
-        header("Location: " . ROOTPATH . "/guests/edit/$id?msg=success");
+        header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
         die;
     }
 
@@ -107,5 +118,5 @@ Route::post('/guests/save', function () {
     // die;
     $insertOneResult  = $collection->insertOne($values);
 
-    header("Location: " . ROOTPATH . "/guests/edit/$id?msg=success");
+    header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
 }, 'login');

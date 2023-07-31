@@ -280,6 +280,13 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
 
+                    
+                    <a href="<?= ROOTPATH ?>/guests" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('guests') ?>">
+                        <i class="ph ph-regular ph-user-switch" aria-hidden="true"></i>
+                        <?= lang('Guests', 'Gäste') ?>
+                    </a>
+
+
                     <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal/browse') ?>">
                         <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
