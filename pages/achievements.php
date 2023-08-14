@@ -1,3 +1,22 @@
+<?php
+    
+/**
+ * Page to show user achievements
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /achievements/<username>
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <div class="content mt-0">
     <h1>
         <i class="ph ph-regular ph-trophy text-signal"></i>

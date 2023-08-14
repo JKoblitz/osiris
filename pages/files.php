@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to upload files for an activity
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /activities/files/<activity_id>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 $files = $doc['files'] ?? array();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

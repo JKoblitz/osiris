@@ -1,17 +1,17 @@
 <?php
-/*
-* This file is part of the OSIRIS package.
-*
-* (c) Julia Koblitz
-*
-* This package is Open Source Software. For the full copyright and license
-* information, please view the LICENSE file which was distributed with this
-* source code.
-*/
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+/**
+ * Core routing file
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 if (file_exists('CONFIG.php')) {
     require_once 'CONFIG.php';
@@ -22,43 +22,9 @@ if (file_exists('CONFIG.php')) {
 
 session_start();
 
-// implement newer functions in case they don't exist
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return $needle !== '' && strpos($haystack, $needle) !== false;
-    }
-}
-if (!function_exists('str_starts_with')) {
-    function str_starts_with($haystack, $needle)
-    {
-        return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
-    }
-}
-if (!function_exists('str_ends_with')) {
-    function str_ends_with($haystack, $needle)
-    {
-        return $needle !== '' && substr($haystack, -strlen($needle)) === (string)$needle;
-    }
-}
-
-
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
 
-
-// Language settings and cookies
-if (!empty($_GET['language'])) {
-    $_COOKIE['osiris-language'] = $_GET['language'] === 'en' ? 'en' : 'de';
-    $domain = ($_SERVER['HTTP_HOST'] != 'testserver') ? $_SERVER['HTTP_HOST'] : false;
-    setcookie('osiris-language', $_COOKIE['osiris-language'], [
-        'expires' => time() + 86400,
-        'path' => ROOTPATH . '/',
-        'domain' =>  $domain,
-        'httponly' => false,
-        'samesite' => 'Strict',
-    ]);
-}
-
+// set time constants
 $year = date("Y");
 $month = date("n");
 $quarter = ceil($month / 3);
@@ -68,12 +34,12 @@ define('CURRENTYEAR', intval($year));
 
 if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
     // someone tries to switch users
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
     $username = $_GET['OSIRIS-SELECT-MAINTENANCE-USER'];
 
     // check if the user is allowed to do that
-    $allowed = $osiris->users->count(['_id' => $username, 'maintenance' => $realusername]);
+    $allowed = $osiris->accounts->count(['username' => $username, 'maintenance' => $realusername]);
 
     // change username if user is allowed
     if ($allowed == 1 || $realusername == $username) {
@@ -99,7 +65,7 @@ function lang($en, $de = null)
 include_once BASEPATH . "/php/Route.php";
 
 Route::get('/', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) {
         include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
@@ -123,16 +89,25 @@ if (defined('GUEST_FORMS') && GUEST_FORMS) {
     require_once 'addons/guestforms/index.php';
 }
 
+
+Route::get('/test-new-func', function () {
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+    $db = new DB;
+    dump($db->getUser('juk20'));
+    
+    include BASEPATH . "/footer.php";
+});
+
 Route::get('/dashboard', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/dashboard.php";
     include BASEPATH . "/footer.php";
 });
 
 Route::get('/issues', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
     $breadcrumb = [
@@ -145,8 +120,7 @@ Route::get('/issues', function () {
 });
 
 Route::get('/queue/(user|editor)', function ($role) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     if ($role == 'editor' && ($USER['is_controlling'] || $USER['is_admin'])) {
         $filter = ['declined' => ['$ne' => true]];
@@ -167,10 +141,9 @@ Route::get('/queue/(user|editor)', function ($role) {
 
 
 Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
-    // include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
-    $mongo_id = to_ObjectID($id);
+    $mongo_id = $DB->to_ObjectID($id);
 
     if ($type == 'accept') {
 
@@ -186,7 +159,7 @@ Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
 
         $insertOneResult = $osiris->activities->insertOne($new);
         $new_id = $insertOneResult->getInsertedId();
-        renderActivities(['_id' => $new_id]);
+        $DB->renderActivities(['_id' => $new_id]);
 
         $osiris->queue->deleteOne(['_id' => $mongo_id]);
         echo $new_id;
@@ -203,33 +176,31 @@ Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
     }
 });
 
-Route::get('/lom', function () {
+Route::get('/coins', function () {
 
     $breadcrumb = [
         ['name' => lang('LOM', 'LOM')]
     ];
 
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/lom.php";
     include BASEPATH . "/footer.php";
 });
-Route::post('/lom', function () {
+
+Route::post('/coins', function () {
     $json = json_encode($_POST['json'], JSON_PRETTY_PRINT);
     file_put_contents(BASEPATH . "/matrix.json", $json);
-    header("Location: " . ROOTPATH . "/lom?msg=success");
+    header("Location: " . ROOTPATH . "/coins?msg=success");
 });
-
-
 
 Route::get('/achievements/?(.*)', function ($user) {
     if (empty($user)) $user = $_SESSION['username'];
 
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/_achievements.php";
 
-    $scientist = getUserFromId($user);
+    $scientist = $DB->getUser($user);
     $name = $scientist['displayname'];
 
     $breadcrumb = [
@@ -250,7 +221,7 @@ Route::get('/new-stuff', function () {
         ['name' => lang('News', 'Neuigkeiten')]
     ];
 
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/MyParsedown.php";
 
     include BASEPATH . "/header.php";
@@ -264,7 +235,7 @@ Route::get('/docs', function () {
         ['name' => lang('Documentation', 'Dokumentation')]
     ];
 
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/MyParsedown.php";
 
     include BASEPATH . "/header.php";
@@ -278,14 +249,14 @@ Route::get('/license', function () {
         ['name' => lang('License', 'Lizenz')]
     ];
 
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/license.html";
     include BASEPATH . "/footer.php";
 });
 
 Route::get('/user/login', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         ['name' => lang('User login', 'Login')]
     ];
@@ -304,7 +275,7 @@ Route::get('/user/login', function () {
 
 
 Route::post('/user/login', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $page = "userlogin";
     $msg = "?msg=welcome";
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
@@ -317,14 +288,14 @@ Route::post('/user/login', function () {
     } else {
         include BASEPATH . "/php/_login.php";
     }
-    include BASEPATH . "/php/_db.php";
+    include BASEPATH . "/php/init.php";
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
         if ($_SERVER['SERVER_NAME'] == 'testserver' && false) {
             // on the test server: log in
             // check if user exists in our database
             $_SESSION['username'] = $_POST['username'];
-            $useracc = getUserFromId($_SESSION['username']);
+            $useracc = $DB->getUser($_SESSION['username']);
             $_SESSION['name'] = $useracc['displayname'];
 
             $_SESSION['loggedin'] = true;
@@ -340,14 +311,19 @@ Route::post('/user/login', function () {
             if (isset($auth["status"]) && $auth["status"] == true) {
 
                 // check if user exists in our database
-                $USER = getUserFromId(strtolower($_POST['username']));
+                $USER = $DB->getUser($_POST['username']);
                 if (empty($USER)) {
                     // create user from LDAP
-                    $USER = newUser(strtolower($_POST['username']));
-                    if (empty($USER)) {
+                    $new_user = newUser($_POST['username']);
+                    if (empty($new_user)) {
                         die('Sorry, the user does not exist. Please contact system administrator!');
                     }
-                    $osiris->users->insertOne($USER);
+                    $osiris->persons->insertOne($new_user['person']);
+                    $osiris->accounts->insertOne($new_user['account']);
+
+                    $user = $new_user['account']['username'];
+
+                    $USER = $DB->getUser($user);
 
                     // try to connect the user with existing authors
                     $updateResult = $osiris->activities->updateMany(
@@ -355,16 +331,17 @@ Route::post('/user/login', function () {
                             'authors.last' => $USER['last'],
                             'authors.first' => new MongoDB\BSON\Regex('^' . $USER['first'][0] . '.*')
                         ],
-                        ['$set' => ["authors.$.user" => strtolower($_POST['username'])]]
+                        ['$set' => ["authors.$.user" => ($user)]]
                     );
                     $n = $updateResult->getModifiedCount();
                     $msg .= "&new=$n";
                 }
-                $_SESSION['username'] = $USER['_id'];
+
+                $_SESSION['username'] = $USER['username'];
                 $_SESSION['name'] = $USER['displayname'];
 
-                $updateResult = $osiris->users->updateOne(
-                    ['_id' => $_POST['username']],
+                $updateResult = $osiris->account->updateOne(
+                    ['username' => $_POST['username']],
                     ['$set' => ["lastlogin" => date('d.m.Y')]]
                 );
 
@@ -398,8 +375,7 @@ Route::post('/user/login', function () {
 /* LOGIN AREA */
 
 Route::get('/(activities|my-activities)', function ($page) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
     $path = $page;
@@ -424,8 +400,8 @@ Route::get('/(activities|my-activities)', function ($page) {
 }, 'login');
 
 
-Route::get('/activities/search', function () {
-    include_once BASEPATH . "/php/_config.php";
+Route::get('/search/activities', function () {
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -436,16 +412,8 @@ Route::get('/activities/search', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/main', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/main.php";
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-
 Route::get('/activities/new', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
     $breadcrumb = [
@@ -458,8 +426,7 @@ Route::get('/activities/new', function () {
 }, 'login');
 
 Route::post('/activities/new', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
     global $form;
@@ -483,8 +450,8 @@ Route::post('/activities/new', function () {
 }, 'login');
 
 
-Route::get('/activities/teaching', function () {
-    include_once BASEPATH . "/php/_config.php";
+Route::get('/teaching', function () {
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -495,8 +462,8 @@ Route::get('/activities/teaching', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/activities/projects', function () {
-    include_once BASEPATH . "/php/_config.php";
+Route::get('/projects', function () {
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -509,7 +476,7 @@ Route::get('/activities/projects', function () {
 
 
 Route::get('/activities/pubmed-search', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
@@ -522,8 +489,7 @@ Route::get('/activities/pubmed-search', function () {
 
 
 Route::get('/activities/(doi|pubmed)/(.*)', function ($type, $identifier) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $form = $osiris->activities->findOne([$type => $identifier]);
     if (!empty($form)) {
@@ -533,11 +499,10 @@ Route::get('/activities/(doi|pubmed)/(.*)', function ($type, $identifier) {
     echo "$type $identifier not found.";
 });
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
     $activity = $osiris->activities->findOne(['_id' => $id], ['projection' => ['file' => 0]]);
 
     $doc = json_decode(json_encode($activity->getArrayCopy()), true);
@@ -552,8 +517,8 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
             );
         }
     }
-    renderActivities(['_id' =>  $activity['_id']]);
-    $user_activity = isUserActivity($doc, $user);
+    $DB->renderActivities(['_id' =>  $activity['_id']]);
+    $user_activity = $DB->isUserActivity($doc, $user);
 
     $Format = new Document;
     $Format->setDocument($doc);
@@ -566,7 +531,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
         ['name' => $name]
     ];
-    if ($Format->hasSchema()){
+    if ($Format->hasSchema()) {
         $additionalHead = $Format->schema();
     }
     include BASEPATH . "/header.php";
@@ -581,11 +546,10 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::get('/activities/files/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
 
     $doc = $osiris->activities->findOne(['_id' => $id]);
 
@@ -609,11 +573,10 @@ Route::get('/activities/files/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::post('/activities/files/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
-    $mongoid = to_ObjectID($id);
+    $mongoid = $DB->to_ObjectID($id);
 
     $activity = $osiris->activities->findOne(['_id' => $mongoid]);
 
@@ -638,10 +601,9 @@ Route::post('/activities/files/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::get('/activities/view/([a-zA-Z0-9]*)/file', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
 
     $activity = $osiris->activities->findOne(['_id' => $id]);
 
@@ -658,11 +620,10 @@ Route::get('/activities/view/([a-zA-Z0-9]*)/file', function ($id) {
 
 
 Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
-    $mongoid = to_ObjectID($id);
+    $mongoid = $DB->to_ObjectID($id);
 
     global $form;
     $form = $osiris->activities->findOne(['_id' => $mongoid]);
@@ -689,11 +650,10 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::get('/activities/copy/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
 
     global $form;
     $form = $osiris->activities->findOne(['_id' => $id]);
@@ -711,10 +671,9 @@ Route::get('/activities/copy/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $role) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
     if (($form['locked'] ?? false) && !$USER['is_controlling']) {
@@ -742,8 +701,7 @@ Route::get('/import', function () {
     $breadcrumb = [
         ['name' => lang('Import')]
     ];
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/import.php";
     include BASEPATH . "/footer.php";
@@ -757,7 +715,7 @@ Route::post('/import/google', function () {
     if (!isset($_POST["user"]) || !isset($_POST['doc']))
         exit - 1;
 
-    include(BASEPATH . '/php/_db.php');
+    include(BASEPATH . '/php/init.php');
     include(BASEPATH . '/php/GoogleScholar.php');
     $user = $_POST["user"];
     $google = new GoogleScholar($user);
@@ -807,7 +765,7 @@ Route::post('/import/google', function () {
         $a = explode(' ', $a);
         $last = array_pop($a);
         $first = implode(' ', $a);
-        $username = getUserFromName($last, $first);
+        $username = $DB->getUserFromName($last, $first);
         $author = [
             'first' => $first,
             'last' => $last,
@@ -831,7 +789,7 @@ Route::post('/import/google', function () {
     $insertOneResult  = $osiris->activities->insertOne($result);
     $id = $insertOneResult->getInsertedId();
     $result['_id'] = $id;
-    renderActivities(['_id' => $id]);
+    $DB->renderActivities(['_id' => $id]);
 
     $Format = new Document();
     $Format->setDocument($doc);
@@ -853,8 +811,7 @@ Route::post('/import/file', function () {
         ['name' => lang('Import'), 'path' => '/import'],
         ['name' => lang('From File', 'Aus Datei')]
     ];
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/import-file.php";
     include BASEPATH . "/footer.php";
@@ -867,16 +824,15 @@ Route::get('/user/browse', function () {
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen')]
     ];
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/users-table.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 
-Route::get('/user/search', function () {
-    include_once BASEPATH . "/php/_config.php";
+Route::get('/search/user', function () {
+    include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
@@ -888,19 +844,18 @@ Route::get('/user/search', function () {
 }, 'login');
 
 Route::get('/expertise', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         ['name' => lang('Expertise search', 'Experten-Suche')]
     ];
-    // include_once BASEPATH . "/php/_db.php";
+    // include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/expertise.php";
     include BASEPATH . "/footer.php";
 });
 
 Route::get('/profile/?(.*)', function ($user) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     if (empty($user)) $user = $_SESSION['username'];
     include_once BASEPATH . "/php/Document.php";
@@ -908,7 +863,7 @@ Route::get('/profile/?(.*)', function ($user) {
 
     $Format = new Document($user);
 
-    $scientist = getUserFromId($user);
+    $scientist = $DB->getUser($user);
 
     if (empty($scientist)) {
         header("Location: " . ROOTPATH . "/user/browse?msg=user-does-not-exist");
@@ -927,15 +882,14 @@ Route::get('/profile/?(.*)', function ($user) {
 }, 'login');
 
 
-Route::get('/scientist/?(.*)', function ($user) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+Route::get('/my-year/?(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
 
     if (empty($user)) $user = $_SESSION['username'];
     include_once BASEPATH . "/php/Document.php";
     $Format = new Document($user);
 
-    $scientist = getUserFromId($user);
+    $scientist = $DB->getUser($user);
     $name = $scientist['displayname'];
 
     $breadcrumb = [
@@ -951,12 +905,11 @@ Route::get('/scientist/?(.*)', function ($user) {
 
 
 Route::get('/controlling', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
     $breadcrumb = [
         // ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
-        // ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
+        // ['name' => lang('Table', 'Tabelle'), 'path' => "/journal"],
         ['name' => lang("Controlling")]
     ];
 
@@ -966,8 +919,7 @@ Route::get('/controlling', function () {
 }, 'login');
 
 Route::post('/controlling', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
 
     $breadcrumb = [
@@ -982,7 +934,7 @@ Route::post('/controlling', function () {
         $lock = ($_POST['action'] == 'lock');
         // dump($lock);
 
-        $cursor = get_reportable_activities($_POST['start'], $_POST['end']);
+        $cursor = $DB->get_reportable_activities($_POST['start'], $_POST['end']);
         foreach ($cursor as $doc) {
             // dump($doc['title'] ?? 'REVIEW');
 
@@ -1024,8 +976,7 @@ Route::post('/controlling', function () {
 }, 'login');
 
 Route::post('/reset-settings', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
 
 
@@ -1058,8 +1009,7 @@ Route::post('/reset-settings', function () {
 
 
 Route::get('/admin/(activities|departments|general)', function ($page) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
     $breadcrumb = [
         ['name' => lang("Admin Dashboard $page")]
@@ -1071,8 +1021,7 @@ Route::get('/admin/(activities|departments|general)', function ($page) {
 }, 'login');
 
 Route::post('/admin/(activities|departments|general)', function ($page) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
 
 
@@ -1129,11 +1078,11 @@ Route::post('/admin/(activities|departments|general)', function ($page) {
 
 
 Route::get('/visualize', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         ['name' => lang('Visualization', 'Visualisierung')]
     ];
-    // include_once BASEPATH . "/php/_db.php";
+    // include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/visualize.php";
     include BASEPATH . "/footer.php";
@@ -1152,8 +1101,7 @@ Route::get('/visualize/(\w*)', function ($page) {
         ['name' => lang('Visualization', 'Visualisierung'), 'path' => "/visualize"],
         ['name' => $names[$page]]
     ];
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/Document.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/visualize-$page.php";
@@ -1161,27 +1109,14 @@ Route::get('/visualize/(\w*)', function ($page) {
 });
 
 
+
 Route::get('/journal', function () {
-    // if ($page == 'users') 
-    $breadcrumb = [
-        ['name' => lang('Journals', 'Journale')]
-    ];
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/journals-overview.php";
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-
-Route::get('/journal/browse', function () {
     // if ($page == 'users') 
     $breadcrumb = [
         ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
         ['name' => lang('Table', 'Tabelle')]
     ];
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/journals-table.php";
     include BASEPATH . "/footer.php";
@@ -1190,15 +1125,13 @@ Route::get('/journal/browse', function () {
 
 
 Route::get('/journal/view/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
         ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
-        ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
         ['name' => $data['journal']]
     ];
 
@@ -1209,13 +1142,11 @@ Route::get('/journal/view/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::get('/journal/add', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $id = null;
     $data = [];
     $breadcrumb = [
         ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
-        ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
         ['name' => lang("Add", "Hinzufügen")]
     ];
 
@@ -1226,15 +1157,13 @@ Route::get('/journal/add', function () {
 
 
 Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
-    $id = to_ObjectID($id);
+    $id = $DB->to_ObjectID($id);
 
     $data = $osiris->journals->findOne(['_id' => $id]);
     $breadcrumb = [
         ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
-        ['name' => lang('Table', 'Tabelle'), 'path' => "/journal/browse"],
         ['name' => $data['journal'], 'path' => "/journal/view/$id"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
@@ -1247,13 +1176,12 @@ Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
 
 
 Route::get('/user/edit/(.*)', function ($user) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/Document.php";
 
-    // $id = to_ObjectID($id);
+    // $id = $DB->to_ObjectID($id);
 
-    $data = getUserFromId($user);
+    $data = $DB->getUser($user);
     if (empty($data)) {
         header("Location: " . ROOTPATH . "/user/browse");
         die;
@@ -1273,7 +1201,7 @@ Route::get('/user/edit/(.*)', function ($user) {
 Route::get('/docs/([\w-]+)', function ($doc) {
     // header("HTTP/1.0 $error");
 
-    include BASEPATH . "/php/_db.php";
+    include BASEPATH . "/php/init.php";
     // SassCompiler::run("scss/", "css/");
 
     $breadcrumb = [
@@ -1341,17 +1269,17 @@ include_once BASEPATH . "/api.php";
 include_once BASEPATH . "/mongo.php";
 include_once BASEPATH . "/export.php";
 
-if (IDA_INTEGRATION){
+if (IDA_INTEGRATION) {
     include_once BASEPATH . "/addons/ida/index.php";
 }
 
 Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/components/$path.php";
 });
 
 Route::get('/check-duplicate', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     if (!isset($_GET['type']) || !isset($_GET['id'])) die('false');
     if ($_GET['type'] != 'doi' && $_GET['type'] != 'pubmed') die('false');
@@ -1362,7 +1290,7 @@ Route::get('/check-duplicate', function () {
 });
 
 Route::get('/settings', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $file_name = BASEPATH . "/settings.json";
     if (!file_exists($file_name)) {
@@ -1376,13 +1304,13 @@ Route::get('/settings', function () {
 // include_once 'user_management.php';
 
 // Route::get('/discover', function () {
-//     include_once BASEPATH . "/php/_db.php";
+//     include_once BASEPATH . "/php/init.php";
 
 //     // user must be set
 //     if (!isset($_GET['user']) || empty($_GET['user'])) die('user not set');
 
 //     // get user account
-//     $user = getUserFromId($_GET['user']);
+//     $user = $DB->getUser($_GET['user']);
 
 //     // if openalex id is not set: nothing to do
 //     if (empty($user['openalex'])) die ('openalex not set');
@@ -1425,12 +1353,12 @@ Route::get('/settings', function () {
 
 
 Route::get('/get-modules', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/Modules.php";
 
     $form = array();
     if (isset($_GET['id']) && !empty($_GET['id'])) {
-        $mongoid = to_ObjectID($_GET['id']);
+        $mongoid = $DB->to_ObjectID($_GET['id']);
         $form = $osiris->activities->findOne(['_id' => $mongoid]);
     }
 
@@ -1443,51 +1371,111 @@ Route::get('/get-modules', function () {
 });
 
 
+// temporary route to restructure users table
+Route::get('/update-user-persons', function () {
+    include_once BASEPATH . "/php/init.php";
+    $osiris->teachings->drop();
+    $osiris->miscs->drop();
+    $osiris->posters->drop();
+    $osiris->publications->drop();
+    $osiris->lectures->drop();
+    $osiris->reviews->drop();
+    $osiris->lecture->drop();
+
+    $users = $osiris->persons->find([]);
+
+    $person_keys = [
+        "first",
+        "last",
+        "academic_title",
+        "displayname",
+        "formalname",
+        "names",
+        "first_abbr",
+        "department",
+        "unit",
+        "telephone",
+        "mail",
+        "dept",
+        "orcid",
+        "gender",
+        "google_scholar",
+        "researchgate",
+        "twitter",
+        "webpage",
+        "expertise",
+        "updated",
+        "updated_by",
+    ];
+
+    $account_keys = [
+        "is_admin",
+        "is_controlling",
+        "is_scientist",
+        "is_leader",
+        "is_active",
+        "maintenance",
+        "hide_achievements",
+        "hide_coins",
+        "display_activities",
+        "lastlogin",
+        "created",
+        "maintenance",
+        "approved",
+    ];
+
+    $osiris->persons->deleteMany([]);
+    $osiris->accounts->deleteMany([]);
+    $osiris->achieved->deleteMany([]);
+
+    foreach ($users as $user) {
+        // TODO: create graphic schema of the new structure
+        $user = iterator_to_array($user);
+        $username = strtolower($user['username']);
+
+
+        $person = ["username" => $username];
+        foreach ($person_keys as $key) {
+            if (!array_key_exists($key, $user)) continue;
+            $person[$key] = $user[$key];
+            unset($user[$key]);
+        }
+        $osiris->persons->insertOne($person);
+
+        $account = ["username" => $username];
+        foreach ($account_keys as $key) {
+            if (!array_key_exists($key, $user)) continue;
+            $account[$key] = $user[$key];
+            unset($user[$key]);
+        }
+        $osiris->accounts->insertOne($account);
+
+        if (isset($user['achievements'])) {
+            foreach ($user['achievements'] as $ac) {
+                $ac['username'] = $username;
+                $osiris->achieved->insertOne($ac);
+            }
+            unset($user['achievements']);
+        }
+
+        dump($user, true);
+        dump($person);
+        dump($account);
+        echo "<hr>";
+    }
+
+    // MongoDB\Collection::createIndexes()
+});
+
 
 Route::get('/test', function () {
-    include_once BASEPATH . "/vendor/autoload.php";
-    $mail = new PHPMailer(true);
-
-    try {
-        //Server settings
-        // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-        // $mail->isSMTP();                                            //Send using SMTP
-        // $mail->Host       = 'localhost';                     //Set the SMTP server to send through
-        // $mail->SMTPAuth   = false;                                   //Enable SMTP authentication
-        // $mail->Username   = 'juk20@dsmz.de';                     //SMTP username
-        // $mail->Password   = '4GHjHAyp';                               //SMTP password
-        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
-        // $mail->Port       = 25;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
     
-        //Recipients
-        $mail->setFrom('no-reply@osiris-app.de', 'OSIRIS');
-        $mail->addAddress('juk20@dsmz.de', 'Julia Koblitz');     //Add a recipient
-        // $mail->addAddress('ellen@example.com');               //Name is optional
-        $mail->addReplyTo(ADMIN.'@dsmz.de', 'OSIRIS Admin');
-        $mail->addCC('julia.koblitz@dsmz.de');
-        // $mail->addBCC('bcc@example.com');
-    
-        //Attachments
-        // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-        // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-    
-        //Content
-        $mail->isHTML(true);                                  //Set email format to HTML
-        $mail->Subject = 'Here is the subject';
-        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-        $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-    
-        $mail->send();
-        echo 'Message has been sent';
-    } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-    }
 });
 
 
 
 // Route::get('/calculate-if', function () {
-//     include_once BASEPATH . "/php/_config.php";
+//     include_once BASEPATH . "/php/init.php";
 //     include BASEPATH . "/header.php";
 
 //     $counts_by_year = '[{"year":2023,"works_count":1069,"cited_by_count":303430},{"year":2022,"works_count":4101,"cited_by_count":1108272},{"year":2021,"works_count":3778,"cited_by_count":1174045},{"year":2020,"works_count":3715,"cited_by_count":1074783},{"year":2019,"works_count":4085,"cited_by_count":948818},{"year":2018,"works_count":4060,"cited_by_count":898835},{"year":2017,"works_count":3927,"cited_by_count":844962},{"year":2016,"works_count":4166,"cited_by_count":829285},{"year":2015,"works_count":4252,"cited_by_count":822252},{"year":2014,"works_count":4195,"cited_by_count":819429},{"year":2013,"works_count":4302,"cited_by_count":806661},{"year":2012,"works_count":4401,"cited_by_count":744492}]';

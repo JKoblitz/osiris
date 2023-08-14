@@ -1,8 +1,10 @@
 <?php
 include_once BASEPATH . "/php/_lom.php";
+include_once BASEPATH . "/php/DB.php";
 
 class Achievement
 {
+    private $DB;
     private $osiris;
     public $userac = [];
     public $achievements = [];
@@ -15,10 +17,11 @@ class Achievement
     private $showcoins = false;
 
 
-    function __construct($osiris)
+    function __construct($DB=null)
     {
-        $this->osiris = $osiris;
-        // $achievements = $this->osiris->achievements->find()->toArray();
+        $this->DB = new DB;
+        $this->osiris = $this->DB->db;
+        // $achievements = $this->DB->achievements->find()->toArray();
 
         $json = file_get_contents(BASEPATH . "/achievements.json");
         $achievements = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
@@ -40,10 +43,12 @@ class Achievement
         }
 
         // find user in the database
-        $this->userdata = $this->osiris->users->findOne(['_id' => $username]);
+        $this->userdata = $this->DB->getUser($username);
         if (empty($this->userdata)) return false;
+
         // get all user achievements
-        $achieved = $this->userdata['achievements'] ?? [];
+        
+        $achieved = $this->osiris->achieved->find(['username'=>$username]);
 
         // check if user disabled coins
         // $this->showcoins = !($this->userdata['hide_coins'] ?? true);
@@ -72,7 +77,6 @@ class Achievement
             // add to list of user achievements
             $this->userac[$ac['id']] = $ac;
         }
-
 
         // save gender for correct title formatting
         if (($this->userdata['gender'] ?? 'n') == 'f') {
@@ -241,7 +245,7 @@ class Achievement
             }
             if ($new_lvl > $user_lvl || ($user_ac['new'] ?? false)) {
                 $this->userac[$key] = [
-                    'id' => $key, "level" => $new_lvl, "achieved" => date("d.m.Y")
+                    'id' => $key, "level" => $new_lvl, "achieved" => date("d.m.Y"), "username" => $this->username
                 ];
                 $this->new[] = $this->userac[$key];
             }
@@ -375,9 +379,7 @@ class Achievement
         if (!$this->self || empty($this->new) || empty($this->userac)) return;
         $values = array_values($this->userac);
 
-        $this->osiris->users->updateOne(
-            ['_id' => $this->username],
-            ['$set' => ['achievements' => $values]]
-        );
+        $this->osiris->achieved->deleteMany(['username'=> $this->username]);
+        $this->osiris->achieved->insertMany($values);
     }
 }

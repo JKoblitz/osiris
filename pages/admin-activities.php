@@ -1,4 +1,21 @@
 <?php
+
+/**
+ * Page for admin dashboard to define activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /admin/activities
+ *
+ * @package OSIRIS
+ * @since 1.1.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 include_once BASEPATH . "/php/Modules.php";
 $Modules = new Modules();
 
@@ -191,7 +208,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                         <?php if ($member == 0) { ?>
                             <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                         <?php } else { ?>
-                            <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/activities/search#{"$and":[{"type":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
+                            <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
                         <?php } ?>
                     </h2>
 
@@ -242,7 +259,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                         <?php if ($submember == 0) { ?>
                                             <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                                         <?php } else { ?>
-                                            <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/activities/search#{"$and":[{"type":"<?= $t ?>"},{"subtype":"<?= $st ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete type: $submember activities associated.", "Kann Typ nicht löschen: $submember Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
+                                            <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"},{"subtype":"<?= $st ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete type: $submember activities associated.", "Kann Typ nicht löschen: $submember Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
                                         <?php } ?>
                                     </h4>
 

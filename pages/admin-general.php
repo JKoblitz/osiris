@@ -1,4 +1,21 @@
 <?php
+
+/**
+ * Page for admin dashboard for general settings
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /admin/general
+ *
+ * @package OSIRIS
+ * @since 1.1.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 $affiliation = $Settings->affiliation_details;
 
 // transform activities to new format

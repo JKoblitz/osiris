@@ -1,8 +1,7 @@
 <?php
 
 Route::get('/guests/?', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $breadcrumb = [
         ['name' => lang('Guests', 'Gäste')],
@@ -15,8 +14,7 @@ Route::get('/guests/?', function () {
 
 
 Route::get('/guests/new', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     // Generate new id
     $id = uniqid();
@@ -34,8 +32,7 @@ Route::get('/guests/new', function () {
 
 
 Route::get('/guests/edit/([a-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $form = $osiris->guests->findOne(['id' => $id]);
     $breadcrumb = [
         ['name' => lang('Guests', 'Gäste'), 'path' => "/guests"],
@@ -48,8 +45,7 @@ Route::get('/guests/edit/([a-z0-9]*)', function ($id) {
 }, 'login');
 
 Route::get('/guests/view/([a-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $form = $osiris->guests->findOne(['id' => $id]);
     $breadcrumb = [
         ['name' => lang('Guests', 'Gäste'), 'path' => "/guests"],
@@ -64,7 +60,7 @@ Route::get('/guests/view/([a-z0-9]*)', function ($id) {
 
 // POST METHODS
 Route::post('/guests/save', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $collection = $osiris->guests;
 
@@ -92,7 +88,7 @@ Route::post('/guests/save', function () {
 
 
     // add supervisor information
-    $supervisor = getUserFromId($values['user']);
+    $supervisor = $DB->getPerson($values['user']);
     if (empty($supervisor)) die('Supervisor does not exist');
     $values['supervisor'] = [
         "user" => $supervisor['_id'],

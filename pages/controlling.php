@@ -1,3 +1,21 @@
+<?php
+/**
+ * Page for reports
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /controlling
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <style>
     .custom-radio input#open_access:checked~label::before {
         background-color: var(--success-color);
@@ -9,9 +27,6 @@
         border-color: var(--danger-color);
     }
 </style>
-<?php
-# code
-?>
 
 
 <div class="box box-primary">

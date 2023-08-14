@@ -1,7 +1,7 @@
 <?php 
 // countries in ISO3166 standard
 
-require_once BASEPATH . "/php/_db.php";
+require_once BASEPATH . "/php/init.php";
 
 $countries = [
         [

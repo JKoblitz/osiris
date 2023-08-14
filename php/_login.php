@@ -217,8 +217,13 @@ function newUser($username)
 {
     global $Settings;
 
+    // get user from ldap
+    $ldap_users = getUser($username);
+    if (empty($ldap_users) || $ldap_users['count'] == 0) return false;
+    $ldap_user = $ldap_users[0];
+
+    $person = array();
     $keys = [
-        "_id" => "samaccountname",
         "username" => "samaccountname",
         "first" => "givenname",
         "last" => "sn",
@@ -229,28 +234,22 @@ function newUser($username)
         "telephone" => "telephonenumber",
         "mail" => "mail"
     ];
-    $user = getUser($username);
-    // dump($user);
-    if (empty($user) || $user['count'] == 0) return false;
-    $value = $user[0];
-    // dump($value);
-    $user = array();
     foreach ($keys as $key => $name) {
         // dump($value, true);
-        $user[$key] = $value[$name][0] ?? null;
+        $person[$key] = $ldap_user[$name][0] ?? null;
     }
-    // if (empty($user['last']) || str_contains($user['unit'], "Allgemeiner Account")) return array();
-    $user['_id'] = strtolower(trim($user['_id']));
-    $user['is_admin'] = false;
-    $user['dept'] = $user['unit'];
-    if (!array_key_exists($user['dept'], $Settings->departments))
-        $user['dept'] = '';
+    $person['academic_title'] = null;
+    $person['orcid'] = null;
+    $person['dept'] = $person['unit'];
+    if (!array_key_exists($person['dept'], $Settings->departments))
+        $person['dept'] = '';
 
-    $user['academic_title'] = null;
-    $user['orcid'] = null;
-    $user['is_controlling'] = $user['department'] == "Controlling";
-    $user['is_scientist'] = false;
-    $user['is_leader'] = str_contains($user['unit'], "leitung");
-    $user['is_active'] = !str_contains($user['unit'], "verlassen");
-    return $user;
+    $account = array("username" => $person["username"]);
+    $account['is_admin'] = false;
+    $account['is_controlling'] = $person['department'] == "Controlling";
+    $account['is_scientist'] = false;
+    $account['is_leader'] = str_contains($person['unit'], "leitung");
+    $account['is_active'] = !str_contains($person['unit'], "verlassen");
+    
+    return ['account' => $account, 'person' => $person];
 }

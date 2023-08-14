@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to search users
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /search/user
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 $Format = new Document(true);
 ?>
 
@@ -9,7 +24,7 @@ $Format = new Document(true);
 
 <div class="content">
     <div class="btn-group float-right">
-        <a href="<?= ROOTPATH ?>/activities/search" class="btn btn-osiris">
+        <a href="<?= ROOTPATH ?>/search/activities" class="btn btn-osiris">
             <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
         <a href="#close-modal" class="btn btn-osiris active">

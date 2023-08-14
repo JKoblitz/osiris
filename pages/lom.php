@@ -1,3 +1,23 @@
+<?php
+/**
+ * Page to edit coins
+ * 
+ * TODO: this should be incorporated into admin/activities.
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /coins
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <style>
     .form-div {
         margin-left: .1rem;

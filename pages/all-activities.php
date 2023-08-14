@@ -1,4 +1,20 @@
 <?php
+/**
+ * Page to see all activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /activities
+ * @link /my-activities
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $user = $user ?? $_SESSION['username'];
 

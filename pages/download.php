@@ -1,3 +1,22 @@
+<?php
+/**
+ * Page to download activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /download
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
+
 <style>
     @media (min-width: 768px) {
         .row.row-eq-spacing-sm:not(.row-eq-spacing) {

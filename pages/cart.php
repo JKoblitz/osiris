@@ -1,3 +1,20 @@
+<?php
+/**
+ * Page to see and edit the download cart
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /cart
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
 
 <style>
     @media (min-width: 768px) {
@@ -27,7 +44,7 @@
             </p>
             <table class="table table-sm mb-20">
                 <?php foreach ($cart as $id) {
-                    $mongo_id = new MongoDB\BSON\ObjectId($id);
+                    $mongo_id = $DB->to_ObjectID($id);
                     $doc = $osiris->activities->findOne(['_id' => $mongo_id]);
                     if (empty($doc)) continue;
                     

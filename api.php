@@ -1,4 +1,18 @@
 <?php
+/**
+ * Routing for API
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 function return_rest($data, $count = 0, $status = 200)
 {
     $result = array();
@@ -45,7 +59,7 @@ function return_rest($data, $count = 0, $status = 200)
  */
 
 Route::get('/api/activities', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $filter = [];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -78,7 +92,7 @@ Route::get('/api/activities', function () {
 
 
 Route::get('/api/html', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/Document.php";
     $Format = new Document(true, 'dsmz.de');
     $Format->full = true;
@@ -97,7 +111,7 @@ Route::get('/api/html', function () {
         if (isset($doc['rendered'])) {
             $rendered = $doc['rendered'];
         } else {
-            $rendered = renderActivities(['_id' => $id]);
+            $rendered = $DB->renderActivities(['_id' => $id]);
         }
 
         $link = null;
@@ -121,7 +135,7 @@ Route::get('/api/html', function () {
 });
 
 Route::get('/api/all-activities', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/Document.php";
 
     header("Content-Type: application/json");
@@ -149,7 +163,7 @@ Route::get('/api/all-activities', function () {
         if (isset($doc['rendered'])) {
             $rendered = $doc['rendered'];
         } else {
-            $rendered = renderActivities(['_id' => $id]);
+            $rendered = $DB->renderActivities(['_id' => $id]);
         }
 
         $depts = $rendered['depts'];
@@ -212,7 +226,7 @@ Route::get('/api/all-activities', function () {
             "<a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/view/$id'>
                 <i class='ph ph-regular ph-arrow-fat-line-right'></i>
             </a>";
-        $useractivity = isUserActivity($doc, $user);
+        $useractivity = $DB->isUserActivity($doc, $user);
         if ($useractivity) {
             $datum['links'] .= " <a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/edit/$id'>
                 <i class='ph ph-regular ph-pencil-simple-line'></i>
@@ -228,7 +242,7 @@ Route::get('/api/all-activities', function () {
 
 
 Route::get('/api/users', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $filter = [];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -236,14 +250,14 @@ Route::get('/api/users', function () {
     if (isset($_GET['json'])) {
         $filter = json_decode($_GET['json']);
     }
-    $result = $osiris->users->find($filter)->toArray();
+    $result = $osiris->persons->find($filter)->toArray();
 
     echo return_rest($result, count($result));
 });
 
 
 Route::get('/api/reviews', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $filter = [];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -254,10 +268,10 @@ Route::get('/api/reviews', function () {
     $reviews = [];
     foreach ($result as $doc) {
         if (!array_key_exists($doc['user'], $reviews)) {
-            $u = getUserFromId($doc['user']);
+            $u = $DB->getNameFromId($doc['user']);
             $reviews[$doc['user']] = [
                 'User' => $doc['user'],
-                'Name' => $u['displayname'],
+                'Name' => $u,
                 'Editor' => 0,
                 'Editorials' => [],
                 'Reviewer' => 0,
@@ -307,7 +321,7 @@ Route::get('/api/reviews', function () {
 
 
 Route::get('/api/journal', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $filter = [];
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
@@ -322,7 +336,7 @@ Route::get('/api/journal', function () {
 
 
 Route::get('/api/teaching', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $filter = [];
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
@@ -336,7 +350,7 @@ Route::get('/api/teaching', function () {
 });
 
 Route::get('/api/projects', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $filter = [];
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
@@ -350,8 +364,7 @@ Route::get('/api/projects', function () {
 });
 
 Route::get('/api/journals', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
@@ -380,7 +393,7 @@ Route::get('/api/journals', function () {
             'publisher' => $doc['publisher'] ?? '',
             'open_access' => $oa,
             'issn' => implode(', ', $doc['issn']->bsonSerialize()),
-            'if' => latest_impact($doc) ?? '',
+            'if' => $DB->latest_impact($doc) ?? '',
             'count' => $activities[strval($doc['_id'])] ?? 0
         ];
     }
@@ -414,7 +427,7 @@ Route::get('/api/google', function () {
 
 
 Route::get('/api/levenshtein', function () {
-    include(BASEPATH . '/php/_db.php');
+    include(BASEPATH . '/php/init.php');
     include(BASEPATH . '/php/Levenshtein.php');
     $levenshtein = new Levenshtein($osiris);
 

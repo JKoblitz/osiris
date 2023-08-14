@@ -1,3 +1,21 @@
+<?php
+/**
+ * Page to see a journal
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /journal/view/<journal_id>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.naturalsort.js"></script>

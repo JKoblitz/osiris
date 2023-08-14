@@ -1,4 +1,23 @@
 <?php
+/**
+ * Page to see the queue
+ * 
+ * Show activities that were lately added via CRON Job.
+ * Either user specific or all (editor).
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /queue/user
+ * @link        /queue/editor
+ *
+ * @package     OSIRIS
+ * @since       1.1.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $Format = new Document();
 

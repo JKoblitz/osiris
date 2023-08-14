@@ -16,7 +16,7 @@
             $Q = CURRENTQUARTER;
         }
         $yq = $Y . "Q" . $Q;
-        $cursor = $osiris->users->find(
+        $cursor = $osiris->accounts->find(
             ['is_scientist' => true, 'is_active' => true],
             ['sort' => ["approved" => -1, "last" => 1]]
         );
@@ -30,8 +30,8 @@
         ?>
             <tr class="row-<?= $approved ? 'success' : '' ?>">
                 <td>
-                    <a href="<?= ROOTPATH ?>/scientist/<?= $s['_id'] ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
-                        <?= $s['last'] ?>, <?= $s['first'] ?>
+                    <a href="<?= ROOTPATH ?>/my-year/<?= $s['_id'] ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
+                        <?= getNameFromId($s['_id']) ?>
                     </a>
                 </td>
                 <td>

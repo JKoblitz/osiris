@@ -1,4 +1,5 @@
 <?php
+require_once "DB.php";
 require_once "Settings.php";
 require_once "Schema.php";
 require_once "Country.php";
@@ -25,12 +26,15 @@ class Document extends Settings
     private $schemaType = null;
     public $schema = [];
 
+    private $db =null;
+
 
     function __construct($highlight = true, $usecase = 'web')
     {
         parent::__construct();
         $this->highlight = $highlight;
         $this->usecase = $usecase;
+        $this->db = new DB;
     }
 
     public function setDocument($doc)
@@ -103,7 +107,7 @@ class Document extends Settings
                 }
 
                 if (isset($d['journal_id'])) {
-                    $j = getConnected('journal', $d['journal_id']);
+                    $j = $this->db->getConnected('journal', $d['journal_id']);
                     if (!empty($j)) {
                         $journal = Schema::journal($j);
                         if (!empty($d['volume'])) {
@@ -728,14 +732,14 @@ class Document extends Settings
             case "journal": // ["journal", "journal_id"],
                 $val = $this->doc['journal_id'] ?? '';
                 if (!empty($val)) {
-                    $j = getConnected('journal', $this->getVal('journal_id'));
+                    $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
                     return $j['journal'];
                 }
                 return $this->getVal('journal');
             case "journal-abbr":
                 $val = $this->doc['journal_id'] ?? '';
                 if (!empty($val)) {
-                    $j = getConnected('journal', $this->getVal('journal_id'));
+                    $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
                     return $j['abbr'];
                 }
                 return $this->getVal('journal');
@@ -820,13 +824,13 @@ class Document extends Settings
                 return $this->translateCategory($this->getVal('category'));
             case "teaching-course": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
-                    $m = getConnected('teaching', $this->getVal('module_id'));
+                    $m = $this->db->getConnected('teaching', $this->getVal('module_id'));
                     return $m['module'] . ': ' . $m['title'];
                 }
                 return $this->getVal('title');
             case "teaching-course-short": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
-                    $m = getConnected('teaching', $this->getVal('module_id'));
+                    $m = $this->db->getConnected('teaching', $this->getVal('module_id'));
                     return $m['module'];
                 }
                 return 'Unknown';

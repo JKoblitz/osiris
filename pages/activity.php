@@ -1,4 +1,20 @@
 <?php
+/**
+ * Page to see details on one activity
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /activities/view/<activity_id>
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 include_once BASEPATH . "/php/Modules.php";
 
 
@@ -182,12 +198,12 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         if (in_array($module, ['authors', "editors", "semester-select"])) continue;
                     ?>
                         <?php if ($module == 'teaching-course' && isset($doc['module_id'])) :
-                            $module = getConnected('teaching', $doc['module_id']);
+                            $module = $DB->getConnected('teaching', $doc['module_id']);
                         ?>
                             <tr>
                                 <th class="key"><?= lang('Module', 'Modul') ?>:</th>
                                 <td>
-                                    <a class="module" href="<?= ROOTPATH ?>/activities/teaching#<?= $doc['module_id'] ?>">
+                                    <a class="module" href="<?= ROOTPATH ?>/teaching#<?= $doc['module_id'] ?>">
 
                                         <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
                                         <span class="text-muted"><?= $module['affiliation'] ?></span>
@@ -199,7 +215,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
                         <?php elseif ($module == 'journal' && isset($doc['journal_id'])) :
-                            $journal = getConnected('journal', $doc['journal_id']);
+                            $journal = $DB->getConnected('journal', $doc['journal_id']);
                         ?>
 
                             <tr>
@@ -267,7 +283,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         <tr class="text-muted">
                             <th class="key">Created by:</th>
                             <td>
-                                <?= getUserFromId($doc['created_by'])['displayname'] ?> (<?= $doc['created'] ?>)
+                                <?= $DB->getNameFromId($doc['created_by']) ?> (<?= $doc['created'] ?>)
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -276,7 +292,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         <tr class="text-muted">
                             <th class="key">Last updated:</th>
                             <td>
-                                <?= getUserFromId($doc['updated_by'])['displayname'] ?> (<?= $doc['updated'] ?>)
+                                <?= $DB->getNameFromId($doc['updated_by']) ?> (<?= $doc['updated'] ?>)
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -430,7 +446,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             $cls = "";
                             $dept = "";
                             if (isset($author['user']) && !empty($author['user'])) {
-                                $u = getUserFromId($author['user']);
+                                $u = $DB->getPerson($author['user']);
                                 $dept = $u['dept'] ?? 'unknown';
                                 $cls = "row-" . ($u['dept'] ?? 'muted');
                             }

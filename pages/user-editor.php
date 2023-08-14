@@ -1,14 +1,28 @@
+<?php
+/**
+ * Page to edit user information
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /user/edit/<username>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1>
     <i class="ph ph-regular ph-student"></i>
     <?= $data['name'] ?>
 </h1>
-<!-- 
-<?php
-dump($data, true);
-?> -->
 
 
-<form action="<?= ROOTPATH ?>/update-user/<?= $data['_id'] ?>" method="post">
+<form action="<?= ROOTPATH ?>/update-user/<?= $data['username'] ?>" method="post">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
     <p>
@@ -253,7 +267,7 @@ dump($data, true);
 
             <datalist id="user-list">
                 <?php
-                $all_users = $osiris->users->find();
+                $all_users = $osiris->persons->find();
                 foreach ($all_users as $s) { ?>
                     <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
                 <?php } ?>

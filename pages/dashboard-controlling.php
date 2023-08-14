@@ -1,3 +1,21 @@
+<?php
+/**
+ * Page for dashboard (only controlling)
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /dashboard
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <div class="content">
     <h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
 
@@ -85,9 +103,8 @@
 
     foreach ($quarters as $q => $d) {
 
-        $n_scientists = $osiris->users->count(["is_scientist" => true, "is_active" => true]);
-        $n_approved = $osiris->users->count(["is_scientist" => true, "is_active" => true, "approved" => $d['year'] . "Q" . $d['quarter']]);
-
+        $n_scientists = $osiris->accounts->count(["is_scientist" => true, "is_active" => true]);
+        $n_approved = $osiris->accounts->count(["is_scientist" => true, "is_active" => true, "approved" => $d['year'] . "Q" . $d['quarter']]);
     ?>
         <div class="col-md-3">
             <div class="box">

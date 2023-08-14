@@ -1,10 +1,22 @@
 <?php
 
-// include_once BASEPATH . "/php/_db.php";
-include_once BASEPATH . "/php/_config.php";
+/**
+ * Routing for CRUD
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 function validateValues($values)
 {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     $first = max(intval($values['first_authors'] ?? 1), 1);
     unset($values['first_authors']);
     $last = max(intval($values['last_authors'] ?? 1), 1);
@@ -31,10 +43,10 @@ function validateValues($values)
                 $author = explode(';', $author, 3);
                 if (count($author) == 1) {
                     $user = $author[0];
-                    $temp = getUserFromId($user);
+                    $temp = $DB->getPerson($user);
                     $author = [$temp['last'], $temp['first'], true];
                 } else {
-                    $user = getUserFromName($author[0], $author[1]);
+                    $user = $DB->getUserFromName($author[0], $author[1]);
                 }
                 $vals = [
                     'last' => $author[0],
@@ -64,7 +76,7 @@ function validateValues($values)
             }
             unset($values['sws']);
         } else if ($key == 'user') {
-            $user = getUserFromId($value);
+            $user = $DB->getPerson($value);
             $values["authors"] = [
                 [
                     'last' => $user['last'],
@@ -103,7 +115,7 @@ function validateValues($values)
         } else if ($key == 'start' || $key == 'end') {
             if (DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
                 $values[$key] = valiDate($value);
-                if ($key == 'start'){
+                if ($key == 'start') {
                     if (!isset($values['year']) && isset($values[$key]['year'])) {
                         $values['year'] = $values[$key]['year'];
                     }
@@ -137,11 +149,11 @@ function validateValues($values)
         if (!isset($values['epub'])) $values['epub'] = false;
         else $values['epub-delay'] = endOfCurrentQuarter(true);
         if (!isset($values['open_access']) || !$values['open_access']) {
-            $values['open_access'] = get_oa($values);
+            $values['open_access'] = $DB->get_oa($values);
         }
         if (!isset($values['correction'])) $values['correction'] = false;
 
-        $values['impact'] = get_impact($values);
+        $values['impact'] = $DB->get_impact($values);
     }
     if (($values['type'] ?? '') == 'misc' && ($values['iteration'] ?? '') == 'annual') {
         $values['end-delay'] = endOfCurrentQuarter(true);
@@ -168,11 +180,8 @@ function valiDate($date)
 }
 
 Route::post('/create', function () {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die ("no values given");
     // dump($_POST);
     // die();
     $collection = $osiris->activities;
@@ -245,7 +254,7 @@ Route::post('/create', function () {
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
-    renderActivities(['_id' => $id]);
+    $DB->renderActivities(['_id' => $id]);
 
     // addUserActivity('create');
 
@@ -264,11 +273,8 @@ Route::post('/create', function () {
 });
 
 Route::post('/create-teaching', function () {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die ("no values given");
     $collection = $osiris->teaching;
 
     $values = validateValues($_POST['values']);
@@ -322,11 +328,8 @@ Route::post('/create-teaching', function () {
 });
 
 Route::post('/create-journal', function () {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die ("no values given");
     $collection = $osiris->journals;
 
     $values = validateValues($_POST['values']);
@@ -463,11 +466,8 @@ Route::post('/create-journal', function () {
 
 
 Route::post('/update/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die ("no values given");
     $collection = $osiris->activities;
     $values = validateValues($_POST['values']);
 
@@ -483,14 +483,14 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
-        $id = new MongoDB\BSON\ObjectId($id);
+        $id = $DB->to_ObjectID($id);
     }
     $updateResult = $collection->updateOne(
         ['_id' => $id],
         ['$set' => $values]
     );
 
-    renderActivities(['_id' => $id]);
+    $DB->renderActivities(['_id' => $id]);
 
     if (isset($values['doi']) && !empty($values['doi'])) {
         // make sure that there is no duplicate entry in the queue
@@ -515,41 +515,74 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
 });
 
 
-Route::post('/update-user/(.*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
-    if (!isset($_POST['values'])) {
-        echo "no values given";
-        die;
-    }
+Route::post('/update-user/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die ("no values given");
 
     $values = $_POST['values'];
     $values = validateValues($values);
 
-    $collection = $osiris->users;
+    // separate personal and account information
+    $person = $values;
+    $account = [];
 
+    foreach ([
+        'is_admin' => 'bool',
+        'is_controlling' => 'bool',
+        'is_scientist' => 'bool',
+        'is_leader' => 'bool',
+        'is_active' => 'bool',
+        'display_activities' => 'string',
+        'show_coins' => 'string',
+        'hide_achievements' => 'string',
+        'maintenance' => 'string',
+    ] as $key => $type) {
+        if ($type == 'bool') {
+            $account[$key] = boolval($values[$key] ?? false);
+        } else {
+            $account[$key] = $values[$key] ?? null;
+        }
+        unset($person[$key]);
+    }
 
-
+    // update name information
     if (isset($values['last']) && isset($values['first'])) {
-        $values['is_controlling'] = boolval($values['is_controlling'] ?? false);
-        $values['is_scientist'] = boolval($values['is_scientist'] ?? false);
-        $values['is_leader'] = boolval($values['is_leader'] ?? false);
-        $values['is_active'] = boolval($values['is_active'] ?? false);
 
-        $values['displayname'] = "$values[first] $values[last]";
-        $values['formalname'] = "$values[last], $values[first]";
-        $values['first_abbr'] = "";
+        $person['displayname'] = "$values[first] $values[last]";
+        $person['formalname'] = "$values[last], $values[first]";
+        $person['first_abbr'] = "";
         foreach (explode(" ", $values['first']) as $name) {
-            $values['first_abbr'] .= " " . $name[0] . ".";
+            $person['first_abbr'] .= " " . $name[0] . ".";
         }
     }
 
-    // add information on updating process
-    $values['updated'] = date('Y-m-d');
-    $values['updated_by'] = $_SESSION['username'];
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
+        ['$set' => $person]
+    );
+    $updateResult = $osiris->accounts->updateOne(
+        ['username' => $user],
+        ['$set' => $account]
+    );
 
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount()
+    ]);
+});
 
-    $updateResult = $collection->updateOne(
-        ['_id' => $id],
+Route::post('/update-expertise/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die ("no values given");
+
+    $values = $_POST['values'];
+    $values = validateValues($values);
+
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
         ['$set' => $values]
     );
 
@@ -558,20 +591,18 @@ Route::post('/update-user/(.*)', function ($id) {
         die();
     }
     echo json_encode([
-        'updated' => $updateResult->getModifiedCount(),
-        'result' => $collection->findOne(['_id' => $id])
+        'updated' => $updateResult->getModifiedCount()
     ]);
 });
 
-
 Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $values = $_POST['values'];
     $values = validateValues($values);
 
     $collection = $osiris->journals;
-    $mongoid = new MongoDB\BSON\ObjectId($id);
+    $mongoid = $DB->to_ObjectID($id);
 
     if (isset($values['year'])) {
         $year = intval($values['year']);
@@ -632,14 +663,14 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
 });
 
 Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     // select the right collection
 
     // prepare id
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
-        $id = new MongoDB\BSON\ObjectId($id);
+        $id = $DB->to_ObjectID($id);
     }
 
     $updateResult = $osiris->activities->deleteOne(
@@ -659,13 +690,13 @@ Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
 });
 
 Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     // prepare id
     if (!isset($_POST['authors']) || empty($_POST['authors'])) {
         echo "Error: Author list cannot be empty.";
         die();
     }
-    $id = new MongoDB\BSON\ObjectId($id);
+    $id = $DB->to_ObjectID($id);
 
     $authors = [];
     foreach ($_POST['authors'] as $i => $a) {
@@ -689,7 +720,7 @@ Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
 });
 
 Route::post('/approve-all', function () {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
     // prepare id
     $user = $_POST['user'] ?? $_SESSION['username'];
 
@@ -702,16 +733,16 @@ Route::post('/approve-all', function () {
 });
 
 Route::post('/approve', function () {
-    include_once BASEPATH . "/php/_db.php";
-    $id = $_SESSION['username'];
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
     if (!isset($_POST['quarter'])) {
         echo "Quarter was not defined";
         die();
     }
     $q = $_POST['quarter'];
 
-    $updateResult = $osiris->users->updateOne(
-        ['_id' => $id],
+    $updateResult = $osiris->account->updateOne(
+        ['username' => $user],
         ['$push' => ["approved" => $q]]
     );
 
@@ -726,21 +757,21 @@ Route::post('/approve', function () {
 
 
 Route::get('/form/user/([A-Za-z0-9]*)', function ($user) {
-    include_once BASEPATH . "/php/_db.php";
-    $data = getUserFromId($user);
+    include_once BASEPATH . "/php/init.php";
+    $data = $DB->getPerson($user);
     include BASEPATH . "/pages/user-editor.php";
 });
 
 
 Route::post('/approve/([A-Za-z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/_db.php";
+    include_once BASEPATH . "/php/init.php";
 
     $collection = $osiris->activities;
     // prepare id
     if (is_numeric($id)) {
         $id = intval($id);
     } else {
-        $id = new MongoDB\BSON\ObjectId($id);
+        $id = $DB->to_ObjectID($id);
     }
     $approval = intval($_POST['approval'] ?? 0);
     $filter = ['_id' => $id, "authors.user" => $_SESSION['username']];

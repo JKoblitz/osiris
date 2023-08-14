@@ -1,6 +1,19 @@
 <?php
-include_once BASEPATH . "/php/_config.php";
-include_once BASEPATH . "/php/_db.php";
+/**
+ * Header component
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
+include_once BASEPATH . "/php/init.php";
 
 $breadcrumb = $breadcrumb ?? [];
 $pagetitle = array('OSIRIS');
@@ -61,10 +74,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <?php
     echo $Settings->generateStyleSheet();
     ?>
-
-    <!-- <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
- 
-<script type="text/javascript" src="DataTables/datatables.min.js"></script> -->
 
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
@@ -182,7 +191,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <?php
                     $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
-                    $maintain = $osiris->users->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1]])->toArray();
+                    $maintain = $osiris->accounts->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1]])->toArray();
                     if (!empty($maintain)) { ?>
                         <form action="" class="content">
                             <select name="OSIRIS-SELECT-MAINTENANCE-USER" id="osiris-select-maintenance-user" class="form-control" onchange="$(this).parent().submit()">
@@ -287,15 +296,15 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <a href="<?= ROOTPATH ?>/journal/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal/browse') ?>">
+                    <a href="<?= ROOTPATH ?>/journal" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
                         <i class="ph ph-regular ph-newspaper-clipping" aria-hidden="true"></i>
                         <?= lang('Journals', 'Journale') ?>
                     </a>
-                    <a href="<?= ROOTPATH ?>/activities/teaching" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/teaching') ?>">
+                    <a href="<?= ROOTPATH ?>/teaching" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('teaching') ?>">
                         <i class="ph ph-regular ph-chalkboard-simple" aria-hidden="true"></i>
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
-                    <a href="<?= ROOTPATH ?>/activities/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
+                    <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
                         <i class="ph ph-regular ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
                     </a>
@@ -304,7 +313,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <div class="sidebar-title">
                         <?= lang('Tools', 'Werkzeuge') ?>
                     </div>
-                    <a href="<?= ROOTPATH ?>/activities/search" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('activities/search') ?>">
+                    <a href="<?= ROOTPATH ?>/search/activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('search') ?>">
                         <i class="ph ph-regular ph-magnifying-glass-plus" aria-hidden="true"></i>
                         <?= lang('Advanced search', 'Erweiterte Suche') ?>
                     </a>

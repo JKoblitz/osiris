@@ -1,3 +1,6 @@
+:root {
+    --osiris-color: #dd590e;
+}
 .ph,
 .ph ph-regular,
 .ph-fill {
@@ -320,7 +323,7 @@ strong {
 }
 
 .text-osiris {
-    color: #dd590e !important;
+    color: var(--osiris-color) !important;
 }
 
 .text-blue {
@@ -644,7 +647,7 @@ label.element-other::before {
 }
 
 .file-link {
-    color: #dd590e;
+    color: var(--osiris-color);
 }
 
 .file-link:hover {
@@ -653,8 +656,8 @@ label.element-other::before {
 
 
 .btn.btn-osiris {
-    color: #dd590e;
-    border-color: #dd590e;
+    color: var(--osiris-color);
+    border-color: var(--osiris-color);
 }
 
 .btn.btn-osiris:hover {

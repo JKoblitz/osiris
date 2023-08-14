@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to show open issues
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /issues
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $Format = new Document($user);
 
@@ -248,7 +263,7 @@ if (array_sum($a) === 0) {
                     <p class="mb-0">
                         <?php
                         if (isset($doc['updated_by'])) {
-                            $updated_by = getUserFromId($doc['updated_by']);
+                            $updated_by = $DB->getPerson($doc['updated_by']);
                             if (!empty($updated_by)) {
                                 echo $updated_by['displayname'];
                                 echo lang(
@@ -260,7 +275,7 @@ if (array_sum($a) === 0) {
                                 echo '<br><b>' . lang('Editor comment:</b> ', 'Editor-Kommentar:') . '</b> <em>' . $doc['editor-comment'] . '</em>';
                             }
                         } else if (isset($doc['created_by'])) {
-                            $created_by = getUserFromId($doc['created_by']);
+                            $created_by = $DB->getPerson($doc['created_by']);
                             if (!empty($created_by)) {
                                 echo $created_by['displayname'];
                                 // if (!empty($doc['created'] ?? '')) {

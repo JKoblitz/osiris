@@ -1,3 +1,22 @@
+<?php
+/**
+ * Page to add or edit one activity
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /activities/new
+ * @link /activities/edit/<activity_id>
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <style>
     .custom-radio input#open_access:checked~label::before {
         background-color: var(--success-color);
@@ -470,7 +489,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 <datalist id="scientist-list">
     <?php
-    foreach ($osiris->users->distinct('formalname') as $s) { ?>
+    foreach ($osiris->persons->distinct('formalname') as $s) { ?>
         <option><?= $s ?></option>
     <?php } ?>
 </datalist>

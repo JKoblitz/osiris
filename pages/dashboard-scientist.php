@@ -1,3 +1,20 @@
+<?php
+/**
+ * Page for dashboard (also shown to scientist)
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /dashboard
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
 <div class="content">
     <h2>
         <?= lang('Publications in the last four quarters', 'Publikationen in den letzten vier Quartalen') ?>

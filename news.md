@@ -176,7 +176,7 @@ OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werd
 
 
 ## 18.12.22
-- Neues "Experten-Tool": mit der [erweiterten Suche](activities/search) können jetzt alle Aktivitäten detailliert durchsucht werden. 45 Datenfelder sind mit unterschieldichen Optionen durchsuchbar. Ein Anleitungsvideo folgt in Kürze.
+- Neues "Experten-Tool": mit der [erweiterten Suche](search/activities) können jetzt alle Aktivitäten detailliert durchsucht werden. 45 Datenfelder sind mit unterschieldichen Optionen durchsuchbar. Ein Anleitungsvideo folgt in Kürze.
 - In der Übersicht einer Aktivität sind nun alle Autoren aufgeführt
 - Bei Autoren ohne Vornamen (z.B. "The Microbiome Consortium") wird nun kein Komma mehr angezeigt
 - Bug Fixes im Report:

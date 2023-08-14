@@ -1,5 +1,21 @@
+<?php
+/**
+ * Page to browse through journals
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /journal
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
-<?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
+if ($USER['is_controlling'] || $USER['is_admin']) { ?>
     <a href="<?= ROOTPATH ?>/journal/add" class="btn btn-osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
 <?php } ?>
 

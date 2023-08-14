@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to see all teaching modules
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /teaching
+ *
+ * @package     OSIRIS
+ * @since       1.1.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $Format = new Document(true);
 $form = $form ?? array();
@@ -62,7 +77,7 @@ function val($index, $default = '')
                         </label>
                         <select class="form-control" id="username" name="values[contact_person]" required autocomplete="off">
                             <?php
-                            $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+                            $userlist = $osiris->persons->find([], ['sort' => ["last" => 1]]);
                             foreach ($userlist as $j) { ?>
                                 <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                             <?php } ?>
@@ -99,7 +114,7 @@ function val($index, $default = '')
     <?php
     $modules = $osiris->teaching->find([], ['sort'=>['module'=>1]]);
     foreach ($modules as $module) {
-        $contact = getUserFromId($module['contact_person'] ?? '', true);
+        $contact = $DB->getPerson($module['contact_person'] ?? '', true);
     ?>
         <div class="col-md-6">
             <div class="box" id="<?= $module['_id'] ?>">

@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to see and approve current quarter
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /my-year/<username>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $currentuser = $user == $_SESSION['username'];
 
@@ -136,17 +151,15 @@ if ($showcoins == 'all'){
 
         <div class="col">
             <h1 class="mb-0">
-                Das Jahr von
+                <?php if ($user == $_SESSION['username']) { ?>
+                    <?=lang('My Year', 'Mein Jahr')?>
+                <?php } else { ?>
+                <?=lang('The year of', 'Das Jahr von')?>
                 <a href="<?= ROOTPATH ?>/profile/<?= $user ?>" class="link colorless">
                     <?= $name ?>
                 </a>
+                <?php } ?>
             </h1>
-
-            <h3 class="m-0 text-<?= $scientist['dept'] ?>">
-                <?php
-                echo $Settings->getDepartments($scientist['dept'])['name'];
-                ?>
-            </h3>
             <?php if ($showcoins) { ?>
                 <p class="lead mt-0">
                     <i class="ph ph-regular ph-lg ph-coin text-signal"></i>

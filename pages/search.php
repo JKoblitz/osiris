@@ -1,3 +1,21 @@
+<?php
+/**
+ * Page to search for activities in PubMed
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /activities/pubmed-search
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <div class="content">
 <h2 class="mb-0">
             <i class="ph ph-regular ph-plus-circle"></i>

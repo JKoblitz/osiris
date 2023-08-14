@@ -1,17 +1,21 @@
 <?php
-// Route::get('/export/?', function () {
-//     include_once BASEPATH . "/php/_config.php";
-//     $breadcrumb = [
-//         ['name' => lang("Export")]
-//     ];
+/**
+ * Routing for export
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
-//     include BASEPATH . "/header.php";
-//     echo "TODO";
-//     include BASEPATH . "/footer.php";
-// }, 'login');
 
 Route::get('/download', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         // ['name' => 'Export', 'path' => "/export"], 
         ['name' => lang("Download")]
@@ -23,7 +27,7 @@ Route::get('/download', function () {
 }, 'login');
 
 Route::get('/cart', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         // ['name' => 'Export', 'path' => "/export"], 
         ['name' => lang("Cart", "Einkaufswagen")]
@@ -36,7 +40,7 @@ Route::get('/cart', function () {
 
 
 Route::get('/reports', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         // ['name' => 'Export', 'path' => "/export"],
         ['name' => lang("Reports", "Berichte")]
@@ -51,7 +55,7 @@ Route::get('/reports', function () {
 Route::post('/download', function () {
     error_reporting(E_ERROR | E_PARSE);
 
-    require_once BASEPATH . '/php/_db.php';
+    require_once BASEPATH . '/php/init.php';
     require_once BASEPATH . '/php/Document.php';
 
     $params = $_POST['filter'] ?? array();
@@ -97,7 +101,7 @@ Route::post('/download', function () {
     }
     if (isset($params['dept']) && !empty($params['dept'])) {
         $users = [];
-        $cursor = $osiris->users->find(['dept' => $params['dept']], ['projection' => ['username' => 1]]);
+        $cursor = $osiris->persons->find(['dept' => $params['dept']], ['projection' => ['username' => 1]]);
 
         foreach ($cursor as $u) {
             if (empty($u['username'] ?? '')) continue;
@@ -378,13 +382,13 @@ Route::post('/reports', function () {
     error_reporting(E_ERROR);
     ini_set('display_errors', 0);
 
-    require_once BASEPATH . '/php/_db.php';
+    require_once BASEPATH . '/php/init.php';
     require_once BASEPATH . '/php/Document.php';
     $Format = new Document(true, 'word');
     $Format->full = true;
 
     // prepare user dict with all departments
-    $users_cursor = $osiris->users->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
+    $users_cursor = $osiris->persons->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
     $users = array();
     foreach ($users_cursor as $u) {
         $users[$u['_id']] = $u['dept'];

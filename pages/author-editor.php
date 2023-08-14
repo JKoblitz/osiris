@@ -1,3 +1,22 @@
+<?php
+/**
+ * Page to see all activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /activities
+ * @link /my-activities
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 <style>
     tr.ui-sortable-helper {
@@ -90,7 +109,7 @@
 
 <datalist id="user-list">
     <?php
-    $all_users = $osiris->users->find();
+    $all_users = $osiris->persons->find(['username' => ['$ne'=>null]]);
     foreach ($all_users as $s) { ?>
         <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
     <?php } ?>

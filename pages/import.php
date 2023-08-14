@@ -1,3 +1,23 @@
+<?php
+/**
+ * Page to import activities
+ * 
+ * e.g. from file or Google Scholar
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /expertise
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1>
     <i class="ph ph-regular ph-upload text-osiris"></i>
     Import
@@ -65,7 +85,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                 </small>
 
                                 <?php if (!empty($id) && $sim > 50) {
-                                    $activity = getActivity($id);
+                                    $activity = $DB->getActivity($id);
 
                                     $Format->setDocument($activity);
                                     $dupl = $Format->formatShort();

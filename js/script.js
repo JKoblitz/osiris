@@ -1655,7 +1655,7 @@ function getTeaching(name) {
             });
             if (teaching.length === 0) {
                 SUGGEST.append('<tr><td colspan="3">' + lang('Module not found in OSIRIS.', 'Modul nicht in OSIRIS gefunden.') + '</tr></td>')
-                SUGGEST.append('<tr><td colspan="3"><a href="' + ROOTPATH + '/activities/teaching#add-teaching" class="btn btn-osiris">' + lang('Add new module', 'Neues Modul anlegen') + '</a></tr></td>')
+                SUGGEST.append('<tr><td colspan="3"><a href="' + ROOTPATH + '/teaching#add-teaching" class="btn btn-osiris">' + lang('Add new module', 'Neues Modul anlegen') + '</a></tr></td>')
                 window.location.replace('#teaching-select')
             } else {
                 teaching.forEach((j) => {

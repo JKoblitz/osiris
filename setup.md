@@ -8,7 +8,7 @@
 2. Update `settings.json`
 3. Install MongoDB (Version 5)
 4. Initialize a new database `osiris` with the collection `users`
-   - In case you choose another database name, you can update it in the [_db.php](php/_db.php) file.
+   - In case you choose another database name, you can update it in the [init.php](php/init.php) file.
 5. Install composer 
 6. Run `composer update --ignore-platform-reqs`
    - It will install the MongoDB module and PHPWord

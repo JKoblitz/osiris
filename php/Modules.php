@@ -1,6 +1,6 @@
 <?php
 include_once "_config.php";
-include_once "_db.php";
+include_once "init.php";
 include_once "Country.php";
 
 class Modules
@@ -329,7 +329,7 @@ class Modules
             $this->editors .= $this->authorForm($a, true);
         }
 
-        $this->userlist = $osiris->users->find([], ['sort' => ["last" => 1]])->toArray();
+        $this->userlist = $osiris->persons->find([], ['sort' => ["last" => 1]])->toArray();
     }
 
     private function val($index, $default = '')
@@ -484,7 +484,7 @@ class Modules
 
                         <div id="selected-teaching">
                             <?php if (!empty($this->form) && isset($this->form['module_id'])) :
-                                $module = getConnected('teaching', $this->form['module_id']);
+                                $module = $DB->getConnected('teaching', $this->form['module_id']);
                             ?>
                                 <h5 class="m-0"><span class="highlight-text"><?= $module['module'] ?></span> <?= $module['title'] ?></h5>
                                 <span class="text-muted"><?= $module['affiliation'] ?></span>
@@ -1202,7 +1202,7 @@ class Modules
 
                         <div id="selected-journal">
                             <?php if (!empty($this->form) && isset($this->form['journal_id'])) :
-                                $journal = getConnected('journal', $this->form['journal_id']);
+                                $journal = $DB->getConnected('journal', $this->form['journal_id']);
                             ?>
                                 <h5 class="m-0"><?= $journal['journal'] ?></h5>
                                 <span class="float-right text-muted"><?= $journal['publisher'] ?></span>

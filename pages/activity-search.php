@@ -1,4 +1,21 @@
 <?php
+
+/**
+ * Page to perform advanced activity search
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /search/activities
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 $Format = new Document(true);
 ?>
 
@@ -11,7 +28,7 @@ $Format = new Document(true);
         <a href="#close-modal" class="btn btn-osiris active">
             <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
-        <a href="<?= ROOTPATH ?>/user/search" class="btn btn-osiris">
+        <a href="<?= ROOTPATH ?>/search/user" class="btn btn-osiris">
             <i class="ph ph-regular ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
         </a>
     </div>

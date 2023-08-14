@@ -1,13 +1,27 @@
 <?php
 
-// http://osiris.int.dsmz.de/my-activities?user=bob10#time=12,2017,12,2023&type=publication
+/**
+ * Page to visualize activities of users in a sunburst
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /visualize/sunburst
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $filter = [];
 $filter_dept = $_GET['dept'] ?? '';
 if (!empty($filter_dept) && $filter_dept != 'undefined') {
 
     $users = [];
-    $cursor = $osiris->users->find(['dept' => $filter_dept], ['projection' => ['username' => 1]]);
+    $cursor = $osiris->persons->find(['dept' => $filter_dept], ['projection' => ['username' => 1]]);
 
     foreach ($cursor as $u) {
         if (empty($u['username'] ?? '')) continue;
@@ -51,10 +65,10 @@ if (!empty($filter_type) && $filter_type != 'undefined') {
 }
 
 
-$temp = $osiris->users->find([], ['sort' => ["last" => 1]]);
+$temp = $osiris->persons->find([], ['sort' => ["last" => 1]]);
 $users = [];
 foreach ($temp as $row) {
-    $users[strval($row['_id'])] = $row['dept'];
+    $users[strval($row['username'])] = $row['dept'];
 }
 
 // generate graph json
