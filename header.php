@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Header component
  * 
@@ -91,8 +92,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
 
 
-    <?php if (isset($additionalHead)) { echo $additionalHead; } ?>
-    
+    <?php if (isset($additionalHead)) {
+        echo $additionalHead;
+    } ?>
+
 </head>
 
 <body>
@@ -289,11 +292,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Users', 'Nutzer:innen') ?>
                     </a>
 
-                    
-                    <a href="<?= ROOTPATH ?>/guests" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('guests') ?>">
-                        <i class="ph ph-regular ph-user-switch" aria-hidden="true"></i>
-                        <?= lang('Guests', 'Gäste') ?>
-                    </a>
+                    <?php if (GUEST_FORMS) { ?>
+                        <a href="<?= ROOTPATH ?>/guests" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('guests') ?>">
+                            <i class="ph ph-regular ph-user-switch" aria-hidden="true"></i>
+                            <?= lang('Guests', 'Gäste') ?>
+                        </a>
+                    <?php } ?>
+
+
 
 
                     <a href="<?= ROOTPATH ?>/journal" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('journal') ?>">
@@ -371,7 +377,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="ph ph-regular ph-printer" aria-hidden="true"></i>
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
-                        
+
                         <?php if (IDA_INTEGRATION) { ?>
                             <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
                                 <i class="ph ph-regular ph-clipboard-text" aria-hidden="true"></i>

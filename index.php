@@ -291,7 +291,7 @@ Route::post('/user/login', function () {
     include BASEPATH . "/php/init.php";
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
-        if ($_SERVER['SERVER_NAME'] == 'testserver' && false) {
+        if ($_SERVER['SERVER_NAME'] == 'testserver' && true) {
             // on the test server: log in
             // check if user exists in our database
             $_SESSION['username'] = $_POST['username'];

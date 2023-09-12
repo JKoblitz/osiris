@@ -10,21 +10,22 @@ if (!defined('ADMIN'))
 
 // if you do not use LDAP, change the following to 'AUTH'
 if (!defined('USER_MANAGEMENT'))
-    define('USER_MANAGEMENT', 'LDAP');
+    define('USER_MANAGEMENT', 'AUTH');
+
 // define LDAP connection
 if (USER_MANAGEMENT == 'LDAP') {
     if (!defined('LDAP_IP'))
-        define("LDAP_IP", "100.10.100.0");
+        die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_IP is not set.");
     if (!defined('LDAP_PORT'))
-        define("LDAP_PORT", 389);
+        die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_PORT is not set.");
     if (!defined('LDAP_USER'))
-        define("LDAP_USER", "osiris");
+        die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_USER is not set.");
     if (!defined('LDAP_DOMAIN'))
-        define("LDAP_DOMAIN", "@domain.local");
+        die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_DOMAIN is not set.");
     if (!defined('LDAP_PASSWORD'))
-        define("LDAP_PASSWORD", "ldap_password");
+        die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_PASSWORD is not set.");
     if (!defined('LDAP_BASEDN'))
-        define("LDAP_BASEDN", "OU=Users,OU=DSMZ,DC=dsmz,DC=local");
+        die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_BASEDN is not set.");
 }
 // define DB connection
 if (!defined('DB_NAME'))
