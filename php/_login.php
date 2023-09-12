@@ -184,13 +184,15 @@ function getUsers()
 
             $search = ldap_search($connect, $base_dn, $fields);
             $result = ldap_get_entries($connect, $search);
-            return $result;
+            // return $result;
             // $ldap_username = $result[0]['samaccountname'][0];
             // $ldap_last_name = $result[0]['cn'][0];
 
-
             foreach ($result as $entry) {
-                $res[$entry['samaccountname'][0]] = $entry['cn'][0];
+                if (!isset($entry['samaccountname'][0])) continue;
+                dump($entry['dn']);
+                $active = !str_contains($entry['dn'], 'DeaktivierteUser');
+                $res[$entry['samaccountname'][0]] = $active;
             }
             ldap_close($connect);
             return $res;
@@ -215,8 +217,7 @@ function getGroups($v)
 
 function newUser($username)
 {
-    global $Settings;
-
+    $Settings = new Settings();
     // get user from ldap
     $ldap_users = getUser($username);
     if (empty($ldap_users) || $ldap_users['count'] == 0) return false;
@@ -250,6 +251,6 @@ function newUser($username)
     $account['is_scientist'] = false;
     $account['is_leader'] = str_contains($person['unit'], "leitung");
     $account['is_active'] = !str_contains($person['unit'], "verlassen");
-    
+
     return ['account' => $account, 'person' => $person];
 }

@@ -250,7 +250,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="ph ph-regular ph-student" aria-hidden="true"></i>
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
-                        <a href="<?= ROOTPATH ?>/scientist" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('scientist') ?>">
+                        <a href="<?= ROOTPATH ?>/my-year" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-year') ?>">
                             <i class="ph ph-regular ph-calendar" aria-hidden="true"></i>
                             <?= lang('My year', 'Mein Jahr') ?>
                         </a>

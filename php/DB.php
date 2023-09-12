@@ -22,15 +22,7 @@ use MongoDB\Model\BSONDocument;
 
 require_once BASEPATH . '/php/Document.php';
 
-if (!isset($Settings)) {
-    require_once BASEPATH . '/php/Settings.php';
-    $Settings = new Settings();
-}
-
 if (!defined('DB_STRING')) {
-    // $dbname = $Settings->settings['database']['dbname'] ?? "osiris";
-    // $address = $Settings->settings['database']['ip'] ?? "localhost";
-    // $port = $Settings->settings['database']['port'] ?? "27017";
     die("DB settings are missing in the CONFIG.php file. Add the DB_STRING constant as defined in the config documentation.");
 }
 
@@ -170,7 +162,7 @@ class DB
         if (strlen($first) == 1) $first .= ".";
 
         try {
-            $regex = new MongoDB\BSON\Regex('^' . $first[0]);
+            $regex = new Regex('^' . $first[0]);
             $user = $this->db->persons->findOne([
                 '$or' => [
                     ['last' => $last, 'first' => $regex],
@@ -337,7 +329,7 @@ class DB
         }
 
         if (isset($doc['journal'])) {
-            $j = new MongoDB\BSON\Regex('^' . trim($doc['journal']) . '$', 'i');
+            $j = new Regex('^' . trim($doc['journal']) . '$', 'i');
             return $this->db->journals->findOne(['journal' => ['$regex' => $j]]);
         }
         return [];

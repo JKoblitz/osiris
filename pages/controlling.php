@@ -77,7 +77,7 @@
             Du kannst einen Zeitraum sperren, sobald ein Report generiert wurde. Alle aktivitäten, die in diesem Zeitraum report-würdig waren, werden dann gesperrt und können nicht mehr gelöscht oder bearbeitet werden.
         </p>
         <p>
-            Aktivitäten, die nicht report-würdig sind (z.B. Online ahead of print, Akt. ohne DSMZ-Autoren) werden nicht gesperrt.
+            Aktivitäten, die nicht report-würdig sind (z.B. Online ahead of print, Akt. ohne affilierte Autoren) werden nicht gesperrt.
         </p>
         
         <form action="#" method="post">
@@ -113,3 +113,26 @@
         </form>
     </div>
 </div>
+
+
+<?php if (USER_MANAGEMENT != 'Auth') { ?>
+<!--    
+<div class="box box-signal">
+    <div class="content">
+        <h2 class="title">
+            Nutzer-Synchronisation
+        </h2>
+
+        <p>
+            Die Nutzer:innen werden mit LDAP synchronisiert.
+        </p>
+        
+        <form action="<?=ROOTPATH?>/ldap/synchonize" method="post">
+        
+            <button class="btn btn-signal" type="submit">Synchronisieren</button>
+
+        </form>
+    </div>
+</div> -->
+
+<?php } ?>

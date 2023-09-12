@@ -371,6 +371,15 @@ Route::post('/user/login', function () {
     include BASEPATH . "/footer.php";
 });
 
+// Route::post('/ldap/synchonize', function () {
+//     include_once BASEPATH . "/php/init.php";
+//     include_once BASEPATH . "/php/_login.php";
+//     $users = getUsers();
+
+//     dump($users, true);
+
+// }, 'login');
+
 
 /* LOGIN AREA */
 
@@ -1382,7 +1391,7 @@ Route::get('/update-user-persons', function () {
     $osiris->reviews->drop();
     $osiris->lecture->drop();
 
-    $users = $osiris->persons->find([]);
+    $users = $osiris->users->find([]);
 
     $person_keys = [
         "first",
