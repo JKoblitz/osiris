@@ -98,7 +98,7 @@ $Format->setDocument($doc);
 ?>
 
 <p class="lead">
-    <span class="mr-10"><?=$Format->activity_icon()?></span>
+    <span class="mr-10"><?= $Format->activity_icon() ?></span>
     <?php echo $Format->formatShort(); ?>
 </p>
 
@@ -156,3 +156,14 @@ $Format->setDocument($doc);
         </form>
     </div>
 </div>
+
+<script>
+    var uploadField = document.getElementById("file-input");
+
+    uploadField.onchange = function() {
+        if (this.files[0].size > 16777216 ) {
+            toastError(lang("File is too large! Max. 16MB is supported!", "Die Datei ist zu groß! Max. 16MB werden unterstützt."));
+            this.value = "";
+        };
+    };
+</script>

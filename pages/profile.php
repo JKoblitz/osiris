@@ -16,6 +16,7 @@
  * @license     MIT
  */
 ?>
+
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
@@ -186,29 +187,90 @@ if ($showcoins == 'all') {
             <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </a>
-
-            </a>
             <?php
             include BASEPATH . "/components/what-are-coins.php";
             ?>
-
         </div>
     </div>
 </div>
+<?php
+
+$img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
+if ($img_exist) {
+    $img = ROOTPATH . "/img/users/$user.jpg";
+} else {
+    // standard picture
+    $img = ROOTPATH . "/img/person.jpg";
+}
+
+if ($currentuser) { ?>
+    <!-- Modal for updating the profile picture -->
+    <div class="modal modal-lg" id="change-picture" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content w-600 mw-full">
+                <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+
+                <h2 class="title">
+                    <?= lang('Change profile picture', 'Profilbild ändern') ?>
+                </h2>
+
+                <form action="<?= ROOTPATH ?>/update-profile/<?= $user ?>" method="post" enctype="multipart/form-data">
+                    <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                    <div class="custom-file mb-20" id="file-input-div">
+                        <input type="file" id="profile-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                        <label for="profile-input"><?= lang('Upload new profile image', 'Lade ein neues Profilbild hoch') ?></label>
+                        <br><small class="text-danger">Max. 2 MB.</small>
+                    </div>
+
+                    <p>
+                        <?= lang('Please note that your profile picture will be visible to all users of OSIRIS.', 'Bitte beachte, dass dein Profilbild für alle OSIRIS-Nutzer:innen sichtbar sein wird.') ?>
+                    </p>
+                    <script>
+                        var uploadField = document.getElementById("profile-input");
+
+                        uploadField.onchange = function() {
+                            if (this.files[0].size > 2097152) {
+                                toastError(lang("File is too large! Max. 2MB is supported!", "Die Datei ist zu groß! Max. 2MB werden unterstützt."));
+                                this.value = "";
+                            };
+                        };
+                    </script>
+                    <button class="btn btn-primary">
+                        <i class="ph ph-upload"></i>
+                        Upload
+                    </button>
+                </form>
+
+                <?php if ($img_exist) { ?>
+                    <hr>
+                    <form action="<?= ROOTPATH ?>/update-profile/<?= $user ?>" method="post">
+                        <input type="hidden" name="delete" value="true">
+                        <button class="btn btn-danger">
+                            <i class="ph ph-trash"></i>
+                            <?= lang('Delete current picture', 'Aktuelles Bild löschen') ?>
+                        </button>
+                    </form>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+
 <div class="content my-0">
 
-    <?php
 
-    $img = ROOTPATH . "/img/person.jpg";
-    if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
-        $img = ROOTPATH . "/img/users/$user.jpg";
-    }
-    ?>
 
     <div class="row align-items-center my-0">
         <div class="col flex-grow-0">
             <div class="position-relative">
                 <img src="<?= $img ?>" alt="" class="profile-img">
+                <?php if ($currentuser) { ?>
+                    <a href="#change-picture" class="position-absolute p-10 bottom-0 right-0 text-white"><i class="ph ph-edit"></i></a>
+                <?php } ?>
+
             </div>
 
         </div>

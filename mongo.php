@@ -181,7 +181,7 @@ function valiDate($date)
 
 Route::post('/create', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['values'])) die ("no values given");
+    if (!isset($_POST['values'])) die("no values given");
     // dump($_POST);
     // die();
     $collection = $osiris->activities;
@@ -274,7 +274,7 @@ Route::post('/create', function () {
 
 Route::post('/create-teaching', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['values'])) die ("no values given");
+    if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->teaching;
 
     $values = validateValues($_POST['values']);
@@ -329,7 +329,7 @@ Route::post('/create-teaching', function () {
 
 Route::post('/create-journal', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['values'])) die ("no values given");
+    if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->journals;
 
     $values = validateValues($_POST['values']);
@@ -467,7 +467,7 @@ Route::post('/create-journal', function () {
 
 Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['values'])) die ("no values given");
+    if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->activities;
     $values = validateValues($_POST['values']);
 
@@ -517,7 +517,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
 
 Route::post('/update-user/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['values'])) die ("no values given");
+    if (!isset($_POST['values'])) die("no values given");
 
     $values = $_POST['values'];
     $values = validateValues($values);
@@ -574,9 +574,59 @@ Route::post('/update-user/(.*)', function ($user) {
     ]);
 });
 
+
+Route::post('/update-profile/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+
+    $target_dir = BASEPATH . "/img/users";
+    if (!is_writable($target_dir)) {
+        die("User image directory is unwritable. Please contact admin.");
+    }
+    $target_dir .= "/";
+    $filename = "$user.jpg";
+
+
+    if (isset($_FILES["file"])) {
+        if ($_FILES['file']['type'] != 'image/jpeg') die('Wrong extension, only JPEG is allowed.');
+
+        if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
+            $errorMsg = match ($_FILES['file']['error']) {
+                1 => lang('The uploaded file exceeds the upload_max_filesize directive in php.ini', 'Die hochgeladene Datei überschreitet die Richtlinie upload_max_filesize in php.ini'),
+                2 => lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."),
+                3 => lang('The uploaded file was only partially uploaded.', 'Die hochgeladene Datei wurde nur teilweise hochgeladen.'),
+                4 => lang('No file was uploaded.', 'Es wurde keine Datei hochgeladen.'),
+                6 => lang('Missing a temporary folder.', 'Der temporäre Ordner fehlt.'),
+                7 => lang('Failed to write file to disk.', 'Datei konnte nicht auf die Festplatte geschrieben werden.'),
+                8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
+                default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
+            };
+            printMsg($errorMsg, "error");
+        } else if ($_FILES["file"]["size"] > 2000000) {
+            printMsg(lang("File is too big: max 2 MB is allowed.", "Die Datei ist zu groß: maximal 2 MB sind erlaubt."), "error");
+        } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            header("Location: " . ROOTPATH . "/profile/$user?msg=success");
+            die;
+        } else {
+            printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
+        }
+    } else if (isset($_POST['delete'])) {
+        $filename = "$user.jpg";
+        if (file_exists($target_dir . $filename)) {
+            // Use unlink() function to delete a file
+            if (!unlink($target_dir . $filename)) {
+                printMsg("$filename cannot be deleted due to an error.", "error");
+            } else {
+                header("Location: " . ROOTPATH . "/profile/$user?msg=deleted");
+                die;
+            }
+        }
+        // printMsg("File has been deleted from the database.", "success");
+    }
+});
+
 Route::post('/update-expertise/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['values'])) die ("no values given");
+    if (!isset($_POST['values'])) die("no values given");
 
     $values = $_POST['values'];
     $values = validateValues($values);
