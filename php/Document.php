@@ -725,6 +725,10 @@ class Document extends Settings
                 return $this->translateCategory($this->getVal('category'));
             case "isbn": // ["isbn"],
                 return $this->getVal('isbn');
+            case "issn": // ["issn"],
+                $issn = $this->getVal('issn');
+                if (empty($issn)) return '';
+                return implode(', ', DB::doc2Arr($issn));
             case "issue": // ["issue"],
                 return $this->getVal('issue');
             case "iteration": // ["iteration"],
@@ -776,6 +780,15 @@ class Document extends Settings
                 }
                 if ($this->usecase == 'list') return $oa . " " . $status;
                 return $oa;
+                
+            case "open_access": // ["open_access"],
+                if (!empty($this->getVal('open_access', false))) {
+                    return '<i class="icon-open-access text-success" title="Open Access"></i> yes';
+                } else {
+                    return '<i class="icon-closed-access text-danger" title="Closed Access"></i> no';
+                }
+            case "oa_status": // ["open_access"],
+                return $this->getVal('oa_status', 'Unknown Status');
             case "pages": // ["pages"],
                 return $this->getVal('pages');
             case "person": // ["name", "affiliation", "academic_title"],

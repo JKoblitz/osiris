@@ -9,6 +9,7 @@ Route::get('/ida/auth', function () {
 }, 'login');
 
 Route::post('/ida/auth', function () {
+    include_once BASEPATH . "/php/init.php";
     require_once IDA_PATH . "/php/IDA.php";
     // Borsigstr3!?
     $IDA = new IDA($_POST['email'], $_POST['password']);
@@ -25,6 +26,7 @@ Route::post('/ida/auth', function () {
 
 
 Route::get('/ida/dashboard', function () {
+    include_once BASEPATH . "/php/init.php";
     require_once IDA_PATH . "/php/IDA.php";
 
     // init IDA and check authorization status
@@ -48,6 +50,8 @@ Route::get('/ida/dashboard', function () {
 
 
 Route::post('/ida/update-institute', function () {
+    include_once BASEPATH . "/php/init.php";
+
     if (!isset($_POST['institute'])) die ('No institute selected');
     $_SESSION['ida-institute_id'] = $_POST['institute'];
     redirect('/ida/dashboard');
@@ -55,6 +59,7 @@ Route::post('/ida/update-institute', function () {
 
 
 Route::get('/ida/formular/(\d+)', function ($formular_id) {
+    include_once BASEPATH . "/php/init.php";
     require_once IDA_PATH . "/php/IDA.php";
 
     // init IDA and check authorization status

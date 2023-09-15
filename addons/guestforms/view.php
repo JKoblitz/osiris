@@ -9,7 +9,7 @@ require_once BASEPATH . "/vendor/autoload.php";
 
 
 
-$url = GUEST_SERVER ."/" . $id;
+$url = GUEST_SERVER . "/" . $id;
 $options = new QROptions([]);
 
 try {
@@ -22,15 +22,24 @@ try {
 
 <h1>
     <?= lang('Guest ', 'Gast') ?>
-    #<?= $id ?>
+    <?php if (!empty($form['guest']) && !empty($form['guest']['last'])) { ?>
+       <span class="text-osiris">
+       <?= $form['guest']['academic_title'] ?? '-' ?>
+        <?= $form['guest']['first'] ?? '-' ?>
+        <?= $form['guest']['last'] ?? '-' ?>
+       </span>
+    <?php } else { ?>
+        #<?= $id ?>
+    <?php } ?>
+
 </h1>
 
 
 <div class="box box-danger">
     <div class="content">
-       <p class="text-danger">
-        Der Nutzer ist noch nicht vollständig angelegt. Bitte lassen Sie das folgende Formular ausfüllen, um den Vorgang abzuschließen:
-       </p>
+        <p class="text-danger">
+            Der Nutzer ist noch nicht vollständig angelegt. Bitte lassen Sie das folgende Formular ausfüllen, um den Vorgang abzuschließen:
+        </p>
         <img src="<?= $qr ?>" alt="<?= $id ?>" class="d-block">
         <a href="http://<?= $url ?>" target="_blank" rel="noopener noreferrer" class="link">
             <?= $url ?>
@@ -55,11 +64,11 @@ try {
 
 <div class="box box-success">
 
-        <div class="content">
-            <h4 class="title mb-0">
-                Formulardaten
-            </h4>
-        </div>
+    <div class="content">
+        <h4 class="title mb-0">
+            Formulardaten
+        </h4>
+    </div>
     <table class="table table-simple">
 
         <tr>
@@ -189,7 +198,7 @@ try {
     </table>
 
     <div class="content">
-        <a href="<?=ROOTPATH?>/guests/edit/<?=$id?>" class="btn btn-success"><?=lang('Edit information', 'Formular bearbeiten')?></a>
+        <a href="<?= ROOTPATH ?>/guests/edit/<?= $id ?>" class="btn btn-success"><?= lang('Edit information', 'Formular bearbeiten') ?></a>
     </div>
 </div>
 
@@ -201,16 +210,16 @@ try {
         <h4 class="title mb-0">
             Hinterlegte Dokumente
         </h4>
-        
-    <table class="table table-simple">
-        <tbody>
-            <tr>
-                <td>
-                    Es sind keine Dokumente hinterlegt.
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+        <table class="table table-simple">
+            <tbody>
+                <tr>
+                    <td>
+                        Es sind keine Dokumente hinterlegt.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <button class="btn btn-muted">Dokument hochladen</button>
     </div>
 </div>
@@ -221,11 +230,11 @@ try {
         <h4 class="title mb-0">
             Zugangschips
         </h4>
-    <p>
-        Die Person hat keinen Zugangschip
-    </p>
+        <p>
+            Die Person hat keinen Zugangschip
+        </p>
 
         <button class="btn btn-primary">Chip hinterlegen</button>
-        
+
     </div>
 </div>

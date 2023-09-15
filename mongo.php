@@ -624,6 +624,10 @@ Route::post('/update-profile/(.*)', function ($user) {
     }
 });
 
+Route::post('/respolve-doublets', function () {
+    include_once BASEPATH . "/php/init.php";
+    dump($_POST, true);
+});
 Route::post('/update-expertise/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");

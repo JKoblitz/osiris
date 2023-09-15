@@ -75,8 +75,6 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
         ]
 
     ];
-
-    dump($activities[$type['type']], true);
 }
 ?>
 <style>
@@ -223,7 +221,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                 <input type="text" class="form-control disabled" name="activities[<?= $t ?>][id]" required value="<?= $type['id'] ?>" readonly>
                             </div>
                             <div class="col-sm">
-                                <label for="icon" class="required element-time">Icon</label>
+                                <label for="icon" class="required element-time"><a href="https://phosphoricons.com/" class="link" target="_blank" rel="noopener noreferrer">Icon</a> </label>
                                 <input type="text" class="form-control" name="activities[<?= $t ?>][icon]" required value="<?= $type['icon'] ?? 'placeholder' ?>">
                             </div>
                             <div class="col-sm">
@@ -272,7 +270,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                             <input type="text" class="form-control <?=isset($type['new']) ? '' : 'disabled' ?>" name="activities[<?= $t ?>][subtypes][<?= $st ?>][id]" required value="<?= $subtype['id'] ?>" <?=isset($type['new']) ? '' : 'readonly' ?>>
                                         </div>
                                         <div class="col-sm-2">
-                                            <label for="icon" class="required element-time">Icon</label>
+                                            <label for="icon" class="required element-time"><a href="https://phosphoricons.com/" class="link" target="_blank" rel="noopener noreferrer">Icon</a> </label>
                                             <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][icon]" required value="<?= $subtype['icon'] ?? 'placeholder' ?>">
                                         </div>
                                         <div class="col-sm">
@@ -455,3 +453,10 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
         authordiv.sortable({});
     }
 </script>
+
+<?php if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) { ?>
+    <script>
+        // TODO: scroll to type
+
+    </script>
+<?php } ?>

@@ -658,6 +658,71 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
 }, 'login');
 
 
+
+Route::get('/activities/doublet/([a-zA-Z0-9]*)/([a-zA-Z0-9]*)', function ($id1, $id2) {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Modules.php";
+
+    $Format = new Document(false, 'list');
+    $Modules = new Modules();
+    
+    $breadcrumb = [
+        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+        ['name' => lang("Doublet", "Dublette")]
+    ];
+    
+    $form = [];
+    $html = [];
+    
+    // first
+    $form1 = $DB->getActivity($id1);
+    // if (($form1['locked'] ?? false) && !$USER['is_controlling']) {
+    //     header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
+    // }
+    
+    // second
+    $form2 = $DB->getActivity($id2);
+
+    
+    include BASEPATH . "/header.php";
+    if ($form1['type'] != $form2['type']) {
+        echo "Error: Activities must be of the same type.";
+    } else {
+
+        // $form = array_merge_recursive($form1, $form2);
+        $keys = array_keys(array_merge($form1, $form2));
+        $ignore = [
+            'rendered','editor-comment',  'updated', 'updated_by',  'created', 'created_by', 'duplicate'
+        ];
+        
+        $Format->setDocument($form1);
+        foreach ($keys as $key) {
+            if (in_array($key, $ignore)) continue;
+            $form[$key] = [
+                $form1[$key] ?? null,
+                $form2[$key] ?? null
+            ];
+
+            $html[$key] = [
+                $Format->get_field($key),
+                null
+            ];
+        }
+        $Format->setDocument($form2);
+        foreach ($keys as $key) {
+            if (in_array($key, $ignore)) continue;
+            $html[$key][1] = $Format->get_field($key);
+        }
+        
+    }
+
+    // dump($form, true);
+
+    include BASEPATH . "/pages/doublets.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/activities/copy/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
 

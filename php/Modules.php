@@ -127,6 +127,11 @@ class Modules
             "name" => "ISBN",
             "name_de" => "ISBN"
         ],
+        "issn" => [
+            "fields" => ["issn"],
+            "name" => "ISSN",
+            "name_de" => "ISSN"
+        ],
         "issue" => [
             "fields" => ["issue"],
             "name" => "Issue",
@@ -181,6 +186,11 @@ class Modules
             "fields" => ["open_access"],
             "name" => "Open-Access",
             "name_de" => "Open-Access"
+        ],
+        "oa_status" => [
+            "fields" => ["oa_status"],
+            "name" => "Open-Access Status",
+            "name_de" => "Open-Access Status"
         ],
         "pages" => [
             "fields" => ["pages"],
