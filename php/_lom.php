@@ -84,7 +84,8 @@ class LOM
             'lom' => 0
         );
         $type = "non-refereed";
-        $pubtype = strtolower(trim($doc['subtype'] ?? $doc['pubtype']));
+        $pubtype = strtolower(trim($doc['subtype'] ?? $doc['pubtype'] ?? 'other'));
+        // if ($pubtype == 'other') dump($doc, true);
         if ($pubtype == "article" || $pubtype == "journal-article" || $pubtype == 'journal article') {
             $type = "refereed";
         } elseif ($pubtype == "book" || $pubtype == "chapter") {

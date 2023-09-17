@@ -14,9 +14,8 @@
  * @license     MIT
  */
 
-function validateValues($values)
+function validateValues($values, $DB)
 {
-    include_once BASEPATH . "/php/init.php";
     $first = max(intval($values['first_authors'] ?? 1), 1);
     unset($values['first_authors']);
     $last = max(intval($values['last_authors'] ?? 1), 1);
@@ -87,7 +86,7 @@ function validateValues($values)
                 ]
             ];
         } else if (is_array($value)) {
-            $values[$key] = validateValues($value);
+            $values[$key] = validateValues($value, $DB);
         } else if ($key == 'issn') {
             if (empty($value)) {
                 $values[$key] = array();
@@ -209,7 +208,7 @@ Route::post('/create', function () {
     }
 
 
-    $values = validateValues($_POST['values']);
+    $values = validateValues($_POST['values'], $DB);
 
     // add information on creating process
     $values['created'] = date('Y-m-d');
@@ -277,7 +276,7 @@ Route::post('/create-teaching', function () {
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->teaching;
 
-    $values = validateValues($_POST['values']);
+    $values = validateValues($_POST['values'], $DB);
     // add information on creating process
     $values['created'] = date('Y-m-d');
     $values['created_by'] = strtolower($_SESSION['username']);
@@ -332,7 +331,7 @@ Route::post('/create-journal', function () {
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->journals;
 
-    $values = validateValues($_POST['values']);
+    $values = validateValues($_POST['values'], $DB);
     $values['impact'] = [];
 
     $values['abbr'] = $values['abbr'] ?? $values['journal'];
@@ -469,7 +468,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->activities;
-    $values = validateValues($_POST['values']);
+    $values = validateValues($_POST['values'], $DB);
 
     if (isset($_POST['minor']) && $_POST['minor'] == 1) {
         unset($values['authors']);
@@ -520,7 +519,7 @@ Route::post('/update-user/(.*)', function ($user) {
     if (!isset($_POST['values'])) die("no values given");
 
     $values = $_POST['values'];
-    $values = validateValues($values);
+    $values = validateValues($values, $DB);
 
     // separate personal and account information
     $person = $values;
@@ -633,7 +632,7 @@ Route::post('/update-expertise/(.*)', function ($user) {
     if (!isset($_POST['values'])) die("no values given");
 
     $values = $_POST['values'];
-    $values = validateValues($values);
+    $values = validateValues($values, $DB);
 
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
@@ -653,7 +652,7 @@ Route::post('/update-journal/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
 
     $values = $_POST['values'];
-    $values = validateValues($values);
+    $values = validateValues($values, $DB);
 
     $collection = $osiris->journals;
     $mongoid = $DB->to_ObjectID($id);

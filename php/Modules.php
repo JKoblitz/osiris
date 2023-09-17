@@ -1003,6 +1003,7 @@ class Modules
                             },
                             setValue: function(s, s1, s2) {
                                 $('#date_start').val(s1);
+                                doubletCheck()
                                 if (SINGLE) return;
                                 $('#date_end').val(s2);
                             }

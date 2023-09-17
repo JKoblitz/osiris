@@ -29,25 +29,10 @@ function initQuill(element) {
 
     quill.on('text-change', function (delta, oldDelta, source) {
         var delta = quill.getContents()
-        console.log(delta);
         var str = $(element).find('.ql-editor p').html()
-        console.log(str);
-        // var str = ""
-        // delta.ops.forEach(el => {
-        //     if (el.attributes !== undefined) {
-        //         // if (el.attributes.bold) str += "<b>";
-        //         if (el.attributes.italic) str += "<i>";
-        //         if (el.attributes.underline) str += "<u>";
-        //     }
-        //     str += el.insert;
-        //     if (el.attributes !== undefined) {
-        //         if (el.attributes.underline) str += "</u>";
-        //         if (el.attributes.italic) str += "</i>";
-        //         // if (el.attributes.bold) str += "</b>";
-        //     }
-        // });
-        // $('.add-form #title').val(str)
         $(element).next().val(str)
+
+        // TODO: add doubletCheck() with underscore
     });
 
     // add additional symbol toolbar for greek letters
@@ -314,12 +299,13 @@ function getPublication(id) {
     }
 }
 
+
 function checkDuplicateID(id, type = 'doi') {
     $.ajax({
         type: "GET",
         data: { id: id, type: type },
         dataType: "html",
-        url: ROOTPATH + "/check-duplicate",
+        url: ROOTPATH + "/check-duplicate-id",
         success: function (data) {
             console.log(data);
             if (data == 'true') {
@@ -1561,7 +1547,9 @@ function verifyForm(event, form) {
         }
     }
 
-    if (correct) return true
+    if (correct) {
+        return true;
+    }
 
     event.preventDefault()
 
@@ -1820,6 +1808,7 @@ function orderByAttr(a, b) {
     return a.localeCompare(b)
 }
 
+
 function checkDuplicate(id, title) {
     $.ajax({
         type: "GET",
@@ -1898,3 +1887,48 @@ function searchLiterature(evt) {
 
     return false;
 }
+
+
+var doubletFound = false;
+function doubletCheck() {
+
+    var form = objectifyForm($('#activity-form'))
+    console.log(form);
+    if (form['values[start]']){
+        var start = form['values[start]'].split('-')
+        form['values[year]'] = start[0]
+        form['values[month]'] = start[1]
+    }
+    if (!form['values[title]'] || !form['values[year]'] || !form['values[month]']) return
+
+    $.ajax({
+        type: "GET",
+        data: form,
+        dataType: "html",
+        url: ROOTPATH + "/check-duplicate",
+        success: function (data) {
+            console.log(data);
+            if (data != 'false') {
+                var doublet = $('#doublet-found')
+                doublet.show()
+                    .find('p').html(data)
+                // doublet.find('a')
+                // .attr('href', ROOTPATH + '/activities/' + data[])
+                $('.loader').removeClass('show')
+                if (!doubletFound){
+                    doubletFound = true;
+                    toastWarning(lang('Possible douplicate found.', 'Mögliche Dublette gefunden.'))
+                }
+
+            } else {
+                $('#doublet-found').hide()
+            }
+            // toastSuccess(data)
+        },
+        error: function (response) {
+            console.log(response.responseText)
+            toastError(response.responseText)
+        }
+    })
+}
+

@@ -23,6 +23,7 @@ if (file_exists('CONFIG.php')) {
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
+define('OSIRIS_VERSION', '1.1.2');
 
 // set time constants
 $year = date("Y");
@@ -1352,7 +1353,7 @@ Route::get('/components/([A-Za-z0-9\-]*)', function ($path) {
     include BASEPATH . "/components/$path.php";
 });
 
-Route::get('/check-duplicate', function () {
+Route::get('/check-duplicate-id', function () {
     include_once BASEPATH . "/php/init.php";
 
     if (!isset($_GET['type']) || !isset($_GET['id'])) die('false');
@@ -1362,6 +1363,41 @@ Route::get('/check-duplicate', function () {
     if (empty($form)) die('false');
     echo 'true';
 });
+
+Route::get('/check-duplicate', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    $values = $_GET['values'] ?? array();
+    if (empty($values)) die ('false');
+
+    $search = [];
+    if (isset($values['title']) && !empty($values['title'])) $search['title'] = new \MongoDB\BSON\Regex(preg_quote($values['title']), 'i');
+    else die('false');
+
+    if (isset($values['year']) && !empty($values['year'])) $search['year'] = intval($values['year']);
+    else die('false');
+
+    if (isset($values['month']) && !empty($values['month'])) $search['month'] = intval($values['month']);
+    else die('false');
+    
+    if (isset($values['type']) && !empty($values['type'])) $search['type'] = trim($values['type']);
+    else die('false');
+
+    if (isset($values['subtype']) && !empty($values['subtype'])) $search['subtype'] = trim($values['subtype']);
+    else die('false');
+    
+    // dump($search, true);
+    $doc = $osiris->activities->findOne($search);
+
+    // dump($doc, true);
+    if (empty($doc)) die('false');
+
+    // $format = new Document();
+    // $format->setDocument($doc);
+    // echo $format->format();
+    echo $doc['rendered']['web']??'';
+});
+
 
 Route::get('/settings', function () {
     include_once BASEPATH . "/php/init.php";
@@ -1446,7 +1482,7 @@ Route::get('/get-modules', function () {
 
 
 // temporary route to restructure users table
-Route::get('/update-user-persons', function () {
+Route::get('/migrate', function () {
     include_once BASEPATH . "/php/init.php";
     $osiris->teachings->drop();
     $osiris->miscs->drop();

@@ -22,3 +22,4 @@ user_management.php
 Schulung.md
 css/phosphoricons
 jobs/config.ini
+*.pyc

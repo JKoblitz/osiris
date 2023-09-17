@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to add or edit one activity
  * 
@@ -470,6 +471,17 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                         </div>
                     </div>
                 <?php } ?>
+
+
+                <div class="alert alert-signal mb-10" id="doublet-found" style="display:none;">
+                    <h4 class="title">
+                        <i class="ph ph-warning text-osiris"></i>
+                        <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
+                    </h4>
+                    <p class="m-0">
+
+                    </p>
+                </div>
 
                 <button class="btn btn-primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 

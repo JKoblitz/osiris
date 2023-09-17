@@ -68,7 +68,7 @@ Route::post('/guests/save', function () {
         echo "no values given";
         die;
     }
-    $values = validateValues($_POST['values']);
+    $values = validateValues($_POST['values'], $DB);
     // dump($_POST);
     if (!isset($values['id'])) {
         echo "no id given";
