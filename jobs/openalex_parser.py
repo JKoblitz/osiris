@@ -18,6 +18,7 @@ class OpenAlexParser():
             "peer-review": "others",
             "book-track": "book",
             "journal-article": "article",
+            "article": "article",
             "book-part": "book",
             "other": "others",
             "book": "book",
@@ -155,9 +156,10 @@ class OpenAlexParser():
                 if self.osiris['queue'].count_documents({'doi': doi}) > 0:
                     continue
                 print(doi)
-                # print(work['title'])
 
                 typ = self.TYPES.get(work['type'])
+                if not typ:
+                    continue
 
                 authors = []
                 for a in work['authorships']:
