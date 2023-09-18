@@ -194,14 +194,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <?php
                     $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
-                    $maintain = $osiris->accounts->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1]])->toArray();
+                    $maintain = $osiris->users->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username'=>1]])->toArray();
                     if (!empty($maintain)) { ?>
                         <form action="" class="content">
                             <select name="OSIRIS-SELECT-MAINTENANCE-USER" id="osiris-select-maintenance-user" class="form-control" onchange="$(this).parent().submit()">
                                 <option value="<?= $realusername ?>"><?= $_SESSION['name'] ?></option>
                                 <?php
                                 foreach ($maintain as $d) { ?>
-                                    <option value="<?= $d['_id'] ?>" <?= $d['_id'] ==  $_SESSION['username'] ? 'selected' : '' ?>><?= $d['displayname'] ?></option>
+                                    <option value="<?= $d['username'] ?>" <?= $d['username'] ==  $_SESSION['username'] ? 'selected' : '' ?>><?= $d['displayname'] ?></option>
                                 <?php } ?>
                             </select>
                         </form>

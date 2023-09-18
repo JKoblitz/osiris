@@ -240,9 +240,7 @@ class Document extends Settings
         $icon = "<i class='ph text-$type ph-$icon'></i>";
         if ($tooltip) {
             $name = $this->activity_title();
-            return "<span data-toggle='tooltip' data-title='$name'>
-                $icon
-            </span>";
+            return "<span data-toggle='tooltip' data-title='$name'>$icon</span>";
         }
 
         return $icon;
@@ -716,9 +714,7 @@ class Document extends Settings
                 $files = '';
                 foreach ($this->getVal('files', array()) as $file) {
                     $icon = getFileIcon($file['filetype']);
-                    $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'>
-                        <i class='ph ph-regular ph-file ph-$icon'></i>
-                        </a>";
+                    $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'><i class='ph ph-regular ph-file ph-$icon'></i></a>";
                 }
                 return $files;
             case "guest": // ["category"],

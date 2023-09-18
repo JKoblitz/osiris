@@ -20,6 +20,9 @@ if (file_exists('CONFIG.php')) {
     require_once 'CONFIG.default.php';
 }
 
+
+error_reporting(E_ERROR);
+
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
@@ -1480,6 +1483,11 @@ Route::get('/get-modules', function () {
     }
 });
 
+Route::get('/rerender', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    $DB->renderActivities();
+});
 
 // temporary route to restructure users table
 Route::get('/migrate', function () {
