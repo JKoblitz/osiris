@@ -388,14 +388,14 @@ Route::post('/reports', function () {
     $Format->full = true;
 
     // prepare user dict with all departments
-    $users_cursor = $osiris->persons->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
+    $users_cursor = $osiris->persons->find([], ['projection' => ['username' => 1, 'dept' => 1]]);
     $users = array();
     foreach ($users_cursor as $u) {
-        $users[$u['_id']] = $u['dept'];
+        $users[$u['username']] = $u['dept'];
     }
 
     // select reportable data
-    $cursor = get_reportable_activities($_POST['start'], $_POST['end']);
+    $cursor = $DB->get_reportable_activities($_POST['start'], $_POST['end']);
 
     $result = [
         'publication' => [],
@@ -503,9 +503,9 @@ Route::post('/reports', function () {
                     break;
             }
             if (isset($doc['journal'])) {
-                $journal = getJournalName($doc);
+                $journal = $DB->getJournalName($doc);
                 if (!empty($journal))
-                    $result[$type][$journal][] = getTitleLastname($doc['authors'][0]['user'] ?? '');
+                    $result[$type][$journal][] = $DB->getTitleLastname($doc['authors'][0]['user'] ?? '');
             } else
                 $result['misc'][] = $doc;
         } else {
@@ -655,7 +655,7 @@ Route::post('/reports', function () {
                                 if (isset($doc['impact'])) {
                                     $if = $doc['impact'];
                                 } else {
-                                    $if = get_impact($doc);
+                                    $if = $DB->get_impact($doc);
                                 }
                                 if (empty($if)) {
                                     $if = "IF not yet available";

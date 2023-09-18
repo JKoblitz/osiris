@@ -511,8 +511,9 @@ class DB
             $ds = getDateTime($doc['start'] ?? $doc);
             if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
             elseif (in_array($doc['subtype'], ['misc-annual', 'editorial']) && is_null($doc['end'])) {
-                $end = $endtime;
-            } else $de = $ds;
+                $de = $endtime;
+            } else 
+                $de = $ds;
 
             if (($de  >= $starttime) && ($endtime >= $ds)) {
                 //overlap
@@ -585,7 +586,7 @@ class DB
                 'print' => $Format->format(),
                 'web' => $Format->formatShort(),
                 'depts' => $this->getDeptFromAuthors($doc['authors']),
-                'icon' => $Format->activity_icon(),
+                'icon' => trim( $Format->activity_icon()),
                 'title' => $Format->activity_title(),
             ];
             $values = ['rendered' => $rendered];
