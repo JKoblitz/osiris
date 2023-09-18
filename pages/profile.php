@@ -51,6 +51,8 @@
         font-weight: 500;
         font-size: 1.2rem;
     }
+
+   
 </style>
 
 <?php
@@ -259,7 +261,7 @@ if ($currentuser) { ?>
 <?php } ?>
 
 
-<div class="content my-0">
+<div class=" my-0">
 
 
 
@@ -1194,8 +1196,8 @@ if ($currentuser) { ?>
             'authors.user' => "$user",
             'end' => null,
             '$or' => array(
-                ['type' => 'misc', 'iteration' => 'annual'],
-                ['type' => 'review', 'role' =>  ['$in' => ['Editor', 'editorial']]],
+                ['type' => 'misc', 'subtype' => 'misc-annual'],
+                ['type' => 'review', 'subtype' =>  'editorial'],
             )
         ];
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to see details on one activity
  * 
@@ -21,13 +22,15 @@ include_once BASEPATH . "/php/Modules.php";
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <div class="alert alert-signal">
         <h3 class="title">
-            <?=lang('For the good practice: ', 'Für die gute Praxis:')?>
+            <?= lang('For the good practice: ', 'Für die gute Praxis:') ?>
         </h3>
-            <?=lang('Upload now all relevant files for this activity (e.g. as PDF) to have them available for documentation and exchange.', 
-            'Lade jetzt die relevanten Dateien (z.B. PDF) hoch, um sie für die Dokumentation parat zu haben.')?>
-            <i class="ph ph-smiley"></i>
-            <b><?=lang('Thank you!', 'Danke!')?></b>
-            <br>
+        <?= lang(
+            'Upload now all relevant files for this activity (e.g. as PDF) to have them available for documentation and exchange.',
+            'Lade jetzt die relevanten Dateien (z.B. PDF) hoch, um sie für die Dokumentation parat zu haben.'
+        ) ?>
+        <i class="ph ph-smiley"></i>
+        <b><?= lang('Thank you!', 'Danke!') ?></b>
+        <br>
         <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn">
             <i class="ph ph-regular ph-upload"></i>
             <?= lang('Upload files', 'Dateien hochladen') ?>
@@ -64,7 +67,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     }
 </style>
 
-<div class="content">
+<div class="">
 
     <div class="float-md-right">
         <div class="btn-group">
@@ -494,21 +497,15 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
 <?php if ($USER['is_admin'] || isset($_GET['verbose'])) { ?>
-    <section class="section">
+    <h2>
+        <?= lang('Raw data', 'Rohdaten') ?>
+    </h2>
 
-        <div class="content">
+    <?= lang('Raw data as they are stored in the database - for admins only.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden - nur für Admins.') ?>
 
-            <h2>
-                Raw data
-            </h2>
-
-            <?= lang('Raw data as they are stored in the database - for development only.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden - nur für die Entwicklung.') ?>
-
-            <?php
-            dump($doc, true);
-            ?>
-
-
-        </div>
-    </section>
+    <div class="box overflow-x-scroll">
+        <?php
+        dump($doc, true);
+        ?>
+    </div>
 <?php } ?>

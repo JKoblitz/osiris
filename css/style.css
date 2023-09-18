@@ -1,6 +1,15 @@
 :root {
     --osiris-color: #dd590e;
 }
+
+.row.row-eq-spacing {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    
+}
+
 .ph,
 .ph ph-regular,
 .ph-fill {
@@ -349,6 +358,8 @@ strong {
     color: var(--success-color);
     border-color: var(--success-color);
     border-left-width: 5px;
+    align-content: center;
+    display: inline-flex;
 }
 
 a.link::after {
@@ -998,8 +1009,9 @@ a.module:hover {
 
 
 @media print {
-    .page-wrapper>.sidebar, 
-    .page-wrapper>.navbar, 
+
+    .page-wrapper>.sidebar,
+    .page-wrapper>.navbar,
     .sidebar-overlay,
     .page-footer {
         display: none;

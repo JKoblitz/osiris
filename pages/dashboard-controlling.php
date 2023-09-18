@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page for dashboard (only controlling)
  * 
@@ -16,10 +17,8 @@
  */
 ?>
 
-<div class="content">
-    <h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
+<h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
 
-</div>
 
 <div class="row row-eq-spacing mb-0">
 

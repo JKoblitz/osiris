@@ -194,20 +194,17 @@ foreach ($impacts as $vals) {
 </script>
 
 <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
-    <div class="content">
-    <a href="<?=ROOTPATH?>/controlling" class="btn btn-success float-right">Controlling</a>
+    <a href="<?=ROOTPATH?>/controlling" class="btn btn-danger btn-lg float-right">Controlling</a>
 
         <h1 class="m-0">Controlling Dashboard</h1>
-    </div>
+
 <?php
     include BASEPATH . "/pages/dashboard-controlling.php";
     include BASEPATH . "/pages/dashboard-scientist.php";
 } else { ?>
-    <div class="content">
 
         <h1 class="m-0"><?=lang('Scientist', 'Wissenschaftler')?> Dashboard</h1>
 
-    </div>
 <?php
 
     include BASEPATH . "/pages/dashboard-scientist.php";
