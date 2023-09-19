@@ -398,6 +398,7 @@ class Modules
 
     function print_module($module, $req = false)
     {
+        $DB = new DB;
         if (str_ends_with($module, '*')) {
             $module = str_replace('*', '', $module);
             $req = true;
@@ -947,7 +948,7 @@ class Modules
                     <select name="values[lecture_type]" id="lecture_type" class="form-control" autocomplete="off">
                         <option value="short" <?= $this->val('lecture_type') == 'short' ? 'selected' : '' ?>><?= lang('short', 'kurz') ?> (15-25 min.)</option>
                         <option value="long" <?= $this->val('lecture_type') == 'long' ? 'selected' : '' ?>><?= lang('long', 'lang') ?> (> 30 min.)</option>
-                        <option value="repetition" <?= $this->val('lecture_type') == 'repetition' || $this->copy ? 'selected' : '' ?>><?= lang('repetition', 'Wiederholung') ?></option>
+                        <option value="repetition" <?= $this->val('lecture_type') == 'repetition' || $this->copy === true ? 'selected' : '' ?>><?= lang('repetition', 'Wiederholung') ?></option>
                     </select>
                 </div>
             <?php
@@ -1187,7 +1188,28 @@ class Modules
                 <div class="data-module col-sm-6" data-module="conference">
                     <label for="conference" class="element-other <?= $required ?>"><?= lang('Conference', 'Konferenz') ?></label>
                     <input type="text" class="form-control" <?= $required ?> name="values[conference]" id="conference" list="conference-list" placeholder="VAAM 2022" value="<?= $this->val('conference') ?>">
+                    <p class="m-0 font-size-12 ">
+                        <?= lang('Latest', 'Zuletzt') ?>:
+                        <?php
+                        $temp_list = [];
+                        foreach ($DB->db->activities->find(['conference' => ['$ne' => null]], ['sort' => ['created' => -1], 'limit' => 10, 'projection' => ['conference' => 1]]) as $c) {
+                            if (count($temp_list) >= 3) break;
+                            if (in_array($c['conference'], $temp_list)) continue;
+                            $temp_list[] = $c['conference'];
+                        ?>
+                            <a onclick="$('#conference').val(this.innerHTML)" class="mr-5"><?= $c['conference'] ?></a>
+                        <?php } ?>
+                    </p>
                 </div>
+
+
+                <datalist id="conference-list">
+                    <?php
+                    foreach ($DB->db->activities->distinct('conference') as $c) { ?>
+                        <option><?= $c ?></option>
+                    <?php } ?>
+                </datalist>
+
             <?php
                 break;
 
