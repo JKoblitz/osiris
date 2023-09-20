@@ -506,12 +506,6 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
     <?php } ?>
 </datalist>
 
-<datalist id="conference-list">
-    <?php
-    foreach ($osiris->activities->distinct('conference') as $c) { ?>
-        <option><?= $c ?></option>
-    <?php } ?>
-</datalist>
 
 
 <script>

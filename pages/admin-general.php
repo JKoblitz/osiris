@@ -52,7 +52,8 @@ if ($N > 0) {
 
 
     <div class="box box-success">
-        <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
+            <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
+
         <div class="content">
             <div class="form-group">
                 <label for="name" class="required "><?= lang('Start year', 'Startjahr') ?></label>
@@ -65,36 +66,48 @@ if ($N > 0) {
                 </span>
             </div>
         </div>
-        <h2 class="header border-top">
-            Affiliation
-        </h2>
+        <hr>
 
+        <div class="content">
+            <h2 class="title">
+                Institut
+            </h2>
 
-        <div class="row row-eq-spacing">
-            <div class="col-sm-2">
-                <label for="icon" class="required">ID</label>
-                <input type="text" class="form-control" name="affiliation[id]" required value="<?= $affiliation['id'] ?>">
-            </div>
-            <div class="col-sm">
-                <label for="name" class="required ">Name</label>
-                <input type="text" class="form-control" name="affiliation[name]" required value="<?= $affiliation['name'] ?? '' ?>">
-            </div>
-            <div class="col-sm">
-                <label for="name" class="required ">Link</label>
-                <input type="text" class="form-control" name="affiliation[link]" required value="<?= $affiliation['link'] ?? '' ?>">
+            <div class="row row-eq-spacing">
+                <div class="col-sm-2">
+                    <label for="icon" class="required">ID</label>
+                    <input type="text" class="form-control" name="affiliation[id]" required value="<?= $affiliation['id'] ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="name" class="required ">Name</label>
+                    <input type="text" class="form-control" name="affiliation[name]" required value="<?= $affiliation['name'] ?? '' ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="name" class="required ">Link</label>
+                    <input type="text" class="form-control" name="affiliation[link]" required value="<?= $affiliation['link'] ?? '' ?>">
+                </div>
             </div>
         </div>
-
-        <h2 class="header border-top">
-            Logo
-        </h2>
+        <hr>
         <div class="content">
-            <b><?= lang('Current Logo', 'Derzeitiges Logo') ?>: <br></b>
-            <img src="<?= ROOTPATH . '/img/' . $affiliation['logo'] ?>" alt="No logo available" class="img-fluid w-300 mw-full mb-20">
-            <div class="custom-file mb-20" id="file-input-div">
-                <input type="file" id="file-input" name="logo" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
-                <label for="file-input"><?= lang('Upload a new logo', 'Lade ein neues Logo hoch') ?></label>
-                <br><small class="text-danger">Max. 2 MB.</small>
+            <h2 class="title">
+                Logo
+            </h2>
+
+            <div class="row">
+                <div class="col-sm">
+                    <b><?= lang('Current Logo', 'Derzeitiges Logo') ?>: <br></b>
+                    <img src="<?= ROOTPATH . '/img/' . $affiliation['logo'] ?>" alt="No logo available" class="img-fluid w-300 mw-full mb-20">
+
+                </div>
+                <div class="col-sm text-right">
+                    <div class="custom-file mb-20" id="file-input-div">
+                        <input type="file" id="file-input" name="logo" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                        <label for="file-input"><?= lang('Upload a new logo', 'Lade ein neues Logo hoch') ?></label>
+                        <br><small class="text-danger">Max. 2 MB.</small>
+                    </div>
+
+                </div>
             </div>
 
             <button class="btn btn-success">

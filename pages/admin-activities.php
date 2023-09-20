@@ -197,7 +197,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                 $member = $osiris->activities->count(['type' => $t]);
             ?>
 
-                <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>; <?=isset($type['new']) ?'opacity:.8;font-style:italic;':''?>">
+                <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>; <?= isset($type['new']) ? 'opacity:.8;font-style:italic;' : '' ?>">
                     <h2 class="header" style="background-color:<?= $color ?>20">
                         <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> text-<?= $t ?>"></i>
                         <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
@@ -247,9 +247,9 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                 $st = $subtype['id'];
                                 $submember = $osiris->activities->count(['type' => $t, 'subtype' => $st]);
                             ?>
-                                <div class="box subtype" id="subtype-<?= $st ?>" style="border-color:<?= $color ?>; <?=isset($subtype['new']) ?'opacity:.8;font-style:italic;':''?>">
+                                <div class="box subtype" id="subtype-<?= $st ?>" style="border-color:<?= $color ?>; <?= isset($subtype['new']) ? 'opacity:.8;font-style:italic;' : '' ?>">
                                     <h4 class="header" style="background-color:<?= $color ?>20">
-                                        <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?> text-<?= $t ?>"></i>
+                                        <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?> text-<?= $t ?> mr-10"></i>
                                         <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
 
                                         <a class="btn btn-link px-5 text-primary ml-auto" onclick="moveElementUp('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
@@ -262,34 +262,36 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                     </h4>
 
                                     <input type="hidden" name="activities[<?= $t ?>][subtypes][<?= $st ?>][id]" value="<?= $st ?>">
+                                    <div class="content">
 
-                                    <div class="row row-eq-spacing">
+                                        <div class="row row-eq-spacing">
 
-                                        <div class="col-sm-2">
-                                            <label for="icon" class="required">ID</label>
-                                            <input type="text" class="form-control <?=isset($type['new']) ? '' : 'disabled' ?>" name="activities[<?= $t ?>][subtypes][<?= $st ?>][id]" required value="<?= $subtype['id'] ?>" <?=isset($type['new']) ? '' : 'readonly' ?>>
+                                            <div class="col-sm-2">
+                                                <label for="icon" class="required">ID</label>
+                                                <input type="text" class="form-control <?= isset($type['new']) ? '' : 'disabled' ?>" name="activities[<?= $t ?>][subtypes][<?= $st ?>][id]" required value="<?= $subtype['id'] ?>" <?= isset($type['new']) ? '' : 'readonly' ?>>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label for="icon" class="required element-time"><a href="https://phosphoricons.com/" class="link" target="_blank" rel="noopener noreferrer">Icon</a> </label>
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][icon]" required value="<?= $subtype['icon'] ?? 'placeholder' ?>">
+                                            </div>
+                                            <div class="col-sm">
+                                                <label for="name" class="required ">Name (en)</label>
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name]" required value="<?= $subtype['name'] ?? '' ?>">
+                                            </div>
+                                            <div class="col-sm">
+                                                <label for="name_de" class="">Name (de)</label>
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name_de]" value="<?= $subtype['name_de'] ?? '' ?>">
+                                            </div>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <label for="icon" class="required element-time"><a href="https://phosphoricons.com/" class="link" target="_blank" rel="noopener noreferrer">Icon</a> </label>
-                                            <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][icon]" required value="<?= $subtype['icon'] ?? 'placeholder' ?>">
-                                        </div>
-                                        <div class="col-sm">
-                                            <label for="name" class="required ">Name (en)</label>
-                                            <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name]" required value="<?= $subtype['name'] ?? '' ?>">
-                                        </div>
-                                        <div class="col-sm">
-                                            <label for="name_de" class="">Name (de)</label>
-                                            <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name_de]" value="<?= $subtype['name_de'] ?? '' ?>">
-                                        </div>
+
                                     </div>
-
                                     <hr>
 
                                     <div class="content">
                                         <label for="module" class="font-weight-bold">Modules:</label>
                                         <div class="border author-widget">
                                             <div class="author-list p-10">
-                                                <?php 
+                                                <?php
                                                 $module_lst = [];
                                                 foreach ($subtype['modules'] ?? array() as $module) {
                                                     $req = '';
@@ -330,7 +332,6 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                         </div>
                                     </div>
 
-
                                     <hr>
 
                                     <div class="content">
@@ -356,6 +357,17 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                             </div>
                                             <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][template][subtitle]" value="<?= $subtype['template']['subtitle'] ?? '{authors}' ?>">
                                         </div>
+
+                                    </div>
+
+
+                                    <hr>
+
+
+                                    <div class="content">
+                                        <label for="coins" class="font-weight-bold">Coins:</label>
+                                        Coming soon...
+
 
                                     </div>
 
@@ -457,6 +469,5 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 <?php if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) { ?>
     <script>
         // TODO: scroll to type
-
     </script>
 <?php } ?>

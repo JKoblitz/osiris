@@ -243,7 +243,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         </a>
 
 
-                        <a href="<?= ROOTPATH ?>/lom" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
+                        <a href="<?= ROOTPATH ?>/coins" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
                             <i class="ph ph-regular ph-coin" aria-hidden="true"></i>
                             <?= lang('Coins') ?>
                         </a>
