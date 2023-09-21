@@ -223,17 +223,17 @@ Route::get('/api/all-activities', function () {
         }
 
         $datum['links'] =
-            "<a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/view/$id'>
-                <i class='ph ph-regular ph-arrow-fat-line-right'></i>
+            "<a class='btn link square' href='" . ROOTPATH . "/activities/view/$id'>
+                <i class='ph ph-arrow-fat-line-right'></i>
             </a>";
         $useractivity = $DB->isUserActivity($doc, $user);
         if ($useractivity) {
-            $datum['links'] .= " <a class='btn btn-link btn-square' href='" . ROOTPATH . "/activities/edit/$id'>
-                <i class='ph ph-regular ph-pencil-simple-line'></i>
+            $datum['links'] .= " <a class='btn link square' href='" . ROOTPATH . "/activities/edit/$id'>
+                <i class='ph ph-pencil-simple-line'></i>
             </a>";
         }
-        $datum['links'] .= "<button class='btn btn-link btn-square' onclick='addToCart(this, \"$id\")'>
-            <i class='" . (in_array($id, $cart) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-regular ph-shopping-cart ph-shopping-cart-plus') . "'></i>
+        $datum['links'] .= "<button class='btn link square' onclick='addToCart(this, \"$id\")'>
+            <i class='" . (in_array($id, $cart) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus') . "'></i>
         </button>";
         $result[] = $datum;
     }

@@ -181,14 +181,14 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
 <div class="row">
     <div class="col-lg-9">
-        <div class="btn-bar">
+        <div class="bar">
             <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
             <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
-            <a href="<?= ROOTPATH ?>/admin/activities" class="btn active btn-primary"><?= lang('Activities', 'Aktivitäten') ?></a>
+            <a href="<?= ROOTPATH ?>/admin/activities" class="btn active primary"><?= lang('Activities', 'Aktivitäten') ?></a>
         </div>
 
         <form action="#" method="post" id="modules-form" class="">
-            <button class="btn btn-success btn-lg position-fixed" style="top: calc(100vh - 10rem);right:0;z-index: 30;margin: 3rem">
+            <button class="btn success lg position-fixed" style="top: calc(100vh - 10rem);right:0;z-index: 30;margin: 3rem">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>
@@ -201,12 +201,12 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                     <h2 class="header" style="background-color:<?= $color ?>20">
                         <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> text-<?= $t ?>"></i>
                         <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
-                        <a class="btn btn-link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
-                        <a class="btn btn-link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
+                        <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
+                        <a class="btn link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
                         <?php if ($member == 0) { ?>
-                            <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
+                            <a class="btn link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                         <?php } else { ?>
-                            <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
+                            <a class="btn link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
                         <?php } ?>
                     </h2>
 
@@ -252,12 +252,12 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                         <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?> text-<?= $t ?> mr-10"></i>
                                         <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
 
-                                        <a class="btn btn-link px-5 text-primary ml-auto" onclick="moveElementUp('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
-                                        <a class="btn btn-link px-5 text-primary" onclick="moveElementDown('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
+                                        <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
+                                        <a class="btn link px-5 text-primary" onclick="moveElementDown('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
                                         <?php if ($submember == 0) { ?>
-                                            <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
+                                            <a class="btn link px-5 ml-20 text-danger " onclick="deleteElement('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                                         <?php } else { ?>
-                                            <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"},{"subtype":"<?= $st ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete type: $submember activities associated.", "Kann Typ nicht löschen: $submember Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
+                                            <a class="btn link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"},{"subtype":"<?= $st ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete type: $submember activities associated.", "Kann Typ nicht löschen: $submember Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
                                         <?php } ?>
                                     </h4>
 
@@ -312,7 +312,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
                                             </div>
                                             <div class=" p-10 bg-light border-top d-flex">
-                                                <div class="input-group input-group-sm d-inline-flex w-auto">
+                                                <div class="input-group sm d-inline-flex w-auto">
                                                     <select class="module-input form-control">
                                                         <option value="" disabled selected><?= lang('Add module ...', 'Füge Module hinzu ...') ?></option>
                                                         <?php
@@ -323,8 +323,8 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                                         <?php } ?>
                                                     </select>
                                                     <div class="input-group-append">
-                                                        <button class="btn btn-primary h-full" type="button" onclick="addModule('<?= $t ?>', '<?= $st ?>');">
-                                                            <i class="ph ph-regular ph-plus"></i>
+                                                        <button class="btn primary h-full" type="button" onclick="addModule('<?= $t ?>', '<?= $st ?>');">
+                                                            <i class="ph ph-plus"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -388,7 +388,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
             <?php } ?>
 
 
-            <a class="btn btn-osiris" href="#add-type"><i class="ph ph-plus-circle"></i>
+            <a class="btn osiris" href="#add-type"><i class="ph ph-plus-circle"></i>
                 <?= lang('Add category', 'Neue Kategorie hinzufügen') ?>
             </a>
 

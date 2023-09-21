@@ -18,7 +18,7 @@
 
 <div class="content">
 <h2 class="mb-0">
-            <i class="ph ph-regular ph-plus-circle"></i>
+            <i class="ph ph-plus-circle"></i>
             <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
         </h2>
 
@@ -43,7 +43,7 @@
             <input type="text" class="form-control" placeholder="" id="year" value="<?=$_GET['year'] ?? CURRENTYEAR?>">
         </div>
         <div class="form-group mb-0">
-            <input type="submit" class="btn btn-primary ml-auto" value="Search">
+            <input type="submit" class="btn primary ml-auto" value="Search">
         </div>
     </form>
 

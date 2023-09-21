@@ -10,5 +10,5 @@
         <input class="form-control" id="password" type="password" name="password" placeholder="your windows password" required />
     </div>
 
-    <input class="btn btn-primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
+    <input class="btn primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
 </form>

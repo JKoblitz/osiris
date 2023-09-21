@@ -68,7 +68,7 @@ $Format = new Document($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#close-modal" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -118,7 +118,7 @@ $Format = new Document($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#close-modal" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -149,7 +149,7 @@ $Format = new Document($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#close-modal" class="btn btn-primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -193,8 +193,8 @@ foreach ($cursor as $doc) {
 }
 ?>
 
-<a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right" id="">
-    <i class="ph ph-regular ph-lg ph-question mr-5"></i>
+<a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right" id="">
+    <i class="ph ph-lg ph-question mr-5"></i>
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a>
 <h1>
@@ -228,7 +228,7 @@ if (array_sum($a) === 0) {
 
     <div class="dropdown">
         <button class="btn mb-10 text-success" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
-            <i class="ph ph-regular ph-check"></i>
+            <i class="ph ph-check"></i>
             <?= lang('Approve all', 'Alle bestätigen') ?>
         </button>
         <div class="dropdown-menu w-300" aria-labelledby="dropdown-1">
@@ -239,7 +239,7 @@ if (array_sum($a) === 0) {
                         'I confirm that I am the author of <b>all</b> of the following publications and that my affiliation has always been the ' . $Settings->affiliation . '.',
                         'Ich bestätige, dass ich Autor:in <b>aller</b> folgenden Publikationen bin und meine Affiliation dabei immer die ' . $Settings->affiliation . ' war.'
                     ) ?>
-                    <button class="btn btn-block btn-success" type="submit"><?= lang('Approve all', 'Alle bestätigen') ?></button>
+                    <button class="btn block success" type="submit"><?= lang('Approve all', 'Alle bestätigen') ?></button>
                 </form>
 
             </div>
@@ -301,22 +301,22 @@ if (array_sum($a) === 0) {
                             <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
                         <?php } ?>
                         <br>
-                        <button class="btn btn-sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
-                            <i class="ph ph-regular ph-check ph-fw"></i>
+                        <button class="btn sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
+                            <i class="ph ph-check ph-fw"></i>
                         </button>
-                        <button class="btn btn-sm text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
-                            <i class="ph ph-regular ph-push-pin-slash ph-fw"></i>
+                        <button class="btn sm text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
+                            <i class="ph ph-push-pin-slash ph-fw"></i>
                         </button>
-                        <button class="btn btn-sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
-                            <i class="ph ph-regular ph-x ph-fw"></i>
+                        <button class="btn sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
+                            <i class="ph ph-x ph-fw"></i>
                         </button>
                         <?php if (!($doc['locked'] ?? false)) { ?>
-                            <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
-                                <i class="ph ph-regular ph-pencil-simple-line"></i>
+                            <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
+                                <i class="ph ph-pencil-simple-line"></i>
                             </a>
                         <?php } ?>
-                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn btn-sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
-                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
+                            <i class="ph ph-arrow-fat-line-right"></i>
                         </a>
                     </div>
                 </div>
@@ -348,7 +348,7 @@ if (array_sum($a) === 0) {
                 <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format(); ?>
-                    <div class='alert alert-signal' id="approve-<?= $id ?>">
+                    <div class='alert signal' id="approve-<?= $id ?>">
                         <?= lang(
                             'This publication is marked as <q>Online ahead of print</q>. Is it still not officially published?',
                             'Diese Aktivität ist markiert als <q>Online ahead of print</q>. Ist sie noch nicht offiziell publiziert?'
@@ -357,21 +357,21 @@ if (array_sum($a) === 0) {
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[epub-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
-                            <button class="btn btn-sm">
-                                <i class="ph ph-regular ph-check"></i>
+                            <button class="btn small">
+                                <i class="ph ph-check"></i>
                                 <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag später noch mal).') ?>
                             </button>
                         </form>
 
 
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>?epub=true" class="btn btn-sm">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>?epub=true" class="btn small">
                             <?= lang('No longer Epub (Review)', 'Nicht länger Epub (Review)') ?>
                         </a>
-                        <!-- <div class="input-group input-group-sm w-500 d-inline-flex">
+                        <!-- <div class="input-group sm w-500 d-inline-flex">
                             <input type="date" class="form-control" value="<?= valueFromDateArray(["year" => $doc['year'], "month" => $doc['month'], "day" => $doc['day'] ?? 1]) ?>">
                             <div class="input-group-append">
                                 <button class="btn" type="button" onclick="todo()">
-                                    <i class="ph ph-regular ph-x"></i>
+                                    <i class="ph ph-x"></i>
                                     <?= lang('No longer Epub and officially issued under this date.', 'Kein Epub mehr und unter diesem Datum offiziell veröffentlicht.') ?>
                                 </button>
                             </div>
@@ -406,7 +406,7 @@ if (array_sum($a) === 0) {
                 <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format(); ?>
-                    <div class='alert alert-signal' id="approve-<?= $id ?>">
+                    <div class='alert signal' id="approve-<?= $id ?>">
                         <?= lang(
                             "The Thesis of $doc[name] has ended. Please confirm if the work has been successfully completed or not or extend the time frame.",
                             "Die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
@@ -468,19 +468,19 @@ if (array_sum($a) === 0) {
                 <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format(); ?>
-                    <div class='alert alert-signal' id="approve-<?= $id ?>">
+                    <div class='alert signal' id="approve-<?= $id ?>">
 
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
-                            <button class="btn btn-sm text-success">
-                                <i class="ph ph-regular ph-check"></i>
+                            <button class="btn sm text-success">
+                                <i class="ph ph-check"></i>
                                 <?= lang('Yes', 'Ja') ?>
                             </button>
                         </form>
 
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-danger">
-                            <i class="ph ph-regular ph-x"></i>
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn sm text-danger">
+                            <i class="ph ph-x"></i>
                             <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
                         </a>
 
@@ -518,8 +518,8 @@ if (array_sum($a) === 0) {
                 <td class="w-50"><?=$Format->activity_icon($doc); ?></td>
                 <td>
                     <?= $Format->format(); ?>
-                    <div class='alert alert-signal' id="approve-<?= $id ?>">
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn btn-sm text-primary">
+                    <div class='alert signal' id="approve-<?= $id ?>">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn sm text-primary">
                             <i class="ph-fill ph-note-pencil"></i>
                             <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
                         </a>

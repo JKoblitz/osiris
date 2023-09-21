@@ -23,40 +23,40 @@ $user = $user ?? $_SESSION['username'];
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
 
-<a class="btn btn-primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-regular ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
+<a class="btn primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
 
 <?php if ($page == 'activities' && $USER['is_scientist']) { ?>
     <h1 class='m-0'>
-        <i class="ph ph-regular ph-book-open"></i>
+        <i class="ph ph-book-open"></i>
         <?= lang("All activities", "Alle Aktivitäten") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
+    <a href="<?= ROOTPATH ?>/my-activities" class="btn sm mb-10" id="user-btn">
         <i class="ph ph-student"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
 <?php
 } elseif (isset($_GET['user'])) { ?>
     <h1 class='m-0'>
-        <i class="ph ph-regular ph-folder-user"></i>
+        <i class="ph ph-folder-user"></i>
         <?= lang("Activities of $user", "Aktivitäten von $user") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="ph ph-regular ph-book-open"></i>
+    <a href="<?= ROOTPATH ?>/activities" class="btn sm mb-10" id="user-btn">
+        <i class="ph ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } elseif ($page == 'my-activities') { ?>
     <h1 class='m-0'>
-        <i class="ph ph-regular ph-folder-user"></i>
+        <i class="ph ph-folder-user"></i>
         <?= lang("My activities", "Meine Aktivitäten") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="ph ph-regular ph-book-open"></i>
+    <a href="<?= ROOTPATH ?>/activities" class="btn sm mb-10" id="user-btn">
+        <i class="ph ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } ?>
 <br>
-<div class="btn-bar d-md-flex align-items-baseline">
+<div class="bar d-md-flex align-items-baseline">
     <div class="dropdown with-arrow mr-10" id="select-dropdown">
         <button class="btn" data-toggle="dropdown" type="button" id="select-activity" aria-haspopup="true" aria-expanded="false">
             <?= lang('Filter by type', 'Nach Typ filtern') ?>
@@ -165,8 +165,8 @@ $user = $user ?? $_SESSION['username'];
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });

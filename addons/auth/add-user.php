@@ -111,7 +111,7 @@ $data = $_POST['values'] ?? [];
     <?php
     if ($Settings->affiliation === 'LISI') {
     ?>
-        <div class="alert alert-signal mb-20">
+        <div class="alert signal mb-20">
             <div class="title">
                 Demo
             </div>

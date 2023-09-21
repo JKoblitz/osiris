@@ -158,7 +158,7 @@ foreach ($activities as $doc) {
 ?>
 
 <h1>
-    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+    <i class="ph ph-graph" aria-hidden="true"></i>
     <?= lang('Department overview', 'Abteilungs-Übersicht') ?>
 </h1>
 
@@ -195,7 +195,7 @@ foreach ($activities as $doc) {
     </div>
     <div class="col-sm ml-sm-10 align-self-end">
 
-        <button class="btn btn-primary " type="submit">Select</button>
+        <button class="btn primary " type="submit">Select</button>
     </div>
     <!-- </div> -->
 </form>

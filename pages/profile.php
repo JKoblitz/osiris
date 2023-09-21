@@ -239,7 +239,7 @@ if ($currentuser) { ?>
                             };
                         };
                     </script>
-                    <button class="btn btn-primary">
+                    <button class="btn primary">
                         <i class="ph ph-upload"></i>
                         Upload
                     </button>
@@ -249,7 +249,7 @@ if ($currentuser) { ?>
                     <hr>
                     <form action="<?= ROOTPATH ?>/update-profile/<?= $user ?>" method="post">
                         <input type="hidden" name="delete" value="true">
-                        <button class="btn btn-danger">
+                        <button class="btn danger">
                             <i class="ph ph-trash"></i>
                             <?= lang('Delete current picture', 'Aktuelles Bild löschen') ?>
                         </button>
@@ -277,7 +277,7 @@ if ($currentuser) { ?>
 
         </div>
         <div class="col ml-20">
-            <h1 class="mb-0"><?= $name ?></h1>
+            <h1 class="m-0"><?= $name ?></h1>
 
             <h3 class="m-0 text-<?= $scientist['dept'] ?>">
                 <?php
@@ -315,11 +315,11 @@ if ($currentuser) { ?>
 
             <?php if ($showcoins) { ?>
                 <p class="lead mt-0">
-                    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
+                    <i class="ph ph-lg ph-coin text-signal"></i>
                     <b id="lom-points"><?= $_lom ?></b>
                     Coins
                     <a href='#coins' class="text-muted">
-                        <i class="ph ph-regular ph-question text-muted"></i>
+                        <i class="ph ph-question text-muted"></i>
                     </a>
                 </p>
             <?php } ?>
@@ -329,7 +329,7 @@ if ($currentuser) { ?>
         <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false) && !($USER['hide_achievements'] ?? false)) {
         ?>
             <div class="achievements text-right" style="max-width: 35rem;">
-                <h5 class="mb-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
+                <h5 class="m-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
 
                 <?php
                 $Achievement->widget();
@@ -352,15 +352,15 @@ if ($currentuser) { ?>
 
                 <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
-                        <i class="ph ph-regular ph-plus-circle text-osiris ph-fw"></i>
+                        <i class="ph ph-plus-circle text-osiris ph-fw"></i>
                         <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
                     </a>
                     <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
-                        <i class="ph ph-regular ph-folder-user text-primary ph-fw"></i>
+                        <i class="ph ph-folder-user text-primary ph-fw"></i>
                         <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
                     </a>
                     <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
-                        <i class="ph ph-regular ph-calendar text-success ph-fw"></i>
+                        <i class="ph ph-calendar text-success ph-fw"></i>
                         <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
                     </a>
 
@@ -368,24 +368,24 @@ if ($currentuser) { ?>
                 </div>
                 <div class="btn-group btn-group-lg mr-5">
                     <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
-                        <i class="ph ph-regular ph-trophy text-signal ph-fw"></i>
+                        <i class="ph ph-trophy text-signal ph-fw"></i>
                     </a>
 
                     <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
-                        <i class="ph ph-regular ph-graph text-osiris ph-fw"></i>
+                        <i class="ph ph-graph text-osiris ph-fw"></i>
                     </a>
                 </div>
 
                 <div class="btn-group btn-group-lg">
                     <a class="btn btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                        <i class="ph ph-regular ph-edit text-muted ph-fw"></i>
+                        <i class="ph ph-edit text-muted ph-fw"></i>
                         <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                     </a>
                 </div>
 
                 <?php if ($issues !== 0) { ?>
-                    <div class="alert alert-danger mt-20">
-                        <a class="link text-danger" href='<?= ROOTPATH ?>/issues'>
+                    <div class="alert danger mt-20">
+                        <a class="link text-danger text-decoration-none" href='<?= ROOTPATH ?>/issues'>
                             <?= lang(
                                 "You have $issues unresolved " . ($issues == 1 ? 'issue' : 'issues') . " with your activities.",
                                 "Du hast $issues " . ($issues == 1 ? 'ungelöstes Problem' : 'ungelöste Probleme') . " mit deinen Aktivitäten."
@@ -397,7 +397,7 @@ if ($currentuser) { ?>
                 <?php
                 $queue = $osiris->queue->count(['authors.user' => $user, 'duplicate' => ['$exists' => false]]);
                 if ($queue !== 0) { ?>
-                    <div class="alert alert-success mt-20">
+                    <div class="alert success mt-20">
                         <a class="link text-success" href='<?= ROOTPATH ?>/queue/user'>
                             <?= lang(
                                 "We found $queue new " . ($queue == 1 ? 'activity' : 'activities') . " for you. Review them now.",
@@ -423,7 +423,7 @@ if ($currentuser) { ?>
                 $lastquarter = $Y . "Q" . $Q;
 
                 if ($scientist['is_scientist'] && !in_array($lastquarter, $approvedQ)) { ?>
-                    <div class="alert alert-muted mt-20">
+                    <div class="alert muted mt-20">
 
                         <div class="title">
                             <?= lang("The past quarter ($lastquarter) has not been approved yet.", "Das vergangene Quartal ($lastquarter) wurde von dir noch nicht freigegeben.") ?>
@@ -439,7 +439,7 @@ if ($currentuser) { ?>
                             ') ?>
                         </p>
 
-                        <a class="btn btn-success" href="<?= ROOTPATH ?>/my-year/<?= $user ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
+                        <a class="btn success" href="<?= ROOTPATH ?>/my-year/<?= $user ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
                             <?= lang('Review & Approve', 'Überprüfen & Freigeben') ?>
                         </a>
                     </div>
@@ -467,21 +467,21 @@ if ($currentuser) { ?>
     <?php } else { ?>
         <div class="btn-group btn-group-lg mt-15">
             <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of', 'Das Jahr ') . $scientist['first'] ?> ">
-                <i class="ph ph-regular ph-calendar text-success ph-fw"></i>
+                <i class="ph ph-calendar text-success ph-fw"></i>
             </a>
             <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
-                <i class="ph ph-regular ph-folder-user text-primary ph-fw"></i>
+                <i class="ph ph-folder-user text-primary ph-fw"></i>
             </a>
             <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
-                <i class="ph ph-regular ph-graph text-danger ph-fw"></i>
+                <i class="ph ph-graph text-danger ph-fw"></i>
             </a>
 
             <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
-                <i class="ph ph-regular ph-trophy text-signal ph-fw"></i>
+                <i class="ph ph-trophy text-signal ph-fw"></i>
             </a>
             <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                 <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                    <i class="ph ph-regular ph-edit text-muted ph-fw"></i>
+                    <i class="ph ph-edit text-muted ph-fw"></i>
                 </a>
             <?php } ?>
 
@@ -494,7 +494,7 @@ if ($currentuser) { ?>
             echo "<b>" . lang('Quarters approved', 'Bestätigte Quartale') . ":</b>";
             foreach ($approvedQ as $appr) {
                 $Q = explode('Q', $appr);
-                echo "<a href='" . ROOTPATH . "/my-year/$user?year=$Q[0]&quarter=$Q[1]' class='badge badge-success ml-5'>$appr</a>";
+                echo "<a href='" . ROOTPATH . "/my-year/$user?year=$Q[0]&quarter=$Q[1]' class='badge success ml-5'>$appr</a>";
             }
             echo "</div>";
         } ?>
@@ -512,7 +512,7 @@ if ($currentuser) { ?>
             <div class="p-10 pb-0">
 
                 <label for="expertise" class="font-weight-bold">
-                    <i class="ph ph-regular ph-barbell text-osiris"></i> <?= lang('Expertise:') ?>
+                    <i class="ph ph-barbell text-osiris"></i> <?= lang('Expertise:') ?>
                 </label>
             </div>
             <div class="p-10 pt-0">
@@ -521,7 +521,7 @@ if ($currentuser) { ?>
                     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                     <?php foreach ($expertise as $n) { ?>
-                        <div class="input-group input-group-sm d-inline-flex w-auto mr-5 mb-10">
+                        <div class="input-group sm d-inline-flex w-auto mr-5 mb-10">
                             <input type="text" name="values[expertise][]" value="<?= $n ?>" list="expertise-list" required>
                             <div class="input-group-append">
                                 <a class="btn" onclick="$(this).closest('.input-group').remove();">&times;</a>
@@ -529,11 +529,11 @@ if ($currentuser) { ?>
                         </div>
                     <?php } ?>
 
-                    <button class="btn btn-sm" type="button" onclick="addName(event, this);">
-                        <i class="ph ph-regular ph-plus"></i>
+                    <button class="btn small" type="button" onclick="addName(event, this);">
+                        <i class="ph ph-plus"></i>
                     </button>
                     <br>
-                    <button class="btn btn-primary" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
+                    <button class="btn primary small" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
                 </form>
             </div>
 
@@ -548,7 +548,7 @@ if ($currentuser) { ?>
 
         <script>
             function addName(evt, el) {
-                var group = $('<div class="input-group input-group-sm d-inline-flex w-auto mr-5 mb-10"> ')
+                var group = $('<div class="input-group sm d-inline-flex w-auto mr-5 mb-10"> ')
                 group.append('<input type="text" name="values[expertise][]" value="" list="expertise-list" required>')
                 // var input = $()
                 var btn = $('<a class="btn">')
@@ -574,7 +574,7 @@ if ($currentuser) { ?>
         </script>
     <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
         <div class="mt-20" id="expertise">
-            <b><i class="ph ph-regular ph-barbell text-osiris"></i> <?= lang('Expertise:') ?></b>
+            <b><i class="ph ph-barbell text-osiris"></i> <?= lang('Expertise:') ?></b>
 
             <?php foreach ($scientist['expertise'] ?? array() as $key) { ?>
                 <span class="expertise"><?= $key ?></span>
@@ -589,12 +589,12 @@ if ($currentuser) { ?>
                 <div class="content">
                     <?php if ($currentuser) { ?>
                         <a class="float-right" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>">
-                            <i class="ph ph-regular ph-note-pencil ph-lg"></i>
+                            <i class="ph ph-note-pencil ph-lg"></i>
                         </a>
                     <?php } ?>
                     <h4 class="title"><?= lang('Details') ?></h4>
                 </div>
-                <table class="table table-simple">
+                <table class="table simple">
                     <tbody>
                         <tr>
                             <td><?= lang('Last name', 'Nachname') ?></td>
@@ -698,7 +698,7 @@ if ($currentuser) { ?>
                     <div class="content">
                         <h4 class="title"><?= lang('Latest publications', 'Neueste Publikationen') ?></h4>
                     </div>
-                    <table class="table table-simple">
+                    <table class="table simple">
                         <tbody>
                             <?php
                             $i = 0;
@@ -724,8 +724,8 @@ if ($currentuser) { ?>
 
                                     </td>
                                     <td class="unbreakable w-25">
-                                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                            <i class="ph ph-arrow-fat-line-right"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -734,8 +734,8 @@ if ($currentuser) { ?>
                     </table>
 
                     <div class="content mt-0">
-                        <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>#type=publication" class="btn btn-osiris">
-                            <i class="ph ph-regular ph-book-bookmark mr-5"></i> <?= lang('All publications of ', 'Alle Publikationen von ') . $name ?>
+                        <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>#type=publication" class="btn osiris">
+                            <i class="ph ph-book-bookmark mr-5"></i> <?= lang('All publications of ', 'Alle Publikationen von ') . $name ?>
                         </a>
                     </div>
 
@@ -748,7 +748,7 @@ if ($currentuser) { ?>
                 <div class="box h-full">
                     <div class="chart content text-center">
                         <h5 class="title mb-0">
-                            <i class="ph ph-regular ph-file-text text-primary"></i>
+                            <i class="ph ph-file-text text-primary"></i>
                             <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
                         </h5>
                         <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
@@ -877,7 +877,7 @@ if ($currentuser) { ?>
                 <div class="box h-full">
                     <div class="chart content text-center">
                         <h5 class="title mb-0">
-                            <i class="ph ph-regular ph-graduation-cap text-primary"></i>
+                            <i class="ph ph-graduation-cap text-primary"></i>
                             <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
                         </h5>
                         <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
@@ -959,7 +959,7 @@ if ($currentuser) { ?>
                 <div class="box h-full">
                     <div class="chart content text-center">
                         <h5 class="title">
-                            <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
+                            <i class="ph ph-lg ph-coin text-signal"></i>
                             <?= lang('Coins per Year', 'Coins pro Jahr') ?>
                         </h5>
                         <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
@@ -1146,7 +1146,7 @@ if ($currentuser) { ?>
                     <div class="content">
                         <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
                     </div>
-                    <table class="table table-simple">
+                    <table class="table simple">
                         <tbody>
                             <?php
                             $i = 0;
@@ -1170,8 +1170,8 @@ if ($currentuser) { ?>
 
                                     </td>
                                     <td class="unbreakable w-25">
-                                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                            <i class="ph ph-arrow-fat-line-right"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -1180,8 +1180,8 @@ if ($currentuser) { ?>
                     </table>
 
                     <div class="content mt-0">
-                        <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn btn-osiris">
-                            <i class="ph ph-regular ph-book-bookmark mr-5"></i>
+                        <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn osiris">
+                            <i class="ph ph-book-bookmark mr-5"></i>
                             <?= lang('All activities', 'Alle Aktivitäten ') ?>
                         </a>
                     </div>
@@ -1212,7 +1212,7 @@ if ($currentuser) { ?>
                     <div class="content">
                         <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
                     </div>
-                    <table class="table table-simple">
+                    <table class="table simple">
                         <tbody>
                             <?php
                             $i = 0;
@@ -1236,8 +1236,8 @@ if ($currentuser) { ?>
 
                                     </td>
                                     <td class="unbreakable w-25">
-                                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                            <i class="ph ph-arrow-fat-line-right"></i>
                                         </a>
                                     </td>
                                 </tr>

@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="box box-primary">
+<div class="box primary">
     <div class="content">
 
         <h5><?= lang('Export reports', 'Exportiere Berichte') ?></h5>

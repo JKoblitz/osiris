@@ -165,11 +165,11 @@ if ($showcoins == 'all') {
             </h1>
             <?php if ($showcoins) { ?>
                 <p class="lead m-0">
-                    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
+                    <i class="ph ph-lg ph-coin text-signal"></i>
                     <b id="lom-points"></b>
                     Coins in <?= $YEAR ?>
                     <a href='#coins' class="text-muted">
-                        <i class="ph ph-regular ph-question text-muted"></i>
+                        <i class="ph ph-question text-muted"></i>
                     </a>
                 </p>
             <?php } ?>
@@ -185,18 +185,18 @@ if ($showcoins == 'all') {
 
                 <?php if (!$quarter_in_past) { ?>
                     <a href="#close-modal" class="btn disabled">
-                        <i class="ph ph-regular ph-check mr-5"></i>
+                        <i class="ph ph-check mr-5"></i>
                         <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
                     </a>
                 <?php
 
                 } elseif ($approved) { ?>
                     <a href="#close-modal" class="btn disabled">
-                        <i class="ph ph-regular ph-check mr-5"></i>
+                        <i class="ph ph-check mr-5"></i>
                         <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
                     </a>
                 <?php } else { ?>
-                    <a class="btn btn-lg btn-success" href="#approve">
+                    <a class="btn lg success" href="#approve">
                         <i class="ph-fill ph-question mr-5"></i>
                         <?= lang('Approve selected quarter', 'Ausgewähltes Quartal freigeben') ?>
                         (<?= $YEAR . 'Q' . $QUARTER ?>)
@@ -217,7 +217,7 @@ if ($showcoins == 'all') {
 
                         <div class="input-group-prepend">
                             <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                                <i class="ph ph-regular ph-calendar-check"></i>
+                                <i class="ph ph-calendar-check"></i>
                             </div>
                         </div>
                         <select name="year" id="year" class="form-control">
@@ -232,14 +232,14 @@ if ($showcoins == 'all') {
                             <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
                         </select>
                         <div class="input-group-append">
-                            <button class="btn btn-primary"><i class="ph ph-regular ph-check"></i></button>
+                            <button class="btn primary"><i class="ph ph-check"></i></button>
                         </div>
                     </div>
 
                 </div>
             </form>
             <div class="text-lg-right">
-                <a target="_blank" href="<?= ROOTPATH ?>/docs/my-year" class="btn btn-tour" id="tour">
+                <a target="_blank" href="<?= ROOTPATH ?>/docs/my-year" class="btn tour" id="tour">
                     <i class="ph ph-lg ph-question mr-5"></i>
                     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
                 </a>
@@ -493,7 +493,7 @@ if ($showcoins == 'all') {
     </script>
 
 
-    <div class="alert alert-signal">
+    <div class="alert signal">
         <?= lang('The entire year is shown here. Activities in the selected quarter <b class="Q">' . $q . '</b> are highlighted. ', 'Das gesamte Jahr ist hier gezeigt. Aktivitäten innerhalb des gewählten Quartals <b class="Q">' . $q . '</b> sind farblich hinterlegt.') ?>
 
     </div>
@@ -507,7 +507,7 @@ if ($showcoins == 'all') {
         <div class="box box-<?= $col ?>" id="<?= $col ?>">
             <div class="content">
                 <h4 class="title text-<?= $col ?>">
-                    <i class="ph ph-regular ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
+                    <i class="ph ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
                     <?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
                 </h4>
             </div>
@@ -517,7 +517,7 @@ if ($showcoins == 'all') {
                 </div>
             <?php } else { ?>
 
-                <table class="table table-simple">
+                <table class="table simple">
                     <tbody>
                         <?php
                         // $filter['type'] = $col;
@@ -579,15 +579,15 @@ if ($showcoins == 'all') {
                             </td>
 
                             <td class="unbreakable w-50">
-                                <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                                <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                    <i class="ph ph-arrow-fat-line-right"></i>
                                 </a>
-                                <button class="btn btn-link btn-square" onclick="addToCart(this, '<?= $id ?>')">
-                                    <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-regular ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
+                                <button class="btn link square" onclick="addToCart(this, '<?= $id ?>')">
+                                    <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
                                 </button>
                                 <?php if ($currentuser) { ?>
-                                    <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                                        <i class="ph ph-regular ph-pencil-simple-line"></i>
+                                    <a class="btn link square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
+                                        <i class="ph ph-pencil-simple-line"></i>
                                     </a>
                                 <?php } ?>
                             </td>
@@ -608,12 +608,12 @@ if ($showcoins == 'all') {
                     if ($col == "publication") $t = "article";
                 ?>
                     <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
-                        <i class="ph ph-regular ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
+                        <i class="ph ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
                     </a>
-                    <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-regular ph-plus"></i></a>
+                    <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
                     <?php if ($col == 'publication') { ?>
                         <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
-                            <i class="ph ph-regular ph-magnifying-glass-plus mr-5"></i>
+                            <i class="ph ph-magnifying-glass-plus mr-5"></i>
                             <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
                         </a>
                     <?php } ?>
@@ -659,7 +659,7 @@ if ($showcoins == 'all') {
                             "The following activities have unresolved warnings. Please <a href='" . ROOTPATH . "/issues' class='link'>review all issues</a> before approving the current quarter.",
                             "Die folgenden Aktivitäten haben ungelöste Warnungen. Bitte <a href='" . ROOTPATH . "/issues' class='link'>kläre alle Probleme</a> bevor du das aktuelle Quartal freigeben kannst."
                         ) . "</p>";
-                        echo "<table class='table table-simple'><tbody>";
+                        echo "<table class='table simple'><tbody>";
                         foreach ($approval_needed as $item) {
                             // $type = ucfirst($item['type']);
                             echo "<tr><td class='px-0'>
@@ -668,7 +668,7 @@ if ($showcoins == 'all') {
                                 $item[badge]";
                             foreach ($item['tags'] as $tag) {
                                 $tag = $tagnames[$tag] ?? $tag;
-                                echo "<a class='badge badge-danger filled ml-5' href='" . ROOTPATH . "/issues#tr-$item[id]'>$tag</a>";
+                                echo "<a class='badge danger filled ml-5' href='" . ROOTPATH . "/issues#tr-$item[id]'>$tag</a>";
                             }
 
                             echo "</td></tr>";
@@ -687,7 +687,7 @@ if ($showcoins == 'all') {
                         <form action="<?= ROOTPATH ?>/approve" method="post">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="quarter" class="hidden" value="<?= $YEAR . "Q" . $QUARTER ?>">
-                            <button class="btn btn-success"><?= lang('Approve', 'Freigeben') ?></button>
+                            <button class="btn success"><?= lang('Approve', 'Freigeben') ?></button>
                         </form>
                     <?php } ?>
 

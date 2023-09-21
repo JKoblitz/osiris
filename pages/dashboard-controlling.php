@@ -32,8 +32,8 @@
 
                     <canvas id="overview-<?= $q ?>"></canvas>
                     <!-- <div class="text-right mt-5">
-                        <button class="btn btn-sm" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
-                            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities') ?>
+                        <button class="btn small" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
+                            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities') ?>
                         </button>
                     </div> -->
 
@@ -112,8 +112,8 @@
 
                     <canvas id="approved-<?= $q ?>"></canvas>
                     <div class="text-right mt-5">
-                        <button class="btn btn-sm" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
-                            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Details') ?>
+                        <button class="btn small" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
+                            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Details') ?>
                         </button>
                     </div>
 
@@ -221,8 +221,8 @@ $Format = new Document(true);
                         <?php echo $Format->format(); ?>
                     </td>
                     <td class="unbreakable">
-                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                            <i class="ph ph-arrow-fat-line-right"></i>
                         </a>
                     </td>
                 </tr>
@@ -242,8 +242,8 @@ $Format = new Document(true);
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });

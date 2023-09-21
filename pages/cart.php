@@ -42,7 +42,7 @@
             <p>
                 <?= lang('The following activities are in your download cart:', 'Die folgenden Aktivitäten sind in deinem Einkaufswagen:') ?>
             </p>
-            <table class="table table-sm mb-20">
+            <table class="table sm mb-20">
                 <?php foreach ($cart as $id) {
                     $mongo_id = $DB->to_ObjectID($id);
                     $doc = $osiris->activities->findOne(['_id' => $mongo_id]);
@@ -56,7 +56,7 @@
                             <?= $Format->formatShort() ?>
                         </td>
                         <td>
-                            <button class="btn btn-link btn-sm" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-regular ph-x"></i></button>
+                            <button class="btn link small" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-x"></i></button>
                         </td>
                     </tr>
                 <?php } ?>
@@ -104,7 +104,7 @@
 
 
 
-            <button class="btn btn-primary">Download</button>
+            <button class="btn primary">Download</button>
         <?php } else { ?>
             <p class="text-danger">
                 <?= lang('Cart is empty.', 'Der Einkaufswagen ist leer.') ?>

@@ -25,7 +25,7 @@
         <p class="text-muted">ID: <?= $id ?></p>
 
         <input type="hidden" name="values[id]" value="<?= $id ?>">
-        <div class="box box-danger">
+        <div class="box danger">
             <div class="content">
 
                 <h5 class="title">
@@ -110,7 +110,7 @@
 
 
 
-        <div class="box box-muted">
+        <div class="box muted">
             <div class="content">
 
                 <h5 class="title">
@@ -194,7 +194,7 @@
             </div>
 
         </div>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn primary">
                 <i class="ph ph-user-plus"></i>
                 <?= lang('Save guest', 'Gast anlegen') ?>
             </button>

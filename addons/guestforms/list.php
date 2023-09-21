@@ -4,7 +4,7 @@
 </h1>
 
 
-<a href="<?= ROOTPATH ?>/guests/new" class="btn btn-osiris">
+<a href="<?= ROOTPATH ?>/guests/new" class="btn osiris">
     <i class="ph ph-plus"></i>
     <?= lang('Add new guest', 'Neuen Gast anmelden') ?>
 </a>

@@ -29,7 +29,7 @@
 </style>
 
 
-<div class="box box-primary">
+<div class="box primary">
     <div class="content">
 
         <h2 class="title">
@@ -60,14 +60,14 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary" type="submit"><?= lang('Generate report', 'Report erstellen') ?></button>
+            <button class="btn primary" type="submit"><?= lang('Generate report', 'Report erstellen') ?></button>
         </form>
 
     </div>
 </div>
 
 
-<div class="box box-danger">
+<div class="box danger">
     <div class="content">
         <h2 class="title">
             Zeitraum sperren
@@ -108,7 +108,7 @@
                     <label for="action-unlock"><i class="ph-fill ph-lock-open text-success"></i> Entsperren</label>
                 </div>
             </div>
-            <button class="btn btn-danger" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>
+            <button class="btn danger" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>
 
         </form>
     </div>
@@ -129,7 +129,7 @@
         
         <form action="<?=ROOTPATH?>/ldap/synchonize" method="post">
         
-            <button class="btn btn-signal" type="submit">Synchronisieren</button>
+            <button class="btn signal" type="submit">Synchronisieren</button>
 
         </form>
     </div>

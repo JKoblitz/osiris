@@ -20,7 +20,7 @@ include_once BASEPATH . "/php/Modules.php";
 
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
-    <div class="alert alert-signal">
+    <div class="alert signal">
         <h3 class="title">
             <?= lang('For the good practice: ', 'Für die gute Praxis:') ?>
         </h3>
@@ -32,7 +32,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <b><?= lang('Thank you!', 'Danke!') ?></b>
         <br>
         <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn">
-            <i class="ph ph-regular ph-upload"></i>
+            <i class="ph ph-upload"></i>
             <?= lang('Upload files', 'Dateien hochladen') ?>
         </a>
     </div>
@@ -52,12 +52,15 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     }
 
     .btn-toolbar .btn {
-        color: var(--color-warm-orange);
-        border-color: var(--color-warm-orange);
+        /* color: var(--color-warm-orange);
+        border-color: var(--color-warm-orange); */
     }
 
-    .btn-toolbar .btn:hover {
-        /* color: white;
+    .btn-toolbar .btn:hover,
+    .btn-group .btn:hover {
+        color: var(--color-warm-orange);
+        border-color: var(--color-warm-orange);
+        /* 
         background-color: var(--color-warm-orange); */
         background-color: var(--signal-color-very-light);
     }
@@ -65,19 +68,38 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     .table tbody tr[class^="row-"]:hover {
         border-left-width: 5px;
     }
+
+    [class^="col-"] .box {
+        margin: 0;
+        /* height: 100%; */
+    }
+
+    .filelink {
+        display: block;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        color: inherit !important;
+        padding: 0 2rem;
+        margin: 0 0 1rem;
+    }
+
+    .filelink:hover {
+        text-decoration: none;
+        background-color: rgba(0, 110, 183, 0.1);
+    }
 </style>
 
-<div class="">
+<div class="box px-20">
 
     <div class="float-md-right">
-        <div class="btn-group">
+        <div class="btn-group pt-20">
             <button class="btn " onclick="addToCart(this, '<?= $id ?>')">
-                <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-regular ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
+                <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
                 <?= lang('Add to cart', 'Für Download sammeln') ?>
             </button>
             <div class=" dropdown with-arrow btn-group ">
                 <button class="btn" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
-                    <i class="ph ph-regular ph-download"></i> Download
+                    <i class="ph ph-download"></i> Download
                     <i class="ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
@@ -123,7 +145,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                                 </div>
 
                             </div>
-                            <button class="btn btn-osiris">Download</button>
+                            <button class="btn osiris">Download</button>
                         </form>
                     </div>
                 </div>
@@ -150,41 +172,145 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </p>
 </div>
 
+
+
+
+<div class="row row-eq-spacing-lg">
+    <div class="col-lg-6">
+
+
+        <div class="box">
+            <div class="content">
+
+                <div class="btn-toolbar float-md-right">
+                    <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
+                        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
+                            <i class="ph ph-upload"></i>
+                            <?= lang('Upload files', 'Dateien hochladen') ?>
+                        </a>
+                    <?php } ?>
+                </div>
+
+                <h2><?= lang('Files', 'Dateien') ?></h2>
+
+                <?php if (!empty($doc['files'])) : ?>
+                    <?php foreach ($doc['files'] as $file) : ?>
+                        <a href="<?= $file['filepath'] ?>" target="_blank" class="filelink">
+                            <i class="ph ph-<?= getFileIcon($file['filetype']) ?> mr-10 ph-2x text-osiris"></i>
+
+                            <?= $file['filename'] ?>
+                        </a>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <span class="text-signal"><?= lang('No files attached', 'Noch keine Dateien hochgeladen') ?></span>
+                <?php endif; ?>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+
+        <div class="box">
+            <div class="content">
+<!-- 
+                <div class="btn-toolbar float-md-right">
+                    <a href="#connect" class="btn mr-5">
+                        <i class="ph ph-circles-three-plus"></i>
+                        <?= lang("Connect", "Verknüpfen") ?>
+                    </a>
+                </div> -->
+
+                <h2 class="title">
+                    <?= lang('Research data', 'Forschungsdaten') ?>
+                </h2>
+                <p>coming soon...</p>
+<!-- 
+                <?php if (!empty($doc['connections'])) { ?>
+                    <?php foreach ($doc['connections'] as $con) { ?>
+                        <p>
+                            <b><?= $con['entity'] ?>:</b>
+                            <?php if (!empty($con['link'])) { ?>
+                                <a href="<?= $con['link'] ?>" class="badge ">
+                                    <i class="ph ph-link text-primary" style="line-height: 0;"></i>
+                                    <?= $con['name'] ? $con['name'] : $con['link'] ?>
+                                </a>
+                            <?php } else { ?>
+                                <span class="badge "><?= $con['name'] ?></span>
+                            <?php } ?>
+                        </p>
+                    <?php } ?>
+
+                <?php } else { ?>
+                    <?= lang('No research data connected.', 'Noch keine Forschungsdaten verknüpft.') ?>
+                <?php } ?>
+             -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="connect" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="modal-title">
+                <?= lang('Connect research data', 'Forschungsdaten verknüpfen') ?>
+            </h5>
+            <div>
+                <form action="#" class="">
+                    <div class="form-row row-eq-spacing">
+                        <div class="col-2">
+                            <label for="entity"><?= lang('Entity', 'Entität') ?></label>
+                            <input type="text" name="entity" class="form-control" placeholder="Strain" required>
+                        </div>
+                        <div class="col">
+                            <label for="name"><?= lang('Name') ?></label>
+                            <input type="text" name="name" class="form-control" placeholder="Lysobacter tolerans DSM 28473">
+                        </div>
+                        <div class="col">
+                            <label for="link"><?= lang('Link') ?></label>
+                            <input type="text" name="link" class="form-control" placeholder="https://bacdive.dsmz.de/strain/132485">
+                        </div>
+                    </div>
+                    <button class="btn success"><?= lang('Connect', 'Verknüpfen') ?></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="row row-eq-spacing-lg">
     <div class="col-lg-7">
 
-        <h2>Details</h2>
 
-        <div class="btn-toolbar mb-10">
-            <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
-                <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
-                    <i class="ph ph-regular ph-pencil-simple-line"></i>
-                    <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
-                </a>
-            <?php } ?>
-
-
-            <?php if (!in_array($doc['type'], ['publication'])) {
-                echo '<a href="' . ROOTPATH . '/activities/copy/' . $id . '" class="btn mr-5">
-        <i class="ph ph-regular ph-copy"></i>
-        ' . lang("Add a copy", "Kopie anlegen") .
-                    '</a>';
-            }
-            ?>
-
-
-            <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
-                <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
-                    <i class="ph ph-regular ph-upload"></i>
-                    <?= lang('Upload files', 'Dateien hochladen') ?>
-                </a>
-            <?php } ?>
-
-
-        </div>
-
-        <div class="box mt-0">
+        <div class="box ">
             <div class="content">
+
+
+                <div class="btn-toolbar float-md-right">
+                    <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
+                            <i class="ph ph-pencil-simple-line"></i>
+                            <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
+                        </a>
+                    <?php } ?>
+
+
+                    <?php if (!in_array($doc['type'], ['publication'])) { ?>
+                        <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn mr-5">
+                            <i class="ph ph-copy"></i>
+                            <?= lang("Add a copy", "Kopie anlegen") ?>
+                        </a>
+                    <?php } ?>
+
+                </div>
+
+                <h2>Details</h2>
                 <div class="mb-10">
                     <?= $Format->activity_badge() ?>
                 </div>
@@ -248,27 +374,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                     <?php } ?>
 
 
-                    <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'misc'])) : ?>
-                        <tr>
-                            <th class="key">Files:</th>
-                            <td>
-                                <?php if (!empty($doc['files'])) : ?>
-                                    <?php foreach ($doc['files'] as $file) : ?>
-                                        <a href="<?= $file['filepath'] ?>" target="_blank" class="mr-10">
-                                            <?= $file['filename'] ?>
-                                        </a>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <span class="text-signal"><?= lang('No files attached', 'Noch keine Dateien hochgeladen') ?></span>
-                                <?php endif; ?>
-                                <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn btn-sm">
-                                    <i class="ph ph-upload"></i>
-                                </a>
-                            </td>
-                        </tr>
-
-                    <?php endif; ?>
-
 
                     <?php if (($user_activity || $USER['is_controlling'] || $USER['is_admin']) && isset($doc['comment'])) : ?>
                         <tr class="text-muted">
@@ -306,26 +411,30 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             </div>
 
         </div>
-        <?php
 
-        // $in_quarter = inCurrentQuarter($doc['year'], $doc['month']);
-        $is_controlling = $USER['is_controlling'] || $USER['is_admin'] ?? false;
-        if ($is_controlling) :
-        ?>
-            <div class="alert alert-danger mt-20 py-20">
+
+        <div class="alert danger mt-20 py-20">
+            <h2 class="title">
+                <?= lang('Delete', 'Löschen') ?>
+            </h2>
+            <?php
+
+            // $in_quarter = inCurrentQuarter($doc['year'], $doc['month']);
+            $is_controlling = $USER['is_controlling'] || $USER['is_admin'] ?? false;
+            if ($is_controlling) :
+            ?>
                 <p class="mt-0">
                     <?= lang('Admins can delete any time:', 'Admins können jederzeit löschen:') ?>
                 </p>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
                     <button type="submit" class="btn text-danger">
-                        <i class="ph ph-regular ph-trash"></i>
+                        <i class="ph ph-trash"></i>
                         <?= lang('Delete activity', 'Lösche Aktivität') ?>
                     </button>
                 </form>
-            </div>
-        <?php elseif (false) : ?>
-            <!-- <div class="alert alert-danger mt-20 py-20">
+            <?php elseif (false) : ?>
+                <!-- <div class="alert danger mt-20 py-20">
 
                 <p class="mt-0">
                     <?= lang(
@@ -337,12 +446,11 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
                 <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Löschung&body=<?= $body ?>">
-                    <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
+                    <i class="ph ph-envelope" aria-hidden="true"></i>
                     <?= lang('Delete activity', 'Löschen beantragen') ?>
                 </a>
             </div> -->
-        <?php elseif (!$user_activity) : ?>
-            <div class="alert alert-danger mt-20 py-20">
+            <?php elseif (!$user_activity) : ?>
 
                 <p class="mt-0">
                     <?= lang(
@@ -354,20 +462,18 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
                 <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
-                    <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
+                    <i class="ph ph-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
                 <?php if (isset($doc['created_by'])) { ?>
 
                     <a class="btn text-danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf 'Änderung'&body=<?= $body ?>">
-                        <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
+                        <i class="ph ph-envelope" aria-hidden="true"></i>
                         <?= lang('Contact creator', 'Urheber kontaktieren') ?>
                     </a>
                 <?php } ?>
 
-            </div>
-        <?php elseif ($locked) : ?>
-            <div class="alert alert-danger mt-20 py-20">
+            <?php elseif ($locked) : ?>
 
                 <p class="mt-0">
                     <?= lang(
@@ -379,13 +485,11 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
                 <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
-                    <i class="ph ph-regular ph-envelope" aria-hidden="true"></i>
+                    <i class="ph ph-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
 
-            </div>
-        <?php else : ?>
-            <div class="alert alert-danger mt-20 py-20">
+            <?php else : ?>
                 <p class="mt-0">
                     <!-- <b>Info:</b> -->
                     <!-- <?= lang(
@@ -396,99 +500,107 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
                     <button type="submit" class="btn text-danger">
-                        <i class="ph ph-regular ph-trash"></i>
+                        <i class="ph ph-trash"></i>
                         <?= lang('Delete activity', 'Lösche Aktivität') ?>
                     </button>
                 </form>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </div>
+
 
 
     <div class="col-lg-5">
         <?php foreach (['authors', 'editors'] as $role) { ?>
             <?php if (isset($activity[$role])) { ?>
 
-                <h2><?= ucfirst($role) ?></h2>
+                <div class="box">
+                    <div class="content">
 
-                <?php
-                // if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { 
-                ?>
-                <div class="btn-toolbar mb-10">
-                    <?php if ($role == 'authors') {
-                        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
-                                <i class="ph ph-regular ph-user-list"></i>
-                                ' . lang("Edit authors", "Autorenliste bearbeiten") .
-                            '</a>';
-                    } else {
-                        echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
-                                    <i class="ph ph-regular ph-user-list"></i>
-                                    ' . lang("Edit editors", "Editorenliste bearbeiten") .
-                            '</a>';
-                    } ?>
-                </div>
-                <?php
-                //  } 
-                ?>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Last name</th>
-                            <th>First name</th>
-                            <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
-                                <th>Position</th>
-                            <?php endif; ?>
-                            <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
-                                <th>SWS</th>
-                            <?php endif; ?>
-                            <th>Username</th>
-                        </tr>
-                    </thead>
-                    <tbody id="<?= $role ?>">
-                        <?php foreach ($activity[$role] as $i => $author) {
-                            $cls = "";
-                            $dept = "";
-                            if (isset($author['user']) && !empty($author['user'])) {
-                                $u = $DB->getPerson($author['user']);
-                                $dept = $u['dept'] ?? 'unknown';
-                                $cls = "row-" . ($u['dept'] ?? 'muted');
-                            }
-                            // row-MIOS 
-                        ?>
-                            <tr class="<?= $cls ?>" data-dept="<?= $dept ?>">
-                                <td class="<?= (($author['aoi'] ?? 0) == '1' ? 'font-weight-bold' : '') ?>">
-                                    <?php if (!empty($dept)) { ?>
-                                        <span data-toggle="tooltip" data-title="<?= $dept ?>"><?= $author['last'] ?? '' ?></span>
-                                    <?php } else { ?>
-                                        <?= $author['last'] ?? '' ?>
-                                    <?php } ?>
-                                </td>
-                                <td>
-                                    <?= $author['first'] ?? '' ?>
-                                </td>
+                        <div class="btn-toolbar mb-10 float-md-right">
+                            <?php if ($role == 'authors') {
+                                echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
+                                <i class="ph ph-user-list"></i>
+                                ' . lang("Edit authors", "Autoren bearbeiten") .
+                                    '</a>';
+                            } else {
+                                echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
+                                    <i class="ph ph-user-list"></i>
+                                    ' . lang("Edit editors", "Editoren bearbeiten") .
+                                    '</a>';
+                            } ?>
+                        </div>
+
+                        <h2>
+                            <?php if ($role == 'authors') {
+                                echo lang('Authors', 'Autoren');
+                            } else {
+                                echo lang('Editors', 'Editoren');
+                            } ?>
+                        </h2>
+
+
+                    </div>
+                    <table class="table simple">
+                        <thead>
+                            <tr>
+                                <th>Last name</th>
+                                <th>First name</th>
                                 <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
-                                    <td>
-                                        <?= $author['position'] ?? '' ?>
-                                    </td>
+                                    <th>Position</th>
                                 <?php endif; ?>
                                 <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
-                                    <td>
-                                        <?= $author['sws'] ?? 0 ?>
-                                    </td>
+                                    <th>SWS</th>
                                 <?php endif; ?>
-                                <td>
-                                    <?php if (isset($author['user']) && !empty($author['user'])) {
-                                    ?>
-                                        <a href="<?= ROOTPATH ?>/profile/<?= $author['user'] ?>"><?= $author['user'] ?></a>
-                                        <span data-toggle="tooltip" data-title="<?= lang('Author approved activity?', 'Autor hat die Aktivität bestätigt?') ?>">
-                                            <?= bool_icon($author['approved'] ?? 0) ?>
-                                        </span>
-                                    <?php } ?>
-                                </td>
+                                <th>Username</th>
                             </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="<?= $role ?>">
+                            <?php foreach ($activity[$role] as $i => $author) {
+                                $cls = "";
+                                $dept = "";
+                                if (isset($author['user']) && !empty($author['user'])) {
+                                    $u = $DB->getPerson($author['user']);
+                                    $dept = $u['dept'] ?? 'unknown';
+                                    $cls = "row-" . ($u['dept'] ?? 'muted');
+                                }
+                                // row-MIOS 
+                            ?>
+                                <tr class="<?= $cls ?>" data-dept="<?= $dept ?>">
+                                    <td class="<?= (($author['aoi'] ?? 0) == '1' ? 'font-weight-bold' : '') ?>">
+                                        <?php if (!empty($dept)) { ?>
+                                            <span data-toggle="tooltip" data-title="<?= $dept ?>"><?= $author['last'] ?? '' ?></span>
+                                        <?php } else { ?>
+                                            <?= $author['last'] ?? '' ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <?= $author['first'] ?? '' ?>
+                                    </td>
+                                    <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
+                                        <td>
+                                            <?= $author['position'] ?? '' ?>
+                                        </td>
+                                    <?php endif; ?>
+                                    <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
+                                        <td>
+                                            <?= $author['sws'] ?? 0 ?>
+                                        </td>
+                                    <?php endif; ?>
+                                    <td>
+                                        <?php if (isset($author['user']) && !empty($author['user'])) {
+                                        ?>
+                                            <a href="<?= ROOTPATH ?>/profile/<?= $author['user'] ?>"><?= $author['user'] ?></a>
+                                            <span data-toggle="tooltip" data-title="<?= lang('Author approved activity?', 'Autor hat die Aktivität bestätigt?') ?>">
+                                                <?= bool_icon($author['approved'] ?? 0) ?>
+                                            </span>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
             <?php } ?>
         <?php } ?>
 

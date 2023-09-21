@@ -3,7 +3,7 @@
 const tour = new Shepherd.Tour({
     useModalOverlay: true,
     defaultStepOptions: {
-        classes: 'shadow-lg alert alert-primary p-5 filled-dm',
+        classes: 'shadow-lg alert primary p-5 filled-dm',
         useModalOverlay: true,
         scrollTo: { behavior: 'smooth', block: 'center' },
         popperOptions: {
@@ -40,18 +40,18 @@ const tour = new Shepherd.Tour({
 const nextBtn = {
     text: lang('Next', "Weiter"),
     action: tour.next,
-    classes: 'btn btn-primary'
+    classes: 'btn primary'
 }
 
 const cancelBtn = {
     text: '<i class="ph-bold fa-xmark"></i>',
     action: tour.cancel,
-    classes: 'btn btn-danger'
+    classes: 'btn danger'
 }
 const lastBtn = {
     text: lang('Finish', "Ende"),
     action: tour.cancel,
-    classes: 'btn btn-primary'
+    classes: 'btn primary'
 }
 
 var counter = 0;
@@ -82,7 +82,7 @@ tour.addStep({
         {
             text: lang('Next', "Weiter"),
             action: null,
-            classes: 'btn btn-primary disabled'
+            classes: 'btn primary disabled'
         }
     ],
     advanceOn: {

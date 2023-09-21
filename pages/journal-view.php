@@ -22,7 +22,7 @@
 
 
 <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
-    <a href="<?= ROOTPATH ?>/journal/edit/<?= $id ?>" class="btn btn-osiris float-right"><?= lang('Edit Journal', 'Journal bearbeiten') ?></a>
+    <a href="<?= ROOTPATH ?>/journal/edit/<?= $id ?>" class="btn osiris float-right"><?= lang('Edit Journal', 'Journal bearbeiten') ?></a>
 <?php } ?>
 
 
@@ -71,7 +71,7 @@
             <td>Web of Science Links</td>
             <td>
                 <?php foreach ($data['wos']['links'] as $link) { ?>
-                    <a href="<?= $link['url'] ?>" target="_blank" rel="noopener noreferrer" class="badge badge-primary"><?= $link['type'] ?></a>
+                    <a href="<?= $link['url'] ?>" target="_blank" rel="noopener noreferrer" class="badge primary"><?= $link['type'] ?></a>
                 <?php } ?>
             </td>
         </tr>
@@ -103,8 +103,8 @@
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });
@@ -135,7 +135,7 @@
                     "targets": 1,
                     "data": "name",
                     "render": function(data, type, full, meta) {
-                        return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-regular ph-arrow-fat-line-right"></a>`;
+                        return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-arrow-fat-line-right"></a>`;
                     }
                 },
             ],
@@ -223,7 +223,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
 
         <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
             <div class="dropdown with-arrow float-right mb-20">
-                <button class="btn btn-osiris" data-toggle="dropdown" type="button" id="dropdown-2" aria-haspopup="true" aria-expanded="false">
+                <button class="btn osiris" data-toggle="dropdown" type="button" id="dropdown-2" aria-haspopup="true" aria-expanded="false">
                     <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-2">
@@ -238,7 +238,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
                                 <label for="if"><?= lang('Impact') ?></label>
                                 <input type="number" min="0" max="300" step="0.001" class="form-control" name="values[if]" id="if">
                             </div>
-                            <button class="btn btn-block"><i class="ph ph-regular ph-check"></i> <?= lang('Add', 'Hinzuf.') ?></button>
+                            <button class="btn block"><i class="ph ph-check"></i> <?= lang('Add', 'Hinzuf.') ?></button>
                         </form>
                     </div>
                 </div>

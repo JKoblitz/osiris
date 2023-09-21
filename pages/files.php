@@ -107,7 +107,7 @@ $Format->setDocument($doc);
         <div class="title">
             <?= lang('All files', 'Alle Dateien') ?>
         </div>
-        <table class="table table-simple w-auto">
+        <table class="table simple w-auto">
             <?php if (!empty($files)) : ?>
                 <?php foreach ($files as $file) : ?>
                     <tr>
@@ -120,7 +120,7 @@ $Format->setDocument($doc);
                             <form action="#" method="post">
                                 <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
 
-                                <button class="btn btn-link" type="submit">
+                                <button class="btn link" type="submit">
                                     <i class="ph ph-trash text-danger"></i>
                                 </button>
                             </form>
@@ -149,7 +149,7 @@ $Format->setDocument($doc);
                 <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>
-            <button class="btn btn-primary">
+            <button class="btn primary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

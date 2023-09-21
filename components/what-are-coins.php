@@ -1,5 +1,5 @@
 <h2 class="title">
-    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
+    <i class="ph ph-lg ph-coin text-signal"></i>
     Coins
 </h2>
 
@@ -29,7 +29,7 @@
     'In der folgenden Tabelle siehst du eine Übersicht über die Coins. Die Vergabe von Coins basiert zurzeit auf den zuvor existenten Möller-Punkten und soll demnächst überarbeitet werden.')?>
 </p>
 
-<table class="table table-simple table-sm">
+<table class="table simple small">
     <thead>
         <tr>
             <th>Type</th>

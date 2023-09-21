@@ -19,7 +19,7 @@
 
 <div class="content mt-0">
     <h1>
-        <i class="ph ph-regular ph-trophy text-signal"></i>
+        <i class="ph ph-trophy text-signal"></i>
         <?= lang('Achievements', 'Errungenschaften') ?>
     </h1>
 
@@ -37,7 +37,7 @@
     $Achievement->checkAchievements();
     $user_ac = $Achievement->userac;
     if ($user == $_SESSION['username'] && !empty($Achievement->new)) {
-        echo '<div class="alert alert-signal m-10">';
+        echo '<div class="alert signal m-10">';
         echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
 
         foreach ($Achievement->new as $i => $n) {

@@ -2,9 +2,8 @@
 * -----------------------------------------------------------------------------
 * digidive JS
 * Version: Dev
-* https://www.getdigidive.com
-* Copyright, digidive UI
-* Licensed under MIT (https://www.getdigidive.com/license)
+* Copyright, Julia Koblitz
+* Licensed under MIT
 * -----------------------------------------------------------------------------
 * The above notice must be included in its entirety when this file is used.
 */
@@ -153,6 +152,8 @@ var digidive = {
             if (btn) btn.classList.add('active');
             if (digidive.pageWrapper.getAttribute("data-sidebar-hidden")) {
                 digidive.pageWrapper.removeAttribute("data-sidebar-hidden");
+                digidive.pageWrapper.removeAttribute("data-sidebar-first");
+
             } else {
                 if (btn) btn.classList.remove('active');
                 digidive.pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
@@ -211,9 +212,9 @@ var digidive = {
 
         // Alert is only toasted if it does not have the .show class
         if (!alertElement.classList.contains("show")) {
-            // Add .alert-block class if it does not exist
-            if (!alertElement.classList.contains("alert-block")) {
-                alertElement.classList.add("alert-block");
+            // Add .block class if it does not exist
+            if (!alertElement.classList.contains("block")) {
+                alertElement.classList.add("block");
             }
 
             // Show the alert
@@ -228,12 +229,12 @@ var digidive = {
                 alertElement.classList.add("fade");
             }, timeToFade);
 
-            // Wait some more time (timeToFade + 500) and dispose the alert (by removing the .alert-block class)
+            // Wait some more time (timeToFade + 500) and dispose the alert (by removing the .block class)
             // Again, the extra delay is for the animation
             // Remove the .show and .fade classes (so the alert can be toasted again)
             var timeToDestroy = timeToFade + 500;
             setTimeout(function () {
-                alertElement.classList.remove("alert-block");
+                alertElement.classList.remove("block");
                 alertElement.classList.remove("show");
                 alertElement.classList.remove("fade");
             }, timeToDestroy);
@@ -264,7 +265,7 @@ var digidive = {
         // Add the classes to the alert element
         alertElement.classList.add("alert");
         if (alertType) {
-            alertElement.classList.add("alert-"+alertType);
+            alertElement.classList.add(alertType);
         }
         if (fillType) {
             alertElement.classList.add('filled');
@@ -279,6 +280,9 @@ var digidive = {
         alertElement.innerHTML = content;
 
         // Append the alert element to the sticky alerts
+        if (digidive.stickyAlerts === undefined) {
+            digidive.stickyAlerts = document.getElementsByClassName("sticky-alerts")[0]
+        }
         digidive.stickyAlerts.insertBefore(alertElement, digidive.stickyAlerts.childNodes[0]);
 
         // Toast the alert
@@ -330,21 +334,15 @@ function digidiveOnDOMContentLoaded() {
         digidive.stickyAlerts = document.getElementsByClassName("sticky-alerts")[0];
     }
 
-    // Hiding sidebar on first load on small screens (unless data-attribute provided)
-    // Or on larger screens when sidebar type is overlayed-all
-    if (document.documentElement.clientWidth <= 768) {
+    // Hiding sidebar on first load on small screens 
+    // add data-sidebar-first as indicator to hide transitions
+    if (document.documentElement.clientWidth <= 992) {
         if (digidive.pageWrapper) {
-            if (!digidive.pageWrapper.getAttribute("data-show-sidebar-onload-sm-and-down")) {
-                digidive.pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
-            }
+            digidive.pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
+            digidive.pageWrapper.setAttribute("data-sidebar-first", "first");
         }
-    } else {
-        if (digidive.pageWrapper) {
-            if (digidive.pageWrapper.getAttribute("data-sidebar-type") === "overlayed-all") {
-                digidive.pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
-            }
-        }
-    }
+    } 
+    console.log(document.documentElement.clientWidth);
 
     // Adding the click event listener
     document.addEventListener(
@@ -409,7 +407,7 @@ function digidiveOnDOMContentLoaded() {
                     if (parentModal.classList.contains("show")) {
                         parentModal.classList.remove("show");
                     } else {
-                        window.location.hash = "#close-modal";
+                        window.location.hash = "#";
                     }
                 }
             }
@@ -560,7 +558,7 @@ function digidiveOnDOMContentLoaded() {
                         if (elem) {
                             if (elem.classList.contains("modal")) {
                                 if (!elem.getAttribute("data-esc-dismissal-disabled")) {
-                                    window.location.hash = "#close-modal";
+                                    window.location.hash = "#";
                                     event.preventDefault();
                                 }
                             }
@@ -675,8 +673,8 @@ function adjustPageNav() {
     // set height of pagenav
     // var wrapper = document //.querySelector('.content-wrapper')
     var footer = document.querySelector('.page-footer')
-    var navbarTopHeight = document.querySelector('.navbar-top').offsetHeight 
-    var navbarBottomHeight = document.querySelector('.navbar-bottom').offsetHeight 
+    var navbarTopHeight = document.querySelector('.navbar-top').offsetHeight
+    var navbarBottomHeight = document.querySelector('.navbar-bottom').offsetHeight
     var navbarHeight = navbarTopHeight - Math.min(navbarTopHeight, window.scrollY) + navbarBottomHeight
     console.log(navbarHeight);
     // var offset = wrapper.scrollTop + wrapper.offsetHeight
@@ -686,7 +684,7 @@ function adjustPageNav() {
     // console.log(offset, footer.offsetTop);
 
     var footerVisible = inViewport(footer);
-    
+
     var m = 10 + footerVisible + navbarHeight;
     var style = ""
 

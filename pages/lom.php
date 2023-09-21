@@ -61,7 +61,7 @@ function array_to_form($array, $level=2, $parents=array()){
 
 
 <h1>
-    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
+    <i class="ph ph-lg ph-coin text-signal"></i>
     LOM Punktematrix
 </h1>
 
@@ -75,5 +75,5 @@ $matrix = json_decode($matrix_json, true, 512, JSON_NUMERIC_CHECK);
 array_to_form($matrix);
 ?> 
 
-<button type="submit" class="btn btn-primary">Update</button>
+<button type="submit" class="btn primary">Update</button>
 </form>

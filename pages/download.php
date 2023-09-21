@@ -141,7 +141,7 @@
        
 
 
-        <button class="btn btn-primary">Download</button>
+        <button class="btn primary">Download</button>
 
     </form>
 </div>

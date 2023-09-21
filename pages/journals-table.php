@@ -16,12 +16,12 @@
  */
 
 if ($USER['is_controlling'] || $USER['is_admin']) { ?>
-    <a href="<?= ROOTPATH ?>/journal/add" class="btn btn-osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
+    <a href="<?= ROOTPATH ?>/journal/add" class="btn osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
 <?php } ?>
 
 
 <h2 class="mt-0">
-    <i class="ph ph-regular ph-book-open-cover text-osiris mr-5"></i>
+    <i class="ph ph-book-open-cover text-osiris mr-5"></i>
    <?=lang('Journals', 'Journale')?>
 </h2>
 
@@ -54,8 +54,8 @@ if ($USER['is_controlling'] || $USER['is_admin']) { ?>
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });

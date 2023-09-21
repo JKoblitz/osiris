@@ -85,7 +85,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <button class="btn btn-primary" type="submit" id="submit-btn"><i class="ph ph-regular ph-check"></i> <?= lang("Save", "Speichern") ?></button>
+                <button class="btn primary" type="submit" id="submit-btn"><i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?></button>
 
             </form>
         </div>
@@ -94,17 +94,17 @@ function val($index, $default = '')
 
 
 <div class="content">
-    <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
-        <i class="ph ph-regular ph-lg ph-question mr-5"></i>
+    <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+        <i class="ph ph-lg ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a> -->
 
     <h2 class="mt-0">
-        <i class="ph ph-regular ph-chalkboard-simple text-osiris mr-5"></i>
+        <i class="ph ph-chalkboard-simple text-osiris mr-5"></i>
         <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
     </h2>
     <a href="#add-teaching">
-        <i class="ph ph-regular ph-plus"></i>
+        <i class="ph ph-plus"></i>
         <?= lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen') ?>
     </a>
 </div>
@@ -129,12 +129,12 @@ function val($index, $default = '')
                     <a class="" href="<?= ROOTPATH ?>/profile/<?= $module['contact_person'] ?? '' ?>"><?= $contact['displayname'] ?? '' ?></a>
 
                     <div class="float-right ">
-                        <a href="#add-teaching" class="btn text-teaching btn-sm" onclick="$('#module').val('<?= $module['module'] ?>');">
-                            <i class="ph ph-regular ph-edit"></i>
+                        <a href="#add-teaching" class="btn text-teaching small" onclick="$('#module').val('<?= $module['module'] ?>');">
+                            <i class="ph ph-edit"></i>
                             <span class="sr-only"><?= lang('Edit course', 'Veranstaltung bearbeiten') ?></span>
                         </a>
-                        <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching btn-sm">
-                            <i class="ph ph-regular ph-plus"></i>
+                        <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching small">
+                            <i class="ph ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>
                     </div>

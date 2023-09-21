@@ -22,10 +22,10 @@
 
 <!-- 
 <div class="select-btns" id="select-btns">
-    <a href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-select btn-osiris" id="poster-btn"><i class="ph-lg ph ph-regular ph-plus-circle"></i><?= lang('Add activities', 'Aktivitäten hinzufügen') ?></a>
-    <a href="<?= ROOTPATH ?>/docs/my-year" class="btn btn-select btn-osiris" id="poster-btn"><i class="ph-lg ph ph-regular ph-calendar"></i><?= lang('My year', 'Mein Jahr') ?></a>
-    <a href="<?= ROOTPATH ?>/docs/warnings" class="btn btn-select btn-osiris" id="poster-btn"><i class="ph-lg ph ph-regular ph-warning"></i><?= lang('Warnings', 'Warnungen') ?></a>
-    <a href="<?= ROOTPATH ?>/docs/faq" class="btn btn-select btn-osiris" id="publication-btn"><i class="ph ph-regular ph-lg ph-chat-dots"></i>FAQ</a>
+    <a href="<?= ROOTPATH ?>/docs/add-activities" class="btn select osiris" id="poster-btn"><i class="ph-lg ph ph-plus-circle"></i><?= lang('Add activities', 'Aktivitäten hinzufügen') ?></a>
+    <a href="<?= ROOTPATH ?>/docs/my-year" class="btn select osiris" id="poster-btn"><i class="ph-lg ph ph-calendar"></i><?= lang('My year', 'Mein Jahr') ?></a>
+    <a href="<?= ROOTPATH ?>/docs/warnings" class="btn select osiris" id="poster-btn"><i class="ph-lg ph ph-warning"></i><?= lang('Warnings', 'Warnungen') ?></a>
+    <a href="<?= ROOTPATH ?>/docs/faq" class="btn select osiris" id="publication-btn"><i class="ph ph-lg ph-chat-dots"></i>FAQ</a>
 
 </div> -->
 
@@ -34,7 +34,7 @@
     <div class="row align-items-center">
         <div class="col flex-grow-0">
             <div class="w-100 text-center text-osiris">
-                <i class="ph-3x ph ph-regular ph-book-open"></i>
+                <i class="ph-3x ph ph-book-open"></i>
             </div>
         </div>
         <div class="col">
@@ -53,7 +53,7 @@
     <div class="row align-items-center">
         <div class="col flex-grow-0">
             <div class="w-100 text-center text-success">
-                <i class="ph-3x ph ph-regular ph-calendar"></i>
+                <i class="ph-3x ph ph-calendar"></i>
             </div>
         </div>
         <div class="col">
@@ -72,7 +72,7 @@
     <div class="row align-items-center">
         <div class="col flex-grow-0">
             <div class="w-100 text-center text-danger">
-                <i class="ph-3x ph ph-regular ph-warning"></i>
+                <i class="ph-3x ph ph-warning"></i>
             </div>
         </div>
         <div class="col">
@@ -92,7 +92,7 @@
     <div class="row align-items-center">
         <div class="col flex-grow-0">
             <div class="w-100 text-center text-muted">
-                <i class="ph-3x ph ph-regular ph-user-list"></i>
+                <i class="ph-3x ph ph-user-list"></i>
             </div>
         </div>
         <div class="col">
@@ -112,7 +112,7 @@
     <div class="row align-items-center">
         <div class="col flex-grow-0">
             <div class="w-100 text-center text-muted">
-                <i class="ph-3x ph ph-regular ph-chat-dots"></i>
+                <i class="ph-3x ph ph-chat-dots"></i>
             </div>
         </div>
         <div class="col">

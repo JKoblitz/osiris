@@ -82,8 +82,8 @@ function writeHash(data) {
 }
 
 $('input[name=activity]').on('change', function () {
-    $('input[name=activity]').removeClass('btn-primary')
-    $(this).addClass('btn-primary')
+    $('input[name=activity]').removeClass('primary')
+    $(this).addClass('primary')
 
 })
 
@@ -1643,7 +1643,7 @@ function getTeaching(name) {
             });
             if (teaching.length === 0) {
                 SUGGEST.append('<tr><td colspan="3">' + lang('Module not found in OSIRIS.', 'Modul nicht in OSIRIS gefunden.') + '</tr></td>')
-                SUGGEST.append('<tr><td colspan="3"><a href="' + ROOTPATH + '/teaching#add-teaching" class="btn btn-osiris">' + lang('Add new module', 'Neues Modul anlegen') + '</a></tr></td>')
+                SUGGEST.append('<tr><td colspan="3"><a href="' + ROOTPATH + '/teaching#add-teaching" class="btn osiris">' + lang('Add new module', 'Neues Modul anlegen') + '</a></tr></td>')
                 window.location.replace('#teaching-select')
             } else {
                 teaching.forEach((j) => {
@@ -1782,7 +1782,7 @@ function displayPubMed(ids) {
                 tr.append(td)
                 tr.append(`
                     <td>
-                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn btn-link btn-large text-primary"><i class="ph ph-plus"></i></a>
+                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn link large text-primary"><i class="ph ph-plus"></i></a>
                     </td>
                     `)
                 table.append(tr)

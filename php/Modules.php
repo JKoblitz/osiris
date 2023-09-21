@@ -517,7 +517,7 @@ class Modules
                 <div class="data-module col-12" data-module="author-table">
                     <label for="authors" class="<?= $required ?>"><?= lang('Author(s)', 'Autor(en)') ?></label>
                     <div class="module p-0">
-                        <table class="table table-simple table-sm">
+                        <table class="table simple small">
                             <thead>
                                 <tr>
                                     <th><label for="user">Username</label></th>
@@ -565,7 +565,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i></button>
+                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -652,7 +652,7 @@ class Modules
                 <div class="data-module col-12" data-module="supervisor">
                     <label for="supervisor" class="<?= $required ?>"><?= lang('Supervisor', 'Betreuer_in') ?></label>
                     <div class="module p-0">
-                        <table class="table table-simple table-sm">
+                        <table class="table simple small">
                             <thead>
                                 <tr>
 
@@ -662,7 +662,7 @@ class Modules
                                     <th>Username</th>
                                     <th><?= lang('SWS', 'Anteil in SWS') ?></th>
                                     <th>
-                                        <a href="#sws-calc" class="btn btn-link"><i class="ph ph-regular ph-calculator"></i></a>
+                                        <a href="#sws-calc" class="btn link"><i class="ph ph-calculator"></i></a>
                                     </th>
                                 </tr>
                             </thead>
@@ -697,7 +697,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addSupervisorRow()"><i class="ph ph-regular ph-plus"></i></button>
+                                        <button class="btn text-primary" type="button" onclick="addSupervisorRow()"><i class="ph ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -803,20 +803,20 @@ class Modules
                         </div>
                         <div class="p-10 bg-light border-top d-flex">
 
-                            <div class="input-group input-group-sm d-inline-flex w-auto">
+                            <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
-                                        <i class="ph ph-regular ph-plus"></i>
+                                    <button class="btn primary h-full" type="button" onclick="addAuthor(event);">
+                                        <i class="ph ph-plus"></i>
                                     </button>
                                 </div>
                             </div>
 
                             <div class="ml-auto" id="author-numbers">
                                 <label for="first-authors"><?= lang('Number of first authors:', 'Anzahl der Erstautoren:') ?></label>
-                                <input type="number" name="values[first_authors]" id="first-authors" value="<?= $this->first ?>" class="form-control form-control-sm w-50 d-inline-block mr-10" autocomplete="off">
+                                <input type="number" name="values[first_authors]" id="first-authors" value="<?= $this->first ?>" class="form-control sm w-50 d-inline-block mr-10" autocomplete="off">
                                 <label for="last-authors"><?= lang('last authors:', 'Letztautoren:') ?></label>
-                                <input type="number" name="values[last_authors]" id="last-authors" value="<?= $this->last ?>" class="form-control form-control-sm w-50 d-inline-block" autocomplete="off">
+                                <input type="number" name="values[last_authors]" id="last-authors" value="<?= $this->last ?>" class="form-control sm w-50 d-inline-block" autocomplete="off">
                             </div>
                         </div>
 
@@ -824,7 +824,7 @@ class Modules
                     <small class="text-muted">
                         <?= lang('Note: A detailed author editor is available after adding the activity.', 'Anmerkung: Ein detaillierter Autoreneditor ist verfügbar, nachdem der Datensatz hinzugefügt wurde.') ?>
                     </small>
-                    <div class="alert alert-danger mb-20 affiliation-warning" style="display: none;">
+                    <div class="alert danger mb-20 affiliation-warning" style="display: none;">
                         <h5 class="title">
                             <i class="ph ph-warning-circle"></i>
                             <?= lang("Attention: No affiliated authors added.", 'Achtung: Keine affilierten Autoren angegeben.') ?>
@@ -973,7 +973,7 @@ class Modules
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>
                         <!-- <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty if only one day', 'Ende leer lassen, falls es nur ein Tag ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span> -->
-                        <button class="btn btn-sm" id="daterange-toggle-btn" type="button" onclick="rebuild_datepicker(this);"><?= lang('Multiple days', 'Mehrtägig') ?></button>
+                        <button class="btn small" id="daterange-toggle-btn" type="button" onclick="rebuild_datepicker(this);"><?= lang('Multiple days', 'Mehrtägig') ?></button>
 
                     </label>
                     <div class="input-group" id="date-range-picker">
@@ -1048,7 +1048,7 @@ class Modules
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitraum") ?>
-                        <button class="btn btn-sm" id="ongoing-toggle-btn" type="button" onclick="rebuild_ongoing_datepicker(this);">
+                        <button class="btn small" id="ongoing-toggle-btn" type="button" onclick="rebuild_ongoing_datepicker(this);">
                             <?= lang('Ongoing', 'Fortlaufend') ?>
                         </button>
 
@@ -1230,7 +1230,7 @@ class Modules
                     </a>
                     <label for="journal" class="element-cat <?= $required ?>">Journal</label>
                     <a href="#journal-select" id="journal-field" class="module">
-                        <!-- <a class="btn btn-link" ><i class="ph ph-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
+                        <!-- <a class="btn link" ><i class="ph ph-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
                         <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
 
                         <div id="selected-journal">
@@ -1365,11 +1365,11 @@ class Modules
                             <?= $this->editors ?>
                         </div>
                         <div class="p-10 bg-light border-top d-flex">
-                            <div class="input-group input-group-sm d-inline-flex w-auto">
+                            <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add editor ...', 'Füge Editor hinzu ...') ?>" onkeypress="addAuthor(event, true);" id="add-editor" list="scientist-list">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event, true);">
-                                        <i class="ph ph-regular ph-plus"></i>
+                                    <button class="btn primary h-full" type="button" onclick="addAuthor(event, true);">
+                                        <i class="ph ph-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -1542,7 +1542,7 @@ class Modules
 
             default:
             ?>
-                <div class="data-module alert alert-danger col-12">
+                <div class="data-module alert danger col-12">
                     <?= lang('Module ' . $module . ' is not defined.', 'Modul ' . $module . ' existiert nicht.') ?>
                 </div>
 <?php

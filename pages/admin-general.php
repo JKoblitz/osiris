@@ -42,8 +42,8 @@ if ($N > 0) {
 ?>
 
 
-<div class="btn-bar">
-    <a href="<?= ROOTPATH ?>/admin/general" class="btn active btn-primary"><?= lang('General', 'Allgemein') ?></a>
+<div class="bar">
+    <a href="<?= ROOTPATH ?>/admin/general" class="btn active primary"><?= lang('General', 'Allgemein') ?></a>
     <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
     <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
 </div>
@@ -51,7 +51,7 @@ if ($N > 0) {
 <form action="#" method="post" id="modules-form" enctype="multipart/form-data">
 
 
-    <div class="box box-success">
+    <div class="box success">
             <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
 
         <div class="content">
@@ -110,7 +110,7 @@ if ($N > 0) {
                 </div>
             </div>
 
-            <button class="btn btn-success">
+            <button class="btn success">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>
@@ -125,7 +125,7 @@ if ($N > 0) {
 </form>
 
 
-<div class="box box-danger">
+<div class="box danger">
     <h2 class="header">
         <?= lang('Export/Import Settings', 'Exportiere und importiere Einstellungen') ?>
     </h2>
@@ -139,13 +139,13 @@ if ($N > 0) {
                 <input type="file" id="settings-input" name="settings" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                 <label for="settings-input"><?= lang('Upload settings (as JSON)', 'Lade Einstellungen hoch (als JSON)') ?></label>
             </div>
-            <button class="btn btn-danger">Upload & Replace</button>
+            <button class="btn danger">Upload & Replace</button>
         </form>
     </div>
     <hr>
     <div class="content">
         <form action="<?= ROOTPATH ?>/reset-settings" method="post">
-            <button class="btn btn-danger">
+            <button class="btn danger">
                 <?= lang('Reset all settings to the default value.', 'Setze alle Einstellungen auf den Standardwert zurück.') ?>
             </button>
         </form>

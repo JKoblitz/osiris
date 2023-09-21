@@ -205,8 +205,8 @@
                     <canvas id="chart-<?= $type ?>"></canvas>
 
                     <div class="mt-5 text-right">
-                        <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn btn-sm">
-                            <i class="ph ph-regular ph-plus"></i>
+                        <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn small">
+                            <i class="ph ph-plus"></i>
                             <?= lang('Add new', 'Neu anlegen') ?>
                         </a>
                     </div>
@@ -247,7 +247,7 @@
 ?>
 
 
-<a href="<?= ROOTPATH ?>/activities" class="btn btn-select bg-white mr-20">
-    <i class="ph ph-regular ph-book-bookmark text-danger"></i>
+<a href="<?= ROOTPATH ?>/activities" class="btn select bg-white mr-20">
+    <i class="ph ph-book-bookmark text-danger"></i>
     <?= lang('View all activites', 'Zeige alle Aktivitäten') ?>
 </a>

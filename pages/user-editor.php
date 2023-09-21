@@ -17,7 +17,7 @@
 ?>
 
 <h1>
-    <i class="ph ph-regular ph-student"></i>
+    <i class="ph ph-student"></i>
     <?= $data['name'] ?>
 </h1>
 
@@ -71,7 +71,7 @@
         </div>
         <div class="p-10 pt-0">
             <?php foreach ($names as $n) { ?>
-                <div class="input-group input-group-sm d-inline-flex w-auto">
+                <div class="input-group sm d-inline-flex w-auto">
                     <input type="text" name="values[names][]" value="<?= $n ?>" required>
                     <div class="input-group-append">
                         <a class="btn" onclick="$(this).closest('.input-group').remove();">×</a>
@@ -79,8 +79,8 @@
                 </div>
             <?php } ?>
 
-            <button class="btn btn-primary btn-sm ml-10" type="button" onclick="addName(event, this);">
-                <i class="ph ph-regular ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
+            <button class="btn primary sm ml-10" type="button" onclick="addName(event, this);">
+                <i class="ph ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
             </button>
         </div>
 
@@ -193,7 +193,7 @@
 
     <?php if ($data['username'] == $_SESSION['username'] || $USER['is_admin']) { ?>
 
-        <div class="alert alert-signal mb-20">
+        <div class="alert signal mb-20">
             <div class="title">
                 <?= lang('Profile preferences', 'Profil-Einstellungen') ?>
             </div>
@@ -254,7 +254,7 @@
             </div>
         </div>
 
-        <div class="alert alert-danger mb-20">
+        <div class="alert danger mb-20">
             <div class="title">
                 <?= lang('Transfer the maintenance of your profile to someone else:', 'Übertrage die Pflege deines Profils an jemand anderes:') ?>
             </div>
@@ -278,14 +278,14 @@
 
 
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn primary">
         Update
     </button>
 </form>
 
 <script>
     function addName(evt, el) {
-        var group = $('<div class="input-group input-group-sm d-inline-flex w-auto"> ')
+        var group = $('<div class="input-group sm d-inline-flex w-auto"> ')
         group.append('<input type="text" name="values[names][]" value="" required>')
         // var input = $()
         var btn = $('<a class="btn">')

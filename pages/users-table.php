@@ -17,7 +17,7 @@
 ?>
 
 <h1 class="mt-0">
-    <i class="ph ph-regular ph-student"></i>
+    <i class="ph ph-student"></i>
     <?= lang('Users', 'Nutzer:innen') ?>
 </h1>
 <!-- <p class="text-muted">
@@ -116,7 +116,7 @@
                     ?></td>
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
-                        <btn class="btn btn-link" type="button" onclick="editUser('<?= $username ?>')">
+                        <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
                             <i class="ph-fill ph-note-pencil"></i>
                         </btn>
                     </td>
@@ -145,8 +145,8 @@
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });

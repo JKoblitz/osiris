@@ -26,7 +26,7 @@ $selectedUser = $osiris->persons->findone(['username' => $scientist]);
 
 
 <h1>
-    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+    <i class="ph ph-graph" aria-hidden="true"></i>
     <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
 </h1>
 
@@ -39,7 +39,7 @@ $selectedUser = $osiris->persons->findone(['username' => $scientist]);
             <?php } ?>
         </select>
         <div class="input-group-append">
-            <button class="btn btn-primary" type="submit">Select</button>
+            <button class="btn primary" type="submit">Select</button>
         </div>
     </div>
 </form>

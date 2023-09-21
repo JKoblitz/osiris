@@ -35,7 +35,7 @@ try {
 </h1>
 
 
-<div class="box box-danger">
+<div class="box danger">
     <div class="content">
         <p class="text-danger">
             Der Nutzer ist noch nicht vollständig angelegt. Bitte lassen Sie das folgende Formular ausfüllen, um den Vorgang abzuschließen:
@@ -56,20 +56,20 @@ try {
         <p>
             Es ist zurzeit kein Nutzer verknüpft.
         </p>
-        <button class="btn btn-signal">Nutzer verknüpfen</button>
+        <button class="btn signal">Nutzer verknüpfen</button>
     </div>
 </div>
 
 
 
-<div class="box box-success">
+<div class="box success">
 
     <div class="content">
         <h4 class="title mb-0">
             Formulardaten
         </h4>
     </div>
-    <table class="table table-simple">
+    <table class="table simple">
 
         <tr>
             <th class="w-300"><?= lang('Title', 'Titel') ?></th>
@@ -198,20 +198,20 @@ try {
     </table>
 
     <div class="content">
-        <a href="<?= ROOTPATH ?>/guests/edit/<?= $id ?>" class="btn btn-success"><?= lang('Edit information', 'Formular bearbeiten') ?></a>
+        <a href="<?= ROOTPATH ?>/guests/edit/<?= $id ?>" class="btn success"><?= lang('Edit information', 'Formular bearbeiten') ?></a>
     </div>
 </div>
 
 
 
 
-<div class="box box-muted">
+<div class="box muted">
     <div class="content">
         <h4 class="title mb-0">
             Hinterlegte Dokumente
         </h4>
 
-        <table class="table table-simple">
+        <table class="table simple">
             <tbody>
                 <tr>
                     <td>
@@ -220,12 +220,12 @@ try {
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-muted">Dokument hochladen</button>
+        <button class="btn muted">Dokument hochladen</button>
     </div>
 </div>
 
 
-<div class="box box-primary">
+<div class="box primary">
     <div class="content">
         <h4 class="title mb-0">
             Zugangschips
@@ -234,7 +234,7 @@ try {
             Die Person hat keinen Zugangschip
         </p>
 
-        <button class="btn btn-primary">Chip hinterlegen</button>
+        <button class="btn primary">Chip hinterlegen</button>
 
     </div>
 </div>

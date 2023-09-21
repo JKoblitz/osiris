@@ -37,11 +37,11 @@ $copy = $copy ?? false;
 $formaction = ROOTPATH . "/";
 if (!empty($form) && isset($form['_id']) && !$copy) {
     $formaction .= "update/" . $form['_id'];
-    $btntext = '<i class="ph ph-regular ph-check"></i> ' . lang("Update", "Aktualisieren");
+    $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
     $formaction .= "create";
-    $btntext = '<i class="ph ph-regular ph-check"></i> ' . lang("Save", "Speichern");
+    $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/activities/view/*";
 }
 
@@ -109,7 +109,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 </p>
             <?php } ?>
 
-            <a href="<?= ROOTPATH ?>/docs/add-activities#autoren-bearbeiten" class="btn btn-tour" target="_blank"><?= lang('Read more', 'Lies mehr') ?></a>
+            <a href="<?= ROOTPATH ?>/docs/add-activities#autoren-bearbeiten" class="btn tour" target="_blank"><?= lang('Read more', 'Lies mehr') ?></a>
 
         </div>
     </div>
@@ -127,10 +127,10 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             <div class="input-group">
                 <input type="text" class="form-control" onchange="getJournal(this.value)" list="journal-list" id="journal-search" value="<?= $form['journal'] ?? '' ?>">
                 <div class="input-group-append">
-                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="ph ph-regular ph-magnifying-glass"></i></button>
+                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
-            <table class="table table-simple">
+            <table class="table simple">
                 <tbody id="journal-suggest">
 
                 </tbody>
@@ -158,10 +158,10 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             <div class="input-group">
                 <input type="text" class="form-control" onchange="getTeaching(this.value)" list="teaching-list" id="teaching-search" value="<?= $form['module'] ?? '' ?>">
                 <div class="input-group-append">
-                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="ph ph-regular ph-magnifying-glass"></i></button>
+                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
-            <table class="table table-simple">
+            <table class="table simple">
                 <tbody id="teaching-suggest">
 
                 </tbody>
@@ -212,7 +212,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             </div>
             <div class="content">
 
-                <button class="btn btn-osiris" type="button" onclick="calcSWS()"><?= lang('Calculate', 'Berechnen') ?></button>
+                <button class="btn osiris" type="button" onclick="calcSWS()"><?= lang('Calculate', 'Berechnen') ?></button>
 
 
 
@@ -261,19 +261,19 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 
 <div class="content">
-    <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
-        <i class="ph ph-regular ph-question mr-5"></i>
+    <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+        <i class="ph ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a>
     <?php if (empty($form)) { ?>
 
-        <!-- <button class="btn btn-tour float-right" id="tour">
-            <i class="ph ph-regular ph-chat-dots mr-5"></i>
+        <!-- <button class="btn tour float-right" id="tour">
+            <i class="ph ph-chat-dots mr-5"></i>
             <?= lang('Interactive tour', 'Interactive Tour') ?>
         </button> -->
         <!-- Create new activity -->
         <h2 class="mb-0">
-            <i class="ph ph-regular ph-plus-circle"></i>
+            <i class="ph ph-plus-circle"></i>
             <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
         </h2>
 
@@ -285,13 +285,13 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit"><i class="ph ph-regular ph-magnifying-glass"></i></button>
+                        <button class="btn primary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
                     </div>
                 </div>
             </div>
         </form>
 
-        <div class="alert alert-danger" id="id-exists" style="display:none;">
+        <div class="alert danger" id="id-exists" style="display:none;">
             <h4 class="title">
                 <?= lang('Duplicate!', 'Duplikat!') ?>
             </h4>
@@ -308,7 +308,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <div class="my-20 select-btns" id="select-btns">
             <?php
             foreach ($Settings->getActivities() as $id => $a) { ?>
-                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 btn-select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
+                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
             <?php } ?>
         </div>
 
@@ -338,7 +338,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <div class="mb-20 select-btns" id="select-btns" style="display:none">
             <?php
             foreach ($Settings->getActivities() as $id => $a) { ?>
-                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 btn-select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
+                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
             <?php }
             ?>
         </div>
@@ -347,12 +347,12 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 
 
-    <div class="box box-primary add-form" style="display:none" id="publication-form">
+    <div class="box primary add-form" style="display:none" id="publication-form">
         <div class="content">
-            <button class="btn btn-osiris btn-sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
+            <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
 
             <?php if (!empty($form) && isset($_GET['epub'])) { ?>
-                <div class="alert alert-signal mb-20">
+                <div class="alert signal mb-20">
                     <div class="title">
                         <?= lang('Please review this entry and mark it as "Not Epub".', 'Bitte überprüfe diesen Eintrag und markiere ihn als "nicht Epub".') ?>
                     </div>
@@ -386,7 +386,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="mb-20 select-btns" data-type="<?= $t ?>">
                     <?php foreach ($subtypes as $st) {
                     ?>
-                        <button onclick="togglePubType('<?= $st ?>')" class="btn btn-select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
+                        <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
                     <?php } ?>
                 </div>
 
@@ -433,7 +433,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="form-group">
                         <a onclick="$(this).next().toggleClass('hidden')">
                             <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
-                                <i class="ph ph-regular ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
+                                <i class="ph ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
                             </label>
                         </a>
                         <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {
@@ -449,7 +449,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 <?php } ?>
                 <?php if (!$copy && !empty($form) && (count($form['authors']) > 1 || ($form['authors'][0]['user'] ?? '') != $_SESSION['username'])) { ?>
-                    <div class="alert alert-signal p-10 mb-10">
+                    <div class="alert signal p-10 mb-10">
                         <div class="title">
                             <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>
                         </div>
@@ -473,7 +473,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <?php } ?>
 
 
-                <div class="alert alert-signal mb-10" id="doublet-found" style="display:none;">
+                <div class="alert signal mb-10" id="doublet-found" style="display:none;">
                     <h4 class="title">
                         <i class="ph ph-warning text-osiris"></i>
                         <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
@@ -483,7 +483,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </p>
                 </div>
 
-                <button class="btn btn-primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
+                <button class="btn primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 
             </form>
         </div>

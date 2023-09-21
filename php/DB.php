@@ -259,7 +259,7 @@ class DB
      */
     public function getNameFromId($user)
     {
-        $USER = $this->getUser($user, true);
+        $USER = $this->getPerson($user, true);
         if (empty($USER['first'])) return $USER['last'];
         return $USER['last'] . ', ' . $USER['first'];
     }
@@ -431,6 +431,7 @@ class DB
      */
     public static function isUserActivity($doc, $user)
     {
+        if (isset($doc['created_by']) && $doc['created_by'] == $user) return true;
         if (isset($doc['user']) && $doc['user'] == $user) return true;
         foreach (['authors', 'editors'] as $role) {
             if (!isset($doc[$role])) continue;

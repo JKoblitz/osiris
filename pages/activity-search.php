@@ -25,23 +25,23 @@ $Format = new Document(true);
 
 <div class="content">
     <div class="btn-group float-right">
-        <a href="#close-modal" class="btn btn-osiris active">
-            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
+        <a href="#close-modal" class="btn osiris active">
+            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
-        <a href="<?= ROOTPATH ?>/search/user" class="btn btn-osiris">
-            <i class="ph ph-regular ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
+        <a href="<?= ROOTPATH ?>/search/user" class="btn osiris">
+            <i class="ph ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
         </a>
     </div>
 
     <h1>
-        <i class="ph ph-regular ph-magnifying-glass-plus text-osiris"></i>
+        <i class="ph ph-magnifying-glass-plus text-osiris"></i>
         <?= lang('Advanced activity search', 'Erweiterte Aktivitäten-Suche') ?>
     </h1>
     <!-- <form action="#" method="get"> -->
 
     <div id="builder"></div>
 
-    <button class="btn btn-osiris" onclick="getResult()"><i class="ph ph-regular ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
+    <button class="btn osiris" onclick="getResult()"><i class="ph ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
 
     <pre id="result" class="code my-20"></pre>
 
@@ -410,10 +410,10 @@ $subtypes = flatten($subtypes);
 
             'lang_code': lang('en', 'de'),
             'icons': {
-                add_group: 'ph ph-regular ph-plus-circle',
-                add_rule: 'ph ph-regular ph-plus',
-                remove_group: 'ph ph-regular ph-x-circle',
-                remove_rule: 'ph ph-regular ph-x',
+                add_group: 'ph ph-plus-circle',
+                add_rule: 'ph ph-plus',
+                remove_group: 'ph ph-x-circle',
+                remove_rule: 'ph ph-x',
                 error: 'ph-fill ph-warning',
             },
             allow_empty: true,
@@ -427,8 +427,8 @@ $subtypes = flatten($subtypes);
             sPagePrevious: "direction ",
             sPageNext: "direction ",
             sPageButtonActive: "active ",
-            sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control form-control-sm d-inline w-auto",
+            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+            sLengthSelect: "form-control sm d-inline w-auto",
             sInfo: "float-right text-muted",
             sLength: "float-right"
         });
@@ -486,7 +486,7 @@ $subtypes = flatten($subtypes);
                         "targets": 2,
                         "data": "name",
                         "render": function(data, type, full, meta) {
-                            return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-regular ph-arrow-fat-line-right"></a>`;
+                            return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-arrow-fat-line-right"></a>`;
                         }
                     },
                 ]

@@ -44,7 +44,7 @@
     </div>
 
 
-    <input class="btn btn-primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
+    <input class="btn primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
 
     <?php
     if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
@@ -57,7 +57,7 @@
     if ($Settings->affiliation === 'LISI') {
     ?>
 
-        <div class="alert alert-signal mt-20">
+        <div class="alert signal mt-20">
             <div class="title">
                 Demo
             </div>

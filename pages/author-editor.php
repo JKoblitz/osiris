@@ -27,7 +27,7 @@
 <div class="content">
 
     <h1>
-        <i class="ph ph-regular ph-users"></i>
+        <i class="ph ph-users"></i>
         <?php if ($role == 'authors') { ?>
         <?= lang('Edit authors', 'Bearbeite die Autoren') ?>
         <?php } else { ?>
@@ -92,14 +92,14 @@
                 <tr id="last-row">
                     <td></td>
                     <td colspan="6">
-                        <button class="btn" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i> <?= lang('Add author', 'Autor hinzufügen') ?></button>
+                        <button class="btn" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i> <?= lang('Add author', 'Autor hinzufügen') ?></button>
                     </td>
                 </tr>
             </tfoot>
 
         </table>
-        <button class="btn btn-primary mt-20">
-            <i class="ph ph-regular ph-check"></i>
+        <button class="btn primary mt-20">
+            <i class="ph ph-check"></i>
             <?= lang('Submit', 'Bestätigen') ?>
         </button>
     </form>
