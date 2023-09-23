@@ -9,6 +9,7 @@ class Settings
     public $departments = array();
     public $activities = array();
     public $errors = array();
+    public $general = array();
 
     function __construct()
     {
@@ -46,6 +47,7 @@ class Settings
         $this->affiliation_details = $this->settings['affiliation'];
 
         $this->startyear = intval($this->settings['startyear'] ?? 2017);
+        $this->general = $this->settings['general'] ?? [];
 
         if (empty($this->settings['departments'] ?? null)) {
             $this->errors[] = ('Departments cannot be empty.');
@@ -80,6 +82,10 @@ class Settings
             }
             $this->activities[$val['id']] = $val;
         }
+    }
+
+    function hasFeatureDisabled($feature){
+        return($this->general['disable-'.$feature] ?? 'false') == 'true';
     }
 
     function getActivities($type = null)

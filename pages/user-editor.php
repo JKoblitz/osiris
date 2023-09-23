@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to edit user information
  * 
@@ -29,7 +30,7 @@
         <b>Username:</b> <?= $data['username'] ?? '' ?>
     </p>
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm-2">
             <label for="academic_title">Title</label>
             <select name="values[academic_title]" id="academic_title" class="form-control">
@@ -79,7 +80,7 @@
                 </div>
             <?php } ?>
 
-            <button class="btn primary sm ml-10" type="button" onclick="addName(event, this);">
+            <button class="btn primary small ml-10" type="button" onclick="addName(event, this);">
                 <i class="ph ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
             </button>
         </div>
@@ -112,7 +113,7 @@
     </div>
 
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm">
             <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
             <select name="values[dept]" id="dept" class="form-control">
@@ -134,7 +135,7 @@
 
     </div>
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
 
         <div class="col-sm">
             <label for="orcid">ORCID</label>
@@ -146,7 +147,7 @@
         </div>
     </div>
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm">
             <label for="researchgate">ResearchGate Handle</label>
             <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
@@ -215,43 +216,56 @@
             </div>
 
 
+            <?php
+            if (!$Settings->hasFeatureDisabled('coins')) {
+            ?>
 
-            <div class="mt-10">
-                <span><?= lang('Coin visibility', 'Sichtbarkeit der Coins') ?>:</span>
-                <?php
-                $show_coins = $data['show_coins'] ?? 'none';
-                ?>
+                <div class="mt-10">
+                    <span><?= lang('Coin visibility', 'Sichtbarkeit der Coins') ?>:</span>
+                    <?php
+                    $show_coins = $data['show_coins'] ?? 'none';
+                    ?>
 
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[show_coins]" id="show_coins-true" value="none" <?= $show_coins == 'none' ? 'checked' : '' ?>>
-                    <label for="show_coins-true"><?= lang('For nobody', 'Für niemanden') ?></label>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[show_coins]" id="show_coins-true" value="none" <?= $show_coins == 'none' ? 'checked' : '' ?>>
+                        <label for="show_coins-true"><?= lang('For nobody', 'Für niemanden') ?></label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[show_coins]" id="show_coins-myself" value="myself" <?= $show_coins == 'myself' ? 'checked' : '' ?>>
+                        <label for="show_coins-myself"><?= lang('For myself', 'Für mich') ?></label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[show_coins]" id="show_coins-all" value="all" <?= $show_coins == 'all' ? 'checked' : '' ?>>
+                        <label for="show_coins-all"><?= lang('For all', 'Für jeden') ?></label>
+                    </div>
                 </div>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[show_coins]" id="show_coins-myself" value="myself" <?= $show_coins == 'myself' ? 'checked' : '' ?>>
-                    <label for="show_coins-myself"><?= lang('For myself', 'Für mich') ?></label>
-                </div>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[show_coins]" id="show_coins-all" value="all" <?= $show_coins == 'all' ? 'checked' : '' ?>>
-                    <label for="show_coins-all"><?= lang('For all', 'Für jeden') ?></label>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
 
 
-            <div class="mt-10">
-                <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>
-                <?php
-                $hide_achievements = $data['hide_achievements'] ?? false;
-                ?>
 
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[hide_achievements]" id="hide_achievements-false" value="false" <?= $hide_achievements ? '' : 'checked' ?>>
-                    <label for="hide_achievements-false"><?= lang('Yes', 'Ja') ?></label>
+            <?php
+            if (!$Settings->hasFeatureDisabled('achievements')) {
+            ?>
+                <div class="mt-10">
+                    <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>
+                    <?php
+                    $hide_achievements = $data['hide_achievements'] ?? false;
+                    ?>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[hide_achievements]" id="hide_achievements-false" value="false" <?= $hide_achievements ? '' : 'checked' ?>>
+                        <label for="hide_achievements-false"><?= lang('Yes', 'Ja') ?></label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[hide_achievements]" id="hide_achievements-true" value="true" <?= $hide_achievements ? 'checked' : '' ?>>
+                        <label for="hide_achievements-true"><?= lang('No', 'Nein') ?></label>
+                    </div>
                 </div>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[hide_achievements]" id="hide_achievements-true" value="true" <?= $hide_achievements ? 'checked' : '' ?>>
-                    <label for="hide_achievements-true"><?= lang('No', 'Nein') ?></label>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
         </div>
 
         <div class="alert danger mb-20">
@@ -264,6 +278,11 @@
 
                 <input type="text" list="user-list" name="values[maintenance]" id="maintenance" class="form-control" value="<?= $data['maintenance'] ?? '' ?>">
             </div>
+
+            <p class="m-0 text-danger">
+                <?=lang('Warning: this person gets full access to your OSIRIS profile and can edit in your name.', 
+                'Warnung: diese Person erhält vollen Zugriff auf dein OSIRIS-Profil und kann in deinem Namen editieren.')?>
+            </p>
 
             <datalist id="user-list">
                 <?php

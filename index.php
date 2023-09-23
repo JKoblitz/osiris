@@ -1114,7 +1114,7 @@ Route::get('/admin/(activities|departments|general)', function ($page) {
     include_once BASEPATH . "/php/init.php";
     if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
     $breadcrumb = [
-        ['name' => lang("Admin Dashboard $page")]
+        ['name' => lang("Admin Panel $page")]
     ];
 
     include BASEPATH . "/header.php";
@@ -1129,7 +1129,7 @@ Route::post('/admin/(activities|departments|general)', function ($page) {
 
     $json = $Settings->settings;
 
-    foreach (['activities', 'departments', 'affiliation', 'startyear'] as $key) {
+    foreach (['activities', 'departments', 'affiliation', 'startyear', 'general'] as $key) {
         if (isset($_POST[$key])) {
             $json[$key] = $_POST[$key];
         }

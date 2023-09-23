@@ -981,3 +981,31 @@ a.module:hover {
         color: black;
     }
 }
+
+
+
+.pills {
+    background: white;
+    padding: 1rem;
+    border-radius: 1.8rem;
+    display: inline-block;
+}
+
+.pills .btn {
+    border: none;
+    border-radius: 1rem;
+    margin: .2rem;
+    color: var(--primary-color);
+    background-color: white;
+    box-shadow: none !important;
+}
+
+.pills .btn:hover {
+    background-color: var(--primary-color-20);
+}
+
+.pills .btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    /* box-shadow: none; */
+}

@@ -42,17 +42,17 @@ if ($N > 0) {
 ?>
 
 
-<div class="bar">
-    <a href="<?= ROOTPATH ?>/admin/general" class="btn active primary"><?= lang('General', 'Allgemein') ?></a>
+<nav class="pills">
+    <a href="<?= ROOTPATH ?>/admin/general" class="btn active"><?= lang('General', 'Allgemein') ?></a>
     <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
     <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
-</div>
+</nav>
 
 <form action="#" method="post" id="modules-form" enctype="multipart/form-data">
 
 
     <div class="box success">
-            <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
+        <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
 
         <div class="content">
             <div class="form-group">
@@ -65,6 +65,69 @@ if ($N > 0) {
                     ) ?>
                 </span>
             </div>
+
+
+            <div class="form-group">
+                <span>
+                <?= lang('Disable coins globally', 'Coins global ausschalten') ?>
+                </span>
+                <?php
+                    $disable_coins = $Settings->hasFeatureDisabled('coins');
+                ?>
+                
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" id="disable-coins-true" value="true" name="general[disable-coins]" <?= $disable_coins ? 'checked' : '' ?>>
+                    <label for="disable-coins-true">ja</label>
+                </div>
+                
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" id="disable-coins-false" value="false" name="general[disable-coins]" <?= $disable_coins ? '' : 'checked' ?>>
+                    <label for="disable-coins-false">nein</label>
+                </div>
+            </div>
+            
+            
+            <div class="form-group">
+                <span>
+                <?= lang('Disable achievements globally', 'Errungenschaften global ausschalten') ?>
+                </span>
+                <?php
+                    $disable_achievements = $Settings->hasFeatureDisabled('achievements');
+                ?>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" id="disable-achievements-true" value="true" name="general[disable-achievements]" <?= $disable_achievements ? 'checked' : '' ?>>
+                    <label for="disable-achievements-true">ja</label>
+                </div>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" id="disable-achievements-false" value="false" name="general[disable-achievements]" <?= $disable_achievements ? '' : 'checked' ?>>
+                    <label for="disable-achievements-false">nein</label>
+                </div>
+            </div>
+
+            
+            <div class="form-group">
+                <span>
+                <?= lang('Disable user profile metrics globally', 'Metriken im Nutzerprofil global ausschalten') ?>
+                </span>
+                <?php
+                    $disable_user_metrics = $Settings->hasFeatureDisabled('user-metrics');
+                ?>
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" id="disable-user-metrics-true" value="true" name="general[disable-user-metrics]" <?= $disable_user_metrics ? 'checked' : '' ?>>
+                    <label for="disable-user-metrics-true">ja</label>
+                </div>
+
+                <div class="custom-radio d-inline-block ml-10">
+                    <input type="radio" id="disable-user-metrics-false" value="false" name="general[disable-user-metrics]" <?= $disable_user_metrics ? '' : 'checked' ?>>
+                    <label for="disable-user-metrics-false">nein</label>
+                </div>
+
+                <span class="font-size-12 d-block text-muted">
+                    Wenn diese Funktion ausgeschaltet wird, sind Nutzermetriken (Graphen) nur noch auf der eigenen Profilseite sichtbar.
+                </span>
+            </div>
+
         </div>
         <hr>
 

@@ -1,6 +1,7 @@
 <?php
 
 require_once BASEPATH . '/php/Settings.php';
+global $Settings;
 $Settings = new Settings();
 
 function printMsg($msg = null, $type = 'info', $header = "default")

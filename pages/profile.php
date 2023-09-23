@@ -51,8 +51,6 @@
         font-weight: 500;
         font-size: 1.2rem;
     }
-
-   
 </style>
 
 <?php
@@ -171,30 +169,35 @@ foreach ($activities as $doc) {
 
 
 // $showcoins = (!($scientist['hide_coins'] ?? true));
-$showcoins = ($scientist['show_coins'] ?? 'no');
-if ($showcoins == 'all') {
-    $showcoins = true;
-} elseif ($showcoins == 'myself' && $currentuser) {
-    $showcoins = true;
-} else {
+if ($Settings->hasFeatureDisabled('coins')) {
     $showcoins = false;
+} else {
+    $showcoins = ($scientist['show_coins'] ?? 'no');
+    if ($showcoins == 'all') {
+        $showcoins = true;
+    } elseif ($showcoins == 'myself' && $currentuser) {
+        $showcoins = true;
+    } else {
+        $showcoins = false;
+    }
 }
 ?>
 
-
-
-<div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content w-600 mw-full">
-            <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </a>
-            <?php
-            include BASEPATH . "/components/what-are-coins.php";
-            ?>
+<?php if ($showcoins != 'no') { ?>
+    <div class="modal modal-lg" id="coins" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content w-600 mw-full">
+                <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+                <?php
+                include BASEPATH . "/components/what-are-coins.php";
+                ?>
+            </div>
         </div>
     </div>
-</div>
+<?php } ?>
+
 <?php
 
 $img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
@@ -326,17 +329,20 @@ if ($currentuser) { ?>
 
         </div>
 
-        <?php if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false) && !($USER['hide_achievements'] ?? false)) {
-        ?>
-            <div class="achievements text-right" style="max-width: 35rem;">
-                <h5 class="m-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
-
-                <?php
-                $Achievement->widget();
-                ?>
-
-            </div>
         <?php
+        if (!$Settings->hasFeatureDisabled('achievements')) {
+            if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false) && !($USER['hide_achievements'] ?? false)) {
+        ?>
+                <div class="achievements text-right" style="max-width: 35rem;">
+                    <h5 class="m-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
+
+                    <?php
+                    $Achievement->widget();
+                    ?>
+
+                </div>
+        <?php
+            }
         } ?>
     </div>
 
@@ -743,7 +749,10 @@ if ($currentuser) { ?>
             </div>
         <?php } ?>
 
-        <?php if (!empty($impacts)) { ?>
+
+
+
+        <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($impacts)) { ?>
             <div class="profile-widget col-lg-6">
                 <div class="box h-full">
                     <div class="chart content text-center">
@@ -872,7 +881,7 @@ if ($currentuser) { ?>
             </div>
         <?php } ?>
 
-        <?php if (array_sum($authors) > 0) { ?>
+        <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && array_sum($authors) > 0) { ?>
             <div class="profile-widget col-md-6 col-lg-3">
                 <div class="box h-full">
                     <div class="chart content text-center">
@@ -954,7 +963,7 @@ if ($currentuser) { ?>
             </div>
         <?php } ?>
 
-        <?php if ($showcoins) { ?>
+        <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && $showcoins) { ?>
             <div class="profile-widget col-md-6 col-lg-3">
                 <div class="box h-full">
                     <div class="chart content text-center">
@@ -1042,7 +1051,7 @@ if ($currentuser) { ?>
             </div>
         <?php } ?>
 
-        <?php if (!empty($stats)) { ?>
+        <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($stats)) { ?>
             <div class="profile-widget col-lg-12 col-xl-6">
                 <div class="box h-full">
                     <div class="chart content">

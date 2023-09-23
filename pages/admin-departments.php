@@ -74,9 +74,9 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
 </div>
 
 
-<div class="bar">
+<div class="pills">
     <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/departments" class="btn active primary"><?= lang('Departments', 'Abteilungen') ?></a>
+    <a href="<?= ROOTPATH ?>/admin/departments" class="btn active"><?= lang('Departments', 'Abteilungen') ?></a>
     <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
 </div>
 

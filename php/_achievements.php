@@ -1,6 +1,6 @@
 <?php
 include_once BASEPATH . "/php/_lom.php";
-include_once BASEPATH . "/php/DB.php";
+include_once BASEPATH . "/php/init.php";
 
 class Achievement
 {
@@ -17,7 +17,7 @@ class Achievement
     private $showcoins = false;
 
 
-    function __construct($DB=null)
+    function __construct($DB = null)
     {
         $this->DB = new DB;
         $this->osiris = $this->DB->db;
@@ -47,19 +47,23 @@ class Achievement
         if (empty($this->userdata)) return false;
 
         // get all user achievements
-        
-        $achieved = $this->osiris->achieved->find(['username'=>$username]);
+
+        $achieved = $this->osiris->achieved->find(['username' => $username]);
 
         // check if user disabled coins
         // $this->showcoins = !($this->userdata['hide_coins'] ?? true);
-
-        $showcoins = ($this->userdata['show_coins'] ?? 'no');
-        if ($showcoins == 'all') {
-            $this->showcoins = true;
-        } elseif ($showcoins == 'myself' && $this->self) {
-            $this->showcoins = true;
+        global $Settings;
+        if ($Settings->hasFeatureDisabled('coins')) {
+            $showcoins = false;
         } else {
-            $this->showcoins = false;
+            $showcoins = ($this->userdata['show_coins'] ?? 'no');
+            if ($showcoins == 'all') {
+                $this->showcoins = true;
+            } elseif ($showcoins == 'myself' && $this->self) {
+                $this->showcoins = true;
+            } else {
+                $this->showcoins = false;
+            }
         }
         if (!$this->showcoins) {
             // do not show coin-associated achievements if the user has disabled coins
@@ -379,7 +383,7 @@ class Achievement
         if (!$this->self || empty($this->new) || empty($this->userac)) return;
         $values = array_values($this->userac);
 
-        $this->osiris->achieved->deleteMany(['username'=> $this->username]);
+        $this->osiris->achieved->deleteMany(['username' => $this->username]);
         $this->osiris->achieved->insertMany($values);
     }
 }

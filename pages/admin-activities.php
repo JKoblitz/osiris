@@ -181,10 +181,10 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
 <div class="row">
     <div class="col-lg-9">
-        <div class="bar">
+        <div class="pills">
             <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
             <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
-            <a href="<?= ROOTPATH ?>/admin/activities" class="btn active primary"><?= lang('Activities', 'Aktivitäten') ?></a>
+            <a href="<?= ROOTPATH ?>/admin/activities" class="btn active"><?= lang('Activities', 'Aktivitäten') ?></a>
         </div>
 
         <form action="#" method="post" id="modules-form" class="">

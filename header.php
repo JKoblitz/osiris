@@ -268,7 +268,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?php if ($USER['is_admin']) { ?>
                         <a href="<?= ROOTPATH ?>/admin/general" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin') ?>">
                             <i class="ph ph-gear" aria-hidden="true"></i>
-                            <?= lang('Admin Dashboard') ?>
+                            <?= lang('Admin Panel') ?>
                         </a>
                     <?php } ?>
 
@@ -441,7 +441,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <h3 class="title">There are errors in your settings:</h3>
                         <?= implode('<br>', $Settings->errors) ?>
                         <br>
-                        Default settings are used. Go to the <a href="<?= ROOTPATH ?>/admin/general">Admin Dashboard</a> to fix this.
+                        Default settings are used. Go to the <a href="<?= ROOTPATH ?>/admin/general">Admin Panel</a> to fix this.
                     </div>
                 <?php
                 }
