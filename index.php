@@ -1666,8 +1666,8 @@ Route::pathNotFound(function ($path) {
     include BASEPATH . "/header.php";
     // $browser = $_SERVER['HTTP_USER_AGENT'];
     // var_dump($browser);
-    // include BASEPATH . "/pages/error.php";
-    echo "Error 404";
+    include BASEPATH . "/pages/error.php";
+    // echo "Error 404";
     include BASEPATH . "/footer.php";
 });
 

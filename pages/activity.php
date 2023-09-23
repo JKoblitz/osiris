@@ -79,7 +79,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     }
 </style>
 
-<div class="box">
+<div class="box mt-0">
     <div class="content">
 
         <div class="float-sm-right">
