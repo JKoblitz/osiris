@@ -488,6 +488,27 @@ Route::get('/projects', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::get('/research-data', function () {
+    include_once BASEPATH . "/php/init.php";
+    $breadcrumb = [
+        ['name' => lang("Research data", "Forschungsdaten")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/research-data.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/research-data/(.*)', function ($name) {
+    include_once BASEPATH . "/php/init.php";
+    $breadcrumb = [
+        ['name' => lang("Research data", "Forschungsdaten"), 'path' => "/research-data"],
+        ['name' => $name]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/research-data-detail.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 
 Route::get('/activities/pubmed-search', function () {
     include_once BASEPATH . "/php/init.php";

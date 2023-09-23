@@ -27,6 +27,15 @@
     }
 }
 
+@media (min-width: 992px) {
+    .row.row-eq-spacing-md:not(.row-eq-spacing-sm):not(.row-eq-spacing) {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: -1rem;
+        margin-right: -1rem;
+    }
+}
+
 
 .ph.ph-edit:before {
     content: '\ec15';

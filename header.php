@@ -315,6 +315,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Projects', 'Projekte') ?>
                     </a>
 
+                    
+                    <a href="<?= ROOTPATH ?>/research-data" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('research-data') ?>">
+                        <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
+                        <?= lang('Research data', 'Forschungsdaten') ?>
+                    </a>
+
 
                     <div class="title">
                         <?= lang('Tools', 'Werkzeuge') ?>

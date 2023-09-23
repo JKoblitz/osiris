@@ -31,7 +31,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <i class="ph ph-smiley"></i>
         <b><?= lang('Thank you!', 'Danke!') ?></b>
         <br>
-        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn">
+        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn primary">
             <i class="ph ph-upload"></i>
             <?= lang('Upload files', 'Dateien hochladen') ?>
         </a>
@@ -51,19 +51,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         padding: 0.5rem 0;
     }
 
-    .btn-toolbar .btn {
-        /* color: var(--color-warm-orange);
-        border-color: var(--color-warm-orange); */
-    }
-
-    .btn-toolbar .btn:hover,
-    .btn-group .btn:hover {
-        color: var(--color-warm-orange);
-        border-color: var(--color-warm-orange);
-        /* 
-        background-color: var(--color-warm-orange); */
-        background-color: var(--signal-color-very-light);
-    }
 
     .table tbody tr[class^="row-"]:hover {
         border-left-width: 5px;
@@ -74,6 +61,9 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         /* height: 100%; */
     }
 
+    .btn-toolbar {
+        margin: 0 0 1rem;
+    }
     .filelink {
         display: block;
         border: 1px solid var(--border-color);
@@ -89,72 +79,73 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     }
 </style>
 
-<div class="box px-20">
+<div class="box">
+    <div class="content">
 
-    <div class="float-md-right">
-        <div class="btn-group pt-20">
-            <button class="btn " onclick="addToCart(this, '<?= $id ?>')">
-                <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
-                <?= lang('Add to cart', 'Für Download sammeln') ?>
-            </button>
-            <div class=" dropdown with-arrow btn-group ">
-                <button class="btn" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
-                    <i class="ph ph-download"></i> Download
-                    <i class="ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
+        <div class="float-sm-right">
+            <div class="btn-group">
+                <button class="btn primary" onclick="addToCart(this, '<?= $id ?>')">
+                    <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
+                    <?= lang('Add to cart', 'Für Download sammeln') ?>
                 </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
-                    <div class="content">
-                        <form action="<?= ROOTPATH ?>/download" method="post">
+                <div class=" dropdown with-arrow btn-group ">
+                    <button class="btn primary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                        <i class="ph ph-download"></i> Download
+                        <i class="ph ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
+                        <div class="content">
+                            <form action="<?= ROOTPATH ?>/download" method="post">
 
-                            <input type="hidden" name="filter[id]" value="<?= $id ?>">
+                                <input type="hidden" name="filter[id]" value="<?= $id ?>">
 
-                            <div class="form-group">
+                                <div class="form-group">
 
-                                <?= lang('Highlight:', 'Hervorheben:') ?>
+                                    <?= lang('Highlight:', 'Hervorheben:') ?>
 
-                                <div class="custom-radio ml-10">
-                                    <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
-                                    <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                                    <div class="custom-radio ml-10">
+                                        <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
+                                        <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                                    </div>
+
+                                    <div class="custom-radio ml-10">
+                                        <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
+                                        <label for="highlight-aoi"><?= $Settings->affiliation ?><?= lang(' Authors', '-Autoren') ?></label>
+                                    </div>
+
+                                    <div class="custom-radio ml-10">
+                                        <input type="radio" name="highlight" id="highlight-none" value="">
+                                        <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
+                                    </div>
+
                                 </div>
 
-                                <div class="custom-radio ml-10">
-                                    <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                                    <label for="highlight-aoi"><?= $Settings->affiliation ?><?= lang(' Authors', '-Autoren') ?></label>
+
+                                <div class="form-group">
+
+                                    <?= lang('File format:', 'Dateiformat:') ?>
+
+                                    <div class="custom-radio ml-10">
+                                        <input type="radio" name="format" id="format-word" value="word" checked="checked">
+                                        <label for="format-word">Word</label>
+                                    </div>
+
+                                    <div class="custom-radio ml-10">
+                                        <input type="radio" name="format" id="format-bibtex" value="bibtex">
+                                        <label for="format-bibtex">BibTex</label>
+                                    </div>
+
                                 </div>
-
-                                <div class="custom-radio ml-10">
-                                    <input type="radio" name="highlight" id="highlight-none" value="">
-                                    <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
-                                </div>
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <?= lang('File format:', 'Dateiformat:') ?>
-
-                                <div class="custom-radio ml-10">
-                                    <input type="radio" name="format" id="format-word" value="word" checked="checked">
-                                    <label for="format-word">Word</label>
-                                </div>
-
-                                <div class="custom-radio ml-10">
-                                    <input type="radio" name="format" id="format-bibtex" value="bibtex">
-                                    <label for="format-bibtex">BibTex</label>
-                                </div>
-
-                            </div>
-                            <button class="btn osiris">Download</button>
-                        </form>
+                                <button class="btn primary">Download</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
-    </div>
 
-    <h2>
+    <h2 class="title">
         <span class='mr-10'><?= $Format->activity_icon(false) ?></span>
         <?= $Format->activity_title() ?>
     </h2>
@@ -171,6 +162,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         ?>
     </p>
 </div>
+    </div>
 
 
 
@@ -182,16 +174,16 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <div class="box">
             <div class="content">
 
-                <div class="btn-toolbar float-md-right">
+                <div class="btn-toolbar float-sm-right">
                     <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
-                        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn mr-5">
+                        <a href="<?= ROOTPATH ?>/activities/files/<?= $id ?>" class="btn primary">
                             <i class="ph ph-upload"></i>
-                            <?= lang('Upload files', 'Dateien hochladen') ?>
+                            <?= lang('Upload', 'Hochladen') ?>
                         </a>
                     <?php } ?>
                 </div>
 
-                <h2><?= lang('Files', 'Dateien') ?></h2>
+                <h2 class="title"><?= lang('Files', 'Dateien') ?></h2>
 
                 <?php if (!empty($doc['files'])) : ?>
                     <?php foreach ($doc['files'] as $file) : ?>
@@ -213,26 +205,25 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
         <div class="box">
             <div class="content">
-<!-- 
-                <div class="btn-toolbar float-md-right">
-                    <a href="#connect" class="btn mr-5">
+
+                <div class="btn-toolbar float-sm-right">
+                    <a href="#connect" class="btn primary mr-5">
                         <i class="ph ph-circles-three-plus"></i>
                         <?= lang("Connect", "Verknüpfen") ?>
                     </a>
-                </div> -->
+                </div>
 
                 <h2 class="title">
                     <?= lang('Research data', 'Forschungsdaten') ?>
                 </h2>
-                <p>coming soon...</p>
-<!-- 
+
                 <?php if (!empty($doc['connections'])) { ?>
                     <?php foreach ($doc['connections'] as $con) { ?>
                         <p>
-                            <b><?= $con['entity'] ?>:</b>
+                            <b class="mr-10"><?= $con['entity'] ?>:</b>
                             <?php if (!empty($con['link'])) { ?>
-                                <a href="<?= $con['link'] ?>" class="badge ">
-                                    <i class="ph ph-link text-primary" style="line-height: 0;"></i>
+                                <a href="<?= $con['link'] ?>" class="badge " target="_blank">
+                                    <i class="ph ph-link text-blue" style="line-height: 0;"></i>
                                     <?= $con['name'] ? $con['name'] : $con['link'] ?>
                                 </a>
                             <?php } else { ?>
@@ -244,7 +235,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php } else { ?>
                     <?= lang('No research data connected.', 'Noch keine Forschungsdaten verknüpft.') ?>
                 <?php } ?>
-             -->
+
             </div>
         </div>
     </div>
@@ -254,30 +245,17 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 <div class="modal" id="connect" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="modal-title">
                 <?= lang('Connect research data', 'Forschungsdaten verknüpfen') ?>
             </h5>
             <div>
-                <form action="#" class="">
-                    <div class="form-row row-eq-spacing">
-                        <div class="col-2">
-                            <label for="entity"><?= lang('Entity', 'Entität') ?></label>
-                            <input type="text" name="entity" class="form-control" placeholder="Strain" required>
-                        </div>
-                        <div class="col">
-                            <label for="name"><?= lang('Name') ?></label>
-                            <input type="text" name="name" class="form-control" placeholder="Lysobacter tolerans DSM 28473">
-                        </div>
-                        <div class="col">
-                            <label for="link"><?= lang('Link') ?></label>
-                            <input type="text" name="link" class="form-control" placeholder="https://bacdive.dsmz.de/strain/132485">
-                        </div>
-                    </div>
-                    <button class="btn success"><?= lang('Connect', 'Verknüpfen') ?></button>
-                </form>
+                <?php
+                include BASEPATH . "/components/connect-research-data.php";
+                ?>
+
             </div>
         </div>
     </div>
@@ -292,17 +270,17 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             <div class="content">
 
 
-                <div class="btn-toolbar float-md-right">
+                <div class="btn-toolbar float-sm-right">
                     <?php if (($user_activity && !$locked) || $USER['is_controlling'] || $USER['is_admin']) { ?>
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn mr-5">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn primary">
                             <i class="ph ph-pencil-simple-line"></i>
-                            <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
+                            <?= lang('Edit', 'Bearbeiten') ?>
                         </a>
                     <?php } ?>
 
 
                     <?php if (!in_array($doc['type'], ['publication'])) { ?>
-                        <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn mr-5">
+                        <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn primary">
                             <i class="ph ph-copy"></i>
                             <?= lang("Add a copy", "Kopie anlegen") ?>
                         </a>
@@ -310,7 +288,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
                 </div>
 
-                <h2>Details</h2>
+                <h2 class="title">Details</h2>
                 <div class="mb-10">
                     <?= $Format->activity_badge() ?>
                 </div>
@@ -428,7 +406,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 </p>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
-                    <button type="submit" class="btn text-danger">
+                    <button type="submit" class="btn danger">
                         <i class="ph ph-trash"></i>
                         <?= lang('Delete activity', 'Lösche Aktivität') ?>
                     </button>
@@ -461,13 +439,13 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
-                <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
+                <a class="btn danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
                     <i class="ph ph-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
                 <?php if (isset($doc['created_by'])) { ?>
 
-                    <a class="btn text-danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf 'Änderung'&body=<?= $body ?>">
+                    <a class="btn danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf 'Änderung'&body=<?= $body ?>">
                         <i class="ph ph-envelope" aria-hidden="true"></i>
                         <?= lang('Contact creator', 'Urheber kontaktieren') ?>
                     </a>
@@ -484,7 +462,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php
                 $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
                 ?>
-                <a class="btn text-danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
+                <a class="btn danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
                     <i class="ph ph-envelope" aria-hidden="true"></i>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a>
@@ -499,7 +477,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 </p>
                 <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                     <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
-                    <button type="submit" class="btn text-danger">
+                    <button type="submit" class="btn danger">
                         <i class="ph ph-trash"></i>
                         <?= lang('Delete activity', 'Lösche Aktivität') ?>
                     </button>
@@ -517,21 +495,14 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <div class="box">
                     <div class="content">
 
-                        <div class="btn-toolbar mb-10 float-md-right">
-                            <?php if ($role == 'authors') {
-                                echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/authors" class="btn">
-                                <i class="ph ph-user-list"></i>
-                                ' . lang("Edit authors", "Autoren bearbeiten") .
-                                    '</a>';
-                            } else {
-                                echo '<a href="' . ROOTPATH . '/activities/edit/' . $id . '/editors" class="btn">
-                                    <i class="ph ph-user-list"></i>
-                                    ' . lang("Edit editors", "Editoren bearbeiten") .
-                                    '</a>';
-                            } ?>
+                        <div class="btn-toolbar mb-10 float-sm-right">
+                            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>/<?= $role ?>" class="btn primary">
+                                <i class="ph ph-pencil-simple-line"></i>
+                                <?= lang("Edit", "Bearbeiten") ?>
+                            </a>
                         </div>
 
-                        <h2>
+                        <h2 class="title">
                             <?php if ($role == 'authors') {
                                 echo lang('Authors', 'Autoren');
                             } else {
@@ -609,7 +580,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
 <?php if ($USER['is_admin'] || isset($_GET['verbose'])) { ?>
-    <h2>
+    <h2 class="title">
         <?= lang('Raw data', 'Rohdaten') ?>
     </h2>
 

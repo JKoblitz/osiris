@@ -1,16 +1,15 @@
 <?php
 
 /**
- * Page to see all activities
+ * Component to add new research data connections.
  * 
  * This file is part of the OSIRIS package.
  * Copyright (c) 2023, Julia Koblitz
  * 
- * @link /activities
- * @link /my-activities
+ * @link /activity
  *
  * @package OSIRIS
- * @since 1.0 
+ * @since 1.2.0
  * 
  * @copyright	Copyright (c) 2023, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
