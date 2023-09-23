@@ -179,11 +179,11 @@ function sortbuttons(string $colname)
     $get = currentGET(['order', 'asc']);
     // $get = $_SERVER['REQUEST_URI'] . $get;
     if ($order == $colname && $asc == 1) {
-        echo "<a href='$get&order=$colname&asc=0'><i class='ph-fill ph-sort-up'></i></a>";
+        echo "<a href='$get&order=$colname&asc=0'><i class='ph ph-fill ph-sort-up'></i></a>";
     } elseif ($order == $colname && $asc == 0) {
-        echo "<a href='$get'><i class='ph-fill ph-sort-down'></i></a>";
+        echo "<a href='$get'><i class='ph ph-fill ph-sort-down'></i></a>";
     } else {
-        echo "<a href='$get&order=$colname&asc=1'><i class='ph-fill ph-sort'></i></a>";
+        echo "<a href='$get&order=$colname&asc=1'><i class='ph ph-fill ph-sort'></i></a>";
     }
 }
 

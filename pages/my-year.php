@@ -196,8 +196,8 @@ if ($showcoins == 'all') {
                         <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
                     </a>
                 <?php } else { ?>
-                    <a class="btn lg success" href="#approve">
-                        <i class="ph-fill ph-question mr-5"></i>
+                    <a class="btn large success" href="#approve">
+                        <i class="ph ph-fill ph-question mr-5"></i>
                         <?= lang('Approve selected quarter', 'Ausgewähltes Quartal freigeben') ?>
                         (<?= $YEAR . 'Q' . $QUARTER ?>)
                     </a>
@@ -583,7 +583,7 @@ if ($showcoins == 'all') {
                                     <i class="ph ph-arrow-fat-line-right"></i>
                                 </a>
                                 <button class="btn link square" onclick="addToCart(this, '<?= $id ?>')">
-                                    <i class="<?= (in_array($id, $cart)) ? 'ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
+                                    <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
                                 </button>
                                 <?php if ($currentuser) { ?>
                                     <a class="btn link square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">

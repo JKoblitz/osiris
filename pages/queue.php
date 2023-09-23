@@ -23,35 +23,6 @@ $Format = new Document();
 
 ?>
 
-<style>
-    .box:target {
-        -moz-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
-        -webkit-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
-        box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
-    }
-
-    .box.duplicate {
-        color: var(--muted-color);
-        opacity: 0.7;
-        border-color: var(--danger-color);
-        position: relative;
-        padding-top: 2rem;
-    }
-
-    .box.duplicate::before {
-        content: 'DUPLICATE';
-        font-size: small;
-        font-weight: bold;
-        display: block;
-        position: absolute;
-        top: 1rem;
-        color: white;
-        background: var(--danger-color);
-        padding: 0 .5rem;
-        padding-left: 2.2rem;
-    }
-</style>
-
 <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right" id="">
     <i class="ph ph-lg ph-question mr-5"></i>
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>

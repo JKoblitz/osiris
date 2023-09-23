@@ -31,7 +31,7 @@ $user = $user ?? $_SESSION['username'];
         <i class="ph ph-book-open"></i>
         <?= lang("All activities", "Alle Aktivitäten") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/my-activities" class="btn sm mb-10" id="user-btn">
+    <a href="<?= ROOTPATH ?>/my-activities" class="btn small mb-10" id="user-btn">
         <i class="ph ph-student"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
@@ -41,7 +41,7 @@ $user = $user ?? $_SESSION['username'];
         <i class="ph ph-folder-user"></i>
         <?= lang("Activities of $user", "Aktivitäten von $user") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/activities" class="btn sm mb-10" id="user-btn">
+    <a href="<?= ROOTPATH ?>/activities" class="btn small mb-10" id="user-btn">
         <i class="ph ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
@@ -50,7 +50,7 @@ $user = $user ?? $_SESSION['username'];
         <i class="ph ph-folder-user"></i>
         <?= lang("My activities", "Meine Aktivitäten") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/activities" class="btn sm mb-10" id="user-btn">
+    <a href="<?= ROOTPATH ?>/activities" class="btn small mb-10" id="user-btn">
         <i class="ph ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>

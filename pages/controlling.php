@@ -101,11 +101,11 @@
                 
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" name="action" id="action-lock" value="lock" checked="">
-                    <label for="action-lock"><i class="ph-fill ph-lock text-danger"></i> Sperren</label>
+                    <label for="action-lock"><i class="ph ph-fill ph-lock text-danger"></i> Sperren</label>
                 </div>
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" name="action" id="action-unlock" value="unlock">
-                    <label for="action-unlock"><i class="ph-fill ph-lock-open text-success"></i> Entsperren</label>
+                    <label for="action-unlock"><i class="ph ph-fill ph-lock-open text-success"></i> Entsperren</label>
                 </div>
             </div>
             <button class="btn danger" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>

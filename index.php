@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Core routing file
  * 
@@ -99,7 +100,7 @@ Route::get('/test-new-func', function () {
     include BASEPATH . "/header.php";
     $db = new DB;
     dump($db->getUser('juk20'));
-    
+
     include BASEPATH . "/footer.php";
 });
 
@@ -518,34 +519,37 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     $id = $DB->to_ObjectID($id);
     $activity = $osiris->activities->findOne(['_id' => $id], ['projection' => ['file' => 0]]);
 
-    $doc = json_decode(json_encode($activity->getArrayCopy()), true);
-    $locked = $activity['locked'] ?? false;
-    if ($doc['type'] == 'publication' && isset($doc['journal'])) {
-        // fix old journal_ids
-        if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])) {
-            $doc['journal_id'] = null;
-            $osiris->activities->updateOne(
-                ['_id' => $activity['_id']],
-                ['$unset' => ['journal_id' => '']]
-            );
+    if (!empty($activity)) {
+
+        $doc = json_decode(json_encode($activity->getArrayCopy()), true);
+        $locked = $activity['locked'] ?? false;
+        if ($doc['type'] == 'publication' && isset($doc['journal'])) {
+            // fix old journal_ids
+            if (isset($doc['journal_id']) && !preg_match("/^[0-9a-fA-F]{24}$/", $doc['journal_id'])) {
+                $doc['journal_id'] = null;
+                $osiris->activities->updateOne(
+                    ['_id' => $activity['_id']],
+                    ['$unset' => ['journal_id' => '']]
+                );
+            }
         }
-    }
-    $DB->renderActivities(['_id' =>  $activity['_id']]);
-    $user_activity = $DB->isUserActivity($doc, $user);
+        $DB->renderActivities(['_id' =>  $activity['_id']]);
+        $user_activity = $DB->isUserActivity($doc, $user);
 
-    $Format = new Document;
-    $Format->setDocument($doc);
+        $Format = new Document;
+        $Format->setDocument($doc);
 
-    $name = $activity['title'] ?? $id;
-    if (strlen($name) > 20)
-        $name = mb_substr(strip_tags($name), 0, 20) . "&hellip;";
-    $name = ucfirst($activity['type']) . ": " . $name;
-    $breadcrumb = [
-        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => $name]
-    ];
-    if ($Format->hasSchema()) {
-        $additionalHead = $Format->schema();
+        $name = $activity['title'] ?? $id;
+        if (strlen($name) > 20)
+            $name = mb_substr(strip_tags($name), 0, 20) . "&hellip;";
+        $name = ucfirst($activity['type']) . ": " . $name;
+        $breadcrumb = [
+            ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
+            ['name' => $name]
+        ];
+        if ($Format->hasSchema()) {
+            $additionalHead = $Format->schema();
+        }
     }
     include BASEPATH . "/header.php";
 
@@ -669,25 +673,25 @@ Route::get('/activities/doublet/([a-zA-Z0-9]*)/([a-zA-Z0-9]*)', function ($id1, 
 
     $Format = new Document(false, 'list');
     $Modules = new Modules();
-    
+
     $breadcrumb = [
         ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
         ['name' => lang("Doublet", "Dublette")]
     ];
-    
+
     $form = [];
     $html = [];
-    
+
     // first
     $form1 = $DB->getActivity($id1);
     // if (($form1['locked'] ?? false) && !$USER['is_controlling']) {
     //     header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
     // }
-    
+
     // second
     $form2 = $DB->getActivity($id2);
 
-    
+
     include BASEPATH . "/header.php";
     if ($form1['type'] != $form2['type']) {
         echo "Error: Activities must be of the same type.";
@@ -696,9 +700,9 @@ Route::get('/activities/doublet/([a-zA-Z0-9]*)/([a-zA-Z0-9]*)', function ($id1, 
         // $form = array_merge_recursive($form1, $form2);
         $keys = array_keys(array_merge($form1, $form2));
         $ignore = [
-            'rendered','editor-comment',  'updated', 'updated_by',  'created', 'created_by', 'duplicate'
+            'rendered', 'editor-comment',  'updated', 'updated_by',  'created', 'created_by', 'duplicate'
         ];
-        
+
         $Format->setDocument($form1);
         foreach ($keys as $key) {
             if (in_array($key, $ignore)) continue;
@@ -717,7 +721,6 @@ Route::get('/activities/doublet/([a-zA-Z0-9]*)/([a-zA-Z0-9]*)', function ($id1, 
             if (in_array($key, $ignore)) continue;
             $html[$key][1] = $Format->get_field($key);
         }
-        
     }
 
     // dump($form, true);
@@ -1371,7 +1374,7 @@ Route::get('/check-duplicate', function () {
     include_once BASEPATH . "/php/init.php";
 
     $values = $_GET['values'] ?? array();
-    if (empty($values)) die ('false');
+    if (empty($values)) die('false');
 
     $search = [];
     if (isset($values['title']) && !empty($values['title'])) $search['title'] = new \MongoDB\BSON\Regex(preg_quote($values['title']), 'i');
@@ -1382,13 +1385,13 @@ Route::get('/check-duplicate', function () {
 
     if (isset($values['month']) && !empty($values['month'])) $search['month'] = intval($values['month']);
     else die('false');
-    
+
     if (isset($values['type']) && !empty($values['type'])) $search['type'] = trim($values['type']);
     else die('false');
 
     if (isset($values['subtype']) && !empty($values['subtype'])) $search['subtype'] = trim($values['subtype']);
     else die('false');
-    
+
     // dump($search, true);
     $doc = $osiris->activities->findOne($search);
 
@@ -1398,7 +1401,7 @@ Route::get('/check-duplicate', function () {
     // $format = new Document();
     // $format->setDocument($doc);
     // echo $format->format();
-    echo $doc['rendered']['web']??'';
+    echo $doc['rendered']['web'] ?? '';
 });
 
 
@@ -1587,7 +1590,6 @@ Route::get('/migrate', function () {
 
 
 Route::get('/test', function () {
-    
 });
 
 

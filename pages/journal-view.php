@@ -224,7 +224,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
         <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
             <div class="dropdown with-arrow float-right mb-20">
                 <button class="btn osiris" data-toggle="dropdown" type="button" id="dropdown-2" aria-haspopup="true" aria-expanded="false">
-                    <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
+                    <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="ph ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-2">
                     <div class="content">

@@ -198,7 +198,7 @@ foreach ($cursor as $doc) {
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a>
 <h1>
-    <i class="ph-fill ph-warning text-osiris"></i>
+    <i class="ph ph-fill ph-warning text-osiris"></i>
     <?= lang('Warnings', 'Warnungen') ?>
 </h1>
 
@@ -301,21 +301,21 @@ if (array_sum($a) === 0) {
                             <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
                         <?php } ?>
                         <br>
-                        <button class="btn sm text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
+                        <button class="btn small text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
                             <i class="ph ph-check ph-fw"></i>
                         </button>
-                        <button class="btn sm text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
+                        <button class="btn small text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
                             <i class="ph ph-push-pin-slash ph-fw"></i>
                         </button>
-                        <button class="btn sm text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
+                        <button class="btn small text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
                             <i class="ph ph-x ph-fw"></i>
                         </button>
                         <?php if (!($doc['locked'] ?? false)) { ?>
-                            <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn sm text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
+                            <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn small text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
                                 <i class="ph ph-pencil-simple-line"></i>
                             </a>
                         <?php } ?>
-                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn sm text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
+                        <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn small text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
                             <i class="ph ph-arrow-fat-line-right"></i>
                         </a>
                     </div>
@@ -473,13 +473,13 @@ if (array_sum($a) === 0) {
                         <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
-                            <button class="btn sm text-success">
+                            <button class="btn small text-success">
                                 <i class="ph ph-check"></i>
                                 <?= lang('Yes', 'Ja') ?>
                             </button>
                         </form>
 
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn sm text-danger">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn small text-danger">
                             <i class="ph ph-x"></i>
                             <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
                         </a>
@@ -519,8 +519,8 @@ if (array_sum($a) === 0) {
                 <td>
                     <?= $Format->format(); ?>
                     <div class='alert signal' id="approve-<?= $id ?>">
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn sm text-primary">
-                            <i class="ph-fill ph-note-pencil"></i>
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn small text-primary">
+                            <i class="ph ph-fill ph-note-pencil"></i>
                             <?= lang('Edit activity', 'Aktivität bearbeiten') ?>
                         </a>
                     </div>

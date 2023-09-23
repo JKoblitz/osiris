@@ -89,11 +89,11 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
 
                                     $Format->setDocument($activity);
                                     $dupl = $Format->formatShort();
-                                    if ($sim >= 98) $alert = 'danger';
+                                    if ($sim >= 98) $alert = 'duplicate';
                                     else $alert = 'signal';
                                 ?>
 
-                                    <div class="alert <?= $alert ?>">
+                                    <div class="box <?= $alert ?>">
                                         <p class="mt-0">
                                             <?php if ($sim >= 98) { ?>
                                                 <?= lang('This is a 100% duplicate of the follwing publication:', 'Dies ist ein 100%iges Duplikat der folgenden Publikation:') ?>

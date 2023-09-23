@@ -62,7 +62,7 @@ Die Unterkategorien werden mit ähnlichen Knöpfen wie oben zu sehen sind gesteu
 
 ### Beispiele nutzen
 
-Ganz oben im Formular gibt es einen kleinen Knopf, mit dem die <button class="btn btn-osiris btn-sm">Beispiele</button> umgeschaltet werden können. Bei aktivierten Beispielen erscheint ein formatierter Text über dem Formular. Dieser Text ist abhängig, von der ausgewählten Aktivitätskategorie (und eventuell Unterkategorie). Hier als Beispiel ein Journalartikel:
+Ganz oben im Formular gibt es einen kleinen Knopf, mit dem die <button class="btn primary btn-sm">Beispiele</button> umgeschaltet werden können. Bei aktivierten Beispielen erscheint ein formatierter Text über dem Formular. Dieser Text ist abhängig, von der ausgewählten Aktivitätskategorie (und eventuell Unterkategorie). Hier als Beispiel ein Journalartikel:
 
 <div class="demo">
     <span class="element-author" data-element="Autor(en)">Spring, S., Rohde, M., Bunk, B., Spröer, C., Will, S. E. and Neumann-Schaal, M. </span>
@@ -142,7 +142,7 @@ Nachdem eine Aktivität hinzugefügt wurde, steht ein detaillierter Autoren-Edit
 
 <div class="demo">
     <h2>Authors</h2>
-    <span class="btn btn-osiris active">
+    <span class="btn primary active">
         <i class="ph-regular ph-user-list"></i>
         Autorenliste bearbeiten
     </span>
@@ -478,11 +478,11 @@ Nachdem eine Aktivität hinzugefügt wurde, können Dokumente hinterlegt werden.
 
 <div class="demo">
 <h2 class="mt-0">Details</h2>
-    <span class="btn btn-osiris mr-5">
+    <span class="btn primary mr-5">
         <i class="ph ph-regular ph-pencil-simple-line"></i>
         Aktivität bearbeiten            
     </span>
-    <span class="btn btn-osiris active">
+    <span class="btn primary active">
         <i class="ph ph-upload"></i>
         Dateien hochladen
     </span>
@@ -589,15 +589,15 @@ Ich halte einen Vortrag auf einer Konferenz. Auf einem Minisymposium ein paar Wo
 
 <div class="demo">
     <h2 class="mt-0">Details</h2>
-    <span class="btn btn-osiris mr-5">
+    <span class="btn primary mr-5">
         <i class="ph ph-regular ph-pencil-simple-line"></i>
         Aktivität bearbeiten            
     </span>
-    <span class="btn btn-osiris mr-5 active">
+    <span class="btn primary mr-5 active">
         <i class="ph ph-copy"></i>
         Kopie anlegen            
     </span>
-    <span class="btn btn-osiris">
+    <span class="btn primary">
         <i class="ph ph-upload"></i>
         Dateien hochladen
     </span>

@@ -171,7 +171,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </ul>
 
             <a href="<?= ROOTPATH ?>/new-stuff#05.06.23" class="btn osiris">
-                <i class="ph-fill ph-sparkle"></i>
+                <i class="ph ph-fill ph-sparkle"></i>
                 NEWS
                 (<?= time_elapsed_string('2023-06-05 7:00') ?>)
             </a>

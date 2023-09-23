@@ -627,6 +627,26 @@ Route::post('/respolve-doublets', function () {
     include_once BASEPATH . "/php/init.php";
     dump($_POST, true);
 });
+
+
+Route::post('/update-research-data/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['connections'])) die("no values given");
+
+    $values = $_POST['connections'];
+    $values = validateValues($values, $DB);
+    // dump($values, true);
+    // die;
+
+    $updateResult = $osiris->activities->updateOne(
+        ['_id' => $DB::to_ObjectID($id)],
+        ['$set' => ["connections" => $values]]
+    );
+
+    header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
+});
+
+
 Route::post('/update-expertise/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");

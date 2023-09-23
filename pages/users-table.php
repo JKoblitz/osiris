@@ -117,7 +117,7 @@
                 <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
                     <td>
                         <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
-                            <i class="ph-fill ph-note-pencil"></i>
+                            <i class="ph ph-fill ph-note-pencil"></i>
                         </btn>
                     </td>
                 <?php

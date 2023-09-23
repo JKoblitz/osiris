@@ -1605,7 +1605,7 @@ function addToCart(el, id) {//.addClass('animate__flip')
     if (el === null) {
         location.reload()
     } else {
-        $(el).find('i').toggleClass('ph-fill').toggleClass('ph').toggleClass('text-success')
+        $(el).find('i').toggleClass('ph ph-fill').toggleClass('ph').toggleClass('text-success')
     }
     // setTimeout(function () {
     //     $(el).find('i').removeClass('animate__flip')
@@ -1700,105 +1700,6 @@ function selectTeaching(j) {
     window.location.replace('#')
 }
 
-function searchPubMed(term) {
-    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
-    var data = {
-        db: 'pubmed',
-        term: term,
-        retmode: 'json',
-        // usehistory: 'y'
-    }
-    $.ajax({
-        type: "GET",
-        data: data,
-        dataType: "json",
-
-        url: url,
-        success: function (data) {
-            console.log(data);
-            var result = data.esearchresult
-            displayPubMed(result.idlist)
-
-            $('#details').html(`
-                    ${result.retmax} out of ${result.count} results are shown.
-                `)
-        },
-        error: function (response) {
-            toastError(response.responseText)
-            $('.loader').removeClass('show')
-        }
-    })
-}
-
-
-function displayPubMed(ids) {
-    if (ids.length === 0) {
-        $('#results').html(`<tr class='row-signal'><td>Nothing found.</td></tr>`);
-        return false
-    }
-    var url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
-    var data = {
-        db: 'pubmed',
-        id: ids.join(','),
-        retmode: 'json',
-        // usehistory: 'y'
-    }
-    $.ajax({
-        type: "GET",
-        data: data,
-        dataType: "json",
-
-        url: url,
-        success: function (data) {
-            console.log(data);
-
-            var table = $('#results')
-
-            for (const id in data.result) {
-
-                const item = data.result[id];
-                if (item.uid === undefined) continue;
-
-                var authors = []
-                if (item.authors !== undefined) {
-                    item.authors.forEach(a => {
-                        authors.push(a.name);
-                    });
-                }
-
-                var tr = $(`<tr id="${item.uid}">`)
-                var td = $('<td>')
-                td.html(
-                    `
-                        <a class='d-block colorless' target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/${item.uid}/">${item.title}</a>
-                        <small class='text-osiris d-block'>${authors.join(', ')}</small>
-                        <small class='text-muted'>${item.fulljournalname} (${item.pubdate})</small>
-                        `
-                )
-                var link = "pubmed=" + item.uid
-                if (item.elocationid && item.elocationid.startsWith('doi:')) {
-                    link = "doi=" + item.elocationid.replace('doi:', '').trim()
-                }
-                tr.append(td)
-                tr.append(`
-                    <td>
-                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn link large text-primary"><i class="ph ph-plus"></i></a>
-                    </td>
-                    `)
-                table.append(tr)
-
-                checkDuplicate(item.uid, item.title)
-
-            }
-
-
-        },
-        error: function (response) {
-            toastError(response.responseText)
-            $('.loader').removeClass('show')
-        }
-    })
-}
 
 function orderByAttr(a, b) {
     a = $(a).attr('data-value')
@@ -1808,85 +1709,6 @@ function orderByAttr(a, b) {
     return a.localeCompare(b)
 }
 
-
-function checkDuplicate(id, title) {
-    $.ajax({
-        type: "GET",
-        data: { title: title, pubmed: id },
-        dataType: "json",
-        url: ROOTPATH + '/api/levenshtein',
-        success: function (result) {
-            console.log(result);
-            const tr = $('tr#' + id)
-            const td = tr.find('td:first-child')
-            const tdlst = tr.find('td:last-child')
-            var p = $('<p>')
-            tr.attr('data-value', result.similarity)
-
-            if (result.similarity > 98) {
-                tr.addClass('row-muted')
-                p.addClass('text-danger')
-
-                p.html(
-                    lang('<b>Duplicate</b> of',
-                        '<b>Duplikat</b> von')
-                    + ` <a href="${ROOTPATH}/activities/view/${result.id}" class="colorless">${result.title}</a>`
-                )
-                tdlst.empty()
-            } else if (result.similarity > 50) {
-                p.addClass('text-signal')
-
-                p.html(
-                    lang('Might be duplicate of ', 'Vielleicht Duplikat von')
-                    + ` (<b>${result.similarity}&nbsp;%</b>):</p>
-                     <a href="${ROOTPATH}/activities/view/${result.id}" class="colorless">${result.title}</a>`
-                )
-                // p.append('<p class="text-signal">'+lang('This might be a duplicate of the follwing publication', 'Dies könnte ein Duplikat der folgenden Publikation sein'))
-            }
-            td.append(p)
-
-            $("#results tr").sort(orderByAttr).prependTo("#results")
-        },
-        error: function (response) {
-            toastError(response.responseText)
-            $('.loader').removeClass('show')
-        }
-    })
-}
-
-function searchLiterature(evt) {
-    evt.preventDefault()
-    $('#results').empty()
-    $('#details').empty()
-
-    var authors = $('#authors').val().trim()
-    var title = $('#title').val().trim()
-    var year = $('#year').val().trim()
-    var affiliation = $('#affiliation').val().trim()
-
-    if (authors === "" && title === "" && year === "") {
-        $('#results').html(`<tr class='row-danger'><td>Search was empty.</td></tr>`);
-        return false
-    }
-
-    console.log(authors);
-
-    var term = []
-    if (title !== '')
-        term.push(`(${title}[title])`)
-    if (authors !== '')
-        term.push(`(${authors}[author])`)
-    if (year !== '')
-        term.push(`(${year}[year])`)
-    if (affiliation !== '')
-        term.push(`(${affiliation}[ad])`)
-
-    term = term.join(' AND ')
-    console.log(term);
-    searchPubMed(term)
-
-    return false;
-}
 
 
 var doubletFound = false;

@@ -1,5 +1,14 @@
 :root {
     --osiris-color: #dd590e;
+    --affiliation: "DSMZ";
+    --primary-color: #dd590e;
+    --primary-color-light: #EF7D17;
+    --primary-color-very-light: #FCE3CD;
+    --primary-color-dark: #DB6903;
+    --primary-color-very-dark: #301701;
+    --primary-color-20: rgba(238, 114, 3, 0.2);
+    --primary-color-30: rgba(238, 114, 3, 0.3);
+    --primary-color-60: rgba(238, 114, 3, 0.6);
 }
 
 .row.row-eq-spacing {
@@ -8,8 +17,9 @@
     margin-left: -1rem;
     margin-right: -1rem;
 }
-@media  (min-width: 1199px)  {
-    .row.row-eq-spacing-lg:not(.row-eq-spacing-md):not(.row-eq-spacing-sm):not(.row-eq-spacing){
+
+@media (min-width: 1199px) {
+    .row.row-eq-spacing-lg:not(.row-eq-spacing-md):not(.row-eq-spacing-sm):not(.row-eq-spacing) {
         padding-left: 0;
         padding-right: 0;
         margin-left: -1rem;
@@ -252,11 +262,11 @@ strong {
     color: var(--color-cold-lightblue) !important;
 }
 
-.btn.btn-select {
+.btn.select {
     height: auto;
 }
 
-.btn.btn-select:not(.disabled):not(:disabled).active {
+.btn.select:not(.disabled):not(:disabled).active {
     background-color: white;
 }
 
@@ -275,6 +285,34 @@ strong {
     display: inline-flex;
 }
 
+
+
+.box:target {
+    -moz-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+    -webkit-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+    box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
+}
+
+.box.duplicate {
+    color: var(--muted-color);
+    opacity: 0.7;
+    border-color: var(--danger-color);
+    position: relative;
+    padding-top: 2rem;
+}
+
+.box.duplicate::before {
+    content: 'DUPLICATE';
+    font-size: small;
+    font-weight: bold;
+    display: block;
+    position: absolute;
+    top: 1rem;
+    color: white;
+    background: var(--danger-color);
+    padding: 0 .5rem;
+    padding-left: 2.2rem;
+}
 
 .lom {
     font-weight: bold;
