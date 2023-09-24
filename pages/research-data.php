@@ -95,8 +95,6 @@ function val($index, $default = '')
                     </table>
                 </div>
 
-
-
             </div>
         </div>
     <?php } ?>

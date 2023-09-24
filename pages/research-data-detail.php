@@ -28,6 +28,7 @@
     <thead>
         <th>Name</th>
         <th>Link</th>
+        <th><?=lang('Year', 'Jahr')?></th>
         <th>Doc</th>
     </thead>
     <tbody>
@@ -58,6 +59,7 @@
                 <tr class="">
                     <td><?= $con['name'] ?></td>
                     <td><a href="<?= $con['link'] ?>" target="_blank" rel="noopener noreferrer"><?= $con['link'] ?></a></td>
+                    <td><?=$doc['year']?></td>
                     <td class="unbreakable">
                         <?= $doc['rendered']['icon'] ?>
                         <a class="btn link square" href="<?= ROOTPATH ?>/activities/view/<?= $doc['_id'] ?>">
@@ -101,13 +103,13 @@
             // dom: 'Plfrtip',
             dom: 'frtipP',
             columnDefs: [{
-                    targets: [0, 1],
+                    targets: [0, 1, 2],
                     searchable: true,
                     sortable: true,
                     visible: true
                 },
                 {
-                    targets: [2],
+                    targets: [3],
                     searchable: false,
                     visible: true
                 },

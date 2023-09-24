@@ -1,5 +1,142 @@
 # Neuigkeiten
 
+## Hoffentlich bald
+`Version 1.2`
+
+<i class="ph ph-circles-three-plus text-osiris"></i>
+**Forschungsdaten**
+- Nein, wir fügen zu OSIRIS keine Forschungsdaten hinzu. Niemals.
+- Stattdessen kann man Foschungsdaten mit Aktivitäten verknüpfen. Das geht über Entität (z.B. Genomsequenz), Freitext und Link. Geht dazu auf die Übersichtsseite einer Aktivität und klickt auf "Verknüpfen".
+- Eine umfassende Suche für Forschungsdaten wurde hinzugefügt. Ihr müsst wissen, wie viele Genomsequenzen ihr im Jahr 2022 veröffentlicht habt? Mit OSIRIS ist das jetzt möglich (solange ihr die Daten eingepflegt habt).
+
+
+<i class="ph ph-gear text-osiris"></i>
+**Mehr Einstellungen im Admin-Panel**
+- Coins und Achievements lassen sich jetzt global ausstellen
+- Fremde Nutzermetriken lassen sich jetzt im Profil ausstellen. Daraufhin sind die Graphen nur noch für einen selbst sichtbar.
+
+<i class="ph ph-copy text-osiris"></i>
+**Verbesserungen bei der Dubletten-Erkennung**
+- Die beste Lösung für Dubletten ist zu verhindern, dass sie entstehen. OSIRIS warnt euch, falls ihr dabei seid, gerade eine Dublette anzulegen.
+
+
+<i class="ph ph-textbox text-osiris"></i>
+**Neue Module**
+- Open Access Status
+- Abstract
+- Gender
+- Country (nach ISO-Standard)
+
+<i class="ph ph-star text-osiris"></i>
+**Kleinere Features und Bug Fixes**
+- Nutzer können ihre Profilbilder jetzt selbst bearbeiten.
+- Zuletzt besuchte Konferenzen werden im "Conference"-Modul jetzt vorgeschlagen. Das führt hoffentlich zu mehr Konsistenz.
+- Einige Interfaces wurden angepasst, z.B. ist die Übersichtsseite einer Aktivität jetzt noch nutzerfreundlicher.
+- OSIRIS-Seiten sollten sich jetzt sehr viel besser ausdrucken lassen.
+- Der Style von Buttons und Badges wurde angepasst.
+- Es gibt jetzt eine neue 404 Seite. Die ist schön, schaut sie euch gern mal an.
+
+<i class="ph ph-code text-osiris"></i>
+**Hintergrundverbesserungen**
+- Es gibt außerdem ein paar Verbesserungen hinter den Szenen. Das wird in Zukunft zu noch schnellerer und konsistenterer Entwicklung führen. 
+- Eine neue Datenbank-Klasse war längst überfällig.
+- Nutzerdaten wurden in Personen und Accounts geteilt. Dadurch können auch Personen angelegt werden, die keine Nutzer sind und Accountdaten sind von Personendaten getrennt. Das war ein wichtiger Schritt für die Gästeformulare. 
+
+
+
+## 10.07.23
+<i class="ph ph-briefcase text-osiris"></i>
+**Altdaten-Import**
+
+Es können jetzt auch Altdaten importiert werden. Wie genau das funktioniert, liest du am besten in der [Anleitung](https://osiris-app.de/install#import). 
+
+## 06.07.23
+
+<i class="ph ph-swap text-osiris"></i>
+**IDA-Integration**
+
+Mit einer IDA-Integration wurde begonnen. Um das Feature zu aktivieren, muss in der CONFIG-Datei der folgende Wert auf true gesetzt werden:
+
+```php
+// activate IDA integration here
+define("IDA_INTEGRATION", true);
+```
+
+Zurzeit wird nur Formular 18.3 als Proof of Concept unterstützt. An weiteren Formularen wird gearbeitet, sobald der Fragenkatalog für das folgende Berichtsjahr feststeht. 
+
+Außerdem wurden einige neue Module hinzugefügt, die für die IDA-Abfrage relevant sind, z.B. gender, nationality, open access status. 
+
+<i class="ph ph-tree-structure text-osiris"></i>
+**Schema.org Integration**
+
+OSIRIS-Aktivitäten sind jetzt auch als Schema.org hinterlegt und exportierbar. Falls ihr nicht wisst, was das ist, könnt ihr es auf der [offiziellen Seite von Schema.org](https://schema.org/) nachlesen. Und falls ihr wissen wollt, wie so ein maschinen-lesbares Format aussieht, habe ich es euch hier mal für eine meiner Publikationen dargestellt:
+
+```json
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@id": "#issue",
+            "@type": "PublicationIssue",
+            "issueNumber": 5,
+            "isPartOf": {
+                "@id": "#volume"
+            }
+        },
+        {
+            "@id": "#volume",
+            "@type": "PublicationVolume",
+            "volumeNumber": 19,
+            "datePublished": "2023-05"
+        },
+        {
+            "@type": "Periodical",
+            "@id": "#journal",
+            "name": "Nature Chemical Biology",
+            "issn": [
+                "1552-4469",
+                "1552-4450"
+            ],
+            "publisher": "Nature Pub. Group",
+            "hasPart": {
+                "@id": "#volume"
+            }
+        },
+        {
+            "@id": "#record",
+            "@type": "ScholarlyArticle",
+            "name": "Metabolism from the magic angle",
+            "author": {
+                "@type": "Person",
+                "givenName": "Koblitz",
+                "familyName": "Julia"
+            },
+            "datePublished": "2023-05",
+            "identifier": [
+                {
+                    "@type": "PropertyValue",
+                    "name": "DOI",
+                    "value": "10.1038/s41589-023-01317-2"
+                }
+            ],
+            "pagination": "538-539",
+            "isPartOf": [
+                {
+                    "@id": "#issue"
+                },
+                {
+                    "@id": "#volume"
+                },
+                {
+                    "@id": "#journal"
+                }
+            ]
+        }
+    ]
+}
+```
+
+
 ## 05.06.23
 
 <i class="ph ph-queue text-osiris"></i>
