@@ -46,7 +46,30 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="OSIRIS ist ein modernes Forschungsinformationssystem, das besonderen Schwerpunkt auf Open Source und Nutzerfreundlichkeit legt." />
+
+    <!-- Favicon and title -->
+    <link rel="icon" href="img/favicon.png">
+    <title><?= $pagetitle ?? 'OSIRIS-App' ?></title>
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="OSIRIS - the open, smart and intuitive research information system" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://osiris-app.de" />
+    <meta property="og:description" content="OSIRIS ist ein modernes Forschungsinformationssystem, das besonderen Schwerpunkt auf Open Source und Nutzerfreundlichkeit legt.." />
+    <meta property="og:image" content="<?=ROOTPATH?>/img/apple-touch-icon.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://osiris-app.de">
+    <meta property="twitter:title" content="OSIRIS - the open, smart and intuitive research information system">
+    <meta property="twitter:description" content="OSIRIS ist ein modernes Forschungsinformationssystem, das besonderen Schwerpunkt auf Open Source und Nutzerfreundlichkeit legt..">
+    <meta property="twitter:image" content="<?=ROOTPATH?>/img/apple-touch-icon.png">
+
+    <!-- Apple -->
+    <link rel="apple-touch-icon" sizes="180x180" href="<?=ROOTPATH?>/img/apple-touch-icon.png">
+    <link rel="mask-icon" href="<?=ROOTPATH?>/img/mask-icon.svg" color="#dd590e">
 
     <!-- Favicon and title -->
     <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
