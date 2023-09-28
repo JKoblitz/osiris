@@ -58,18 +58,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://osiris-app.de" />
     <meta property="og:description" content="OSIRIS ist ein modernes Forschungsinformationssystem, das besonderen Schwerpunkt auf Open Source und Nutzerfreundlichkeit legt.." />
-    <meta property="og:image" content="<?=ROOTPATH?>/img/apple-touch-icon.png" />
+    <meta property="og:image" content="<?= ROOTPATH ?>/img/apple-touch-icon.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://osiris-app.de">
     <meta property="twitter:title" content="OSIRIS - the open, smart and intuitive research information system">
     <meta property="twitter:description" content="OSIRIS ist ein modernes Forschungsinformationssystem, das besonderen Schwerpunkt auf Open Source und Nutzerfreundlichkeit legt..">
-    <meta property="twitter:image" content="<?=ROOTPATH?>/img/apple-touch-icon.png">
+    <meta property="twitter:image" content="<?= ROOTPATH ?>/img/apple-touch-icon.png">
 
     <!-- Apple -->
-    <link rel="apple-touch-icon" sizes="180x180" href="<?=ROOTPATH?>/img/apple-touch-icon.png">
-    <link rel="mask-icon" href="<?=ROOTPATH?>/img/mask-icon.svg" color="#dd590e">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= ROOTPATH ?>/img/apple-touch-icon.png">
+    <link rel="mask-icon" href="<?= ROOTPATH ?>/img/mask-icon.svg" color="#dd590e">
 
     <!-- Favicon and title -->
     <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
@@ -193,11 +193,18 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             </ul>
 
-            <a href="<?= ROOTPATH ?>/new-stuff#05.06.23" class="btn osiris">
-                <i class="ph ph-fill ph-sparkle"></i>
-                NEWS
-                (<?= time_elapsed_string('2023-06-05 7:00') ?>)
-            </a>
+            <form id="navbar-search" action="<?=ROOTPATH?>/activities" method="get" class="nav-search">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" autocomplete="off" placeholder="<?=lang('Search in activities', 'Suche in Aktivitäten')?>">
+                    <div class="input-group-append">
+                        <button class="btn primary"><i class="ph ph-magnifying-glass"></i></button>
+                    </div>
+                </div>
+                <!-- <div class="suggestions">
+                    <div class="title"></div>
+                </div> -->
+            </form>
+
         </nav>
         <!-- Sidebar start -->
         <div class="sidebar">
@@ -217,7 +224,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <?php
                     $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
-                    $maintain = $osiris->users->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username'=>1]])->toArray();
+                    $maintain = $osiris->users->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username' => 1]])->toArray();
                     if (!empty($maintain)) { ?>
                         <form action="" class="content">
                             <select name="OSIRIS-SELECT-MAINTENANCE-USER" id="osiris-select-maintenance-user" class="form-control" onchange="$(this).parent().submit()">
@@ -338,7 +345,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Projects', 'Projekte') ?>
                     </a>
 
-                    
+
                     <a href="<?= ROOTPATH ?>/research-data" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('research-data') ?>">
                         <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
                         <?= lang('Research data', 'Forschungsdaten') ?>
