@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to see all teaching modules
  * 
@@ -40,11 +41,19 @@ function val($index, $default = '')
                 <span aria-hidden="true">&times;</span>
             </a>
 
+            <h3 class="title"><?= lang('Add new teaching module', 'Neue Lehrveranstaltung hinzufügen') ?></h3>
+            <p class="text-danger mt-0">
+                <?= lang(
+                    'Please add only teaching module from an university with a module number.',
+                    'Bitte füge hier nur Lehrveranstaltungen von Universitäten mit einer Modulnummer hinzu.'
+                ) ?>
+            </p>
+
 
             <form action="<?= ROOTPATH ?>/create-teaching" method="post" enctype="multipart/form-data" id="activity-form">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
-                <div class="form-group lang-<?= lang('en', 'de') ?>" data-visible="article,preprint,magazine,book,chapter,lecture,poster,dissertation,others,misc-once,misc-annual,students,guests,teaching,software">
+                <div class="form-group lang-<?= lang('en', 'de') ?>">
                     <label for="title" class="required element-title">
                         <?= lang('Name of the module', 'Name des Moduls') ?>
                     </label>
@@ -52,7 +61,7 @@ function val($index, $default = '')
                     <div class="form-group title-editor" id="title-editor"><?= $form['title'] ?? '' ?></div>
                     <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= val('title') ?>">
                 </div>
-                
+
                 <script>
                     initQuill(document.getElementById('title-editor'));
                 </script>
@@ -79,7 +88,7 @@ function val($index, $default = '')
                             <?php
                             $userlist = $osiris->persons->find([], ['sort' => ["last" => 1]]);
                             foreach ($userlist as $j) { ?>
-                                <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                                <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['user'] ?? $_SESSION['username']) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -93,30 +102,35 @@ function val($index, $default = '')
 </div>
 
 
-<div class="content">
-    <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+<!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
         <i class="ph ph-lg ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a> -->
 
-    <h2 class="mt-0">
-        <i class="ph ph-chalkboard-simple text-osiris mr-5"></i>
-        <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
-    </h2>
-    <a href="#add-teaching">
-        <i class="ph ph-plus"></i>
-        <?= lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen') ?>
-    </a>
+<h2 class="mt-0">
+    <i class="ph ph-chalkboard-simple text-osiris mr-5"></i>
+    <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
+</h2>
+<a href="#add-teaching" class="btn link px-0">
+    <i class="ph ph-plus"></i>
+    <?= lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen') ?>
+</a>
+
+
+<div class="form-group with-icon">
+    <input class="form-control mb-20" type="search" name="search" id="search" oninput="filterTeaching(this.value);" placeholder="Filter ...">
+    <i class="ph ph-x" onclick="$(this).prev().val('');filterTeaching('')"></i>
 </div>
 
-<div class="row row-eq-spacing-md">
+
+<div class="masonry">
 
     <?php
-    $modules = $osiris->teaching->find([], ['sort'=>['module'=>1]]);
+    $modules = $osiris->teaching->find([], ['sort' => ['module' => 1]]);
     foreach ($modules as $module) {
         $contact = $DB->getPerson($module['contact_person'] ?? '', true);
     ?>
-        <div class="col-md-6">
+        <div class="teaching col-md-6">
             <div class="box" id="<?= $module['_id'] ?>">
                 <div class="content">
                     <h5 class="mt-0">
@@ -139,26 +153,97 @@ function val($index, $default = '')
                         </a>
                     </div>
                 </div>
-                <?php
-                $activities = $osiris->activities->find(['module_id' => strval($module['_id'])]);
-                if (!empty($activities)) :
-                ?>
-                    <hr>
-                    <div class="content">
 
-                        <?php foreach ($activities as $doc) :
-                            $Format->setDocument($doc);
-                        ?>
-                            <?= $Format->activity_icon() ?>
-                            <?= $Format->formatShort() ?>
-                        <?php endforeach; ?>
-                    </div>
+                <hr>
+                <div class="content">
+                    <?php
+                    $activities = $osiris->activities->find(['module_id' => strval($module['_id'])])->toArray();
+                    $activities = $DB::doc2Arr($activities);
+                    if (count($activities) != 0) {
+                    ?>
+                        <a onclick="showAll(this)"><?= lang('Show ' . (count($activities)) . ' connected activities', 'Zeige  ' . (count($activities)) . ' verknüpfte Aktivitäten') ?></a>
+                        <table class="w-full hidden">
+                            <?php foreach ($activities as $n => $doc) :
+                                if (!isset($doc['rendered'])) $DB->renderActivities(['_id' => $doc['_id']]);
+                            ?>
+                                <tr>
+                                    <td class="pb-5">
+                                        <?= $doc['rendered']['icon'] ?>
+                                        <?= $doc['rendered']['web'] ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
 
-                <?php endif; ?>
+
+                    <?php } else { ?>
+
+                        <?= lang('No activities connected.', 'Keine Aktivitäten verknüpft.') ?>
+                        <form action="<?= ROOTPATH ?>/delete-teaching/<?= strval($module['_id']) ?>" method="post">
+                            <input type="hidden" name="redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
+                            <button class="btn danger small">
+                                <i class="ph ph-trash"></i>
+                                <?= lang('Delete', 'Löschen') ?>
+                            </button>
+                        </form>
 
 
+
+                    <?php } ?>
+
+
+                </div>
             </div>
         </div>
     <?php } ?>
 
 </div>
+
+<style>
+    .masonry {
+        margin: -1rem;
+    }
+
+    .teaching {
+        padding: 1rem;
+    }
+
+    .teaching .box {
+        margin: 0;
+    }
+</style>
+
+<script src="<?= ROOTPATH ?>/js/masonry.pkgd.min.js"></script>
+<script>
+    // $(document).on('load', function() {
+        const layout = {
+        // options
+        itemSelector: '.teaching',
+        // columnWidth: 300,
+        columnWidth: '.teaching',
+        percentPosition: true,
+    }
+    var mason = $('.masonry').masonry(layout);
+    // });
+
+    function showAll(el) {
+        console.log($(el));
+        // $(el).closest('.content').find('.hidden').removeClass('hidden');
+        // $(el).remove();
+        $(el).hide().next().removeClass('hidden')
+        mason.masonry(layout)
+    }
+
+    function filterTeaching(input) {
+        if (input == "") {
+            $('.teaching').show()
+            mason.masonry(layout)
+            return
+        }
+        // input = input.toUpperCase()
+        console.log(input);
+        $('.teaching').hide()
+        $('.teaching:contains("' + input + '")').show()
+        mason.masonry(layout)
+    }
+</script>

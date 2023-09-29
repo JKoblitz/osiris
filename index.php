@@ -105,9 +105,22 @@ Route::get('/test-new-func', function () {
 });
 
 Route::get('/dashboard', function () {
+    $breadcrumb = [
+        ['name' => lang('Dashboard')]
+    ];
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/dashboard.php";
+    include BASEPATH . "/footer.php";
+});
+
+Route::get('/whats-up', function () {
+    $breadcrumb = [
+        ['name' => lang('What\'s up?', 'Was ist los?')]
+    ];
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/whats-up.php";
     include BASEPATH . "/footer.php";
 });
 
@@ -1509,7 +1522,6 @@ Route::get('/get-modules', function () {
 
 Route::get('/rerender', function () {
     include_once BASEPATH . "/php/init.php";
-
     $DB->renderActivities();
 });
 

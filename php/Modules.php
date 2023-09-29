@@ -1192,7 +1192,7 @@ class Modules
                         <?= lang('Latest', 'Zuletzt') ?>:
                         <?php
                         $temp_list = [];
-                        foreach ($DB->db->activities->find(['conference' => ['$ne' => null]], ['sort' => ['created' => -1], 'limit' => 10, 'projection' => ['conference' => 1]]) as $c) {
+                        foreach ($DB->db->activities->find(['conference' => ['$ne' => null]], ['sort' => ['year' => -1, 'month' => -1, 'date' => -1], 'limit' => 10, 'projection' => ['conference' => 1]]) as $c) {
                             if (count($temp_list) >= 3) break;
                             if (in_array($c['conference'], $temp_list)) continue;
                             $temp_list[] = $c['conference'];

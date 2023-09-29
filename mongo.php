@@ -762,6 +762,30 @@ Route::post('/delete/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+Route::post('/delete-teaching/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    //chack that no activities are connected
+    $activities = $osiris->activities->count(['module_id' => strval($module['_id'])]);
+    if ($activities != 0) {
+        header("Location: " . $_POST['redirect'] . "?msg=Cannot+delete+teaching+module+when+activities+are+still+connected&msgType=error");
+        die;
+    }
+
+    // prepare id
+    $id = $DB->to_ObjectID($id);
+    $updateResult = $osiris->teaching->deleteOne(['_id' => $id]);
+    $deletedCount = $updateResult->getDeletedCount();
+
+    // addUserActivity('delete');
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=deleted-1&msgType=error");
+        die();
+    }
+    echo json_encode([
+        'deleted' => $deletedCount
+    ]);
+});
+
 Route::post('/update-authors/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     // prepare id
