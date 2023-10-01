@@ -242,14 +242,15 @@ function newUser($username)
     $person['academic_title'] = null;
     $person['orcid'] = null;
     $person['dept'] = $person['unit'];
-    if (!array_key_exists($person['dept'], $Settings->departments))
+    if (!array_key_exists($person['dept'], $Settings->get('departments')))
         $person['dept'] = '';
 
-    $account = array("username" => $person["username"]);
-    $account['is_admin'] = false;
-    $account['is_controlling'] = $person['department'] == "Controlling";
-    $account['is_scientist'] = false;
-    $account['is_leader'] = str_contains($person['unit'], "leitung");
+    $account = array("username" => $person["username"], "roles"=>[]);
+
+    // $account['is_admin'] = false;
+    // $account['is_controlling'] = $person['department'] == "Controlling";
+    // $account['is_scientist'] = false;
+    // $account['is_leader'] = str_contains($person['unit'], "leitung");
     $account['is_active'] = !str_contains($person['unit'], "verlassen");
 
     return ['account' => $account, 'person' => $person];

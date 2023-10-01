@@ -42,11 +42,12 @@ foreach ($temp as $row) {
 
 // generate graph json
 $combinations = [];
-$labels = $Settings->getDepartments();
+$depts = $Settings->getDepartments();
 
-foreach ($labels as $key => $val) {
-    $labels[$key]['count'] = 0;
-    $labels[$key]['id'] = $key;
+$labels = [];
+foreach ($depts as $dept) {
+    $labels[$dept['id']] = $dept;
+    $labels[$dept['id']]['count'] = 0;
 }
 
 foreach ($activities as $doc) {

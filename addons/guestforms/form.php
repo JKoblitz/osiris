@@ -53,7 +53,7 @@
 
                 <div class="form-group">
                     <label class="required" for="username">
-                        <?= lang('Responsible Scientist at the ' . $Settings->affiliation, 'Verantwortliche/r Wissenschaftler/in von ' . $Settings->affiliation) ?>
+                        <?= lang('Responsible Scientist at the ' . $Settings->get('affiliation'), 'Verantwortliche/r Wissenschaftler/in von ' . $Settings->get('affiliation')) ?>
                     </label>
                     <select class="form-control" id="username" name="values[user]" autocomplete="off" required>
                         <?php

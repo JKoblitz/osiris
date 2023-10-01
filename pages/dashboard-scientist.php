@@ -135,7 +135,7 @@
     <div class="col-lg-4">
         <div class="box h-full">
             <div class="chart content">
-                <h5 class="title text-center"><?= lang('Role of ' . $Settings->affiliation . ' authors', 'Rolle der ' . $Settings->affiliation . '-Autoren') ?></h5>
+                <h5 class="title text-center"><?= lang('Role of ' . $Settings->get('affiliation') . ' authors', 'Rolle der ' . $Settings->get('affiliation') . '-Autoren') ?></h5>
                 <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
             </div>
             <script>
@@ -193,7 +193,7 @@
     <?php foreach ($stats as $type => $vals) {
 
         $years = [];
-        for ($i = $Settings->startyear; $i <= CURRENTYEAR; $i++) {
+        for ($i = $Settings->get('startyear'); $i <= CURRENTYEAR; $i++) {
             $years[] = strval($i);
         }
     ?>

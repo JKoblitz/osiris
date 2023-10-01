@@ -73,7 +73,7 @@ $stats = [];
 
 
 $groups = [];
-foreach ($Settings->activities as $key => $value) {
+foreach ($Settings->get('activities') as $key => $value) {
     $groups[$value['id']] = 0;
 }
 
@@ -84,7 +84,7 @@ $issues = 0;
 
 $years = [];
 $lom_years = [];
-for ($i = $Settings->startyear; $i <= CURRENTYEAR; $i++) {
+for ($i = $Settings->get('startyear'); $i <= CURRENTYEAR; $i++) {
     $years[] = strval($i);
     $lom_years[$i] = 0;
 }
@@ -93,14 +93,14 @@ $impacts = [];
 $journals = [];
 
 
-$filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]], 'year' => ['$gte' => $Settings->startyear]];
+$filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]], 'year' => ['$gte' => $Settings->get('startyear')]];
 $options = ['sort' => ["year" => -1, "month" => -1, "day" => -1]];
 $cursor = $osiris->activities->find($filter, $options);
 $activities = $cursor->toArray();
 
 foreach ($activities as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-    // if ($doc['year'] < $Settings->startyear) continue;
+    // if ($doc['year'] < $Settings->get('startyear')) continue;
 
     $type = $doc['type'];
 
@@ -295,22 +295,9 @@ if ($currentuser) { ?>
                     <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
                 </span>
             <?php } else { ?>
-                <?php if ($scientist['is_admin'] ?? false) { ?>
+                <?php foreach ($scientist['roles'] as $role) { ?>
                     <span class="user-role">
-                        <?= lang('ADMIN') ?>
-                    </span>
-                <?php } elseif ($scientist['is_controlling']) { ?>
-                    <span class="user-role">
-                        <?= lang('EDITOR') ?>
-                    </span>
-                <?php } else { ?>
-                    <span class="user-role">
-                        <?= lang('USER') ?>
-                    </span>
-                <?php } ?>
-                <?php if ($scientist['is_scientist'] ?? true) { ?>
-                    <span class="user-role">
-                        <?= lang('Scientist', ($scientist['gender'] ?? 'm') == 'f' ? 'Wissenschaftlerin' : 'Wissenschaftler') ?>
+                       <?=strtoupper($role)?>
                     </span>
                 <?php } ?>
                 <!-- <span class="user-role">Last login: <?= $scientist['lastlogin'] ?></span> -->
@@ -428,7 +415,7 @@ if ($currentuser) { ?>
                 }
                 $lastquarter = $Y . "Q" . $Q;
 
-                if ($scientist['is_scientist'] && !in_array($lastquarter, $approvedQ)) { ?>
+                if ($Settings->hasPermission('scientist') && !in_array($lastquarter, $approvedQ)) { ?>
                     <div class="alert muted mt-20">
 
                         <div class="title">
@@ -485,7 +472,7 @@ if ($currentuser) { ?>
             <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
                 <i class="ph ph-trophy text-signal ph-fw"></i>
             </a>
-            <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+            <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
                 <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="ph ph-edit text-muted ph-fw"></i>
                 </a>
@@ -493,7 +480,7 @@ if ($currentuser) { ?>
 
         </div>
 
-        <?php if (($USER['is_admin'] || $USER['is_controlling']) && isset($scientist['approved'])) {
+        <?php if (($Settings->hasPermission('complete-dashboard')) && isset($scientist['approved'])) {
             $approvedQ = $scientist['approved']->bsonSerialize();
             sort($approvedQ);
             echo "<div class='mt-20'>";
@@ -681,18 +668,6 @@ if ($currentuser) { ?>
                                 </td>
                             </tr>
                         <?php } ?>
-                        <tr>
-                            <td><?= lang('Department', 'Abteilung') ?></td>
-                            <td>
-                                <?= $Settings->getDepartments($scientist['dept'])['name'] ?? 'unknown' ?>
-                                <?php if ($scientist['is_leader'] ?? false) { ?>
-                                    <br>
-                                    <small class="text-osiris"><?= lang('Department head', 'Abteilungsleiter_in') ?></small>
-                                <?php } ?>
-
-
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -760,7 +735,7 @@ if ($currentuser) { ?>
                             <i class="ph ph-file-text text-primary"></i>
                             <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
                         </h5>
-                        <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
+                        <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->get('startyear') ?></p>
                         <canvas id="chart-impact" style="max-height: 30rem;"></canvas>
                         <?php
                         $x = [];
@@ -889,7 +864,7 @@ if ($currentuser) { ?>
                             <i class="ph ph-graduation-cap text-primary"></i>
                             <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
                         </h5>
-                        <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p>
+                        <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->get('startyear') ?></p>
 
                         <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
 
@@ -971,7 +946,7 @@ if ($currentuser) { ?>
                             <i class="ph ph-lg ph-coin text-signal"></i>
                             <?= lang('Coins per Year', 'Coins pro Jahr') ?>
                         </h5>
-                        <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->startyear ?></p> -->
+                        <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->get('startyear') ?></p> -->
                         <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
                     </div>
 

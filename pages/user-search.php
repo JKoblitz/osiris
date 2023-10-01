@@ -56,8 +56,8 @@ $Format = new Document(true);
 
     <?php
     $depts = [];
-    foreach ($Settings->getDepartments() as $d => $val) {
-        $depts[$d] = $val['name'];
+    foreach ($Settings->getDepartments() as $dept) {
+        $depts[$dept['id']] = $dept['name'];
     }
     ?>
 
@@ -104,52 +104,8 @@ $Format = new Document(true);
                     type: 'string'
                 },
                 {
-                    id: 'is_scientist',
-                    label: lang('Is scientist', 'Ist Wissenschaftler:in'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
-                    id: 'is_admin',
-                    label: lang('Is admin', 'Ist Admin'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
-                    id: 'is_controlling',
-                    label: lang('Is controlling', 'Ist Controlling'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
                     id: 'is_active',
                     label: lang('Is active', 'Ist aktiv'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
-                    id: 'is_leader',
-                    label: lang('Is leader', 'Ist AG-Leiter'),
                     type: 'boolean',
                     values: {
                         'true': 'yes',

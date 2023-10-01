@@ -102,8 +102,8 @@
 
     foreach ($quarters as $q => $d) {
 
-        $n_scientists = $osiris->accounts->count(["is_scientist" => true, "is_active" => true]);
-        $n_approved = $osiris->accounts->count(["is_scientist" => true, "is_active" => true, "approved" => $d['year'] . "Q" . $d['quarter']]);
+        $n_scientists = $osiris->accounts->count(["roles" => 'scientist', "is_active" => true]);
+        $n_approved = $osiris->accounts->count(["roles" => 'scientist', "is_active" => true, "approved" => $d['year'] . "Q" . $d['quarter']]);
     ?>
         <div class="col-md-3">
             <div class="box">

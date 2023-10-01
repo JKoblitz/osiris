@@ -34,12 +34,12 @@ Route::post('/auth/new-user', function () {
         'username' => $_POST['username'],
         'password' => $_POST['password'],
         'created' => date('d.m.Y'),
-        'is_controlling' => false,
-        'is_scientist' => boolval($person['is_scientist'] ?? false),
-        'is_leader' => false,
-        'is_active' => true,
+        'roles' => [],
+        'is_active' => true
     ];
+
+    if (boolval($person['is_scientist'] ?? false)) $account['roles'][] = 'scientist';
     $osiris->accounts->insertOne($account);
-    
+
     header("Location: " . ROOTPATH . "/user/login?msg=account-created");
 });

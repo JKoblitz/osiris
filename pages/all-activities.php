@@ -26,7 +26,7 @@ $user = $user ?? $_SESSION['username'];
 <a class="btn primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
 
-<?php if ($page == 'activities' && $USER['is_scientist']) { ?>
+<?php if ($page == 'activities' && $Settings->hasPermission('scientist')) { ?>
     <h1 class='m-0'>
         <i class="ph ph-book-open"></i>
         <?= lang("All activities", "Alle Aktivitäten") ?>
@@ -92,7 +92,9 @@ $user = $user ?? $_SESSION['username'];
             </button>
             <div class="dropdown-menu" aria-labelledby="select-department">
                 <?php
-                foreach ($Settings->getDepartments() as $id => $a) { ?>
+                foreach ($Settings->getDepartments() as $dept) { 
+                    $id = $dept['id'];
+                    ?>
                     <a data-type="<?= $id ?>" onclick="selectDepartment(this, '<?= $id ?>')" class="item" id="<?= $id ?>-btn">
                         <span class="text-<?= $id ?>"><?= $id ?></span>
                     </a>
@@ -118,12 +120,12 @@ $user = $user ?? $_SESSION['username'];
             <span class="input-group-text"><?= lang('From', 'Von') ?></span>
         </div>
         <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-        <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+        <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->get('startyear') ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
         <div class="input-group-prepend">
             <span class="input-group-text"><?= lang('to', 'bis') ?></span>
         </div>
         <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-        <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+        <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->get('startyear') ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
         <div class="input-group-append">
             <button class="btn" type="button" onclick="resetTime()">&times;</button>
@@ -404,7 +406,7 @@ $user = $user ?? $_SESSION['username'];
         }
 
         var maxYear = today.getFullYear() + 1,
-            minYear = <?= $Settings->startyear ?>;
+            minYear = <?= $Settings->get('startyear') ?>;
 
         if (fromMonth.length == 0 || parseInt(fromMonth) < 1 || parseInt(fromMonth) > 12) {
             fromMonth = 1

@@ -112,15 +112,10 @@ foreach ($departments as $dept => $val) {
         'name' => $dept,
         'abbr' => $dept,
         'children' => [],
-        // 'color' => $departments[$dept]['color']
     ];
     $departments[$dept]['index'] = $i++;
 }
 
-// foreach ($departments as $key => $val) {
-//     $departments[$key]['index'] = $i++;
-//     $departments[$key]['count'] = 0;
-// }
 
 $N = 0; //count($activities);
 $links = implode('&', $links);
@@ -188,7 +183,7 @@ foreach ($activities as $doc) {
         <label for="type-select"><?= lang('Activities', 'Aktivitäten') ?></label>
         <select name="type" id="type-select" class="form-control ">
             <option value=""><?= lang('All types', 'Alle Arten') ?></option>
-            <?php foreach ($Settings->activities as $type => $a) { ?>
+            <?php foreach ($Settings->get('activities') as $type => $a) { ?>
                 <option value="<?= $type ?>" <?= $type == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
             <?php } ?>
         </select>
@@ -215,6 +210,10 @@ foreach ($activities as $doc) {
 <script src="<?= ROOTPATH ?>/js/d3-sunburst.js?v=2"></script>
 <script>
     var DEPTS = JSON.parse('<?= json_encode($departments) ?>')
+    // var depts = {}
+    // DEPTS.forEach((d)=>{
+    //     depts[d.id] = d;
+    // })
     var flare = '<?= json_encode($flare) ?>'
     data = {
         name: AFFILIATION,

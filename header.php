@@ -77,7 +77,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <style>
         :root {
-            --affiliation: "<?= $Settings->affiliation ?>";
+            --affiliation: "<?= $Settings->get('affiliation') ?>";
         }
     </style>
 
@@ -101,7 +101,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
-        const AFFILIATION = "<?= $Settings->affiliation ?>";
+        const AFFILIATION = "<?= $Settings->get('affiliation') ?>";
     </script>
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/shepherd.css" />
@@ -156,8 +156,8 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v1.1</span>
             </a>
 
-            <a href="<?= $Settings->affiliation_details['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
-                <img src="<?= ROOTPATH ?>/img/<?= $Settings->affiliation_details['logo'] ?? '#' ?>" alt="<?= $Settings->affiliation ?>">
+            <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
+                <img src="<?= ROOTPATH ?>/img/<?= $Settings->get('affiliation_details')['logo'] ?? '#' ?>" alt="<?= $Settings->get('affiliation') ?>">
             </a>
         </div>
         <nav class="navbar navbar-bottom">
@@ -193,9 +193,9 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
             </ul>
 
-            <form id="navbar-search" action="<?=ROOTPATH?>/activities" method="get" class="nav-search">
+            <form id="navbar-search" action="<?= ROOTPATH ?>/activities" method="get" class="nav-search">
                 <div class="input-group">
-                    <input type="text" name="q" class="form-control" autocomplete="off" placeholder="<?=lang('Search in activities', 'Suche in Aktivitäten')?>">
+                    <input type="text" name="q" class="form-control" autocomplete="off" placeholder="<?= lang('Search in activities', 'Suche in Aktivitäten') ?>">
                     <div class="input-group-append">
                         <button class="btn primary"><i class="ph ph-magnifying-glass"></i></button>
                     </div>
@@ -224,14 +224,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <?php
                     $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
-                    $maintain = $osiris->users->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username' => 1]])->toArray();
+                    $maintain = $osiris->accounts->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username' => 1]])->toArray();
                     if (!empty($maintain)) { ?>
                         <form action="" class="content">
                             <select name="OSIRIS-SELECT-MAINTENANCE-USER" id="osiris-select-maintenance-user" class="form-control" onchange="$(this).parent().submit()">
-                                <option value="<?= $realusername ?>"><?= $_SESSION['name'] ?></option>
+                                <option value="<?= $realusername ?>"><?= $DB->getNameFromId($realusername) ?></option>
                                 <?php
                                 foreach ($maintain as $d) { ?>
-                                    <option value="<?= $d['username'] ?>" <?= $d['username'] ==  $_SESSION['username'] ? 'selected' : '' ?>><?= $d['displayname'] ?></option>
+                                    <option value="<?= $d['username'] ?>" <?= $d['username'] ==  $_SESSION['username'] ? 'selected' : '' ?>><?= $DB->getNameFromId($d['username']) ?></option>
                                 <?php } ?>
                             </select>
                         </form>
@@ -249,21 +249,22 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Add activity', 'Aktivität hinzuf.') ?>
                         </a>
                     </div>
+                    <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/' . $_SESSION['username']) ?>">
+                        <i class="ph ph-user" aria-hidden="true"></i>
+                        <?= $USER["displayname"] ?? 'User' ?>
+                    </a>
 
-                    <?php if ($USER['is_controlling']) { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/' . $_SESSION['username']) ?>">
-                            <i class="ph ph-user" aria-hidden="true"></i>
-                            <?= $USER["displayname"] ?? 'User' ?>
-                        </a>
 
+                    <?php if ($Settings->hasPermission('complete-dashboard')) { ?>
                         <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
                             <i class="ph ph-chart-line" aria-hidden="true"></i>
                             <?= lang('Dashboard') ?>
                         </a>
+                    <?php } ?>
+                    <?php if ($Settings->hasPermission('complete-queue')) { ?>
                         <?php
                         $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
                         ?>
-
                         <a href="<?= ROOTPATH ?>/queue/editor" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('queue/editor') ?>">
                             <i class="ph ph-queue" aria-hidden="true"></i>
                             <?= lang('Queue', 'Warteschlange') ?>
@@ -271,31 +272,28 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                                 <?= $n_queue ?>
                             </span>
                         </a>
+                    <?php } ?>
 
 
-                        <a href="<?= ROOTPATH ?>/coins" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
-                            <i class="ph ph-coin" aria-hidden="true"></i>
-                            <?= lang('Coins') ?>
-                        </a>
+<!-- 
+                    <a href="<?= ROOTPATH ?>/coins" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
+                        <i class="ph ph-coin" aria-hidden="true"></i>
+                        <?= lang('Coins') ?>
+                    </a> -->
 
-                    <?php } else { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $_SESSION['username'] ?>" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('profile/' . $_SESSION['username']) ?>">
-                            <i class="ph ph-student" aria-hidden="true"></i>
-                            <?= $USER["displayname"] ?? 'User' ?>
-                        </a>
+
+                    <?php if ($Settings->hasPermission('scientist')) { ?>
                         <a href="<?= ROOTPATH ?>/my-year" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-year') ?>">
                             <i class="ph ph-calendar" aria-hidden="true"></i>
                             <?= lang('My year', 'Mein Jahr') ?>
                         </a>
-                    <?php } ?>
-
-                    <?php if ($USER['is_scientist']) { ?>
                         <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-activities') ?>">
                             <i class="ph ph-folder-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
                         </a>
                     <?php } ?>
-                    <?php if ($USER['is_admin']) { ?>
+
+                    <?php if ($Settings->hasPermission('admin-panel')) { ?>
                         <a href="<?= ROOTPATH ?>/admin/general" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin') ?>">
                             <i class="ph ph-gear" aria-hidden="true"></i>
                             <?= lang('Admin Panel') ?>
@@ -360,12 +358,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Advanced search', 'Erweiterte Suche') ?>
                     </a>
 
-                    <?php if ($USER['is_scientist']) { ?>
-                        <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
-                            <i class="ph ph-chart-line" aria-hidden="true"></i>
-                            <?= lang('Dashboard') ?>
-                        </a>
-                    <?php } ?>
+                    <a href="<?= ROOTPATH ?>/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('dashboard') ?>">
+                        <i class="ph ph-chart-line" aria-hidden="true"></i>
+                        <?= lang('Dashboard') ?>
+                    </a>
+
                     <a href="<?= ROOTPATH ?>/visualize" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('visualize') ?>">
                         <i class="ph ph-graph" aria-hidden="true"></i>
                         <?= lang('Visualizations', 'Visualisierung') ?>
@@ -407,7 +404,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
 
 
-                    <?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
+                    <?php if ($Settings->hasPermission('reports')) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
                             <i class="ph ph-printer" aria-hidden="true"></i>
@@ -465,7 +462,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     printMsg();
                 }
 
-                if (isset($USER['is_admin']) && $USER['is_admin'] && isset($Settings->errors) && !empty($Settings->errors)) {
+                if ($Settings->hasPermission('admin') && isset($Settings->errors) && !empty($Settings->errors)) {
                 ?>
                     <div class="alert danger mb-20">
                         <h3 class="title">There are errors in your settings:</h3>

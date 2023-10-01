@@ -109,7 +109,7 @@ foreach ($activities as $doc) {
     $combinations = array_merge($combinations, combinations($authors));
 }
 $depts = $Settings->getDepartments();
-$depts = array_keys($depts);
+$depts = array_column($depts, 'id');
 usort($depts, function ($a, $b) use ($selectedUser) {
     if ($a == $selectedUser['dept']) return -1;
     return 1;
@@ -153,11 +153,15 @@ foreach ($combinations as $c) {
     var data = JSON.parse('<?= json_encode(array_values($labels)) ?>')
 
     const DEPTS = JSON.parse('<?= json_encode($Settings->getDepartments()) ?>');
+    var depts = {}
+    DEPTS.forEach((d)=>{
+        depts[d.id] = d;
+    })
 
     var colors = []
     var links = []
     data.forEach(function(d, i) {
-        var dept = DEPTS[d['dept']] ?? {
+        var dept = depts[d['dept']] ?? {
             color: '#cccccc'
         };
         colors.push(dept['color']);
@@ -175,7 +179,7 @@ foreach ($combinations as $c) {
     for (var i = 0; i < data.length; i++) {
         var d = data[i]['dept']
 
-        if (d && DEPTS[d] !== undefined && !depts_in_use.includes(d))
+        if (d && depts[d] !== undefined && !depts_in_use.includes(d))
             depts_in_use.push(d);
     }
 
@@ -193,12 +197,12 @@ foreach ($combinations as $c) {
             .attr('class', 'd-flex mb-5 text-' + d)
 
         row.append('div')
-            .style('background-color', DEPTS[d]['color'])
+            .style('background-color', depts[d]['color'])
             .style("width", "2rem")
             .style("height", "2rem")
             .style("display", "inline-block")
             .style("margin-right", "1rem")
-        row.append('span').text(DEPTS[d]['name'])
+        row.append('span').text(depts[d]['name'])
     });
 </script>
 

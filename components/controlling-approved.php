@@ -17,21 +17,18 @@
         }
         $yq = $Y . "Q" . $Q;
         $cursor = $osiris->accounts->find(
-            ['is_scientist' => true, 'is_active' => true],
+            ['roles' => 'scientist', 'is_active' => true],
             ['sort' => ["approved" => -1, "last" => 1]]
         );
         if (empty($cursor)) {
             echo "<div class='content'>" . lang('No scientists found.', 'Keine Forschenden gefunden.') . "</div>";
         } else foreach ($cursor as $s) {
-            // $s = MongoDB\BSON\toJSON($s);
-            // $s = $doc->bsonSerialize();
-            // var_dump($s);
             $approved = isset($s['approved']) && in_array($yq, $s['approved']->bsonSerialize());
         ?>
             <tr class="row-<?= $approved ? 'success' : '' ?>">
                 <td>
-                    <a href="<?= ROOTPATH ?>/my-year/<?= $s['_id'] ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
-                        <?= getNameFromId($s['_id']) ?>
+                    <a href="<?= ROOTPATH ?>/my-year/<?= $s['username'] ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
+                        <?= $DB->getNameFromId($s['username']) ?>
                     </a>
                 </td>
                 <td>

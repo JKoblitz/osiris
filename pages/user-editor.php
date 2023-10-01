@@ -119,7 +119,9 @@
             <select name="values[dept]" id="dept" class="form-control">
                 <option value="">Unknown</option>
                 <?php
-                foreach ($Settings->getDepartments() as $d => $dept) { ?>
+                foreach ($Settings->getDepartments() as $dept) { 
+                    $d = $dept['id'];
+                    ?>
                     <option value="<?= $d ?>" <?= $data['dept'] == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
                 <?php } ?>
             </select>
@@ -162,37 +164,31 @@
     </div>
 
     <div>
-        <div class="form-group custom-checkbox d-inline-block ml-10">
-            <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_active">Is Active</label>
-        </div>
-        <div class="form-group custom-checkbox d-inline-block ml-10">
-            <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_scientist">Is Scientist</label>
-        </div>
+        <b><?= lang('Roles', 'Rollen') ?>:</b>
+        <?php
+        // dump($data['roles']);
+        foreach ($Settings->get('roles') as $role) {
+            // everyone is user: no setting needed
+            if ($role == 'user') continue;
 
+            // check if user has role
+            $has_role = in_array($role, DB::doc2Arr($data['roles']??array()));
 
-        <div class="form-group custom-checkbox ml-10  <?= ($USER['is_admin'] || $USER['is_controlling']) ? ' d-inline-block ' : 'd-none' ?>">
-            <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_controlling">Is Editor</label>
-        </div>
-
-        <div class="form-group custom-checkbox ml-10  <?= ($USER['is_admin'] || $USER['is_controlling']) ? ' d-inline-block ' : 'd-none' ?>">
-            <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_leader">Is Leader</label>
-        </div>
-
-        <?php if ($USER['is_admin']) { ?>
-            <div class="form-group custom-checkbox ml-10 d-inline-block">
-                <input type="checkbox" id="is_admin" value="1" name="values[is_admin]" <?= ($data['is_admin'] ?? false) ? 'checked' : '' ?>>
-                <label for="is_admin">Is Admin</label>
+            $disable = false;
+            if (!$Settings->hasPermission('edit-roles')) $disable = true;
+            // only admin can make others admins
+            if ($role == 'admin' && !$Settings->hasPermission('admin')) $disable = true;
+        ?>
+            <div class="form-group custom-checkbox d-inline-block ml-10 <?= $disable ? 'text-muted' : '' ?>">
+                <input type="checkbox" id="role-<?= $role ?>" value="<?= $role ?>" name="values[roles][]" <?= ($has_role) ? 'checked' : '' ?> <?= $disable ? 'onclick="return false;"' : '' ?>>
+                <label for="role-<?= $role ?>"><?= strtoupper($role) ?></label>
             </div>
         <?php } ?>
 
 
     </div>
 
-    <?php if ($data['username'] == $_SESSION['username'] || $USER['is_admin']) { ?>
+    <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('edit-user-settings')) { ?>
 
         <div class="alert signal mb-20">
             <div class="title">
@@ -280,8 +276,10 @@
             </div>
 
             <p class="m-0 text-danger">
-                <?=lang('Warning: this person gets full access to your OSIRIS profile and can edit in your name.', 
-                'Warnung: diese Person erhält vollen Zugriff auf dein OSIRIS-Profil und kann in deinem Namen editieren.')?>
+                <?= lang(
+                    'Warning: this person gets full access to your OSIRIS profile and can edit in your name.',
+                    'Warnung: diese Person erhält vollen Zugriff auf dein OSIRIS-Profil und kann in deinem Namen editieren.'
+                ) ?>
             </p>
 
             <datalist id="user-list">

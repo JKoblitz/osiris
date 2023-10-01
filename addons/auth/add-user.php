@@ -56,7 +56,9 @@ $data = $_POST['values'] ?? [];
                 <option value="">Unknown</option>
                 <?php
                 $dept = $data['dept'] ?? '';
-                foreach ($Settings->getDepartments() as $d => $dept) { ?>
+                foreach ($Settings->getDepartments() as $dept) { 
+                    $d = $dept['id'];
+                    ?>
                     <option value="<?= $d ?>" <?= $dept == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
                 <?php } ?>
             </select>
@@ -109,7 +111,7 @@ $data = $_POST['values'] ?? [];
     </div>
 
     <?php
-    if ($Settings->affiliation === 'LISI') {
+    if ($Settings->get('affiliation') === 'LISI') {
     ?>
         <div class="alert signal mb-20">
             <div class="title">

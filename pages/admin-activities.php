@@ -181,11 +181,9 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
 <div class="row">
     <div class="col-lg-9">
-        <div class="pills">
-            <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
-            <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
-            <a href="<?= ROOTPATH ?>/admin/activities" class="btn active"><?= lang('Activities', 'Aktivitäten') ?></a>
-        </div>
+        <?php
+        include BASEPATH . "/components/admin-nav.php";
+        ?>
 
         <form action="#" method="post" id="modules-form" class="">
             <button class="btn success lg position-fixed" style="top: calc(100vh - 10rem);right:0;z-index: 30;margin: 3rem">

@@ -43,7 +43,7 @@
                     <th>Last name <span class="text-danger">*</span></th>
                     <th>First name</th>
                     <th>Position</th>
-                    <th><?= $Settings->affiliation ?></th>
+                    <th><?= $Settings->get('affiliation') ?></th>
                     <th>Username</th>
                     <th></th>
                 </tr>

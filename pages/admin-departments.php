@@ -74,11 +74,9 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
 </div>
 
 
-<div class="pills">
-    <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/departments" class="btn active"><?= lang('Departments', 'Abteilungen') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
-</div>
+<?php
+    include BASEPATH . "/components/admin-nav.php";
+?>
 
 <form action="#" method="post" id="modules-form">
     <?php foreach ($departments as $t => $dept) {

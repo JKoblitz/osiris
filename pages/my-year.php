@@ -37,7 +37,7 @@ $_lom = 0;
 
 
 $groups = [];
-foreach ($Settings->activities as $key => $value) {
+foreach ($Settings->get('activities') as $key => $value) {
     $groups[$value['id']] = [];
 }
 
@@ -225,7 +225,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
                             </div>
                         </div>
                         <select name="year" id="year" class="form-control">
-                            <?php foreach (range($Settings->startyear, CURRENTYEAR) as $year) { ?>
+                            <?php foreach (range($Settings->get('startyear'), CURRENTYEAR) as $year) { ?>
                                 <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
                             <?php } ?>
                         </select>

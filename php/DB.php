@@ -59,14 +59,10 @@ class DB
         $USER = array();
         if (!empty($_SESSION['username'])) {
             $USER = $this->getUser($_SESSION['username']);
-
             // set standard values
-            if (!isset($USER['is_controlling'])) $USER['is_controlling'] = false;
-
-            $USER['is_admin'] = ($_SESSION['username'] === ADMIN || ($USER['is_admin'] ?? false));
-
-            if (!isset($USER['is_scientist'])) $USER['is_scientist'] = false;
-            if (!isset($USER['is_leader'])) $USER['is_leader'] = false;
+            if ($_SESSION['username'] === ADMIN) {
+                $USER['roles'][] = 'admin';
+            }
             if (!isset($USER['display_activities'])) $USER['display_activities'] = 'web';
         }
         return $this->doc2Arr($USER);
@@ -513,7 +509,7 @@ class DB
             if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
             elseif (in_array($doc['subtype'], ['misc-annual', 'editorial']) && is_null($doc['end'])) {
                 $de = $endtime;
-            } else 
+            } else
                 $de = $ds;
 
             if (($de  >= $starttime) && ($endtime >= $ds)) {
@@ -587,7 +583,7 @@ class DB
                 'print' => $Format->format(),
                 'web' => $Format->formatShort(),
                 'depts' => $this->getDeptFromAuthors($doc['authors']),
-                'icon' => trim( $Format->activity_icon()),
+                'icon' => trim($Format->activity_icon()),
                 'title' => $Format->activity_title(),
             ];
             $values = ['rendered' => $rendered];

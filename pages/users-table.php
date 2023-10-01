@@ -72,7 +72,7 @@
         <th><?= lang('First name', 'Vorname') ?></th>
         <th><?= lang('Dept', 'Abteilung') ?></th>
         <th><?= lang('Phone', 'Telefon') ?></th>
-        <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+        <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
             <th></th>
         <?php
         }
@@ -114,7 +114,7 @@
                         echo $ph;
                     }
                     ?></td>
-                <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+                <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
                     <td>
                         <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
                             <i class="ph ph-fill ph-note-pencil"></i>

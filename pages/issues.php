@@ -44,14 +44,14 @@ $Format = new Document($user);
                     However, a lot can go wrong with this. For reporting purposes, for example, it is not only important that the 
                     bibliographic data is correct, the users must also be correctly assigned. Therefore it is important, <b>if this 
                     is you at all</b> or maybe someone with a similar name, that your <b>name is spelled correctly</b> and 
-                    that you were also <b>affiliated with the ' . $Settings->affiliation . '</b>. 
+                    that you were also <b>affiliated with the ' . $Settings->get('affiliation') . '</b>. 
                     ', '
                     Manchmal fügen andere Wissenschaftler:innen oder Mitglieder des Institutes wissenschaftliche Aktivitäten hinzu,
                     an denen du ebenfalls beteiligt warst. Das System versucht, diese automatisch zuzuordnen, weshalb sie hier 
                     in dieser Liste auftauchen. Allerdings kann dabei sehr viel schief gehen. Für die Berichterstattung ist es z.B. 
                     nicht nur wichtig, dass die bibliographischen Daten korrekt sind, die Nutzer müssen auch korrekt zugeordnet sein. 
                     Deshalb ist es wichtig, <b>ob du das überhaupt bist</b> (oder vielleicht jemand mit einem ähnlichen Namen), 
-                    dass <b>dein Name korrekt geschrieben</b> ist und du außerdem <b>der ' . $Settings->affiliation . ' zugehörig</b> bist. 
+                    dass <b>dein Name korrekt geschrieben</b> ist und du außerdem <b>der ' . $Settings->get('affiliation') . ' zugehörig</b> bist. 
                 ') ?>
             </p>
             <p>
@@ -236,8 +236,8 @@ if (array_sum($a) === 0) {
                 <form action="<?= ROOTPATH ?>/approve-all" method="post">
                     <input type="hidden" name="user" value="<?= $user ?>">
                     <?= lang(
-                        'I confirm that I am the author of <b>all</b> of the following publications and that my affiliation has always been the ' . $Settings->affiliation . '.',
-                        'Ich bestätige, dass ich Autor:in <b>aller</b> folgenden Publikationen bin und meine Affiliation dabei immer die ' . $Settings->affiliation . ' war.'
+                        'I confirm that I am the author of <b>all</b> of the following publications and that my affiliation has always been the ' . $Settings->get('affiliation') . '.',
+                        'Ich bestätige, dass ich Autor:in <b>aller</b> folgenden Publikationen bin und meine Affiliation dabei immer die ' . $Settings->get('affiliation') . ' war.'
                     ) ?>
                     <button class="btn block success" type="submit"><?= lang('Approve all', 'Alle bestätigen') ?></button>
                 </form>
@@ -301,10 +301,10 @@ if (array_sum($a) === 0) {
                             <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
                         <?php } ?>
                         <br>
-                        <button class="btn small text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->affiliation, 'Ja, und ich war der ' . $Settings->affiliation . ' angehörig') ?>">
+                        <button class="btn small text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->get('affiliation'), 'Ja, und ich war der ' . $Settings->get('affiliation') . ' angehörig') ?>">
                             <i class="ph ph-check ph-fw"></i>
                         </button>
-                        <button class="btn small text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->affiliation, 'Ja, aber ich war nicht der ' . $Settings->affiliation . ' angehörig') ?>">
+                        <button class="btn small text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->get('affiliation'), 'Ja, aber ich war nicht der ' . $Settings->get('affiliation') . ' angehörig') ?>">
                             <i class="ph ph-push-pin-slash ph-fw"></i>
                         </button>
                         <button class="btn small text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">

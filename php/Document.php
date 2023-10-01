@@ -274,9 +274,9 @@ class Document extends Settings
             $type = strtolower(trim($this->doc['type'] ?? $this->doc['subtype'] ?? ''));
         }
         $this->type = $type;
-        $this->typeArr = $this->activities[$type];
+        $this->typeArr = $this->get('activities')[$type];
 
-        if (!isset($this->activities[$type])) return;
+        if (!isset($this->get('activities')[$type])) return;
         if (!isset($this->doc['subtype'])) {
 
             $subtype = $type;

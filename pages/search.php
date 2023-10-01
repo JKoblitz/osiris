@@ -32,7 +32,7 @@
         </div>
         <div class="form-group">
             <label class=" w-100" for="affiliation">Affiliation</label>
-            <input type="text" class="form-control" placeholder="" id="affiliation" value="<?= $Settings->affiliation ?>">
+            <input type="text" class="form-control" placeholder="" id="affiliation" value="<?= $Settings->get('affiliation') ?>">
         </div>
         <div class="form-group">
             <label class=" w-100" for="title">Title</label>

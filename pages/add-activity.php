@@ -77,7 +77,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             </h5>
             <?php if (lang("en", "de") == "en") { ?>
                 <p>
-                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?= $Settings->affiliation ?> authors are suggested in a list. An author from the list will be automatically assigned to <?= $Settings->affiliation ?>.
+                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?= $Settings->get('affiliation') ?> authors are suggested in a list. An author from the list will be automatically assigned to <?= $Settings->get('affiliation') ?>.
                 </p>
 
                 <p>
@@ -87,11 +87,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     To <b>change the author order</b>, you can take an author and drag and drop it to the desired position.
                 </p>
                 <p>
-                    To <b>mark an author as belonging to the <?= $Settings->affiliation ?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?= $Settings->affiliation ?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?= $Settings->affiliation ?> employees but were not at the time of the activity, they must not be marked as a <?= $Settings->affiliation ?> author!
+                    To <b>mark an author as belonging to the <?= $Settings->get('affiliation') ?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?= $Settings->get('affiliation') ?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?= $Settings->get('affiliation') ?> employees but were not at the time of the activity, they must not be marked as a <?= $Settings->get('affiliation') ?> author!
                 </p>
             <?php } else { ?>
                 <p>
-                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?= $Settings->affiliation ?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?= $Settings->affiliation ?> zugeordnet.
+                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?= $Settings->get('affiliation') ?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?= $Settings->get('affiliation') ?> zugeordnet.
                 </p>
 
                 <p>
@@ -101,7 +101,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     Um die <b>Autorenreihenfolge zu ändern</b>, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
                 </p>
                 <p>
-                    Um einen <b>Autor zur <?= $Settings->affiliation ?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?= $Settings->affiliation ?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?= $Settings->affiliation ?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?= $Settings->affiliation ?>-Autor markiert werden!
+                    Um einen <b>Autor zur <?= $Settings->get('affiliation') ?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?= $Settings->get('affiliation') ?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?= $Settings->get('affiliation') ?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?= $Settings->get('affiliation') ?>-Autor markiert werden!
                 </p>
 
                 <p>

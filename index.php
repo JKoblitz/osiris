@@ -45,7 +45,6 @@ if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
 
     // check if the user is allowed to do that
     $allowed = $osiris->accounts->count(['username' => $username, 'maintenance' => $realusername]);
-
     // change username if user is allowed
     if ($allowed == 1 || $realusername == $username) {
         $msg = "User switched!";
@@ -75,10 +74,10 @@ Route::get('/', function () {
         include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
         include BASEPATH . "/footer.php";
-    } elseif ($USER['is_controlling']) {
-        $path = ROOTPATH . "/dashboard";
-        if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
-        header("Location: $path");
+    // } elseif ($USER['is_controlling']) {
+    //     $path = ROOTPATH . "/dashboard";
+    //     if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
+    //     header("Location: $path");
     } else {
         $path = ROOTPATH . "/profile/" . $_SESSION['username'];
         if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
@@ -140,7 +139,7 @@ Route::get('/issues', function () {
 Route::get('/queue/(user|editor)', function ($role) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
-    if ($role == 'editor' && ($USER['is_controlling'] || $USER['is_admin'])) {
+    if ($role == 'editor' && ($Settings->hasPermission('complete-dashboard'))) {
         $filter = ['declined' => ['$ne' => true]];
     } else {
         $filter = ['authors.user' => $user, 'declined' => ['$ne' => true]];
@@ -679,7 +678,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     global $form;
     $form = $osiris->activities->findOne(['_id' => $mongoid]);
     $copy = false;
-    if (($form['locked'] ?? false) && !$USER['is_controlling']) {
+    if (($form['locked'] ?? false) && !$Settings->hasPermission('edit-locked')) {
         header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
     }
 
@@ -791,7 +790,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
     $id = $DB->to_ObjectID($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
-    if (($form['locked'] ?? false) && !$USER['is_controlling']) {
+    if (($form['locked'] ?? false) && !$Settings->hasPermission('edit-locked')) {
         header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
     }
 
@@ -1021,10 +1020,8 @@ Route::get('/my-year/?(.*)', function ($user) {
 
 Route::get('/controlling', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('lock-activities')) die('You have no permission to be here.');
     $breadcrumb = [
-        // ['name' => lang('Journals', 'Journale'), 'path' => "/journal"],
-        // ['name' => lang('Table', 'Tabelle'), 'path' => "/journal"],
         ['name' => lang("Controlling")]
     ];
 
@@ -1035,7 +1032,7 @@ Route::get('/controlling', function () {
 
 Route::post('/controlling', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('lock-activities')) die('You have no permission to be here.');
 
     $breadcrumb = [
         ['name' => lang("Controlling")]
@@ -1092,7 +1089,7 @@ Route::post('/controlling', function () {
 
 Route::post('/reset-settings', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
 
 
     $filename = BASEPATH . '/settings.default.json';
@@ -1123,9 +1120,9 @@ Route::post('/reset-settings', function () {
 }, 'login');
 
 
-Route::get('/admin/(activities|departments|general)', function ($page) {
+Route::get('/admin/(activities|departments|general|roles)', function ($page) {
     include_once BASEPATH . "/php/init.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
     $breadcrumb = [
         ['name' => lang("Admin Panel $page")]
     ];
@@ -1135,16 +1132,25 @@ Route::get('/admin/(activities|departments|general)', function ($page) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::post('/admin/(activities|departments|general)', function ($page) {
+Route::post('/admin/(activities|departments|general|roles)', function ($page) {
     include_once BASEPATH . "/php/init.php";
-    if (!$USER['is_controlling'] && !$USER['is_admin']) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
 
 
     $json = $Settings->settings;
 
-    foreach (['activities', 'departments', 'affiliation', 'startyear', 'general'] as $key) {
+    foreach (['activities', 'departments', 'affiliation', 'general', 'roles'] as $key) {
         if (isset($_POST[$key])) {
-            $json[$key] = $_POST[$key];
+            $values = $_POST[$key];
+
+            if ($key == 'roles'){
+                foreach ($values['rights'] as $k => $v) {
+                    $values['rights'][$k] = array_map('boolval', $v);
+                }
+            }
+            // dump($values, true);
+            // die;
+            $json[$key] = $values;
         }
     }
     $msg = 'settings-saved';
@@ -1170,10 +1176,10 @@ Route::post('/admin/(activities|departments|general)', function ($page) {
                 default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
             };
             // printMsg($errorMsg, "error");
-            $json['affiliation']['logo'] = $Settings->affiliation_details['logo'];
+            $json['affiliation']['logo'] = $Settings->get('affiliation_details')['logo'];
         } else if ($filesize > 2000000) {
             $msg = lang("File is too big: max 2 MB is allowed.", "Die Datei ist zu groß: maximal 2 MB sind erlaubt.");
-            $json['affiliation']['logo'] = $Settings->affiliation_details['logo'];
+            $json['affiliation']['logo'] = $Settings->get('affiliation_details')['logo'];
         }
         if (file_exists($filepath)) {
             chmod($filepath, 0755); //Change the file permissions if allowed
@@ -1183,7 +1189,7 @@ Route::post('/admin/(activities|departments|general)', function ($page) {
             $json['affiliation']['logo'] = "logo-custom." . $filetype;
         } else {
             $msg = lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload.");
-            $json['affiliation']['logo'] = $Settings->affiliation_details['logo'];
+            $json['affiliation']['logo'] = $Settings->get('affiliation_details')['logo'];
         }
     }
     $json = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -1563,10 +1569,10 @@ Route::get('/migrate', function () {
     ];
 
     $account_keys = [
-        "is_admin",
-        "is_controlling",
-        "is_scientist",
-        "is_leader",
+        // "is_admin",
+        // "is_controlling",
+        // "is_scientist",
+        // "is_leader",
         "is_active",
         "maintenance",
         "hide_achievements",
@@ -1599,9 +1605,19 @@ Route::get('/migrate', function () {
         $account = ["username" => $username];
         foreach ($account_keys as $key) {
             if (!array_key_exists($key, $user)) continue;
+            if ($key)
             $account[$key] = $user[$key];
             unset($user[$key]);
         }
+        $roles = [];
+        foreach (['editor', 'admin', 'leader', 'controlling', 'scientist'] as $role) {
+            if ($user['is_' . $role] ?? false){
+                if ($role == 'controlling') $role = 'editor';
+                $roles[] = $role;
+            }
+        }
+        $account['roles'] = $roles;
+
         $osiris->accounts->insertOne($account);
 
         if (isset($user['achievements'])) {

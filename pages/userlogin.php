@@ -21,13 +21,13 @@
 <h5 class="">
     <?php
     if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
-        if ($Settings->affiliation === 'LISI') {
+        if ($Settings->get('affiliation') === 'LISI') {
             echo lang('Please log-in with your Demo account.', 'Bitte melde dich mit deinem Demo-Benutzeraccount an.');
         } else {
             echo lang('Please log-in with your OSIRIS account.', 'Bitte melde dich mit deinem OSIRIS-Benutzeraccount an.');
         }
     } else {
-        echo lang('Please log-in with your ' . $Settings->affiliation . '-Account.', 'Bitte melde dich mit deinem ' . $Settings->affiliation . '-Benutzeraccount an.');
+        echo lang('Please log-in with your ' . $Settings->get('affiliation') . '-Account.', 'Bitte melde dich mit deinem ' . $Settings->get('affiliation') . '-Benutzeraccount an.');
     }
     ?>
 </h5>
@@ -54,7 +54,7 @@
         ) . "</a>";
     }
 
-    if ($Settings->affiliation === 'LISI') {
+    if ($Settings->get('affiliation') === 'LISI') {
     ?>
 
         <div class="alert signal mt-20">

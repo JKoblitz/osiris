@@ -1,9 +1,5 @@
 <?php
 
-require_once BASEPATH . '/php/Settings.php';
-global $Settings;
-$Settings = new Settings();
-
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
     if ($msg === null && isset($_SESSION['msg'])) {

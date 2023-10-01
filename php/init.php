@@ -33,6 +33,7 @@ if (!empty($_GET['language'])) {
     ]);
 }
 
+require_once BASEPATH . '/php/Settings.php';
 include_once BASEPATH . "/php/_config.php";
 include_once BASEPATH . "/php/DB.php";
 
@@ -44,4 +45,8 @@ $osiris = $DB->db;
 
 global $USER;
 $USER = $DB->initUser();
+
+
+global $Settings;
+$Settings = new Settings($USER);
 ?>

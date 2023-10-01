@@ -76,7 +76,7 @@ $cursor = $osiris->activities->find($filter, $options);
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-    if ($doc['year'] < $Settings->startyear) continue;
+    if ($doc['year'] < $Settings->get('startyear')) continue;
     $type = $doc['type'];
     $year = strval($doc['year']);
     $issue = false;
@@ -193,7 +193,7 @@ foreach ($impacts as $vals) {
     };
 </script>
 
-<?php if ($USER['is_controlling'] ) { ?>
+<?php if ($Settings->hasPermission('complete-dashboard')) { ?>
     <a href="<?=ROOTPATH?>/controlling" class="btn danger lg float-right">Controlling</a>
 
         <h1 class="m-0">Controlling Dashboard</h1>

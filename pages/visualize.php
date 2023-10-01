@@ -15,10 +15,10 @@
  * @license     MIT
  */
 
-$users = $osiris->persons->find(['is_scientist' => true], ['sort' => ["last" => 1]]);
+$users = $osiris->persons->find(['roles' => 'scientist'], ['sort' => ["last" => 1]]);
 
 $scientist = $_GET['scientist'] ?? $_SESSION['username'];
-$selectedUser = $osiris->persons->findone(['_id' => $scientist]);
+$selectedUser = $osiris->persons->findone(['user' => $scientist]);
 
 ?>
 

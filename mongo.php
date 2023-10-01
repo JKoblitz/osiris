@@ -526,16 +526,18 @@ Route::post('/update-user/(.*)', function ($user) {
     $account = [];
 
     foreach ([
-        'is_admin' => 'bool',
-        'is_controlling' => 'bool',
-        'is_scientist' => 'bool',
-        'is_leader' => 'bool',
-        'is_active' => 'bool',
+        // 'is_admin' => 'bool',
+        // 'is_controlling' => 'bool',
+        // 'is_scientist' => 'bool',
+        // 'is_leader' => 'bool',
+        // 'is_active' => 'bool',
         'display_activities' => 'string',
         'show_coins' => 'string',
         'hide_achievements' => 'string',
         'maintenance' => 'string',
+        'roles'=> 'array'
     ] as $key => $type) {
+        if (!isset($values[$key])) continue;
         if ($type == 'bool') {
             $account[$key] = boolval($values[$key] ?? false);
         } else {

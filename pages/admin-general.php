@@ -16,7 +16,7 @@
  * @license     MIT
  */
 
-$affiliation = $Settings->affiliation_details;
+$affiliation = $Settings->get('affiliation_details');
 
 // transform activities to new format
 $Format = new Document();
@@ -42,11 +42,10 @@ if ($N > 0) {
 ?>
 
 
-<nav class="pills">
-    <a href="<?= ROOTPATH ?>/admin/general" class="btn active"><?= lang('General', 'Allgemein') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/departments" class="btn"><?= lang('Departments', 'Abteilungen') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
-</nav>
+<?php
+    include BASEPATH . "/components/admin-nav.php";
+?>
+
 
 <form action="#" method="post" id="modules-form" enctype="multipart/form-data">
 
@@ -57,7 +56,7 @@ if ($N > 0) {
         <div class="content">
             <div class="form-group">
                 <label for="name" class="required "><?= lang('Start year', 'Startjahr') ?></label>
-                <input type="year" class="form-control" name="startyear" required value="<?= $Settings->startyear ?? '2022' ?>">
+                <input type="year" class="form-control" name="general[startyear]" required value="<?= $Settings->get('startyear') ?? '2022' ?>">
                 <span class="text-muted">
                     <?= lang(
                         'The start year defines the beginning of many charts in OSIRIS. It is possible to add activities that occur befor that year though.',
