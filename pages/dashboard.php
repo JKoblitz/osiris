@@ -192,20 +192,3 @@ foreach ($impacts as $vals) {
 
     };
 </script>
-
-<?php if ($Settings->hasPermission('complete-dashboard')) { ?>
-    <a href="<?=ROOTPATH?>/controlling" class="btn danger lg float-right">Controlling</a>
-
-        <h1 class="m-0">Controlling Dashboard</h1>
-
-<?php
-    include BASEPATH . "/pages/dashboard-controlling.php";
-    include BASEPATH . "/pages/dashboard-scientist.php";
-} else { ?>
-
-        <h1 class="m-0"><?=lang('Scientist', 'Wissenschaftler')?> Dashboard</h1>
-
-<?php
-
-    include BASEPATH . "/pages/dashboard-scientist.php";
- } ?>

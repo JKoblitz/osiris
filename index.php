@@ -74,10 +74,10 @@ Route::get('/', function () {
         include BASEPATH . "/header.php";
         include BASEPATH . "/pages/userlogin.php";
         include BASEPATH . "/footer.php";
-    // } elseif ($USER['is_controlling']) {
-    //     $path = ROOTPATH . "/dashboard";
-    //     if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
-    //     header("Location: $path");
+        // } elseif ($USER['is_controlling']) {
+        //     $path = ROOTPATH . "/dashboard";
+        //     if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
+        //     header("Location: $path");
     } else {
         $path = ROOTPATH . "/profile/" . $_SESSION['username'];
         if (!empty($_SERVER['QUERY_STRING'])) $path .= "?" . $_SERVER['QUERY_STRING'];
@@ -110,6 +110,17 @@ Route::get('/dashboard', function () {
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/dashboard.php";
+
+    if ($Settings->hasPermission('complete-dashboard')) {
+        echo '<a href="' . ROOTPATH . '/controlling" class="btn danger lg float-right">Controlling</a>';
+
+        echo '<h1 class="m-0">Controlling Dashboard</h1>';
+        include BASEPATH . "/pages/dashboard-controlling.php";
+        include BASEPATH . "/pages/dashboard-scientist.php";
+    } else {
+        echo '<h1 class="m-0">' . lang('Scientist', 'Wissenschaftler') . 'Dashboard</h1>';
+        include BASEPATH . "/pages/dashboard-scientist.php";
+    }
     include BASEPATH . "/footer.php";
 });
 
@@ -1143,7 +1154,7 @@ Route::post('/admin/(activities|departments|general|roles)', function ($page) {
         if (isset($_POST[$key])) {
             $values = $_POST[$key];
 
-            if ($key == 'roles'){
+            if ($key == 'roles') {
                 foreach ($values['rights'] as $k => $v) {
                     $values['rights'][$k] = array_map('boolval', $v);
                 }
@@ -1627,12 +1638,12 @@ Route::get('/migrate', function () {
         foreach ($account_keys as $key) {
             if (!array_key_exists($key, $user)) continue;
             if ($key)
-            $account[$key] = $user[$key];
+                $account[$key] = $user[$key];
             unset($user[$key]);
         }
         $roles = [];
         foreach (['editor', 'admin', 'leader', 'controlling', 'scientist'] as $role) {
-            if ($user['is_' . $role] ?? false){
+            if ($user['is_' . $role] ?? false) {
                 if ($role == 'controlling') $role = 'editor';
                 $roles[] = $role;
             }

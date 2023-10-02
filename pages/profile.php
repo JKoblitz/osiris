@@ -55,6 +55,15 @@
 
 <?php
 
+
+$Q = CURRENTQUARTER - 1;
+$Y = CURRENTYEAR;
+if ($Q < 1) {
+    $Q = 4;
+    $Y -= 1;
+}
+$lastquarter = $Y . "Q" . $Q;
+
 $currentuser = $user == $_SESSION['username'];
 
 // Check for new achievements
@@ -407,13 +416,6 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     $approvedQ = $scientist['approved']->bsonSerialize();
                 }
 
-                $Q = CURRENTQUARTER - 1;
-                $Y = CURRENTYEAR;
-                if ($Q < 1) {
-                    $Q = 4;
-                    $Y -= 1;
-                }
-                $lastquarter = $Y . "Q" . $Q;
 
                 if ($Settings->hasPermission('scientist') && !in_array($lastquarter, $approvedQ)) { ?>
                     <div class="alert muted mt-20">
@@ -560,16 +562,6 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 // $(el).prepend(group);
                 $(group).insertBefore(el);
             }
-
-            // function resizeInput() {
-            //     console.log(this);
-            //     var el = $(this) 
-            //     el.css('width', el.val().length+'ch')
-            // }
-            // var expertFields = $('#expertise-form').find('input:not([type=hidden])')
-            // expertFields.on('input', resizeInput)
-
-            // expertFields.each((n, el) => {resizeInput.call(el)})
         </script>
     <?php } else if (!empty($scientist['expertise'] ?? array())) { ?>
         <div class="mt-20" id="expertise">
@@ -583,7 +575,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     <?php } ?>
 
     <div class="row row-eq-spacing my-0">
-        <div class="profile-widget col-lg-4">
+        <div class="profile-widget col-lg-6">
             <div class="box h-full">
                 <div class="content">
                     <?php if ($currentuser) { ?>
@@ -679,8 +671,115 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             </div>
         </div>
 
-        <?php if (!empty($activities)) { ?>
-            <div class="profile-widget col-lg-8">
+        <?php if ($currentuser && $Settings->hasPermission('complete-dashboard')) {
+
+            $n_scientists = $osiris->accounts->count(["roles" => 'scientist', "is_active" => true]);
+            $n_approved = $osiris->accounts->count(["roles" => 'scientist', "is_active" => true, "approved" => $lastquarter]);
+        ?>
+            <div class="col-6 col-md-3 profile-widget ">
+                <div class="box h-full">
+                    <div class="chart content">
+                        <h5 class="title text-center"><?= $lastquarter ?></h5>
+
+                        <canvas id="approved-<?= $lastquarter ?>"></canvas>
+                        <div class="text-right mt-5">
+                            <button class="btn small" onclick="loadModal('components/controlling-approved', {q: '<?= $Q ?>', y: '<?= $Y ?>'})">
+                                <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Details') ?>
+                            </button>
+                        </div>
+
+                        <script>
+                            var ctx = document.getElementById('approved-<?= $lastquarter ?>')
+                            var myChart = new Chart(ctx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: ['<?= lang("Approved", "Bestätigt") ?>', '<?= lang("Approval missing", "Bestätigung fehlt") ?>'],
+                                    datasets: [{
+                                        label: '# of Scientists',
+                                        data: [<?= $n_approved ?>, <?= $n_scientists - $n_approved ?>],
+                                        backgroundColor: [
+                                            '#ECAF0095',
+                                            '#B61F2995',
+                                        ],
+                                        borderColor: '#464646', //'',
+                                        borderWidth: 1,
+                                    }]
+                                },
+                                plugins: [ChartDataLabels],
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        datalabels: {
+                                            color: 'black',
+                                            // anchor: 'end',
+                                            // align: 'end',
+                                            // offset: 10,
+                                            font: {
+                                                size: 20
+                                            }
+                                        },
+                                        legend: {
+                                            position: 'bottom',
+                                            display: false,
+                                        },
+                                        title: {
+                                            display: false,
+                                            text: 'Scientists approvation'
+                                        }
+                                    }
+                                }
+                            });
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+
+
+        <?php if ($currentuser && $Settings->hasPermission('reports')) { ?>
+            <div class="col-6 col-md-3 profile-widget ">
+                <div class=" h-full">
+                    <div class="py-10">
+                        <div class="link-list">
+                            <?php if ($Settings->hasPermission('complete-dashboard')) { ?>
+                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Dashboard', 'Dashboard') ?></a>
+                            <?php } ?>
+
+                            <?php if ($Settings->hasPermission('complete-queue')) { ?>
+                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Queue', 'Warteschlange') ?></a>
+                            <?php } ?>
+
+                            <?php if ($Settings->hasPermission('reports')) { ?>
+                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Reports', 'Berichte') ?></a>
+                            <?php } ?>
+
+                            <?php if ($Settings->hasPermission('lock-activities')) { ?>
+                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Lock activities', 'Aktivitäten sperren') ?></a>
+                            <?php } ?>
+
+                            <?php if ($Settings->hasPermission('admin-panel')) { ?>
+                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Admin-Panel') ?></a>
+                            <?php } ?>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+
+
+        <?php
+        // PUBLICATION WIDGET
+        $pubs = [];
+        $i = 0;
+        foreach ($activities as $doc) {
+            if ($doc['type'] != 'publication') continue;
+            if ($i++ >= 5) break;
+            $pubs[] = $doc;
+        }
+        if (!empty($pubs)) { ?>
+            <div class="profile-widget col-lg-6">
                 <div class="box h-full">
                     <div class="content">
                         <h4 class="title"><?= lang('Latest publications', 'Neueste Publikationen') ?></h4>
@@ -688,27 +787,19 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     <table class="table simple">
                         <tbody>
                             <?php
-                            $i = 0;
-                            foreach ($activities as $doc) {
-
-                                if ($doc['type'] != 'publication') continue;
-                                if ($i++ >= 5) break;
+                            foreach ($pubs as $doc) {
                                 $id = $doc['_id'];
-
-                                $Format->setDocument($doc);
-
                             ?>
                                 <tr id='tr-<?= $id ?>'>
-                                    <td class="w-50"><?= $Format->activity_icon($doc); ?></td>
+                                    <td class="w-50"><?= $doc['rendered']['icon'] ?></td>
                                     <td>
                                         <?php
                                         if ($USER['display_activities'] == 'web') {
-                                            echo $Format->formatShort();
+                                            echo $doc['rendered']['web'];
                                         } else {
-                                            echo $Format->format();
+                                            echo $doc['rendered']['print'];
                                         }
                                         ?>
-
                                     </td>
                                     <td class="unbreakable w-25">
                                         <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
@@ -733,7 +824,9 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
 
 
-        <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($impacts)) { ?>
+        <?php
+        // IMPACT FACTOR WIDGET
+        if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($impacts)) { ?>
             <div class="profile-widget col-lg-6">
                 <div class="box h-full">
                     <div class="chart content text-center">
@@ -862,7 +955,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             </div>
         <?php } ?>
 
-        <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && array_sum($authors) > 0) { ?>
+
+
+        <?php
+        // ROLE WIDGET
+        if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && array_sum($authors) > 0) { ?>
             <div class="profile-widget col-md-6 col-lg-3">
                 <div class="box h-full">
                     <div class="chart content text-center">
@@ -952,7 +1049,6 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                             <i class="ph ph-lg ph-coin text-signal"></i>
                             <?= lang('Coins per Year', 'Coins pro Jahr') ?>
                         </h5>
-                        <!-- <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->get('startyear') ?></p> -->
                         <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
                     </div>
 
@@ -965,8 +1061,6 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                         $data[] = [$lastval, $val + $lastval];
                         $lastval = $val + $lastval;
                     }
-                    // $labels[] = 'total';
-                    // $data[] = $lastval;
                     ?>
 
                     <script>
@@ -1033,7 +1127,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <?php } ?>
 
         <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($stats)) { ?>
-            <div class="profile-widget col-lg-12 col-xl-6">
+            <div class="profile-widget col-lg-6">
                 <div class="box h-full">
                     <div class="chart content">
                         <h5 class="title text-center">
@@ -1131,7 +1225,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <?php } ?>
 
         <?php if (!empty($activities)) { ?>
-            <div class="profile-widget col-lg-12 col-xl-6">
+            <div class="profile-widget col-md-12 col-lg-6">
                 <div class="box h-full">
                     <div class="content">
                         <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
