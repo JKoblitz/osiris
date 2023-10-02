@@ -3,6 +3,23 @@
 ## Hoffentlich bald
 `Version 1.2`
 
+
+<i class="ph ph-users text-osiris"></i>
+**Rollensystem**
+- Ein ausgeklügeltes Rollensystem wurde hinzugefügt
+- Einem Nutzer können jetzt mehrere Rollen zugewiesen werden (im Nutzer-Editor)
+- Welche Rechte eine Rolle hat, kann jetzt feingranular im Admin-Panel eingstellt werden (neuer Reiter "Rollen")
+- Die Einstellungen wurden im Hintergund verbessert
+
+
+<i class="ph ph-user-minus text-osiris"></i>
+**Verbessertes Inaktivieren von Nutzern**
+- Nutzer können jetzt leichter als "Inaktiv" markiert werden
+- Dazu wurde ein Knopf zur Toolbar im Nutzerprofil hinzugefügt (nur für Nutzer mit entsprechenden Rechten sichtbar)
+- Persönliche Daten werden (abgesehen von Namen und Abteilung) gelöscht, sobald ein Nutzer inaktiviert wird
+- Um einen Nutzer wieder zu aktivieren, kann man in "Nutzerprofil bearbeiten" einen entsprechenden Haken setzen.
+
+
 <i class="ph ph-circles-three-plus text-osiris"></i>
 **Forschungsdaten**
 - Nein, wir fügen zu OSIRIS keine Forschungsdaten hinzu. Niemals.
@@ -20,6 +37,12 @@
 - Die beste Lösung für Dubletten ist zu verhindern, dass sie entstehen. OSIRIS warnt euch, falls ihr dabei seid, gerade eine Dublette anzulegen.
 
 
+<i class="ph ph-chalkboard-simple text-osiris"></i>
+**Verbesserung der Lehrveranstaltungen**
+- Lehrveranstaltungen wurden optisch überarbeitet
+- Ein Filter wurde hinzugefügt
+- Es wurde eine Möglichkeit hinzugefügt, um Lehrveranstaltungen zu löschen (nur wenn keine Aktivitäten verknüpft sind)
+
 <i class="ph ph-textbox text-osiris"></i>
 **Neue Module**
 - Open Access Status
@@ -29,8 +52,10 @@
 
 <i class="ph ph-star text-osiris"></i>
 **Kleinere Features und Bug Fixes**
+- Im Header ist nun ein Suchfeld für Aktivitäten zu finden
 - Nutzer können ihre Profilbilder jetzt selbst bearbeiten.
 - Zuletzt besuchte Konferenzen werden im "Conference"-Modul jetzt vorgeschlagen. Das führt hoffentlich zu mehr Konsistenz.
+- Dem Profil von Berichterstattern wurden neue Elemente hinzugefügt
 - Einige Interfaces wurden angepasst, z.B. ist die Übersichtsseite einer Aktivität jetzt noch nutzerfreundlicher.
 - OSIRIS-Seiten sollten sich jetzt sehr viel besser ausdrucken lassen.
 - Der Style von Buttons und Badges wurde angepasst.
