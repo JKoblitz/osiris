@@ -82,6 +82,11 @@
                 "en": "Edit User profiles"
             },
             {
+                "id": "upload-user-picture",
+                "de": "Nutzerbild hochladen",
+                "en": "Upload user picture"
+            },
+            {
                 "id": "edit-user-settings",
                 "de": "Nutzereinstellungen bearbeiten",
                 "en": "Edit user settings"
@@ -90,6 +95,11 @@
                 "id": "edit-roles",
                 "de": "Nutzerrollen vergeben (außer Admin)",
                 "en": "Give users roles (except admin)"
+            },
+            {
+                "id": "set-user-inactive",
+                "de": "Nutzer als inaktiv markieren",
+                "en": "Set users to inactive"
             }
         ]
     },

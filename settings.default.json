@@ -599,7 +599,9 @@
             "edit-roles": [false, false, true, true, true],
             "edit-journals": [false, false, true, true, true],
             "see-raw-data": [false, false, true, true, true],
-            "edit-user-settings": [false, false, false, false, true]
+            "edit-user-settings": [false, false, false, false, true],
+            "set-user-inactive": [false, false, true, false, true],
+            "upload-user-picture": [false, false, true, false, true]
         }
     }
 }

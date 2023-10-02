@@ -119,9 +119,9 @@
             <select name="values[dept]" id="dept" class="form-control">
                 <option value="">Unknown</option>
                 <?php
-                foreach ($Settings->getDepartments() as $dept) { 
+                foreach ($Settings->getDepartments() as $dept) {
                     $d = $dept['id'];
-                    ?>
+                ?>
                     <option value="<?= $d ?>" <?= $data['dept'] == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
                 <?php } ?>
             </select>
@@ -163,6 +163,19 @@
         </div>
     </div>
 
+    <?php if (!($data['is_active'] ?? true)) { ?>
+        <div class="alert danger mb-20">
+            <h3 class="title">
+                <?= lang('Reactivate inactive user account', 'Inaktiven Account reaktivieren') ?>
+            </h3>
+            <div class="custom-checkbox">
+                <input type="checkbox" id="is_active" value="1" name="values[is_active]">
+                <label for="is_active"><?= lang('Reactivate', 'Reaktivieren') ?></label>
+            </div>
+        </div>
+    <?php } ?>
+
+
     <div>
         <b><?= lang('Roles', 'Rollen') ?>:</b>
         <?php
@@ -172,7 +185,7 @@
             if ($role == 'user') continue;
 
             // check if user has role
-            $has_role = in_array($role, DB::doc2Arr($data['roles']??array()));
+            $has_role = in_array($role, DB::doc2Arr($data['roles'] ?? array()));
 
             $disable = false;
             if (!$Settings->hasPermission('edit-roles')) $disable = true;

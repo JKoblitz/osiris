@@ -1319,6 +1319,27 @@ Route::get('/user/edit/(.*)', function ($user) {
 }, 'login');
 
 
+Route::get('/user/delete/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+
+    $data = $DB->getPerson($user);
+    $data = DB::doc2Arr($data);
+    if (empty($data)) {
+        header("Location: " . ROOTPATH . "/user/browse");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => $data['name'], 'path' => "/profile/$user"],
+        ['name' => lang("Inactivate", "Inaktivieren")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/user-delete.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/docs/([\w-]+)', function ($doc) {
     // header("HTTP/1.0 $error");
 

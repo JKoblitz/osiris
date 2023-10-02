@@ -208,7 +208,7 @@ if ($img_exist) {
     $img = ROOTPATH . "/img/person.jpg";
 }
 
-if ($currentuser) { ?>
+if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     <!-- Modal for updating the profile picture -->
     <div class="modal modal-lg" id="change-picture" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -272,7 +272,7 @@ if ($currentuser) { ?>
         <div class="col flex-grow-0">
             <div class="position-relative">
                 <img src="<?= $img ?>" alt="" class="profile-img">
-                <?php if ($currentuser) { ?>
+                <?php if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     <a href="#change-picture" class="position-absolute p-10 bottom-0 right-0 text-white"><i class="ph ph-edit"></i></a>
                 <?php } ?>
 
@@ -297,7 +297,7 @@ if ($currentuser) { ?>
             <?php } else { ?>
                 <?php foreach ($scientist['roles'] as $role) { ?>
                     <span class="user-role">
-                       <?=strtoupper($role)?>
+                        <?= strtoupper($role) ?>
                     </span>
                 <?php } ?>
                 <!-- <span class="user-role">Last login: <?= $scientist['lastlogin'] ?></span> -->
@@ -439,7 +439,6 @@ if ($currentuser) { ?>
                 <?php } ?>
 
                 <div class="mt-20">
-
                     <?php
                     $new = $Achievement->new;
 
@@ -458,7 +457,7 @@ if ($currentuser) { ?>
         </div>
 
     <?php } else { ?>
-        <div class="btn-group btn-group-lg mt-15">
+        <div class="btn-group btn-group-lg mt-15 ml-5">
             <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of', 'Das Jahr ') . $scientist['first'] ?> ">
                 <i class="ph ph-calendar text-success ph-fw"></i>
             </a>
@@ -472,9 +471,16 @@ if ($currentuser) { ?>
             <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
                 <i class="ph ph-trophy text-signal ph-fw"></i>
             </a>
+        </div>
+        <div class="btn-group btn-group-lg mt-15 ml-5">
             <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
                 <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="ph ph-edit text-muted ph-fw"></i>
+                </a>
+            <?php } ?>
+            <?php if (($scientist['is_active'] ?? true) && $Settings->hasPermission('set-user-inactive')) { ?>
+                <a class="btn" href="<?= ROOTPATH ?>/user/delete/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Inactivate user', 'Nutzer:in inaktivieren') ?>">
+                    <i class="ph ph-trash text-danger ph-fw"></i>
                 </a>
             <?php } ?>
 

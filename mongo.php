@@ -513,6 +513,48 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+Route::post('/delete-user/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+
+
+    $data = $DB->getPerson($user);
+
+    $keep = [
+        '_id',
+        'displayname',
+        'formalname',
+        'first_abbr',
+        'updated', 'updated_by',
+        "academic_title",
+        "first",
+        "last",
+        "name",
+        "dept",
+        "username"
+    ];
+    $arr = [];
+    foreach ($data as $key => $value) {
+        if (in_array($key, $keep)) continue;
+        $arr[$key] = null;
+    }
+    $arr['is_active'] = false;
+
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
+        ['$set' => $arr]
+    );
+
+
+    if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
+        unlink(BASEPATH . "/img/users/$user.jpg");
+    }
+    if (file_exists(BASEPATH . "/img/users/".$user."_sm.jpg")) {
+        unlink(BASEPATH . "/img/users/".$user."_sm.jpg");
+    }
+
+    header("Location: " . ROOTPATH . "/profile/" . $user . "?msg=user-inactivated");
+    die();
+});
 
 Route::post('/update-user/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
@@ -535,7 +577,7 @@ Route::post('/update-user/(.*)', function ($user) {
         'show_coins' => 'string',
         'hide_achievements' => 'string',
         'maintenance' => 'string',
-        'roles'=> 'array'
+        'roles' => 'array'
     ] as $key => $type) {
         if (!isset($values[$key])) continue;
         if ($type == 'bool') {
