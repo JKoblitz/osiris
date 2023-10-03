@@ -111,7 +111,7 @@ Route::post('/download', function () {
         $filename .= "_" . trim($params['dept']);
     }
     if (isset($params['id']) && !empty($params['id'])) {
-        $id = new MongoDB\BSON\ObjectId($params['id']);
+        $id = DB::to_ObjectID($params['id']);
         $filter['_id'] = $id;
         $filename .= "_" . trim($params['id']);
     }
@@ -123,10 +123,10 @@ Route::post('/download', function () {
 
     if (isset($params['time']) && !empty($params['time'])) {
         $timefilter = true;
-        $startyear = $params['time']['from']['year'];
-        $endyear = $params['time']['to']['year'];
-        $startmonth = $params['time']['from']['month'];
-        $endmonth = $params['time']['to']['month'];
+        $startyear = intval($params['time']['from']['year']);
+        $endyear = intval($params['time']['to']['year']);
+        $startmonth = intval($params['time']['from']['month']);
+        $endmonth = intval($params['time']['to']['month']);
 
         if (!empty($startyear) && !empty($endyear)) {
             // this is for the monthly filter below.
@@ -164,7 +164,7 @@ Route::post('/download', function () {
         $cart = readCart();
         if (!empty($cart)) {
             foreach ($cart as $id) {
-                $mongo_id = new MongoDB\BSON\ObjectId($id);
+                $mongo_id = DB::to_ObjectID($id);
                 $cursor[] = $osiris->activities->findOne(['_id' => $mongo_id]);
             }
             $filename .= "_cart";
@@ -204,10 +204,13 @@ Route::post('/download', function () {
             return $pos_a - $pos_b;
         });
 
+        // dump($endmonth);
         foreach ($cursor as $doc) {
             // filtering by month is to much effort, so we just do not show activities out
-            if ($timefilter && $startyear == $doc['year'] && $startmonth < $doc['month']) continue;
-            if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
+            if ($timefilter && $startyear == $doc['year'] && $startmonth > $doc['month']) continue;
+            // dump($doc['month']);
+            
+            if ($timefilter && $endyear == $doc['year'] && $endmonth < $doc['month']) continue;
             if (!in_array($doc['type'], $headers)) {
                 $headers[] = $doc['type'];
                 $section->addTitle($Settings->getActivities($doc['type'])['name'], 1);
