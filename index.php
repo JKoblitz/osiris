@@ -1773,10 +1773,10 @@ Route::get('/synchronize-users', function () {
             $osiris->persons->insertOne($new_user['person']);
             $osiris->accounts->insertOne($new_user['account']);
         } else {
-            // user exists
+            // user is no longer active
             if (!$active && $USER['is_active']) {
                 echo ('<p>' . $username . ' is no longer active.</p>');
-                $osiris->persons->updateOne(
+                $osiris->accounts->updateOne(
                     ['username' => $username],
                     ['$set' => ['is_active' => false]]
                 );

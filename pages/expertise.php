@@ -15,8 +15,8 @@
  * @license     MIT
  */
 
- $users = $osiris->accounts->distinct('username', ['is_active' => true]);
-// dump($users);
+$users = $osiris->accounts->distinct('username', ['is_active' => true]);
+
 $cursor = $osiris->persons->aggregate([
     [
         '$match' => [
@@ -33,8 +33,7 @@ $cursor = $osiris->persons->aggregate([
             'users' => ['$push' => '$$ROOT']
         ]
     ],
-    ['$sort' => ['count' => -1]],
-    // [ '$limit' => 100 ]
+    ['$sort' => ['count' => -1]]
 ]);
 
 ?>
@@ -59,9 +58,7 @@ $cursor = $osiris->persons->aggregate([
                 <div class="content">
                     <h3 class="title"><?= strtoupper($doc['_id']) ?></h3>
                     <p class="text-muted"><?= $doc['count'] ?> <?= lang('experts found:', 'Experten gefunden:') ?></p>
-                    <?php foreach ($doc['users'] as $u) { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge badge-<?= $u['dept'] ?>"><?= $u['displayname'] ?></a>
-                    <?php } ?>
+                    <?php foreach ($doc['users'] as $u) { ?><a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge badge-<?= $u['dept'] ?> mr-5 mb-5"><?= $u['displayname'] ?></a><?php } ?>
                 </div>
             </div>
         </div>
