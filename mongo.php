@@ -603,10 +603,10 @@ Route::post('/update-user/(.*)', function ($user) {
         ['username' => $user],
         ['$set' => $person]
     );
-    $updateResult = $osiris->accounts->updateOne(
-        ['username' => $user],
-        ['$set' => $account]
-    );
+    if (!empty($account)) $updateResult = $osiris->accounts->updateOne(
+            ['username' => $user],
+            ['$set' => $account]
+        );
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");
