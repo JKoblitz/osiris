@@ -28,7 +28,6 @@ if (!empty($filter_dept) && $filter_dept != 'undefined') {
         $users[] = strtolower($u['username']);
     }
     $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
-
 }
 
 $links = array();
@@ -105,23 +104,24 @@ if (count($time) === 4 && array_sum($time) > 0) {
 
 
 $index = 0;
-$departments = $Settings->getDepartments();
 $i = 0;
-foreach ($departments as $dept => $val) {
+$departments = [];
+foreach ($Settings->getDepartments() as $val) {
+    $dept_id = $val['id'];
     $flare[$i] = [
-        'name' => $dept,
-        'abbr' => $dept,
+        'name' => $dept_id,
+        'abbr' => $dept_id,
         'children' => [],
     ];
-    $departments[$dept]['index'] = $i++;
+    $departments[$dept_id] = $val;
+    $departments[$dept_id]['index'] = $i++;
 }
 
 
-$N = 0; //count($activities);
+$N = 0; 
 $links = implode('&', $links);
 
 foreach ($activities as $doc) {
-    // dump($doc['authors']);
     $count = false;
     foreach ($doc['authors'] as $aut) {
         if (!($aut['aoi'] ?? false) || empty($aut['user']) || !array_key_exists($aut['user'], $users)) continue;
