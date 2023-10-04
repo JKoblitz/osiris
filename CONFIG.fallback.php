@@ -27,6 +27,7 @@ if (USER_MANAGEMENT == 'LDAP') {
     if (!defined('LDAP_BASEDN'))
         die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_BASEDN is not set.");
 }
+
 // define DB connection
 if (!defined('DB_NAME'))
     define("DB_NAME", "osiris");
@@ -49,6 +50,7 @@ if (!defined('ORCID_SECRET_KEY'))
 // activate IDA integration here
 if (!defined('IDA_INTEGRATION'))
     define("IDA_INTEGRATION", false);
+
 
 if (!defined('GUEST_FORMS'))
     define('GUEST_FORMS', false);

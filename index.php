@@ -1645,7 +1645,6 @@ Route::get('/migrate', function () {
             $user = iterator_to_array($user);
             $username = strtolower($user['username']);
 
-
             $person = ["username" => $username];
             foreach ($person_keys as $key) {
                 if (!array_key_exists($key, $user)) continue;

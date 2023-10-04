@@ -156,7 +156,6 @@ class OpenAlexParser():
                 if self.osiris['queue'].count_documents({'doi': doi}) > 0:
                     continue
                 print(doi)
-
                 typ = self.TYPES.get(work['type'])
                 if not typ:
                     continue

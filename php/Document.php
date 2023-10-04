@@ -25,7 +25,6 @@ class Document extends Settings
 
     private $schemaType = null;
     public $schema = [];
-
     private $db =null;
 
 
@@ -785,6 +784,7 @@ class Document extends Settings
                 }
             case "oa_status": // ["open_access"],
                 return $this->getVal('oa_status', 'Unknown Status');
+
             case "pages": // ["pages"],
                 return $this->getVal('pages');
             case "person": // ["name", "affiliation", "academic_title"],

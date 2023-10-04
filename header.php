@@ -265,6 +265,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?php
                         $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
                         ?>
+              
                         <a href="<?= ROOTPATH ?>/queue/editor" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('queue/editor') ?>">
                             <i class="ph ph-queue" aria-hidden="true"></i>
                             <?= lang('Queue', 'Warteschlange') ?>
@@ -404,14 +405,14 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Import') ?>
                     </a>
 
-
                     <?php if ($Settings->hasPermission('reports')) { ?>
 
                         <a href="<?= ROOTPATH ?>/reports" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('reports') ?>">
                             <i class="ph ph-printer" aria-hidden="true"></i>
+
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
-
+                       
                         <?php if (IDA_INTEGRATION) { ?>
                             <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
                                 <i class="ph ph-clipboard-text" aria-hidden="true"></i>
