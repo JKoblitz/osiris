@@ -18,15 +18,14 @@
 ?>
 
 <?php
-    
 // get OSIRIS version
 $version = $osiris->system->findOne(['key' => 'version']);
 if ($version['value'] != OSIRIS_VERSION) { ?>
     <div class="alert danger mb-20">
-        <h3 class="title"><?=lang('Warning', 'Warnung')?></h3>
-        <?=lang('
-        A new OSIRIS-Version has been found. Please click <a href="'.ROOTPATH.'/migrate">here</a> to migrate', '
-        Eine neue OSIRIS-Version wurde gefunden. Bitte klicke <a href="'.ROOTPATH.'/migrate">hier</a>, um zu migrieren.')?>
+        <h3 class="title"><?= lang('Warning', 'Warnung') ?></h3>
+        <?= lang('
+        A new OSIRIS-Version has been found. Please click <a href="' . ROOTPATH . '/migrate">here</a> to migrate', '
+        Eine neue OSIRIS-Version wurde gefunden. Bitte klicke <a href="' . ROOTPATH . '/migrate">hier</a>, um zu migrieren.') ?>
     </div>
 <?php } ?>
 
@@ -424,6 +423,20 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     </div>
                 <?php } ?>
 
+                <?php
+                if (lang('en', 'de') == 'de') {
+                    // no news in english
+                    if (empty($scientist['lastversion'] ?? '') || $scientist['lastversion'] !== OSIRIS_VERSION) { ?>
+                        <div class="alert primary mt-20">
+                            <a class="link text-decoration-none" href='<?= ROOTPATH ?>/new-stuff#version-<?= OSIRIS_VERSION ?>'>
+                                <?= lang(
+                                    "There has been an OSIRIS-Update since your last login. Have a look at the news.",
+                                    "Es gab ein OSIRIS-Update, seitdem du das letzte Mal hier warst. Schau in die News, um zu wissen, was neu ist."
+                                ) ?>
+                            </a>
+                        </div>
+                <?php }
+                } ?>
 
                 <?php
                 $approvedQ = array();
@@ -758,11 +771,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     <div class="py-10">
                         <div class="link-list">
                             <?php if ($Settings->hasPermission('complete-dashboard')) { ?>
-                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Dashboard', 'Dashboard') ?></a>
+                                <a class="border" href="<?= ROOTPATH ?>/dashboard"><?= lang('Dashboard', 'Dashboard') ?></a>
                             <?php } ?>
 
                             <?php if ($Settings->hasPermission('complete-queue')) { ?>
-                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Queue', 'Warteschlange') ?></a>
+                                <a class="border" href="<?= ROOTPATH ?>/queue/editor"><?= lang('Queue', 'Warteschlange') ?></a>
                             <?php } ?>
 
                             <?php if ($Settings->hasPermission('reports')) { ?>
@@ -770,11 +783,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                             <?php } ?>
 
                             <?php if ($Settings->hasPermission('lock-activities')) { ?>
-                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Lock activities', 'Aktivitäten sperren') ?></a>
+                                <a class="border" href="<?= ROOTPATH ?>/controlling"><?= lang('Lock activities', 'Aktivitäten sperren') ?></a>
                             <?php } ?>
 
                             <?php if ($Settings->hasPermission('admin-panel')) { ?>
-                                <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Admin-Panel') ?></a>
+                                <a class="border" href="<?= ROOTPATH ?>/admin/general"><?= lang('Admin-Panel') ?></a>
                             <?php } ?>
                         </div>
                         </a>

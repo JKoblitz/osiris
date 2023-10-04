@@ -1,8 +1,9 @@
 # Neuigkeiten
 
-## Hoffentlich bald
-`Version 1.2`
 
+<a id="version-1.2.0"></a>
+## 04.10.2023
+`Version 1.2.0`
 
 <i class="ph ph-users text-osiris"></i>
 **Rollensystem**
@@ -172,7 +173,8 @@ OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob e
 
 ## 12.05.23
 
-`Version 1.1`
+`Version 1.1.0`
+<a id="version-1.1.0"></a>
 
 Ich habe mehrere kleinere Releases in einem großen zusammengeführt.
 
