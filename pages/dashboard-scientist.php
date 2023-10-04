@@ -1,10 +1,26 @@
-<div class="content">
-    <h2>
-        <?= lang('Publications in the last four quarters', 'Publikationen in den letzten vier Quartalen') ?>
-    </h2>
-</div>
+<?php
 
-<div class="row row-eq-spacing mx-0 mb-0">
+/**
+ * Page for dashboard (also shown to scientist)
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /dashboard
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+<h2>
+    <?= lang('Publications in the last four quarters', 'Publikationen in den letzten vier Quartalen') ?>
+</h2>
+
+<div class="row row-eq-spacing">
     <div class="col-lg-8">
 
         <div class="box h-full">
@@ -58,34 +74,34 @@
                     },
                     responsive: true,
                     scales: {
-                                x: {
-                                    type: 'linear',
-                                    ticks: {
-                                        stepSize: 1
-                                    },
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: lang('Impact factor', 'Impact factor')
-                                    },
-                                },
-                                y: {
-                                    stacked: true,
-                                    title: {
-                                        display: true,
-                                        text: lang('Number of publications', 'Anzahl Publikationen')
-                                    },
-                                    ticks: {
-                                        callback: function(value, index, ticks) {
-                                            // only show full numbers
-                                            if (Number.isInteger(value)) {
-                                                return value
-                                            }
-                                            return "";
-                                        }
-                                    }
-                                }
+                        x: {
+                            type: 'linear',
+                            ticks: {
+                                stepSize: 1
                             },
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: lang('Impact factor', 'Impact factor')
+                            },
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: lang('Number of publications', 'Anzahl Publikationen')
+                            },
+                            ticks: {
+                                callback: function(value, index, ticks) {
+                                    // only show full numbers
+                                    if (Number.isInteger(value)) {
+                                        return value
+                                    }
+                                    return "";
+                                }
+                            }
+                        }
+                    },
                 },
                 data: {
                     labels: labels,
@@ -119,7 +135,7 @@
     <div class="col-lg-4">
         <div class="box h-full">
             <div class="chart content">
-                <h5 class="title text-center"><?= lang('Role of '.$Settings->affiliation.' authors', 'Rolle der '.$Settings->affiliation.'-Autoren') ?></h5>
+                <h5 class="title text-center"><?= lang('Role of ' . $Settings->get('affiliation') . ' authors', 'Rolle der ' . $Settings->get('affiliation') . '-Autoren') ?></h5>
                 <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
             </div>
             <script>
@@ -169,17 +185,15 @@
 
 </div>
 
-<div class="content">
-    <h2>
-        <?= lang('Development of activities by type', 'Entwicklung der Aktivitäten nach Art') ?>
-    </h2>
-</div>
+<h2>
+    <?= lang('Development of activities by type', 'Entwicklung der Aktivitäten nach Art') ?>
+</h2>
 
-<div class="row row-eq-spacing mx-0 mb-0">
+<div class="row row-eq-spacing mb-0">
     <?php foreach ($stats as $type => $vals) {
 
         $years = [];
-        for ($i = $Settings->startyear; $i <= CURRENTYEAR; $i++) {
+        for ($i = $Settings->get('startyear'); $i <= CURRENTYEAR; $i++) {
             $years[] = strval($i);
         }
     ?>
@@ -191,8 +205,8 @@
                     <canvas id="chart-<?= $type ?>"></canvas>
 
                     <div class="mt-5 text-right">
-                        <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn btn-sm">
-                            <i class="ph ph-regular ph-plus"></i>
+                        <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn small">
+                            <i class="ph ph-plus"></i>
                             <?= lang('Add new', 'Neu anlegen') ?>
                         </a>
                     </div>
@@ -229,13 +243,11 @@
 </div>
 
 <?php
-    // include BASEPATH ."/pages/visualize-departments.php";
+// include BASEPATH ."/pages/visualize-departments.php";
 ?>
 
 
-<div class="content mt-0">
-    <a href="<?= ROOTPATH ?>/activities" class="btn btn-select bg-white mr-20">
-        <i class="ph ph-regular ph-book-bookmark text-danger"></i>
-        <?= lang('View all activites', 'Zeige alle Aktivitäten') ?>
-    </a>
-</div>
+<a href="<?= ROOTPATH ?>/activities" class="btn select bg-white mr-20">
+    <i class="ph ph-book-bookmark text-danger"></i>
+    <?= lang('View all activites', 'Zeige alle Aktivitäten') ?>
+</a>

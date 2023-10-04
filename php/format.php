@@ -140,7 +140,7 @@ function$Format->activity_icon($doc, $tooltip = true)
     } else {
         $type = strtolower(trim($doc['type'] ?? $doc['subtype'] ?? ''));
     }
-    $icon = "<i class='ph ph-regular text-misc ph-placeholder'></i>";
+    $icon = "<i class='ph text-misc ph-placeholder'></i>";
     switch ($type) {
         case 'publication':
             $pubtype = strtolower(trim($doc['pubtype'] ?? $doc['subtype'] ?? $type));
@@ -148,83 +148,83 @@ function$Format->activity_icon($doc, $tooltip = true)
                 case 'journal article':
                 case 'journal-article':
                 case 'article':
-                    $icon = "<i class='ph ph-regular text-publication ph-file-text'></i>";
+                    $icon = "<i class='ph text-publication ph-file-text'></i>";
                     break 2;
                 case 'magazine article':
                 case 'magazine':
-                    $icon = "<i class='ph ph-regular text-publication ph-newspaper'></i>";
+                    $icon = "<i class='ph text-publication ph-newspaper'></i>";
                     break 2;
                 case 'book-chapter':
                 case 'book chapter':
                 case 'chapter':
                 case 'book-editor':
                 case 'publication':
-                    $icon = "<i class='ph ph-regular text-publication ph-book-bookmark'></i>";
+                    $icon = "<i class='ph text-publication ph-book-bookmark'></i>";
                     break 2;
                 case 'book':
-                    $icon = "<i class='ph ph-regular text-publication ph-book'></i>";
+                    $icon = "<i class='ph text-publication ph-book'></i>";
                     break 2;
                 case 'preprint':
-                    $icon = "<i class='ph ph-regular text-publication ph-file-text'></i>";
+                    $icon = "<i class='ph text-publication ph-file-text'></i>";
                     break 2;
                 case 'dissertation':
-                    $icon = "<i class='ph ph-regular text-publication ph-graduation-cap'></i>";
+                    $icon = "<i class='ph text-publication ph-graduation-cap'></i>";
                     break 2;
                 case 'others':
                 default:
-                    $icon = "<i class='ph ph-regular text-publication ph-notebook'></i>";
+                    $icon = "<i class='ph text-publication ph-notebook'></i>";
                     break 2;
             }
         case 'poster':
-            $icon = "<i class='ph ph-regular text-poster ph-presentation-chart'></i>";
+            $icon = "<i class='ph text-poster ph-presentation-chart'></i>";
             break;
         case 'lecture':
-            $icon = "<i class='ph ph-regular text-lecture ph-chalkboard-teacher'></i>";
+            $icon = "<i class='ph text-lecture ph-chalkboard-teacher'></i>";
             break;
         case 'review':
             switch (strtolower($doc['role'] ?? $doc['subtype'] ?? '')) {
                 case 'editorial':
                 case 'editor':
-                    $icon = "<i class='ph ph-regular text-review ph-user-list'></i>";
+                    $icon = "<i class='ph text-review ph-user-list'></i>";
                     break 2;
                 case 'grant-rev':
-                    $icon = "<i class='ph ph-regular text-review ph-clipboard-text'></i>";
+                    $icon = "<i class='ph text-review ph-clipboard-text'></i>";
                     break 2;
                 case 'thesis-rev':
-                    $icon = "<i class='ph ph-regular text-review ph-graduation-cap'></i>";
+                    $icon = "<i class='ph text-review ph-graduation-cap'></i>";
                     break 2;
                 default:
-                    $icon = "<i class='ph ph-regular text-review ph-article'></i>";
+                    $icon = "<i class='ph text-review ph-article'></i>";
                     break 2;
             }
 
         case 'misc':
             $subtype = $doc['iteration'] ?? $doc['subtype'] ?? '';
             if ($subtype == 'once' || $subtype == 'misc-once') {
-                $icon = "<i class='ph ph-regular text-misc ph-calendar-check'></i>";
+                $icon = "<i class='ph text-misc ph-calendar-check'></i>";
             } elseif ($subtype == 'annual' || $subtype == 'misc-annual') {
-                $icon = "<i class='ph ph-regular text-misc ph-repeat'></i>";
+                $icon = "<i class='ph text-misc ph-repeat'></i>";
             } else {
-                $icon = "<i class='ph ph-regular text-misc ph-shapes'></i>";
+                $icon = "<i class='ph text-misc ph-shapes'></i>";
             }
             break;
         case 'students':
             $cat = strtolower(trim($doc['category'] ?? $doc['subtype'] ?? 'thesis'));
             if (str_contains($cat, "thesis") || $cat == 'doktorand:in' || $cat == 'students') {
-                $icon = "<i class='ph ph-regular text-students ph-student'></i>";
+                $icon = "<i class='ph text-students ph-student'></i>";
                 break;
             }
-            $icon = "<i class='ph ph-regular text-students ph-users'></i>";
+            $icon = "<i class='ph text-students ph-users'></i>";
             break;
 
         case 'teaching':
-            $icon = "<i class='ph ph-regular text-teaching ph-chalkboard-simple'></i>";
+            $icon = "<i class='ph text-teaching ph-chalkboard-simple'></i>";
             break;
         case 'software':
-            $icon = "<i class='ph ph-regular text-software ph-desktop-tower'></i>";
+            $icon = "<i class='ph text-software ph-desktop-tower'></i>";
             break;
         case 'award':
-            $icon = "<i class='ph ph-regular text-award ph-certificate'></i>";
+            $icon = "<i class='ph text-award ph-certificate'></i>";
             break;
         default:
             break;
@@ -303,7 +303,7 @@ class Format
             foreach ($doc['files'] as $file) {
                 $icon = getFileIcon($file['filetype']);
                 $line .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'>
-                <i class='ph ph-regular ph-file ph-$icon'></i>
+                <i class='ph ph-file ph-$icon'></i>
                 </a>";
             }
         }
@@ -375,7 +375,7 @@ class Format
             foreach ($doc['files'] as $file) {
                 $icon = getFileIcon($file['filetype']);
                 $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]' class='file-link'>
-                <i class='ph ph-regular ph-file ph-$icon'></i>
+                <i class='ph ph-file ph-$icon'></i>
                 </a>";
             }
         }

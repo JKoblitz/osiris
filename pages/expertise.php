@@ -1,13 +1,30 @@
 <?php
+/**
+ * Page to search for experts
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /expertise
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
-$cursor = $osiris->users->aggregate([
+$users = $osiris->accounts->distinct('username', ['is_active' => true]);
+
+$cursor = $osiris->persons->aggregate([
     [
         '$match' => [
             'expertise' => ['$exists' => true],
-            'is_active' => true
+            'username' => ['$in' => $users]
         ]
     ],
-    ['$project' => ['expertise' => 1, 'displayname' => 1, 'dept' => 1]],
+    ['$project' => ['expertise' => 1, 'displayname' => 1, 'dept' => 1, 'username'=>1]],
     ['$unwind' => '$expertise'],
     [
         '$group' => [
@@ -16,8 +33,7 @@ $cursor = $osiris->users->aggregate([
             'users' => ['$push' => '$$ROOT']
         ]
     ],
-    ['$sort' => ['count' => -1]],
-    // [ '$limit' => 100 ]
+    ['$sort' => ['count' => -1]]
 ]);
 
 ?>
@@ -30,7 +46,7 @@ $cursor = $osiris->users->aggregate([
 
     <div class="form-group with-icon">
         <input class="form-control mb-20" type="search" name="search" id="search" oninput="filterFAQ(this.value);" placeholder="Filter ...">
-        <i class="ph ph-regular ph-x" onclick="$(this).prev().val('');filterFAQ('')"></i>
+        <i class="ph ph-x" onclick="$(this).prev().val('');filterFAQ('')"></i>
     </div>
 </div>
 
@@ -42,9 +58,7 @@ $cursor = $osiris->users->aggregate([
                 <div class="content">
                     <h3 class="title"><?= strtoupper($doc['_id']) ?></h3>
                     <p class="text-muted"><?= $doc['count'] ?> <?= lang('experts found:', 'Experten gefunden:') ?></p>
-                    <?php foreach ($doc['users'] as $u) { ?>
-                        <a href="<?= ROOTPATH ?>/profile/<?= $u['_id'] ?>" class="badge badge-<?= $u['dept'] ?>"><?= $u['displayname'] ?></a>
-                    <?php } ?>
+                    <?php foreach ($doc['users'] as $u) { ?><a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge badge-<?= $u['dept'] ?> mr-5 mb-5"><?= $u['displayname'] ?></a><?php } ?>
                 </div>
             </div>
         </div>

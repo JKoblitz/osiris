@@ -1,21 +1,36 @@
+<?php
+
+/**
+ * Page to edit user information
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /user/edit/<username>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1>
-    <i class="ph ph-regular ph-student"></i>
+    <i class="ph ph-student"></i>
     <?= $data['name'] ?>
 </h1>
-<!-- 
-<?php
-dump($data, true);
-?> -->
 
 
-<form action="<?= ROOTPATH ?>/update-user/<?= $data['_id'] ?>" method="post">
+<form action="<?= ROOTPATH ?>/update-user/<?= $data['username'] ?>" method="post">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
     <p>
         <b>Username:</b> <?= $data['username'] ?? '' ?>
     </p>
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm-2">
             <label for="academic_title">Title</label>
             <select name="values[academic_title]" id="academic_title" class="form-control">
@@ -57,7 +72,7 @@ dump($data, true);
         </div>
         <div class="p-10 pt-0">
             <?php foreach ($names as $n) { ?>
-                <div class="input-group input-group-sm d-inline-flex w-auto">
+                <div class="input-group sm d-inline-flex w-auto">
                     <input type="text" name="values[names][]" value="<?= $n ?>" required>
                     <div class="input-group-append">
                         <a class="btn" onclick="$(this).closest('.input-group').remove();">×</a>
@@ -65,8 +80,8 @@ dump($data, true);
                 </div>
             <?php } ?>
 
-            <button class="btn btn-primary btn-sm ml-10" type="button" onclick="addName(event, this);">
-                <i class="ph ph-regular ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
+            <button class="btn primary small ml-10" type="button" onclick="addName(event, this);">
+                <i class="ph ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
             </button>
         </div>
 
@@ -98,13 +113,15 @@ dump($data, true);
     </div>
 
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm">
             <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
             <select name="values[dept]" id="dept" class="form-control">
                 <option value="">Unknown</option>
                 <?php
-                foreach ($Settings->getDepartments() as $d => $dept) { ?>
+                foreach ($Settings->getDepartments() as $dept) {
+                    $d = $dept['id'];
+                ?>
                     <option value="<?= $d ?>" <?= $data['dept'] == $d ? 'selected' : '' ?>><?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?></option>
                 <?php } ?>
             </select>
@@ -120,7 +137,7 @@ dump($data, true);
 
     </div>
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
 
         <div class="col-sm">
             <label for="orcid">ORCID</label>
@@ -132,7 +149,7 @@ dump($data, true);
         </div>
     </div>
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm">
             <label for="researchgate">ResearchGate Handle</label>
             <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
@@ -146,40 +163,47 @@ dump($data, true);
         </div>
     </div>
 
+    <?php if (!($data['is_active'] ?? true)) { ?>
+        <div class="alert danger mb-20">
+            <h3 class="title">
+                <?= lang('Reactivate inactive user account', 'Inaktiven Account reaktivieren') ?>
+            </h3>
+            <div class="custom-checkbox">
+                <input type="checkbox" id="is_active" value="1" name="values[is_active]">
+                <label for="is_active"><?= lang('Reactivate', 'Reaktivieren') ?></label>
+            </div>
+        </div>
+    <?php } ?>
+
+
     <div>
-        <div class="form-group custom-checkbox d-inline-block ml-10">
-            <input type="checkbox" id="is_active" value="1" name="values[is_active]" <?= ($data['is_active'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_active">Is Active</label>
-        </div>
-        <div class="form-group custom-checkbox d-inline-block ml-10">
-            <input type="checkbox" id="is_scientist" value="1" name="values[is_scientist]" <?= ($data['is_scientist'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_scientist">Is Scientist</label>
-        </div>
+        <b><?= lang('Roles', 'Rollen') ?>:</b>
+        <?php
+        // dump($data['roles']);
+        foreach ($Settings->get('roles') as $role) {
+            // everyone is user: no setting needed
+            if ($role == 'user') continue;
 
+            // check if user has role
+            $has_role = in_array($role, DB::doc2Arr($data['roles'] ?? array()));
 
-        <div class="form-group custom-checkbox ml-10  <?= ($USER['is_admin'] || $USER['is_controlling']) ? ' d-inline-block ' : 'd-none' ?>">
-            <input type="checkbox" id="is_controlling" value="1" name="values[is_controlling]" <?= ($data['is_controlling'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_controlling">Is Editor</label>
-        </div>
-
-        <div class="form-group custom-checkbox ml-10  <?= ($USER['is_admin'] || $USER['is_controlling']) ? ' d-inline-block ' : 'd-none' ?>">
-            <input type="checkbox" id="is_leader" value="1" name="values[is_leader]" <?= ($data['is_leader'] ?? false) ? 'checked' : '' ?>>
-            <label for="is_leader">Is Leader</label>
-        </div>
-
-        <?php if ($USER['is_admin']) { ?>
-            <div class="form-group custom-checkbox ml-10 d-inline-block">
-                <input type="checkbox" id="is_admin" value="1" name="values[is_admin]" <?= ($data['is_admin'] ?? false) ? 'checked' : '' ?>>
-                <label for="is_admin">Is Admin</label>
+            $disable = false;
+            if (!$Settings->hasPermission('edit-roles')) $disable = true;
+            // only admin can make others admins
+            if ($role == 'admin' && !$Settings->hasPermission('admin')) $disable = true;
+        ?>
+            <div class="form-group custom-checkbox d-inline-block ml-10 <?= $disable ? 'text-muted' : '' ?>">
+                <input type="checkbox" id="role-<?= $role ?>" value="<?= $role ?>" name="values[roles][]" <?= ($has_role) ? 'checked' : '' ?> <?= $disable ? 'onclick="return false;"' : '' ?>>
+                <label for="role-<?= $role ?>"><?= strtoupper($role) ?></label>
             </div>
         <?php } ?>
 
 
     </div>
 
-    <?php if ($data['username'] == $_SESSION['username'] || $USER['is_admin']) { ?>
+    <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('edit-user-settings')) { ?>
 
-        <div class="alert alert-signal mb-20">
+        <div class="alert signal mb-20">
             <div class="title">
                 <?= lang('Profile preferences', 'Profil-Einstellungen') ?>
             </div>
@@ -201,46 +225,59 @@ dump($data, true);
             </div>
 
 
+            <?php
+            if (!$Settings->hasFeatureDisabled('coins')) {
+            ?>
 
-            <div class="mt-10">
-                <span><?= lang('Coin visibility', 'Sichtbarkeit der Coins') ?>:</span>
-                <?php
-                $show_coins = $data['show_coins'] ?? 'none';
-                ?>
+                <div class="mt-10">
+                    <span><?= lang('Coin visibility', 'Sichtbarkeit der Coins') ?>:</span>
+                    <?php
+                    $show_coins = $data['show_coins'] ?? 'none';
+                    ?>
 
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[show_coins]" id="show_coins-true" value="none" <?= $show_coins == 'none' ? 'checked' : '' ?>>
-                    <label for="show_coins-true"><?= lang('For nobody', 'Für niemanden') ?></label>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[show_coins]" id="show_coins-true" value="none" <?= $show_coins == 'none' ? 'checked' : '' ?>>
+                        <label for="show_coins-true"><?= lang('For nobody', 'Für niemanden') ?></label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[show_coins]" id="show_coins-myself" value="myself" <?= $show_coins == 'myself' ? 'checked' : '' ?>>
+                        <label for="show_coins-myself"><?= lang('For myself', 'Für mich') ?></label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[show_coins]" id="show_coins-all" value="all" <?= $show_coins == 'all' ? 'checked' : '' ?>>
+                        <label for="show_coins-all"><?= lang('For all', 'Für jeden') ?></label>
+                    </div>
                 </div>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[show_coins]" id="show_coins-myself" value="myself" <?= $show_coins == 'myself' ? 'checked' : '' ?>>
-                    <label for="show_coins-myself"><?= lang('For myself', 'Für mich') ?></label>
-                </div>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[show_coins]" id="show_coins-all" value="all" <?= $show_coins == 'all' ? 'checked' : '' ?>>
-                    <label for="show_coins-all"><?= lang('For all', 'Für jeden') ?></label>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
 
 
-            <div class="mt-10">
-                <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>
-                <?php
-                $hide_achievements = $data['hide_achievements'] ?? false;
-                ?>
 
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[hide_achievements]" id="hide_achievements-false" value="false" <?= $hide_achievements ? '' : 'checked' ?>>
-                    <label for="hide_achievements-false"><?= lang('Yes', 'Ja') ?></label>
+            <?php
+            if (!$Settings->hasFeatureDisabled('achievements')) {
+            ?>
+                <div class="mt-10">
+                    <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>
+                    <?php
+                    $hide_achievements = $data['hide_achievements'] ?? false;
+                    ?>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[hide_achievements]" id="hide_achievements-false" value="false" <?= $hide_achievements ? '' : 'checked' ?>>
+                        <label for="hide_achievements-false"><?= lang('Yes', 'Ja') ?></label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" name="values[hide_achievements]" id="hide_achievements-true" value="true" <?= $hide_achievements ? 'checked' : '' ?>>
+                        <label for="hide_achievements-true"><?= lang('No', 'Nein') ?></label>
+                    </div>
                 </div>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" name="values[hide_achievements]" id="hide_achievements-true" value="true" <?= $hide_achievements ? 'checked' : '' ?>>
-                    <label for="hide_achievements-true"><?= lang('No', 'Nein') ?></label>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
         </div>
 
-        <div class="alert alert-danger mb-20">
+        <div class="alert danger mb-20">
             <div class="title">
                 <?= lang('Transfer the maintenance of your profile to someone else:', 'Übertrage die Pflege deines Profils an jemand anderes:') ?>
             </div>
@@ -251,9 +288,16 @@ dump($data, true);
                 <input type="text" list="user-list" name="values[maintenance]" id="maintenance" class="form-control" value="<?= $data['maintenance'] ?? '' ?>">
             </div>
 
+            <p class="m-0 text-danger">
+                <?= lang(
+                    'Warning: this person gets full access to your OSIRIS profile and can edit in your name.',
+                    'Warnung: diese Person erhält vollen Zugriff auf dein OSIRIS-Profil und kann in deinem Namen editieren.'
+                ) ?>
+            </p>
+
             <datalist id="user-list">
                 <?php
-                $all_users = $osiris->users->find();
+                $all_users = $osiris->persons->find();
                 foreach ($all_users as $s) { ?>
                     <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
                 <?php } ?>
@@ -264,14 +308,14 @@ dump($data, true);
 
 
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn primary">
         Update
     </button>
 </form>
 
 <script>
     function addName(evt, el) {
-        var group = $('<div class="input-group input-group-sm d-inline-flex w-auto"> ')
+        var group = $('<div class="input-group sm d-inline-flex w-auto"> ')
         group.append('<input type="text" name="values[names][]" value="" required>')
         // var input = $()
         var btn = $('<a class="btn">')

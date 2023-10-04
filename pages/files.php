@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to upload files for an activity
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /activities/files/<activity_id>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 $files = $doc['files'] ?? array();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -83,7 +98,7 @@ $Format->setDocument($doc);
 ?>
 
 <p class="lead">
-    <span class="mr-10"><?=$Format->activity_icon()?></span>
+    <span class="mr-10"><?= $Format->activity_icon() ?></span>
     <?php echo $Format->formatShort(); ?>
 </p>
 
@@ -92,7 +107,7 @@ $Format->setDocument($doc);
         <div class="title">
             <?= lang('All files', 'Alle Dateien') ?>
         </div>
-        <table class="table table-simple w-auto">
+        <table class="table simple w-auto">
             <?php if (!empty($files)) : ?>
                 <?php foreach ($files as $file) : ?>
                     <tr>
@@ -105,7 +120,7 @@ $Format->setDocument($doc);
                             <form action="#" method="post">
                                 <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
 
-                                <button class="btn btn-link" type="submit">
+                                <button class="btn link" type="submit">
                                     <i class="ph ph-trash text-danger"></i>
                                 </button>
                             </form>
@@ -134,10 +149,21 @@ $Format->setDocument($doc);
                 <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>
-            <button class="btn btn-primary">
+            <button class="btn primary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>
         </form>
     </div>
 </div>
+
+<script>
+    var uploadField = document.getElementById("file-input");
+
+    uploadField.onchange = function() {
+        if (this.files[0].size > 16777216 ) {
+            toastError(lang("File is too large! Max. 16MB is supported!", "Die Datei ist zu groß! Max. 16MB werden unterstützt."));
+            this.value = "";
+        };
+    };
+</script>

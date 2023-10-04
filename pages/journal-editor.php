@@ -1,3 +1,22 @@
+<?php
+/**
+ * Page to add or edit journal
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /journal/add
+ * @link        /journal/edit/<journal_id>
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1>
 <?php
     if ($id === null || empty($data)){
@@ -79,7 +98,7 @@ dump($data, true);
     </div>
 
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn primary">
         Update
     </button>
 </form>

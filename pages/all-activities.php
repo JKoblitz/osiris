@@ -1,4 +1,20 @@
 <?php
+/**
+ * Page to see all activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /activities
+ * @link /my-activities
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $user = $user ?? $_SESSION['username'];
 
@@ -7,40 +23,40 @@ $user = $user ?? $_SESSION['username'];
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
 
-<a class="btn btn-primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-regular ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
+<a class="btn primary float-right" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
 
-<?php if ($page == 'activities' && $USER['is_scientist']) { ?>
+<?php if ($page == 'activities' && $Settings->hasPermission('scientist')) { ?>
     <h1 class='m-0'>
-        <i class="ph ph-regular ph-book-open"></i>
+        <i class="ph ph-book-open"></i>
         <?= lang("All activities", "Alle Aktivitäten") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/my-activities" class="btn btn-sm mb-10" id="user-btn">
+    <a href="<?= ROOTPATH ?>/my-activities" class="btn small mb-10" id="user-btn">
         <i class="ph ph-student"></i>
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a>
 <?php
 } elseif (isset($_GET['user'])) { ?>
     <h1 class='m-0'>
-        <i class="ph ph-regular ph-folder-user"></i>
+        <i class="ph ph-folder-user"></i>
         <?= lang("Activities of $user", "Aktivitäten von $user") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="ph ph-regular ph-book-open"></i>
+    <a href="<?= ROOTPATH ?>/activities" class="btn small mb-10" id="user-btn">
+        <i class="ph ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } elseif ($page == 'my-activities') { ?>
     <h1 class='m-0'>
-        <i class="ph ph-regular ph-folder-user"></i>
+        <i class="ph ph-folder-user"></i>
         <?= lang("My activities", "Meine Aktivitäten") ?>
     </h1>
-    <a href="<?= ROOTPATH ?>/activities" class="btn btn-sm mb-10" id="user-btn">
-        <i class="ph ph-regular ph-book-open"></i>
+    <a href="<?= ROOTPATH ?>/activities" class="btn small mb-10" id="user-btn">
+        <i class="ph ph-book-open"></i>
         <?= lang('Show  all activities', "Zeige alle Aktivitäten") ?>
     </a>
 <?php } ?>
 <br>
-<div class="btn-bar d-md-flex align-items-baseline">
+<div class="bar d-md-flex align-items-baseline">
     <div class="dropdown with-arrow mr-10" id="select-dropdown">
         <button class="btn" data-toggle="dropdown" type="button" id="select-activity" aria-haspopup="true" aria-expanded="false">
             <?= lang('Filter by type', 'Nach Typ filtern') ?>
@@ -76,7 +92,9 @@ $user = $user ?? $_SESSION['username'];
             </button>
             <div class="dropdown-menu" aria-labelledby="select-department">
                 <?php
-                foreach ($Settings->getDepartments() as $id => $a) { ?>
+                foreach ($Settings->getDepartments() as $dept) { 
+                    $id = $dept['id'];
+                    ?>
                     <a data-type="<?= $id ?>" onclick="selectDepartment(this, '<?= $id ?>')" class="item" id="<?= $id ?>-btn">
                         <span class="text-<?= $id ?>"><?= $id ?></span>
                     </a>
@@ -102,12 +120,12 @@ $user = $user ?? $_SESSION['username'];
             <span class="input-group-text"><?= lang('From', 'Von') ?></span>
         </div>
         <input type="number" name="time[from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-        <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+        <input type="number" name="time[from][year]" class="form-control" placeholder="year" min="<?= $Settings->get('startyear') ?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
         <div class="input-group-prepend">
             <span class="input-group-text"><?= lang('to', 'bis') ?></span>
         </div>
         <input type="number" name="time[to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-        <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->startyear ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+        <input type="number" name="time[to][year]" class="form-control" placeholder="year" min="<?= $Settings->get('startyear') ?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
         <div class="input-group-append">
             <button class="btn" type="button" onclick="resetTime()">&times;</button>
@@ -149,8 +167,8 @@ $user = $user ?? $_SESSION['username'];
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });
@@ -388,7 +406,7 @@ $user = $user ?? $_SESSION['username'];
         }
 
         var maxYear = today.getFullYear() + 1,
-            minYear = <?= $Settings->startyear ?>;
+            minYear = <?= $Settings->get('startyear') ?>;
 
         if (fromMonth.length == 0 || parseInt(fromMonth) < 1 || parseInt(fromMonth) > 12) {
             fromMonth = 1

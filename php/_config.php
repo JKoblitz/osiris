@@ -1,8 +1,5 @@
 <?php
 
-require_once BASEPATH . '/php/Settings.php';
-$Settings = new Settings();
-
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
     if ($msg === null && isset($_SESSION['msg'])) {
@@ -117,12 +114,12 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             break;
     }
     $get = currentGET(['msg']) ?? "";
-    echo "<div class='alert alert-$class alert-block show my-10' role='alert'>
+    echo "<div class='alert $class block show my-10' role='alert'>
           <a class='close' href='$get' aria-label='Close'>
           <span aria-hidden='true'>&times;</span>
         </a> ";
     if (!empty($header)) {
-        echo " <h4 class='alert-title'>$header</h4>";
+        echo " <h4 class='title'>$header</h4>";
     }
     echo "$text
       </div>";
@@ -179,11 +176,11 @@ function sortbuttons(string $colname)
     $get = currentGET(['order', 'asc']);
     // $get = $_SERVER['REQUEST_URI'] . $get;
     if ($order == $colname && $asc == 1) {
-        echo "<a href='$get&order=$colname&asc=0'><i class='ph-fill ph-sort-up'></i></a>";
+        echo "<a href='$get&order=$colname&asc=0'><i class='ph ph-fill ph-sort-up'></i></a>";
     } elseif ($order == $colname && $asc == 0) {
-        echo "<a href='$get'><i class='ph-fill ph-sort-down'></i></a>";
+        echo "<a href='$get'><i class='ph ph-fill ph-sort-down'></i></a>";
     } else {
-        echo "<a href='$get&order=$colname&asc=1'><i class='ph-fill ph-sort'></i></a>";
+        echo "<a href='$get&order=$colname&asc=1'><i class='ph ph-fill ph-sort'></i></a>";
     }
 }
 
@@ -498,9 +495,9 @@ function dump($element, $as_json = false)
 function bool_icon($bool)
 {
     if ($bool) {
-        return '<i class="ph ph-regular ph-check text-success"></i>';
+        return '<i class="ph ph-check text-success"></i>';
     } else {
-        return '<i class="ph ph-regular ph-x text-danger"></i>';
+        return '<i class="ph ph-x text-danger"></i>';
     }
 }
 

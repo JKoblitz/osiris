@@ -127,13 +127,13 @@ Solltest du doch noch ungelöste Warnungen haben, werden diese im Fenster darges
         <tr><td class="px-0">
         Media<i>Dive</i>: the expert-curated cultivation media database
         <br>
-        <span class="badge badge-publication"><i class="ph ph-lg text-publication ph-file-lines"></i> Journal article</span><a class="badge badge-danger filled ml-5" href="#t">Online ahead of print</a></td></tr><tr><td class="px-0">
+        <span class="badge badge-publication"><i class="ph ph-lg text-publication ph-file-lines"></i> Journal article</span><a class="badge danger filled ml-5" href="#t">Online ahead of print</a></td></tr><tr><td class="px-0">
         MediaDive: The expert-curated cultivation media database
         <br>
-        <span class="badge badge-poster"><i class="ph ph-lg text-poster ph-presentation-screen"></i> Poster</span><a class="badge badge-danger filled ml-5" href="#t">Überprüfung nötig</a></td></tr><tr><td class="px-0">
+        <span class="badge badge-poster"><i class="ph ph-lg text-poster ph-presentation-screen"></i> Poster</span><a class="badge danger filled ml-5" href="#t">Überprüfung nötig</a></td></tr><tr><td class="px-0">
         Reviewer für  <i>Artificial Intelligence Review</i>. 
         <br>
-        <span class="badge badge-review"><i class="ph ph-lg text-review ph-file-lines"></i> Peer-Review</span><a class="badge badge-danger filled ml-5" href="#t">Nicht-standardisiertes Journal</a></td></tr>
+        <span class="badge badge-review"><i class="ph ph-lg text-review ph-file-lines"></i> Peer-Review</span><a class="badge danger filled ml-5" href="#t">Nicht-standardisiertes Journal</a></td></tr>
         </tbody></table>
     </div>
 </div>

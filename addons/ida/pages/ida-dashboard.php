@@ -8,7 +8,7 @@
             <?php } ?>
         </select>
         <div class="input-group-append">
-            <button class="btn btn-osiris">Select</button>
+            <button class="btn osiris">Select</button>
         </div>
     </div>
 </form>

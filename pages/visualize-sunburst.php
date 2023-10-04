@@ -1,20 +1,33 @@
 <?php
 
-// http://osiris.int.dsmz.de/my-activities?user=bob10#time=12,2017,12,2023&type=publication
+/**
+ * Page to visualize activities of users in a sunburst
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /visualize/sunburst
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $filter = [];
 $filter_dept = $_GET['dept'] ?? '';
 if (!empty($filter_dept) && $filter_dept != 'undefined') {
 
     $users = [];
-    $cursor = $osiris->users->find(['dept' => $filter_dept], ['projection' => ['username' => 1]]);
+    $cursor = $osiris->persons->find(['dept' => $filter_dept], ['projection' => ['username' => 1]]);
 
     foreach ($cursor as $u) {
         if (empty($u['username'] ?? '')) continue;
         $users[] = strtolower($u['username']);
     }
     $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
-
 }
 
 $links = array();
@@ -51,10 +64,10 @@ if (!empty($filter_type) && $filter_type != 'undefined') {
 }
 
 
-$temp = $osiris->users->find([], ['sort' => ["last" => 1]]);
+$temp = $osiris->persons->find([], ['sort' => ["last" => 1]]);
 $users = [];
 foreach ($temp as $row) {
-    $users[strval($row['_id'])] = $row['dept'];
+    $users[strval($row['username'])] = $row['dept'];
 }
 
 // generate graph json
@@ -91,28 +104,24 @@ if (count($time) === 4 && array_sum($time) > 0) {
 
 
 $index = 0;
-$departments = $Settings->getDepartments();
 $i = 0;
-foreach ($departments as $dept => $val) {
+$departments = [];
+foreach ($Settings->getDepartments() as $val) {
+    $dept_id = $val['id'];
     $flare[$i] = [
-        'name' => $dept,
-        'abbr' => $dept,
+        'name' => $dept_id,
+        'abbr' => $dept_id,
         'children' => [],
-        // 'color' => $departments[$dept]['color']
     ];
-    $departments[$dept]['index'] = $i++;
+    $departments[$dept_id] = $val;
+    $departments[$dept_id]['index'] = $i++;
 }
 
-// foreach ($departments as $key => $val) {
-//     $departments[$key]['index'] = $i++;
-//     $departments[$key]['count'] = 0;
-// }
 
-$N = 0; //count($activities);
+$N = 0; 
 $links = implode('&', $links);
 
 foreach ($activities as $doc) {
-    // dump($doc['authors']);
     $count = false;
     foreach ($doc['authors'] as $aut) {
         if (!($aut['aoi'] ?? false) || empty($aut['user']) || !array_key_exists($aut['user'], $users)) continue;
@@ -144,7 +153,7 @@ foreach ($activities as $doc) {
 ?>
 
 <h1>
-    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+    <i class="ph ph-graph" aria-hidden="true"></i>
     <?= lang('Department overview', 'Abteilungs-Übersicht') ?>
 </h1>
 
@@ -174,14 +183,14 @@ foreach ($activities as $doc) {
         <label for="type-select"><?= lang('Activities', 'Aktivitäten') ?></label>
         <select name="type" id="type-select" class="form-control ">
             <option value=""><?= lang('All types', 'Alle Arten') ?></option>
-            <?php foreach ($Settings->activities as $type => $a) { ?>
+            <?php foreach ($Settings->get('activities') as $type => $a) { ?>
                 <option value="<?= $type ?>" <?= $type == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
             <?php } ?>
         </select>
     </div>
     <div class="col-sm ml-sm-10 align-self-end">
 
-        <button class="btn btn-primary " type="submit">Select</button>
+        <button class="btn primary " type="submit">Select</button>
     </div>
     <!-- </div> -->
 </form>
@@ -201,6 +210,10 @@ foreach ($activities as $doc) {
 <script src="<?= ROOTPATH ?>/js/d3-sunburst.js?v=2"></script>
 <script>
     var DEPTS = JSON.parse('<?= json_encode($departments) ?>')
+    // var depts = {}
+    // DEPTS.forEach((d)=>{
+    //     depts[d.id] = d;
+    // })
     var flare = '<?= json_encode($flare) ?>'
     data = {
         name: AFFILIATION,

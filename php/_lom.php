@@ -1,7 +1,7 @@
 
 <?php
 
-
+include_once "DB.php";
 
 
 class LOM
@@ -9,9 +9,9 @@ class LOM
 
     public $matrix = array();
     private $user = null;
-    private $osiris = null;
+    private $db = null;
 
-    function __construct($user = null, $osiris = null)
+    function __construct($user = null)
     {
         // parent::__construct($mod_id);
         $this->user = $user;
@@ -20,7 +20,7 @@ class LOM
         $this->matrix = json_decode($matrix_json, true, 512, JSON_NUMERIC_CHECK);
 
         // needed for journal IF
-        $this->osiris = $osiris;
+        $this->db = new DB;
     }
 
     function get_author($doc)
@@ -84,7 +84,8 @@ class LOM
             'lom' => 0
         );
         $type = "non-refereed";
-        $pubtype = strtolower(trim($doc['subtype'] ?? $doc['pubtype']));
+        $pubtype = strtolower(trim($doc['subtype'] ?? $doc['pubtype'] ?? 'other'));
+        // if ($pubtype == 'other') dump($doc, true);
         if ($pubtype == "article" || $pubtype == "journal-article" || $pubtype == 'journal article') {
             $type = "refereed";
         } elseif ($pubtype == "book" || $pubtype == "chapter") {
@@ -140,7 +141,7 @@ class LOM
         if (isset($doc['impact'])) {
             $if = $doc['impact'];
         } else {
-            $if = get_impact($doc);
+            $if = $this->db->get_impact($doc);
         }
         if (empty($if)) $if = 1;
         $points = $this->matrix['publication']['refereed'][$posKey] ?? 0;
@@ -284,7 +285,7 @@ class LOM
 
         $points = $this->matrix['teaching'] ?? 0;
         $author = $this->get_author($doc);
-        $sws = $author['sws'] ?? 0;
+        $sws = floatval($author['sws'] ?? 0);
         // $sws = $doc['sws'];
         return  array(
             'type' => "teaching",

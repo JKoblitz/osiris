@@ -3,91 +3,88 @@
 class Settings
 {
     public $settings = array();
-    public $affiliation = null;
-    public $affiliation_details = array();
-    public $startyear = 2017;
-    public $departments = array();
-    public $activities = array();
-    public $errors = array();
+    // private $user = array();
+    public $roles = array();
 
-    function __construct()
+    function __construct($user = array())
     {
-
-        $file_name = BASEPATH . "/settings.json";
-        if (!file_exists($file_name)) {
-            $this->construct_default();
+        // set user roles
+        if (isset($user['roles'])) {
+            $this->roles = DB::doc2Arr($user['roles']);
         } else {
-            $this->construct($file_name);
+            foreach (['editor', 'admin', 'leader', 'controlling', 'scientist'] as $key) {
+                if ($user['is_' . $key] ?? false) $this->roles[] = $key;
+            }
+        }
+        // everyone is a user
+        $this->roles[] = 'user';
+
+
+        // dump($this->roles);
+        // get default settings
+        $json = file_get_contents(BASEPATH . "/settings.default.json");
+        $default = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+        $this->settings = $default;
+
+        // get custom settings
+        $file_name = BASEPATH . "/settings.json";
+        if (file_exists($file_name)) {
+            $json = file_get_contents($file_name);
+            $set = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+            // replace existing keys with new ones
+            $this->settings = array_merge($this->settings, $set);
         }
     }
 
-    function construct_default()
+    function get($key)
     {
-        $this->construct(BASEPATH . "/settings.default.json");
+        $s = $this->settings;
+        switch ($key) {
+            case 'affiliation':
+                return $s['affiliation']['id'] ?? '';
+            case 'affiliation_details':
+                return $s['affiliation'];
+            case 'startyear':
+                return intval($s['general']['startyear'] ?? 2020);
+            case 'departments':
+                return $s['departments'];
+            case 'activities':
+                return $s['activities'];
+            case 'general':
+                return $s['general'];
+            case 'roles':
+                return $s['roles']['roles'];
+            case 'rights':
+                return $s['roles']['rights'];
+
+            default:
+                return '';
+                break;
+        }
     }
 
-    function construct($file_name)
+    function hasPermission($right)
     {
-        $json = file_get_contents($file_name);
+        $rights = $this->settings['roles']['rights'][$right] ?? array();
+        foreach ($this->roles as $role) {
+            $index = array_search($role, $this->settings['roles']['roles']);
+            if ($index === false) continue;
+            if ($rights[$index] ?? false) return true;
+        }
+        return false;
+    }
 
-        $this->settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
-        if (!empty(json_last_error())) {
-            $this->errors[] = "You have an error in your <code>settings.json</code>: ";
-            $this->errors[] = (json_last_error_msg() . PHP_EOL);
-            $this->construct_default();
-            return;
-        }
-        if (empty($this->settings['affiliation'] ?? null) || empty($this->settings['affiliation']['id'] ?? null)) {
-            $this->errors[] = ('Affiliation cannot be empty.');
-            $this->construct_default();
-            return;
-        }
-        $this->affiliation = $this->settings['affiliation']['id'];
-        $this->affiliation_details = $this->settings['affiliation'];
-
-        $this->startyear = intval($this->settings['startyear'] ?? 2017);
-
-        if (empty($this->settings['departments'] ?? null)) {
-            $this->errors[] = ('Departments cannot be empty.');
-            $this->construct_default();
-            return;
-        }
-        foreach ($this->settings['departments'] as $val) {
-            if (!isset($val['id'])) {
-                $this->errors[] = ('Each department need an ID.');
-                $this->construct_default();
-                return;
-            }
-            $this->departments[$val['id']] = $val;
-        }
-
-        if (empty($this->settings['activities'] ?? null)) {
-            $this->errors[] = ('Activities cannot be empty.');
-            $this->construct_default();
-            return;
-        }
-        foreach ($this->settings['activities'] as $val) {
-            if (!($val['display'] ?? true)) continue;
-            if (!isset($val['id'])) {
-                $this->errors[] = ('Each activitiy need an ID.');
-                $this->construct_default();
-                return;
-            }
-            if (!isset($val['subtypes'])) {
-                $this->errors[] = ('Each activitiy need at least one subtype.');
-                $this->construct_default();
-                return;
-            }
-            $this->activities[$val['id']] = $val;
-        }
+    function hasFeatureDisabled($feature)
+    {
+        return ($this->settings['general']['disable-' . $feature] ?? 'false') == 'true';
     }
 
     function getActivities($type = null)
     {
         if ($type === null)
-            return $this->activities;
+            return $this->settings['activities'];
 
-        return $this->activities[$type] ?? [
+        return $this->settings['activities'][$type] ?? [
             'name' => $type,
             'name_de' => $type,
             'color' => '#cccccc',
@@ -136,8 +133,11 @@ class Settings
 
     function getDepartments($dept = null)
     {
-        if ($dept === null) return $this->departments;
-        return $this->departments[$dept] ?? [
+        if ($dept === null) return $this->settings['departments'];
+        foreach ($this->settings['departments'] as $d) {
+            if ($d['id'] == $dept) return $d;
+        }
+        return $this->settings['departments'][$dept] ?? [
             "color" => '#cccccc',
             'name' => $dept
         ];
@@ -147,7 +147,7 @@ class Settings
     {
         $style = "";
 
-        foreach ($this->departments as $val) {
+        foreach ($this->settings['departments'] as $val) {
             $style .= "
             .text-$val[id] {
                 color: $val[color] !important;
@@ -161,7 +161,7 @@ class Settings
             }
             ";
         }
-        foreach ($this->activities as $val) {
+        foreach ($this->settings['activities'] as $val) {
             $style .= "
             .text-$val[id] {
                 color: $val[color] !important;

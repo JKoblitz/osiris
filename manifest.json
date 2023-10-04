@@ -1,0 +1,14 @@
+{
+  "name":"OSIRIS - the open, smart and intuitive research information system",
+  "short_name":"OSIRIS",
+  "icons": [
+    {
+      "src":"/favicon_512x512.png",
+      "sizes":"512x512",
+      "type":"image/png"
+    }
+  ],
+  "theme_color":"#dd590e",
+  "background_color":"#ffffff",
+  "display":"standalone"
+}

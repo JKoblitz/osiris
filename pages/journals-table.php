@@ -1,11 +1,27 @@
+<?php
+/**
+ * Page to browse through journals
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /journal
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
-<?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
-    <a href="<?= ROOTPATH ?>/journal/add" class="btn btn-osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
+if ($Settings->hasPermission('edit-journals')) { ?>
+    <a href="<?= ROOTPATH ?>/journal/add" class="btn osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
 <?php } ?>
 
 
 <h2 class="mt-0">
-    <i class="ph ph-regular ph-book-open-cover text-osiris mr-5"></i>
+    <i class="ph ph-book-open-cover text-osiris mr-5"></i>
    <?=lang('Journals', 'Journale')?>
 </h2>
 
@@ -38,8 +54,8 @@
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });

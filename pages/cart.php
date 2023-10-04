@@ -1,3 +1,20 @@
+<?php
+/**
+ * Page to see and edit the download cart
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /cart
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
 
 <style>
     @media (min-width: 768px) {
@@ -25,9 +42,9 @@
             <p>
                 <?= lang('The following activities are in your download cart:', 'Die folgenden Aktivitäten sind in deinem Einkaufswagen:') ?>
             </p>
-            <table class="table table-sm mb-20">
+            <table class="table sm mb-20">
                 <?php foreach ($cart as $id) {
-                    $mongo_id = new MongoDB\BSON\ObjectId($id);
+                    $mongo_id = $DB->to_ObjectID($id);
                     $doc = $osiris->activities->findOne(['_id' => $mongo_id]);
                     if (empty($doc)) continue;
                     
@@ -39,7 +56,7 @@
                             <?= $Format->formatShort() ?>
                         </td>
                         <td>
-                            <button class="btn btn-link btn-sm" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-regular ph-x"></i></button>
+                            <button class="btn link small" type="button" onclick="addToCart(null, '<?= $id ?>')"><i class="ph ph-x"></i></button>
                         </td>
                     </tr>
                 <?php } ?>
@@ -58,7 +75,7 @@
 
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                    <label for="highlight-aoi"><?= $Settings->affiliation ?><?= lang(' Authors', '-Autoren') ?></label>
+                    <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
                 </div>
 
                 <div class="custom-radio d-inline-block ml-10">
@@ -87,7 +104,7 @@
 
 
 
-            <button class="btn btn-primary">Download</button>
+            <button class="btn primary">Download</button>
         <?php } else { ?>
             <p class="text-danger">
                 <?= lang('Cart is empty.', 'Der Einkaufswagen ist leer.') ?>

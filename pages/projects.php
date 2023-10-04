@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to see all projects
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /projects
+ *
+ * @package     OSIRIS
+ * @since       1.2.1
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $Format = new Document(true);
 $form = $form ?? array();
@@ -64,7 +79,7 @@ function val($index, $default = '')
                         </label>
                         <select class="form-control" id="username" name="values[contact_person]" required autocomplete="off">
                             <?php
-                            $userlist = $osiris->users->find([], ['sort' => ["last" => 1]]);
+                            $userlist = $osiris->persons->find([], ['sort' => ["last" => 1]]);
                             foreach ($userlist as $j) { ?>
                                 <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['user'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                             <?php } ?>
@@ -163,7 +178,7 @@ function val($index, $default = '')
 
                 </div>
 
-                <button class="btn btn-primary" type="submit" id="submit-btn"><i class="ph ph-regular ph-check"></i> <?= lang("Save", "Speichern") ?></button>
+                <button class="btn primary" type="submit" id="submit-btn"><i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?></button>
 
             </form>
         </div>
@@ -172,8 +187,8 @@ function val($index, $default = '')
 
 
 <div class="content">
-    <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
-        <i class="ph ph-regular ph-lg ph-question mr-5"></i>
+    <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+        <i class="ph ph-lg ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a> -->
     <h2 class="mt-0">
@@ -183,7 +198,7 @@ function val($index, $default = '')
 
     <?php if (false) : ?>
         <a href="#add-projects">
-            <i class="ph ph-regular ph-plus"></i>
+            <i class="ph ph-plus"></i>
             <?= lang('Add new project', 'Neues Projekt anlegen') ?>
         </a>
     <?php endif; ?>
@@ -199,7 +214,7 @@ function val($index, $default = '')
     <?php
     $projects = $osiris->projects->find();
     foreach ($projects as $project) {
-        $contact = getUserFromId($project['contact_person'] ?? '', true);
+        $contact = $DB->getPerson($project['contact_person'] ?? '', true);
     ?>
         <div class="col-md-6">
             <div class="box" id="<?= $project['_id'] ?>">
@@ -214,9 +229,9 @@ function val($index, $default = '')
                     <a class="" href="<?= ROOTPATH ?>/profile/<?= $project['contact_person'] ?? '' ?>"><?= $contact['displayname'] ?? '' ?></a>
 
                     <div class="float-right ">
-                        <a href="<?= ROOTPATH ?>/activities/new?type=projects&projects=<?= $project['project'] ?>" class="btn text-projects btn-sm">
-                            <i class="ph ph-regular ph-lg ph-chalkboard-simple-user"></i>
-                            <i class="ph ph-regular ph-plus"></i>
+                        <a href="<?= ROOTPATH ?>/activities/new?type=projects&projects=<?= $project['project'] ?>" class="btn text-projects small">
+                            <i class="ph ph-lg ph-chalkboard-simple-user"></i>
+                            <i class="ph ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>
                     </div>

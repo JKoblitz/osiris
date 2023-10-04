@@ -78,7 +78,7 @@ Mit Klick auf "Update" bestätigst du die Änderungen.
             Julia Koblitz
         </div>
         <div class="cta">
-            <a class="btn btn-osiris " style="border-radius:2rem">
+            <a class="btn primary " style="border-radius:2rem">
                 <i class="icon-activity-plus mr-10" aria-hidden="true"></i>
                 Aktivität hinzuf. 
             </a>

@@ -1,3 +1,23 @@
+<?php
+
+/**
+ * Page to add or edit one activity
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /activities/new
+ * @link /activities/edit/<activity_id>
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <style>
     .custom-radio input#open_access:checked~label::before {
         background-color: var(--success-color);
@@ -17,11 +37,11 @@ $copy = $copy ?? false;
 $formaction = ROOTPATH . "/";
 if (!empty($form) && isset($form['_id']) && !$copy) {
     $formaction .= "update/" . $form['_id'];
-    $btntext = '<i class="ph ph-regular ph-check"></i> ' . lang("Update", "Aktualisieren");
+    $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
     $formaction .= "create";
-    $btntext = '<i class="ph ph-regular ph-check"></i> ' . lang("Save", "Speichern");
+    $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/activities/view/*";
 }
 
@@ -57,7 +77,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             </h5>
             <?php if (lang("en", "de") == "en") { ?>
                 <p>
-                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?= $Settings->affiliation ?> authors are suggested in a list. An author from the list will be automatically assigned to <?= $Settings->affiliation ?>.
+                    To <b>add an author</b>, you have to enter him in the field marked "Add author ...". Please use the format <code>last name, first name</code>, so that OSIRIS can assign the authors correctly. <?= $Settings->get('affiliation') ?> authors are suggested in a list. An author from the list will be automatically assigned to <?= $Settings->get('affiliation') ?>.
                 </p>
 
                 <p>
@@ -67,11 +87,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     To <b>change the author order</b>, you can take an author and drag and drop it to the desired position.
                 </p>
                 <p>
-                    To <b>mark an author as belonging to the <?= $Settings->affiliation ?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?= $Settings->affiliation ?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?= $Settings->affiliation ?> employees but were not at the time of the activity, they must not be marked as a <?= $Settings->affiliation ?> author!
+                    To <b>mark an author as belonging to the <?= $Settings->get('affiliation') ?></b>, you can simply double click on it. The name will then be highlighted in blue and the word <?= $Settings->get('affiliation') ?> will appear in front of it. It is important for reporting that all authors are marked according to their affiliation! If authors are <?= $Settings->get('affiliation') ?> employees but were not at the time of the activity, they must not be marked as a <?= $Settings->get('affiliation') ?> author!
                 </p>
             <?php } else { ?>
                 <p>
-                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?= $Settings->affiliation ?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?= $Settings->affiliation ?> zugeordnet.
+                    Um einen <b>Autor hinzuzufügen</b>, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. <?= $Settings->get('affiliation') ?>-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur <?= $Settings->get('affiliation') ?> zugeordnet.
                 </p>
 
                 <p>
@@ -81,7 +101,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     Um die <b>Autorenreihenfolge zu ändern</b>, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
                 </p>
                 <p>
-                    Um einen <b>Autor zur <?= $Settings->affiliation ?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?= $Settings->affiliation ?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?= $Settings->affiliation ?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?= $Settings->affiliation ?>-Autor markiert werden!
+                    Um einen <b>Autor zur <?= $Settings->get('affiliation') ?> zugehörig zu markieren</b>, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort <?= $Settings->get('affiliation') ?> taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der <?= $Settings->get('affiliation') ?> sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als <?= $Settings->get('affiliation') ?>-Autor markiert werden!
                 </p>
 
                 <p>
@@ -89,7 +109,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 </p>
             <?php } ?>
 
-            <a href="<?= ROOTPATH ?>/docs/add-activities#autoren-bearbeiten" class="btn btn-tour" target="_blank"><?= lang('Read more', 'Lies mehr') ?></a>
+            <a href="<?= ROOTPATH ?>/docs/add-activities#autoren-bearbeiten" class="btn tour" target="_blank"><?= lang('Read more', 'Lies mehr') ?></a>
 
         </div>
     </div>
@@ -107,10 +127,10 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             <div class="input-group">
                 <input type="text" class="form-control" onchange="getJournal(this.value)" list="journal-list" id="journal-search" value="<?= $form['journal'] ?? '' ?>">
                 <div class="input-group-append">
-                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="ph ph-regular ph-magnifying-glass"></i></button>
+                    <button class="btn" onclick="getJournal($('#journal-search').val())"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
-            <table class="table table-simple">
+            <table class="table simple">
                 <tbody id="journal-suggest">
 
                 </tbody>
@@ -138,10 +158,10 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             <div class="input-group">
                 <input type="text" class="form-control" onchange="getTeaching(this.value)" list="teaching-list" id="teaching-search" value="<?= $form['module'] ?? '' ?>">
                 <div class="input-group-append">
-                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="ph ph-regular ph-magnifying-glass"></i></button>
+                    <button class="btn" onclick="getTeaching($('#teaching-search').val())"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
-            <table class="table table-simple">
+            <table class="table simple">
                 <tbody id="teaching-suggest">
 
                 </tbody>
@@ -192,7 +212,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
             </div>
             <div class="content">
 
-                <button class="btn btn-osiris" type="button" onclick="calcSWS()"><?= lang('Calculate', 'Berechnen') ?></button>
+                <button class="btn osiris" type="button" onclick="calcSWS()"><?= lang('Calculate', 'Berechnen') ?></button>
 
 
 
@@ -241,19 +261,19 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 
 <div class="content">
-    <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right ml-5" id="docs-btn">
-        <i class="ph ph-regular ph-question mr-5"></i>
+    <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+        <i class="ph ph-question mr-5"></i>
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a>
     <?php if (empty($form)) { ?>
 
-        <!-- <button class="btn btn-tour float-right" id="tour">
-            <i class="ph ph-regular ph-chat-dots mr-5"></i>
+        <!-- <button class="btn tour float-right" id="tour">
+            <i class="ph ph-chat-dots mr-5"></i>
             <?= lang('Interactive tour', 'Interactive Tour') ?>
         </button> -->
         <!-- Create new activity -->
         <h2 class="mb-0">
-            <i class="ph ph-regular ph-plus-circle"></i>
+            <i class="ph ph-plus-circle"></i>
             <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
         </h2>
 
@@ -265,13 +285,13 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit"><i class="ph ph-regular ph-magnifying-glass"></i></button>
+                        <button class="btn primary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
                     </div>
                 </div>
             </div>
         </form>
 
-        <div class="alert alert-danger" id="id-exists" style="display:none;">
+        <div class="alert danger" id="id-exists" style="display:none;">
             <h4 class="title">
                 <?= lang('Duplicate!', 'Duplikat!') ?>
             </h4>
@@ -288,7 +308,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <div class="my-20 select-btns" id="select-btns">
             <?php
             foreach ($Settings->getActivities() as $id => $a) { ?>
-                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 btn-select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
+                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
             <?php } ?>
         </div>
 
@@ -318,7 +338,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
         <div class="mb-20 select-btns" id="select-btns" style="display:none">
             <?php
             foreach ($Settings->getActivities() as $id => $a) { ?>
-                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 btn-select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
+                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
             <?php }
             ?>
         </div>
@@ -327,12 +347,12 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 
 
-    <div class="box box-primary add-form" style="display:none" id="publication-form">
+    <div class="box primary add-form" style="display:none" id="publication-form">
         <div class="content">
-            <button class="btn btn-osiris btn-sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
+            <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
 
             <?php if (!empty($form) && isset($_GET['epub'])) { ?>
-                <div class="alert alert-signal mb-20">
+                <div class="alert signal mb-20">
                     <div class="title">
                         <?= lang('Please review this entry and mark it as "Not Epub".', 'Bitte überprüfe diesen Eintrag und markiere ihn als "nicht Epub".') ?>
                     </div>
@@ -366,7 +386,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <div class="mb-20 select-btns" data-type="<?= $t ?>">
                     <?php foreach ($subtypes as $st) {
                     ?>
-                        <button onclick="togglePubType('<?= $st ?>')" class="btn btn-select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
+                        <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
                     <?php } ?>
                 </div>
 
@@ -413,7 +433,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     <div class="form-group">
                         <a onclick="$(this).next().toggleClass('hidden')">
                             <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
-                                <i class="ph ph-regular ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
+                                <i class="ph ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
                             </label>
                         </a>
                         <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {
@@ -429,7 +449,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 <?php } ?>
                 <?php if (!$copy && !empty($form) && (count($form['authors']) > 1 || ($form['authors'][0]['user'] ?? '') != $_SESSION['username'])) { ?>
-                    <div class="alert alert-signal p-10 mb-10">
+                    <div class="alert signal p-10 mb-10">
                         <div class="title">
                             <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>
                         </div>
@@ -452,7 +472,18 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                     </div>
                 <?php } ?>
 
-                <button class="btn btn-primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
+
+                <div class="alert signal mb-10" id="doublet-found" style="display:none;">
+                    <h4 class="title">
+                        <i class="ph ph-warning text-osiris"></i>
+                        <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
+                    </h4>
+                    <p class="m-0">
+
+                    </p>
+                </div>
+
+                <button class="btn primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 
             </form>
         </div>
@@ -470,17 +501,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
 <datalist id="scientist-list">
     <?php
-    foreach ($osiris->users->distinct('formalname') as $s) { ?>
+    foreach ($osiris->persons->distinct('formalname') as $s) { ?>
         <option><?= $s ?></option>
     <?php } ?>
 </datalist>
 
-<datalist id="conference-list">
-    <?php
-    foreach ($osiris->activities->distinct('conference') as $c) { ?>
-        <option><?= $c ?></option>
-    <?php } ?>
-</datalist>
 
 
 <script>

@@ -1,3 +1,23 @@
+<?php
+/**
+ * Page to edit coins
+ * 
+ * TODO: this should be incorporated into admin/activities.
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /coins
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <style>
     .form-div {
         margin-left: .1rem;
@@ -41,7 +61,7 @@ function array_to_form($array, $level=2, $parents=array()){
 
 
 <h1>
-    <i class="ph ph-regular ph-lg ph-coin text-signal"></i>
+    <i class="ph ph-lg ph-coin text-signal"></i>
     LOM Punktematrix
 </h1>
 
@@ -55,5 +75,5 @@ $matrix = json_decode($matrix_json, true, 512, JSON_NUMERIC_CHECK);
 array_to_form($matrix);
 ?> 
 
-<button type="submit" class="btn btn-primary">Update</button>
+<button type="submit" class="btn primary">Update</button>
 </form>

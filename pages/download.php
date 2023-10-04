@@ -1,3 +1,22 @@
+<?php
+/**
+ * Page to download activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /download
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
+
 <style>
     @media (min-width: 768px) {
         .row.row-eq-spacing-sm:not(.row-eq-spacing) {
@@ -53,7 +72,7 @@
                         <option value=""><?= lang('All departments', 'Alle Abteilungen') ?></option>
                         <?php
                         foreach ($Settings->getDepartments() as $d => $dept) { ?>
-                            <option value="<?= $d ?>"><?= $dept['name'] ?></option>
+                            <option value="<?= $dept['id'] ?>"><?= $dept['name'] ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -68,12 +87,12 @@
                     <span class="input-group-text"><?= lang('From', 'Von') ?></span>
                 </div>
                 <input type="number" name="filter[time][from][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" onchange="filtertime()">
-                <input type="number" name="filter[time][from][year]" class="form-control" placeholder="year" min="<?=$Settings->startyear?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
+                <input type="number" name="filter[time][from][year]" class="form-control" placeholder="year" min="<?=$Settings->get('startyear')?>" max="<?= CURRENTYEAR ?>" step="1" id="from-year" onchange="filtertime()">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><?= lang('to', 'bis') ?></span>
                 </div>
                 <input type="number" name="filter[time][to][month]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" onchange="filtertime()">
-                <input type="number" name="filter[time][to][year]" class="form-control" placeholder="year" min="<?=$Settings->startyear?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
+                <input type="number" name="filter[time][to][year]" class="form-control" placeholder="year" min="<?=$Settings->get('startyear')?>" max="<?= CURRENTYEAR ?>" step="1" id="to-year" onchange="filtertime()">
 
                 <div class="input-group-append">
                     <button class="btn" type="button" onclick="filtertime(true)">&times;</button>
@@ -93,7 +112,7 @@
 
             <div class="custom-radio d-inline-block ml-10">
                 <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                <label for="highlight-aoi"><?= $Settings->affiliation ?><?= lang(' Authors', '-Autoren') ?></label>
+                <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
             </div>
 
             <div class="custom-radio d-inline-block ml-10">
@@ -122,7 +141,7 @@
        
 
 
-        <button class="btn btn-primary">Download</button>
+        <button class="btn primary">Download</button>
 
     </form>
 </div>
@@ -149,15 +168,15 @@
             fromMonth = 1
         }
         var fromYear = $("#from-year").val()
-        if (fromYear.length == 0 || parseInt(fromYear) < <?=$Settings->startyear?> || parseInt(fromYear) > today.getFullYear()) {
-            fromYear = <?=$Settings->startyear?>
+        if (fromYear.length == 0 || parseInt(fromYear) < <?=$Settings->get('startyear')?> || parseInt(fromYear) > today.getFullYear()) {
+            fromYear = <?=$Settings->get('startyear')?>
         }
         var toMonth = $("#to-month").val()
         if (toMonth.length == 0 || parseInt(toMonth) < 1 || parseInt(toMonth) > 12) {
             toMonth = 12
         }
         var toYear = $("#to-year").val()
-        if (toYear.length == 0 || parseInt(toYear) < <?=$Settings->startyear?> || parseInt(toYear) > today.getFullYear()) {
+        if (toYear.length == 0 || parseInt(toYear) < <?=$Settings->get('startyear')?> || parseInt(toYear) > today.getFullYear()) {
             toYear = today.getFullYear()
         }
         // take care that from is not larger than to

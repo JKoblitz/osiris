@@ -1,5 +1,21 @@
-
 <?php
+
+/**
+ * Page to visualize department network
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /visualize/departments
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 function combinations($array)
 {
     $results = array();
@@ -18,19 +34,20 @@ $activities = $osiris->activities->find(['type' => 'publication']);
 $activities = $activities->toArray();
 
 // generate user dept array
-$temp = $osiris->users->find([], ['sort' => ["last" => 1]]);
+$temp = $osiris->persons->find([], ['sort' => ["last" => 1]]);
 $users = [];
 foreach ($temp as $row) {
-    $users[$row['_id']] = $row['dept'];
+    $users[$row['username']] = $row['dept'];
 }
 
 // generate graph json
 $combinations = [];
-$labels = $Settings->getDepartments();
+$depts = $Settings->getDepartments();
 
-foreach ($labels as $key => $val) {
-    $labels[$key]['count'] = 0;
-    $labels[$key]['id'] = $key;
+$labels = [];
+foreach ($depts as $dept) {
+    $labels[$dept['id']] = $dept;
+    $labels[$dept['id']]['count'] = 0;
 }
 
 foreach ($activities as $doc) {
@@ -79,7 +96,7 @@ foreach ($combinations as $c) {
 ?>
 
 <h1>
-    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+    <i class="ph ph-graph" aria-hidden="true"></i>
     <?= lang('Department network', 'Abteilungs-Netzwerk') ?>
 </h1>
 

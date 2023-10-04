@@ -1,4 +1,5 @@
 <?php
+require_once "DB.php";
 require_once "Settings.php";
 require_once "Schema.php";
 require_once "Country.php";
@@ -24,6 +25,7 @@ class Document extends Settings
 
     private $schemaType = null;
     public $schema = [];
+    private $db =null;
 
 
     function __construct($highlight = true, $usecase = 'web')
@@ -31,6 +33,7 @@ class Document extends Settings
         parent::__construct();
         $this->highlight = $highlight;
         $this->usecase = $usecase;
+        $this->db = new DB;
     }
 
     public function setDocument($doc)
@@ -103,7 +106,7 @@ class Document extends Settings
                 }
 
                 if (isset($d['journal_id'])) {
-                    $j = getConnected('journal', $d['journal_id']);
+                    $j = $this->db->getConnected('journal', $d['journal_id']);
                     if (!empty($j)) {
                         $journal = Schema::journal($j);
                         if (!empty($d['volume'])) {
@@ -236,9 +239,7 @@ class Document extends Settings
         $icon = "<i class='ph text-$type ph-$icon'></i>";
         if ($tooltip) {
             $name = $this->activity_title();
-            return "<span data-toggle='tooltip' data-title='$name'>
-                $icon
-            </span>";
+            return "<span data-toggle='tooltip' data-title='$name'>$icon</span>";
         }
 
         return $icon;
@@ -272,9 +273,9 @@ class Document extends Settings
             $type = strtolower(trim($this->doc['type'] ?? $this->doc['subtype'] ?? ''));
         }
         $this->type = $type;
-        $this->typeArr = $this->activities[$type];
+        $this->typeArr = $this->get('activities')[$type];
 
-        if (!isset($this->activities[$type])) return;
+        if (!isset($this->get('activities')[$type])) return;
         if (!isset($this->doc['subtype'])) {
 
             $subtype = $type;
@@ -712,15 +713,17 @@ class Document extends Settings
                 $files = '';
                 foreach ($this->getVal('files', array()) as $file) {
                     $icon = getFileIcon($file['filetype']);
-                    $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'>
-                        <i class='ph ph-regular ph-file ph-$icon'></i>
-                        </a>";
+                    $files .= " <a href='$file[filepath]' target='_blank' data-toggle='tooltip' data-title='$file[filetype]: $file[filename]' class='file-link'><i class='ph ph-file ph-$icon'></i></a>";
                 }
                 return $files;
             case "guest": // ["category"],
                 return $this->translateCategory($this->getVal('category'));
             case "isbn": // ["isbn"],
                 return $this->getVal('isbn');
+            case "issn": // ["issn"],
+                $issn = $this->getVal('issn');
+                if (empty($issn)) return '';
+                return implode(', ', DB::doc2Arr($issn));
             case "issue": // ["issue"],
                 return $this->getVal('issue');
             case "iteration": // ["iteration"],
@@ -728,14 +731,14 @@ class Document extends Settings
             case "journal": // ["journal", "journal_id"],
                 $val = $this->doc['journal_id'] ?? '';
                 if (!empty($val)) {
-                    $j = getConnected('journal', $this->getVal('journal_id'));
+                    $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
                     return $j['journal'];
                 }
                 return $this->getVal('journal');
             case "journal-abbr":
                 $val = $this->doc['journal_id'] ?? '';
                 if (!empty($val)) {
-                    $j = getConnected('journal', $this->getVal('journal_id'));
+                    $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
                     return $j['abbr'];
                 }
                 return $this->getVal('journal');
@@ -772,6 +775,16 @@ class Document extends Settings
                 }
                 if ($this->usecase == 'list') return $oa . " " . $status;
                 return $oa;
+                
+            case "open_access": // ["open_access"],
+                if (!empty($this->getVal('open_access', false))) {
+                    return '<i class="icon-open-access text-success" title="Open Access"></i> yes';
+                } else {
+                    return '<i class="icon-closed-access text-danger" title="Closed Access"></i> no';
+                }
+            case "oa_status": // ["open_access"],
+                return $this->getVal('oa_status', 'Unknown Status');
+
             case "pages": // ["pages"],
                 return $this->getVal('pages');
             case "person": // ["name", "affiliation", "academic_title"],
@@ -820,13 +833,13 @@ class Document extends Settings
                 return $this->translateCategory($this->getVal('category'));
             case "teaching-course": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
-                    $m = getConnected('teaching', $this->getVal('module_id'));
+                    $m = $this->db->getConnected('teaching', $this->getVal('module_id'));
                     return $m['module'] . ': ' . $m['title'];
                 }
                 return $this->getVal('title');
             case "teaching-course-short": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
-                    $m = getConnected('teaching', $this->getVal('module_id'));
+                    $m = $this->db->getConnected('teaching', $this->getVal('module_id'));
                     return $m['module'];
                 }
                 return 'Unknown';

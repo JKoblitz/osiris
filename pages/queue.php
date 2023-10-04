@@ -1,40 +1,30 @@
 <?php
+/**
+ * Page to see the queue
+ * 
+ * Show activities that were lately added via CRON Job.
+ * Either user specific or all (editor).
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /queue/user
+ * @link        /queue/editor
+ *
+ * @package     OSIRIS
+ * @since       1.1.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
 $Format = new Document();
 
 ?>
 
-<style>
-    .box:target {
-        -moz-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
-        -webkit-box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
-        box-shadow: 0 0 0 0.3rem var(--signal-box-shadow-color);
-    }
-
-    .box.duplicate {
-        color: var(--muted-color);
-        opacity: 0.7;
-        border-color: var(--danger-color);
-        position: relative;
-        padding-top: 2rem;
-    }
-
-    .box.duplicate::before {
-        content: 'DUPLICATE';
-        font-size: small;
-        font-weight: bold;
-        display: block;
-        position: absolute;
-        top: 1rem;
-        color: white;
-        background: var(--danger-color);
-        padding: 0 .5rem;
-        padding-left: 2.2rem;
-    }
-</style>
-
-<!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn btn-tour float-right" id="">
-    <i class="ph ph-regular ph-lg ph-question mr-5"></i>
+<!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right" id="">
+    <i class="ph ph-lg ph-question mr-5"></i>
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a> -->
 <h1>
@@ -67,24 +57,24 @@ if ($n_queue == 0) {
                     </p>
                     <div class='' id="approve-<?= $id ?>">
                         <?php if (isset($doc['duplicate'])) { ?>
-                            <button class="btn btn-danger mr-10" onclick="_queue('<?= $id ?>', false)" data-toggle="tooltip" data-title="<?= lang('It is a duplicate: remove from queue.', 'Es ist ein Duplikat: aus der Warteschlange entfernen.') ?>">
-                                <i class="ph ph-regular ph-x ph-fw"></i>
+                            <button class="btn danger mr-10" onclick="_queue('<?= $id ?>', false)" data-toggle="tooltip" data-title="<?= lang('It is a duplicate: remove from queue.', 'Es ist ein Duplikat: aus der Warteschlange entfernen.') ?>">
+                                <i class="ph ph-x ph-fw"></i>
                             </button>
                             <button class="btn text-success" onclick="_queue('<?= $id ?>', true)" data-toggle="tooltip" data-title="<?= lang('No duplicate: Accept and add to the database.', 'Kein Duplikat: akzeptieren und zur Datenbank hinzufügen.') ?>">
-                                <i class="ph ph-regular ph-check ph-fw"></i>
+                                <i class="ph ph-check ph-fw"></i>
                             </button>
                             <a target="_self" href="<?= ROOTPATH ?>/activities/new?doi=<?= $doc['doi'] ?>" class="btn text-primary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
-                                <i class="ph ph-regular ph-pencil-simple-line"></i>
+                                <i class="ph ph-pencil-simple-line"></i>
                             </a>
                         <?php } else { ?>
-                            <button class="btn btn-success mr-10" onclick="_queue('<?= $id ?>', true)" data-toggle="tooltip" data-title="<?= lang('Accept and add to the database.', 'Akzeptieren und zur Datenbank hinzufügen.') ?>">
-                                <i class="ph ph-regular ph-check ph-fw"></i>
+                            <button class="btn success mr-10" onclick="_queue('<?= $id ?>', true)" data-toggle="tooltip" data-title="<?= lang('Accept and add to the database.', 'Akzeptieren und zur Datenbank hinzufügen.') ?>">
+                                <i class="ph ph-check ph-fw"></i>
                             </button>
                             <button class="btn text-danger" onclick="_queue('<?= $id ?>', false)" data-toggle="tooltip" data-title="<?= lang('Decline and remove from queue.', 'Ablehnen und aus der Warteschlange entfernen.') ?>">
-                                <i class="ph ph-regular ph-x ph-fw"></i>
+                                <i class="ph ph-x ph-fw"></i>
                             </button>
                             <a target="_self" href="<?= ROOTPATH ?>/activities/new?doi=<?= $doc['doi'] ?>" class="btn text-primary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
-                                <i class="ph ph-regular ph-pencil-simple-line"></i>
+                                <i class="ph ph-pencil-simple-line"></i>
                             </a>
                         <?php } ?>
                     </div>

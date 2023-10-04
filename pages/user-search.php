@@ -1,4 +1,19 @@
 <?php
+/**
+ * Page to search users
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /search/user
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 $Format = new Document(true);
 ?>
 
@@ -9,23 +24,23 @@ $Format = new Document(true);
 
 <div class="content">
     <div class="btn-group float-right">
-        <a href="<?= ROOTPATH ?>/activities/search" class="btn btn-osiris">
-            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
+        <a href="<?= ROOTPATH ?>/search/activities" class="btn osiris">
+            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
-        <a href="#close-modal" class="btn btn-osiris active">
-            <i class="ph ph-regular ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
+        <a href="#close-modal" class="btn osiris active">
+            <i class="ph ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
         </a>
     </div>
 
     <h1>
-        <i class="ph ph-regular ph-student text-osiris"></i>
+        <i class="ph ph-student text-osiris"></i>
         <?= lang('Advanced user search', 'Erweiterte Nutzer-Suche') ?>
     </h1>
     <!-- <form action="#" method="get"> -->
 
     <div id="builder"></div>
 
-    <button class="btn btn-osiris" onclick="getResult()"><i class="ph ph-regular ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
+    <button class="btn osiris" onclick="getResult()"><i class="ph ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
 
     <pre id="result" class="code my-20"></pre>
 
@@ -41,8 +56,8 @@ $Format = new Document(true);
 
     <?php
     $depts = [];
-    foreach ($Settings->getDepartments() as $d => $val) {
-        $depts[$d] = $val['name'];
+    foreach ($Settings->getDepartments() as $dept) {
+        $depts[$dept['id']] = $dept['name'];
     }
     ?>
 
@@ -89,52 +104,8 @@ $Format = new Document(true);
                     type: 'string'
                 },
                 {
-                    id: 'is_scientist',
-                    label: lang('Is scientist', 'Ist Wissenschaftler:in'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
-                    id: 'is_admin',
-                    label: lang('Is admin', 'Ist Admin'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
-                    id: 'is_controlling',
-                    label: lang('Is controlling', 'Ist Controlling'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
                     id: 'is_active',
                     label: lang('Is active', 'Ist aktiv'),
-                    type: 'boolean',
-                    values: {
-                        'true': 'yes',
-                        'false': 'no'
-                    },
-                    input: 'radio',
-                    default_value: true
-                },
-                {
-                    id: 'is_leader',
-                    label: lang('Is leader', 'Ist AG-Leiter'),
                     type: 'boolean',
                     values: {
                         'true': 'yes',
@@ -148,11 +119,11 @@ $Format = new Document(true);
 
             'lang_code': lang('en', 'de'),
             'icons': {
-                add_group: 'ph ph-regular ph-plus-circle',
-                add_rule: 'ph ph-regular ph-plus',
-                remove_group: 'ph ph-regular ph-x-circle',
-                remove_rule: 'ph ph-regular ph-x',
-                error: 'ph-fill ph-warning',
+                add_group: 'ph ph-plus-circle',
+                add_rule: 'ph ph-plus',
+                remove_group: 'ph ph-x-circle',
+                remove_rule: 'ph ph-x',
+                error: 'ph ph-fill ph-warning',
             },
             allow_empty: true,
             default_filter: 'is_active'
@@ -165,8 +136,8 @@ $Format = new Document(true);
             sPagePrevious: "direction ",
             sPageNext: "direction ",
             sPageButtonActive: "active ",
-            sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control form-control-sm d-inline w-auto",
+            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+            sLengthSelect: "form-control sm d-inline w-auto",
             sInfo: "float-right text-muted",
             sLength: "float-right"
         });

@@ -1,15 +1,33 @@
+<?php
+/**
+ * Page to log in
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1><?= lang('Welcome!', 'Willkommen') ?></h1>
 
 <h5 class="">
     <?php
     if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
-        if ($Settings->affiliation === 'LISI') {
+        if ($Settings->get('affiliation') === 'LISI') {
             echo lang('Please log-in with your Demo account.', 'Bitte melde dich mit deinem Demo-Benutzeraccount an.');
         } else {
             echo lang('Please log-in with your OSIRIS account.', 'Bitte melde dich mit deinem OSIRIS-Benutzeraccount an.');
         }
     } else {
-        echo lang('Please log-in with your ' . $Settings->affiliation . '-Account.', 'Bitte melde dich mit deinem ' . $Settings->affiliation . '-Benutzeraccount an.');
+        echo lang('Please log-in with your ' . $Settings->get('affiliation') . '-Account.', 'Bitte melde dich mit deinem ' . $Settings->get('affiliation') . '-Benutzeraccount an.');
     }
     ?>
 </h5>
@@ -26,7 +44,7 @@
     </div>
 
 
-    <input class="btn btn-primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
+    <input class="btn primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
 
     <?php
     if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
@@ -36,10 +54,10 @@
         ) . "</a>";
     }
 
-    if ($Settings->affiliation === 'LISI') {
+    if ($Settings->get('affiliation') === 'LISI') {
     ?>
 
-        <div class="alert alert-signal mt-20">
+        <div class="alert signal mt-20">
             <div class="title">
                 Demo
             </div>

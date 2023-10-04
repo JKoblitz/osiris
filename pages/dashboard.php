@@ -1,3 +1,21 @@
+<?php
+/**
+ * Page for dashboard (general)
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /dashboard
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
 <script>
@@ -58,7 +76,7 @@ $cursor = $osiris->activities->find($filter, $options);
 
 foreach ($cursor as $doc) {
     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-    if ($doc['year'] < $Settings->startyear) continue;
+    if ($doc['year'] < $Settings->get('startyear')) continue;
     $type = $doc['type'];
     $year = strval($doc['year']);
     $issue = false;
@@ -82,7 +100,7 @@ foreach ($cursor as $doc) {
 
             if (isset($doc['journal'])) {
                 if (!isset($doc['impact'])) {
-                    $if = get_impact($doc['journal'], $doc['year'] - 1);
+                    $if = $DB->get_impact($doc['journal'], $doc['year'] - 1);
                     if (!empty($if)) {
                         $osiris->activities->updateOne(
                             ['_id' => $doc['_id']],
@@ -174,23 +192,3 @@ foreach ($impacts as $vals) {
 
     };
 </script>
-
-<?php if ($USER['is_controlling'] || $USER['is_admin']) { ?>
-    <div class="content">
-    <a href="<?=ROOTPATH?>/controlling" class="btn btn-success float-right">Controlling</a>
-
-        <h1 class="m-0">Controlling Dashboard</h1>
-    </div>
-<?php
-    include BASEPATH . "/pages/dashboard-controlling.php";
-    include BASEPATH . "/pages/dashboard-scientist.php";
-} else { ?>
-    <div class="content">
-
-        <h1 class="m-0"><?=lang('Scientist', 'Wissenschaftler')?> Dashboard</h1>
-
-    </div>
-<?php
-
-    include BASEPATH . "/pages/dashboard-scientist.php";
- } ?>

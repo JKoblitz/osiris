@@ -94,72 +94,72 @@ Route::get('/journals-open-access', function () {
 });
 
 
-Route::get('/fix-journals', function () {
-    include_once BASEPATH . "/php/_config.php";
-    include_once BASEPATH . "/php/_db.php";
+// Route::get('/fix-journals', function () {
+//     include_once BASEPATH . "/php/_config.php";
+//     include_once BASEPATH . "/php/_db.php";
 
-    include BASEPATH . "/header.php";
+//     include BASEPATH . "/header.php";
 
-    if (!$USER['is_admin']) die('You have no permission to be here.');
-    // $updateResult = $osiris->journals->updateMany(
-    //     [],
-    //     ['$set' => ['open_access' => false]]
-    // );
-    // dump($updateResult);
+//     if (!$USER['is_admin']) die('You have no permission to be here.');
+//     // $updateResult = $osiris->journals->updateMany(
+//     //     [],
+//     //     ['$set' => ['open_access' => false]]
+//     // );
+//     // dump($updateResult);
 
-    $cursor = $osiris->activities->find(['journal' => ['$exists' => true]]);
-    $journalList = [];
-    foreach ($cursor as $doc) {
-        $j_id = $doc['journal_id'] ?? null;
-        $name = $doc['journal'];
-        if (is_ObjectID($j_id)) {
-            continue;
-        }
-        $j_id = null;
-        echo '<br>';
-        echo "<a target='_blank' href='" . ROOTPATH . "/activities/view/$doc[_id]'>" . activity_badge($doc) . "</a>";
-        echo "<br>";
-        echo "Journal: " . $name . "<br>";
-        // echo "ISSN: ".($doc['issn']??'') . "<br>";
-        echo "Journal-ID: " . ($j_id) . "<br>";
+//     $cursor = $osiris->activities->find(['journal' => ['$exists' => true]]);
+//     $journalList = [];
+//     foreach ($cursor as $doc) {
+//         $j_id = $doc['journal_id'] ?? null;
+//         $name = $doc['journal'];
+//         if (is_ObjectID($j_id)) {
+//             continue;
+//         }
+//         $j_id = null;
+//         echo '<br>';
+//         echo "<a target='_blank' href='" . ROOTPATH . "/activities/view/$doc[_id]'>" . activity_badge($doc) . "</a>";
+//         echo "<br>";
+//         echo "Journal: " . $name . "<br>";
+//         // echo "ISSN: ".($doc['issn']??'') . "<br>";
+//         echo "Journal-ID: " . ($j_id) . "<br>";
 
 
 
-        if (str_contains($name, '(MDPI)')) {
-            $name = str_replace('(MDPI)', '', $name);
-        }
+//         if (str_contains($name, '(MDPI)')) {
+//             $name = str_replace('(MDPI)', '', $name);
+//         }
 
-        $j = new \MongoDB\BSON\Regex('^' . trim($name) . '$', 'i');
-        $journal = $osiris->journals->findOne([
-            '$or' => [
-                ['journal' => ['$regex' => $j]],
-                ['abbr' => ['$regex' => $j]]
-            ]
-        ]);
-        if (!empty($journal)) {
-            $j_id = strval($journal['_id']);
-            $name = $journal['journal'];
-        }
+//         $j = new \MongoDB\BSON\Regex('^' . trim($name) . '$', 'i');
+//         $journal = $osiris->journals->findOne([
+//             '$or' => [
+//                 ['journal' => ['$regex' => $j]],
+//                 ['abbr' => ['$regex' => $j]]
+//             ]
+//         ]);
+//         if (!empty($journal)) {
+//             $j_id = strval($journal['_id']);
+//             $name = $journal['journal'];
+//         }
 
-        $updateResult = $osiris->activities->updateOne(
-            ['_id' => $doc['_id']],
-            ['$set' => ['journal' => $name, 'journal_id' => $j_id]]
-        );
-        if ($updateResult->getModifiedCount() > 0) {
-            echo "UPDATED Journal: " . $name . "<br>";
-            // echo "ISSN: ".($doc['issn']??'') . "<br>";
-            echo "Journal-ID: " . ($j_id) . "<br>";
-        } else {
-            $journalList[] = trim($name);
-        }
-    }
+//         $updateResult = $osiris->activities->updateOne(
+//             ['_id' => $doc['_id']],
+//             ['$set' => ['journal' => $name, 'journal_id' => $j_id]]
+//         );
+//         if ($updateResult->getModifiedCount() > 0) {
+//             echo "UPDATED Journal: " . $name . "<br>";
+//             // echo "ISSN: ".($doc['issn']??'') . "<br>";
+//             echo "Journal-ID: " . ($j_id) . "<br>";
+//         } else {
+//             $journalList[] = trim($name);
+//         }
+//     }
 
-    $journalList = array_count_values($journalList);
-    arsort($journalList);
-    dump($journalList, true);
+//     $journalList = array_count_values($journalList);
+//     arsort($journalList);
+//     dump($journalList, true);
 
-    include BASEPATH . "/footer.php";
-});
+//     include BASEPATH . "/footer.php";
+// });
 
 
 Route::get('/lom-test/([A-Za-z0-9]*)', function ($user) {

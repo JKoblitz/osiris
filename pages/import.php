@@ -1,5 +1,25 @@
+<?php
+/**
+ * Page to import activities
+ * 
+ * e.g. from file or Google Scholar
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /expertise
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1>
-    <i class="ph ph-regular ph-upload text-osiris"></i>
+    <i class="ph ph-upload text-osiris"></i>
     Import
 </h1>
 
@@ -65,15 +85,15 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                 </small>
 
                                 <?php if (!empty($id) && $sim > 50) {
-                                    $activity = getActivity($id);
+                                    $activity = $DB->getActivity($id);
 
                                     $Format->setDocument($activity);
                                     $dupl = $Format->formatShort();
-                                    if ($sim >= 98) $alert = 'danger';
+                                    if ($sim >= 98) $alert = 'duplicate';
                                     else $alert = 'signal';
                                 ?>
 
-                                    <div class="alert alert-<?= $alert ?>">
+                                    <div class="box <?= $alert ?>">
                                         <p class="mt-0">
                                             <?php if ($sim >= 98) { ?>
                                                 <?= lang('This is a 100% duplicate of the follwing publication:', 'Dies ist ein 100%iges Duplikat der folgenden Publikation:') ?>
@@ -88,12 +108,12 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
 
                                 <?php if ($sim >= 98) { ?>
                                     <!-- <button class="btn" disabled>
-                                    <i class="ph ph-regular ph-plus"></i>
+                                    <i class="ph ph-plus"></i>
                                     <?= lang('Adding duplicates is impossible.', 'de') ?>
                                 </button> -->
                                 <?php } else { ?>
                                     <button class="btn mt-5" onclick='addGoogleActivity("<?= $user ?>", "<?= $pub_id ?>")'>
-                                        <i class="ph ph-regular ph-plus"></i>
+                                        <i class="ph ph-plus"></i>
                                         <?= lang('Add to database', 'Zur DB hinzufügen') ?>
                                     </button>
                                 <?php } ?>
@@ -138,7 +158,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                             tr.append(td)
 
                             var btn = $('<button>')
-                            btn.addClass('btn btn-sm')
+                            btn.addClass('btn sm')
                                 .html('Import')
                             btn.on('click', googleScholarDetails(user, pub.link))
                             tr.append($('<td>').append(btn))
@@ -192,7 +212,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                         if (response.inserted > 0) {
                             var td = $('tr#' + doc).find('td:first')
                             td.find('.alert,.btn').remove()
-                            var alert = $('<div class="alert alert-success">')
+                            var alert = $('<div class="alert success">')
                             alert.append('<p class="mt-0">' + lang('Publication successfully added. Please review the result carefully.', 'Publikation wurde hinzugefügt. Bitte überprüfe das Ergebnis sorgfältig!') + '</p>')
                             alert.append(response.formatted)
                             alert.append('<a class="btn mt-5" href="' + ROOTPATH + '/activities/view/' + response.id + '" target="_blank">Review</a>')
@@ -212,7 +232,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
     <?php } else { ?>
 
 
-        <div class="box box-primary">
+        <div class="box primary">
             <div class="content">
                 <h2 class="title">Google Scholar Import</h2>
                 <p>
@@ -237,7 +257,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
     <?php } ?>
 
 <?php } else { ?><!-- if empty(USER[googlescholar]) -->
-    <div class="box box-primary">
+    <div class="box primary">
         <div class="content">
             <h2 class="title">Google Scholar Import</h2>
             <p>
@@ -291,7 +311,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                 </div>
             </div>
 
-            <button class="btn btn-primary">
+            <button class="btn primary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

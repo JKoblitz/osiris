@@ -1,8 +1,10 @@
 <?php
 include_once BASEPATH . "/php/_lom.php";
+include_once BASEPATH . "/php/init.php";
 
 class Achievement
 {
+    private $DB;
     private $osiris;
     public $userac = [];
     public $achievements = [];
@@ -15,10 +17,11 @@ class Achievement
     private $showcoins = false;
 
 
-    function __construct($osiris)
+    function __construct($DB = null)
     {
-        $this->osiris = $osiris;
-        // $achievements = $this->osiris->achievements->find()->toArray();
+        $this->DB = new DB;
+        $this->osiris = $this->DB->db;
+        // $achievements = $this->DB->achievements->find()->toArray();
 
         $json = file_get_contents(BASEPATH . "/achievements.json");
         $achievements = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
@@ -40,21 +43,27 @@ class Achievement
         }
 
         // find user in the database
-        $this->userdata = $this->osiris->users->findOne(['_id' => $username]);
+        $this->userdata = $this->DB->getUser($username);
         if (empty($this->userdata)) return false;
+
         // get all user achievements
-        $achieved = $this->userdata['achievements'] ?? [];
+
+        $achieved = $this->osiris->achieved->find(['username' => $username]);
 
         // check if user disabled coins
         // $this->showcoins = !($this->userdata['hide_coins'] ?? true);
-
-        $showcoins = ($this->userdata['show_coins'] ?? 'no');
-        if ($showcoins == 'all') {
-            $this->showcoins = true;
-        } elseif ($showcoins == 'myself' && $this->self) {
-            $this->showcoins = true;
+        global $Settings;
+        if ($Settings->hasFeatureDisabled('coins')) {
+            $showcoins = false;
         } else {
-            $this->showcoins = false;
+            $showcoins = ($this->userdata['show_coins'] ?? 'no');
+            if ($showcoins == 'all') {
+                $this->showcoins = true;
+            } elseif ($showcoins == 'myself' && $this->self) {
+                $this->showcoins = true;
+            } else {
+                $this->showcoins = false;
+            }
         }
         if (!$this->showcoins) {
             // do not show coin-associated achievements if the user has disabled coins
@@ -72,7 +81,6 @@ class Achievement
             // add to list of user achievements
             $this->userac[$ac['id']] = $ac;
         }
-
 
         // save gender for correct title formatting
         if (($this->userdata['gender'] ?? 'n') == 'f') {
@@ -241,7 +249,7 @@ class Achievement
             }
             if ($new_lvl > $user_lvl || ($user_ac['new'] ?? false)) {
                 $this->userac[$key] = [
-                    'id' => $key, "level" => $new_lvl, "achieved" => date("d.m.Y")
+                    'id' => $key, "level" => $new_lvl, "achieved" => date("d.m.Y"), "username" => $this->username
                 ];
                 $this->new[] = $this->userac[$key];
             }
@@ -317,7 +325,7 @@ class Achievement
         // foreach ($levels as $lvl => $value) {
         //     if ($value == 0) continue;
         //     echo "<a class='achievement colorless font-size-16 max-4 lvl$lvl mr-10' href='".ROOTPATH."/achievements/$this->username'>";
-        //     echo "<i class='ph-fill ph-lg ph-trophy'></i> $value";
+        //     echo "<i class='ph ph-fill ph-lg ph-trophy'></i> $value";
         //     echo "</a>";
         // }
         // echo "</div>";
@@ -375,9 +383,7 @@ class Achievement
         if (!$this->self || empty($this->new) || empty($this->userac)) return;
         $values = array_values($this->userac);
 
-        $this->osiris->users->updateOne(
-            ['_id' => $this->username],
-            ['$set' => ['achievements' => $values]]
-        );
+        $this->osiris->achieved->deleteMany(['username' => $this->username]);
+        $this->osiris->achieved->insertMany($values);
     }
 }

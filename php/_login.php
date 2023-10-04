@@ -184,13 +184,15 @@ function getUsers()
 
             $search = ldap_search($connect, $base_dn, $fields);
             $result = ldap_get_entries($connect, $search);
-            return $result;
+            // return $result;
             // $ldap_username = $result[0]['samaccountname'][0];
             // $ldap_last_name = $result[0]['cn'][0];
 
-
             foreach ($result as $entry) {
-                $res[$entry['samaccountname'][0]] = $entry['cn'][0];
+                if (!isset($entry['samaccountname'][0])) continue;
+                // dump($entry['dn']);
+                $active = !str_contains($entry['dn'], 'DeaktivierteUser');
+                $res[$entry['samaccountname'][0]] = $active;
             }
             ldap_close($connect);
             return $res;
@@ -215,10 +217,14 @@ function getGroups($v)
 
 function newUser($username)
 {
-    global $Settings;
+    $Settings = new Settings();
+    // get user from ldap
+    $ldap_users = getUser($username);
+    if (empty($ldap_users) || $ldap_users['count'] == 0) return false;
+    $ldap_user = $ldap_users[0];
 
+    $person = array();
     $keys = [
-        "_id" => "samaccountname",
         "username" => "samaccountname",
         "first" => "givenname",
         "last" => "sn",
@@ -229,28 +235,38 @@ function newUser($username)
         "telephone" => "telephonenumber",
         "mail" => "mail"
     ];
-    $user = getUser($username);
-    // dump($user);
-    if (empty($user) || $user['count'] == 0) return false;
-    $value = $user[0];
-    // dump($value);
-    $user = array();
     foreach ($keys as $key => $name) {
         // dump($value, true);
-        $user[$key] = $value[$name][0] ?? null;
+        $person[$key] = $ldap_user[$name][0] ?? null;
     }
-    // if (empty($user['last']) || str_contains($user['unit'], "Allgemeiner Account")) return array();
-    $user['_id'] = strtolower(trim($user['_id']));
-    $user['is_admin'] = false;
-    $user['dept'] = $user['unit'];
-    if (!array_key_exists($user['dept'], $Settings->departments))
-        $user['dept'] = '';
+    $person['academic_title'] = null;
+    $person['orcid'] = null;
+    $person['dept'] = null;
 
-    $user['academic_title'] = null;
-    $user['orcid'] = null;
-    $user['is_controlling'] = $user['department'] == "Controlling";
-    $user['is_scientist'] = false;
-    $user['is_leader'] = str_contains($user['unit'], "leitung");
-    $user['is_active'] = !str_contains($user['unit'], "verlassen");
-    return $user;
+    $departments = [];
+    foreach ($Settings->get('departments') as $D) {
+        $departments[strtolower($D['id'])] = $D['id'];
+        $departments[strtolower($D['name'])] = $D['id'];
+    }
+    $unit = strtolower($person['unit']);
+    $departments['science policy'] = 'SPI';
+    $departments['bid'] = 'BIDB';
+    if (array_key_exists($unit, $departments))
+        $person['dept'] = $departments[$unit];
+    else {
+        $unit = trim(explode('/', $unit)[0]);
+        if (array_key_exists($unit, $departments))
+            $person['dept'] = $departments[$unit];
+    }
+
+    $account = array("username" => $person["username"], "roles"=>[]);
+
+    // $account['is_admin'] = false;
+    // $account['is_controlling'] = $person['department'] == "Controlling";
+    // $account['is_scientist'] = false;
+    // $account['is_leader'] = str_contains($person['unit'], "leitung");
+    $account['is_active'] = !str_contains($ldap_user['dn'], 'DeaktivierteUser');
+    $account['created'] = date('Y-m-d');
+
+    return ['account' => $account, 'person' => $person];
 }

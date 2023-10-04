@@ -1,3 +1,22 @@
+<?php
+/**
+ * Page to see all activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /activities
+ * @link /my-activities
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 <style>
     tr.ui-sortable-helper {
@@ -8,7 +27,7 @@
 <div class="content">
 
     <h1>
-        <i class="ph ph-regular ph-users"></i>
+        <i class="ph ph-users"></i>
         <?php if ($role == 'authors') { ?>
         <?= lang('Edit authors', 'Bearbeite die Autoren') ?>
         <?php } else { ?>
@@ -24,7 +43,7 @@
                     <th>Last name <span class="text-danger">*</span></th>
                     <th>First name</th>
                     <th>Position</th>
-                    <th><?= $Settings->affiliation ?></th>
+                    <th><?= $Settings->get('affiliation') ?></th>
                     <th>Username</th>
                     <th></th>
                 </tr>
@@ -73,14 +92,14 @@
                 <tr id="last-row">
                     <td></td>
                     <td colspan="6">
-                        <button class="btn" type="button" onclick="addAuthorRow()"><i class="ph ph-regular ph-plus"></i> <?= lang('Add author', 'Autor hinzufügen') ?></button>
+                        <button class="btn" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i> <?= lang('Add author', 'Autor hinzufügen') ?></button>
                     </td>
                 </tr>
             </tfoot>
 
         </table>
-        <button class="btn btn-primary mt-20">
-            <i class="ph ph-regular ph-check"></i>
+        <button class="btn primary mt-20">
+            <i class="ph ph-check"></i>
             <?= lang('Submit', 'Bestätigen') ?>
         </button>
     </form>
@@ -90,7 +109,7 @@
 
 <datalist id="user-list">
     <?php
-    $all_users = $osiris->users->find();
+    $all_users = $osiris->persons->find(['username' => ['$ne'=>null]]);
     foreach ($all_users as $s) { ?>
         <option value="<?= $s['username'] ?>"><?= "$s[last], $s[first] ($s[username])" ?></option>
     <?php } ?>

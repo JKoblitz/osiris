@@ -1,14 +1,32 @@
 <?php
-$users = $osiris->users->find(['is_scientist' => true], ['sort' => ["last" => 1]]);
+
+/**
+ * Page to visualize coauthor network
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /visualize/coauthors
+ *
+ * @package OSIRIS
+ * @since 1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
+
+$users = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
 
 $scientist = $_GET['scientist'] ?? $_SESSION['username'];
-$selectedUser = $osiris->users->findone(['_id' => $scientist]);
+$selectedUser = $osiris->persons->findone(['username' => $scientist]);
 
 ?>
 
 
 <h1>
-    <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+    <i class="ph ph-graph" aria-hidden="true"></i>
     <?= lang('Coauthor network', 'Koautoren-Netzwerk') ?>
 </h1>
 
@@ -17,16 +35,16 @@ $selectedUser = $osiris->users->findone(['_id' => $scientist]);
     <div class="input-group">
         <select name="scientist" id="scientist-select" class="form-control">
             <?php foreach ($users as $u) { ?>
-                <option value="<?= $u['_id'] ?>" <?= $u['_id'] == $scientist ? 'selected' : '' ?>><?= $u['formalname'] ?></option>
+                <option value="<?= $u['username'] ?>" <?= $u['username'] == $scientist ? 'selected' : '' ?>><?= $u['formalname'] ?></option>
             <?php } ?>
         </select>
         <div class="input-group-append">
-            <button class="btn btn-primary" type="submit">Select</button>
+            <button class="btn primary" type="submit">Select</button>
         </div>
     </div>
 </form>
 
-<a class="link" href="<?= ROOTPATH ?>/profile/<?= $scientist ?>"><i class="ph-fill ph-student"></i>
+<a class="link" href="<?= ROOTPATH ?>/profile/<?= $scientist ?>"><i class="ph ph-fill ph-student"></i>
     <?= lang('View scientist page of ', 'Zeige die Übersichtsseite von ') ?>
     <?= $selectedUser['displayname'] ?>
 </a>
@@ -74,7 +92,7 @@ foreach ($activities as $doc) {
             // $name = $labels[$id]['name'];
             $labels[$id]['count']++;
         } else {
-            $name = $osiris->users->findone(['_id' => $aut['user']]);
+            $name = $osiris->persons->findone(['username' => $aut['user']]);
             if (empty($name)) continue;
             $abbr_name = Document::abbreviateAuthor($name['last'], $name['first'], true, ' ');
             $labels[$id] = [
@@ -91,18 +109,18 @@ foreach ($activities as $doc) {
     $combinations = array_merge($combinations, combinations($authors));
 }
 $depts = $Settings->getDepartments();
-$depts = array_keys($depts);
+$depts = array_column($depts, 'id');
 usort($depts, function ($a, $b) use ($selectedUser) {
     if ($a == $selectedUser['dept']) return -1;
     return 1;
 });
 
-uasort($labels, function ($a, $b) use ($depts){
+uasort($labels, function ($a, $b) use ($depts) {
     $a = array_search($a['dept'], $depts);
     $b = array_search($b['dept'], $depts);
     if ($b === false) return -1;
     if ($a === false) return 1;
-    return ($a < $b ? -1: 1);
+    return ($a < $b ? -1 : 1);
 });
 
 $i = 0;
@@ -124,7 +142,7 @@ foreach ($combinations as $c) {
 
 ?>
 <!-- https://github.com/vivo-project/VIVO/blob/1dd2851e45f1fc10ecb9cadeab4d0db8eb83ca00/webapp/src/main/webapp/templates/freemarker/visualization/personlevel/coAuthorPersonLevelD3.ftl -->
-<script src="<?=ROOTPATH?>/js/d3.v4.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
 
@@ -133,13 +151,19 @@ foreach ($combinations as $c) {
     var labels = JSON.parse('<?= json_encode(array_column($labels, 'name')) ?>')
 
     var data = JSON.parse('<?= json_encode(array_values($labels)) ?>')
-    
-    const DEPTS = JSON.parse('<?=json_encode($Settings->getDepartments())?>');
+
+    const DEPTS = JSON.parse('<?= json_encode($Settings->getDepartments()) ?>');
+    var depts = {}
+    DEPTS.forEach((d)=>{
+        depts[d.id] = d;
+    })
 
     var colors = []
     var links = []
     data.forEach(function(d, i) {
-        var dept = DEPTS[d['dept']] ?? {color: '#cccccc'};
+        var dept = depts[d['dept']] ?? {
+            color: '#cccccc'
+        };
         colors.push(dept['color']);
 
         var link = null
@@ -147,7 +171,7 @@ foreach ($combinations as $c) {
         links.push(link)
     })
 
-    Chords('#chord', matrix, labels, colors, data, links, false, '<?=$labels[$scientist]['index']?>');
+    Chords('#chord', matrix, labels, colors, data, links, false, '<?= $labels[$scientist]['index'] ?>');
 
 
     // var SVG = d3.select("#legend")
@@ -155,32 +179,31 @@ foreach ($combinations as $c) {
     for (var i = 0; i < data.length; i++) {
         var d = data[i]['dept']
 
-        if (d && DEPTS[d]!==undefined && !depts_in_use.includes(d))
+        if (d && depts[d] !== undefined && !depts_in_use.includes(d))
             depts_in_use.push(d);
     }
 
     var legend = d3.select('#legend')
-    // .append('div').attr('class', 'box w-auto')
-    .append('div').attr('class', 'content')
+        // .append('div').attr('class', 'box w-auto')
+        .append('div').attr('class', 'content')
 
     legend.append('div')
-    .style('font-weight', 'bold')
-    .attr('class', 'mb-5')
-    .text('<?=lang("Departments","Abteilungen")?>')
+        .style('font-weight', 'bold')
+        .attr('class', 'mb-5')
+        .text('<?= lang("Departments", "Abteilungen") ?>')
 
     depts_in_use.forEach(d => {
         var row = legend.append('div')
-        .attr('class', 'd-flex mb-5 text-'+d)
+            .attr('class', 'd-flex mb-5 text-' + d)
 
         row.append('div')
-        .style('background-color',DEPTS[d]['color'])
-        .style("width", "2rem")
-        .style("height", "2rem")
-        .style("display", "inline-block")
-        .style("margin-right", "1rem")
-        row.append('span').text(DEPTS[d]['name'])
+            .style('background-color', depts[d]['color'])
+            .style("width", "2rem")
+            .style("height", "2rem")
+            .style("display", "inline-block")
+            .style("margin-right", "1rem")
+        row.append('span').text(depts[d]['name'])
     });
-
 </script>
 
 <!-- 
@@ -358,7 +381,7 @@ foreach ($combinations as $c) {
     legend.append('div')
     .style('font-weight', 'bold')
     .attr('class', 'mb-5')
-    .text('<?=lang("Departments","Abteilungen")?>')
+    .text('<?= lang("Departments", "Abteilungen") ?>')
 
     depts_in_use.forEach(d => {
         var row = legend.append('div')

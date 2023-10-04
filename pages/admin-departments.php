@@ -1,4 +1,21 @@
 <?php
+
+/**
+ * Page for admin dashboard to define departments
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /admin/departments
+ *
+ * @package OSIRIS
+ * @since 1.1.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 $departments = $Settings->getDepartments();
 
 
@@ -57,27 +74,25 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
 </div>
 
 
-<div class="btn-bar">
-    <a href="<?= ROOTPATH ?>/admin/general" class="btn"><?= lang('General', 'Allgemein') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/departments" class="btn active btn-primary"><?= lang('Departments', 'Abteilungen') ?></a>
-    <a href="<?= ROOTPATH ?>/admin/activities" class="btn"><?= lang('Activities', 'Aktivitäten') ?></a>
-</div>
+<?php
+    include BASEPATH . "/components/admin-nav.php";
+?>
 
 <form action="#" method="post" id="modules-form">
     <?php foreach ($departments as $t => $dept) {
-        $member = $osiris->users->count(['dept' => $t]);
+        $member = $osiris->persons->count(['dept' => $t]);
         $color = $dept['color'] ?? '';
     ?>
 
         <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>; <?=isset($dept['new']) ?'opacity:.8;font-style:italic;':''?>">
             <h2 class="header" style="background-color:<?= $color ?>20">
                 <?= $dept['id'] ?>: <?= $dept['name'] ?>
-                <a class="btn btn-link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
-                <a class="btn btn-link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
+                <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
+                <a class="btn link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
                 <?php if ($member == 0) { ?>
-                    <a class="btn btn-link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
+                    <a class="btn link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                 <?php } else { ?>
-                    <a class="btn btn-link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/user/search#{"$and":[{"dept":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete department: $member users associated.", "Kann Abt. nicht löschen: $member Nutzer zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
+                    <a class="btn link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/user#{"$and":[{"dept":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete department: $member users associated.", "Kann Abt. nicht löschen: $member Nutzer zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
                 <?php } ?>
             </h2>
 
@@ -107,11 +122,11 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
     <?php } ?>
 
 
-    <a class="btn btn-osiris" href="#add-type"><i class="ph ph-plus-circle"></i>
+    <a class="btn osiris" href="#add-type"><i class="ph ph-plus-circle"></i>
         <?= lang('Add department', 'Neue Abteilung hinzufügen') ?>
     </a>
 
-    <button class="btn btn-osiris">
+    <button class="btn osiris">
         <i class="ph ph-floppy-disk"></i>
         Save
     </button>

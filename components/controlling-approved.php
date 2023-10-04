@@ -5,7 +5,7 @@
     </h3>
 
 </div>
-<table class="table table-simple table-sm">
+<table class="table simple small">
     <tbody>
         <?php
         if (isset($_GET['q']) && isset($_GET['y'])) {
@@ -16,22 +16,19 @@
             $Q = CURRENTQUARTER;
         }
         $yq = $Y . "Q" . $Q;
-        $cursor = $osiris->users->find(
-            ['is_scientist' => true, 'is_active' => true],
+        $cursor = $osiris->accounts->find(
+            ['roles' => 'scientist', 'is_active' => true],
             ['sort' => ["approved" => -1, "last" => 1]]
         );
         if (empty($cursor)) {
             echo "<div class='content'>" . lang('No scientists found.', 'Keine Forschenden gefunden.') . "</div>";
         } else foreach ($cursor as $s) {
-            // $s = MongoDB\BSON\toJSON($s);
-            // $s = $doc->bsonSerialize();
-            // var_dump($s);
             $approved = isset($s['approved']) && in_array($yq, $s['approved']->bsonSerialize());
         ?>
             <tr class="row-<?= $approved ? 'success' : '' ?>">
                 <td>
-                    <a href="<?= ROOTPATH ?>/scientist/<?= $s['_id'] ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
-                        <?= $s['last'] ?>, <?= $s['first'] ?>
+                    <a href="<?= ROOTPATH ?>/my-year/<?= $s['username'] ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
+                        <?= $DB->getNameFromId($s['username']) ?>
                     </a>
                 </td>
                 <td>

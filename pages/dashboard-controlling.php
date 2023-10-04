@@ -1,7 +1,24 @@
-<div class="content">
-    <h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
+<?php
 
-</div>
+/**
+ * Page for dashboard (only controlling)
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /dashboard
+ *
+ * @package     OSIRIS
+ * @since       1.0 
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
+<h2><?= lang('Overview on the past four quarters', 'Überblick über die letzten vier Quartale') ?></h2>
+
 
 <div class="row row-eq-spacing mb-0">
 
@@ -15,8 +32,8 @@
 
                     <canvas id="overview-<?= $q ?>"></canvas>
                     <!-- <div class="text-right mt-5">
-                        <button class="btn btn-sm" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
-                            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Activities') ?>
+                        <button class="btn small" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
+                            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities') ?>
                         </button>
                     </div> -->
 
@@ -85,9 +102,8 @@
 
     foreach ($quarters as $q => $d) {
 
-        $n_scientists = $osiris->users->count(["is_scientist" => true, "is_active" => true]);
-        $n_approved = $osiris->users->count(["is_scientist" => true, "is_active" => true, "approved" => $d['year'] . "Q" . $d['quarter']]);
-
+        $n_scientists = $osiris->accounts->count(["roles" => 'scientist', "is_active" => true]);
+        $n_approved = $osiris->accounts->count(["roles" => 'scientist', "is_active" => true, "approved" => $d['year'] . "Q" . $d['quarter']]);
     ?>
         <div class="col-md-3">
             <div class="box">
@@ -96,8 +112,8 @@
 
                     <canvas id="approved-<?= $q ?>"></canvas>
                     <div class="text-right mt-5">
-                        <button class="btn btn-sm" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
-                            <i class="ph ph-regular ph-magnifying-glass-plus"></i> <?= lang('Details') ?>
+                        <button class="btn small" onclick="loadModal('components/controlling-approved', {q: '<?= $d['quarter'] ?>', y: '<?= $d['year'] ?>'})">
+                            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Details') ?>
                         </button>
                     </div>
 
@@ -205,8 +221,8 @@ $Format = new Document(true);
                         <?php echo $Format->format(); ?>
                     </td>
                     <td class="unbreakable">
-                        <a class="btn btn-link btn-square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
+                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                            <i class="ph ph-arrow-fat-line-right"></i>
                         </a>
                     </td>
                 </tr>
@@ -226,8 +242,8 @@ $Format = new Document(true);
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });

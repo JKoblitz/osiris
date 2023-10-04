@@ -1,15 +1,31 @@
 <?php
-$users = $osiris->users->find(['is_scientist' => true], ['sort' => ["last" => 1]]);
+/**
+ * Page for overview on visualizations
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /visualize
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
+$users = $osiris->persons->find(['roles' => 'scientist'], ['sort' => ["last" => 1]]);
 
 $scientist = $_GET['scientist'] ?? $_SESSION['username'];
-$selectedUser = $osiris->users->findone(['_id' => $scientist]);
+$selectedUser = $osiris->persons->findone(['user' => $scientist]);
 
 ?>
 
 <div class="content">
 
     <h1>
-        <i class="ph ph-regular ph-graph" aria-hidden="true"></i>
+        <i class="ph ph-graph" aria-hidden="true"></i>
         <?= lang('Visualizations', 'Visualisierungen') ?>
     </h1>
 

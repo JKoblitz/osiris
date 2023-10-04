@@ -1,4 +1,20 @@
 <?php
+/**
+ * Page to import files
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /import
+ *
+ * @package     OSIRIS
+ * @since       1.2.1
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
 require_once BASEPATH . '/vendor/autoload.php';
 require_once BASEPATH . '/php/Document.php';
 $Format = new Document();
@@ -15,7 +31,7 @@ use \LibRIS\RISReader;
 ?>
 <!-- ONLY FOR POST!!! -->
 <h1>
-    <i class="ph ph-regular ph-upload text-osiris"></i>
+    <i class="ph ph-upload text-osiris"></i>
     Import
 </h1>
 
@@ -50,7 +66,7 @@ use \LibRIS\RISReader;
                 </div>
             </div>
 
-            <button class="btn btn-primary">
+            <button class="btn primary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>
@@ -171,7 +187,7 @@ if (isset($_FILES["file"])) {
                         <form action="<?= ROOTPATH ?>/activities/new" method="post" target="_blank">
 
                             <input type="hidden" name="form" value='<?= $dataString ?>'>
-                            <button class="btn"><i class="ph ph-regular ph-plus"></i></button>
+                            <button class="btn"><i class="ph ph-plus"></i></button>
                         </form>
                     </td>
                 </tr>

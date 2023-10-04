@@ -1,11 +1,16 @@
 {
+     "general": {
+        "startyear": "2020",
+        "disable-coins": "false",
+        "disable-achievements": "false",
+        "disable-user-metrics": "false"
+    },
     "affiliation": {
-        "id": "DSMZ",
+        "id": "LISI",
         "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",
         "link": "https://www.dsmz.de/",
         "logo": "dsmz.svg"
     },
-    "startyear": 2017,
     "departments": [
         {
             "id": "MIOS",
@@ -574,6 +579,29 @@
                     }
                 }
             }
+        }
+    },
+    "roles":{
+        "roles":["user", "scientist", "pa", "editor", "admin"],
+        "rights":{
+            "admin": [false, false, false, false, true],
+            "admin-panel": [false, false, false, true, true],
+            "scientist": [false, true, false, false, false],
+            "complete-dashboard": [false, false, false, true, true],
+            "complete-queue": [false, false, false, true, false],
+            "reports": [false, false, false, true, true],
+            "lock-activities": [false, false, false, true, true],
+            "delete-locked": [false, false, false, true, true],
+            "delete-activities": [false, false, false, true, true],
+            "edit-user-profile": [false, false, false, true, true],
+            "edit-activities": [false, false, false, true, true],
+            "edit-locked": [false, false, false, true, true],
+            "edit-roles": [false, false, true, true, true],
+            "edit-journals": [false, false, true, true, true],
+            "see-raw-data": [false, false, true, true, true],
+            "edit-user-settings": [false, false, false, false, true],
+            "set-user-inactive": [false, false, true, false, true],
+            "upload-user-picture": [false, false, true, false, true]
         }
     }
 }

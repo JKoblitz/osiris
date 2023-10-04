@@ -1,5 +1,23 @@
+<?php
+/**
+ * Page to browse all users
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link        /user/browse
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+?>
+
 <h1 class="mt-0">
-    <i class="ph ph-regular ph-student"></i>
+    <i class="ph ph-student"></i>
     <?= lang('Users', 'Nutzer:innen') ?>
 </h1>
 <!-- <p class="text-muted">
@@ -54,12 +72,7 @@
         <th><?= lang('First name', 'Vorname') ?></th>
         <th><?= lang('Dept', 'Abteilung') ?></th>
         <th><?= lang('Phone', 'Telefon') ?></th>
-        <!-- <th><?= lang('Comment', 'Kommentar') ?></th> -->
-        <th><?= lang('Scientist', 'Wissenschaftler:in') ?></th>
-        <th><?= lang('Active', 'Aktiv') ?></th>
-        <th><?= lang('Leader', 'Leiter:in') ?></th>
-        <th><?= lang('Gender', 'Geschlecht') ?></th>
-        <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+        <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
             <th></th>
         <?php
         }
@@ -68,13 +81,14 @@
     <tbody>
 
         <?php
-        $result = $osiris->users->find()->toArray();
+        $result = $osiris->persons->find(['username'=>['$ne'=>null]]);
+        $result = $DB->doc2Arr($result);
 
         foreach ($result as $document) {
-            $username = strval($document['_id']);
+            $username = strval($document['username']);
             $img = ROOTPATH . "/img/person.jpg";
-            if (file_exists(BASEPATH . "/img/users/${username}_sm.jpg")) {
-                $img = ROOTPATH . "/img/users/${username}_sm.jpg";
+            if (file_exists(BASEPATH . "/img/users/".$username."_sm.jpg")) {
+                $img = ROOTPATH . "/img/users/".$username."_sm.jpg";
             }
         ?>
             <tr class="">
@@ -100,15 +114,10 @@
                         echo $ph;
                     }
                     ?></td>
-                <!-- <td><?= $document['unit'] ?? '' ?></td> -->
-                <td><?= bool_icon($document['is_scientist'] ?? false) ?> <span class="hidden"><?= $document['is_scientist'] ?? '0' ?></span></td>
-                <td><?= ($document['is_active'] ?? false) ? 'yes' : 'no' ?></td>
-                <td><?= bool_icon($document['is_leader'] ?? false) ?> <span class="hidden"><?= $document['is_leader'] ?? '0' ?></span></td>
-                <td><?= $document['gender'] ?? 'n' ?></td>
-                <?php if ($USER['is_admin'] || $USER['is_controlling']) { ?>
+                <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
                     <td>
-                        <btn class="btn btn-link" type="button" onclick="editUser('<?= $username ?>')">
-                            <i class="ph-fill ph-note-pencil"></i>
+                        <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
+                            <i class="ph ph-fill ph-note-pencil"></i>
                         </btn>
                     </td>
                 <?php
@@ -136,8 +145,8 @@
         sPagePrevious: "direction ",
         sPageNext: "direction ",
         sPageButtonActive: "active ",
-        sFilterInput: "form-control form-control-sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control form-control-sm d-inline w-auto",
+        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+        sLengthSelect: "form-control sm d-inline w-auto",
         sInfo: "float-right text-muted",
         sLength: "float-right"
     });
@@ -153,11 +162,11 @@
             dom: 'frtipP',
             searchPanes: {
                 initCollapsed: true,
-                columns: [4, 6, 7, 8, 9],
-                preSelect: [{
-                    column: 7,
-                    rows: ['yes']
-                }]
+                columns: [4, 6],
+                // preSelect: [{
+                //     column: 7,
+                //     rows: ['yes']
+                // }]
             },
 
             columnDefs: [{
@@ -171,16 +180,16 @@
                     searchable: true,
                     visible: true
                 },
-                {
-                    targets: [8, 9],
-                    searchable: true,
-                    visible: false
-                },
-                {
-                    targets: [7],
-                    searchable: true,
-                    visible: false,
-                },
+                // {
+                //     targets: [8, 9],
+                //     searchable: true,
+                //     visible: false
+                // },
+                // {
+                //     targets: [7],
+                //     searchable: true,
+                //     visible: false,
+                // },
             ],
             "order": [
                 [1, 'asc'],

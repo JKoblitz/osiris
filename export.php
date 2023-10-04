@@ -1,17 +1,21 @@
 <?php
-// Route::get('/export/?', function () {
-//     include_once BASEPATH . "/php/_config.php";
-//     $breadcrumb = [
-//         ['name' => lang("Export")]
-//     ];
+/**
+ * Routing for export
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.0.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
 
-//     include BASEPATH . "/header.php";
-//     echo "TODO";
-//     include BASEPATH . "/footer.php";
-// }, 'login');
 
 Route::get('/download', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         // ['name' => 'Export', 'path' => "/export"], 
         ['name' => lang("Download")]
@@ -23,7 +27,7 @@ Route::get('/download', function () {
 }, 'login');
 
 Route::get('/cart', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         // ['name' => 'Export', 'path' => "/export"], 
         ['name' => lang("Cart", "Einkaufswagen")]
@@ -36,7 +40,7 @@ Route::get('/cart', function () {
 
 
 Route::get('/reports', function () {
-    include_once BASEPATH . "/php/_config.php";
+    include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         // ['name' => 'Export', 'path' => "/export"],
         ['name' => lang("Reports", "Berichte")]
@@ -51,7 +55,7 @@ Route::get('/reports', function () {
 Route::post('/download', function () {
     error_reporting(E_ERROR | E_PARSE);
 
-    require_once BASEPATH . '/php/_db.php';
+    require_once BASEPATH . '/php/init.php';
     require_once BASEPATH . '/php/Document.php';
 
     $params = $_POST['filter'] ?? array();
@@ -97,7 +101,7 @@ Route::post('/download', function () {
     }
     if (isset($params['dept']) && !empty($params['dept'])) {
         $users = [];
-        $cursor = $osiris->users->find(['dept' => $params['dept']], ['projection' => ['username' => 1]]);
+        $cursor = $osiris->persons->find(['dept' => $params['dept']], ['projection' => ['username' => 1]]);
 
         foreach ($cursor as $u) {
             if (empty($u['username'] ?? '')) continue;
@@ -107,7 +111,7 @@ Route::post('/download', function () {
         $filename .= "_" . trim($params['dept']);
     }
     if (isset($params['id']) && !empty($params['id'])) {
-        $id = new MongoDB\BSON\ObjectId($params['id']);
+        $id = DB::to_ObjectID($params['id']);
         $filter['_id'] = $id;
         $filename .= "_" . trim($params['id']);
     }
@@ -119,10 +123,10 @@ Route::post('/download', function () {
 
     if (isset($params['time']) && !empty($params['time'])) {
         $timefilter = true;
-        $startyear = $params['time']['from']['year'];
-        $endyear = $params['time']['to']['year'];
-        $startmonth = $params['time']['from']['month'];
-        $endmonth = $params['time']['to']['month'];
+        $startyear = intval($params['time']['from']['year']);
+        $endyear = intval($params['time']['to']['year']);
+        $startmonth = intval($params['time']['from']['month']);
+        $endmonth = intval($params['time']['to']['month']);
 
         if (!empty($startyear) && !empty($endyear)) {
             // this is for the monthly filter below.
@@ -160,7 +164,7 @@ Route::post('/download', function () {
         $cart = readCart();
         if (!empty($cart)) {
             foreach ($cart as $id) {
-                $mongo_id = new MongoDB\BSON\ObjectId($id);
+                $mongo_id = DB::to_ObjectID($id);
                 $cursor[] = $osiris->activities->findOne(['_id' => $mongo_id]);
             }
             $filename .= "_cart";
@@ -200,10 +204,13 @@ Route::post('/download', function () {
             return $pos_a - $pos_b;
         });
 
+        // dump($endmonth);
         foreach ($cursor as $doc) {
             // filtering by month is to much effort, so we just do not show activities out
-            if ($timefilter && $startyear == $doc['year'] && $startmonth < $doc['month']) continue;
-            if ($timefilter && $endyear == $doc['year'] && $endmonth > $doc['month']) continue;
+            if ($timefilter && $startyear == $doc['year'] && $startmonth > $doc['month']) continue;
+            // dump($doc['month']);
+            
+            if ($timefilter && $endyear == $doc['year'] && $endmonth < $doc['month']) continue;
             if (!in_array($doc['type'], $headers)) {
                 $headers[] = $doc['type'];
                 $section->addTitle($Settings->getActivities($doc['type'])['name'], 1);
@@ -378,20 +385,20 @@ Route::post('/reports', function () {
     error_reporting(E_ERROR);
     ini_set('display_errors', 0);
 
-    require_once BASEPATH . '/php/_db.php';
+    require_once BASEPATH . '/php/init.php';
     require_once BASEPATH . '/php/Document.php';
     $Format = new Document(true, 'word');
     $Format->full = true;
 
     // prepare user dict with all departments
-    $users_cursor = $osiris->users->find([], ['projection' => ['_id' => 1, 'dept' => 1]]);
+    $users_cursor = $osiris->persons->find([], ['projection' => ['username' => 1, 'dept' => 1]]);
     $users = array();
     foreach ($users_cursor as $u) {
-        $users[$u['_id']] = $u['dept'];
+        $users[$u['username']] = $u['dept'];
     }
 
     // select reportable data
-    $cursor = get_reportable_activities($_POST['start'], $_POST['end']);
+    $cursor = $DB->get_reportable_activities($_POST['start'], $_POST['end']);
 
     $result = [
         'publication' => [],
@@ -499,9 +506,9 @@ Route::post('/reports', function () {
                     break;
             }
             if (isset($doc['journal'])) {
-                $journal = getJournalName($doc);
+                $journal = $DB->getJournalName($doc);
                 if (!empty($journal))
-                    $result[$type][$journal][] = getTitleLastname($doc['authors'][0]['user'] ?? '');
+                    $result[$type][$journal][] = $DB->getTitleLastname($doc['authors'][0]['user'] ?? '');
             } else
                 $result['misc'][] = $doc;
         } else {
@@ -651,7 +658,7 @@ Route::post('/reports', function () {
                                 if (isset($doc['impact'])) {
                                     $if = $doc['impact'];
                                 } else {
-                                    $if = get_impact($doc);
+                                    $if = $DB->get_impact($doc);
                                 }
                                 if (empty($if)) {
                                     $if = "IF not yet available";

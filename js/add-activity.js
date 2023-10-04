@@ -132,6 +132,8 @@ function togglePubType(type, callback = () => { }) {
             // }
 
             callback()
+            console.log('TEST');
+            $('#data-modules').find(':input').on('change', function(){console.log('test');doubletCheck()})
         }
     });
 
@@ -208,3 +210,4 @@ function activeButtons(type) {
             break;
     }
 }
+
