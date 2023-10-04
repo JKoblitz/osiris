@@ -27,7 +27,7 @@ error_reporting(E_ERROR);
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('OSIRIS_VERSION', '1.1.2');
+define('OSIRIS_VERSION', '1.2.0');
 
 // set time constants
 $year = date("Y");
@@ -1566,107 +1566,123 @@ Route::get('/rerender', function () {
 // temporary route to restructure users table
 Route::get('/migrate', function () {
     include_once BASEPATH . "/php/init.php";
-    $osiris->teachings->drop();
-    $osiris->miscs->drop();
-    $osiris->posters->drop();
-    $osiris->publications->drop();
-    $osiris->lectures->drop();
-    $osiris->reviews->drop();
-    $osiris->lecture->drop();
+    include BASEPATH . "/header.php";
+    $version = $osiris->system->findOne(['key' => 'version']);
+    if (empty($version)) {
+        $version = "1.0.0";
+        $osiris->system->insertOne([
+            'key' => 'version',
+            'value' => $version
+        ]);
+    } else
+        $version = $version['value'];
+    $V = explode('.', $version);
+    if ($V[1] < 2) {
+        echo "<h1>Migrate to Version 1.2.X</h1>";
+        $osiris->teachings->drop();
+        $osiris->miscs->drop();
+        $osiris->posters->drop();
+        $osiris->publications->drop();
+        $osiris->lectures->drop();
+        $osiris->reviews->drop();
+        $osiris->lecture->drop();
 
-    $users = $osiris->users->find([]);
+        $users = $osiris->users->find([])->toArray();
 
-    $person_keys = [
-        "first",
-        "last",
-        "academic_title",
-        "displayname",
-        "formalname",
-        "names",
-        "first_abbr",
-        "department",
-        "unit",
-        "telephone",
-        "mail",
-        "dept",
-        "orcid",
-        "gender",
-        "google_scholar",
-        "researchgate",
-        "twitter",
-        "webpage",
-        "expertise",
-        "updated",
-        "updated_by",
-    ];
+        $person_keys = [
+            "first",
+            "last",
+            "academic_title",
+            "displayname",
+            "formalname",
+            "names",
+            "first_abbr",
+            "department",
+            "unit",
+            "telephone",
+            "mail",
+            "dept",
+            "orcid",
+            "gender",
+            "google_scholar",
+            "researchgate",
+            "twitter",
+            "webpage",
+            "expertise",
+            "updated",
+            "updated_by",
+        ];
 
-    $account_keys = [
-        // "is_admin",
-        // "is_controlling",
-        // "is_scientist",
-        // "is_leader",
-        "is_active",
-        "maintenance",
-        "hide_achievements",
-        "hide_coins",
-        "display_activities",
-        "lastlogin",
-        "created",
-        "maintenance",
-        "approved",
-    ];
+        $account_keys = [
+            // "is_admin",
+            // "is_controlling",
+            // "is_scientist",
+            // "is_leader",
+            "is_active",
+            "maintenance",
+            "hide_achievements",
+            "hide_coins",
+            "display_activities",
+            "lastlogin",
+            "created",
+            "maintenance",
+            "approved",
+        ];
 
-    $osiris->persons->deleteMany([]);
-    $osiris->accounts->deleteMany([]);
-    $osiris->achieved->deleteMany([]);
+        $osiris->persons->deleteMany([]);
+        $osiris->accounts->deleteMany([]);
+        $osiris->achieved->deleteMany([]);
 
-    foreach ($users as $user) {
-        // TODO: create graphic schema of the new structure
-        $user = iterator_to_array($user);
-        $username = strtolower($user['username']);
+        foreach ($users as $user) {
+            // TODO: create graphic schema of the new structure
+            $user = iterator_to_array($user);
+            $username = strtolower($user['username']);
 
 
-        $person = ["username" => $username];
-        foreach ($person_keys as $key) {
-            if (!array_key_exists($key, $user)) continue;
-            $person[$key] = $user[$key];
-            unset($user[$key]);
-        }
-        $osiris->persons->insertOne($person);
+            $person = ["username" => $username];
+            foreach ($person_keys as $key) {
+                if (!array_key_exists($key, $user)) continue;
+                $person[$key] = $user[$key];
+                unset($user[$key]);
+            }
+            $osiris->persons->insertOne($person);
 
-        $account = ["username" => $username];
-        foreach ($account_keys as $key) {
-            if (!array_key_exists($key, $user)) continue;
-            if ($key)
-                $account[$key] = $user[$key];
-            unset($user[$key]);
-        }
-        $roles = [];
-        foreach (['editor', 'admin', 'leader', 'controlling', 'scientist'] as $role) {
-            if ($user['is_' . $role] ?? false) {
-                if ($role == 'controlling') $role = 'editor';
-                $roles[] = $role;
+            $account = ["username" => $username];
+            foreach ($account_keys as $key) {
+                if (!array_key_exists($key, $user)) continue;
+                if ($key)
+                    $account[$key] = $user[$key];
+                unset($user[$key]);
+            }
+            $roles = [];
+            foreach (['editor', 'admin', 'leader', 'controlling', 'scientist'] as $role) {
+                if ($user['is_' . $role] ?? false) {
+                    if ($role == 'controlling') $role = 'editor';
+                    $roles[] = $role;
+                }
+            }
+            $account['roles'] = $roles;
+
+            $osiris->accounts->insertOne($account);
+
+            if (isset($user['achievements'])) {
+                foreach ($user['achievements'] as $ac) {
+                    $ac['username'] = $username;
+                    $osiris->achieved->insertOne($ac);
+                }
+                unset($user['achievements']);
             }
         }
-        $account['roles'] = $roles;
-
-        $osiris->accounts->insertOne($account);
-
-        if (isset($user['achievements'])) {
-            foreach ($user['achievements'] as $ac) {
-                $ac['username'] = $username;
-                $osiris->achieved->insertOne($ac);
-            }
-            unset($user['achievements']);
-        }
-
-        dump($user, true);
-        dump($person);
-        dump($account);
-        echo "<hr>";
+        echo "Migrated " . count($users) . " users into a new format.<br> Migration successful. You might close this window now.";
+    } else {
+        echo "Nothing to do.";
     }
 
-    // MongoDB\Collection::createIndexes()
+    $insertOneResult  = $osiris->system->updateOne(
+        ['key' => 'version'],
+        ['$set' => ['value' => OSIRIS_VERSION]]
+    );
+    include BASEPATH . "/footer.php";
 });
 
 

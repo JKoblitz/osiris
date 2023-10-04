@@ -153,7 +153,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
                 <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
-                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v1.1</span>
+                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v<?=OSIRIS_VERSION?></span>
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
