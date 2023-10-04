@@ -316,10 +316,9 @@ Route::post('/user/login', function () {
     } else {
         include BASEPATH . "/php/_login.php";
     }
-    include BASEPATH . "/php/init.php";
 
     if (isset($_POST['username']) && isset($_POST['password'])) {
-        if ($_SERVER['SERVER_NAME'] == 'testserver' && true) {
+        if ($_SERVER['SERVER_NAME'] == 'testserver' && false) {
             // on the test server: log in
             // check if user exists in our database
             $_SESSION['username'] = $_POST['username'];
@@ -1686,7 +1685,115 @@ Route::get('/migrate', function () {
 });
 
 
-Route::get('/test', function () {
+Route::get('/synchronize-users', function () {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/_login.php";
+    include BASEPATH . "/header.php";
+
+
+    $blacklist = [
+        "webkalender",
+        "sequenzer",
+        "pvnano",
+        "pre19", //presse praktikant
+        "pacbio",
+        "xcu",
+        "guest",
+        "hplce35",
+        "dsmzmutz",
+        "SNA",
+        "dsmzplant",
+        "dsmzpv",
+        "root",
+        "oxadmin",
+        "dau2", //Dummy Ata
+        "admin-mas19",
+        "dsc20", // DSMZ SCAN
+        "femto",
+        "robo20",
+        "dsmzbug",
+        "lagerk16",
+        "services",
+        "admin-maa21",
+        "admin-vig21",
+        "bug-hplc",
+        "dsmzmebo",
+        "mutz-prakt",
+        "gramnegative",
+        "spi", //Science Policy
+        "christian.quast",
+        "admin-ols23",
+        "pan-test23",
+        "admin-pie23",
+        "admin-lla16",
+        "kodierstation",
+        "mi03-prakt1",
+        "mi03-prakt2",
+        "mi03-prakt3",
+        "mi03-prakt4",
+        "mi03-prakt5",
+        "mi03-prakt6",
+        "mi03-prakt7",
+        "pan-test24",
+        "pan-test25",
+        "pan-test26",
+        "pan-test27",
+        "johnwick",
+    ];
+
+    $users = getUsers();
+    // dump($users);
+    foreach ($users as $username => $active) {
+        // check if username is on the blacklist
+        if (in_array($username, $blacklist)) continue;
+
+        // first: check if user is in database
+        $USER = $DB->getUser($username);
+        // if user does not exists
+        if (empty($USER)) {
+            // if inactive: do nothing
+            if (!$active) continue;
+
+            // else: add new user
+            $new_user = newUser($username);
+            if (empty($new_user)) {
+                // this should never happen
+                echo "<p>$username did not exist.</p>";
+                continue;
+            }
+            dump($new_user, true);
+            $osiris->persons->insertOne($new_user['person']);
+            $osiris->accounts->insertOne($new_user['account']);
+        } else {
+            // user exists
+            if (!$active && $USER['is_active']) {
+                echo ('<p>' . $username . ' is no longer active.</p>');
+                $osiris->persons->updateOne(
+                    ['username' => $username],
+                    ['$set' => ['is_active' => false]]
+                );
+            } 
+
+            // if (empty($USER['dept'])){
+            //     $new_user = newUser($username);
+            //     if ($new_user['person']['dept']){
+            //         $osiris->persons->updateOne(
+            //             ['username' => $username],
+            //             ['$set' => ['dept' => $new_user['person']['dept']]]
+            //         );
+            //     }                
+            // }
+            // else if ($active && !$USER['is_active']) {
+            //     echo ('<p>' . $username . ' is active again.</p>');
+            //     $osiris->persons->updateOne(
+            //         ['username' => $username],
+            //         ['$set' => ['is_active' => true]]
+            //     );
+            // }
+        }
+    }
+        echo "User synchronization successful";
+    include BASEPATH . "/footer.php";
 });
 
 
@@ -1727,7 +1834,6 @@ Route::get('/impress', function () {
     include BASEPATH . "/pages/impressum.html";
     include BASEPATH . "/footer.php";
 });
-
 
 
 // Add a 404 not found route

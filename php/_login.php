@@ -190,7 +190,7 @@ function getUsers()
 
             foreach ($result as $entry) {
                 if (!isset($entry['samaccountname'][0])) continue;
-                dump($entry['dn']);
+                // dump($entry['dn']);
                 $active = !str_contains($entry['dn'], 'DeaktivierteUser');
                 $res[$entry['samaccountname'][0]] = $active;
             }
@@ -241,9 +241,23 @@ function newUser($username)
     }
     $person['academic_title'] = null;
     $person['orcid'] = null;
-    $person['dept'] = $person['unit'];
-    if (!array_key_exists($person['dept'], $Settings->get('departments')))
-        $person['dept'] = '';
+    $person['dept'] = null;
+
+    $departments = [];
+    foreach ($Settings->get('departments') as $D) {
+        $departments[strtolower($D['id'])] = $D['id'];
+        $departments[strtolower($D['name'])] = $D['id'];
+    }
+    $unit = strtolower($person['unit']);
+    $departments['science policy'] = 'SPI';
+    $departments['bid'] = 'BIDB';
+    if (array_key_exists($unit, $departments))
+        $person['dept'] = $departments[$unit];
+    else {
+        $unit = trim(explode('/', $unit)[0]);
+        if (array_key_exists($unit, $departments))
+            $person['dept'] = $departments[$unit];
+    }
 
     $account = array("username" => $person["username"], "roles"=>[]);
 
@@ -251,7 +265,8 @@ function newUser($username)
     // $account['is_controlling'] = $person['department'] == "Controlling";
     // $account['is_scientist'] = false;
     // $account['is_leader'] = str_contains($person['unit'], "leitung");
-    $account['is_active'] = !str_contains($person['unit'], "verlassen");
+    $account['is_active'] = !str_contains($ldap_user['dn'], 'DeaktivierteUser');
+    $account['created'] = date('Y-m-d');
 
     return ['account' => $account, 'person' => $person];
 }
