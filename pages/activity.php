@@ -199,7 +199,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <div class="col-lg-6">
 
 
-        <div class="box">
+        <div class="box h-full">
             <div class="content">
 
                 <div class="btn-toolbar float-sm-right">
@@ -231,7 +231,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
     <div class="col-lg-6">
 
-        <div class="box">
+        <div class="box h-full">
             <div class="content">
 
                 <div class="btn-toolbar float-sm-right">

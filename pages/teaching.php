@@ -161,7 +161,15 @@ function val($index, $default = '')
                     $activities = $DB::doc2Arr($activities);
                     if (count($activities) != 0) {
                     ?>
-                        <a onclick="showAll(this)"><?= lang('Show ' . (count($activities)) . ' connected activities', 'Zeige  ' . (count($activities)) . ' verknüpfte Aktivitäten') ?></a>
+                        <a onclick="showAll(this)">
+                        <?php
+                            $N = count($activities);
+                            if ($N==1)
+                                echo lang('Show 1 connected activity', 'Zeige  1 verknüpfte Aktivität');
+                            else
+                                echo lang('Show ' . $N . ' connected activities', 'Zeige  ' . $N . ' verknüpfte Aktivitäten');
+                        ?>
+                    </a>
                         <table class="w-full hidden">
                             <?php foreach ($activities as $n => $doc) :
                                 if (!isset($doc['rendered'])) $DB->renderActivities(['_id' => $doc['_id']]);

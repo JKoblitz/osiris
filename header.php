@@ -341,6 +341,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
                         <i class="ph ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
+                        <span class="badge ml-10">SOON</span>
                     </a>
 
 

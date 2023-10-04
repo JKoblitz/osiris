@@ -524,7 +524,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     ?>
     <?php if ($currentuser) { ?>
 
-        <div class="box" id="expertise">
+        <div class="box mb-0" id="expertise">
             <div class="p-10 pb-0">
 
                 <label for="expertise" class="font-weight-bold">
