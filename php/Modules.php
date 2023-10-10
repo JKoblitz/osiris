@@ -1500,7 +1500,7 @@ class Modules
                     <select class="form-control" id="username" name="values[user]" <?= $required ?> autocomplete="off">
                         <?php
                         foreach ($this->userlist as $j) { ?>
-                            <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($this->form['user'] ?? $this->user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                            <option value="<?= $j['username'] ?>" <?= $j['username'] == ($this->form['user'] ?? $this->user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                         <?php } ?>
                     </select>
                 </div>

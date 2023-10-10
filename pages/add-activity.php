@@ -473,7 +473,7 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
                 <?php } ?>
 
 
-                <div class="alert signal mb-10" id="doublet-found" style="display:none;">
+                <div class="alert signal mb-10 <?=empty($form) ? '' : 'hidden'?>" id="doublet-found" style="display:none;">
                     <h4 class="title">
                         <i class="ph ph-warning text-osiris"></i>
                         <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>

@@ -1632,7 +1632,6 @@ Route::get('/migrate', function () {
             "display_activities",
             "lastlogin",
             "created",
-            "maintenance",
             "approved",
         ];
 
@@ -1710,6 +1709,7 @@ Route::get('/synchronize-users', function () {
         "dsmzmutz",
         "SNA",
         "dsmzplant",
+        "jkipv",
         "dsmzpv",
         "root",
         "oxadmin",
