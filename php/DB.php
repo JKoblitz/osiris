@@ -220,7 +220,7 @@ class DB
         $userArr = [];
         $account = $this->getAccount($user);
         $person = $this->getPerson($user);
-        $userArr = array_merge($account, $person);
+        $userArr = array_merge($person, $account);
 
         return $userArr;
     }
@@ -257,7 +257,11 @@ class DB
     {
         $USER = $this->getPerson($user, true);
         if (empty($USER['first'])) return $USER['last'];
-        return $USER['last'] . ', ' . $USER['first'];
+        if ($reverse){
+            return $USER['last'] . ', ' . $USER['first'];
+        } else {
+            return $USER['first'] . ' ' . $USER['last'];
+        }
     }
 
     /**

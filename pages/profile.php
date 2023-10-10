@@ -324,6 +324,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     </span>
                 <?php } ?>
                 <!-- <span class="user-role">Last login: <?= $scientist['lastlogin'] ?></span> -->
+                <?php if ($currentuser && !empty($scientist['maintenance'] ?? null)) { ?>
+                    <span class="user-role">
+                        <?=lang('Maintainer: '.$DB->getNameFromId($scientist['maintenance']))?>
+                    </span>
+                <?php } ?>
             <?php } ?>
 
             <?php if ($showcoins) { ?>
@@ -1365,6 +1370,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     </div>
     <?php
     if (isset($_GET['verbose'])) {
+        echo "<h4>Person</h4>";
+        dump($DB->getPerson($user), true);
+        echo "<h4>Account</h4>";
+        dump($DB->getAccount($user), true);
+        echo "<hr>";
         dump($scientist, true);
     }
     ?>

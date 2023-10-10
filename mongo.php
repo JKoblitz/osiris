@@ -537,11 +537,16 @@ Route::post('/delete-user/(.*)', function ($user) {
         if (in_array($key, $keep)) continue;
         $arr[$key] = null;
     }
-    $arr['is_active'] = false;
+    // $arr['is_active'] = false;
 
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
         ['$set' => $arr]
+    );
+
+    $osiris->accounts->updateOne(
+        ['username' => $user],
+        ['$set' => ['is_active'=> false]]
     );
 
 
@@ -622,9 +627,9 @@ Route::post('/update-profile/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
 
     $target_dir = BASEPATH . "/img/users";
-    if (!is_writable($target_dir)) {
-        die("User image directory is unwritable. Please contact admin.");
-    }
+    // if (!is_writable($target_dir)) {
+    //     die("User image directory is unwritable. Please contact admin.");
+    // }
     $target_dir .= "/";
     $filename = "$user.jpg";
 
@@ -882,7 +887,7 @@ Route::post('/approve', function () {
     }
     $q = $_POST['quarter'];
 
-    $updateResult = $osiris->account->updateOne(
+    $updateResult = $osiris->accounts->updateOne(
         ['username' => $user],
         ['$push' => ["approved" => $q]]
     );

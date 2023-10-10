@@ -25,6 +25,12 @@
     und ist in vielen Fällen noch nicht korrekt!
 </p> -->
 
+<?php if (isset($_GET['inactive'])){ ?>
+    <a href="?" class="btn float-right active"><?=lang('See inactive users', 'Zeige inaktive Nutzer:innen')?></a>
+<?php } else { ?>
+    <a href="?inactive" class="btn float-right"><?=lang('See inactive users', 'Zeige inaktive Nutzer:innen')?></a>
+<?php } ?>
+
 <style>
     .table {
         border-collapse: separate !important;
@@ -81,7 +87,13 @@
     <tbody>
 
         <?php
-        $result = $osiris->persons->find(['username'=>['$ne'=>null]]);
+        $filter = ['username'=>['$ne'=>null]];
+        if (!isset($_GET['inactive'])){
+            // TODO: change 
+            $users = $osiris->accounts->distinct('username', ['is_active'=>false]);
+            $filter['username'] = ['$nin'=>$users];
+        }
+        $result = $osiris->persons->find($filter);
         $result = $DB->doc2Arr($result);
 
         foreach ($result as $document) {
@@ -153,16 +165,16 @@
     var dataTable;
     $(document).ready(function() {
         dataTable = $('#result-table').DataTable({
-            // searchPanes: {
-            //     viewTotal: true,
-            //     columns: [6]
-            // },
-            // searchPanes: true,
+            searchPanes: {
+                viewTotal: true,
+                columns: [6]
+            },
+            searchPanes: true,
             // dom: 'Plfrtip',
             dom: 'frtipP',
             searchPanes: {
                 initCollapsed: true,
-                columns: [4, 6],
+                columns: [4],
                 // preSelect: [{
                 //     column: 7,
                 //     rows: ['yes']
@@ -174,12 +186,7 @@
                     searchable: false,
                     sortable: false,
                     visible: true
-                },
-                {
-                    targets: [4, 6],
-                    searchable: true,
-                    visible: true
-                },
+                }
                 // {
                 //     targets: [8, 9],
                 //     searchable: true,
@@ -192,7 +199,7 @@
                 // },
             ],
             "order": [
-                [1, 'asc'],
+                [2, 'asc'],
             ],
             // "search": {
             //     "search": "1"

@@ -88,7 +88,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
-    <link href="<?= ROOTPATH ?>/css/digidive.css" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/digidive.css?v=2" rel="stylesheet" />
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
     <!-- Quill (rich-text editor) -->
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
