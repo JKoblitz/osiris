@@ -486,8 +486,9 @@ class Document extends Settings
 
     public static function format_date($date)
     {
-        // dump($date);
+        if (empty($date)) return '';
         $d = Document::getDateTime($date);
+        if (empty($d)) return '';
         return date_format($d, "d.m.Y");
     }
 

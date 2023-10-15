@@ -129,7 +129,7 @@
                 <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
                     <td>
                         <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
-                            <i class="ph ph-fill ph-note-pencil"></i>
+                            <i class="ph ph-note-pencil"></i>
                         </btn>
                     </td>
                 <?php

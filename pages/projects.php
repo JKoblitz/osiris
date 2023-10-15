@@ -186,28 +186,25 @@ function val($index, $default = '')
 </div>
 
 
-<div class="content">
-    <!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
-        <i class="ph ph-lg ph-question mr-5"></i>
-        <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
-    </a> -->
-    <h2 class="mt-0">
-        <i class="ph ph-tree-structure text-osiris"></i>
-        <?= lang('Projects', 'Projekte') ?>
-    </h2>
+<!-- <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+    <i class="ph ph-lg ph-question mr-5"></i>
+    <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+</a> -->
+<h1 class="mt-0">
+    <i class="ph ph-tree-structure text-osiris"></i>
+    <?= lang('Projects', 'Projekte') ?>
+</h1>
 
-    <?php if (false) : ?>
-        <a href="#add-projects">
-            <i class="ph ph-plus"></i>
-            <?= lang('Add new project', 'Neues Projekt anlegen') ?>
-        </a>
-    <?php endif; ?>
+<?php if (false) : ?>
+    <a href="#add-projects">
+        <i class="ph ph-plus"></i>
+        <?= lang('Add new project', 'Neues Projekt anlegen') ?>
+    </a>
+<?php endif; ?>
 
-    <p>
-        Hier entstehen demnächst Drittmittelprojekte.
-    </p>
-
-</div>
+<p>
+    Hier entstehen demnächst Drittmittelprojekte.
+</p>
 
 <div class="row row-eq-spacing-md">
 

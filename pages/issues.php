@@ -197,7 +197,7 @@ foreach ($cursor as $doc) {
     <i class="ph ph-lg ph-question mr-5"></i>
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a>
-<h1>
+<h1 class="mt-0">
     <i class="ph ph-fill ph-warning text-osiris"></i>
     <?= lang('Warnings', 'Warnungen') ?>
 </h1>
@@ -223,7 +223,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="<?= ROOTPATH ?>/docs/warnings#Überprüfung-der-autorenschaft-nötig" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#Überprüfung-der-autorenschaft-nötig"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <div class="dropdown">
@@ -333,7 +333,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="<?= ROOTPATH ?>/docs/warnings#online-ahead-of-print" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#online-ahead-of-print"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">
@@ -391,7 +391,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="<?= ROOTPATH ?>/docs/warnings#studenten-abschluss" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#studenten-abschluss"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">
@@ -452,7 +452,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="<?= ROOTPATH ?>/docs/warnings#open-end" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#open-end"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">
@@ -502,7 +502,7 @@ if (array_sum($a) === 0) {
         ) ?>
     </h2>
     <p class="mt-0">
-        <a href="<?= ROOTPATH ?>/docs/warnings#nicht-standardisiertes-journal" class="link"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
+        <a href="<?= ROOTPATH ?>/docs/warnings#nicht-standardisiertes-journal"><?= lang('What does it mean?', 'Was bedeutet das?') ?></a>
     </p>
 
     <table class="table">

@@ -1739,7 +1739,7 @@ function doubletCheck() {
                 $('.loader').removeClass('show')
                 if (!doubletFound){
                     doubletFound = true;
-                    toastWarning(lang('Possible douplicate found.', 'Mögliche Dublette gefunden.'))
+                    // toastWarning(lang('Possible douplicate found.', 'Mögliche Dublette gefunden.'))
                 }
 
             } else {

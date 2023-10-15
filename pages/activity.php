@@ -383,7 +383,9 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
                     <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && isset($doc['comment'])) : ?>
                         <tr class="text-muted">
-                            <th class="key" style="text-decoration: 1px dotted underline;" data-toggle="tooltip" data-title="<?= lang('Only visible for authors and editors.', 'Nur sichtbar für Autoren und Editor-MA.') ?>"><?= lang('Comment', 'Kommentar') ?>:</th>
+                            <th class="key" style="text-decoration: 1px dotted underline;" data-toggle="tooltip" data-title="<?= lang('Only visible for authors and editors.', 'Nur sichtbar für Autoren und Editor-MA.') ?>">
+                                <?= lang('Comment', 'Kommentar') ?>:
+                            </th>
                             <td>
                                 <?= $doc['comment'] ?>
                             </td>

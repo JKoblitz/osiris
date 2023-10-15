@@ -287,9 +287,6 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 <?php } ?>
 
 
-<div class=" my-0">
-
-
 
     <div class="row align-items-center my-0">
         <div class="col flex-grow-0">
@@ -305,13 +302,13 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <div class="col ml-20">
             <h1 class="m-0"><?= $name ?></h1>
 
-            <h3 class="m-0 text-<?= $scientist['dept'] ?>">
+            <p class="m-0 lead text-<?= $scientist['dept'] ?>" style="font-weight: 500">
                 <?php
                 if (!empty($scientist['dept'])) {
                     echo $Settings->getDepartments($scientist['dept'])['name'] ?? '';
                 }
                 ?>
-            </h3>
+            </p>
 
             <?php if (!($scientist['is_active'] ?? true)) { ?>
                 <span class="text-danger user-role">
@@ -365,8 +362,8 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
     <?php if ($currentuser) { ?>
 
-        <div class="box p-5 row-<?= $scientist['dept'] ?>" style="border-left-width:5px">
-            <div class="m-10">
+        <div class="box row-<?= $scientist['dept'] ?>" style="border-left-width:5px">
+            <div class="content">
                 <h5 class="title font-size-16">
                     <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
                 </h5>
@@ -543,13 +540,10 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     <?php if ($currentuser) { ?>
 
         <div class="box mb-0" id="expertise">
-            <div class="p-10 pb-0">
-
-                <label for="expertise" class="font-weight-bold">
-                    <i class="ph ph-barbell text-osiris"></i> <?= lang('Expertise:') ?>
-                </label>
-            </div>
-            <div class="p-10 pt-0">
+            <div class="content">
+                <h4 class="title mt-0">
+                    <?= lang('Expertise') ?>
+                </h4>
 
                 <form action="<?= ROOTPATH ?>/update-expertise/<?= $user ?>" method="post" id="expertise-form">
                     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
@@ -862,11 +856,10 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($impacts)) { ?>
             <div class="profile-widget col-lg-6">
                 <div class="box h-full">
-                    <div class="chart content text-center">
-                        <h5 class="title mb-0">
-                            <i class="ph ph-file-text text-primary"></i>
+                    <div class="chart content">
+                        <h4 class="title mb-0">
                             <?= lang('Impact factor histogram', 'Impact Factor Histogramm') ?>
-                        </h5>
+                        </h4>
                         <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->get('startyear') ?></p>
                         <canvas id="chart-impact" style="max-height: 30rem;"></canvas>
                         <?php
@@ -995,11 +988,10 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && array_sum($authors) > 0) { ?>
             <div class="profile-widget col-md-6 col-lg-3">
                 <div class="box h-full">
-                    <div class="chart content text-center">
-                        <h5 class="title mb-0">
-                            <i class="ph ph-graduation-cap text-primary"></i>
-                            <?= lang('Role of', 'Rolle von') ?> <?= $scientist['first'] ?> <?= lang('in publications', 'in Publikationen') ?>
-                        </h5>
+                    <div class="chart content">
+                        <h4 class="title mb-0">
+                            <?= lang('Role in publications', 'Rolle in Publikationen') ?>
+                        </h4>
                         <p class="text-muted mt-0"><?= lang('since', 'seit') . " " . $Settings->get('startyear') ?></p>
 
                         <canvas id="chart-authors" style="max-height: 30rem;"></canvas>
@@ -1077,11 +1069,10 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && $showcoins) { ?>
             <div class="profile-widget col-md-6 col-lg-3">
                 <div class="box h-full">
-                    <div class="chart content text-center">
-                        <h5 class="title">
-                            <i class="ph ph-lg ph-coin text-signal"></i>
+                    <div class="chart content">
+                        <h4 class="title">
                             <?= lang('Coins per Year', 'Coins pro Jahr') ?>
-                        </h5>
+                        </h4>
                         <canvas id="chart-coins" style="max-height: 30rem;"></canvas>
                     </div>
 
@@ -1163,9 +1154,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             <div class="profile-widget col-lg-6">
                 <div class="box h-full">
                     <div class="chart content">
-                        <h5 class="title text-center">
-                            <?= lang('All activities in which ' . $scientist['first'] . ' was involved', 'Alle Aktivitäten, an denen ' . $scientist['first'] . ' beteiligt war') ?>
-                        </h5>
+                        <h4 class="title mb-0">
+                        <?= lang('All activities', 'Alle Aktivitäten') ?>
+                        </h4>
+                        <p class="text-muted mt-0"><?= lang('in which ' . $scientist['first'] . ' was involved', 'an denen ' . $scientist['first'] . ' beteiligt war') ?></p>
+
                         <canvas id="chart-activities" style="max-height: 35rem;"></canvas>
 
                         <small class="text-muted">
@@ -1378,5 +1371,3 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         dump($scientist, true);
     }
     ?>
-
-</div>
