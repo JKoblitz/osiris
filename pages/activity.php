@@ -173,16 +173,18 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
         </div>
 
-        <h2 class="title">
+        <h4 class="title m-0" style="line-height: 1;">
             <span class='mr-10'><?= $Format->activity_icon(false) ?></span>
             <?= $Format->activity_title() ?>
-        </h2>
+        </h4>
 
         <p class="lead">
             <?= $Format->formatShort($link = false) ?>
         </p>
-
-        <h4><?= lang('Formatted entry', 'Formatierter Eintrag') ?></h4>
+    </div>
+    <hr>
+    <div class="content">
+        <span class="float-right badge font-size-12"><?= lang('Formatted entry', 'Formatierter Eintrag') ?></span>
 
         <p>
             <?php
@@ -297,7 +299,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <div class="box ">
             <div class="content">
 
-
                 <div class="btn-toolbar float-sm-right">
                     <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn primary">
@@ -312,6 +313,26 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             <i class="ph ph-copy"></i>
                             <?= lang("Add a copy", "Kopie anlegen") ?>
                         </a>
+                    <?php } ?>
+
+                    <?php if ($user_activity && $locked && array_key_exists('end', $doc) && empty($doc['end'])) { ?>
+                        <!-- End user activity even if activity is locked -->
+                        <div class="dropdown">
+                            <button class="btn primary" data-toggle="dropdown" type="button" id="update-end-date" aria-haspopup="true" aria-expanded="false">
+                                <i class="ph ph-calendar-check"></i>
+                                <?= lang('End activity', 'Beenden') ?> <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-center w-200" aria-labelledby="update-end-date">
+                                <form action="<?= ROOTPATH . "/update/" . $id ?>" method="POST" class="content">
+                                    <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                    <div class="form-group">
+                                        <label for="date_end"><?= lang('Activity ended at:', 'Aktivität beendet am:') ?></label>
+                                        <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($doc['end'] ?? null) ?>" required>
+                                    </div>
+                                    <button class="btn btn-block" type="submit"><?= lang('Save', 'Speichern') ?></button>
+                                </form>
+                            </div>
+                        </div>
                     <?php } ?>
 
                 </div>

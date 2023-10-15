@@ -260,235 +260,227 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 </div>
 
 
-<div class="content">
-    <a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
-        <i class="ph ph-question mr-5"></i>
-        <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
-    </a>
-    <?php if (empty($form)) { ?>
+<a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right ml-5" id="docs-btn">
+    <i class="ph ph-question mr-5"></i>
+    <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
+</a>
+<?php if (empty($form)) { ?>
+    <!-- Create new activity -->
+    <h1 class="my-0">
+        <i class="ph ph-plus-circle"></i>
+        <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
+    </h1>
 
-        <!-- <button class="btn tour float-right" id="tour">
-            <i class="ph ph-chat-dots mr-5"></i>
-            <?= lang('Interactive tour', 'Interactive Tour') ?>
-        </button> -->
-        <!-- Create new activity -->
-        <h2 class="mb-0">
-            <i class="ph ph-plus-circle"></i>
-            <?= lang('Add activity', 'Füge Aktivität hinzu') ?>
-        </h2>
+    <a href="<?= ROOTPATH ?>/activities/pubmed-search" class="link mb-10 d-inline-block"><?= lang('Search in Pubmed', 'Suche in Pubmed') ?></a>
 
-        <a href="<?= ROOTPATH ?>/activities/pubmed-search" class="link mb-10 d-inline-block"><?= lang('Search in Pubmed', 'Suche in Pubmed') ?></a>
-
-        <form method="get" onsubmit="getPubData(event, this)">
-            <div class="form-group">
-                <label for="doi"><?= lang('Search by DOI or Pubmed-ID', 'Suche über die DOI oder Pubmed-ID') ?>:</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
-                    <div class="input-group-append">
-                        <button class="btn primary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
-                    </div>
+    <form method="get" onsubmit="getPubData(event, this)">
+        <div class="form-group">
+            <label for="doi"><?= lang('Search by DOI or Pubmed-ID', 'Suche über die DOI oder Pubmed-ID') ?>:</label>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
+                <div class="input-group-append">
+                    <button class="btn primary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
-        </form>
-
-        <div class="alert danger" id="id-exists" style="display:none;">
-            <h4 class="title">
-                <?= lang('Duplicate!', 'Duplikat!') ?>
-            </h4>
-            <p class="mt-10">
-                <?= lang(
-                    'This DOI/Pubmed-ID already exists in the database!',
-                    'Diese DOI/Pubmed-ID existiert bereits in der Datenbank!'
-                ) ?>
-            </p>
-            <a class="btn text-danger border-danger" href="link"><?= lang('View entry', 'Eintrag anschauen') ?> <i class="ph ph-arrow-fat-line-right"></i></a>
         </div>
+    </form>
 
-
-        <div class="my-20 select-btns" id="select-btns">
-            <?php
-            foreach ($Settings->getActivities() as $id => $a) { ?>
-                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
-            <?php } ?>
-        </div>
-
-
-    <?php } elseif ($copy) { ?>
-        <h3 class=""><?= lang('Copy activity', 'Kopiere Aktivität') ?></h3>
-    <?php } else { ?>
-        <!-- Edit existing activity -->
-        <h3 class="mb-0"><?= lang('Edit activity', 'Bearbeite Aktivität') ?>:</h3>
-        <div class="mb-10">
-            <?php
-            $Format = new Document(false);
-            $Format->setDocument($form);
-            echo $Format->activity_icon();
-            echo $Format->formatShort();
-            ?>
-        </div>
-
-    <?php } ?>
-
-    <?php if (!empty($form)) { ?>
-
-        <a href="#close-modal" class="text-decoration-none" onclick="$(this).next().slideToggle()">
-            <i class="ph ph-caret-down"></i>
-            <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
-        </a>
-        <div class="mb-20 select-btns" id="select-btns" style="display:none">
-            <?php
-            foreach ($Settings->getActivities() as $id => $a) { ?>
-                <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
-            <?php }
-            ?>
-        </div>
-
-    <?php } ?>
-
-
-
-    <div class="box primary add-form" style="display:none" id="publication-form">
-        <div class="content">
-            <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
-
-            <?php if (!empty($form) && isset($_GET['epub'])) { ?>
-                <div class="alert signal mb-20">
-                    <div class="title">
-                        <?= lang('Please review this entry and mark it as "Not Epub".', 'Bitte überprüfe diesen Eintrag und markiere ihn als "nicht Epub".') ?>
-                    </div>
-                    <p>
-                        <?= lang(
-                            'Review carefully all data, especially the publication date, which has to be the <b>date of the issued publication</b> (not online publication)!',
-                            'Überprüfe alle Daten sorgfältig, für den Fall, dass sich Änderungen ergeben haben. Besonders das Publikationsdatum muss überprüft und auf das <b>tatsächliche Datum der Publikation (nicht online)</b> gesetzt werden.'
-                        ) ?>
-                    </p>
-                    <?php if (isset($form['doi']) && !empty($form['doi'])) { ?>
-                        <p class="mb-0">
-                            <a class="link" href="http://doi.org/<?= $form['doi'] ?>" target="_blank" rel="noopener noreferrer">
-                                <?= lang(
-                                    'Have a look at the publishers page of your publication for reference.',
-                                    'Als Referenz kannst du hier die Seite des Publishers zu deiner Publikation sehen.'
-                                ) ?>
-                            </a>
-                        </p>
-                    <?php } ?>
-
-                </div>
-
-            <?php } ?>
-
-            <!-- SUBTYPES -->
-            <?php foreach ($Settings->getActivities() as $t => $a) {
-                $subtypes = array_column($a['subtypes'] ?? array(), 'id');
-                if (count($subtypes) <= 1) continue;
-            ?>
-
-                <div class="mb-20 select-btns" data-type="<?= $t ?>">
-                    <?php foreach ($subtypes as $st) {
-                    ?>
-                        <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
-                    <?php } ?>
-                </div>
-
-            <?php } ?>
-
-
-            <div id="examples" class="mb-20">
-                <?php include BASEPATH . '/components/activity-examples.php' ?>
-            </div>
-
-
-            <form action="<?= $formaction ?>" method="post" enctype="multipart/form-data" id="activity-form">
-                <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
-                <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
-                <input type="hidden" class="form-control disabled" name="values[subtype]" id="subtype" readonly>
-
-                <style>
-                    #data-modules {
-                        padding: 0;
-                        margin: 0 -1rem;
-                    }
-
-                    #data-modules .data-module {
-                        padding: 1rem;
-                        align-self: baseline;
-                    }
-
-                    #data-modules .row {
-                        padding: 0;
-                    }
-
-                    #data-modules .row [class^="col"] {
-                        padding: 1rem;
-                        align-self: baseline;
-                    }
-                </style>
-
-                <div id="data-modules" class="row row-eq-spacing">
-
-                </div>
-
-
-                <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
-                    <div class="form-group">
-                        <a onclick="$(this).next().toggleClass('hidden')">
-                            <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
-                                <i class="ph ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
-                            </label>
-                        </a>
-                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {
-                                                                                                                            echo val('comment');
-                                                                                                                        } ?></textarea>
-                    </div>
-                <?php } else { ?>
-                    <div class="form-group">
-                        <label for="comment"><?= lang('Comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)</label>
-                        <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control"><?php if (!$copy) {
-                                                                                                                    echo val('comment');
-                                                                                                                } ?></textarea>
-                    </div>
-                <?php } ?>
-                <?php if (!$copy && !empty($form) && (count($form['authors']) > 1 || ($form['authors'][0]['user'] ?? '') != $_SESSION['username'])) { ?>
-                    <div class="alert signal p-10 mb-10">
-                        <div class="title">
-                            <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>
-                        </div>
-                        <!-- <div class="form-group"> -->
-                        <label for="editor-comment"><?= lang('Editor comment (tell your co-authors what you have changed)', 'Editor-Kommentar (teile deinen Ko-Autoren mit, was du geändert hast)') ?></label>
-                        <textarea name="values[editor-comment]" id="editor-comment" cols="30" rows="2" class="form-control"></textarea>
-                        <!-- </div> -->
-                        <div class="mt-10">
-                            <div class="custom-checkbox" id="minor-div">
-                                <input type="checkbox" id="minor" value="1" name="minor">
-                                <label for="minor"><?= lang('Changes are minor and coauthors do not need to be notified.', 'Änderungen sind minimal und Koautoren müssen nicht benachrichtigt werden.') ?></label>
-                            </div>
-                            <small class="text-muted">
-                                <?= lang(
-                                    'Please note that changes to the author list are ignored if this checkmark is set.',
-                                    'Bitte beachte, dass Änderungen an den Autoren ignoriert werden, wenn dieser Haken gesetzt ist.'
-                                ) ?>
-                            </small>
-                        </div>
-                    </div>
-                <?php } ?>
-
-
-                <div class="alert signal mb-10 <?=empty($form) ? '' : 'hidden'?>" id="doublet-found" style="display:none;">
-                    <h4 class="title">
-                        <i class="ph ph-warning text-osiris"></i>
-                        <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
-                    </h4>
-                    <p class="m-0">
-
-                    </p>
-                </div>
-
-                <button class="btn primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
-
-            </form>
-        </div>
+    <div class="alert danger" id="id-exists" style="display:none;">
+        <h4 class="title">
+            <?= lang('Duplicate!', 'Duplikat!') ?>
+        </h4>
+        <p class="mt-10">
+            <?= lang(
+                'This DOI/Pubmed-ID already exists in the database!',
+                'Diese DOI/Pubmed-ID existiert bereits in der Datenbank!'
+            ) ?>
+        </p>
+        <a class="btn text-danger border-danger" href="link"><?= lang('View entry', 'Eintrag anschauen') ?> <i class="ph ph-arrow-fat-line-right"></i></a>
     </div>
 
+
+    <div class="my-20 select-btns" id="select-btns">
+        <?php
+        foreach ($Settings->getActivities() as $id => $a) { ?>
+            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
+        <?php } ?>
+    </div>
+
+
+<?php } elseif ($copy) { ?>
+    <h1 class="mt-0"><?= lang('Copy activity', 'Kopiere Aktivität') ?></h1>
+<?php } else { ?>
+    <!-- Edit existing activity -->
+    <h1 class="my-0"><?= lang('Edit activity', 'Bearbeite Aktivität') ?>:</h1>
+    <div class="mb-10">
+        <?php
+        $Format = new Document(false);
+        $Format->setDocument($form);
+        echo $Format->activity_icon() . " ";
+        echo $Format->formatShort();
+        ?>
+    </div>
+
+<?php } ?>
+
+<?php if (!empty($form)) { ?>
+
+    <a href="#close-modal" class="text-decoration-none" onclick="$(this).next().slideToggle()">
+        <i class="ph ph-caret-down"></i>
+        <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
+    </a>
+    <div class="mb-20 select-btns" id="select-btns" style="display:none">
+        <?php
+        foreach ($Settings->getActivities() as $id => $a) { ?>
+            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
+        <?php }
+        ?>
+    </div>
+
+<?php } ?>
+
+
+
+<div class="box primary add-form" style="display:none" id="publication-form">
+    <div class="content">
+        <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
+
+        <?php if (!empty($form) && isset($_GET['epub'])) { ?>
+            <div class="alert signal mb-20">
+                <div class="title">
+                    <?= lang('Please review this entry and mark it as "Not Epub".', 'Bitte überprüfe diesen Eintrag und markiere ihn als "nicht Epub".') ?>
+                </div>
+                <p>
+                    <?= lang(
+                        'Review carefully all data, especially the publication date, which has to be the <b>date of the issued publication</b> (not online publication)!',
+                        'Überprüfe alle Daten sorgfältig, für den Fall, dass sich Änderungen ergeben haben. Besonders das Publikationsdatum muss überprüft und auf das <b>tatsächliche Datum der Publikation (nicht online)</b> gesetzt werden.'
+                    ) ?>
+                </p>
+                <?php if (isset($form['doi']) && !empty($form['doi'])) { ?>
+                    <p class="mb-0">
+                        <a class="link" href="http://doi.org/<?= $form['doi'] ?>" target="_blank" rel="noopener noreferrer">
+                            <?= lang(
+                                'Have a look at the publishers page of your publication for reference.',
+                                'Als Referenz kannst du hier die Seite des Publishers zu deiner Publikation sehen.'
+                            ) ?>
+                        </a>
+                    </p>
+                <?php } ?>
+
+            </div>
+
+        <?php } ?>
+
+        <!-- SUBTYPES -->
+        <?php foreach ($Settings->getActivities() as $t => $a) {
+            $subtypes = array_column($a['subtypes'] ?? array(), 'id');
+            if (count($subtypes) <= 1) continue;
+        ?>
+
+            <div class="mb-20 select-btns" data-type="<?= $t ?>">
+                <?php foreach ($subtypes as $st) {
+                ?>
+                    <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
+                <?php } ?>
+            </div>
+
+        <?php } ?>
+
+
+        <div id="examples" class="mb-20">
+            <?php include BASEPATH . '/components/activity-examples.php' ?>
+        </div>
+
+
+        <form action="<?= $formaction ?>" method="post" id="activity-form">
+            <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
+            <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
+            <input type="hidden" class="form-control disabled" name="values[subtype]" id="subtype" readonly>
+
+            <style>
+                #data-modules {
+                    padding: 0;
+                    margin: 0 -1rem;
+                }
+
+                #data-modules .data-module {
+                    padding: 1rem;
+                    align-self: baseline;
+                }
+
+                #data-modules .row {
+                    padding: 0;
+                }
+
+                #data-modules .row [class^="col"] {
+                    padding: 1rem;
+                    align-self: baseline;
+                }
+            </style>
+
+            <div id="data-modules" class="row row-eq-spacing">
+
+            </div>
+
+
+            <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
+                <div class="form-group">
+                    <a onclick="$(this).next().toggleClass('hidden')">
+                        <label onclick="$(this).next().toggleClass('hidden')" for="comment" class="cursor-pointer">
+                            <i class="ph ph-plus"></i> <?= lang('Add note', 'Notiz') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)
+                        </label>
+                    </a>
+                    <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control hidden"><?php if (!$copy) {
+                                                                                                                        echo val('comment');
+                                                                                                                    } ?></textarea>
+                </div>
+            <?php } else { ?>
+                <div class="form-group">
+                    <label for="comment"><?= lang('Comment', 'Kommentar') ?> (<?= lang('Only visible for authors and controlling staff.', 'Nur sichtbar für Autoren und Admins') ?>)</label>
+                    <textarea name="values[comment]" id="comment" cols="30" rows="2" class="form-control"><?php if (!$copy) {
+                                                                                                                echo val('comment');
+                                                                                                            } ?></textarea>
+                </div>
+            <?php } ?>
+            <?php if (!$copy && !empty($form) && (count($form['authors']) > 1 || ($form['authors'][0]['user'] ?? '') != $_SESSION['username'])) { ?>
+                <div class="alert signal p-10 mb-10">
+                    <div class="title">
+                        <?= lang('Editorial area', 'Bearbeitungs-Bereich') ?>
+                    </div>
+                    <!-- <div class="form-group"> -->
+                    <label for="editor-comment"><?= lang('Editor comment (tell your co-authors what you have changed)', 'Editor-Kommentar (teile deinen Ko-Autoren mit, was du geändert hast)') ?></label>
+                    <textarea name="values[editor-comment]" id="editor-comment" cols="30" rows="2" class="form-control"></textarea>
+                    <!-- </div> -->
+                    <div class="mt-10">
+                        <div class="custom-checkbox" id="minor-div">
+                            <input type="checkbox" id="minor" value="1" name="minor">
+                            <label for="minor"><?= lang('Changes are minor and coauthors do not need to be notified.', 'Änderungen sind minimal und Koautoren müssen nicht benachrichtigt werden.') ?></label>
+                        </div>
+                        <small class="text-muted">
+                            <?= lang(
+                                'Please note that changes to the author list are ignored if this checkmark is set.',
+                                'Bitte beachte, dass Änderungen an den Autoren ignoriert werden, wenn dieser Haken gesetzt ist.'
+                            ) ?>
+                        </small>
+                    </div>
+                </div>
+            <?php } ?>
+
+
+            <div class="alert signal mb-10 <?= empty($form) ? '' : 'hidden' ?>" id="doublet-found" style="display:none;">
+                <h4 class="title">
+                    <i class="ph ph-warning text-osiris"></i>
+                    <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
+                </h4>
+                <p class="m-0">
+
+                </p>
+            </div>
+
+            <button class="btn primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
+
+        </form>
+    </div>
 </div>
 
 
