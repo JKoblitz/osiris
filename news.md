@@ -1,5 +1,10 @@
 # Neuigkeiten
 
+<a id="version-1.2.1"></a>
+## 18.10.2023
+`Version 1.2.1`
+
+Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund. Außerdem wurde das Layout einiger Seiten verbessert, sowie die Schriftart für Überschriften verändert. 
 
 <a id="version-1.2.0"></a>
 ## 04.10.2023

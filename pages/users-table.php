@@ -89,9 +89,9 @@
         <?php
         $filter = ['username'=>['$ne'=>null]];
         if (!isset($_GET['inactive'])){
-            // TODO: change 
-            $users = $osiris->accounts->distinct('username', ['is_active'=>false]);
-            $filter['username'] = ['$nin'=>$users];
+            // $users = $osiris->account->distinct('username', ['is_active'=>false]);
+            // $filter['username'] = ['$nin'=>$users];
+            $filter['is_active'] = true;
         }
         $result = $osiris->persons->find($filter);
         $result = $DB->doc2Arr($result);

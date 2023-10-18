@@ -9,6 +9,7 @@
     --primary-color-20: rgba(238, 114, 3, 0.2);
     --primary-color-30: rgba(238, 114, 3, 0.3);
     --primary-color-60: rgba(238, 114, 3, 0.6);
+    --border-radius: 1rem;
 }
 
 @font-face {
@@ -1022,4 +1023,9 @@ a.module:hover {
 
 .alert a.btn, .alert a.link {
     text-decoration: none;
+}
+
+.box>.table.simple th:first-child,
+.box>.table.simple td:first-child {
+    padding: 1rem 1.4rem 1rem 2rem;
 }

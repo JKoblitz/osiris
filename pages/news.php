@@ -24,7 +24,7 @@
 
 <?php if (isset($USER) && !empty($USER)) { 
     if ($USER['lastversion'] !== OSIRIS_VERSION){
-        $updateResult = $osiris->accounts->updateOne(
+        $updateResult = $osiris->persons->updateOne(
             ['username' => $_SESSION['username']],
             ['$set' => ['lastversion' => OSIRIS_VERSION]]
         );

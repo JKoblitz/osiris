@@ -18,9 +18,16 @@
 
 include_once BASEPATH . "/php/Modules.php";
 
+// check if this is an ongoing activity type
+$ongoing = false;
+$M = $Format->subtypeArr['modules'] ?? array();
+foreach ($M as $m) {
+    if (str_ends_with($m, '*')) $m = str_replace('*', '', $m);
+    if ($m == 'date-range-ongoing') $ongoing = true;
+}
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
-    <div class="alert signal">
+    <div class="alert signal mb-20">
         <h3 class="title">
             <?= lang('For the good practice: ', 'Für die gute Praxis:') ?>
         </h3>
@@ -299,6 +306,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <div class="box ">
             <div class="content">
 
+
                 <div class="btn-toolbar float-sm-right">
                     <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn primary">
@@ -315,7 +323,8 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         </a>
                     <?php } ?>
 
-                    <?php if ($user_activity && $locked && array_key_exists('end', $doc) && empty($doc['end'])) { ?>
+
+                    <?php if ($user_activity && $locked && empty($doc['end'] ?? null) && $ongoing) { ?>
                         <!-- End user activity even if activity is locked -->
                         <div class="dropdown">
                             <button class="btn primary" data-toggle="dropdown" type="button" id="update-end-date" aria-haspopup="true" aria-expanded="false">

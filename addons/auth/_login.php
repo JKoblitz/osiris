@@ -4,7 +4,7 @@ function login($username, $password)
     global $osiris;
     $return = array("msg" => '', "success" => false);
 
-    $USER = $osiris->accounts->findOne([
+    $USER = $osiris->persons->findOne([
         'username'=> $username,
         'password'=> $password
     ]);

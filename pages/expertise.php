@@ -15,13 +15,12 @@
  * @license     MIT
  */
 
-$users = $osiris->accounts->distinct('username', ['is_active' => true]);
 
 $cursor = $osiris->persons->aggregate([
     [
         '$match' => [
             'expertise' => ['$exists' => true],
-            'username' => ['$in' => $users]
+            'is_active' => true
         ]
     ],
     ['$project' => ['expertise' => 1, 'displayname' => 1, 'dept' => 1, 'username'=>1]],

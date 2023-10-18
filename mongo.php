@@ -45,7 +45,7 @@ function validateValues($values, $DB)
                     $temp = $DB->getPerson($user);
                     $author = [$temp['last'], $temp['first'], true];
                 } else {
-                    $user = $DB->getUserFromName($author[0], $author[1]);
+                    $user = $DB->getPersonFromName($author[0], $author[1]);
                 }
                 $vals = [
                     'last' => $author[0],
@@ -125,6 +125,8 @@ function validateValues($values, $DB)
             } else {
                 $values[$key] = null;
             }
+        } else if ($key == 'month' || $key == 'year') {
+            $values[$key] = intval($value);
         } else if (is_numeric($value)) {
             // dump($key);
             // dump($value);
@@ -537,24 +539,19 @@ Route::post('/delete-user/(.*)', function ($user) {
         if (in_array($key, $keep)) continue;
         $arr[$key] = null;
     }
-    // $arr['is_active'] = false;
-
+    $arr['is_active'] = false;
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
         ['$set' => $arr]
     );
 
-    $osiris->accounts->updateOne(
-        ['username' => $user],
-        ['$set' => ['is_active'=> false]]
-    );
 
 
     if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
         unlink(BASEPATH . "/img/users/$user.jpg");
     }
-    if (file_exists(BASEPATH . "/img/users/".$user."_sm.jpg")) {
-        unlink(BASEPATH . "/img/users/".$user."_sm.jpg");
+    if (file_exists(BASEPATH . "/img/users/" . $user . "_sm.jpg")) {
+        unlink(BASEPATH . "/img/users/" . $user . "_sm.jpg");
     }
 
     header("Location: " . ROOTPATH . "/profile/" . $user . "?msg=user-inactivated");
@@ -570,28 +567,28 @@ Route::post('/update-user/(.*)', function ($user) {
 
     // separate personal and account information
     $person = $values;
-    $account = [];
+    // $account = [];
 
-    foreach ([
-        // 'is_admin' => 'bool',
-        // 'is_controlling' => 'bool',
-        // 'is_scientist' => 'bool',
-        // 'is_leader' => 'bool',
-        // 'is_active' => 'bool',
-        'display_activities' => 'string',
-        'show_coins' => 'string',
-        'hide_achievements' => 'string',
-        'maintenance' => 'string',
-        'roles' => 'array'
-    ] as $key => $type) {
-        if (!isset($values[$key])) continue;
-        if ($type == 'bool') {
-            $account[$key] = boolval($values[$key] ?? false);
-        } else {
-            $account[$key] = $values[$key] ?? null;
-        }
-        unset($person[$key]);
-    }
+    // foreach ([
+    //     // 'is_admin' => 'bool',
+    //     // 'is_controlling' => 'bool',
+    //     // 'is_scientist' => 'bool',
+    //     // 'is_leader' => 'bool',
+    //     // 'is_active' => 'bool',
+    //     'display_activities' => 'string',
+    //     'show_coins' => 'string',
+    //     'hide_achievements' => 'string',
+    //     'maintenance' => 'string',
+    //     'roles' => 'array'
+    // ] as $key => $type) {
+    //     if (!array_key_exists($key, $values)) continue;
+    //     if ($type == 'bool') {
+    //         $account[$key] = boolval($values[$key] ?? false);
+    //     } else {
+    //         $account[$key] = $values[$key] ?? null;
+    //     }
+    //     unset($person[$key]);
+    // }
 
     // update name information
     if (isset($values['last']) && isset($values['first'])) {
@@ -608,10 +605,10 @@ Route::post('/update-user/(.*)', function ($user) {
         ['username' => $user],
         ['$set' => $person]
     );
-    if (!empty($account)) $updateResult = $osiris->accounts->updateOne(
-            ['username' => $user],
-            ['$set' => $account]
-        );
+    // if (!empty($account)) $updateResult = $osiris->account->updateOne(
+    //     ['username' => $user],
+    //     ['$set' => $account]
+    // );
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");
@@ -887,7 +884,7 @@ Route::post('/approve', function () {
     }
     $q = $_POST['quarter'];
 
-    $updateResult = $osiris->accounts->updateOne(
+    $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
         ['$push' => ["approved" => $q]]
     );

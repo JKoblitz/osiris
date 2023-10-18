@@ -22,12 +22,12 @@ if (file_exists('CONFIG.php')) {
 }
 
 
-error_reporting(E_ERROR);
+// error_reporting(E_ERROR);
 
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('OSIRIS_VERSION', '1.2.0');
+define('OSIRIS_VERSION', '1.2.1');
 
 // set time constants
 $year = date("Y");
@@ -44,7 +44,7 @@ if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
     $username = $_GET['OSIRIS-SELECT-MAINTENANCE-USER'];
 
     // check if the user is allowed to do that
-    $allowed = $osiris->accounts->count(['username' => $username, 'maintenance' => $realusername]);
+    $allowed = $osiris->persons->count(['username' => $username, 'maintenance' => $realusername]);
     // change username if user is allowed
     if ($allowed == 1 || $realusername == $username) {
         $msg = "User switched!";
@@ -98,7 +98,7 @@ Route::get('/test-new-func', function () {
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
     $db = new DB;
-    dump($db->getUser('juk20'));
+    dump($db->getPerson('juk20'));
 
     include BASEPATH . "/footer.php";
 });
@@ -228,7 +228,7 @@ Route::get('/achievements/?(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/_achievements.php";
 
-    $scientist = $DB->getUser($user);
+    $scientist = $DB->getPerson($user);
     $name = $scientist['displayname'];
 
     $breadcrumb = [
@@ -330,7 +330,7 @@ Route::post('/user/login', function () {
             // on the test server: log in
             // check if user exists in our database
             $_SESSION['username'] = $_POST['username'];
-            $useracc = $DB->getUser($_SESSION['username']);
+            $useracc = $DB->getPerson($_SESSION['username']);
             $_SESSION['name'] = $useracc['displayname'];
 
             $_SESSION['loggedin'] = true;
@@ -346,19 +346,18 @@ Route::post('/user/login', function () {
             if (isset($auth["status"]) && $auth["status"] == true) {
 
                 // check if user exists in our database
-                $USER = $DB->getUser($_POST['username']);
+                $USER = $DB->getPerson($_POST['username']);
                 if (empty($USER)) {
                     // create user from LDAP
                     $new_user = newUser($_POST['username']);
                     if (empty($new_user)) {
                         die('Sorry, the user does not exist. Please contact system administrator!');
                     }
-                    $osiris->persons->insertOne($new_user['person']);
-                    $osiris->accounts->insertOne($new_user['account']);
+                    $osiris->persons->insertOne($new_user);
 
                     $user = $new_user['account']['username'];
 
-                    $USER = $DB->getUser($user);
+                    $USER = $DB->getPerson($user);
 
                     // try to connect the user with existing authors
                     $updateResult = $osiris->activities->updateMany(
@@ -375,7 +374,7 @@ Route::post('/user/login', function () {
                 $_SESSION['username'] = $USER['username'];
                 $_SESSION['name'] = $USER['displayname'];
 
-                $updateResult = $osiris->account->updateOne(
+                $updateResult = $osiris->persons->updateOne(
                     ['username' => $_POST['username']],
                     ['$set' => ["lastlogin" => date('d.m.Y')]]
                 );
@@ -897,7 +896,7 @@ Route::post('/import/google', function () {
         $a = explode(' ', $a);
         $last = array_pop($a);
         $first = implode(' ', $a);
-        $username = $DB->getUserFromName($last, $first);
+        $username = $DB->getPersonFromName($last, $first);
         $author = [
             'first' => $first,
             'last' => $last,
@@ -995,7 +994,7 @@ Route::get('/profile/?(.*)', function ($user) {
 
     $Format = new Document($user);
 
-    $scientist = $DB->getUser($user);
+    $scientist = $DB->getPerson($user);
 
     if (empty($scientist)) {
         header("Location: " . ROOTPATH . "/user/browse?msg=user-does-not-exist");
@@ -1021,7 +1020,7 @@ Route::get('/my-year/?(.*)', function ($user) {
     include_once BASEPATH . "/php/Document.php";
     $Format = new Document($user);
 
-    $scientist = $DB->getUser($user);
+    $scientist = $DB->getPerson($user);
     $name = $scientist['displayname'];
 
     $breadcrumb = [
@@ -1320,7 +1319,7 @@ Route::get('/user/edit/(.*)', function ($user) {
 
     // $id = $DB->to_ObjectID($id);
 
-    $data = $DB->getUser($user);
+    $data = $DB->getPerson($user);
     if (empty($data)) {
         header("Location: " . ROOTPATH . "/user/browse");
         die;
@@ -1505,7 +1504,7 @@ Route::get('/settings', function () {
 //     if (!isset($_GET['user']) || empty($_GET['user'])) die('user not set');
 
 //     // get user account
-//     $user = $DB->getUser($_GET['user']);
+//     $user = $DB->getPerson($_GET['user']);
 
 //     // if openalex id is not set: nothing to do
 //     if (empty($user['openalex'])) die ('openalex not set');
@@ -1679,10 +1678,32 @@ Route::get('/migrate', function () {
             }
         }
         echo "Migrated " . count($users) . " users into a new format.<br> Migration successful. You might close this window now.";
-    } else {
-        echo "Nothing to do.";
+    }
+    if ($V[1] < 2 || ($V[1] == 2 && $V[2] < 1)) {
+        echo "<p>Migrating persons into new version.</p>";
+        $migrated = 0;
+
+        $accounts = $osiris->accounts->find([])->toArray();
+        foreach ($accounts as $account) {
+            $user = $account['username'];
+            // check if user exists
+            $person = $osiris->persons->findOne(['username' => $user]);
+            if (empty($person)) {
+                echo $user;
+            } else {
+                unset($account['_id']);
+                $updated = $osiris->persons->updateOne(
+                    ['username' => $user],
+                    ['$set' => $account]
+                );
+                $migrated += $updated->getModifiedCount();
+            }
+        }
+
+        echo "<p>Migrated $migrated users.</p>";
     }
 
+    echo "<p>Done.</p>";
     $insertOneResult  = $osiris->system->updateOne(
         ['key' => 'version'],
         ['$set' => ['value' => OSIRIS_VERSION]]
@@ -1755,7 +1776,7 @@ Route::get('/synchronize-users', function () {
         if (in_array($username, $blacklist)) continue;
 
         // first: check if user is in database
-        $USER = $DB->getUser($username);
+        $USER = $DB->getPerson($username);
         // if user does not exists
         if (empty($USER)) {
             // if inactive: do nothing
@@ -1779,7 +1800,7 @@ Route::get('/synchronize-users', function () {
                     ['username' => $username],
                     ['$set' => ['is_active' => false]]
                 );
-            } 
+            }
 
             // if (empty($USER['dept'])){
             //     $new_user = newUser($username);
@@ -1799,7 +1820,7 @@ Route::get('/synchronize-users', function () {
             // }
         }
     }
-        echo "User synchronization successful";
+    echo "User synchronization successful";
     include BASEPATH . "/footer.php";
 });
 
