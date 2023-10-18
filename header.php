@@ -224,7 +224,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <?php
                     $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
-                    $maintain = $osiris->accounts->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username' => 1]])->toArray();
+                    $maintain = $osiris->persons->find(['maintenance' => $realusername], ['projection' => ['displayname' => 1, 'username' => 1]])->toArray();
                     if (!empty($maintain)) { ?>
                         <form action="" class="content">
                             <select name="OSIRIS-SELECT-MAINTENANCE-USER" id="osiris-select-maintenance-user" class="form-control" onchange="$(this).parent().submit()">

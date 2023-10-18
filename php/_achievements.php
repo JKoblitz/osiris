@@ -43,7 +43,7 @@ class Achievement
         }
 
         // find user in the database
-        $this->userdata = $this->DB->getUser($username);
+        $this->userdata = $this->DB->getPerson($username);
         if (empty($this->userdata)) return false;
 
         // get all user achievements

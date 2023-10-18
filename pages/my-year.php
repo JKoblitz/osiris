@@ -28,13 +28,6 @@ $LOM = new LOM($user, $osiris);
 
 $_lom = 0;
 
-// gravatar
-// $email = $scientist['mail']; #. "@dsmz.de";
-// $default = ROOTPATH . "/img/person.jpg";
-// $size = 140;
-
-// $gravatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?s=" . $size;
-
 
 $groups = [];
 foreach ($Settings->get('activities') as $key => $value) {
@@ -96,23 +89,6 @@ foreach ($cursor as $doc) {
         'title' => htmlspecialchars(strip_tags(trim($doc['title'] ?? $doc['journal']))),
         // 'icon' => $icon
     ];
-    if (isset($doc['end'])) {
-        if (empty($doc['end'])) {
-            $date = $endOfYear;
-        } else {
-            $date = getDateTime($doc['end']);
-
-            // make sure date lies in range
-            if ($date > $endOfYear) $date = $endOfYear;
-        }
-        $endtime = $date->getTimestamp();
-        if ($endtime - $starttime > 2595625) {
-            // etwa ein monat
-            $event['ending_time'] = $endtime;
-        }
-    } else {
-        // $event["display"] = "circle";
-    }
     // $timeline[$doc['type']]['times'][] = $event;
     $timeline[] = $event;
     if (!in_array($doc['type'], $timelineGroups)) $timelineGroups[] = $doc['type'];
@@ -189,21 +165,21 @@ if ($Settings->hasFeatureDisabled('coins')) {
 
                 <?php if (!$quarter_in_past) { ?>
                     <a href="#close-modal" class="btn disabled">
-                        <i class="ph ph-check mr-5"></i>
+                        <i class="ph ph-seal-question mr-5 text-signal"></i>
                         <?= lang('Selected quarter is not over yet.', 'Gewähltes Quartal ist noch nicht zu Ende.') ?>
                     </a>
                 <?php
 
                 } elseif ($approved) { ?>
                     <a href="#close-modal" class="btn disabled">
-                        <i class="ph ph-check mr-5"></i>
+                        <i class="ph ph-fill ph-seal-check mr-5 text-success"></i>
                         <?= lang('You have already approved the currently selected quarter.', 'Du hast das aktuelle Quartal bereits bestätigt.') ?>
                     </a>
                 <?php } else { ?>
                     <a class="btn large success" href="#approve">
-                        <i class="ph ph-fill ph-question mr-5"></i>
-                        <?= lang('Approve selected quarter', 'Ausgewähltes Quartal freigeben') ?>
-                        (<?= $YEAR . 'Q' . $QUARTER ?>)
+                        <i class="ph ph-seal-check mr-5"></i>
+                        <?= lang('Approve selected quarter', 'Ausgewähltes Quartal freigeben') ?>:
+                        <b><?= $YEAR . ' Q' . $QUARTER ?></b>
                     </a>
                 <?php } ?>
 
@@ -292,11 +268,11 @@ if ($Settings->hasFeatureDisabled('coins')) {
     <div id="timeline" class="box">
         <div class="content my-0">
 
-            <h1>
+            <h2>
                 <?php
                 echo lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR;
                 ?>
-            </h1>
+            </h2>
 
 
         </div>
@@ -356,7 +332,25 @@ if ($Settings->hasFeatureDisabled('coins')) {
         // .tickPadding(5).tickSize(20);
         svg.append('g').attr('class', 'axes')
             .attr('transform', `translate(${margin.left}, ${height+margin.top+radius*2})`)
-            .call(axisBottom);
+            .call(axisBottom);   
+
+        var quarter = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${height+margin.top+radius*2})`)
+            // .selectAll("g")
+            .append('rect')
+            .style("fill", 'rgb(236, 175, 0)')
+            // .attr('height', height+margin.top+radius*4)
+            .attr('height', 8)
+            .attr('width', function(d, i) {
+                return width / 4
+            })
+            .style('opacity', .1)
+            .attr('x', (d) => {
+                var date = new Date('<?=$YEAR?>-<?=$QUARTER*3-2?>-01')
+                return timescale(date)
+            })
+            // .attr('y', radius*-2)
+            .attr('y', 0)
 
         d3.selectAll("g>.tick>text")
             .each(function(d, i) {
@@ -380,9 +374,6 @@ if ($Settings->hasFeatureDisabled('coins')) {
                 .select('circle,rect')
                 .transition()
                 .duration(300)
-                // .attr('cy', -2)
-                // .attr('y', -radius-2)
-                // .attr("r", radius * 1.5)
                 .style('opacity', 1)
 
             //Define and show the tooltip over the mouse location
@@ -409,10 +400,6 @@ if ($Settings->hasFeatureDisabled('coins')) {
             d3.select(this).select('circle,rect')
                 .transition()
                 .duration(300)
-                // .attr("r", radius)
-                // .attr('dy', 4)
-                // .attr('cy', 0)
-                // .attr('y', -radius)
                 .style('opacity', .5)
             //Hide the tooltip
             $('.popover').each(function() {
@@ -509,12 +496,12 @@ if ($Settings->hasFeatureDisabled('coins')) {
     ?>
 
         <div class="box box-<?= $col ?>" id="<?= $col ?>">
-            <div class="content">
-                <h4 class="title text-<?= $col ?>">
+                <div class="content mb-0">
+                <h3 class="title text-<?= $col ?> m-0">
                     <i class="ph ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
                     <?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
-                </h4>
-            </div>
+                </h3>
+                </div>
             <?php if (empty($data)) { ?>
                 <div class="content text-muted">
                     <?= lang('No activities found.', 'Noch keine Aktivitäten vorhanden.') ?>

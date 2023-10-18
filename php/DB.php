@@ -58,7 +58,7 @@ class DB
     {
         $USER = array();
         if (!empty($_SESSION['username'])) {
-            $USER = $this->getUser($_SESSION['username']);
+            $USER = $this->getPerson($_SESSION['username']);
             // set standard values
             if ($_SESSION['username'] === ADMIN) {
                 $USER['roles'][] = 'admin';
@@ -193,38 +193,6 @@ class DB
         return $this->doc2Arr($person);
     }
 
-
-    /**
-     * Get all account settings from username.
-     * Does not contain any personal information.
-     *
-     * @param string $user Username.
-     * @return array Account array.
-     */
-    public function getAccount($user = null)
-    {
-        $account = $this->db->accounts->findOne(['username' => $user ?? $_SESSION['username']]);
-        return $this->doc2Arr($account);
-    }
-
-
-    /**
-     * Get all available user information from username.
-     * Note: this contains both, account and person information.
-     *
-     * @param string $user Username.
-     * @return array User array.
-     */
-    public function getUser($user = null)
-    {
-        $userArr = [];
-        $account = $this->getAccount($user);
-        $person = $this->getPerson($user);
-        $userArr = array_merge($person, $account);
-
-        return $userArr;
-    }
-
     /**
      * Abbreviate all first names including hyphens.
      *
@@ -253,7 +221,7 @@ class DB
      * @param string $user Username.
      * @return string Full name.
      */
-    public function getNameFromId($user)
+    public function getNameFromId($user, $reverse=false)
     {
         $USER = $this->getPerson($user, true);
         if (empty($USER['first'])) return $USER['last'];
@@ -273,7 +241,7 @@ class DB
      */
     public function getTitleLastname($user)
     {
-        $u = $this->getUser($user);
+        $u = $this->getPerson($user);
         if (empty($u)) return "!!$user!!";
         $n = "";
         if (!empty($u['academic_title'])) $n = $u['academic_title'] . " ";

@@ -982,6 +982,7 @@ class Modules
                     </div>
                     <script>
                         var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
+                        const DOUBLETCHECK = <?=empty($this->form) ? 'true': 'false'?>;
                         // console.log(SINGLE);
                         var dateRange = {
                             // format: 'DD.MM.YYYY',
@@ -1004,7 +1005,8 @@ class Modules
                             },
                             setValue: function(s, s1, s2) {
                                 $('#date_start').val(s1);
-                                doubletCheck()
+                                if (DOUBLETCHECK)
+                                    doubletCheck()
                                 if (SINGLE) return;
                                 $('#date_end').val(s2);
                             }

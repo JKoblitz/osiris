@@ -9,6 +9,17 @@
     --primary-color-20: rgba(238, 114, 3, 0.2);
     --primary-color-30: rgba(238, 114, 3, 0.3);
     --primary-color-60: rgba(238, 114, 3, 0.6);
+    --border-radius: 1rem;
+}
+
+@font-face {
+    font-family: 'Young Serif';
+    src: url("Young\ Serif/YoungSerif-Regular.ttf") format("truetype"); }
+  
+
+h1, h2, h3, h4 {
+    font-family: "Young Serif", "Rubik";
+    font-weight: 500;
 }
 
 .row.row-eq-spacing {
@@ -1008,4 +1019,13 @@ a.module:hover {
     background-color: var(--primary-color);
     color: white;
     /* box-shadow: none; */
+}
+
+.alert a.btn, .alert a.link {
+    text-decoration: none;
+}
+
+.box>.table.simple th:first-child,
+.box>.table.simple td:first-child {
+    padding: 1rem 1.4rem 1rem 2rem;
 }

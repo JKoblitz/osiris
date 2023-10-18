@@ -259,14 +259,14 @@ function newUser($username)
             $person['dept'] = $departments[$unit];
     }
 
-    $account = array("username" => $person["username"], "roles"=>[]);
 
-    // $account['is_admin'] = false;
-    // $account['is_controlling'] = $person['department'] == "Controlling";
-    // $account['is_scientist'] = false;
-    // $account['is_leader'] = str_contains($person['unit'], "leitung");
-    $account['is_active'] = !str_contains($ldap_user['dn'], 'DeaktivierteUser');
-    $account['created'] = date('Y-m-d');
+    // $person['is_admin'] = false;
+    // $person['is_controlling'] = $person['department'] == "Controlling";
+    // $person['is_scientist'] = false;
+    // $person['is_leader'] = str_contains($person['unit'], "leitung");
+    $person['is_active'] = !str_contains($ldap_user['dn'], 'DeaktivierteUser');
+    $person['created'] = date('Y-m-d');
+    $person['roles'] = [];
 
-    return ['account' => $account, 'person' => $person];
+    return $person;
 }

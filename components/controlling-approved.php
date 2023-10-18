@@ -16,7 +16,7 @@
             $Q = CURRENTQUARTER;
         }
         $yq = $Y . "Q" . $Q;
-        $cursor = $osiris->accounts->find(
+        $cursor = $osiris->persons->find(
             ['roles' => 'scientist', 'is_active' => true],
             ['sort' => ["approved" => -1, "last" => 1]]
         );

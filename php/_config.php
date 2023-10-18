@@ -97,8 +97,8 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'locked':
             $header = lang("This activity is locked.", "Diese Aktivität ist gesperrt.");
             $text = lang(
-                "You cannot edit this activity because of our reporting rules. Contact controlling if there are any issues.",
-                "Du kannst diese Aktivität aufgrund unserer Report-Richtlinien nicht löschen. Kontaktiere das Controlling, falls dadurch irgendwelche Probleme entstehen."
+                "You cannot edit or delete this activity because of our reporting rules. Contact the OSIRIS editors if there are any issues.",
+                "Du kannst diese Aktivität aufgrund unserer Report-Richtlinien nicht bearbeiten oder löschen. Kontaktiere die OSIRIS-Editoren, falls dadurch irgendwelche Probleme entstehen."
             );
             $class = "danger";
             break;

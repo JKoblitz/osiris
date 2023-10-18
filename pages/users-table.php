@@ -89,9 +89,9 @@
         <?php
         $filter = ['username'=>['$ne'=>null]];
         if (!isset($_GET['inactive'])){
-            // TODO: change 
-            $users = $osiris->accounts->distinct('username', ['is_active'=>false]);
-            $filter['username'] = ['$nin'=>$users];
+            // $users = $osiris->account->distinct('username', ['is_active'=>false]);
+            // $filter['username'] = ['$nin'=>$users];
+            $filter['is_active'] = true;
         }
         $result = $osiris->persons->find($filter);
         $result = $DB->doc2Arr($result);
@@ -129,7 +129,7 @@
                 <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
                     <td>
                         <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
-                            <i class="ph ph-fill ph-note-pencil"></i>
+                            <i class="ph ph-note-pencil"></i>
                         </btn>
                     </td>
                 <?php

@@ -20,10 +20,10 @@ if ($Settings->hasPermission('edit-journals')) { ?>
 <?php } ?>
 
 
-<h2 class="mt-0">
+<h1 class="mt-0">
     <i class="ph ph-book-open-cover text-osiris mr-5"></i>
    <?=lang('Journals', 'Journale')?>
-</h2>
+</h1>
 
 
 

@@ -107,10 +107,10 @@ function val($index, $default = '')
         <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
     </a> -->
 
-<h2 class="mt-0">
+<h1 class="mt-0">
     <i class="ph ph-chalkboard-simple text-osiris mr-5"></i>
     <?= lang('Teaching Modules', 'Lehrveranstaltungen') ?>
-</h2>
+</h1>
 <a href="#add-teaching" class="btn link px-0">
     <i class="ph ph-plus"></i>
     <?= lang('Add new teaching module', 'Neue Lehrveranstaltung anlegen') ?>

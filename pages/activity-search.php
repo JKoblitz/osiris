@@ -414,7 +414,7 @@ $subtypes = flatten($subtypes);
                 add_rule: 'ph ph-plus',
                 remove_group: 'ph ph-x-circle',
                 remove_rule: 'ph ph-x',
-                error: 'ph ph-fill ph-warning',
+                error: 'ph ph-warning',
             },
             allow_empty: true,
             default_filter: 'type'
