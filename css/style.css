@@ -228,15 +228,15 @@ td.unbreakable {
 }
 
 .ql-toolbar.ql-snow {
-    border-top-right-radius: var(--border-radius);
-    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: 2pt;
+    border-top-left-radius: 2pt;
     border-color: var(--border-color);
     background-color: #f1f1f1;
 }
 
 .ql-container.ql-snow {
-    border-bottom-right-radius: var(--border-radius);
-    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: 2pt;
+    border-bottom-left-radius: 2pt;
     border-color: var(--border-color);
     box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.05);
     background-color: white;

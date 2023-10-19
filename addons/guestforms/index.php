@@ -68,7 +68,16 @@ Route::post('/guests/save', function () {
         echo "no values given";
         die;
     }
-    $values = validateValues($_POST['values'], $DB);
+
+    $values = $_POST['values'];
+    // get supervisor first, otherwise users are converted into authors
+    $supervisor = $DB->getPerson($values['user']);
+    if (empty($supervisor)) die('Supervisor does not exist');
+    // remove supervisor from OG dataset
+    unset($values['user']);
+
+    // standardize inputs
+    $values = validateValues($values, $DB);
     // dump($_POST);
     if (!isset($values['id'])) {
         echo "no id given";
@@ -76,31 +85,74 @@ Route::post('/guests/save', function () {
     }
     $id = $values['id'];
 
-    // add information on creating process
-    $values['created'] = date('Y-m-d');
-    $values['created_by'] = strtolower($_SESSION['username']);
+    $finished = false;
+    $guest_exist = $collection->findOne(['id' => $id]);
+    if (!empty($guest_exist)) {
+        $finished = $guest_exist['legal']['general'] ?? false;
+    } else {
+        // add information on creating process
+        $values['created'] = date('Y-m-d');
+        $values['created_by'] = strtolower($_SESSION['username']);
 
-    // check if check boxes are checked
-    $values['legal']['general'] = $values['legal']['general'] ?? false;
-    $values['legal']['data_security'] = $values['legal']['data_security'] ?? false;
-    $values['legal']['data_protection'] = $values['legal']['data_protection'] ?? false;
-    $values['legal']['safety_instruction'] = $values['legal']['safety_instruction'] ?? false;
+        // check if check boxes are checked
+        $values['legal']['general'] = $values['legal']['general'] ?? false;
+        $values['legal']['data_security'] = $values['legal']['data_security'] ?? false;
+        $values['legal']['data_protection'] = $values['legal']['data_protection'] ?? false;
+        $values['legal']['safety_instruction'] = $values['legal']['safety_instruction'] ?? false;
+
+        // add supervisor information
+        $values['supervisor'] = [
+            "user" => $supervisor['username'],
+            "name" => $supervisor['displayname']
+        ];
+    }
+
+    if (!$finished) {
+        // send data to guest server
+        $URL = GUEST_SERVER . '/api/post';
+        $postData = $values;
+        $postData['secret'] = GUEST_FORM_SECRET_KEY;
+        $postRes = CallAPI('JSON', $URL, $postData);
+        $postRes = json_decode($postRes, true);
+        if ($postRes['message'] != 'Success') {
+            die($postRes['message']);
+        }
+    }
+
+    // check if guest already exists:
+    if (!empty($guest_exist)) {
+        $id = $guest_exist['id'];
+        $collection->updateOne(
+            ['id' => $id],
+            ['$set' => $values]
+        );
+    } else {
+        $insertOneResult  = $collection->insertOne($values);
+    }
+
+    header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
+}, 'login');
 
 
-    // add supervisor information
-    $supervisor = $DB->getPerson($values['user']);
-    if (empty($supervisor)) die('Supervisor does not exist');
-    $values['supervisor'] = [
-        "user" => $supervisor['_id'],
-        "name" => $supervisor['displayname']
-    ];
 
-    unset($values['user']);
+
+
+Route::post('/guests/synchronize/([a-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $collection = $osiris->guests;
+
+    // send data to guest server
+    $URL = GUEST_SERVER . '/api/get/' . $id;
+    if (!str_contains($URL, '//')) $URL = "https://" . $URL;
+    $postData = [];
+    $postData['secret'] = GUEST_FORM_SECRET_KEY;
+    $postRes = CallAPI('GET', $URL, $postData);
+    $values = json_decode($postRes, true);
 
     // check if guest already exists:
     $guest_exist = $collection->findOne(['id' => $id]);
     if (!empty($guest_exist)) {
-        $id = $guest_exist['id'];
         $collection->updateOne(
             ['id' => $id],
             ['$set' => $values]
@@ -108,11 +160,26 @@ Route::post('/guests/save', function () {
 
         header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
         die;
+    } else {
+        header("Location: " . ROOTPATH . "/guests?msg=guest+not+found");
+        die;
     }
+}, 'login');
 
-    // dump($values);
-    // die;
-    $insertOneResult  = $collection->insertOne($values);
+
+/**
+ * Update data points within 
+ */
+Route::post('/guests/update/([a-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $collection = $osiris->guests;
+    $values = $_POST['values'];
+
+    $collection->updateOne(
+        ['id' => $id],
+        ['$set' => $values]
+    );
 
     header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
 }, 'login');

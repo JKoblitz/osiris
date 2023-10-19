@@ -20,7 +20,11 @@
         <i class="ph ph-user-circle-plus text-osiris"></i>
         <?= lang('Guest Forms', 'Gast anmelden') ?>
     </h1>
-
+    <div class="alert danger mb-20">
+    <p class="text-danger lead">
+        Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
+    </p>
+</div>
     <form action="<?= ROOTPATH ?>/guests/save" method="post" class="">
         <p class="text-muted">ID: <?= $id ?></p>
 
@@ -58,7 +62,7 @@
                     <select class="form-control" id="username" name="values[user]" autocomplete="off" required>
                         <?php
                         foreach ($osiris->persons->find(['username'=>['$ne'=>null]], ['sort' => ["last" => 1]]) as $j) { ?>
-                            <option value="<?= $j['_id'] ?>" <?= $j['_id'] == ($form['supervisor']['user'] ?? $_SESSION['username']) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                            <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['supervisor']['user'] ?? $_SESSION['username']) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                         <?php } ?>
                     </select>
                 </div>

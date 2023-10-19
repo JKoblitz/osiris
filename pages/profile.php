@@ -61,7 +61,6 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
         font-family: 'Consolas', 'Courier New', Courier, monospace;
         font-weight: 500;
     }
-
 </style>
 
 <?php
@@ -324,6 +323,20 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 </span>
             <?php } ?>
         <?php } ?>
+
+        <?php
+        // show current guest state
+        if (defined('GUEST_FORMS') && GUEST_FORMS) {
+            $guestState = $osiris->guests->findOne(['username' => $user]);
+            if (!empty($guestState)) { ?>
+                <span class="user-role">
+                    <?= lang('Guest:', 'Gast:') ?>
+                    <?= fromToDate($guestState['start'], $guestState['end'] ?? null) ?>
+                </span>
+        <?php }
+        }
+        ?>
+
 
         <?php if ($showcoins) { ?>
             <p class="lead m-0">
