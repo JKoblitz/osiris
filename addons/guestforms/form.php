@@ -200,7 +200,11 @@
         </div>
             <button type="submit" class="btn primary">
                 <i class="ph ph-user-plus"></i>
-                <?= lang('Save guest', 'Gast anlegen') ?>
+                <?php if (empty($form)){ 
+                    echo lang('Save guest', 'Gast anlegen');
+                } else {
+                    echo lang('Save guest', 'Gast speichern');
+                } ?>
             </button>
 
     </form>

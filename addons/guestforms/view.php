@@ -238,10 +238,10 @@ try {
     <div class="modal" id="connect-user" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close">
+                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
                     <span aria-hidden="true">&times;</span>
                 </a>
-                <h4 class="title"><?= lang('Connect user', 'Nutzer veknüpfen') ?></h4>
+                <h4 class="title"><?= lang('Connect user', 'Nutzer verknüpfen') ?></h4>
 
                 <form action="<?= ROOTPATH ?>/guests/update/<?= $id ?>" method="post">
 

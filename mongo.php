@@ -45,7 +45,7 @@ function validateValues($values, $DB)
                     $temp = $DB->getPerson($user);
                     $author = [$temp['last'], $temp['first'], true];
                 } else {
-                    $user = $DB->getPersonFromName($author[0], $author[1]);
+                    $user = $DB->getUserFromName($author[0], $author[1]);
                 }
                 $vals = [
                     'last' => $author[0],

@@ -896,7 +896,7 @@ Route::post('/import/google', function () {
         $a = explode(' ', $a);
         $last = array_pop($a);
         $first = implode(' ', $a);
-        $username = $DB->getPersonFromName($last, $first);
+        $username = $DB->getUserFromName($last, $first);
         $author = [
             'first' => $first,
             'last' => $last,

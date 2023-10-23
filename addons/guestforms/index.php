@@ -107,6 +107,7 @@ Route::post('/guests/save', function () {
         ];
     }
 
+    // dump($values, true);
     if (!$finished) {
         // send data to guest server
         $URL = GUEST_SERVER . '/api/post';

@@ -1029,3 +1029,8 @@ a.module:hover {
 .box>.table.simple td:first-child {
     padding: 1rem 1.4rem 1rem 2rem;
 }
+
+
+h1:first-of-type {
+    margin-top: 1rem;
+}

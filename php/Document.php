@@ -573,7 +573,7 @@ class Document extends Settings
         if ($user === null) $user = $_SESSION['username'];
         $issues = array();
         $type = $this->typeArr['id'];
-        $subtypeArr = $this->subtypeArr['id'];
+        $subtype = $this->subtypeArr['id'];
 
         if (!$this->is_approved($user)) $issues[] = "approval";
 
@@ -588,7 +588,7 @@ class Document extends Settings
         if ($epub) $issues[] = "epub";
 
         // CHECK student status issue
-        if ($type == "students" && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
+        if ($subtype == "students" && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
 
         // check ongoing reminder
         if (in_array('date-range-ongoing', $this->modules) && is_null($this->doc['end'])) {
