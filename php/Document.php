@@ -25,7 +25,7 @@ class Document extends Settings
 
     private $schemaType = null;
     public $schema = [];
-    private $db =null;
+    private $db = null;
 
 
     function __construct($highlight = true, $usecase = 'web')
@@ -776,7 +776,7 @@ class Document extends Settings
                 }
                 if ($this->usecase == 'list') return $oa . " " . $status;
                 return $oa;
-                
+
             case "open_access": // ["open_access"],
                 if (!empty($this->getVal('open_access', false))) {
                     return '<i class="icon-open-access text-success" title="Open Access"></i> yes';
@@ -830,6 +830,17 @@ class Document extends Settings
                 return $this->translateCategory($this->getVal('category'));
             case "supervisor": // ["authors"],
                 return $this->formatAuthors($this->getVal('authors'));
+            case "thesis": // ["category"],
+                switch ($this->getVal('thesis')) {
+                    case 'doctor':
+                        return lang('Doctoral Thesis', 'Doktorarbeit');
+                    case 'master':
+                        return lang('Master Thesis', 'Masterarbeit');
+                    case 'bachelor':
+                        return lang('Bachelor Thesis', 'Bachelorarbeit');
+                    default:
+                        return lang('Thesis', 'Abschlussarbeit');
+                }
             case "teaching-category": // ["category"],
                 return $this->translateCategory($this->getVal('category'));
             case "teaching-course": // ["title", "module", "module_id"],

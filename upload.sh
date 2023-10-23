@@ -8,7 +8,7 @@ scp -r .\addons osiris:/var/www/html/
 scp -r .\css osiris:/var/www/html/
 scp -r .\*.php osiris:/var/www/html/
 scp -r .\*.md osiris:/var/www/html/
-scp -r .\*.json osiris:/var/www/html/
+# scp -r .\*.json osiris:/var/www/html/
 
 
 scp -r .\php ambrosia:/var/www/html/

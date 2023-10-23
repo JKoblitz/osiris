@@ -220,14 +220,15 @@
                         "date*",
                         "university*",
                         "city*",
+                        "thesis*",
                         "doi",
                         "pubmed",
                         "isbn",
                         "openaccess"
                     ],
                     "template": {
-                        "print": "{authors} ({year}) {title} (Dissertation) {university}, {city}. {doi}",
-                        "title": "{title} [Dissertation]",
+                        "print": "{authors} ({year}) {title} ({thesis}) {university}, {city}. {doi}",
+                        "title": "{title} [{thesis}]",
                         "subtitle": "{authors}, {university}, {city} ({year})"
                     }
                 },
@@ -358,11 +359,12 @@
                     "modules": [
                         "date*",
                         "title*",
+                        "thesis*",
                         "scientist*"
                     ],
                     "template": {
-                        "print": "{authors} Begutachtung einer Doktorarbeit: <i>{title}</i>. {month} {year}.",
-                        "title": "Begutachtung einer Doktorarbeit: <i>{title}</i>",
+                        "print": "{authors} Begutachtung einer {thesis}: <i>{title}</i>. {month} {year}.",
+                        "title": "Begutachtung einer {thesis}: <i>{title}</i>",
                         "subtitle": "{authors} ({month} {year})"
                     }
                 },
