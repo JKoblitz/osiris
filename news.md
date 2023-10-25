@@ -1,71 +1,117 @@
 # Neuigkeiten
 
-<a id="version-1.2.1"></a>
+## 25.10.2023
+<a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>
+`Version 1.2.2alpha`
+
+
+#### <i class="ph ph-tree-structure text-osiris"></i> Projekte
+
+Drittmittelprojekte wurden eingeführt.
+- Eine Übersicht über alle Projekte wird als Tabelle dargestellt. Diese ist durchsuchbar und kann nach Status und Rolle des Instituts gefiltert werden.
+- Durch Klick auf den Kurznamen gelangt man zur Übersichtsseite eines Projektes. Hier sind die folgenden Details dargestellt:
+  - Eine Übersicht über alle Projektinformationen ist als Tabelle dargestellt
+  - Ein Knopf führt zur Bearbeitungsseite
+  - Ein Überblick über alle beteiligten Personen ist dargestellt. Ansprechpartner werden bei der Erstellung eines Projektes automatisch als Projektleiter hinzugefügt
+  - Über einen Knopf lassen sich die Personen bearbeiten
+  - Alle verknüpfte Aktivitäten werden dargestellt
+  - Über einen Download-Knopf lassen sich alle zu dem Projekt gehörige Aktivitäten als Word oder BibTeX herunterladen.
+- Auf der Profilseite einer Person wurde ein neues Widget hinzugefügt. Dies zeigt alle Projekte, an denen eine Person beteiligt ist.
+- Auf der Übersichtsseite einer Aktivität können nun Projekte verknüpft werden. Dazu wurde auch hier ein neues Widget hinzugefügt. ![Projekte auf der Übersichtsseite](img/news/activity-projects.png)
+
+
+#### <i class="ph ph-person-arms-spread text-osiris"></i> Accessibility
+Es wurden neue Features für die verbesserte Accessibility hinzugefügt, insbesondere ein Modus mit erhöhtem Kontrast, verringerte Animationen, sowie eine Schriftart speziell für Personen mit Dyslexie. All diese Features findest du in einem neuen Dropdown-Menü im Header.
+
+#### <i class="ph ph-user-switch text-osiris"></i> Gäste
+
+Das Gästeaddon wurde weiterentwickelt (immer noch im Prototyp-Stadium)
+- Gäste können jetzt über das Modul angemeldet werden
+  - Einige Details sind dabei bei Anmeldung vom Betreuer auszufüllen
+  - Andere Details sind bei Anmeldung optional
+- Nach Anmeldung wird ein Link und ein QR-Code generiert. Diese können an den Gast weitergeleitet werden.
+- Der Gast kann nun das extern freigeschaltete Formular verwenden, um alle Daten zu ergänzen, alle Belehrungen zur Kenntnis zu nehmen und sich anzumelden.
+- Die Daten werden dann an OSIRIS übermittelt.
+- Wenn der Gast fertig angelegt ist, kann auch ein Nutzeraccount verknüpft werden. Dieser wird beim Gast angezeigt und im Profil des Gastes wird der Gaststatus dargestellt. ![Gaststatus](img/news/guest-status.png)
+
+<div class="alert signal">
+  <h5 class="title">
+      <i class="ph ph-warning"></i>
+      Work in Progress
+  </h5>
+  Bitte beachtet, dass es sich hierbei um Work in Progress handelt. Es fehlen noch wichtige Funktionen, die für den Live-Betrieb unerlässlich sind. 
+  Dies sind u.a. Email-Benachrichtigungen, Sichtbarkeit und Zugriffsrechte.
+  Außerdem funktionieren einige Knöpfe noch nicht, z.B. die Verknüpfung von Chips und der Upload von Dokumenten. Des Weiteren soll auch eine Lösung für Universitätspraktika geschaffen werden, bei denen viele Studierende an die Einrichtung kommen. 
+</div>
+
+#### <i class="ph ph-gear text-osiris"></i> Generell
+
+Es wurden einige generelle Verbesserungen durchgeführt:
+- Im Zuge der Einführung von Projekten wurde die visuelle Darstellung der Aktivitätsseite weiter verbessert. Die wichtigsten Knöpfe sind jetzt zusätzlich in einer Toolbar ganz oben zu finden.
+- Der generelle Look aller Tabellen wurde überarbeitet.
+
+
+
+
 ## 18.10.2023
+<a class="anchor" href="#version-1.2.1" id="version-1.2.1"></a>
 `Version 1.2.1`
 
 Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund. Außerdem wurde das Layout einiger Seiten verbessert, sowie die Schriftart für Überschriften verändert. 
 
-**ALPHA**
 
-Zurzeit werden folgende Features entwickelt und getestet:
-
-- Gäste-Anmeldung über OSIRIS
-- Verwaltung von Drittmittelprojekten
-
-
-<a id="version-1.2.0"></a>
 ## 04.10.2023
+<a class="anchor" href="#version-1.2.0" id="version-1.2.0"></a>
 `Version 1.2.0`
 
-<i class="ph ph-users text-osiris"></i>
-**Rollensystem**
+#### <i class="ph ph-users text-osiris"></i> Rollensystem
+
 - Ein ausgeklügeltes Rollensystem wurde hinzugefügt
 - Einem Nutzer können jetzt mehrere Rollen zugewiesen werden (im Nutzer-Editor)
 - Welche Rechte eine Rolle hat, kann jetzt feingranular im Admin-Panel eingstellt werden (neuer Reiter "Rollen")
 - Die Einstellungen wurden im Hintergund verbessert
 
 
-<i class="ph ph-user-minus text-osiris"></i>
-**Verbessertes Inaktivieren von Nutzern**
+#### <i class="ph ph-user-minus text-osiris"></i> Verbessertes Inaktivieren von Nutzern
+
 - Nutzer können jetzt leichter als "Inaktiv" markiert werden
 - Dazu wurde ein Knopf zur Toolbar im Nutzerprofil hinzugefügt (nur für Nutzer mit entsprechenden Rechten sichtbar)
 - Persönliche Daten werden (abgesehen von Namen und Abteilung) gelöscht, sobald ein Nutzer inaktiviert wird
 - Um einen Nutzer wieder zu aktivieren, kann man in "Nutzerprofil bearbeiten" einen entsprechenden Haken setzen.
 
 
-<i class="ph ph-circles-three-plus text-osiris"></i>
-**Forschungsdaten**
+#### <i class="ph ph-circles-three-plus text-osiris"></i> Forschungsdaten
+
 - Nein, wir fügen zu OSIRIS keine Forschungsdaten hinzu. Niemals.
 - Stattdessen kann man Foschungsdaten mit Aktivitäten verknüpfen. Das geht über Entität (z.B. Genomsequenz), Freitext und Link. Geht dazu auf die Übersichtsseite einer Aktivität und klickt auf "Verknüpfen".
 - Eine umfassende Suche für Forschungsdaten wurde hinzugefügt. Ihr müsst wissen, wie viele Genomsequenzen ihr im Jahr 2022 veröffentlicht habt? Mit OSIRIS ist das jetzt möglich (solange ihr die Daten eingepflegt habt).
 
 
-<i class="ph ph-gear text-osiris"></i>
-**Mehr Einstellungen im Admin-Panel**
+#### <i class="ph ph-gear text-osiris"></i> Mehr Einstellungen im Admin-Panel
+
 - Coins und Achievements lassen sich jetzt global ausstellen
 - Fremde Nutzermetriken lassen sich jetzt im Profil ausstellen. Daraufhin sind die Graphen nur noch für einen selbst sichtbar.
 
-<i class="ph ph-copy text-osiris"></i>
-**Verbesserungen bei der Dubletten-Erkennung**
+#### <i class="ph ph-copy text-osiris"></i> Verbesserungen bei der Dubletten-Erkennung
+
 - Die beste Lösung für Dubletten ist zu verhindern, dass sie entstehen. OSIRIS warnt euch, falls ihr dabei seid, gerade eine Dublette anzulegen.
 
 
-<i class="ph ph-chalkboard-simple text-osiris"></i>
-**Verbesserung der Lehrveranstaltungen**
+#### <i class="ph ph-chalkboard-simple text-osiris"></i> Verbesserung der Lehrveranstaltungen
+
 - Lehrveranstaltungen wurden optisch überarbeitet
 - Ein Filter wurde hinzugefügt
 - Es wurde eine Möglichkeit hinzugefügt, um Lehrveranstaltungen zu löschen (nur wenn keine Aktivitäten verknüpft sind)
 
-<i class="ph ph-textbox text-osiris"></i>
-**Neue Module**
+#### <i class="ph ph-textbox text-osiris"></i> Neue Module
+
 - Open Access Status
 - Abstract
 - Gender
 - Country (nach ISO-Standard)
 
-<i class="ph ph-star text-osiris"></i>
-**Kleinere Features und Bug Fixes**
+#### <i class="ph ph-star text-osiris"></i> Kleinere Features und Bug Fixes
+
 - Im Header ist nun ein Suchfeld für Aktivitäten zu finden
 - Nutzer können ihre Profilbilder jetzt selbst bearbeiten.
 - Zuletzt besuchte Konferenzen werden im "Conference"-Modul jetzt vorgeschlagen. Das führt hoffentlich zu mehr Konsistenz.
@@ -75,8 +121,8 @@ Zurzeit werden folgende Features entwickelt und getestet:
 - Der Style von Buttons und Badges wurde angepasst.
 - Es gibt jetzt eine neue 404 Seite. Die ist schön, schaut sie euch gern mal an.
 
-<i class="ph ph-code text-osiris"></i>
-**Hintergrundverbesserungen**
+#### <i class="ph ph-code text-osiris"></i> Hintergrundverbesserungen
+
 - Es gibt außerdem ein paar Verbesserungen hinter den Szenen. Das wird in Zukunft zu noch schnellerer und konsistenterer Entwicklung führen. 
 - Eine neue Datenbank-Klasse war längst überfällig.
 - Nutzerdaten wurden in Personen und Accounts geteilt. Dadurch können auch Personen angelegt werden, die keine Nutzer sind und Accountdaten sind von Personendaten getrennt. Das war ein wichtiger Schritt für die Gästeformulare. 
@@ -84,15 +130,15 @@ Zurzeit werden folgende Features entwickelt und getestet:
 
 
 ## 10.07.23
-<i class="ph ph-briefcase text-osiris"></i>
-**Altdaten-Import**
+#### <i class="ph ph-briefcase text-osiris"></i> Altdaten-Import
+
 
 Es können jetzt auch Altdaten importiert werden. Wie genau das funktioniert, liest du am besten in der [Anleitung](https://osiris-app.de/install#import). 
 
 ## 06.07.23
 
-<i class="ph ph-swap text-osiris"></i>
-**IDA-Integration**
+#### <i class="ph ph-swap text-osiris"></i> IDA-Integration
+
 
 Mit einer IDA-Integration wurde begonnen. Um das Feature zu aktivieren, muss in der CONFIG-Datei der folgende Wert auf true gesetzt werden:
 
@@ -105,8 +151,8 @@ Zurzeit wird nur Formular 18.3 als Proof of Concept unterstützt. An weiteren Fo
 
 Außerdem wurden einige neue Module hinzugefügt, die für die IDA-Abfrage relevant sind, z.B. gender, nationality, open access status. 
 
-<i class="ph ph-tree-structure text-osiris"></i>
-**Schema.org Integration**
+#### <i class="ph ph-tree-structure text-osiris"></i> Schema.org Integration
+
 
 OSIRIS-Aktivitäten sind jetzt auch als Schema.org hinterlegt und exportierbar. Falls ihr nicht wisst, was das ist, könnt ihr es auf der [offiziellen Seite von Schema.org](https://schema.org/) nachlesen. Und falls ihr wissen wollt, wie so ein maschinen-lesbares Format aussieht, habe ich es euch hier mal für eine meiner Publikationen dargestellt:
 
@@ -178,8 +224,8 @@ OSIRIS-Aktivitäten sind jetzt auch als Schema.org hinterlegt und exportierbar. 
 
 ## 05.06.23
 
-<i class="ph ph-queue text-osiris"></i>
-**Neues Feature: Warteschlange**
+#### <i class="ph ph-queue text-osiris"></i> Neues Feature: Warteschlange
+
 
 OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob es neue Publikationen für die Institution gibt. Wenn für dich neue Publikationen gefunden wurden, erhältst du einen Hinweis auf deiner Startseite.
 
@@ -187,19 +233,19 @@ OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob e
 ## 12.05.23
 
 `Version 1.1.0`
-<a id="version-1.1.0"></a>
 
+<a class="anchor" href="#version-1.1.0" id="version-1.1.0"></a>
 Ich habe mehrere kleinere Releases in einem großen zusammengeführt.
 
-<i class="ph ph-cake text-osiris"></i>
-**Neue Icons wurden eingeführt**
+#### <i class="ph ph-cake text-osiris"></i> Neue Icons wurden eingeführt
+
 
 Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [Phosphor-Icons](https://phosphoricons.com/) ersetzt. Die sind (genau wie OSIRIS) unter der Open Source-Lizenz MIT veröffentlicht.
 
 Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr werdet euch aber sicher schnell daran gewöhnen.
 
-<i class="ph ph-plus-circle text-osiris"></i>
-**Verbesserungen beim Hinzufügen der Aktivitäten**
+#### <i class="ph ph-plus-circle text-osiris"></i> Verbesserungen beim Hinzufügen der Aktivitäten
+
 - Viele Module wurden umstrukturiert und verbessert
 - Ein neuer Date-Picker für Zeiträume erleichtert (hoffentlich) die Bedienung
 - Journale und Lehrveranstaltungen haben ein komplett neues UI/UX und lassen sich jetzt (hoffentlich) besser bedienen
@@ -209,8 +255,8 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Ein Fehler wurde behoben, durch den sich das Interface aufhängen konnte, wenn die DOI nicht gefunden wurde
 - Ein Fehler wurde behoben, durch den OSIRIS sich 'verschluckt' hat, wenn Autoren-Vornamen mit einem Sonderzeichen beginnen
 
-<i class="ph ph-chalkboard-simple text-osiris"></i>
-**Umstrukturierung der Lehre**
+#### <i class="ph ph-chalkboard-simple text-osiris"></i> Umstrukturierung der Lehre
+
 - Lehrveranstaltungen sind jetzt standardisiert
 - Jedes Modul hat eine einzigartige Modulnummer, über die es leicht gefunden werden kann
 - Es kann für jede Person einzeln der Anteil der SWS angegeben werden (nur bei affilierten Personen notwendig)
@@ -219,20 +265,20 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Gäste, die wegen einer Lehrveranstaltung hier sind (i.e. Studenten), können ebenfalls mit dem Modul verknüpft werden
 
 
-<i class="ph ph-book-open-text text-osiris"></i>
-**Neue Pubmed-Suche**
+#### <i class="ph ph-book-open-text text-osiris"></i> Neue Pubmed-Suche
+
 - Pubmed kann nun nach Autor(en), Titel, Jahr und Affiliation [durchsucht werden](activities/pubmed-search?authors=Koblitz&year=2023)
 - Mittels der Levenshtein-Distanz wird die Wahrscheinlichkeit berechnet, ob es sich um ein Duplikat handelt oder nicht (nur basierend auf dem Titel)
 - Die neue Suche kann z.B. bei Publikationen in [Mein Jahr](scientist) gefunden werden
 
 
-<i class="ph ph-newspaper-clipping text-osiris"></i>
-**Verbesserungen bei Journalen**
+#### <i class="ph ph-newspaper-clipping text-osiris"></i> Verbesserungen bei Journalen
+
 - Das UI/UX-Design der Journale wurde verbessert
 - Es wird nun eine bessere API verwendet, um Journale abzufragen. [OpenAlex](https://docs.openalex.org/api-entities/venues) ist nicht nur deutlich schneller als NLM, es enthält auch mehr Journale und mehr Datenfelder. So muss OpenAccess jetzt nicht mehr zusätzlich abgefragt werden.
 
-<i class="ph ph-sparkle text-osiris"></i>
-**Verbesserungen bei den Aktivitäten**
+#### <i class="ph ph-sparkle text-osiris"></i> Verbesserungen bei den Aktivitäten
+
 - Als Beta-Feature wurden Awards eingeführt. Falls ihr dort Datenfelder vermisst, meldet euch bitte bei mir.
 - Die Filter-Funktionen in Alle Aktivitäten wurden verbessert
   - Laufende Aktivitäten werden jetzt auch bei der Zeitraum-Suche berücksichtigt
@@ -240,8 +286,8 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
   - Der mittlerweile sehr viel Platz fressende Aktivitätenfilter wurde in ein Dropdown gepackt
   - Es wurde die Möglichkeit hinzugefügt, nach Abteilung zu filtern und Epubs (Online ahead of print) auszuschließen
 
-<i class="ph ph-shapes text-osiris"></i>
-**Sonstiges**
+#### <i class="ph ph-shapes text-osiris"></i> Sonstiges
+
 - Nicht aktive Nutzer werden in der Expertise-Suche nicht mehr berücksichtigt
 - Widgets auf der Profilseite sind nur noch sichtbar, wenn sie Daten enthalten
 - Coins müssen jetzt aktiv eingeschaltet werden (drei Zustände: nicht sichtbar, für mich sichtbar, für alle sichtbar)
@@ -251,8 +297,8 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Man erhält nur noch Erfolge für Aktivitäten, die man bereits bestätigt hat
 
 
-<i class="ph ph-hammer text-osiris"></i>
-**Maximale Flexibilität**
+#### <i class="ph ph-hammer text-osiris"></i> Maximale Flexibilität
+
 - durch einige umfangreiche Umstellungen ist es nun kinderleicht, neue Aktivitätsarten hinzuzufügen, zu konfigurieren, formatieren und zu bearbeiten. Dafür sind jetzt nicht mal mehr Programmierkenntnisse erforderlich.
 - Die Konfiguration bei anderen Instituten wird auch bei neuen Updates nicht überschrieben, wodurch sie die maximale Flexibilität haben, OSIRIS nach ihren Wünschen zu gestalten.
 

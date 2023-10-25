@@ -200,7 +200,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             <!-- Accessibility menu -->
             <div class="dropdown">
                 <button class="btn accessibility" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
-                    <span class="sr-only">Accessibility Options</span>
+                    <span class="sr-only"><?=lang('Accessibility Options', 'Accessibility-Optionen')?></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-center w-300" aria-labelledby="accessibility-menu">
                     <h6 class="header text-primary">Accessibility</h6>
@@ -210,27 +210,27 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <div class="form-group">
                             <div class="custom-checkbox">
                                 <input type="checkbox" id="set-contrast" name="accessibility[contrast]" value="high-contrast" <?= !empty($_COOKIE['D3-accessibility-contrast'] ?? '') ? 'checked' : '' ?>>
-                                <label for="set-contrast">High contrast</label><br>
+                                <label for="set-contrast"><?=lang('High contrast', 'Erhöhter Kontrast')?></label><br>
                                 <small class="text-muted">
-                                    Enhance the contrast of the web page for better readability.
+                                    <?=lang('Enhance the contrast of the web page for better readability.', 'Erhöht den Kontrast für bessere Lesbarkeit.')?>
                                 </small>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-checkbox">
                                 <input type="checkbox" id="set-transitions" name="accessibility[transitions]" value="without-transitions" <?= !empty($_COOKIE['D3-accessibility-transitions'] ?? '') ? 'checked' : '' ?>>
-                                <label for="set-transitions">Reduce motion</label><br>
+                                <label for="set-transitions"><?=lang('Reduce motion', 'Verringerte Bewegung')?></label><br>
                                 <small class="text-muted">
-                                    Reduce motion and animations on the page.
+                                    <?=lang('Reduce motion and animations on the page.', 'Verringert Animationen und Bewegungen auf der Seite.')?>
                                 </small>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-checkbox">
                                 <input type="checkbox" id="set-dyslexia" name="accessibility[dyslexia]" value="dyslexia" <?= !empty($_COOKIE['D3-accessibility-dyslexia'] ?? '') ? 'checked' : '' ?>>
-                                <label for="set-dyslexia">Dyslexia mode</label><br>
+                                <label for="set-dyslexia"><?=lang('Dyslexia mode', 'Dyslexie-Modus')?></label><br>
                                 <small class="text-muted">
-                                    Use a special font to increase readability for users with dyslexia.
+                                    <?=lang('Use a special font to increase readability for users with dyslexia.', 'OSIRIS nutzt eine spezielle Schriftart, die von manchen Menschen mit Dyslexie besser gelesen werden kann.')?>
                                 </small>
                             </div>
                         </div>

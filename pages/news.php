@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to see latest changes
  * 
@@ -22,20 +23,22 @@
     }
 </style>
 
-<?php if (isset($USER) && !empty($USER)) { 
-    if ($USER['lastversion'] !== OSIRIS_VERSION){
+<?php if (isset($USER) && !empty($USER)) {
+    if ($USER['lastversion'] !== OSIRIS_VERSION) {
         $updateResult = $osiris->persons->updateOne(
             ['username' => $_SESSION['username']],
             ['$set' => ['lastversion' => OSIRIS_VERSION]]
         );
     }
- } ?>
+} ?>
 
 
 <div class='container'>
-    <?php
-    $text = file_get_contents(BASEPATH . "/news.md");
-    $parsedown = new Parsedown;
-    echo $parsedown->text($text);
-    ?>
+    <div class="content">
+        <?php
+        $text = file_get_contents(BASEPATH . "/news.md");
+        $parsedown = new Parsedown;
+        echo $parsedown->text($text);
+        ?>
+    </div>
 </div>

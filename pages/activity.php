@@ -140,7 +140,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 <div class="row row-eq-spacing-lg">
     <div class="col-lg-8">
 
-        <div class="box mt-0">
+        <div class="box mt-0 h-full">
             <div class="content">
 
                 <div class="float-sm-right">
