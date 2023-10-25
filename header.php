@@ -127,7 +127,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     </div>
 
     <!-- Page wrapper start -->
-    <div class="page-wrapper">
+    <div class="page-wrapper 
+        <?= $_COOKIE['D3-accessibility-contrast'] ?? '' ?>
+        <?= $_COOKIE['D3-accessibility-transitions'] ?? '' ?>
+        <?= $_COOKIE['D3-accessibility-dyslexia'] ?? '' ?>
+    ">
         <!-- data-sidebar-hidden="hidden" to hide sidebar on start -->
 
         <!-- Sticky alerts (toasts), empty container -->
@@ -153,7 +157,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
                 <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
-                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v<?=OSIRIS_VERSION?></span>
+                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v<?= OSIRIS_VERSION ?></span>
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
@@ -192,6 +196,49 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                 <?php } ?>
 
             </ul>
+
+            <!-- Accessibility menu -->
+            <div class="dropdown">
+                <button class="btn accessibility" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">Accessibility Options</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-center w-300" aria-labelledby="accessibility-menu">
+                    <h6 class="header text-primary">Accessibility</h6>
+                    <form action="#" method="get" class="content">
+                        <input type="hidden" name="accessibility[check]">
+
+                        <div class="form-group">
+                            <div class="custom-checkbox">
+                                <input type="checkbox" id="set-contrast" name="accessibility[contrast]" value="high-contrast" <?= !empty($_COOKIE['D3-accessibility-contrast'] ?? '') ? 'checked' : '' ?>>
+                                <label for="set-contrast">High contrast</label><br>
+                                <small class="text-muted">
+                                    Enhance the contrast of the web page for better readability.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-checkbox">
+                                <input type="checkbox" id="set-transitions" name="accessibility[transitions]" value="without-transitions" <?= !empty($_COOKIE['D3-accessibility-transitions'] ?? '') ? 'checked' : '' ?>>
+                                <label for="set-transitions">Reduce motion</label><br>
+                                <small class="text-muted">
+                                    Reduce motion and animations on the page.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-checkbox">
+                                <input type="checkbox" id="set-dyslexia" name="accessibility[dyslexia]" value="dyslexia" <?= !empty($_COOKIE['D3-accessibility-dyslexia'] ?? '') ? 'checked' : '' ?>>
+                                <label for="set-dyslexia">Dyslexia mode</label><br>
+                                <small class="text-muted">
+                                    Use a special font to increase readability for users with dyslexia.
+                                </small>
+                            </div>
+                        </div>
+                        <button class="btn primary">Apply</button>
+                    </form>
+                </div>
+            </div>
+
 
             <form id="navbar-search" action="<?= ROOTPATH ?>/activities" method="get" class="nav-search">
                 <div class="input-group">
@@ -265,7 +312,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?php
                         $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
                         ?>
-              
+
                         <a href="<?= ROOTPATH ?>/queue/editor" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('queue/editor') ?>">
                             <i class="ph ph-queue" aria-hidden="true"></i>
                             <?= lang('Queue', 'Warteschlange') ?>
@@ -276,7 +323,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?php } ?>
 
 
-<!-- 
+                    <!-- 
                     <a href="<?= ROOTPATH ?>/coins" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('lom') ?>">
                         <i class="ph ph-coin" aria-hidden="true"></i>
                         <?= lang('Coins') ?>
@@ -412,7 +459,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
-                       
+
                         <?php if (IDA_INTEGRATION) { ?>
                             <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
                                 <i class="ph ph-clipboard-text" aria-hidden="true"></i>
