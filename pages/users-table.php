@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to browse all users
  * 
@@ -20,53 +21,19 @@
     <i class="ph ph-student"></i>
     <?= lang('Users', 'Nutzer:innen') ?>
 </h1>
-<!-- <p class="text-muted">
-    Achtung: Einteilung und Klassifizierung der Nutzer erfolgte automatisch
-    und ist in vielen Fällen noch nicht korrekt!
-</p> -->
 
-<?php if (isset($_GET['inactive'])){ ?>
-    <a href="?" class="btn float-right active"><?=lang('See inactive users', 'Zeige inaktive Nutzer:innen')?></a>
+<?php if (isset($_GET['inactive'])) { ?>
+    <a href="?" class="btn float-right active"><?= lang('See inactive users', 'Zeige inaktive Nutzer:innen') ?></a>
 <?php } else { ?>
-    <a href="?inactive" class="btn float-right"><?=lang('See inactive users', 'Zeige inaktive Nutzer:innen')?></a>
+    <a href="?inactive" class="btn float-right"><?= lang('See inactive users', 'Zeige inaktive Nutzer:innen') ?></a>
 <?php } ?>
 
 <style>
-    .table {
-        border-collapse: separate !important;
-        border-spacing: 0 .5rem;
-        background-color: transparent;
-        border: none;
-        box-shadow: none;
-    }
-
-    .table tr {
-        background-color: white;
-        -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-        -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-        box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-    }
-
-    .table tr td,
-    .table tr th {
-        border-top: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .table tr td:first-child,
-    .table tr th:first-child {
-        border-left: 1px solid var(--border-color);
-    }
-
-    .table tr td:last-child,
-    .table tr th:last-child {
-        border-right: 1px solid var(--border-color);
-    }
 
     .table img {
         display: block;
-        width: 5.2rem;
-        border: 1px solid var(--border-color);
+        width: 4.2rem;
+        border-radius: var(--border-radius);
     }
 </style>
 
@@ -87,8 +54,8 @@
     <tbody>
 
         <?php
-        $filter = ['username'=>['$ne'=>null]];
-        if (!isset($_GET['inactive'])){
+        $filter = ['username' => ['$ne' => null]];
+        if (!isset($_GET['inactive'])) {
             // $users = $osiris->account->distinct('username', ['is_active'=>false]);
             // $filter['username'] = ['$nin'=>$users];
             $filter['is_active'] = true;
@@ -99,12 +66,12 @@
         foreach ($result as $document) {
             $username = strval($document['username']);
             $img = ROOTPATH . "/img/person.jpg";
-            if (file_exists(BASEPATH . "/img/users/".$username."_sm.jpg")) {
-                $img = ROOTPATH . "/img/users/".$username."_sm.jpg";
+            if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
+                $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
             }
         ?>
             <tr class="">
-                <td class="p-0">
+                <td class="py-5">
                     <img src="<?= $img ?>" alt="">
                 </td>
                 <td><a href="<?= ROOTPATH ?>/profile/<?= $username ?>"><?= $username ?></a></td>
@@ -187,16 +154,6 @@
                     sortable: false,
                     visible: true
                 }
-                // {
-                //     targets: [8, 9],
-                //     searchable: true,
-                //     visible: false
-                // },
-                // {
-                //     targets: [7],
-                //     searchable: true,
-                //     visible: false,
-                // },
             ],
             "order": [
                 [2, 'asc'],

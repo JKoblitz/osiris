@@ -99,14 +99,14 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
     <label for="author" class="element-author">
         Autor(en) (in korrekter Reihenfolge, Format: Nachname, Vorname)
     </label>
-    <div class="border" id="author-widget">
+    <div class="author-widget" id="author-widget">
         <div class="author-list p-10" id="author-list">
             <div class="author author-aoi ui-sortable-handle" ondblclick="toggleAffiliation(this);">
                 Koblitz, Julia<input type="hidden" name="values[authors][]" value="Koblitz;Julia;1">
                 <a onclick="removeAuthor(event, this);">×</a>
             </div>
         </div>
-        <div class="p-10 bg-light border-top d-flex">
+        <div class="footer">
             <div class="input-group input-group-sm d-inline-flex w-auto">
                 <input type="text" placeholder="Füge Autor hinzu ..." onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                 <div class="input-group-append">

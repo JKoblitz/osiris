@@ -6,6 +6,14 @@
 
 Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund. Außerdem wurde das Layout einiger Seiten verbessert, sowie die Schriftart für Überschriften verändert. 
 
+**ALPHA**
+
+Zurzeit werden folgende Features entwickelt und getestet:
+
+- Gäste-Anmeldung über OSIRIS
+- Verwaltung von Drittmittelprojekten
+
+
 <a id="version-1.2.0"></a>
 ## 04.10.2023
 `Version 1.2.0`

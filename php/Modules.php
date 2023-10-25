@@ -802,11 +802,11 @@ class Modules
                         <small class="text-muted"><?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?></small>
                     </label>
 
-                    <div class="border" id="author-widget">
+                    <div class="author-widget" id="author-widget">
                         <div class="author-list p-10" id="author-list">
                             <?= $this->authors ?>
                         </div>
-                        <div class="p-10 bg-light border-top d-flex">
+                        <div class="footer">
 
                             <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">

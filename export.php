@@ -145,6 +145,10 @@ Route::post('/download', function () {
         $filename .= "_" . trim($params['id']);
     }
 
+    if (isset($params['project']) && !empty($params['project'])) {
+        $filter['projects'] = trim($params['project']);
+        $filename .= "_" . trim($params['project']);
+    }
 
     // if (isset($params['year']) && !empty($params['year'])) {
     //     $filter['year'] = intval($params['year']);

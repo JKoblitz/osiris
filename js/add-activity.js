@@ -14,7 +14,8 @@ const TYPES = {
     'reviewer': 'review',
     'editor': 'editorial',
     "monograph": "book",
-    "misc": "misc-once"
+    "misc": "misc-once",
+    "edited-book": "book"
 }
 
 function toggleExamples(subtype) {

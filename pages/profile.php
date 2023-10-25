@@ -41,7 +41,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
     }
 
     .expertise {
-        border-radius: .4rem;
+        border-radius: var(--border-radius);
         background-color: white;
         border: 1px solid #afafaf;
         display: inline-block;
@@ -51,7 +51,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
     }
 
     .user-role {
-        border-radius: .4rem;
+        border-radius: var(--border-radius);
         background-color: white;
         border: 1px solid #afafaf;
         display: inline-block;
@@ -125,6 +125,8 @@ foreach ($activities as $doc) {
 
     $l = $LOM->lom($doc);
     $_lom += $l['lom'];
+    if (!isset($lom_years[$doc['year']]))
+        $lom_years[$doc['year']] = 0;
     $lom_years[$doc['year']] +=  $l['lom'];
 
     if ($type == 'publication' && isset($doc['journal'])) {
@@ -1336,7 +1338,7 @@ if ($currentuser) { ?>
         $memberships = $osiris->activities->find($filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1, "day" => -1]]);
     ?>
 
-        <div class="profile-widget col-lg-12 col-xl-6">
+        <div class="profile-widget col-md-12 col-lg-6">
             <div class="box h-full">
                 <div class="content">
                     <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
@@ -1346,8 +1348,6 @@ if ($currentuser) { ?>
                         <?php
                         $i = 0;
                         foreach ($memberships as $doc) {
-                            if ($doc['type'] == 'publication') continue;
-                            // if ($i++ > 5) break;
                             $id = $doc['_id'];
 
                             $Format->setDocument($doc);
@@ -1376,8 +1376,52 @@ if ($currentuser) { ?>
             </div>
         </div>
 
+    <?php } ?>
+
+
+
     <?php
-    } ?>
+    $filter = [
+        '$or' => array(
+           [ 'contact' => "$user"],
+           [ 'persons.user' => "$user"]
+        ),
+        "status" => ['$ne'=>"rejected"]
+    ];
+
+
+    if ($osiris->projects->count($filter) > 0) {
+        $projects = $osiris->projects->find($filter, ['sort' => ["start" => -1, "end" => -1]]);
+
+        require_once BASEPATH . "/php/Project.php";
+        $Project = new Project();
+    ?>
+
+        <div class="profile-widget col-md-12 col-lg-6">
+            <div class="box h-full">
+                <div class="content">
+                    <h4 class="title"><?= lang('Ongoing projects', 'Laufende Projekte') ?></h4>
+                </div>
+                <table class="table simple">
+                    <tbody>
+                        <?php
+                        $i = 0;
+                        foreach ($projects as $project) {
+                            $Project->setProject($project);
+                        ?>
+                            <tr id='tr-<?= $id ?>'>
+                                <td>
+                                    <?= $Project->widgetLarge($user) ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    <?php } ?>
+
 
 </div>
 <?php

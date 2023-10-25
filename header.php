@@ -88,7 +88,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
     <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
-    <link href="<?= ROOTPATH ?>/css/digidive.css?v=2" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/digidive.css?v=3" rel="stylesheet" />
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
     <!-- Quill (rich-text editor) -->
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
@@ -342,7 +342,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
                         <i class="ph ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
-                        <span class="badge ml-10">SOON</span>
+                        <!-- <span class="badge ml-10">SOON</span> -->
                     </a>
 
 

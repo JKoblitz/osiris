@@ -287,7 +287,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
                                     <div class="content">
                                         <label for="module" class="font-weight-bold">Modules:</label>
-                                        <div class="border author-widget">
+                                        <div class="author-widget">
                                             <div class="author-list p-10">
                                                 <?php
                                                 $module_lst = [];
@@ -309,7 +309,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                                 <?php } ?>
 
                                             </div>
-                                            <div class=" p-10 bg-light border-top d-flex">
+                                            <div class=" footer">
                                                 <div class="input-group sm d-inline-flex w-auto">
                                                     <select class="module-input form-control">
                                                         <option value="" disabled selected><?= lang('Add module ...', 'Füge Module hinzu ...') ?></option>
