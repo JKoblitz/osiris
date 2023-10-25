@@ -19,4 +19,4 @@ scp -r .\img ambrosia:/var/www/html/
 scp -r .\css ambrosia:/var/www/html/
 scp -r .\*.php ambrosia:/var/www/html/
 scp -r .\*.md ambrosia:/var/www/html/
-scp -r .\*.json ambrosia:/var/www/html/
+# scp -r .\*.json ambrosia:/var/www/html/

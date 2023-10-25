@@ -8,6 +8,56 @@ Route::get('/auth/new-user', function () {
 });
 
 
+Route::get('/auth/reset-password', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true  && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Forgot password', 'Passwort vergessen')]
+    ];
+    include BASEPATH . "/header.php";
+
+    include BASEPATH . "/addons/auth/forgot-password.php";
+    include BASEPATH . "/footer.php";
+});
+
+Route::post('/auth/reset-password', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true  && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]");
+        die;
+    }
+
+    // check type of request 
+    if (isset($_POST['password']) && isset($_POST['username'])) {
+        // reset password
+        $osiris->persons->updateOne(
+            ['username' => $_POST['username']],
+            ['$set' => ['password' => $_POST['password']]]
+        );
+        header("Location: " . ROOTPATH . "/user/login");
+        die;
+    } else {
+        $values = $_POST['values'];
+        // check if data is correct and user can be found.
+        $user = $osiris->persons->findOne($values);
+        if (empty($user)) {
+            header("Location: " . ROOTPATH . "/auth/reset-password?msg=user+could+not+be+found");
+            die;
+        }
+    }
+
+    $breadcrumb = [
+        ['name' => lang('Forgot password', 'Passwort vergessen')]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/addons/auth/forgot-password.php";
+    include BASEPATH . "/footer.php";
+});
+
+
 Route::post('/auth/new-user', function () {
     include_once BASEPATH . "/php/init.php";
 
