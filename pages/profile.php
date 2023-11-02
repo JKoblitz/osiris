@@ -1383,10 +1383,10 @@ if ($currentuser) { ?>
     <?php
     $filter = [
         '$or' => array(
-           [ 'contact' => "$user"],
-           [ 'persons.user' => "$user"]
+            ['contact' => "$user"],
+            ['persons.user' => "$user"]
         ),
-        "status" => ['$ne'=>"rejected"]
+        "status" => ['$ne' => "rejected"]
     ];
 
 
@@ -1400,7 +1400,11 @@ if ($currentuser) { ?>
         <div class="profile-widget col-md-12 col-lg-6">
             <div class="box h-full">
                 <div class="content">
-                    <h4 class="title"><?= lang('Ongoing projects', 'Laufende Projekte') ?></h4>
+                    <h4 class="title">
+                        <?= lang('Ongoing projects', 'Laufende Projekte') ?>
+
+                        <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
+                    </h4>
                 </div>
                 <table class="table simple">
                     <tbody>

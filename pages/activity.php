@@ -105,26 +105,26 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </span>
     <?php } ?>
 
-        <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
-            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn ">
-                <i class="ph ph-pencil-simple-line"></i>
-                <?= lang('Edit', 'Bearbeiten') ?>
-            </a>
-        <?php } ?>
+    <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
+        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn ">
+            <i class="ph ph-pencil-simple-line"></i>
+            <?= lang('Edit', 'Bearbeiten') ?>
+        </a>
+    <?php } ?>
 
-        <a href="#upload-files" class="btn ">
-            <i class="ph ph-upload"></i>
-            <?= lang('Upload', 'Hochladen') ?>
-        </a>
-    
-        <a href="#projects" class="btn ">
-            <i class="ph ph-tree-structure"></i>
-            <?= lang("Project", "Projekte") ?>
-        </a>
-        <a href="#connect" class="btn ">
-            <i class="ph ph-circles-three-plus"></i>
-            <?= lang("Research data", "Forschungsdaten") ?>
-        </a>
+    <a href="#upload-files" class="btn ">
+        <i class="ph ph-upload"></i>
+        <?= lang('Upload', 'Hochladen') ?>
+    </a>
+
+    <a href="#projects" class="btn ">
+        <i class="ph ph-tree-structure"></i>
+        <?= lang("Project", "Projekte") ?>
+    </a>
+    <a href="#connect" class="btn ">
+        <i class="ph ph-circles-three-plus"></i>
+        <?= lang("Research data", "Forschungsdaten") ?>
+    </a>
 
 
 
@@ -240,6 +240,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                     </a>
                     <h5 class="title">
                         <?= lang('Connect projects', 'Projekte verknüpfen') ?>
+                        <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
                     </h5>
                     <div>
                         <?php
@@ -262,6 +263,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
                 <h2 class="title">
                     <?= lang('Projects', 'Projekte') ?>
+                    <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
                 </h2>
 
                 <?php if (!empty($doc['projects'] ?? '') && !empty($doc['projects'][0])) {

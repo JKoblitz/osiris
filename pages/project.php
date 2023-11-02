@@ -31,6 +31,7 @@ $Project = new Project($project);
 
 <h1>
     <?= $project['name'] ?>
+    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
 </h1>
 
 <?= $Project->getStatus() ?>

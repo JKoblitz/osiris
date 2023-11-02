@@ -50,14 +50,18 @@ function val($index, $default = '')
     }
 </style>
 
-<a href="<?= ROOTPATH ?>/projects/new" class="btn primary float-sm-right mb-10">
-    <i class="ph ph-plus"></i>
-    <?= lang('Add new project', 'Neues Projekt anlegen') ?>
-</a>
 <h1 class="mt-0">
     <i class="ph ph-tree-structure text-osiris"></i>
     <?= lang('Projects', 'Projekte') ?>
+    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
 </h1>
+
+
+
+<a href="<?= ROOTPATH ?>/projects/new" class="mb-10 d-inline-block">
+    <i class="ph ph-plus"></i>
+    <?= lang('Add new project', 'Neues Projekt anlegen') ?>
+</a>
 
 <div class="btn-toolbar float-sm-right">
     <span>
@@ -145,9 +149,6 @@ function val($index, $default = '')
 
 
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<!-- <link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
-<script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script> -->
 
 <script>
     $.extend($.fn.DataTable.ext.classes, {
