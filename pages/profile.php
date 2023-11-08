@@ -41,7 +41,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
     }
 
     .expertise {
-        border-radius: .4rem;
+        border-radius: var(--border-radius);
         background-color: white;
         border: 1px solid #afafaf;
         display: inline-block;
@@ -51,7 +51,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
     }
 
     .user-role {
-        border-radius: .4rem;
+        border-radius: var(--border-radius);
         background-color: white;
         border: 1px solid #afafaf;
         display: inline-block;
@@ -61,7 +61,6 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
         font-family: 'Consolas', 'Courier New', Courier, monospace;
         font-weight: 500;
     }
-
 </style>
 
 <?php
@@ -126,6 +125,8 @@ foreach ($activities as $doc) {
 
     $l = $LOM->lom($doc);
     $_lom += $l['lom'];
+    if (!isset($lom_years[$doc['year']]))
+        $lom_years[$doc['year']] = 0;
     $lom_years[$doc['year']] +=  $l['lom'];
 
     if ($type == 'publication' && isset($doc['journal'])) {
@@ -324,6 +325,20 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 </span>
             <?php } ?>
         <?php } ?>
+
+        <?php
+        // show current guest state
+        if (defined('GUEST_FORMS') && GUEST_FORMS) {
+            $guestState = $osiris->guests->findOne(['username' => $user]);
+            if (!empty($guestState)) { ?>
+                <span class="user-role">
+                    <?= lang('Guest:', 'Gast:') ?>
+                    <?= fromToDate($guestState['start'], $guestState['end'] ?? null) ?>
+                </span>
+        <?php }
+        }
+        ?>
+
 
         <?php if ($showcoins) { ?>
             <p class="lead m-0">
@@ -1323,7 +1338,7 @@ if ($currentuser) { ?>
         $memberships = $osiris->activities->find($filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1, "day" => -1]]);
     ?>
 
-        <div class="profile-widget col-lg-12 col-xl-6">
+        <div class="profile-widget col-md-12 col-lg-6">
             <div class="box h-full">
                 <div class="content">
                     <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
@@ -1333,8 +1348,6 @@ if ($currentuser) { ?>
                         <?php
                         $i = 0;
                         foreach ($memberships as $doc) {
-                            if ($doc['type'] == 'publication') continue;
-                            // if ($i++ > 5) break;
                             $id = $doc['_id'];
 
                             $Format->setDocument($doc);
@@ -1363,8 +1376,56 @@ if ($currentuser) { ?>
             </div>
         </div>
 
+    <?php } ?>
+
+
+
     <?php
-    } ?>
+    $filter = [
+        '$or' => array(
+            ['contact' => "$user"],
+            ['persons.user' => "$user"]
+        ),
+        "status" => ['$ne' => "rejected"]
+    ];
+
+
+    if ($osiris->projects->count($filter) > 0) {
+        $projects = $osiris->projects->find($filter, ['sort' => ["start" => -1, "end" => -1]]);
+
+        require_once BASEPATH . "/php/Project.php";
+        $Project = new Project();
+    ?>
+
+        <div class="profile-widget col-md-12 col-lg-6">
+            <div class="box h-full">
+                <div class="content">
+                    <h4 class="title">
+                        <?= lang('Ongoing projects', 'Laufende Projekte') ?>
+
+                        <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
+                    </h4>
+                </div>
+                <table class="table simple">
+                    <tbody>
+                        <?php
+                        $i = 0;
+                        foreach ($projects as $project) {
+                            $Project->setProject($project);
+                        ?>
+                            <tr id='tr-<?= $id ?>'>
+                                <td>
+                                    <?= $Project->widgetLarge($user) ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    <?php } ?>
+
 
 </div>
 <?php

@@ -278,6 +278,12 @@ function CallAPI($method, $url, $data = [])
             if ($data)
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             break;
+        case "JSON":
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            break;
         case "PUT":
             curl_setopt($curl, CURLOPT_PUT, 1);
             break;
@@ -301,7 +307,8 @@ function CallAPI($method, $url, $data = [])
     return $result;
 }
 
-function redirect($url){
+function redirect($url)
+{
     header("Location: " . ROOTPATH . $url);
 }
 
@@ -501,9 +508,12 @@ function bool_icon($bool)
     }
 }
 
-function flatten(array $array) {
+function flatten(array $array)
+{
     $return = array();
-    array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+    array_walk_recursive($array, function ($a) use (&$return) {
+        $return[] = $a;
+    });
     return $return;
 }
 

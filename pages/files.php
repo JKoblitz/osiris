@@ -1,5 +1,8 @@
 <?php
 /**
+ * DISCONTINUED! Please do not use any more.
+ * 
+ * 
  * Page to upload files for an activity
  * 
  * This file is part of the OSIRIS package.

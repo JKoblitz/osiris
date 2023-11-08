@@ -45,7 +45,7 @@ function validateValues($values, $DB)
                     $temp = $DB->getPerson($user);
                     $author = [$temp['last'], $temp['first'], true];
                 } else {
-                    $user = $DB->getPersonFromName($author[0], $author[1]);
+                    $user = $DB->getUserFromName($author[0], $author[1]);
                 }
                 $vals = [
                     'last' => $author[0],
@@ -328,6 +328,105 @@ Route::post('/create-teaching', function () {
     ]);
 });
 
+
+Route::post('/projects/create', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die("no values given");
+    $collection = $osiris->projects;
+
+    $values = validateValues($_POST['values'], $DB);
+
+    // check if project name already exists:
+    $project_exist = $collection->findOne(['name' => $values['name']]);
+    if (!empty($project_exist)) {
+        header("Location: " . $red . "?msg=project ID does already exist.");
+        die();
+    }
+
+    // add information on creating process
+    $values['created'] = date('Y-m-d');
+    $values['created_by'] = strtolower($_SESSION['username']);
+
+    // add false checkbox values
+    $values['public'] = boolval($values['public'] ?? false);
+
+    // add persons
+    if (!empty($values['contact'])) {
+        $values['persons'] = [
+            [
+                'user' => $values['contact'],
+                'role' => 'PI',
+                'name' => $DB->getNameFromId($values['contact'])
+            ]
+        ];
+    }
+
+    $insertOneResult  = $collection->insertOne($values);
+    $id = $insertOneResult->getInsertedId();
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        $red = str_replace("*", $id, $_POST['redirect']);
+        header("Location: " . $red . "?msg=success");
+        die();
+    }
+
+    echo json_encode([
+        'inserted' => $insertOneResult->getInsertedCount(),
+        'id' => $id,
+    ]);
+});
+
+Route::post('/projects/update/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die("no values given");
+    $collection = $osiris->projects;
+
+    $values = validateValues($_POST['values'], $DB);
+    // add information on creating process
+    $values['updated'] = date('Y-m-d');
+    $values['updated_by'] = strtolower($_SESSION['username']);
+
+    $values['public'] = boolval($values['public'] ?? false);
+
+    // check if module already exists:
+    // $project_exist = $collection->findOne(['name' => $values['name']]);
+
+
+    $id = $DB->to_ObjectID($id);
+    $updateResult = $collection->updateOne(
+        ['_id' => $id],
+        ['$set' => $values]
+    );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+
+    echo json_encode([
+        'inserted' => $updateResult->getModifiedCount(),
+        'id' => $id,
+    ]);
+});
+
+
+Route::post('/projects/update-persons/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $values = $_POST['persons'];
+    foreach ($values as $i => $p) {
+        $values[$i]['name'] =  $DB->getNameFromId($p['user']);
+    }
+
+    $osiris->projects->updateOne(
+        ['_id' => $DB::to_ObjectID($id)],
+        ['$set' => ["persons" => $values]]
+    );
+
+    header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
+});
+
+
+
 Route::post('/create-journal', function () {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
@@ -356,55 +455,18 @@ Route::post('/create-journal', function () {
         }
     }
 
-    // try to get oa information from DOAJ
-    // $name = $values['journal'];
-    // $oa = $values['oa'] ?? false;
     $issn = $values['issn'];
-    // $query = [];
     foreach ($issn as $n => $i) {
         if (empty($i)) {
             unset($values['issn'][$n]);
             continue;
         }
-
-        // $query[] = "issn:" . $i;
     }
-    // if ($oa === false && !empty($query)) {
-    //     $query = implode(' OR ', $query);
-    //     $url = "https://doaj.org/api/search/journals/" . $query;
-    //     $response = CallAPI('GET', $url);
-    //     $json = json_decode($response, true);
-
-    //     if (!empty($json['results'] ?? null) && isset($json['results'][0]['bibjson'])) {
-    //         $n = count($json['results']);
-    //         $index = 0;
-    //         if ($n > 1) {
-    //             $compare_name = strtolower($name);
-    //             $compare_name = explode('(', $compare_name)[0];
-    //             $compare_name = trim($compare_name);
-    //             foreach ($json['results'] as $i => $res) {
-    //                 if (isset($res['bibjson']['is_replaced_by'])) continue;
-    //                 $index = $i;
-    //                 if (strtolower($res['bibjson']['title']) == $compare_name) {
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //         $r = $json['results'][$index]['bibjson'];
-    //         $oa = $r['oa_start'] ?? false;
-    //     }
-    // }
-    // $values['oa'] = $oa;
 
     try {
         // try to get impact factor from WoS Journal info
         include_once BASEPATH . "/php/simple_html_dom.php";
 
-        // require_once BASEPATH . '/php/Settings.php';
-        // $Settings = new Settings();
-        // $settings = $Settings['api'];
-        // $settings = file_get_contents(BASEPATH . "/apis.json");
-        // $settings = json_decode($settings, true, 512, JSON_NUMERIC_CHECK);
         if (defined('WOS_JOURNAL_INFO') && !empty(WOS_JOURNAL_INFO)) {
             $YEAR = WOS_JOURNAL_INFO ?? 2021;
 
@@ -513,6 +575,92 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         'updated' => $updateResult->getModifiedCount(),
         'result' => $collection->findOne(['_id' => $id])
     ]);
+});
+
+
+Route::post('/upload-files/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $mongoid = DB::to_ObjectID($id);
+
+    $target_dir = BASEPATH . "/uploads/";
+    if (!is_writable($target_dir)) {
+        printMsg("Upload directory is unwritable. Please contact admin.");
+    }
+    $target_dir .= "$id/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777);
+        echo "<!-- The directory $target_dir was successfully created.-->";
+    } else {
+        echo "<!-- The directory $target_dir exists.-->";
+    }
+
+
+    if (isset($_FILES["file"])) {
+
+        // $target_file = basename($_FILES["file"]["name"]);
+
+        $filename = htmlspecialchars(basename($_FILES["file"]["name"]));
+        $filetype = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $filesize = $_FILES["file"]["size"];
+        $filepath = ROOTPATH . "/uploads/$id/$filename";
+
+        if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
+            $errorMsg = match ($_FILES['file']['error']) {
+                1 => lang('The uploaded file exceeds the upload_max_filesize directive in php.ini', 'Die hochgeladene Datei überschreitet die Richtlinie upload_max_filesize in php.ini'),
+                2 => lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."),
+                3 => lang('The uploaded file was only partially uploaded.', 'Die hochgeladene Datei wurde nur teilweise hochgeladen.'),
+                4 => lang('No file was uploaded.', 'Es wurde keine Datei hochgeladen.'),
+                6 => lang('Missing a temporary folder.', 'Der temporäre Ordner fehlt.'),
+                7 => lang('Failed to write file to disk.', 'Datei konnte nicht auf die Festplatte geschrieben werden.'),
+                8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
+                default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
+            };
+            printMsg($errorMsg, "error");
+        } else if ($filesize > 16000000) {
+            printMsg(lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."), "error");
+        } else if (file_exists($target_dir . $filename)) {
+            printMsg(lang("Sorry, file already exists.", "Die Datei existiert bereits. Um sie zu überschreiben, muss sie zunächst gelöscht werden."), "error");
+        } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            printMsg(lang("The file $filename has been uploaded.", "Die Datei <q>$filename</q> wurde hochgeladen."), "success");
+            $values = [
+                "filename" => $filename,
+                "filetype" => $filetype,
+                "filesize" => $filesize,
+                "filepath" => $filepath,
+            ];
+
+            $osiris->activities->updateOne(
+                ['_id' => $mongoid],
+                ['$push' => ["files" => $values]]
+            );
+            // $files[] = $values;
+        } else {
+            printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
+        }
+
+        header("Location: " . ROOTPATH . "/activities/view/" . $id . "?msg=upload-successful");
+        die();
+    } else if (isset($_POST['delete'])) {
+        $filename = $_POST['delete'];
+        if (file_exists($target_dir . $filename)) {
+            // Use unlink() function to delete a file
+            if (!unlink($target_dir . $filename)) {
+                printMsg("$filename cannot be deleted due to an error.", "error");
+            } else {
+                printMsg(lang("$filename has been deleted.", "$filename wurde gelöscht."), "success");
+            }
+        }
+
+        $osiris->activities->updateOne(
+            ['_id' => $mongoid],
+            ['$pull' => ["files" => ["filename" => $filename]]]
+        );
+        // printMsg("File has been deleted from the database.", "success");
+
+        header("Location: " . ROOTPATH . "/activities/view/" . $id . "?msg=file-deleted-successfully");
+        die();
+    }
 });
 
 Route::post('/delete-user/(.*)', function ($user) {
@@ -624,12 +772,11 @@ Route::post('/update-profile/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
 
     $target_dir = BASEPATH . "/img/users";
-    // if (!is_writable($target_dir)) {
-    //     die("User image directory is unwritable. Please contact admin.");
-    // }
+    if (!is_writable($target_dir)) {
+        die("User image directory is unwritable. Please contact admin.");
+    }
     $target_dir .= "/";
     $filename = "$user.jpg";
-
 
     if (isset($_FILES["file"])) {
         if ($_FILES['file']['type'] != 'image/jpeg') die('Wrong extension, only JPEG is allowed.');
@@ -669,26 +816,44 @@ Route::post('/update-profile/(.*)', function ($user) {
     }
 });
 
-Route::post('/respolve-doublets', function () {
-    include_once BASEPATH . "/php/init.php";
-    dump($_POST, true);
-});
-
 
 Route::post('/update-research-data/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['connections'])) die("no values given");
+    if (!isset($_POST['connections'])) {
+        $osiris->activities->updateOne(
+            ['_id' => $DB::to_ObjectID($id)],
+            ['$unset' => ["connections" => '']]
+        );
+    } else {
+        $values = $_POST['connections'];
+        $values = validateValues($values, $DB);
 
-    $values = $_POST['connections'];
-    $values = validateValues($values, $DB);
-    // dump($values, true);
-    // die;
+        $osiris->activities->updateOne(
+            ['_id' => $DB::to_ObjectID($id)],
+            ['$set' => ["connections" => $values]]
+        );
+    }
 
-    $updateResult = $osiris->activities->updateOne(
-        ['_id' => $DB::to_ObjectID($id)],
-        ['$set' => ["connections" => $values]]
-    );
+    header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
+});
 
+
+Route::post('/update-project-data/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['projects'])) {
+        $osiris->activities->updateOne(
+            ['_id' => $DB::to_ObjectID($id)],
+            ['$unset' => ["projects" => '']]
+        );
+    } else {
+        $values = $_POST['projects'];
+        $values = validateValues($values, $DB);
+
+        $osiris->activities->updateOne(
+            ['_id' => $DB::to_ObjectID($id)],
+            ['$set' => ["projects" => $values]]
+        );
+    }
     header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
 });
 

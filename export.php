@@ -145,6 +145,10 @@ Route::post('/download', function () {
         $filename .= "_" . trim($params['id']);
     }
 
+    if (isset($params['project']) && !empty($params['project'])) {
+        $filter['projects'] = trim($params['project']);
+        $filename .= "_" . trim($params['project']);
+    }
 
     // if (isset($params['year']) && !empty($params['year'])) {
     //     $filter['year'] = intval($params['year']);
@@ -699,6 +703,7 @@ Route::post('/reports', function () {
                             } else {
                                 $paragraph = $section->addTextRun();
                                 // $line = clean_comment_export($line);
+            $line = clean_comment_export($line, false);
                                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
                             }
                         }
@@ -765,7 +770,7 @@ Route::post('/reports', function () {
                     $paragraph = $section->addTextRun();
                     $line = $doc['format'];
                     if (!str_ends_with(trim($line), '.')) $line = trim($line). '.';
-                    $line .= "<br>";
+                    // $line .= "<br>";
                     $line = clean_comment_export($line, false);
                     \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
                     // $paragraph = $section->addTextRun();
@@ -796,6 +801,7 @@ Route::post('/reports', function () {
 
                 $line = "$journal (" . implode(", ", $authors) . ")";
                 // $line = clean_comment_export($line);
+            $line = clean_comment_export($line, false);
                 \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
             }
         }

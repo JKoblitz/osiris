@@ -262,6 +262,11 @@ class Modules
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
+        "thesis" => [
+            "fields" => ["category"],
+            "name" => "Category",
+            "name_de" => "Kategorie"
+        ],
         "supervisor" => [
             "fields" => ["authors"],
             "name" => "Supervisor",
@@ -797,11 +802,11 @@ class Modules
                         <small class="text-muted"><?= lang('(in correct order, format: Last name, First name)', '(in korrekter Reihenfolge, Format: Nachname, Vorname)') ?></small>
                     </label>
 
-                    <div class="border" id="author-widget">
+                    <div class="author-widget" id="author-widget">
                         <div class="author-list p-10" id="author-list">
                             <?= $this->authors ?>
                         </div>
-                        <div class="p-10 bg-light border-top d-flex">
+                        <div class="footer">
 
                             <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
@@ -868,6 +873,20 @@ class Modules
                         <option value="doctoral thesis" <?= $this->val('category') == 'doctoral thesis' ? 'selected' : '' ?>><?= lang('Doctoral Thesis', 'Doktorand:in') ?></option>
                         <option value="master thesis" <?= $this->val('category') == 'master thesis' ? 'selected' : '' ?>><?= lang('Master Thesis', 'Master-Thesis') ?></option>
                         <option value="bachelor thesis" <?= $this->val('category') == 'bachelor thesis' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelor-Thesis') ?></option>
+                    </select>
+                </div>
+            <?php
+                break;
+
+            case "thesis":
+            ?>
+                <div class="data-module col-sm-6" data-module="thesis">
+                    <label for="thesis" class="<?= $required ?> element-cat"><?= lang('Thesis type', 'Art der Abschlussarbeit') ?></label>
+                    <select name="values[thesis]" id="thesis" class="form-control" <?= $required ?>>
+                        <option value=""><?= lang('Thesis', 'Abschlussarbeit') ?></option>
+                        <option value="doctor" <?= $this->val('thesis') == 'doctor' ? 'selected' : '' ?>><?= lang('Doctoral Thesis', 'Doktorarbeit') ?></option>
+                        <option value="master" <?= $this->val('thesis') == 'master' ? 'selected' : '' ?>><?= lang('Master Thesis', 'Masterarbeit') ?></option>
+                        <option value="bachelor" <?= $this->val('thesis') == 'bachelor' ? 'selected' : '' ?>><?= lang('Bachelor Thesis', 'Bachelorarbeit') ?></option>
                     </select>
                 </div>
             <?php
@@ -982,7 +1001,7 @@ class Modules
                     </div>
                     <script>
                         var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
-                        const DOUBLETCHECK = <?=empty($this->form) ? 'true': 'false'?>;
+                        const DOUBLETCHECK = <?= empty($this->form) ? 'true' : 'false' ?>;
                         // console.log(SINGLE);
                         var dateRange = {
                             // format: 'DD.MM.YYYY',
@@ -1487,15 +1506,6 @@ class Modules
             case "scientist":
             ?>
                 <div class="data-module col-sm-4" data-module="scientist">
-                    <select class="form-control hidden" id="role-input" name="values[role]" <?= $required ?> autocomplete="off" onchange="togglePubType(this.value)">
-                        <!-- <option value="review" disabled selected>-- <?= lang('Select role', 'Wähle deine Rolle') ?> --</option> -->
-                        <option value="review" <?= strtolower($this->val('role')) == 'review' ? 'selected' : '' ?>>Reviewer</option>
-                        <option value="editorial" <?= strtolower($this->val('role')) == 'editorial' ? 'selected' : '' ?>>Editorial board</option>
-                        <option value="thesis-rev" <?= strtolower($this->val('role')) == 'thesis-rev' ? 'selected' : '' ?>>Thesis review</option>
-                        <option value="grant-rev" <?= strtolower($this->val('role')) == 'grant-rev' ? 'selected' : '' ?>><?= lang('Other review', 'Sonstiges Review') ?></option>
-                    </select>
-
-
                     <label class="<?= $required ?> element-author" for="username">
                         <?= lang('Scientist', 'Wissenschaftler:in') ?>
                     </label>

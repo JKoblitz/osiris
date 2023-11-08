@@ -25,7 +25,7 @@ class Document extends Settings
 
     private $schemaType = null;
     public $schema = [];
-    private $db =null;
+    private $db = null;
 
 
     function __construct($highlight = true, $usecase = 'web')
@@ -573,7 +573,7 @@ class Document extends Settings
         if ($user === null) $user = $_SESSION['username'];
         $issues = array();
         $type = $this->typeArr['id'];
-        $subtypeArr = $this->subtypeArr['id'];
+        $subtype = $this->subtypeArr['id'];
 
         if (!$this->is_approved($user)) $issues[] = "approval";
 
@@ -588,7 +588,7 @@ class Document extends Settings
         if ($epub) $issues[] = "epub";
 
         // CHECK student status issue
-        if ($type == "students" && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
+        if ($subtype == "students" && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
 
         // check ongoing reminder
         if (in_array('date-range-ongoing', $this->modules) && is_null($this->doc['end'])) {
@@ -776,7 +776,7 @@ class Document extends Settings
                 }
                 if ($this->usecase == 'list') return $oa . " " . $status;
                 return $oa;
-                
+
             case "open_access": // ["open_access"],
                 if (!empty($this->getVal('open_access', false))) {
                     return '<i class="icon-open-access text-success" title="Open Access"></i> yes';
@@ -830,6 +830,17 @@ class Document extends Settings
                 return $this->translateCategory($this->getVal('category'));
             case "supervisor": // ["authors"],
                 return $this->formatAuthors($this->getVal('authors'));
+            case "thesis": // ["category"],
+                switch ($this->getVal('thesis')) {
+                    case 'doctor':
+                        return lang('Doctoral Thesis', 'Doktorarbeit');
+                    case 'master':
+                        return lang('Master Thesis', 'Masterarbeit');
+                    case 'bachelor':
+                        return lang('Bachelor Thesis', 'Bachelorarbeit');
+                    default:
+                        return lang('Thesis', 'Abschlussarbeit');
+                }
             case "teaching-category": // ["category"],
                 return $this->translateCategory($this->getVal('category'));
             case "teaching-course": // ["title", "module", "module_id"],

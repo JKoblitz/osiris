@@ -46,13 +46,20 @@
 
     <input class="btn primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
 
-    <?php
-    if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
-        echo "<hr><a class='link' href='" . ROOTPATH . "/auth/new-user'>" . lang(
+    <?php if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') { ?>
+
+        <hr>
+        
+        <a class='link d-block' href='<?=ROOTPATH ?>/auth/reset-password'><?=lang(
+            'Forgot password?',
+            'Password vergessen?'
+        ) ?></a>
+        <a class='link' href='<?=ROOTPATH ?>/auth/new-user'><?=lang(
             'No account? Register now',
             'Noch keinen Account? Jetzt registrieren'
-        ) . "</a>";
-    }
+        ) ?>
+        </a>
+    <?php }
 
     if ($Settings->get('affiliation') === 'LISI') {
     ?>

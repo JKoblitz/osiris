@@ -4,6 +4,13 @@
 </h1>
 
 
+<div class="alert danger mb-20">
+    <p class="text-danger lead">
+        Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
+    </p>
+</div>
+
+
 <a href="<?= ROOTPATH ?>/guests/new" class="btn osiris">
     <i class="ph ph-plus"></i>
     <?= lang('Add new guest', 'Neuen Gast anmelden') ?>
@@ -19,7 +26,7 @@
             <th><?= lang('Affiliation', 'Affiliation') ?></th>
             <th><?= lang('Time of stay', 'Zeitraum des Aufenthalts') ?></th>
             <th><?= lang('Supervisor', 'Betreuer:in') ?></th>
-            <th><?=lang('Complete', 'Vollständig')?></th>
+            <th><?= lang('Complete', 'Vollständig') ?></th>
         </tr>
     </thead>
     <tbody>
@@ -44,7 +51,7 @@
                 </td>
                 <td>
                     <?php
-                    $finished = (isset($entry['legal']['general']) && $entry['legal']['general']);
+                    $finished = ($entry['legal']['general'] ?? false);
                     echo bool_icon($finished);
                     ?>
 

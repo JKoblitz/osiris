@@ -27,7 +27,7 @@ if (file_exists('CONFIG.php')) {
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('OSIRIS_VERSION', '1.2.1');
+define('OSIRIS_VERSION', '1.2.2');
 
 // set time constants
 $year = date("Y");
@@ -297,7 +297,7 @@ Route::get('/user/login', function () {
         ['name' => lang('User login', 'Login')]
     ];
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true  && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
-        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]?msg=ali");
+        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]");
         die;
     }
     include BASEPATH . "/header.php";
@@ -315,7 +315,7 @@ Route::post('/user/login', function () {
     $page = "userlogin";
     $msg = "?msg=welcome";
     if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['username']) && !empty($_SESSION['username'])) {
-        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]?msg=ali");
+        header("Location: " . ROOTPATH . "/profile/$_SESSION[username]");
         die;
     }
 
@@ -509,13 +509,75 @@ Route::get('/projects', function () {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
-        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
         ['name' => lang("Projects", "Projekte")]
     ];
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/projects.php";
     include BASEPATH . "/footer.php";
 }, 'login');
+
+Route::get('/projects/new', function () {
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' => lang("New", "Neu")]
+    ];
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/add-project.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/projects/view/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
+
+    if (DB::is_ObjectID($id)) {
+        $mongo_id = $DB->to_ObjectID($id);
+        $project = $osiris->projects->findOne(['_id' => $mongo_id]);
+    } else {
+        $project = $osiris->projects->findOne(['name' => $id]);
+        $id = strval($project['_id'] ?? '');
+    }
+    if (empty($project)) {
+        header("Location: " . ROOTPATH . "/projects?msg=not-found");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' => $project['name']]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/project.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/projects/edit/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
+
+    $mongo_id = $DB->to_ObjectID($id);
+    $project = $osiris->projects->findOne(['_id' => $mongo_id]);
+    if (empty($project)) {
+        header("Location: " . ROOTPATH . "/projects?msg=not-found");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' =>  $project['name'], 'path' => "/projects/view/$id"],
+        ['name' => lang("Edit", "Bearbeiten")]
+    ];
+
+    global $form;
+    $form = DB::doc2Arr($project);
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/add-project.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 
 Route::get('/research-data', function () {
     include_once BASEPATH . "/php/init.php";
@@ -608,61 +670,6 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     } else {
         include BASEPATH . "/pages/activity.php";
     }
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-
-Route::get('/activities/files/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/init.php";
-    $user = $_SESSION['username'];
-
-    $id = $DB->to_ObjectID($id);
-
-    $doc = $osiris->activities->findOne(['_id' => $id]);
-
-    $name = $doc['title'] ?? $id;
-    if (strlen($name) > 20)
-        $name = mb_substr(strip_tags($name), 0, 20) . "&hellip;";
-    $name = ucfirst($doc['type']) . ": " . $name;
-    $breadcrumb = [
-        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => $name, 'path' => "/activities/view/$id"],
-        ['name' => lang("Files", "Dateien")]
-    ];
-    include BASEPATH . "/header.php";
-    if (empty($doc)) {
-        echo "Activity not found!";
-    } else {
-        include BASEPATH . "/pages/files.php";
-    }
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-
-Route::post('/activities/files/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/init.php";
-    $user = $_SESSION['username'];
-
-    $mongoid = $DB->to_ObjectID($id);
-
-    $activity = $osiris->activities->findOne(['_id' => $mongoid]);
-
-    $name = $activity['title'] ?? $id;
-    if (strlen($name) > 20)
-        $name = mb_substr(strip_tags($name), 0, 20) . "&hellip;";
-    $name = ucfirst($activity['type']) . ": " . $name;
-    $breadcrumb = [
-        ['name' => lang('Activities', "Aktivitäten"), 'path' => "/activities"],
-        ['name' => $name, 'path' => "/activities/view/$id"],
-        ['name' => lang("Files", "Dateien")]
-    ];
-    include BASEPATH . "/header.php";
-    if (empty($activity)) {
-        echo "Activity not found!";
-    } else {
-        include BASEPATH . "/pages/files.php";
-    }
-    // include BASEPATH . "/pages/add-activity.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -896,7 +903,7 @@ Route::post('/import/google', function () {
         $a = explode(' ', $a);
         $last = array_pop($a);
         $first = implode(' ', $a);
-        $username = $DB->getPersonFromName($last, $first);
+        $username = $DB->getUserFromName($last, $first);
         $author = [
             'first' => $first,
             'last' => $last,

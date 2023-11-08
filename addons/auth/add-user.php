@@ -8,7 +8,7 @@ $data = $_POST['values'] ?? [];
 
 <form action="#" method="post">
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col">
             <label class="required" for="username">Username </label>
             <input class="form-control" type="text" id="username" name="username" required>
@@ -20,7 +20,7 @@ $data = $_POST['values'] ?? [];
     </div>
 
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm-2">
             <?php
             $title = $data['academic_title'] ?? '';
@@ -49,7 +49,7 @@ $data = $_POST['values'] ?? [];
 
 
 
-    <div class="form-row row-eq-spacing-sm">
+    <div class="form-row row-eq-spacing">
         <div class="col-sm">
             <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
             <select name="values[dept]" id="dept" class="form-control">
