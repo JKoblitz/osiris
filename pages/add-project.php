@@ -52,6 +52,7 @@ function sel($index, $value)
 
 <h3 class="title">
     <?= lang('Add new project', 'Neues Drittmittelprojekt') ?>
+    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
 </h3>
 
 <form action="<?= $formaction ?>" method="post" id="project-form">

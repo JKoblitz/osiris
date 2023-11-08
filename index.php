@@ -27,7 +27,7 @@ if (file_exists('CONFIG.php')) {
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('OSIRIS_VERSION', '1.2.1');
+define('OSIRIS_VERSION', '1.2.2');
 
 // set time constants
 $year = date("Y");

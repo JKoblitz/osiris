@@ -2,7 +2,7 @@
 
 ## 25.10.2023
 <a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>
-`Version 1.2.2alpha`
+`Version 1.2.2`
 
 
 #### <i class="ph ph-tree-structure text-osiris"></i> Projekte
@@ -18,14 +18,15 @@ Drittmittelprojekte wurden eingeführt.
   - Über einen Download-Knopf lassen sich alle zu dem Projekt gehörige Aktivitäten als Word oder BibTeX herunterladen.
 - Auf der Profilseite einer Person wurde ein neues Widget hinzugefügt. Dies zeigt alle Projekte, an denen eine Person beteiligt ist.
 - Auf der Übersichtsseite einer Aktivität können nun Projekte verknüpft werden. Dazu wurde auch hier ein neues Widget hinzugefügt. ![Projekte auf der Übersichtsseite](img/news/activity-projects.png)
+- Alle Projektseiten sind zurzeit noch mit dem Flag     <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="Nicht für den Produktions-einsatz">BETA</span> versehen. Sobald das Feature ausreichend getestet wurde, wird es entfernt. Feedback dazu wie immer an <a href="mailto:julia.koblitz@dsmz.de"><i class="ph ph-envelope"></i>&nbsp;Julia</a>.
 
 
 #### <i class="ph ph-person-arms-spread text-osiris"></i> Accessibility
 Es wurden neue Features für die verbesserte Accessibility hinzugefügt, insbesondere ein Modus mit erhöhtem Kontrast, verringerte Animationen, sowie eine Schriftart speziell für Personen mit Dyslexie. All diese Features findest du in einem neuen Dropdown-Menü im Header.
 
-#### <i class="ph ph-user-switch text-osiris"></i> Gäste
+#### <i class="ph ph-user-switch text-osiris"></i> Gäste (Prototyp)
 
-Das Gästeaddon wurde weiterentwickelt (immer noch im Prototyp-Stadium)
+Das Gästeaddon wurde weiterentwickelt (**immer noch im Prototyp-Stadium**)
 - Gäste können jetzt über das Modul angemeldet werden
   - Einige Details sind dabei bei Anmeldung vom Betreuer auszufüllen
   - Andere Details sind bei Anmeldung optional
