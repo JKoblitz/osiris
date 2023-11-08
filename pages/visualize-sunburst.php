@@ -52,6 +52,9 @@ if (!empty($time) && $time != 'undefined') {
     $time = ['', '', '', ''];
 }
 
+if (!isset($_GET['epub'])) {
+    $filter['epub'] = ['$ne' => true];
+}
 
 $filter_year = intval($_GET['year'] ?? 0);
 // if (!empty($filter_year) && $filter_year != 'undefined') {
@@ -118,7 +121,7 @@ foreach ($Settings->getDepartments() as $val) {
 }
 
 
-$N = 0; 
+$N = 0;
 $links = implode('&', $links);
 
 foreach ($activities as $doc) {
@@ -138,7 +141,7 @@ foreach ($activities as $doc) {
                     'name' => $aut['last'] . ", " . $aut['first'],
                     'abbr' => $username,
                     'value' => 0,
-                    'link' => ROOTPATH.'/my-activities?user=' . $username . '#'. $links
+                    'link' => ROOTPATH . '/my-activities?user=' . $username . '#' . $links
                     // 'color' => $departments[$dept]['color']
                 ];
                 $userindex = count($flare[$deptindex]['children']) - 1;
@@ -157,43 +160,61 @@ foreach ($activities as $doc) {
     <?= lang('Department overview', 'Abteilungs-Übersicht') ?>
 </h1>
 
-<form action="" method="get" class="form-row">
-    <div class="col-sm" style="max-width: 40rem;">
-        <label for="type-select"><?= lang('Time range', 'Zeitspanne') ?></label>
+<div class="dropdown">
+    <button class="btn primary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+        <i class="ph ph-funnel"></i>
+        Filter
+        <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
+    </button>
+    <div class="dropdown-menu w-400 " aria-labelledby="dropdown-1">
+        <form action="" method="get" class="content">
 
-        <div class="input-group mb-10 w-400 mw-full d-md-inline-flex">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+
+            <div class="form-group">
+                <label for="type-select"><?= lang('Time range', 'Zeitspanne') ?></label>
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+                    </div>
+                    <input type="number" name="time[]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" value="<?= $time[0] ?? '' ?>">
+                    <input type="number" name="time[]" class="form-control" placeholder="year" min="2000" max="<?= CURRENTYEAR + 1 ?>" step="1" id="from-year" value="<?= $time[1] ?? '' ?>">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><?= lang('to', 'bis') ?></span>
+                    </div>
+                    <input type="number" name="time[]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" value="<?= $time[2] ?? '' ?>">
+                    <input type="number" name="time[]" class="form-control" placeholder="year" min="2000" max="<?= CURRENTYEAR + 1 ?>" step="1" id="to-year" value="<?= $time[3] ?? '' ?>">
+
+                    <div class="input-group-append">
+                        <a class="btn" type="button" href="<?= currentGET(['time']) ?>">&times;</a>
+                    </div>
+                </div>
+
             </div>
-            <input type="number" name="time[]" class="form-control" placeholder="month" min="1" max="12" step="1" id="from-month" value="<?= $time[0] ?? '' ?>">
-            <input type="number" name="time[]" class="form-control" placeholder="year" min="2000" max="<?= CURRENTYEAR + 1 ?>" step="1" id="from-year" value="<?= $time[1] ?? '' ?>">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><?= lang('to', 'bis') ?></span>
+            <div class="form-group">
+                <label for="type-select"><?= lang('Activities', 'Aktivitäten') ?></label>
+                <select name="type" id="type-select" class="form-control ">
+                    <option value=""><?= lang('All types', 'Alle Arten') ?></option>
+                    <?php foreach ($Settings->get('activities') as $type => $a) { ?>
+                        <option value="<?= $type ?>" <?= $type == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
+                    <?php } ?>
+                </select>
             </div>
-            <input type="number" name="time[]" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month" value="<?= $time[2] ?? '' ?>">
-            <input type="number" name="time[]" class="form-control" placeholder="year" min="2000" max="<?= CURRENTYEAR + 1 ?>" step="1" id="to-year" value="<?= $time[3] ?? '' ?>">
 
-            <div class="input-group-append">
-                <a class="btn" type="button" href="<?= currentGET(['time']) ?>">&times;</a>
+            <div class="form-group">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="epub" value="1" name="epub" <?=isset($_GET['epub']) ? 'checked': '' ?>>
+                    <label for="epub"><?= lang('Include online ahead of print', 'Inklusive Online ahead of print') ?></label>
+                </div>
             </div>
-        </div>
 
+            <button class="btn primary " type="submit">Select</button>
+        </form>
     </div>
-    <div class="col-sm ml-sm-10" style="max-width: 40rem;">
-        <label for="type-select"><?= lang('Activities', 'Aktivitäten') ?></label>
-        <select name="type" id="type-select" class="form-control ">
-            <option value=""><?= lang('All types', 'Alle Arten') ?></option>
-            <?php foreach ($Settings->get('activities') as $type => $a) { ?>
-                <option value="<?= $type ?>" <?= $type == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
-            <?php } ?>
-        </select>
-    </div>
-    <div class="col-sm ml-sm-10 align-self-end">
+</div>
 
-        <button class="btn primary " type="submit">Select</button>
-    </div>
-    <!-- </div> -->
-</form>
+
+<!-- </div> -->
 
 <p>
     <?= $N ?> <?= lang('results', 'Ergebnisse') ?>

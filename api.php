@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Routing for API
  * 
@@ -167,7 +168,7 @@ Route::get('/api/all-activities', function () {
         }
 
         $depts = $rendered['depts'];
-        if ($depts instanceof MongoDB\Model\BSONArray ) {
+        if ($depts instanceof MongoDB\Model\BSONArray) {
             $depts = $depts->bsonSerialize();
         }
         $type = $doc['type'];
@@ -466,6 +467,50 @@ Route::get('/api/levenshtein', function () {
 });
 
 
+// Dashboard interface
+
+Route::get('/api/dashboard/oa-status', function () {
+    include(BASEPATH . '/php/init.php');
+
+    $filter = ['oa_status' => ['$ne' => null]];
+    if (isset($_GET['year'])){
+        $filter['year'] = $_GET['year'];
+    } else {        
+        $filter['year'] = ['$gte' => $Settings->get('startyear')];
+    }
+
+    $result = array();
+    $result = $osiris->activities->aggregate([
+        ['$match' => $filter ],
+        [
+            '$group' => [
+                '_id' => [
+                    'status' => '$oa_status',
+                    'year' => '$year'
+                ],
+                'count' => ['$sum' => 1],
+            ]
+        ],
+        ['$project' => ['_id' => 0, 'status' => '$_id.status', 'year' => '$_id.year', 'count' => 1]],
+        ['$sort' => ['year' => 1]],
+        [
+            '$group' => [
+                '_id' => '$status',
+                'data' => ['$push' => '$$ROOT']
+            ]
+        ],
+    ])->toArray();
+    echo return_rest($result, count($result));
+});
+
+
+
+
+
+
+
+
+
 /**
  * Official interface API endpoints
  */
@@ -509,4 +554,3 @@ Route::get('/data/activities', function () {
     $result = array();
     echo return_rest($result, count($result));
 });
-

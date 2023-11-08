@@ -32,14 +32,6 @@ for ($i = 0; $i < 4; $i++) {
         'year' => $y,
         'quarter' => $q,
         'activities' => array(
-            "publication" => 0,
-            "poster" => 0,
-            "lecture" => 0,
-            "review" => 0,
-            "teaching" => 0,
-            "students" => 0,
-            "software" => 0,
-            "misc" => 0,
         ),
         'impacts' => []
     ];
@@ -93,6 +85,9 @@ foreach ($cursor as $doc) {
         $yq = "${year}Q$q";
         if (!isset($quarters[$yq])) continue;
 
+        if (!isset($quarters[$yq]['activities'][$type]))
+            $quarters[$yq]['activities'][$type] = 0;
+        
         $quarters[$yq]['activities'][$type]++;
 
 
@@ -191,4 +186,7 @@ foreach ($impacts as $vals) {
         }
 
     };
+
+  
+
 </script>

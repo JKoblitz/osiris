@@ -1238,6 +1238,7 @@ Route::get('/visualize/(\w*)', function ($page) {
         "coauthors" => lang('Coauthor network', 'Koautoren-Netzwerk'),
         "sunburst" => lang('Department overview', 'Abteilungs-Übersicht'),
         "departments" => lang('Department network', 'Abteilungs-netzwerk'),
+        "openaccess" => lang('Open Access'),
     ];
     if (!array_key_exists($page, $names)) {
         die("404");
