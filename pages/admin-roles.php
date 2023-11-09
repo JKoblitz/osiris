@@ -25,6 +25,9 @@ $role_groups = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
 
 ?>
 
+<h1>
+    <?=lang('Roles &amp; Rights', 'Rollen &amp; Rechte')?>
+</h1>
 
 <form action="#" method="post" id="role-form">
 
@@ -48,7 +51,7 @@ $role_groups = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
             <?php foreach ($role_groups as $group) {
                 ?>
                 <tr>
-                    <th colspan="">
+                    <th colspan="<?=count($roles)+1?>">
                         <?= lang($group['en'], $group['de']) ?>
                     </th>
                 </tr>

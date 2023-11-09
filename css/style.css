@@ -1204,3 +1204,35 @@ table.table tbody tr:last-child th {
     font-family: var(--icon-font);
     color: var(--muted-color);
 }
+
+td .key {
+    display: block;
+    color: var(--muted-color);
+    font-size: .8em;
+  }
+
+  .btn {
+    background-color: white;
+    border: var(--border-width) solid var(--border-color);
+}
+.btn:hover {
+    background-color: var(--button-bg-color);
+}
+.input-group-prepend > .btn, .input-group-append > .btn {
+border-color: var(--border-color);
+}
+
+.cv {
+    margin-bottom: 1.5rem;
+}
+.cv .time {
+    font-size: small;
+    color: var(--primary-color);
+}
+.cv .title {
+    font-size: 1.6rem;
+    margin: 0;
+}
+.cv .affiliation {
+    color: var(--muted-color);
+}

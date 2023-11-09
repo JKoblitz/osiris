@@ -86,7 +86,7 @@ Route::get('/', function () {
 });
 
 
-if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
+if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
     require_once 'addons/auth/index.php';
 }
 if (defined('GUEST_FORMS') && GUEST_FORMS) {
@@ -319,7 +319,7 @@ Route::post('/user/login', function () {
         die;
     }
 
-    if (defined('USER_MANAGEMENT') && USER_MANAGEMENT == 'AUTH') {
+    if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
         require_once 'addons/auth/_login.php';
     } else {
         include BASEPATH . "/php/_login.php";
@@ -1144,7 +1144,7 @@ Route::post('/reset-settings', function () {
 }, 'login');
 
 
-Route::get('/admin/(activities|departments|general|roles)', function ($page) {
+Route::get('/admin/(activities|departments|general|roles|features)', function ($page) {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
     $breadcrumb = [
@@ -1156,14 +1156,14 @@ Route::get('/admin/(activities|departments|general|roles)', function ($page) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::post('/admin/(activities|departments|general|roles)', function ($page) {
+Route::post('/admin/(activities|departments|general|roles|features)', function ($page) {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
 
 
     $json = $Settings->settings;
 
-    foreach (['activities', 'departments', 'affiliation', 'general', 'roles'] as $key) {
+    foreach (['activities', 'departments', 'affiliation', 'general', 'roles', 'features'] as $key) {
         if (isset($_POST[$key])) {
             $values = $_POST[$key];
 
@@ -1340,6 +1340,28 @@ Route::get('/user/edit/(.*)', function ($user) {
 
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/user-editor.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::get('/user/edit-bio/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+
+    // $id = $DB->to_ObjectID($id);
+
+    $data = $DB->getPerson($user);
+    if (empty($data)) {
+        header("Location: " . ROOTPATH . "/user/browse");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => $data['name'], 'path' => "/profile/$user"],
+        ['name' => lang("Edit Biography", "Biographie bearbeiten")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/user-edit-bio.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 

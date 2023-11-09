@@ -1,4 +1,3 @@
-
 <h2>
     <?= lang('Open Access') ?>
 </h2>
@@ -8,7 +7,7 @@
         <div class="box">
             <div class="chart content text-center">
                 <h5 class="title mb-0">Open Access <?= lang('en', 'Verteilung') ?></h5>
-                <p class="mt-0 text-muted"><?= lang('Status according to Unpaywall since ', 'Status nach Unpaywall seit ').$Settings->get('startyear') ?></p>
+                <p class="mt-0 text-muted"><?= lang('Status according to Unpaywall since ', 'Status nach Unpaywall seit ') . $Settings->get('startyear') ?></p>
 
                 <div id="chart-oa-status-pie"></div>
             </div>
@@ -77,7 +76,7 @@
 
                     piechart[0].labels.push(a['_id'])
                     piechart[0].values.push(accumulated)
-                    piechart[0].marker.colors.push(COLORS[a['_id']]+'80')
+                    piechart[0].marker.colors.push(COLORS[a['_id']] + '80')
                 })
 
                 Plotly.newPlot('chart-oa-status-pie', piechart, {
@@ -111,3 +110,69 @@
 
 </div>
 
+<!-- 
+<div id="myDiv"></div>
+
+<script>
+    var data = [{
+
+        type: 'scattergeo',
+
+        mode: 'markers',
+
+        locations: ['FRA', 'DEU', 'RUS', 'ESP'],
+
+        marker: {
+
+            size: [20, 30, 15, 10],
+
+            color: [10, 20, 40, 50],
+
+            cmin: 0,
+
+            cmax: 50,
+
+            colorscale: 'Greens',
+
+            colorbar: {
+
+                title: 'Some rate',
+
+                ticksuffix: '%',
+
+                showticksuffix: 'last'
+
+            },
+
+            line: {
+
+                color: 'black'
+
+            }
+
+        },
+
+        name: 'europe data'
+
+    }];
+
+
+    var layout = {
+
+        'geo': {
+
+            // 'scope': 'europe',
+
+            // 'resolution': 50,
+            projection: {
+
+                type: 'robinson'
+
+            }
+        }
+
+    };
+
+
+    Plotly.newPlot('myDiv', data, layout);
+</script> -->

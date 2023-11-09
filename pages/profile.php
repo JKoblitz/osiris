@@ -407,11 +407,15 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             </div>
 
             <div class="btn-group btn-group-lg">
-                <a class="btn btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="ph ph-edit text-muted ph-fw"></i>
                     <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                 </a>
+                <!-- <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
+                    <i class="ph ph-eye text-muted ph-fw"></i>
+                </a> -->
             </div>
+
 
             <?php if ($issues !== 0) { ?>
                 <div class="alert danger mt-20">
@@ -502,7 +506,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
 <?php } else { ?>
     <div class="btn-group btn-group-lg mt-15 ml-5">
-        <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of', 'Das Jahr ') . $scientist['first'] ?> ">
+        <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of ', 'Das Jahr von ') . $scientist['first'] ?> ">
             <i class="ph ph-calendar text-success ph-fw"></i>
         </a>
         <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
@@ -564,15 +568,15 @@ if ($currentuser) { ?>
                     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                     <?php foreach ($expertise as $n) { ?>
-                        <div class="input-group sm d-inline-flex w-auto mr-5 mb-10">
-                            <input type="text" name="values[expertise][]" value="<?= $n ?>" list="expertise-list" required>
+                        <div class="input-group d-inline-flex w-auto mr-5 mb-10">
+                            <input type="text" name="values[expertise][]" value="<?= $n ?>" list="expertise-list" required class="form-control">
                             <div class="input-group-append">
                                 <a class="btn" onclick="$(this).closest('.input-group').remove();">&times;</a>
                             </div>
                         </div>
                     <?php } ?>
 
-                    <button class="btn small" type="button" onclick="addName(event, this);">
+                    <button class="btn mb-10" type="button" onclick="addName(event, this);">
                         <i class="ph ph-plus"></i>
                     </button>
                     <br>
@@ -591,8 +595,8 @@ if ($currentuser) { ?>
 
     <script>
         function addName(evt, el) {
-            var group = $('<div class="input-group sm d-inline-flex w-auto mr-5 mb-10"> ')
-            group.append('<input type="text" name="values[expertise][]" value="" list="expertise-list" required>')
+            var group = $('<div class="input-group d-inline-flex w-auto mr-5 mb-10"> ')
+            group.append('<input type="text" name="values[expertise][]" value="" list="expertise-list" required class="form-control">')
             // var input = $()
             var btn = $('<a class="btn">')
             btn.on('click', function() {
@@ -623,7 +627,7 @@ if ($currentuser) { ?>
 <?php } elseif ($currentuser) { ?> <a href="#expertise" class=""><i class="ph ph-edit"></i></a> <?php } ?>
 
 <div class="row row-eq-spacing my-0">
-    <div class="profile-widget col-lg-6">
+    <div class="profile-widget col-md-6 col-lg-4">
         <div class="box h-full">
             <div class="content">
                 <?php if ($currentuser) { ?>
@@ -633,45 +637,43 @@ if ($currentuser) { ?>
                 <?php } ?>
                 <h4 class="title"><?= lang('Details') ?></h4>
             </div>
-            <table class="table simple">
+            <table class="table simple small">
                 <tbody>
                     <tr>
-                        <td><?= lang('Last name', 'Nachname') ?></td>
-                        <td><?= $scientist['last'] ?? '' ?></td>
-                    </tr>
-                    <tr>
-                        <td><?= lang('First name', 'Vorname') ?></td>
-                        <td><?= $scientist['first'] ?? '' ?></td>
-                    </tr>
-                    <tr>
-                        <td><?= lang('Academic title', 'Akademischer Titel') ?></td>
-                        <td><?= $scientist['academic_title'] ?? '' ?></td>
-                    </tr>
-                    <!-- <tr>
-                        <td><?= lang('Gender', 'Geschlecht') ?></td>
-                        <td><?php
-                            $genders = [
-                                'm' => lang('male', 'männlich'),
-                                'f' => lang('female', 'weiblich'),
-                                'd' => lang('non-binary', 'divers'),
-                                'n' => lang('not specified', 'nicht angegeben'),
-                            ];
-                            echo $genders[$scientist['gender'] ?? 'n'];
-                            ?>
+                        <td>
+                            <span class="key"><?= lang('Last name', 'Nachname') ?></span>
+                            <?= $scientist['last'] ?? '' ?>
                         </td>
-                    </tr> -->
-                    <tr>
-                        <td>Email</td>
-                        <td><?= $scientist['mail'] ?? '' ?></td>
                     </tr>
                     <tr>
-                        <td><?= lang('Telephone', 'Telefon') ?></td>
-                        <td><?= $scientist['telephone'] ?? '' ?></td>
+                        <td>
+                            <span class="key"><?= lang('First name', 'Vorname') ?></span>
+                            <?= $scientist['first'] ?? '' ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="key"><?= lang('Academic title', 'Akademischer Titel') ?></span>
+                            <?= $scientist['academic_title'] ?? '' ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="key">Email</span>
+                            <?= $scientist['mail'] ?? '' ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="key"><?= lang('Telephone', 'Telefon') ?></span>
+                            <?= $scientist['telephone'] ?? '' ?>
+                        </td>
                     </tr>
                     <?php if (!empty($scientist['twitter'] ?? null)) { ?>
                         <tr>
-                            <td>Twitter</td>
                             <td>
+                                <span class="key">Twitter</span>
+
                                 <a href="https://twitter.com/<?= $scientist['twitter'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['twitter'] ?></a>
 
                             </td>
@@ -679,8 +681,9 @@ if ($currentuser) { ?>
                     <?php } ?>
                     <?php if (!empty($scientist['orcid'] ?? null)) { ?>
                         <tr>
-                            <td>ORCID</td>
                             <td>
+                                <span class="key">ORCID</span>
+
                                 <a href="http://orcid.org/<?= $scientist['orcid'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['orcid'] ?></a>
 
                             </td>
@@ -688,8 +691,9 @@ if ($currentuser) { ?>
                     <?php } ?>
                     <?php if (!empty($scientist['researchgate'] ?? null)) { ?>
                         <tr>
-                            <td>ResearchGate</td>
                             <td>
+                                <span class="key">ResearchGate</span>
+
                                 <a href="https://www.researchgate.net/profile/<?= $scientist['researchgate'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['researchgate'] ?></a>
 
                             </td>
@@ -697,8 +701,9 @@ if ($currentuser) { ?>
                     <?php } ?>
                     <?php if (!empty($scientist['google_scholar'] ?? null)) { ?>
                         <tr>
-                            <td>Google Scholar</td>
                             <td>
+                                <span class="key">Google Scholar</span>
+
                                 <a href="https://scholar.google.com/citations?user=<?= $scientist['google_scholar'] ?>" target="_blank" rel="noopener noreferrer"><?= $scientist['google_scholar'] ?></a>
 
                             </td>
@@ -708,8 +713,9 @@ if ($currentuser) { ?>
                         $web = preg_replace('/^https?:\/\//', '', $scientist['webpage']);
                     ?>
                         <tr>
-                            <td>Personal web page</td>
                             <td>
+                                <span class="key">Personal web page</span>
+
                                 <a href="https://<?= $web ?>" target="_blank" rel="noopener noreferrer"><?= $web ?></a>
                             </td>
                         </tr>
@@ -718,6 +724,69 @@ if ($currentuser) { ?>
             </table>
         </div>
     </div>
+
+
+    <div class="profile-widget col-md-6 col-lg-8">
+        <div class="box h-full">
+            <div class="content">
+                <?php if ($currentuser) { ?>
+                    <a class="float-right" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>">
+                        <i class="ph ph-note-pencil ph-lg"></i>
+                    </a>
+                <?php } ?>
+
+                <h4 class="title"><?= lang('Position', 'Position') ?></h4>
+                <?php if (isset($scientist['position']) && !empty($scientist['position'])) { ?>
+                   <p><?=$scientist['position']?></p>
+                <?php } else { ?>
+                    <p><?= lang('No position given.', 'Keine Position angegeben.') ?></p>
+                <?php } ?>
+            </div>
+            <hr>
+            <div class="content">
+
+                <h4 class="title"><?= lang('Research interest', 'Forschungsinteressen') ?></h4>
+
+                <?php if (isset($scientist['research']) && !empty($scientist['research'])) { ?>
+                    <ul class="list">
+                        <?php foreach ($scientist['research'] as $key) { ?>
+                            <li><?= $key ?></li>
+                        <?php } ?>
+                    </ul>
+                <?php } else { ?>
+                    <p><?= lang('No research interests stated.', 'Keine Forschungsinteressen angegeben.') ?></p>
+                <?php } ?>
+            </div>
+            <hr>
+            <div class="content">
+
+                <h4 class="title"><?= lang('Curriculum Vitae') ?></h4>
+
+                <?php if (isset($scientist['cv']) && !empty($scientist['cv'])) { 
+                    $cv = DB::doc2Arr($scientist['cv']);
+                    usort ( $cv , function ($a, $b) {
+                        $a = $a['from']['year'].'.'.$a['from']['month'];
+                        $b = $b['from']['year'].'.'.$b['from']['month'];
+                        return strnatcmp($b, $a); 
+                    }
+                );
+                    ?>
+                    <div class="biography">
+                        <?php foreach ($cv as $entry) { ?>
+                            <div class="cv">
+                                <span class="time"><?=$entry['time']?></span>
+                                <h5 class="title"><?=$entry['position']?></h5>
+                                <span class="affiliation"><?=$entry['affiliation']?></span>
+                            </div>
+                        <?php } ?>
+                    </div>
+                <?php } else { ?>
+                    <p><?= lang('No CV given.', 'Kein CV angegeben.') ?></p>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+
 
     <?php if ($currentuser && $Settings->hasPermission('complete-dashboard')) {
 
@@ -872,6 +941,59 @@ if ($currentuser) { ?>
 
 
 
+    <?php if (!empty($activities)) { ?>
+        <div class="profile-widget col-md-12 col-lg-6">
+            <div class="box h-full">
+                <div class="content">
+                    <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
+                </div>
+                <table class="table simple">
+                    <tbody>
+                        <?php
+                        $i = 0;
+                        foreach ($activities as $doc) {
+                            if ($doc['type'] == 'publication') continue;
+                            if ($i++ > 5) break;
+                            $id = $doc['_id'];
+                            $Format->setDocument($doc);
+
+                        ?>
+                            <tr id='tr-<?= $id ?>'>
+                                <td class="w-50"><?= $Format->activity_icon(); ?></td>
+                                <td>
+                                    <?php
+                                    if ($USER['display_activities'] == 'web') {
+                                        echo $Format->formatShort();
+                                    } else {
+                                        echo $Format->format();
+                                    }
+                                    ?>
+
+                                </td>
+                                <td class="unbreakable w-25">
+                                    <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                        <i class="ph ph-arrow-fat-line-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+                <div class="content mt-0">
+                    <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn osiris">
+                        <i class="ph ph-book-bookmark mr-5"></i>
+                        <?= lang('All activities', 'Alle Aktivitäten ') ?>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    <?php } ?>
+
+
+
+
     <?php
     // IMPACT FACTOR WIDGET
     if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && !empty($impacts)) { ?>
@@ -1007,7 +1129,7 @@ if ($currentuser) { ?>
     <?php
     // ROLE WIDGET
     if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && array_sum($authors) > 0) { ?>
-        <div class="profile-widget col-md-6 col-lg-3">
+        <div class="profile-widget col-md-6">
             <div class="box h-full">
                 <div class="chart content">
                     <h4 class="title mb-0">
@@ -1270,57 +1392,6 @@ if ($currentuser) { ?>
             </script>
         </div>
     <?php } ?>
-
-    <?php if (!empty($activities)) { ?>
-        <div class="profile-widget col-md-12 col-lg-6">
-            <div class="box h-full">
-                <div class="content">
-                    <h4 class="title"><?= lang('Latest activities', 'Neueste Aktivitäten') ?></h4>
-                </div>
-                <table class="table simple">
-                    <tbody>
-                        <?php
-                        $i = 0;
-                        foreach ($activities as $doc) {
-                            if ($doc['type'] == 'publication') continue;
-                            if ($i++ > 5) break;
-                            $id = $doc['_id'];
-                            $Format->setDocument($doc);
-
-                        ?>
-                            <tr id='tr-<?= $id ?>'>
-                                <td class="w-50"><?= $Format->activity_icon(); ?></td>
-                                <td>
-                                    <?php
-                                    if ($USER['display_activities'] == 'web') {
-                                        echo $Format->formatShort();
-                                    } else {
-                                        echo $Format->format();
-                                    }
-                                    ?>
-
-                                </td>
-                                <td class="unbreakable w-25">
-                                    <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                        <i class="ph ph-arrow-fat-line-right"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-
-                <div class="content mt-0">
-                    <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn osiris">
-                        <i class="ph ph-book-bookmark mr-5"></i>
-                        <?= lang('All activities', 'Alle Aktivitäten ') ?>
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    <?php } ?>
-
 
     <?php
     $filter = [

@@ -712,31 +712,9 @@ Route::post('/update-user/(.*)', function ($user) {
 
     $values = $_POST['values'];
     $values = validateValues($values, $DB);
-
     // separate personal and account information
     $person = $values;
     // $account = [];
-
-    // foreach ([
-    //     // 'is_admin' => 'bool',
-    //     // 'is_controlling' => 'bool',
-    //     // 'is_scientist' => 'bool',
-    //     // 'is_leader' => 'bool',
-    //     // 'is_active' => 'bool',
-    //     'display_activities' => 'string',
-    //     'show_coins' => 'string',
-    //     'hide_achievements' => 'string',
-    //     'maintenance' => 'string',
-    //     'roles' => 'array'
-    // ] as $key => $type) {
-    //     if (!array_key_exists($key, $values)) continue;
-    //     if ($type == 'bool') {
-    //         $account[$key] = boolval($values[$key] ?? false);
-    //     } else {
-    //         $account[$key] = $values[$key] ?? null;
-    //     }
-    //     unset($person[$key]);
-    // }
 
     // update name information
     if (isset($values['last']) && isset($values['first'])) {
@@ -749,10 +727,37 @@ Route::post('/update-user/(.*)', function ($user) {
         }
     }
 
+    if (isset($values['cv'])) {
+        $cv = $values['cv'];
+        foreach ($values['cv'] as $key => $entry) {
+            // add time text to entry
+            $fromto = $entry['from']['month'] . '/' . $entry['from']['year'];
+            $fromto .= " - ";
+            if (empty($entry['to']['year'])) {
+                $fromto .= "Current";
+            } else {
+                if (!empty($entry['to']['month'])) {
+                    $fromto .= $entry['to']['month'] . '/';
+                }
+                $fromto .= $entry['to']['year'];
+            }
+            $cv[$key]['time'] = $fromto;
+        }
+        // sort cv descending
+        usort($cv, function ($a, $b) {
+            $a = $a['from']['year'] . '.' . $a['from']['month'];
+            $b = $b['from']['year'] . '.' . $b['from']['month'];
+            return strnatcmp($b, $a);
+        });
+        $person['cv'] = $cv;
+    }
+
+
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
         ['$set' => $person]
     );
+
     // if (!empty($account)) $updateResult = $osiris->account->updateOne(
     //     ['username' => $user],
     //     ['$set' => $account]
