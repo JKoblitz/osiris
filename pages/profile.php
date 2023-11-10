@@ -411,9 +411,9 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     <i class="ph ph-edit text-muted ph-fw"></i>
                     <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                 </a>
-                <!-- <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
+                <a class="btn" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
                     <i class="ph ph-eye text-muted ph-fw"></i>
-                </a> -->
+                </a>
             </div>
 
 
@@ -764,12 +764,11 @@ if ($currentuser) { ?>
 
                 <?php if (isset($scientist['cv']) && !empty($scientist['cv'])) { 
                     $cv = DB::doc2Arr($scientist['cv']);
-                    usort ( $cv , function ($a, $b) {
-                        $a = $a['from']['year'].'.'.$a['from']['month'];
-                        $b = $b['from']['year'].'.'.$b['from']['month'];
-                        return strnatcmp($b, $a); 
-                    }
-                );
+                    // usort ( $cv , function ($a, $b) {
+                    //     $a = $a['from']['year'].'.'.$a['from']['month'];
+                    //     $b = $b['from']['year'].'.'.$b['from']['month'];
+                    //     return strnatcmp($b, $a); 
+                    // });
                     ?>
                     <div class="biography">
                         <?php foreach ($cv as $entry) { ?>

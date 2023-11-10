@@ -1,5 +1,18 @@
 # Neuigkeiten
 
+## soon
+<a class="anchor" href="#version-1.2.3" id="version-1.2.3"></a>
+`Version 1.2.3`
+
+Biography
+
+started with openly available user profile
+
+<!-- Forschungsbereiche -->
+
+.htaccess removed
+
+
 ## 25.10.2023
 <a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>
 `Version 1.2.2`

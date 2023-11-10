@@ -1366,6 +1366,28 @@ Route::get('/user/edit-bio/(.*)', function ($user) {
 }, 'login');
 
 
+Route::get('/user/visibility/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+    // include_once BASEPATH . "/php/Document.php";
+
+    $data = $DB->getPerson($user);
+    if (empty($data)) {
+        header("Location: " . ROOTPATH . "/user/browse");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => $data['name'], 'path' => "/profile/$user"],
+        ['name' => lang("Configure web view", "Webansicht Konfigurieren")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/user-webconfigure.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+
 Route::get('/user/delete/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
 

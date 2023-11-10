@@ -605,5 +605,8 @@
             "set-user-inactive": [false, false, true, false, true],
             "upload-user-picture": [false, false, true, false, true]
         }
+    },
+    "features": {
+        "projects": true
     }
 }

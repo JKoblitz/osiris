@@ -56,6 +56,8 @@ class Settings
                 return $s['roles']['roles'];
             case 'rights':
                 return $s['roles']['rights'];
+            case 'features':
+                return $s['features'];
 
             default:
                 return '';
@@ -77,6 +79,12 @@ class Settings
     function hasFeatureDisabled($feature)
     {
         return ($this->settings['general']['disable-' . $feature] ?? 'false') == 'true';
+    }
+
+    function featureActive($name){
+        $f = $this->settings['features'][$name] ?? array();
+        if (($f['active'] ?? 'false') == 'true') return true;
+        return false;
     }
 
     function getActivities($type = null)
