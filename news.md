@@ -20,7 +20,7 @@ started with openly available user profile
 
 #### <i class="ph ph-tree-structure text-osiris"></i> Projekte
 
-Drittmittelprojekte wurden eingeführt.
+Projekte wurden eingeführt.
 - Eine Übersicht über alle Projekte wird als Tabelle dargestellt. Diese ist durchsuchbar und kann nach Status und Rolle des Instituts gefiltert werden.
 - Durch Klick auf den Kurznamen gelangt man zur Übersichtsseite eines Projektes. Hier sind die folgenden Details dargestellt:
   - Eine Übersicht über alle Projektinformationen ist als Tabelle dargestellt

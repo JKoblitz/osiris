@@ -385,7 +385,7 @@ class DB
         if (empty($journal)) return null;
 
         if ($year == null) {
-            $year = intval($doc['year'] ?? 1) - 1;
+            $year = intval($doc['year'] ?? 1);
         }
         return $this->impact_from_year($journal, $year);
     }

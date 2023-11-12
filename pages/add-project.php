@@ -51,20 +51,30 @@ function sel($index, $value)
 </style>
 
 <h3 class="title">
-    <?= lang('Add new project', 'Neues Drittmittelprojekt') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
+    <?= lang('Add new project', 'Neues Projekt') ?>
+    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
 </h3>
 
 <form action="<?= $formaction ?>" method="post" id="project-form">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
 
-    <!-- <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>"> -->
-
-    <div class="form-group">
-        <label for="project" class="required element-other">
-            <?= lang('Short title', 'Kurztitel') ?>
-        </label>
-        <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>" maxlength="30">
+    <div class="row row-eq-spacing">
+        <div class="col-sm-6">
+            <label for="project" class="required element-other">
+                <?= lang('Short title', 'Kurztitel') ?>
+            </label>
+            <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>" maxlength="30">
+        </div>
+        <div class="col-sm-6">
+            <label class="required" for="type">
+                <?= lang('Type', 'Typ') ?>
+            </label>
+            <select class="form-control" id="type" name="values[type]" required autocomplete="off">
+                <option value="Drittmittel" <?= sel('type', 'Drittmittel') ?>><?= lang('Third-party funded', 'Drittmittel-finanziert') ?></option>
+                <option value="Eigenfinanziert" <?= sel('type', 'Eigenfinanziert') ?>><?= lang('Self-funded', 'Eigenfinanziert') ?></option>
+                <option value="Sonstiges" <?= sel('type', 'Sonstiges') ?>><?= lang('Other', 'Sonstiges') ?></option>
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
@@ -116,6 +126,7 @@ function sel($index, $value)
                 <?= lang('Third-party funder', 'Drittmittelgeber') ?>
             </label>
             <select class="form-control" name="values[funder]" value="<?= val('funder') ?>" required id="funder">
+                <option <?= sel('funder', 'Eigenmittel') ?>>Eigenmittel</option>
                 <option <?= sel('funder', 'DFG') ?>>DFG</option>
                 <option <?= sel('funder', 'Bund') ?>>Bund</option>
                 <option <?= sel('funder', 'Bundesländer') ?>>Bundesländer</option>
@@ -219,28 +230,21 @@ function sel($index, $value)
         }
     </script>
 
-    <!-- 
+    
     <div class="row row-eq-spacing">
-
-        <div class="col-sm-4">
-            <label for="">
+        <div class="col-sm-6">
+            <label for="grant_sum">
                 <?= lang('Grant amount', 'Bewilligungssumme') ?> [Euro]
             </label>
-            <input type="number" step="1" class="form-control" name="values[]">
+            <input type="number" step="1" class="form-control" name="values[grant_sum]" id="grant_sum" value="<?=val('grant_sum')?>">
         </div>
-        <div class="col-sm-4">
-            <label for="">
+        <div class="col-sm-6">
+            <label for="grant_income">
                 <?= lang('Funding income', 'Drittmitteleinnahmen') ?> [Euro]
             </label>
-            <input type="number" class="form-control" name="values[]">
+            <input type="number" step="1" class="form-control" name="values[grant_income]" id="grant_income" value="<?=val('grant_income')?>">
         </div>
-        <div class="col-sm-4">
-            <label for="">
-                <?= lang('en', 'Drittmittelerträge') ?> [Euro]
-            </label>
-            <input type="number" class="form-control" name="values[]">
-        </div>
-    </div> -->
+    </div>
 
     <div class="form-group">
         <label for="personal" class="">

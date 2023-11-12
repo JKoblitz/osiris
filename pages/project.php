@@ -31,7 +31,7 @@ $Project = new Project($project);
 
 <h1>
     <?= $project['name'] ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
+    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
 </h1>
 
 <?= $Project->getStatus() ?>
@@ -62,6 +62,12 @@ $Project = new Project($project);
                     <td>
                         <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
                         <?= $project['title'] ?? '-' ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
+                        <?= $project['type'] ?? '-' ?>
                     </td>
                 </tr>
                 <tr>
@@ -165,8 +171,6 @@ $Project = new Project($project);
             <?= lang('Persons', 'Personen') ?>
         </h2>
 
-
-
         <div class="modal" id="persons" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -200,7 +204,7 @@ $Project = new Project($project);
                                             <td class="">
                                                 <select name="persons[<?= $i ?>][user]" id="persons-<?= $i ?>" class="form-control">
                                                     <?php
-                                                    $all_users = $osiris->persons->find(['username' => ['$ne' => null]], ['sort'=>['last'=> 1]]);
+                                                    $all_users = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ['last' => 1]]);
                                                     foreach ($all_users as $s) { ?>
                                                         <option value="<?= $s['username'] ?>" <?= ($con['user'] == $s['username'] ? 'selected' : '') ?>>
                                                             <?= "$s[last], $s[first] ($s[username])" ?>
@@ -305,8 +309,91 @@ $Project = new Project($project);
             </tbody>
         </table>
 
+
+
+        <h2>
+            <?= lang('Collaborators', 'Kooperationspartner') ?>
+        </h2>
+
+        <div class="btn-toolbar mb-10">
+            <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn primary">
+                <i class="ph ph-edit"></i>
+                <?= lang('Edit', 'Bearbeiten') ?>
+            </a>
+            <?php if (empty($project['collaborators'] ?? array())) { ?>
+                <a class="btn primary disabled">
+                    <i class="ph ph-map-trifold"></i>
+                    <?= lang('Show on map', 'Zeige auf Karte') ?>
+                </a>
+            <?php } else { ?>
+                <a href="<?= ROOTPATH ?>/visualize/map?project=<?= $id ?>" class="btn primary">
+                    <i class="ph ph-map-trifold"></i>
+                    <?= lang('Show on map', 'Zeige auf Karte') ?>
+                </a>
+            <?php } ?>
+
+        </div>
+
+
+        <table class="table">
+            <tbody>
+                <?php
+                if (empty($project['collaborators'] ?? array())) {
+                ?>
+                    <tr>
+                        <td>
+                            <?= lang('No collaborators connected.', 'Keine Partner verknüpft.') ?>
+                        </td>
+                    </tr>
+                <?php
+                } else foreach ($project['collaborators'] as $collab) {
+                ?>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+
+                                <span data-toggle="tooltip" data-title="<?= $collab['type'] ?>" class="badge mr-10">
+                                    <?= Project::getCollaboratorIcon($collab['type'], 'ph-fw ph-2x m-0') ?>
+                                </span>
+                                <div class="">
+                                    <h5 class="my-0">
+                                        <?= $collab['name'] ?>
+                                    </h5>
+                                    <?= $collab['location'] ?>
+                                    <a href="<?= $collab['ror'] ?>" class="ml-10" target="_blank" rel="noopener noreferrer">ROR <i class="ph ph-arrow-square-out"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                <?php
+                } ?>
+
+            </tbody>
+        </table>
+
+        <div class="alert mt-20">
+
+            <small class="text-muted float-right">
+                <?= lang('Based on partners', 'Basierend auf Partnern') ?>
+            </small>
+
+            <h5 class="title mb-0">
+                Scope
+            </h5>
+            <?php
+            $scope = $Project->getScope();
+
+            echo  $scope['scope'] . ' (' . $scope['region'] . ')';
+            ?>
+        </div>
+
+
+
+
+
+
         <?php
-        $activities = $osiris->activities->find(['projects' => $project['name']], ['sort'=> ['year'=>-1, 'month'=>-1, 'day'=>-1]]);
+        $activities = $osiris->activities->find(['projects' => $project['name']], ['sort' => ['year' => -1, 'month' => -1, 'day' => -1]]);
         $activities = $activities->toArray();
         $N = count($activities);
         ?>

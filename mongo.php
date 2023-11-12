@@ -425,6 +425,26 @@ Route::post('/projects/update-persons/([A-Za-z0-9]*)', function ($id) {
     header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
 });
 
+Route::post('/projects/update-collaborators/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $values = $_POST['values'];
+
+    $collaborators = [];
+    foreach ($values as $key => $values) {
+        foreach ($values as $i => $val) {
+            $collaborators[$i][$key] = $val;
+        }
+    }
+
+    $osiris->projects->updateOne(
+        ['_id' => $DB::to_ObjectID($id)],
+        ['$set' => ["collaborators" => $collaborators]]
+    );
+
+    header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
+});
+
+
 
 
 Route::post('/create-journal', function () {

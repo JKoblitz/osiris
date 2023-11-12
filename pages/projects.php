@@ -50,10 +50,21 @@ function val($index, $default = '')
     }
 </style>
 
+<div class="btn-toolbar float-right">
+    <a href="<?= ROOTPATH ?>/visualize/map" class="btn primary">
+        <i class="ph ph-map-trifold"></i>
+        <?= lang('Show on map', 'Zeige auf Karte') ?>
+    </a>
+    <a href="#<?= ROOTPATH ?>/visualize/projects" class="btn primary" onclick="todo()">
+        <i class="ph ph-chart-line-up"></i>
+        <?= lang('Show metrics', 'Zeige Metriken') ?>
+    </a>
+</div>
+
 <h1 class="mt-0">
     <i class="ph ph-tree-structure text-osiris"></i>
     <?= lang('Projects', 'Projekte') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
+    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
 </h1>
 
 
@@ -63,7 +74,7 @@ function val($index, $default = '')
     <?= lang('Add new project', 'Neues Projekt anlegen') ?>
 </a>
 
-<div class="btn-toolbar float-sm-right">
+<div class="btn-toolbar float-sm-right filters">
     <span>
         <i class="ph ph-funnel-simple"></i>
         <span class="sr-only">Filters</span>
@@ -100,7 +111,7 @@ function val($index, $default = '')
     <thead>
         <th><?= lang('ID', 'ID') ?></th>
         <!-- <th><?= lang('Title', 'Title') ?></th> -->
-        <th><?= lang('Third-party funder', 'Drittmittelgeber') ?></th>
+        <th><?= lang('Funder', 'Mittelgeber') ?></th>
         <th><?= lang('Project time', 'Projektlaufzeit') ?></th>
         <th><?= lang('Role', 'Rolle') ?></th>
         <th><?= lang('Contact person', 'Kontaktperson') ?></th>
@@ -171,8 +182,8 @@ function val($index, $default = '')
                 [2, 'desc'],
             ]
         });
-        
-        $('#project-table_wrapper').prepend($('.btn-toolbar'))
+
+        $('#project-table_wrapper').prepend($('.filters'))
     });
 
     function filterStatus(btn, status) {

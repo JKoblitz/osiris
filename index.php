@@ -578,6 +578,29 @@ Route::get('/projects/edit/([a-zA-Z0-9]*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::get('/projects/collaborators/([a-zA-Z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
+
+    $mongo_id = $DB->to_ObjectID($id);
+    $project = $osiris->projects->findOne(['_id' => $mongo_id]);
+    if (empty($project)) {
+        header("Location: " . ROOTPATH . "/projects?msg=not-found");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' =>  $project['name'], 'path' => "/projects/view/$id"],
+        ['name' => lang("Collaborators", "Kooperationspartner")]
+    ];
+    global $form;
+    $form = DB::doc2Arr($project);
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/project-collaborators.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 
 Route::get('/research-data', function () {
     include_once BASEPATH . "/php/init.php";
@@ -1239,6 +1262,7 @@ Route::get('/visualize/(\w*)', function ($page) {
         "sunburst" => lang('Department overview', 'Abteilungs-Übersicht'),
         "departments" => lang('Department network', 'Abteilungs-netzwerk'),
         "openaccess" => lang('Open Access'),
+        "map" => lang('Map', 'Karte'),
     ];
     if (!array_key_exists($page, $names)) {
         die("404");

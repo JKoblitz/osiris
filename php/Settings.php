@@ -58,7 +58,6 @@ class Settings
                 return $s['roles']['rights'];
             case 'features':
                 return $s['features'];
-
             default:
                 return '';
                 break;

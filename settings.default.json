@@ -6,10 +6,16 @@
         "disable-user-metrics": "false"
     },
     "affiliation": {
-        "id": "LISI",
+        "id": "DSMZ",
         "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",
         "link": "https://www.dsmz.de/",
-        "logo": "dsmz.svg"
+        "logo": "dsmz.svg",
+        "type": "Facility",
+        "ror": "https://ror.org/02tyer376",
+        "location": "Braunschweig, Germany",
+        "country": "DE",
+        "lat": 52.211427,
+        "lng": 10.531188
     },
     "departments": [
         {

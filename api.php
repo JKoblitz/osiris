@@ -473,15 +473,15 @@ Route::get('/api/dashboard/oa-status', function () {
     include(BASEPATH . '/php/init.php');
 
     $filter = ['oa_status' => ['$ne' => null]];
-    if (isset($_GET['year'])){
+    if (isset($_GET['year'])) {
         $filter['year'] = $_GET['year'];
-    } else {        
+    } else {
         $filter['year'] = ['$gte' => $Settings->get('startyear')];
     }
 
     $result = array();
     $result = $osiris->activities->aggregate([
-        ['$match' => $filter ],
+        ['$match' => $filter],
         [
             '$group' => [
                 '_id' => [
@@ -503,6 +503,77 @@ Route::get('/api/dashboard/oa-status', function () {
     echo return_rest($result, count($result));
 });
 
+
+Route::get('/api/dashboard/collaborators', function () {
+    include(BASEPATH . '/php/init.php');
+    include(BASEPATH . '/php/Project.php');
+
+    $result = [];
+    if (isset($_GET['project'])) {
+        $id = $_GET['project'];
+        if (DB::is_ObjectID($id)) {
+            $mongo_id = $DB->to_ObjectID($id);
+            $project = $osiris->projects->findOne(['_id' => $mongo_id]);
+        } else {
+            $project = $osiris->projects->findOne(['name' => $id]);
+            $id = strval($project['_id'] ?? '');
+        }
+        if (empty($project)) {
+            die("Project could not be found.");
+        } elseif (empty($project['collaborators'] ?? [])) {
+            die("Project has no collaborators");
+        } else {
+            $P = new Project($project);
+            $result = $P->getScope();
+
+            $data = [
+                'lon' => [],
+                'lat' => [],
+                'text' => [],
+                'marker' => [
+                    'size' => 15,
+                    'color' => []
+                ]
+            ];
+            foreach ($project['collaborators'] as $c) {
+                // if (empty($c['lng']))
+                $data['lon'][] = $c['lng'];
+                $data['lat'][] = $c['lat'];
+                $data['text'][] = "<b>$c[name]</b><br>$c[location]";
+                $color = ($c['role'] == 'Partner' ? '#ECAF00' : '#B61F29');
+                $data['marker']['color'][] = $color;
+            }
+            $result['collaborators'] = $data;
+        }
+    } else {
+        $result = $osiris->projects->aggregate([
+            ['$match' => ['collaborators' => ['$exists' => 1]]],
+            ['$project' => ['collaborators' => 1]],
+            ['$unwind' => '$collaborators'],
+            [
+                '$group' => [
+                    '_id' => '$collaborators.ror',
+                    'count' => ['$sum' => 1],
+                    'data' => [
+                        '$first' => '$collaborators'
+                    ]
+                ]
+            ],
+            // ['$project' => ['_id' => 0, 'status' => '$_id.status', 'year' => '$_id.year', 'count' => 1]],
+            // ['$sort' => ['year' => 1]],
+            // [
+            //     '$group' => [
+            //         '_id' => '$status',
+            //         'data' => ['$push' => '$$ROOT']
+            //     ]
+            // ],
+        ])->toArray();
+    }
+
+
+
+    echo return_rest($result, count($result));
+});
 
 
 

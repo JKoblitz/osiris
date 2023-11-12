@@ -437,7 +437,7 @@ class Modules
                     </label>
                     <select name="values[country]" id="country" class="form-control" <?= $required ?>>
                         <option value="" <?= empty($val) ? 'selected' : '' ?>><?= lang('unknown', 'unbekannt') ?></option>
-                        <?php foreach (Country::$ALL as $code => $country) { ?>
+                        <?php foreach (Country::COUNTRIES as $code => $country) { ?>
                             <option value="<?= $code ?>" <?= $val == $code ? 'selected' : '' ?>><?= $country ?></option>
                         <?php } ?>
                     </select>

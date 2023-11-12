@@ -15,6 +15,7 @@
  */
 
 require_once "DB.php";
+require_once "Country.php";
 
 class Project
 {
@@ -55,6 +56,31 @@ class Project
         return "<span class='badge'>" . '<i class="ph ph-handshake text-muted"></i> ' . lang('Partner') . "</span>";
     }
 
+    public static function getCollaboratorIcon($collab, $cls = "")
+    {
+        switch ($collab) {
+            case 'Education':
+                return '<i class="ph ' . $cls . ' ph-graduation-cap"></i>';
+            case 'Healthcare':
+                return '<i class="ph ' . $cls . ' ph-heartbeat"></i>';
+            case 'Company':
+                return '<i class="ph ' . $cls . ' ph-buildings"></i>';
+            case 'Archive':
+                return '<i class="ph ' . $cls . ' ph-archive"></i>';
+            case 'Nonprofit':
+                return '<i class="ph ' . $cls . ' ph-hand-coins"></i>';
+            case 'Government':
+                return '<i class="ph ' . $cls . ' ph-bank"></i>';
+            case 'Facility':
+                return '<i class="ph ' . $cls . ' ph-warehouse"></i>';
+            case 'Other':
+                return '<i class="ph ' . $cls . ' ph-house"></i>';
+            default:
+                return '<i class="ph ' . $cls . ' ph-house"></i>';
+        }
+    }
+
+
     /**
      * Convert MongoDB document to array.
      *
@@ -81,7 +107,7 @@ class Project
         return false;
     }
 
-    public static function personRole($role, $gender='n')
+    public static function personRole($role, $gender = 'n')
     {
         switch ($role) {
             case 'PI':
@@ -95,7 +121,7 @@ class Project
 
     public function widgetSmall()
     {
-        $widget = '<a class="module '.($this->inPast() ? 'inactive': '').'" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
         $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
@@ -105,9 +131,9 @@ class Project
     }
 
 
-    public function widgetLarge($user=null)
+    public function widgetLarge($user = null)
     {
-        $widget = '<a class="module '.($this->inPast() ? 'inactive': '').'" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
 
         $widget .= '<span class="float-right">' . $this->getDateRange() . '</span>';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
@@ -118,7 +144,7 @@ class Project
         else {
             $userrole = '';
             foreach ($this->project['persons'] as $p) {
-                if ($p['user'] == $user){
+                if ($p['user'] == $user) {
                     $userrole = $p['role'];
                     break;
                 }
@@ -133,5 +159,42 @@ class Project
         $widget .=  '</span>';
         $widget .= '</a>';
         return $widget;
+    }
+
+    public function getScope()
+    {
+        $collaborators = DB::doc2Arr($this->project['collaborators'] ?? []);
+
+        $scope = 'local';
+        $countries = array_column($collaborators, 'country');
+        if (empty($countries)) return ['scope' => $scope, 'region' => '-'];
+
+        $scope = 'national';
+        $countries = array_unique($countries);
+        if (count($countries) == 1) return ['scope' => $scope, 'region' => Country::get($countries[0])];
+
+        $scope = 'continental';
+        $continents = [];
+        foreach ($countries as $code) {
+            $continents[] = Country::countryToContinent($code);
+        }
+        $continents = array_unique($continents);
+        if (count($continents) == 1) return ['scope' => $scope, 'region' => $continents[0]];
+
+        $scope = 'international';
+        return ['scope' => $scope, 'region' => 'world'];
+    }
+
+    public function getContinents()
+    {
+        $collaborators = DB::doc2Arr($this->project['collaborators'] ?? []);
+        $countries = array_column($collaborators, 'country');
+        $countries = array_unique($countries);
+        $continents = [];
+        foreach ($countries as $code) {
+            $continents[] = Country::countryToContinent($code);
+        }
+        $continents = array_unique($continents);
+        return $continents;
     }
 }

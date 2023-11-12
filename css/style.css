@@ -1236,3 +1236,25 @@ border-color: var(--border-color);
 .cv .affiliation {
     color: var(--muted-color);
 }
+
+
+
+i.ph.ph-lg {  
+    font-size: 1.25em;
+    line-height: .05em;
+    vertical-align: -.075em;
+  }
+  i.ph.ph-2x {
+    font-size: 2em;
+  }
+  i.ph.ph-3x {
+    font-size: 3em;
+  }
+  i.ph.ph-4x {
+    font-size: 4em;
+  }
+  i.ph.ph-fw {
+    text-align: center;
+    width: 1.25em;
+    display: inline-block;
+  }

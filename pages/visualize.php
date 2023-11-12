@@ -55,5 +55,11 @@ $selectedUser = $osiris->persons->findone(['user' => $scientist]);
             </h5>
             <img src="<?= ROOTPATH ?>/img/charts/open-access.png" alt="" class="w-full">
         </a>
+        <!-- <a href="<?= ROOTPATH ?>/visualize/map" class="tile">
+            <h5 class="title">
+                <?= lang('Map', 'Karte') ?>
+            </h5>
+            <img src="<?= ROOTPATH ?>/img/charts/map.png" alt="" class="w-full">
+        </a> -->
     </div>
 </div>
