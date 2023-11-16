@@ -1,3 +1,23 @@
+<?php
+    
+/**
+ * Page to visualize open access activities
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /visualize/openaccess
+ *
+ * @package OSIRIS
+ * @since 1.3.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
+?>
+
 <h2>
     <?= lang('Open Access') ?>
 </h2>

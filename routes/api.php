@@ -157,6 +157,9 @@ Route::get('/api/all-activities', function () {
         // only own work
         $filter = ['$or' => [['authors.user' => $user], ['editors.user' => $user], ['user' => $user]]];
     }
+    if (isset($_GET['type'])) {
+        $filter['type'] = $_GET['type'];
+    }
     $cursor = $osiris->activities->find($filter);
     $cart = readCart();
     foreach ($cursor as $doc) {
@@ -180,8 +183,10 @@ Route::get('/api/all-activities', function () {
         }
 
         $active = false;
-        $sm = intval($doc['month']);
-        $sy = intval($doc['year']);
+        // if (!isset($doc['year'])) {dump($doc, true); die;}
+        $sm = intval($doc['month'] ?? 0);
+        $sy = intval($doc['year'] ?? 0);
+        // die;
         $em = $sm;
         $ey = $sy;
 
@@ -576,9 +581,191 @@ Route::get('/api/dashboard/collaborators', function () {
 });
 
 
+Route::get('/api/dashboard/author-role', function () {
+    include(BASEPATH . '/php/init.php');
+    $result = array(
+        'labels' => [],
+        'y' => [],
+        'colors' => []
+    );
+
+    $filter = ['year' => ['$gte' => $Settings->get('startyear')], 'type' => 'publication'];
+    if (isset($_GET['user'])) {
+        $user = $_GET['user'];
+        $filter['authors.user'] = $user;
+
+        $data = $osiris->activities->aggregate([
+            ['$match' => $filter],
+            ['$project' => ['authors' => 1]],
+            ['$unwind' => '$authors'],
+            ['$match' => ['authors.user' => $user, 'authors.aoi' => true]],
+            [
+                '$group' => [
+                    '_id' => '$authors.position',
+                    'count' => ['$sum' => 1],
+                ]
+            ],
+            ['$sort' => ['count' => -1]],
+            ['$project' => ['_id' => 0, 'x' => '$_id', 'y' => '$count']],
+        ])->toArray();
+
+        $editorials = $osiris->activities->count(['editors.user' => $user]);
+        if ($editorials !== 0)
+            $data[] = [
+                'x' => 'editor',
+                'y' => $editorials
+            ];
+    }
+
+    foreach ($data as $el) {
+        switch ($el['x']) {
+            case 'first':
+                $label = lang("First author", "Erstautor");
+                $color = '#006EB799';
+                break;
+            case 'last':
+                $label = lang("Last author", "Letztautor");
+                $color = '#004d8099';
+                break;
+            case 'middle':
+                $label = lang("Middle author", "Mittelautor");
+                $color = '#cce2f099';
+                break;
+            case 'editor':
+                $label = lang("Editorship", "Editorenschaft");
+                $color = '#002c4999';
+                break;
+            case 'corresponding':
+                $label = lang("Corresponding", "Korrespondierender Autor");
+                $color = '#4c99cc99';
+                break;
+            default:
+                $label = $el['x'];
+                $color = '#ffffff';
+                break;
+        }
+        $result['labels'][] = $label;
+        $result['y'][] = $el['y'];
+        $result['colors'][] = $color;
+    }
+
+    echo return_rest($result, count($result));
+});
 
 
 
+Route::get('/api/dashboard/impact-factor-hist', function () {
+    include(BASEPATH . '/php/init.php');
+
+    $filter = ['year' => ['$gte' => $Settings->get('startyear')], 'impact' => ['$ne' => null]];
+    if (isset($_GET['user'])) {
+        $filter['authors.user'] = $_GET['user'];
+    }
+    $max = $osiris->activities->find(
+        $filter,
+        ['sort' => ['impact' => -1], 'limit' => 1, 'projection' => ['impact' => 1]]
+    )->toArray();
+
+    if (empty($max)) {
+        echo return_rest([], 0);
+        die;
+    }
+    $max_impact = ceil($max[0]['impact']);
+    $x = [];
+    for ($i = 1; $i <= $max_impact; $i++) {
+        $x[] = $i;
+    }
+
+    $data = $osiris->activities->aggregate([
+        ['$match' => $filter],
+        ['$project' => ['_id' => 0, 'impact' => 1]],
+        ['$bucket' => [
+            'groupBy' => '$impact',
+            'boundaries' => $x,
+            'default' => 0
+        ]],
+        ['$project' => ['_id' => 0, 'x' => '$_id', 'y' => '$count']],
+    ])->toArray();
+
+    array_unshift($x, 0);
+
+    $result = [
+        'x' => $x,
+        'y' => array_fill(0, $max_impact + 1, 0),
+        'labels' => $x,
+    ];
+    foreach ($data as $i => $datum) {
+        $result['y'][$datum['x']] = $datum['y'];
+    }
+
+    echo return_rest($result, count($result));
+});
+
+
+
+Route::get('/api/dashboard/activity-chart', function () {
+    include(BASEPATH . '/php/init.php');
+
+    $filter = ['year' => ['$gte' => $Settings->get('startyear')]];
+    if (isset($_GET['user'])) {
+        $filter['authors.user'] = $_GET['user'];
+    }
+
+    $result = [];
+    $years = [];
+    for ($i = $Settings->get('startyear'); $i <= CURRENTYEAR; $i++) {
+        $years[] = strval($i);
+    }
+    $result['labels'] = $years;
+    $data = $osiris->activities->aggregate([
+        ['$match' => $filter],
+        [
+            '$group' => [
+                '_id' => [
+                    'type' => '$type',
+                    'year' => '$year'
+                ],
+                'count' => ['$sum' => 1],
+            ]
+        ],
+        ['$project' => ['_id' => 0, 'type' => '$_id.type', 'year' => '$_id.year', 'count' => 1]],
+        ['$sort' => ['year' => 1]],
+        [
+            '$group' => [
+                '_id' => '$type',
+                'x' => ['$push' => '$year'],
+                'y' => ['$push' => '$count'],
+                
+            ]
+        ],
+        
+        // ['$project' => ['_id' => 0, 'data'=>['$arrayToObject' => ['$literal' =>  [
+        //     '$x', '$y'
+        // ]]]]],
+    ])->toArray();
+
+    // dump($data);
+
+    $result['data'] = [];
+    foreach ($data as $d) {
+        $group = $Settings->getActivities($d['_id']);
+        $element = [
+            'label' => $group['name'],
+            'backgroundColor' => $group['color'].'95',
+            'data' => []
+        ];
+        foreach ($years as $y) {
+            $i = array_search($y, DB::doc2Arr($d['x'])); 
+            if ($i === false) $v = 0;
+            else $v = $d['y'][$i];
+
+            $element['data'][] = $v;
+        }
+        $result['data'][] = $element;
+    }
+
+    echo return_rest($result, count($result));
+});
 
 
 

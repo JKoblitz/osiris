@@ -422,6 +422,11 @@ $dept = $form['dept'] ?? $USER['dept'] ?? '';
 
             </div>
 
+            <?php if (empty($form)) { ?>
+                <input type="text" class="hidden" id="funding" name="values[funding]" value="">
+            <?php } ?>
+            
+
 
             <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
                 <div class="form-group">

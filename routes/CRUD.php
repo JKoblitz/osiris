@@ -188,27 +188,6 @@ Route::post('/create', function () {
     $collection = $osiris->activities;
     $required = [];
     $col = $_POST['values']['type'];
-    switch ($col) {
-        case 'lecture':
-            break;
-        case 'misc':
-            break;
-        case 'poster':
-            break;
-        case 'publication':
-            // $required = ['title', 'year', 'month'];
-            break;
-        case 'students':
-            // $required = ['title', 'category', 'name', 'affiliation', 'start', 'end'];
-            break;
-        case 'review':
-            // $required = ['role', 'user'];
-            break;
-        default:
-            // echo "unsupported collection";
-            break;
-    }
-
 
     $values = validateValues($_POST['values'], $DB);
 
@@ -236,12 +215,6 @@ Route::post('/create', function () {
         $osiris->queue->deleteOne(['pubmed' => $values['pubmed']]);
     }
 
-
-    // if (isset($_FILES["file"]) && $_FILES["file"]['error'] == 0) {
-    //     $filecontent = file_get_contents($_FILES["file"]['tmp_name']);
-
-    //     $values['file'] = new MongoDB\BSON\Binary($filecontent, MongoDB\BSON\Binary::TYPE_GENERIC);
-    // }
     foreach ($required as $req) {
         if (!isset($values[$req]) || empty($values[$req])) {
             echo "$req is required";
@@ -249,15 +222,19 @@ Route::post('/create', function () {
         }
     }
 
-    // dump($values, true);
-    // die();
+    // add projects if possible
+    if (isset($values['funding'])){
+        $values['funding'] = explode(',',$values['funding']);
+        foreach ($values['funding'] as $key) {
+            $project = $osiris->projects->findOne(['funding_number'=>$key]);
+            if (isset($project['name'])) $values['projects'][] = $project['name'];
+        }
+    }
 
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
     $DB->renderActivities(['_id' => $id]);
-
-    // addUserActivity('create');
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         $red = str_replace("*", $id, $_POST['redirect']);
@@ -360,6 +337,17 @@ Route::post('/projects/create', function () {
             ]
         ];
     }
+    if (isset($values['funding_number'])){
+        $values['funding_number'] = explode(',', $values['funding_number']);
+        $values['funding_number'] = array_map('trim', $values['funding_number']);
+        
+        // check if there are already activities with this funding number
+        $test = $osiris->activities->updateMany(
+            ['funding'=>['$in'=>$values['funding_number']]],
+            ['$push' => ['projects'=>$values['name']]]
+        );
+        dump( $test->getModifiedCount());
+    }
 
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
@@ -376,6 +364,7 @@ Route::post('/projects/create', function () {
     ]);
 });
 
+
 Route::post('/projects/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
@@ -391,6 +380,10 @@ Route::post('/projects/update/([A-Za-z0-9]*)', function ($id) {
     // check if module already exists:
     // $project_exist = $collection->findOne(['name' => $values['name']]);
 
+    if (isset($values['funding_number'])){
+        $values['funding_number'] = explode(',', $values['funding_number']);
+        $values['funding_number'] = array_map('trim', $values['funding_number']);
+    }
 
     $id = $DB->to_ObjectID($id);
     $updateResult = $collection->updateOne(
@@ -444,6 +437,46 @@ Route::post('/projects/update-collaborators/([A-Za-z0-9]*)', function ($id) {
     header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
 });
 
+
+Route::post('/groups/create', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die("no values given");
+    $collection = $osiris->groups;
+
+    $values = validateValues($_POST['values'], $DB);
+
+    // check if group name already exists:
+    $group_exist = $collection->findOne(['id' => $values['id']]);
+    if (!empty($group_exist)) {
+        header("Location: " . ROOTPATH . "/groups/new?msg=Group ID does already exist.");
+        die();
+    }
+
+    // add information on creating process
+    $values['created'] = date('Y-m-d');
+    $values['created_by'] = strtolower($_SESSION['username']);
+
+    if (!empty($values['parent'])){
+        $parent = $Groups->getGroup($values['parent']);
+        if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
+    }
+
+//    dump($values, true);
+//    die;
+    $insertOneResult  = $collection->insertOne($values);
+    $id = $insertOneResult->getInsertedId();
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        $red = str_replace("*", $id, $_POST['redirect']);
+        header("Location: " . $red . "?msg=success");
+        die();
+    }
+
+    echo json_encode([
+        'inserted' => $insertOneResult->getInsertedCount(),
+        'id' => $id,
+    ]);
+});
 
 
 
@@ -747,6 +780,7 @@ Route::post('/update-user/(.*)', function ($user) {
         }
     }
 
+
     if (isset($values['cv'])) {
         $cv = $values['cv'];
         foreach ($values['cv'] as $key => $entry) {
@@ -772,6 +806,12 @@ Route::post('/update-user/(.*)', function ($user) {
         $person['cv'] = $cv;
     }
 
+    // dump($person, true);
+    // die;
+    if (isset($person['dept'])){
+        $person['depts'] = $Groups->getGroupList($person['dept']);
+    }
+    $person['depts'] = array_reverse($person['depts']);
 
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
@@ -873,6 +913,9 @@ Route::post('/update-project-data/(.*)', function ($id) {
     } else {
         $values = $_POST['projects'];
         $values = validateValues($values, $DB);
+        // dump($values);
+        // die;
+
 
         $osiris->activities->updateOne(
             ['_id' => $DB::to_ObjectID($id)],

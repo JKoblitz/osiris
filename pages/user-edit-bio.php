@@ -48,7 +48,7 @@
             </h4>
             <small class="text-muted">Max. 5</small><br>
 
-            <?php foreach (($data['research'] ?? array() )as $n) { ?>
+            <?php foreach (($data['research'] ?? array()) as $n) { ?>
                 <div class="input-group mb-10 research-interest">
                     <input type="text" name="values[research][]" value="<?= $n ?>" list="research-list" required class="form-control">
                     <div class="input-group-append">
@@ -101,49 +101,51 @@
             </h4>
 
 
-            <button class="btn mb-20" type="button" onclick="addRow(event, '#cv-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
-
+            <button class="btn" type="button" onclick="addCVrow(event, '#cv-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
+<br>
+            <small class="text-muted float-right"><?=lang('Sorting will be done automatically', 'Wir sortieren das automatisch für dich')?></small>
+            <br>
             <div id="cv-list">
                 <?php
-                if (isset($data['cv']) && !empty($data['cv'])) { 
-                
-                foreach ($data['cv'] as $i => $con) { ?>
+                if (isset($data['cv']) && !empty($data['cv'])) {
 
-                    <div class="alert mb-10">
-                        <div class="input-group my-10">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+                    foreach ($data['cv'] as $i => $con) { ?>
+
+                        <div class="alert mb-10">
+                            <div class="input-group my-10">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><?= lang('From', 'Von') ?></span>
+                                </div>
+                                <input type="number" name="values[cv][<?= $i ?>][from][month]" value="<?= $con['from']['month'] ?? '' ?>" class="form-control" placeholder="month *" min="1" max="12" step="1" id="from-month" required>
+                                <input type="number" name="values[cv][<?= $i ?>][from][year]" value="<?= $con['from']['year'] ?? '' ?>" class="form-control" placeholder="year *" min="1900" max="<?= CURRENTYEAR ?>" step="1" id="from-year" required>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><?= lang('to', 'bis') ?></span>
+                                </div>
+                                <input type="number" name="values[cv][<?= $i ?>][to][month]" value="<?= $con['to']['month'] ?? '' ?>" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month">
+                                <input type="number" name="values[cv][<?= $i ?>][to][year]" value="<?= $con['to']['year'] ?? '' ?>" class="form-control" placeholder="year" min="1900" step="1" id="to-year">
                             </div>
-                            <input type="number" name="values[cv][<?= $i ?>][from][month]" value="<?= $con['from']['month'] ?? '' ?>" class="form-control" placeholder="month *" min="1" max="12" step="1" id="from-month" required>
-                            <input type="number" name="values[cv][<?= $i ?>][from][year]" value="<?= $con['from']['year'] ?? '' ?>" class="form-control" placeholder="year *" min="1900" max="<?= CURRENTYEAR ?>" step="1" id="from-year" required>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><?= lang('to', 'bis') ?></span>
+
+                            <div class="form-group mb-10">
+                                <input name="values[cv][<?= $i ?>][position]" type="text" class="form-control" value="<?= $con['position'] ?? '' ?>" placeholder="Position *" required>
                             </div>
-                            <input type="number" name="values[cv][<?= $i ?>][to][month]" value="<?= $con['to']['month'] ?? '' ?>" class="form-control" placeholder="month" min="1" max="12" step="1" id="to-month">
-                            <input type="number" name="values[cv][<?= $i ?>][to][year]" value="<?= $con['to']['year'] ?? '' ?>" class="form-control" placeholder="year" min="1900" step="1" id="to-year">
-                        </div>
+                            <div class="form-group mb-0">
+                                <input name="values[cv][<?= $i ?>][affiliation]" type="text" class="form-control" value="<?= $con['affiliation'] ?? '' ?>" placeholder="Affiliation *" list="affiliation-list" required>
+                            </div>
 
-                        <div class="form-group mb-10">
-                            <input name="values[cv][<?= $i ?>][position]" type="text" class="form-control" value="<?= $con['position'] ?? '' ?>" placeholder="Position *" required>
-                        </div>
-                        <div class="form-group mb-0">
-                            <input name="values[cv][<?= $i ?>][affiliation]" type="text" class="form-control" value="<?= $con['affiliation'] ?? '' ?>" placeholder="Affiliation *" list="affiliation-list" required>
-                        </div>
+                            <small class="text-muted">* required</small><br>
 
-                        <small class="text-muted">* required</small><br>
-
-                        <button class="btn danger my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
-                    </div>
-                <?php } 
-                }?>
+                            <button class="btn danger my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
+                        </div>
+                <?php }
+                } ?>
             </div>
 
             <script>
-                var i = <?= $i ?>
+                var i = <?= $i ?? 0 ?>
 
-                var CURRENTYEAR = <?= CURRENTYEAR ?>
+                var CURRENTYEAR = <?= CURRENTYEAR ?>;
 
-                function addRow(evt, parent) {
+                function addCVrow(evt, parent) {
                     i++;
                     var el = `
             <div class="alert mb-10">
@@ -178,7 +180,7 @@
             </script>
 
 
-<datalist id="affiliation-list">
+            <datalist id="affiliation-list">
                 <?php
                 foreach ($osiris->persons->distinct('cv.affiliation') as $d) { ?>
                     <option><?= $d ?></option>

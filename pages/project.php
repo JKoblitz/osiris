@@ -29,6 +29,12 @@ $Project = new Project($project);
     }
 </style>
 
+
+<a class="btn float-right" href="<?= ROOTPATH ?>/preview/project/<?= $id ?>">
+    <i class="ph ph-eye ph-fw"></i>
+    <?= lang('Preview', 'Vorschau') ?>
+</a>
+
 <h1>
     <?= $project['name'] ?>
     <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
@@ -96,8 +102,8 @@ $Project = new Project($project);
                 </tr>
                 <tr>
                     <td>
-                        <span class="key"><?= lang('Funding reference number', 'Förderkennzeichen') ?></span>
-                        <?= $project['funding_number'] ?? '-' ?>
+                        <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
+                        <?php $Project->getFundingNumbers('<br>') ?>
                     </td>
                 </tr>
                 <tr>

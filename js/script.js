@@ -780,6 +780,16 @@ function getDOI(doi) {
             var issue = null
             if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
 
+            var funder = [];
+            if (pub.funder !== undefined && pub.funder !== null){
+                pub.funder.forEach(f => {
+                    if (f.award){
+                        funder=funder.concat(f.award)
+                    }
+                });
+            }
+            console.log(funder);
+
             var pubdata = {
                 title: pub.title[0],
                 first_authors: first,
@@ -802,6 +812,7 @@ function getDOI(doi) {
                 city: pub['publisher-location'],
                 // open_access: pub.open_access,
                 epub: (pub['published-print'] === undefined && pub['published-online'] === undefined),
+                funding: funder.join(',')
             }
             toggleForm(pubdata)
             getOpenAccessStatus(doi)
@@ -1131,12 +1142,15 @@ function fillForm(pub) {
         'date_start',
         'software_doi',
         'open_access',
-        'abstract'
+        'abstract',
+        'funding'
     ]
 
     elements.forEach(element => {
         if (pub[element] !== undefined && !UPDATE || !isEmpty(pub[element]))
             $('#' + element).val(pub[element]).addClass('is-valid')
+        console.log(element);
+        console.log(pub[element]);
         // console.log($('#' + element));
     });
 
@@ -1193,6 +1207,9 @@ function fillForm(pub) {
 
         affiliationCheck();
     }
+    // if (pub.funder.length > 0){
+    //     funder
+    // }
 
     toastSuccess('Bibliographic data were updated.')
 

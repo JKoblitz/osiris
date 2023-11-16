@@ -1,6 +1,6 @@
 <?php
-require_once "DB.php";
 require_once "Settings.php";
+require_once "DB.php";
 require_once "Schema.php";
 require_once "Country.php";
 
@@ -406,7 +406,13 @@ class Document extends Settings
             $corresponding = array_key_exists('corresponding', $pos);
         }
         foreach ($raw_authors as $n => $a) {
+            // if ($this->usecase == 'portal'){
+            //     $author = Document::abbreviateAuthor($a['last'], $a['first']);
+            //     if (isset($a['user'])) 
+            //         $author = "<a href='".ROOTPATH."/portal/person/".$a['user']."'>$author</a>";
 
+            //     $authors[] = $author;
+            // } else 
             if (!$this->full) {
                 if ($n > 9) break;
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
@@ -417,10 +423,11 @@ class Document extends Settings
                 }
                 $authors[] = $author;
             } else {
-
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
-
-                if ($this->highlight === true) {
+                if ($this->usecase == 'portal') {
+                    if (isset($a['user']))
+                        $author = "<a href='" . ROOTPATH . "/portal/person/" . $a['user'] . "'>$author</a>";
+                } else if ($this->highlight === true) {
                     if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
                     $author = "<b>$author</b>";
@@ -453,7 +460,6 @@ class Document extends Settings
         if ($corresponding) {
             $this->appendix .= " <sup>§</sup> Corresponding author";
         }
-
         $append = "";
         $separator = 'and';
         if (!$this->full && $n > 9) {
@@ -588,18 +594,13 @@ class Document extends Settings
         if ($epub) $issues[] = "epub";
 
         // CHECK student status issue
-        if ($subtype == "students" && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
+        if (in_array('status', $this->modules) && isset($this->doc['status']) && $this->doc['status'] == 'in progress' && new DateTime() > getDateTime($this->doc['end'])) $issues[] = "students";
 
         // check ongoing reminder
         if (in_array('date-range-ongoing', $this->modules) && is_null($this->doc['end'])) {
             if (!isset($this->doc['end-delay']) || (new DateTime() > new DateTime($this->doc['end-delay']))) {
                 $issues[] = "openend";
             }
-        }
-
-        // check if journal is standardized
-        if (isset($this->doc['journal']) && (!isset($this->doc['journal_id']) || empty($this->doc['journal_id']))) {
-            $issues[] = 'journal_id';
         }
 
         return $issues;
@@ -701,16 +702,19 @@ class Document extends Settings
                 return "DOI: <a target='_blank' href='https://doi.org/$val'>$val</a>";
             case "edition": // ["edition"],
                 $val = $this->getVal('edition');
-                if ($val == 1) $val .= "st";
-                elseif ($val == 2) $val .= "nd";
-                elseif ($val == 3) $val .= "rd";
-                else $val .= "th";
+                if (!empty($val)) {
+                    if ($val == 1) $val .= "st";
+                    elseif ($val == 2) $val .= "nd";
+                    elseif ($val == 3) $val .= "rd";
+                    else $val .= "th";
+                }
                 return $val;
             case "editor": // ["editors"],
                 return $this->formatAuthors($this->getVal('editors'));
             case "editorial": // ["editor_type"],
                 return $this->getVal('editor_type');
             case "file-icons":
+                // if ($this->usecase == 'portal') return '';
                 $files = '';
                 foreach ($this->getVal('files', array()) as $file) {
                     $icon = getFileIcon($file['filetype']);
@@ -927,7 +931,6 @@ class Document extends Settings
             $line = $title;
         }
 
-
         $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
         $line .= "<br><small class='text-muted d-block'>";
         $line .= $this->template($template);
@@ -937,6 +940,46 @@ class Document extends Settings
         // if (!empty($this->appendix)) {
         //     $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
         // }
+        return $line;
+    }
+
+    public function formatPortal()
+    {
+        $this->full = true;
+        $line = "";
+        $template = $this->subtypeArr['template']['title'] ?? '{title}';
+        $title = $this->template($template);
+
+        $id = strval($this->doc['_id']);
+        $line = "<a class='colorless' href='" . ROOTPATH . "/portal/activity/$id'>$title</a>";
+        $line = "<h1 class='title'>$line</h1>";
+
+        $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
+        $line .= "<p class='text-muted'>";
+        $line .= $this->template($template);
+        // $line .= $this->get_field('file-icons');
+        if (!empty($this->appendix)) {
+            $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
+        }
+        $line .= "</p>";
+
+        // List of departments
+        if (isset($this->doc['authors']) && !empty($this->doc['authors'])) {
+            $authors = DB::doc2Arr($this->doc['authors']);
+            // $users = array_column($authors, 'user');
+            $depts = $this->db->getDeptFromAuthors($authors);
+            if (!empty($depts)) {
+
+                foreach ($depts as $i => $dept) {
+                    $name = $this->getDepartments($dept)['name'];
+                    $depts[$i] = "<a class='text-$dept' href='" . ROOTPATH . "/portal/group/$dept'>$name</a>";
+                }
+                $line .= "<p><b>" . lang('Departments', 'Abteilungen') . ':</b><br>';
+                $line .= implode(', ', $depts);
+                $line .= "</p>";
+            }
+        }
+
         return $line;
     }
 

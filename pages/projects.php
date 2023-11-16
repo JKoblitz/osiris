@@ -132,7 +132,7 @@ function val($index, $default = '')
                 </td>
                 <td>
                     <?= $project['funder'] ?? '-' ?>
-                    (<?= $project['funding_number'] ?? '-' ?>)
+                    (<?= $Project->getFundingNumbers('<br>') ?>)
                 </td>
                 <td>
                     <?= $Project->getDateRange() ?>

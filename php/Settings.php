@@ -1,5 +1,7 @@
 <?php
 
+include_once "Groups.php";
+
 class Settings
 {
     public $settings = array();
@@ -140,6 +142,7 @@ class Settings
 
     function getDepartments($dept = null)
     {
+
         if ($dept === null) return $this->settings['departments'];
         foreach ($this->settings['departments'] as $d) {
             if ($d['id'] == $dept) return $d;
@@ -164,7 +167,7 @@ class Settings
             }
             .badge-$val[id] {
                 color:  $val[color] !important;
-                border-color:  $val[color] !important;
+                background-color:  $val[color]20 !important;
             }
             ";
         }

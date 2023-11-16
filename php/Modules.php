@@ -991,11 +991,14 @@ class Modules
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>
-                        <!-- <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty if only one day', 'Ende leer lassen, falls es nur ein Tag ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span> -->
-                        <button class="btn small" id="daterange-toggle-btn" type="button" onclick="rebuild_datepicker(this);"><?= lang('Multiple days', 'Mehrtägig') ?></button>
-
+                        <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty if only one day', 'Ende leer lassen, falls es nur ein Tag ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span>
+                        <!-- <button class="btn small" id="daterange-toggle-btn" type="button" onclick="rebuild_datepicker(this);"><?= lang('Multiple days', 'Mehrtägig') ?></button> -->
                     </label>
-                    <div class="input-group" id="date-range-picker">
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
+                        <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
+                    </div>
+                    <!-- <div class="input-group" id="date-range-picker">
                         <input class="form-control" name="values[start]" id="date_start" <?= $required ?>>
                         <input class="form-control" name="values[end]" id="date_end">
                     </div>
@@ -1059,14 +1062,14 @@ class Modules
                             }
                             $("#date-range-picker").dateRangePicker(dateRange)
                         }
-                    </script>
+                    </script> -->
                 </div>
             <?php
                 break;
 
             case "date-range-ongoing":
             ?>
-                <div class="data-module col-sm-8 col-md-6" data-module="date-range">
+                <!-- <div class="data-module col-sm-8 col-md-6" data-module="date-range">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitraum") ?>
                         <button class="btn small" id="ongoing-toggle-btn" type="button" onclick="rebuild_ongoing_datepicker(this);">
@@ -1135,19 +1138,20 @@ class Modules
 
                         }
                     </script>
-                </div>
-                <!-- <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
+                </div> -->
+                <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>
-                        <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty ongoing activity', 'Ende leer lassen, falls es eine laufende Aktivität ist') ?>"><i class="ph ph-question" style="line-height:0;"></i></span>
+                        <span data-toggle="tooltip" data-title="<?= lang('Leave end date empty ongoing activity', 'Ende leer lassen, falls es eine zurzeit laufende Aktivität ist') ?>"><i class="ph ph-question"></i></span>
                     </label>
                     <div class="input-group">
                         <input type="date" class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
                         <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
                     </div>
-                </div> -->
+                </div>
             <?php
                 break;
+            // case "date-range-ongoing-simple"
 
             case "software-venue":
             ?>

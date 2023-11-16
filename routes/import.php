@@ -1,0 +1,124 @@
+<?php
+    
+Route::get('/import', function () {
+    $breadcrumb = [
+        ['name' => lang('Import')]
+    ];
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/import.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+Route::post('/import/google', function () {
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    if (!isset($_POST["user"]) || !isset($_POST['doc']))
+        exit - 1;
+
+    include(BASEPATH . '/php/init.php');
+    include(BASEPATH . '/php/GoogleScholar.php');
+    $user = $_POST["user"];
+    $google = new GoogleScholar($user);
+
+    $docid = $_POST["doc"];
+    $pub = $google->getDocumentDetails($docid);
+
+    $result = [];
+
+    if (empty($pub['title'])) die('Error: Title was empty.');
+    if (empty($pub['Publikationsdatum'])) die('Error: Date was empty.');
+
+    $result['type'] = 'publication';
+    $result['title'] = $pub['title'];
+    $result['doi'] = empty($pub['doi']) ? null : $pub['doi'];
+    $date = explode('/', $pub['Publikationsdatum']);
+    $result['year'] = intval($date[0]);
+    $result['month'] = isset($date[1]) ? intval($date[1]) : null;
+    $result['day'] = isset($date[2]) ? intval($date[2]) : null;
+
+    $result['volume'] = $pub['Band'] ?? null;
+    $result['issue'] = $pub['Ausgabe'] ?? null;
+    $result['pages'] = $pub['Seiten'] ?? null;
+
+    $result['pubtype'] = 'article';
+
+    if (isset($pub['Zeitschrift']) || isset($pub['Quelle'])) {
+        $result['journal'] = $pub['Zeitschrift'] ?? $pub['Quelle'];
+        $j = new MongoDB\BSON\Regex('^' . trim($result['journal']) . '$', 'i');
+        $journal = $osiris->journals->findOne(['journal' => ['$regex' => $j]]);
+        if (!empty($journal)) {
+            $result['journal_id'] = strval($journal['_id']);
+            $result['journal'] = $journal['journal'];
+        }
+    } else if (isset($pub['Buch'])) {
+        $result['book'] = $pub['Buch'];
+        $result['publisher'] = $pub['Verlag'];
+        $result['pubtype'] = 'chapter';
+    } else {
+        $result['publisher'] = $pub['Verlag'];
+        $result['pubtype'] = 'book';
+    }
+
+    // update authors and check if they are in the database
+    $result['authors'] = array();
+    foreach ($pub['Autoren'] as $a) {
+        $a = explode(' ', $a);
+        $last = array_pop($a);
+        $first = implode(' ', $a);
+        $username = $DB->getUserFromName($last, $first);
+        $author = [
+            'first' => $first,
+            'last' => $last,
+            'user' => $username,
+            'aoi' => !empty($username)
+        ];
+        $result['authors'][] = $author;
+    }
+
+    // insert document into the database
+    $result['created'] = date('Y-m-d');
+    $result['created_by'] = $_SESSION['username'];
+
+
+    if (isset($result['doi']) && !empty($result['doi'])) {
+        $doi_exist = $$osiris->activities->findOne(['doi' => $result['doi']]);
+        if (!empty($doi_exist)) {
+            die('DOI already exists. Publication could not be added.');
+        }
+    }
+    $insertOneResult  = $osiris->activities->insertOne($result);
+    $id = $insertOneResult->getInsertedId();
+    $result['_id'] = $id;
+    $DB->renderActivities(['_id' => $id]);
+
+    $Format = new Document();
+    $Format->setDocument($doc);
+
+    echo json_encode([
+        'inserted' => $insertOneResult->getInsertedCount(),
+        'id' => strval($id),
+        'result' => $result,
+        'formatted' => $Format->formatShort()
+    ]);
+
+    // echo json_encode($result);
+});
+
+
+Route::post('/import/file', function () {
+    // if ($page == 'users') 
+    $breadcrumb = [
+        ['name' => lang('Import'), 'path' => '/import'],
+        ['name' => lang('From File', 'Aus Datei')]
+    ];
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/import-file.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
+?>

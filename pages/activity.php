@@ -127,6 +127,10 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </a>
 
 
+    <a class="btn" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
+        <i class="ph ph-eye ph-fw"></i>
+        <?= lang('Preview', 'Vorschau') ?>
+    </a>
 
     <?php if (!in_array($doc['type'], ['publication'])) { ?>
         <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn ">

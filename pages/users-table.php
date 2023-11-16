@@ -17,7 +17,7 @@
  */
 ?>
 
-<h1 class="mt-0">
+<h1>
     <i class="ph ph-student"></i>
     <?= lang('Users', 'Nutzer:innen') ?>
 </h1>

@@ -19,8 +19,9 @@ use MongoDB\Client;
 use MongoDB\BSON\Regex;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
+use MongoDB\Driver\Cursor;
 
-require_once BASEPATH . '/php/Document.php';
+require_once 'Document.php';
 
 if (!defined('DB_STRING')) {
     die("DB settings are missing in the CONFIG.php file. Add the DB_STRING constant as defined in the config documentation.");
@@ -112,6 +113,9 @@ class DB
         }
         if ($doc instanceof BSONDocument) {
             return iterator_to_array($doc);
+        }
+        if ($doc instanceof Cursor) {
+            return DB::doc2Arr($doc->toArray());
         }
         return $doc;
     }
@@ -221,11 +225,11 @@ class DB
      * @param string $user Username.
      * @return string Full name.
      */
-    public function getNameFromId($user, $reverse=false)
+    public function getNameFromId($user, $reverse = false)
     {
         $USER = $this->getPerson($user, true);
         if (empty($USER['first'])) return $USER['last'];
-        if ($reverse){
+        if ($reverse) {
             return $USER['last'] . ', ' . $USER['first'];
         } else {
             return $USER['first'] . ' ' . $USER['last'];
@@ -575,5 +579,52 @@ class DB
         }
         // return last element in case that only one id has been rendered
         return $rendered;
+    }
+
+    public function getUserIssues($user = null)
+    {
+        if ($user === null) $user = $_SESSION['username'];
+        $issues = array();
+
+        // check if new activity was added for user
+        $docs = $this->db->activities->distinct(
+            '_id',
+            ['authors' => ['$elemMatch' => ['user' => $user, 'approved' => ['$nin' => [true, 1, '1']]]]]
+        );
+        if (!empty($docs)) $issues['approval'] = array_map('strval', $docs);
+
+        // CHECK student status issue
+        $docs = $this->db->activities->find(['authors.user' => $user, 'status' => 'in progress', 'end.year' => ['$lte' => CURRENTYEAR]], ['projection' => ['end' => 1]]);
+        foreach ($docs as $doc) {
+            if (new DateTime() < getDateTime($doc['end'])) continue;
+            $issues['students'][] = strval($doc['_id']);
+        }
+
+        // check EPUB issue
+        $docs = $this->db->activities->find(['authors.user' => $user, 'epub' => true], ['projection' => ['epub-delay' => 1]]);
+        foreach ($docs as $doc) {
+            if (isset($doc['epub-delay']) && new DateTime() < new DateTime($doc['epub-delay'])) continue;
+            $issues['epub'][] = strval($doc['_id']);
+        }
+
+        // check ongoing reminder
+        // but first get all open end subtypes
+        $Format = new Document();
+        $activities = $Format->getActivities();
+        $openendtypes = [];
+        foreach ($activities as $typeArr) {
+            foreach ($typeArr['subtypes'] as $subtype => $subArr) {
+                if (in_array('date-range-ongoing', $subArr['modules']) || in_array('date-range-ongoing*', $subArr['modules']))
+                    $openendtypes[] = $subtype;
+            }
+        }
+        // then find all documents that belong to this
+        $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype'=>['$in'=>$openendtypes]], ['projection' => ['end-delay' => 1]]);
+        foreach ($docs as $doc) {
+            if (isset($doc['end-delay']) && new DateTime() < new DateTime($doc['end-delay'])) continue;
+            $issues['openend'][] = strval($doc['_id']);
+        }
+
+        return $issues;
     }
 }

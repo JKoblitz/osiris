@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to search for experts
  * 
@@ -23,7 +24,7 @@ $cursor = $osiris->persons->aggregate([
             'is_active' => true
         ]
     ],
-    ['$project' => ['expertise' => 1, 'displayname' => 1, 'dept' => 1, 'username'=>1]],
+    ['$project' => ['expertise' => 1, 'displayname' => 1, 'dept' => 1, 'username' => 1]],
     ['$unwind' => '$expertise'],
     [
         '$group' => [
@@ -37,16 +38,14 @@ $cursor = $osiris->persons->aggregate([
 
 ?>
 
-<div class="content">
-    <h1 class="mt-0">
-        <i class="fal ph-lg ph-barbell text-osiris"></i>
-        <?=lang('Expertise search', 'Experten-Suche')?>
-    </h1>
+<h1 class="mt-0">
+    <i class="fal ph-lg ph-barbell text-osiris"></i>
+    <?= lang('Expertise search', 'Experten-Suche') ?>
+</h1>
 
-    <div class="form-group with-icon">
-        <input class="form-control mb-20" type="search" name="search" id="search" oninput="filterFAQ(this.value);" placeholder="Filter ...">
-        <i class="ph ph-x" onclick="$(this).prev().val('');filterFAQ('')"></i>
-    </div>
+<div class="form-group with-icon mw-full w-400">
+    <input class="form-control mb-20" type="search" name="search" id="search" oninput="filterFAQ(this.value);" placeholder="Filter ..." value="<?= $_GET['search'] ?? '' ?>">
+    <i class="ph ph-x" onclick="$(this).prev().val('');filterFAQ('')"></i>
 </div>
 
 <div class="row row-eq-spacing-md">
@@ -77,3 +76,8 @@ $cursor = $osiris->persons->aggregate([
         $('.expertise:contains("' + input + '")').show()
     }
 </script>
+<?php if (isset($_GET['search'])) { ?>
+    <script>
+        filterFAQ('<?= $_GET['search'] ?>');
+    </script>
+<?php } ?>

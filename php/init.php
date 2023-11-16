@@ -65,6 +65,10 @@ $DB = new DB;
 global $osiris;
 $osiris = $DB->db;
 
+include_once BASEPATH . "/php/Groups.php";
+global $Groups;
+$Groups = new Groups();
+
 global $USER;
 $USER = $DB->initUser();
 

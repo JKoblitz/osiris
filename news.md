@@ -6,11 +6,20 @@
 
 Biography
 
-started with openly available user profile
+Forschungsportal
+
+Profilseite überarbeitet
 
 <!-- Forschungsbereiche -->
 
 .htaccess removed
+
+Project
+  collaborators
+  funding automatically
+
+Restructuring of Code
+
 
 
 ## 25.10.2023

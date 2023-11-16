@@ -1,4 +1,24 @@
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+<?php
+    
+/**
+ * Page to visualize collaborators on a map
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ * 
+ * @link /visualize/map
+ *
+ * @package OSIRIS
+ * @since 1.3.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
+?>
+
+ <script src="<?=ROOTPATH?>/js/plotly-2.27.1.min.js" charset="utf-8"></script>
 
 
 <script>

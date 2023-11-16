@@ -37,6 +37,11 @@ function val($index, $default = '')
     if (is_string($val)) {
         return htmlspecialchars($val);
     }
+    if ($val instanceof MongoDB\Model\BSONArray){
+        return implode(',', DB::doc2Arr($val));
+    }
+
+
     return $val;
 }
 
@@ -150,6 +155,7 @@ function sel($index, $value)
                 <?= lang('Funding reference number', 'Förderkennzeichen') ?>
             </label>
             <input type="text" class="form-control" name="values[funding_number]" value="<?= val('funding_number') ?>" id="funding_number">
+            <span class="text-muted"><?=lang('Multiple seperated by comma', 'Mehrere durch Komma getrennt')?></span>
         </div>
     </div>
 
@@ -189,10 +195,10 @@ function sel($index, $value)
 
     <div class=" row row-eq-spacing align-items-end">
         <div class="col-sm-4">
-            <label for="start">
+            <label for="start" class="required">
                 Projektbeginn
             </label>
-            <input type="date" class="form-control" name="values[start]" value="<?= valueFromDateArray(val('start')) ?>" id="start">
+            <input type="date" class="form-control" name="values[start]" value="<?= valueFromDateArray(val('start')) ?>" id="start" required>
         </div>
         <div class="col-sm-4">
             <label for="">
@@ -206,10 +212,10 @@ function sel($index, $value)
             </div>
         </div>
         <div class="col-sm-4">
-            <label for="end">
+            <label for="end" class="required">
                 Projektende
             </label>
-            <input type="date" class="form-control" name="values[end]" value="<?= valueFromDateArray(val('end')) ?>" id="end">
+            <input type="date" class="form-control" name="values[end]" value="<?= valueFromDateArray(val('end')) ?>" id="end" required>
         </div>
     </div>
 

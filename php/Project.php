@@ -80,6 +80,14 @@ class Project
         }
     }
 
+    function getFundingNumbers($seperator)
+    {
+        if (!isset($this->project['funding_number']) || empty($this->project['funding_number']))
+            return '-';
+        if (is_string($this->project['funding_number']))
+            return $this->project['funding_number'];
+        return implode($seperator, $this->project['funding_number']->bsonSerialize());
+    }
 
     /**
      * Convert MongoDB document to array.
@@ -111,7 +119,7 @@ class Project
     {
         switch ($role) {
             case 'PI':
-                return lang('Project lead', 'Projektleitung');
+                return '<i class="ph ph-crown text-signal"></i>'. lang('Project lead', 'Projektleitung');
             case 'worker':
                 return lang('Project member', 'Projektmitarbeiter');
             default:
@@ -122,6 +130,17 @@ class Project
     public function widgetSmall()
     {
         $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
+        $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
+        $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
+        $widget .= '<span class="text-muted">' . $this->getDateRange() . '</span>';
+        $widget .= '</a>';
+        return $widget;
+    }
+
+    public function widgetPortal()
+    {
+        $widget = '<a class="module" href="' . ROOTPATH . '/portal/project/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
         $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
@@ -154,7 +173,7 @@ class Project
         $widget .= '<span class="mr-10">' . $this->getStatus() . '</span> ';
         $widget .= '<span class="mr-10">' . $this->project['funder'];
         if (!empty($this->project['funding_number'])) {
-            $widget .= " (" . $this->project['funding_number'] . ")";
+            $widget .= " (" . $this->getFundingNumbers(', ') . ")";
         }
         $widget .=  '</span>';
         $widget .= '</a>';

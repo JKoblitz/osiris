@@ -48,7 +48,8 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
                         "title" => "{title}",
                         "subtitle" => "{authors}, {date}"
                     ]
-                ]
+                    ],
+                    "coins" => 0
             ]
 
         ];
@@ -72,7 +73,8 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
             "print" => "{authors} ({year}) {title}.",
             "title" => "{title}",
             "subtitle" => "{authors}, {date}"
-        ]
+        ],
+        "coins" => 0
 
     ];
 }
@@ -364,9 +366,10 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
                                     <div class="content">
                                         <label for="coins" class="font-weight-bold">Coins:</label>
-                                        Coming soon...
-
-
+                                        <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][coins]" value="<?= $subtype['coins'] ?? '0' ?>">
+                                       <span class="text-muted">
+                                        <?=lang('Please note that regarding publications, first and last authors will receive double the amount.', 'Bitte bemerken Sie, dass bei Publikationen der Erst- und Letztautor die doppelte Menge bekommen.')?>
+                                       </span>
                                     </div>
 
                                 </div>
