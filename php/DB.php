@@ -228,7 +228,7 @@ class DB
     public function getNameFromId($user, $reverse = false)
     {
         $USER = $this->getPerson($user, true);
-        if (empty($USER['first'])) return $USER['last'];
+        if (empty($USER['first'])) return $USER['last'] ?? '';
         if ($reverse) {
             return $USER['last'] . ', ' . $USER['first'];
         } else {

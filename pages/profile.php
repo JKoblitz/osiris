@@ -100,109 +100,6 @@ $Coins = new Coins();
 
 $coins = $Coins->getCoins($user);
 
-
-
-// include_once BASEPATH . "/php/_lom.php";
-// $LOM = new LOM($user, $osiris);
-
-// $_lom = 0;
-
-// $stats = [];
-
-
-// $groups = [];
-// foreach ($Settings->get('activities') as $key => $value) {
-//     $groups[$value['id']] = 0;
-// }
-
-
-// $authors = ["first" => 0, "last" => 0, 'middle' => 0, 'editor' => 0];
-
-// $years = [];
-// $lom_years = [];
-// for ($i = $Settings->get('startyear'); $i <= CURRENTYEAR; $i++) {
-//     $years[] = strval($i);
-//     $lom_years[$i] = 0;
-// }
-
-// $impacts = [];
-// $journals = [];
-
-
-// $filter = ['$or' => [['authors.user' => "$user"], ['editors.user' => "$user"], ['user' => "$user"]], 'year' => ['$gte' => $Settings->get('startyear')]];
-// $options = ['sort' => ["year" => -1, "month" => -1, "day" => -1]];
-// $cursor = $osiris->activities->find($filter, $options);
-// $activities = $cursor->toArray();
-
-// foreach ($activities as $doc) {
-//     if (!isset($doc['type']) || !isset($doc['year'])) continue;
-//     // if ($doc['year'] < $Settings->get('startyear')) continue;
-
-//     $type = $doc['type'];
-
-//     $l = $LOM->lom($doc);
-//     $_lom += $l['lom'];
-//     if (!isset($lom_years[$doc['year']]))
-//         $lom_years[$doc['year']] = 0;
-//     $lom_years[$doc['year']] +=  $l['lom'];
-
-//     if ($type == 'publication' && isset($doc['journal'])) {
-//         // dump([get_impact($doc['journal'], $doc['year'] - 1), $doc['year'], $doc['journal']], true);
-//         if (!isset($doc['impact'])) {
-//             $if = $DB->get_impact($doc);
-//             if (!empty($if)) {
-//                 $osiris->activities->updateOne(
-//                     ['_id' => $doc['_id']],
-//                     ['$set' => ['impact' => $if]]
-//                 );
-//             }
-//         } else {
-//             $if = $doc['impact'];
-//         }
-//         if (!empty($if)) {
-//             $impacts[] = $if;
-//             // $impacts[] = [$year, $if];
-//             $journals[] = $doc['journal'];
-//         }
-//     }
-//     if ($type == 'publication') {
-//         foreach ($doc['authors'] ?? array() as $a) {
-//             if (($a['user'] ?? '') == $user) {
-//                 if (isset($a['position']) && (in_array($a['position'], ['last', 'corresponding']))) {
-//                     $authors['last']++;
-//                 } elseif (isset($a['position']) && $a['position'] == 'first') {
-//                     $authors['first']++;
-//                 } else {
-//                     $authors['middle']++;
-//                 }
-//                 break;
-//             }
-//         }
-
-//         foreach ($doc['editors'] ?? array() as $a) {
-//             if (($a['user'] ?? '') == $user) {
-//                 $authors['editor']++;
-//                 break;
-//             }
-//         }
-//     }
-
-//     if (!array_key_exists($type, $groups)) continue;
-
-//     $year = strval($doc['year']);
-
-
-//     if (!isset($stats)) $stats = [];
-//     if (!isset($stats[$year])) $stats[$year] = array_merge(["x" => $year], $groups);
-
-//     $stats[$year][$type] += 1;
-
-// }
-
-
-
-
-
 // $showcoins = (!($scientist['hide_coins'] ?? true));
 if ($Settings->hasFeatureDisabled('coins')) {
     $showcoins = false;
@@ -315,9 +212,12 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <?php
         foreach ($scientist['depts'] as $i => $d) {
             $dept = $Groups->getGroup($d);
-            if ($i > 0) echo '<br>';
+            if ($i > 0) echo ', ';
         ?>
-            <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>" class="font-weight-bold">
+            <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
+                <?php if (in_array($user, $dept['head'])) { ?>
+                    <i class="ph ph-crown"></i>
+                <?php } ?>
                 <?= $dept['name'] ?>
             </a>
         <?php } ?>
@@ -439,7 +339,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         if (!empty($issues)) {
             $issues = count(array_merge($issues));
         ?>
-            <div class="alert danger mt-20">
+            <div class="alert danger mt-10">
                 <a class="link text-danger text-decoration-none" href='<?= ROOTPATH ?>/issues'>
                     <?= lang(
                         "You have $issues unresolved " . ($issues == 1 ? 'message' : 'messages') . " with your activities.",
@@ -452,7 +352,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <?php
         $queue = $osiris->queue->count(['authors.user' => $user, 'duplicate' => ['$exists' => false]]);
         if ($queue !== 0) { ?>
-            <div class="alert success mt-20">
+            <div class="alert success mt-10">
                 <a class="link text-success" href='<?= ROOTPATH ?>/queue/user'>
                     <?= lang(
                         "We found $queue new " . ($queue == 1 ? 'activity' : 'activities') . " for you. Review them now.",
@@ -466,7 +366,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         if (lang('en', 'de') == 'de') {
             // no news in english
             if (empty($scientist['lastversion'] ?? '') || $scientist['lastversion'] !== OSIRIS_VERSION) { ?>
-                <div class="alert primary mt-20">
+                <div class="alert primary mt-10">
                     <a class="link text-decoration-none" href='<?= ROOTPATH ?>/new-stuff#version-<?= OSIRIS_VERSION ?>'>
                         <?= lang(
                             "There has been an OSIRIS-Update since your last login. Have a look at the news.",
@@ -485,7 +385,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
 
         if ($Settings->hasPermission('scientist') && !in_array($lastquarter, $approvedQ)) { ?>
-            <div class="alert muted mt-20">
+            <div class="alert muted mt-10">
 
                 <div class="title">
                     <?= lang("The past quarter ($lastquarter) has not been approved yet.", "Das vergangene Quartal ($lastquarter) wurde von dir noch nicht freigegeben.") ?>

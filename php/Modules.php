@@ -197,6 +197,11 @@ class Modules
             "name" => "Pages",
             "name_de" => "Seiten"
         ],
+        "peer-reviewed" => [
+            "fields" => ["peer-reviewed"],
+            "name" => "Peer-Reviewed",
+            "name_de" => "Peer-Reviewed"
+        ],
         "person" => [
             "fields" => ["name", "affiliation", "academic_title"],
             "name" => "Person",
@@ -1151,7 +1156,7 @@ class Modules
                 </div>
             <?php
                 break;
-            // case "date-range-ongoing-simple"
+                // case "date-range-ongoing-simple"
 
             case "software-venue":
             ?>
@@ -1346,6 +1351,22 @@ class Modules
                 <div class="data-module col-sm-4" data-module="pages">
                     <label for="pages" class="element-other <?= $required ?>">Pages</label>
                     <input type="text" class="form-control" <?= $required ?> name="values[pages]" value="<?= $this->val('pages') ?>" id="pages">
+                </div>
+            <?php
+                break;
+
+
+            case "peer-reviewed":
+            ?>
+                <div class="data-module col-sm-12" data-module="pages">
+                    <div class="custom-radio d-inline-block" id="peer_reviewed-div">
+                        <input type="radio" id="peer_reviewed-0" value="false" name="values[peer_reviewed]" <?= $this->val('peer_reviewed', false) ? '' : 'checked' ?>>
+                        <label for="peer_reviewed-0"><i class="icon-closed-access text-danger"></i> Non-refereed</label>
+                    </div>
+                    <div class="custom-radio d-inline-block ml-20" id="peer_reviewed-div">
+                        <input type="radio" id="peer_reviewed" value="true" name="values[peer_reviewed]" <?= $this->val('peer_reviewed', false) ? 'checked' : '' ?>>
+                        <label for="peer_reviewed"><i class="icon-open-access text-success"></i> Peer-Reviewed</label>
+                    </div>
                 </div>
             <?php
                 break;

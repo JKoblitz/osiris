@@ -223,10 +223,10 @@ Route::post('/create', function () {
     }
 
     // add projects if possible
-    if (isset($values['funding'])){
-        $values['funding'] = explode(',',$values['funding']);
+    if (isset($values['funding'])) {
+        $values['funding'] = explode(',', $values['funding']);
         foreach ($values['funding'] as $key) {
-            $project = $osiris->projects->findOne(['funding_number'=>$key]);
+            $project = $osiris->projects->findOne(['funding_number' => $key]);
             if (isset($project['name'])) $values['projects'][] = $project['name'];
         }
     }
@@ -337,16 +337,16 @@ Route::post('/projects/create', function () {
             ]
         ];
     }
-    if (isset($values['funding_number'])){
+    if (isset($values['funding_number'])) {
         $values['funding_number'] = explode(',', $values['funding_number']);
         $values['funding_number'] = array_map('trim', $values['funding_number']);
-        
+
         // check if there are already activities with this funding number
         $test = $osiris->activities->updateMany(
-            ['funding'=>['$in'=>$values['funding_number']]],
-            ['$push' => ['projects'=>$values['name']]]
+            ['funding' => ['$in' => $values['funding_number']]],
+            ['$push' => ['projects' => $values['name']]]
         );
-        dump( $test->getModifiedCount());
+        dump($test->getModifiedCount());
     }
 
     $insertOneResult  = $collection->insertOne($values);
@@ -380,7 +380,7 @@ Route::post('/projects/update/([A-Za-z0-9]*)', function ($id) {
     // check if module already exists:
     // $project_exist = $collection->findOne(['name' => $values['name']]);
 
-    if (isset($values['funding_number'])){
+    if (isset($values['funding_number'])) {
         $values['funding_number'] = explode(',', $values['funding_number']);
         $values['funding_number'] = array_map('trim', $values['funding_number']);
     }
@@ -456,13 +456,25 @@ Route::post('/groups/create', function () {
     $values['created'] = date('Y-m-d');
     $values['created_by'] = strtolower($_SESSION['username']);
 
-    if (!empty($values['parent'])){
+    if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
         if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
     }
 
-//    dump($values, true);
-//    die;
+    if (isset($values['head'])) {
+        foreach ($values['head'] as $head) {
+            $osiris->persons->updateOne(
+                ['username' => $head],
+                ['$push' => ["depts" => $values['id']]]
+            );
+        }
+    }
+
+    if (!empty($values['parent'])) {
+        $parent = $Groups->getGroup($values['parent']);
+        if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
+    }
+
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
@@ -478,6 +490,95 @@ Route::post('/groups/create', function () {
     ]);
 });
 
+Route::post('/groups/update/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die("no values given");
+    $collection = $osiris->groups;
+
+    $values = validateValues($_POST['values'], $DB);
+    // add information on creating process
+    $values['updated'] = date('Y-m-d');
+    $values['updated_by'] = strtolower($_SESSION['username']);
+
+    $id = $DB->to_ObjectID($id);
+
+    // check if ID has changes
+    $group = $osiris->groups->findOne(['_id' => $id]);
+    if ($group['id'] != $values['id']){
+        // change IDs of Members
+        $osiris->persons->updateMany(
+            ['depts'=>$group['id']],
+            [ '$set' => [ 'depts.$[elem]'=> $values['id'] ] ],
+            [ 'arrayFilters'=> [ [ 'elem'=> [ '$eq'=> $group['id'] ] ] ], 'multi'=> true ]
+        );
+    }
+
+    if (!empty($values['parent'])) {
+        $parent = $Groups->getGroup($values['parent']);
+        if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
+    }
+
+    // check if head is connected 
+    if (isset($values['head'])){
+        foreach ($values['head'] as $head) {
+            $N = $osiris->persons->count(['username' => $head, 'depts'=>$values['id']]);
+            if ($N == 0){
+                $osiris->persons->updateOne(
+                    ['username' => $head],
+                    ['$push' => ["depts" => $values['id']]]
+                );
+            }
+        }
+    }
+
+    $updateResult = $collection->updateOne(
+        ['_id' => $id],
+        ['$set' => $values]
+    );
+
+    // dump($updateResult->getModifiedCount(), true);
+    // die;
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+
+    echo json_encode([
+        'inserted' => $updateResult->getModifiedCount(),
+        'id' => $id,
+    ]);
+});
+
+Route::post('/groups/delete/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    // select the right collection
+
+    // prepare id
+    $id = $DB->to_ObjectID($id);
+    
+    // remove from all users
+    $group = $osiris->groups->findOne(['_id' => $id]);
+    $osiris->persons->updateOne(
+        ['depts' => $group['id']],
+        ['$pull' => ["depts" => $group['id']]]
+    );
+
+    $updateResult = $osiris->groups->deleteOne(
+        ['_id' => $id]
+    );
+
+    $deletedCount = $updateResult->getDeletedCount();
+
+    // addUserActivity('delete');
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=deleted-" . $deletedCount);
+        die();
+    }
+    echo json_encode([
+        'deleted' => $deletedCount
+    ]);
+});
 
 
 Route::post('/create-journal', function () {
@@ -808,8 +909,8 @@ Route::post('/update-user/(.*)', function ($user) {
 
     // dump($person, true);
     // die;
-    if (isset($person['dept'])){
-        $person['depts'] = $Groups->getGroupList($person['dept']);
+    if (isset($person['dept'])) {
+        $person['depts'] = $Groups->getParents($person['dept']);
     }
     $person['depts'] = array_reverse($person['depts']);
 

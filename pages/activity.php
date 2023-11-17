@@ -20,10 +20,12 @@ include_once BASEPATH . "/php/Modules.php";
 
 // check if this is an ongoing activity type
 $ongoing = false;
+$sws = false;
 $M = $Format->subtypeArr['modules'] ?? array();
 foreach ($M as $m) {
     if (str_ends_with($m, '*')) $m = str_replace('*', '', $m);
     if ($m == 'date-range-ongoing') $ongoing = true;
+    if ($m == 'supervisor') $sws = true;
 }
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
@@ -280,7 +282,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         if (empty($project)) continue;
                         $Project->setProject($project);
                 ?>
-
                         <?= $Project->widgetSmall(true) ?>
                     <?php } ?>
 
@@ -485,8 +486,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                                 </td>
                             </tr>
 
-
-
                         <?php elseif ($module == 'journal' && isset($doc['journal_id'])) :
                             $journal = $DB->getConnected('journal', $doc['journal_id']);
                         ?>
@@ -494,9 +493,9 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             <tr>
                                 <th class="key"><?= lang('Journal') ?>:</th>
                                 <td>
-                                    <a class="module" href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
+                                    <a class="module border p-10" href="<?= ROOTPATH ?>/journal/view/<?= $doc['journal_id'] ?>">
 
-                                        <h5 class="m-0"><?= $journal['journal'] ?></h5>
+                                        <h6 class="m-0"><?= $journal['journal'] ?></h6>
                                         <span class="float-right text-muted"><?= $journal['publisher'] ?></span>
                                         <span class="text-muted">
                                             ISSN: <?= print_list($journal['issn']) ?>
@@ -601,20 +600,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         'Dies ist nicht deine Aktivität. Wenn du aus irgendwelchen Gründen willst, dass sie verändert oder gelöscht wird, kontaktiere bitte den Urheber der Aktivität oder das Controlling.'
                     ) ?>
                 </p>
-                <!-- <?php
-                        $body = $USER['displayname'] . " möchte folgenden OSIRIS-Eintrag bearbeiten/löschen: $name%0D%0A%0D%0ABegründung/Reason:%0D%0A%0D%0Ahttp://osiris.int.dsmz.de/activities/view/$id";
-                        ?>
-                <a class="btn danger" href="mailto:dominic.koblitz@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf Änderung&body=<?= $body ?>">
-                    <i class="ph ph-envelope" aria-hidden="true"></i>
-                    <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
-                </a>
-                <?php if (isset($doc['created_by'])) { ?>
-
-                    <a class="btn danger" href="mailto:<?= $doc['created_by'] ?>@dsmz.de?cc=julia.koblitz@dsmz.de&subject=[OSIRIS] Antrag auf 'Änderung'&body=<?= $body ?>">
-                        <i class="ph ph-envelope" aria-hidden="true"></i>
-                        <?= lang('Contact creator', 'Urheber kontaktieren') ?>
-                    </a>
-                <?php } ?> -->
 
             <?php else : ?>
                 <p class="mt-0">
@@ -666,51 +651,64 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         </h2>
 
 
+                        <?php
+                        $users = array_column(DB::doc2Arr($activity[$role]), 'user');
+                        $depts = $osiris->persons->aggregate([
+                            ['$match' => ['username' => ['$in' => $users]]],
+                            ['$project' => ['depts' => 1]],
+                            ['$unwind' => '$depts'],
+                            [
+                                '$group' => [
+                                    '_id' => '$depts',
+                                    'count' => ['$sum' => 1],
+                                ]
+                            ],
+                            ['$sort' => ['count' => -1]],
+                            ['$limit' => 100]
+                        ]);
+                        if (!empty($depts)) {
+                            foreach ($depts as $g) { 
+                                $group = $Groups->getGroup($g['_id']);
+                                ?>
+                                <a href="<?= ROOTPATH ?>/groups/view/<?= $g['_id'] ?>" style="background-color:<?=$group['color']?>70" class="badge font-size-12">
+                                <b><?= $g['_id'] ?></b> (<?= $g['count'] ?>)
+                            </a>
+                        <?php }
+                        }
+                        ?>
                     </div>
                     <table class="table simple">
                         <thead>
                             <tr>
                                 <th>Last name</th>
                                 <th>First name</th>
-                                <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
-                                    <th>Position</th>
-                                <?php endif; ?>
-                                <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
+
+                                <?php if ($sws) : ?>
                                     <th>SWS</th>
+                                <?php elseif ($role == 'authors') : ?>
+                                    <th>Position</th>
                                 <?php endif; ?>
                                 <th>Username</th>
                             </tr>
                         </thead>
                         <tbody id="<?= $role ?>">
                             <?php foreach ($activity[$role] as $i => $author) {
-                                $cls = "";
-                                $dept = "";
-                                if (isset($author['user']) && !empty($author['user'])) {
-                                    $u = $DB->getPerson($author['user']);
-                                    $dept = $u['dept'] ?? 'unknown';
-                                    $cls = "row-" . ($u['dept'] ?? 'muted');
-                                }
                                 // row-MIOS 
                             ?>
-                                <tr class="<?= $cls ?>" data-dept="<?= $dept ?>">
+                                <tr>
                                     <td class="<?= (($author['aoi'] ?? 0) == '1' ? 'font-weight-bold' : '') ?>">
-                                        <?php if (!empty($dept)) { ?>
-                                            <span data-toggle="tooltip" data-title="<?= $dept ?>"><?= $author['last'] ?? '' ?></span>
-                                        <?php } else { ?>
-                                            <?= $author['last'] ?? '' ?>
-                                        <?php } ?>
+                                        <?= $author['last'] ?? '' ?>
                                     </td>
                                     <td>
                                         <?= $author['first'] ?? '' ?>
                                     </td>
-                                    <?php if ($doc['type'] == 'publication' && $role == 'authors') : ?>
-                                        <td>
-                                            <?= $author['position'] ?? '' ?>
-                                        </td>
-                                    <?php endif; ?>
-                                    <?php if ($doc['type'] == 'teaching' && $role == 'authors') : ?>
+                                    <?php if ($sws) : ?>
                                         <td>
                                             <?= $author['sws'] ?? 0 ?>
+                                        </td>
+                                    <?php elseif ($role == 'authors') : ?>
+                                        <td>
+                                            <?= $author['position'] ?? '' ?>
                                         </td>
                                     <?php endif; ?>
                                     <td>

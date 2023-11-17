@@ -242,10 +242,6 @@ if (array_sum($a) === 0) {
                             $created_by = $DB->getPerson($doc['created_by']);
                             if (!empty($created_by)) {
                                 echo $created_by['displayname'];
-                                // if (!empty($doc['created'] ?? '')) {
-                                //    echo lang('at ', 'am ');
-                                //    echo $doc['created'];
-                                // }
                                 echo lang(
                                     ' has created the following activity for you:',
                                     ' hat die folgende Aktivität für dich hinzugefügt:'
@@ -255,16 +251,21 @@ if (array_sum($a) === 0) {
                         ?>
                     </p>
                     <p>
-                        <span class="mr-20"><?= $doc['rendered']['icon'] ?></span>
+                        <b class="text-<?=$doc['type']?>">
+                        <?= $doc['rendered']['icon'] ?>
+                        <?= $doc['rendered']['title'] ?>
+                        </b> <br>
                         <?= $doc['rendered']['web'] ?>
                     </p>
                     <div class='' id="approve-<?= $id ?>">
                         <?php if (isset($updated_by) && !empty($updated_by)) { ?>
-                            <?= lang('Please confirm (possibly again) that you are the author: ', 'Bitte bestätige (evtl. erneut), dass du Autor:in bist:') ?>
+                            <?= lang('Please confirm (possibly again) that you are the author and all details are correct: ', 'Bitte bestätige (evtl. erneut), dass du Autor:in bist und alle Angaben korrekt sind:') ?>
                         <?php } else { ?>
                             <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
                         <?php } ?>
                         <br>
+                       
+                        <div class="btn-group mr-10">
                         <button class="btn small text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->get('affiliation'), 'Ja, und ich war der ' . $Settings->get('affiliation') . ' angehörig') ?>">
                             <i class="ph ph-check ph-fw"></i>
                         </button>
@@ -274,6 +275,8 @@ if (array_sum($a) === 0) {
                         <button class="btn small text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
                             <i class="ph ph-x ph-fw"></i>
                         </button>
+                        </div>
+
                         <?php if (!($doc['locked'] ?? false)) { ?>
                             <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn small text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
                                 <i class="ph ph-pencil-simple-line"></i>

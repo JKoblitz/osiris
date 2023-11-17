@@ -23,10 +23,15 @@ $QUARTER = intval($_GET['quarter'] ?? CURRENTQUARTER);
 
 $q = $YEAR . "Q" . $QUARTER;
 
-include_once BASEPATH . "/php/_lom.php";
-$LOM = new LOM($user, $osiris);
+// include_once BASEPATH . "/php/_lom.php";
+// $LOM = new LOM($user, $osiris);
 
-$_lom = 0;
+// $_lom = 0;
+
+include_once BASEPATH . "/php/Coins.php";
+$Coins = new Coins();
+
+$coins = $Coins->getCoins($user, $YEAR);
 
 
 $groups = [];
@@ -146,7 +151,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
             <?php if ($showcoins) { ?>
                 <p class="lead m-0">
                     <i class="ph ph-lg ph-coin text-signal"></i>
-                    <b id="lom-points"></b>
+                    <b id="lom-points"><?= $coins ?></b>
                     Coins in <?= $YEAR ?>
                     <a href='#coins' class="text-muted">
                         <i class="ph ph-question text-muted"></i>
@@ -280,6 +285,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
 
     <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
     <script src="<?= ROOTPATH ?>/js/popover.js"></script>
+    <script src="<?= ROOTPATH ?>/js/my-year.js"></script>
     <!-- <script src="<?= ROOTPATH ?>/js/d3-timeline.js"></script> -->
 
     <script>
@@ -287,200 +293,9 @@ if ($Settings->hasFeatureDisabled('coins')) {
         let events = JSON.parse('<?= json_encode(array_values($timeline)) ?>');
         console.log(events);
         var types = JSON.parse('<?= json_encode($timelineGroups) ?>');
-
-        // set the dimensions and margins of the graph
-        var radius = 3,
-            distance = 12,
-            divSelector = '#timeline'
-
-        var margin = {
-                top: 8,
-                right: 25,
-                bottom: 30,
-                left: 25
-            },
-            width = 600,
-            // height = (distance * types.length) + margin.top + margin.bottom;
-            height = distance + margin.top + margin.bottom;
-
-
-        var svg = d3.select(divSelector).append('svg')
-            .attr("viewBox", `0 0 ${width} ${height}`)
-
-        width = width - margin.left - margin.right
-        height = height - margin.top - margin.bottom;
-
-        var timescale = d3.scaleTime()
-            .domain([new Date(<?= $YEAR ?>, 0, 1), new Date(<?= $YEAR ?>, 12, 1)])
-            .range([0, width]);
-
-        // var types = Object.keys(typeInfo)
-        let ordinalScale = d3.scaleOrdinal()
-            .domain(types.reverse())
-            .range(Array.from({
-                length: types.length
-            }, (x, i) => i * (height / (types.length - 1))));
-
-
-        // let axisLeft = d3.axisLeft(ordinalScale);
-        // svg.append('g').attr('class', 'axes')
-        //     .attr('transform', `translate(${margin.left}, ${margin.top})`)
-        //     .call(axisLeft);
-
-        var axisBottom = d3.axisBottom(timescale)
-            .ticks(12)
-        // .tickPadding(5).tickSize(20);
-        svg.append('g').attr('class', 'axes')
-            .attr('transform', `translate(${margin.left}, ${height+margin.top+radius*2})`)
-            .call(axisBottom);   
-
-        var quarter = svg.append('g')
-            .attr('transform', `translate(${margin.left}, ${height+margin.top+radius*2})`)
-            // .selectAll("g")
-            .append('rect')
-            .style("fill", 'rgb(236, 175, 0)')
-            // .attr('height', height+margin.top+radius*4)
-            .attr('height', 8)
-            .attr('width', function(d, i) {
-                return width / 4
-            })
-            .style('opacity', .1)
-            .attr('x', (d) => {
-                var date = new Date('<?=$YEAR?>-<?=$QUARTER*3-2?>-01')
-                return timescale(date)
-            })
-            // .attr('y', radius*-2)
-            .attr('y', 0)
-
-        d3.selectAll("g>.tick>text")
-            .each(function(d, i) {
-                d3.select(this).style("font-size", "8px");
-            });
-
-        var Tooltip = d3.select(divSelector)
-            .append("div")
-            .style("opacity", 0)
-            .attr("class", "tooltip")
-            .style("background-color", "white")
-            .style("border", "solid")
-            .style("border-width", "2px")
-            .style("border-radius", "5px")
-            .style("padding", "5px")
-
-
-        function mouseover(d, i) {
-
-            d3.select(this)
-                .select('circle,rect')
-                .transition()
-                .duration(300)
-                .style('opacity', 1)
-
-            //Define and show the tooltip over the mouse location
-            $(this).popover({
-                placement: 'auto top',
-                container: divSelector,
-                mouseOffset: 10,
-                followMouse: true,
-                trigger: 'hover',
-                html: true,
-                content: function() {
-                    var icon = '';
-                    if (typeInfo[d.type]) {
-                        icon = `<i class="ph ph-${typeInfo[d.type].icon}" style="color:${typeInfo[d.type].color}"></i>`
-                    }
-                    return `${icon} ${d.title ?? 'No title available'}`
-                }
-            });
-            $(this).popover('show');
-        } //mouseoverChord
-
-        //Bring all chords back to default opacity
-        function mouseout(event, d) {
-            d3.select(this).select('circle,rect')
-                .transition()
-                .duration(300)
-                .style('opacity', .5)
-            //Hide the tooltip
-            $('.popover').each(function() {
-                $(this).remove();
-            });
-        }
-
-        var dots = svg.append('g')
-            .attr('transform', `translate(${margin.left}, ${margin.top})`)
-            .selectAll("g")
-            .data(events)
-            .enter().append("g")
-            .attr('transform', function(d, i) {
-                var date = new Date(d.starting_time * 1000)
-                var x = timescale(date)
-                // var y = ordinalScale(d.type) //(typeInfo[d.type]['index'] * -(radius * 2)) + radius
-                var y = 1
-                return `translate(${x}, ${y})`
-            })
-
-        dots.on("mouseover", mouseover)
-            // .on("mousemove", mousemove)
-            .on("mouseout", mouseout)
-            .on("click", (d) => {
-                // $('tr.active').removeClass('active')
-                var element = document.getElementById("tr-" + d.id);
-                // element.className="active"
-                var headerOffset = 60;
-                var elementPosition = element.getBoundingClientRect().top;
-                var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: "smooth"
-                });
-            });
-        // .style("stroke", "gray")
-
-        var circle = dots.append('circle')
-            .style("fill", function(d, i) {
-                if (d.ending_time !== undefined) return 'transparent'
-                return typeInfo[d.type]['color']
-            })
-            .attr("r", radius)
-            .attr('cy', (d) => Math.random() * distance - distance / 2)
-            .style('opacity', .6)
-
-        var lines = dots.append('rect')
-            .style("fill", function(d, i) {
-                if (d.ending_time === undefined) return 'transparent'
-                return typeInfo[d.type]['color']
-            })
-            .attr('height', radius * 2)
-            .attr('width', function(d, i) {
-                if (d.ending_time === undefined) return 0
-
-                var date = new Date(d.starting_time * 1000)
-                var x1 = timescale(date)
-                var date = new Date(d.ending_time * 1000)
-                var x2 = timescale(date)
-                return x2 - x1
-            })
-            .style('opacity', .6)
-            .attr('rx', 3)
-            .attr('y', -radius)
-        // ending_time
-        // var labels = dots.append('text')
-        // .attr("cx", function(d, i) {
-        //     var date = new Date(d.starting_time * 1000)
-        //     return timescale(date)
-        // })
-        // .attr("cy", (d)=>((typeInfo[d.type]['index'])*-8)+4)
-
-        //     .on('mouseover', function(d){
-        //     d3.select(this).style({opacity:'0.8'})
-        //     d3.select("text").style({opacity:'1.0'});
-        //             })
-        // .on('mouseout', function(d){
-        //   d3.select(this).style({opacity:'0.0',})
-        //   d3.select("text").style({opacity:'0.0'});
-        // })
+        var year = <?= $YEAR ?>;
+        var quarter = <?= $QUARTER ?>;
+        timeline(year, quarter, typeInfo, events, types);
     </script>
 
 
@@ -490,133 +305,154 @@ if ($Settings->hasFeatureDisabled('coins')) {
     </div>
 
 
+    <div class="row row-eq-spacing">
+        <div class="col-lg-9">
 
-    <?php
-    foreach ($groups as $col => $data) {
-    ?>
+            <?php
+            foreach ($groups as $col => $data) {
+            ?>
 
-        <div class="box box-<?= $col ?>" id="<?= $col ?>">
-                <div class="content mb-0">
-                <h3 class="title text-<?= $col ?> m-0">
-                    <i class="ph ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
-                    <?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
-                </h3>
-                </div>
-            <?php if (empty($data)) { ?>
-                <div class="content text-muted">
-                    <?= lang('No activities found.', 'Noch keine Aktivitäten vorhanden.') ?>
-                </div>
-            <?php } else { ?>
+                <div class="box box-<?= $col ?>" id="<?= $col ?>">
+                    <div class="content mb-0">
+                        <h3 class="title text-<?= $col ?> m-0">
+                            <i class="ph ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
+                            <?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
+                        </h3>
+                    </div>
+                    <?php if (empty($data)) { ?>
+                        <div class="content text-muted">
+                            <?= lang('No activities found.', 'Noch keine Aktivitäten vorhanden.') ?>
+                        </div>
+                    <?php } else { ?>
 
-                <table class="table simple">
-                    <tbody>
-                        <?php
-                        // $filter['type'] = $col;
-                        // $cursor = $collection->find($filter, $options);
-                        // dump($cursor);
-                        foreach ($data as $doc) {
-                            $id = $doc['_id'];
-                            $l = $LOM->lom($doc);
-                            $_lom += $l['lom'];
-                            $Format->setDocument($doc);
+                        <table class="table simple">
+                            <tbody>
+                                <?php
+                                // $filter['type'] = $col;
+                                // $cursor = $collection->find($filter, $options);
+                                // dump($cursor);
+                                foreach ($data as $doc) {
+                                    $id = $doc['_id'];
+                                    $l = $Coins->activityCoins($doc, $user);
+                                    $Format->setDocument($doc);
 
-                            if ($doc['year'] == $YEAR) {
-                                $q = getQuarter($doc);
-                                $in_quarter = $q == $QUARTER;
-                                $q = "Q$q";
-                            } else {
-                                $q = getQuarter($doc);
-                                $in_quarter = false;
-                                $q = $doc['year'] . "Q$q";
-                            }
+                                    if ($doc['year'] == $YEAR) {
+                                        $q = getQuarter($doc);
+                                        $in_quarter = $q == $QUARTER;
+                                        $q = "Q$q";
+                                    } else {
+                                        $q = getQuarter($doc);
+                                        $in_quarter = false;
+                                        $q = $doc['year'] . "Q$q";
+                                    }
 
 
-                            echo "<tr class='" . ($in_quarter ? 'in-quarter' : '') . "' id='tr-$id'>";
-                            // echo "<td class='w-25'>";
-                            // echo$Format->activity_icon($doc);
-                            // echo "</td>";
-                            echo "<td class='quarter'>";
-                            if (!empty($q)) echo "$q";
-                            echo "</td>";
-                            echo "<td>";
-                            // echo $doc['format'];
-                            if ($USER['display_activities'] == 'web') {
-                                echo $Format->formatShort();
-                            } else {
-                                echo $Format->format();
-                            }
+                                    echo "<tr class='" . ($in_quarter ? 'in-quarter' : '') . "' id='tr-$id'>";
+                                    // echo "<td class='w-25'>";
+                                    // echo$Format->activity_icon($doc);
+                                    // echo "</td>";
+                                    echo "<td class='quarter'>";
+                                    if (!empty($q)) echo "$q";
+                                    echo "</td>";
+                                    echo "<td>";
+                                    // echo $doc['format'];
+                                    if ($USER['display_activities'] == 'web') {
+                                        echo $Format->formatShort();
+                                    } else {
+                                        echo $Format->format();
+                                    }
 
-                            // show error messages, warnings and todos
-                            $has_issues = $Format->has_issues();
-                            if ($currentuser && !empty($has_issues)) {
-                                $approval_needed[] = array(
-                                    'type' => $col,
-                                    'id' => $id,
-                                    'title' => $Format->title,
-                                    'badge' => $Format->activity_badge(),
-                                    'tags' => $has_issues
-                                );
-                        ?>
-                                <br>
-                                <b class="text-danger">
-                                    <?= lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.') ?>
-                                    <a href="<?= ROOTPATH ?>/issues#tr-<?= $id ?>" class="link">Review</a>
-                                </b>
-                            <?php
-                            }
+                                    // show error messages, warnings and todos
+                                    $has_issues = $Format->has_issues();
+                                    if ($currentuser && !empty($has_issues)) {
+                                        $approval_needed[] = array(
+                                            'type' => $col,
+                                            'id' => $id,
+                                            'title' => $Format->title,
+                                            'badge' => $Format->activity_badge(),
+                                            'tags' => $has_issues
+                                        );
+                                ?>
+                                        <br>
+                                        <b class="text-danger">
+                                            <?= lang('This activity has unresolved warnings.', 'Diese Aktivität hat ungelöste Warnungen.') ?>
+                                            <a href="<?= ROOTPATH ?>/issues#tr-<?= $id ?>" class="link">Review</a>
+                                        </b>
+                                    <?php
+                                    }
 
-                            ?>
+                                    ?>
 
-                            </td>
+                                    </td>
 
-                            <td class="unbreakable w-50">
-                                <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                    <i class="ph ph-arrow-fat-line-right"></i>
-                                </a>
-                                <button class="btn link square" onclick="addToCart(this, '<?= $id ?>')">
-                                    <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
-                                </button>
-                                <?php if ($currentuser) { ?>
-                                    <a class="btn link square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
-                                        <i class="ph ph-pencil-simple-line"></i>
-                                    </a>
+                                    <td class="unbreakable w-50">
+                                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                            <i class="ph ph-arrow-fat-line-right"></i>
+                                        </a>
+                                        <button class="btn link square" onclick="addToCart(this, '<?= $id ?>')">
+                                            <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
+                                        </button>
+                                        <?php if ($currentuser) { ?>
+                                            <a class="btn link square" href="<?= ROOTPATH . "/activities/edit/" . $id ?>">
+                                                <i class="ph ph-pencil-simple-line"></i>
+                                            </a>
+                                        <?php } ?>
+                                    </td>
+                                    <?php if ($showcoins) { ?>
+                                        <td class='lom unbreakable'>
+                                            <span data-toggle='tooltip' data-title='<?= $l['comment'] ?>'>
+                                                <?= round($l["coins"]) ?>
+                                            </span>
+                                        </td>
+                                    <?php } ?>
+                                    </tr>
                                 <?php } ?>
-                            </td>
-                            <?php if ($showcoins) { ?>
-                                <td class='lom w-50'><span data-toggle='tooltip' data-title='<?= $l['points'] ?>'><?= $l["lom"] ?></span></td>
-                            <?php } ?>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
 
+
+                    <?php } ?>
+
+                    <div class="content mt-0">
+                        <?php if ($currentuser) {
+                            $t = $col;
+                            if ($col == "publication") $t = "article";
+                        ?>
+                            <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
+                                <i class="ph ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
+                            </a>
+                            <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
+                            <?php if ($col == 'publication') { ?>
+                                <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
+                                    <i class="ph ph-magnifying-glass-plus mr-5"></i>
+                                    <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
+                                </a>
+                            <?php } ?>
+
+                        <?php } ?>
+
+                    </div>
+
+                </div>
 
             <?php } ?>
 
-            <div class="content mt-0">
-                <?php if ($currentuser) {
-                    $t = $col;
-                    if ($col == "publication") $t = "article";
-                ?>
-                    <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
-                        <i class="ph ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
-                    </a>
-                    <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
-                    <?php if ($col == 'publication') { ?>
-                        <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
-                            <i class="ph ph-magnifying-glass-plus mr-5"></i>
-                            <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
+        </div>
+        <div class="col-lg-3 d-none d-lg-block">
+            <nav class="on-this-page-nav">
+                <div class="content">
+                    <div class="title"><?= lang('Activities', 'Aktivitäten') ?></div>
+                    <?php foreach ($groups as $col => $data) { ?>
+                        <a href="#<?= $col ?>" class="text-<?= $col ?>">
+                            <i class="ph ph-fw ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i>
+                            <?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
+                            (<?= count($data) ?>)
                         </a>
                     <?php } ?>
-
-                <?php } ?>
-
-            </div>
-
+                </div>
+            </nav>
         </div>
-
-    <?php } ?>
-
+    </div>
 
 
 
@@ -688,6 +524,3 @@ if ($Settings->hasFeatureDisabled('coins')) {
     <?php } ?>
 
 </div>
-<script>
-    $('#lom-points').html('<?= round($_lom) ?>');
-</script>

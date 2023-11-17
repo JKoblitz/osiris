@@ -44,7 +44,7 @@ Route::get('/groups/view/(.*)', function ($id) {
     }
     $breadcrumb = [
         ['name' => lang("Groups", "Gruppen"), 'path' => "/groups"],
-        ['name' => $group['name']]
+        ['name' => $group['id']]
     ];
 
     include BASEPATH . "/header.php";
@@ -52,19 +52,19 @@ Route::get('/groups/view/(.*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/groups/edit/([a-zA-Z0-9]*)', function ($id) {
+Route::get('/groups/edit/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
-    $mongo_id = $DB->to_ObjectID($id);
-    $group = $osiris->groups->findOne(['_id' => $mongo_id]);
+    $id = urldecode($id);
+    $group = $osiris->groups->findOne(['id' => $id]);
     if (empty($group)) {
         header("Location: " . ROOTPATH . "/groups?msg=not-found");
         die;
     }
     $breadcrumb = [
         ['name' => lang("Groups", "Gruppen"), 'path' => "/groups"],
-        ['name' =>  $group['name'], 'path' => "/groups/view/$id"],
+        ['name' =>  $group['id'], 'path' => "/groups/view/$id"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
 

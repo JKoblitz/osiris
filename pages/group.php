@@ -1,5 +1,5 @@
 <?php
-    
+
 /**
  * Page to view a selected group
  * 
@@ -16,6 +16,10 @@
  * @license     MIT
  */
 
+//  $children = $Groups->getChildren($id);
+//  dump($children, true);
+
+//  dump($Groups->tree, true);
 ?>
 
 <style>
@@ -38,12 +42,20 @@
     }
 </style>
 
-<div <?= $Groups->cssVar($id) ?> class="">
 
-<a class="btn float-right" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
-    <i class="ph ph-eye ph-fw"></i>
-    <?= lang('Preview', 'Vorschau') ?>
-</a>
+
+<div <?= $Groups->cssVar($id) ?> class="">
+    <div class="btn-group float-right">
+
+        <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
+            <i class="ph ph-note-pencil ph-fw"></i>
+            <?= lang('Edit', 'Bearbeiten') ?>
+        </a>
+        <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
+            <i class="ph ph-eye ph-fw"></i>
+            <?= lang('Preview', 'Vorschau') ?>
+        </a>
+    </div>
     <h1>
         <?= $group['name'] ?>
     </h1>
@@ -53,7 +65,7 @@
     <div class="row row-eq-spacing">
         <div class="col-md-6 col-lg-8">
 
-        <h3><?=lang('Relevant units', 'Verwandte Einheiten')?></h3>
+            <h3><?= lang('Relevant units', 'Verwandte Einheiten') ?></h3>
             <table class="table">
                 <tbody>
                     <tr>
@@ -95,9 +107,24 @@
 
         <div class="col-md-6 col-lg-4">
             <?php
-                $persons = $osiris->persons->find(['depts' => $id, 'is_active' => true], ['sort'=>['last'=> 1]])->toArray();
+            $children = $Groups->getChildren($group['id']);
+            $persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+
+            if (isset($group['head'])) {
+
+                $head = $group['head'];
+                if (is_string($head)) $head = [$head];
+                else $head = DB::doc2Arr($head);
+
+
+                usort($persons, function ($a, $b) use ($head) {
+                    return in_array($a['username'], $head)  ? -1 : 1;
+                });
+            } else {
+                $head = [];
+            }
             ?>
-            <h3><?=lang('Employees', 'Mitarbeitende')?></h3>
+            <h3><?= lang('Employees', 'Mitarbeitende') ?></h3>
             <table class="table" id="person-table">
                 <tbody>
                     <?php
@@ -125,6 +152,10 @@
                                     <img src="<?= $img ?>" alt="" style="max-width: 3rem;" class="mr-20 rounded">
                                     <div class="">
                                         <h5 class="my-0">
+                                            <?php if (in_array($username, $head)) { ?>
+                                                <i class="ph ph-crown text-signal"></i>
+                                            <?php } ?>
+
                                             <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="colorless">
                                                 <?= $person['first'] ?>
                                                 <?= $person['last'] ?>
@@ -135,17 +166,16 @@
                                 </div>
                             </td>
                         </tr>
-                    <?php
-                    } ?>
+                    <?php } ?>
 
 
 
                 </tbody>
             </table>
-            <?php if (($i ?? 0) >= 10) { 
+            <?php if (($i ?? 0) >= 10) {
                 $n = $i - 9;
-                ?>
-                <a onclick="$('#person-table').find('tr.hidden').removeClass('hidden');$(this).hide()"><?=lang("Show $n more", "Zeige $n weitere")?></a>
+            ?>
+                <a onclick="$('#person-table').find('tr.hidden').removeClass('hidden');$(this).hide()"><?= lang("Show $n more", "Zeige $n weitere") ?></a>
             <?php } ?>
 
         </div>
@@ -153,9 +183,18 @@
     </div>
 
 </div>
+
+
+<div class=" text-danger">
+    <form action="<?= ROOTPATH ?>/groups/delete/<?= $group['_id'] ?>" method="post">
+    <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/groups">
+        <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
+        <?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?>
+    </form>
+</div>
 <?php
 
-if (isset($_GET['verbose'])){
+if (isset($_GET['verbose'])) {
     dump($group, true);
 }
 ?>

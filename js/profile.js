@@ -397,11 +397,10 @@ function activitiesChart() {
                     maintainAspectRatio: false,
                     onClick: (e) => {
                         const canvasPosition = Chart.helpers.getRelativePosition(e, activityChart);
-
                         // Substitute the appropriate scale IDs
                         const dataX = activityChart.scales.x.getValueForPixel(canvasPosition.x);
                         const dataY = activityChart.scales.y.getValueForPixel(canvasPosition.y);
-                        window.location = ROOTPATH + "/my-year/" + CURRENT_USER + "?year=" + years[dataX]
+                        window.location = ROOTPATH + "/my-year/" + CURRENT_USER + "?year=" + dataset.labels[dataX]
                     }
                 },
                 data: {

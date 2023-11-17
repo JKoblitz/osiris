@@ -24,7 +24,62 @@ class Coins
                 $this->matrix[$subtype] = $subArr['coins'];
             }
         }
+    }
 
+    function activityCoins($doc, $user)
+    {
+        if (isset($doc['epub']) && $doc['epub']) return [
+            'coins' => 0, 'comment' => 'Online ahead of print'
+        ];
+
+        $subtype = $doc['subtype'];
+        $coins = $this->matrix[$subtype];
+
+        $authors = $doc['authors']->bsonSerialize();
+        $author = array_filter($authors, function ($author) use ($user) {
+            return $author['user'] == $user;
+        });
+
+        if (empty($author)) return [
+            'coins' => 0, 'comment' => 'User not author'
+        ];
+        $author = reset($author);
+        $position = ($author['position'] ?? '');
+        
+        if (!($author['aoi']?? false)) return [
+            'coins' => 0, 'comment' => 'User not affiliated'
+        ];
+
+        if (is_numeric($coins)) {
+            $comment = "$coins for $subtype";
+            if ($position == 'middle') {
+                $coins /= 2;
+                $comment .= " (middle author)";
+            }
+            return [
+                'coins' => $coins, 'comment' => $comment
+            ];
+        }
+        if (preg_match('/(\d+)(?:\s*)([\+\-\*\/])(?:\s*)\{(if|sws)\}/', $coins, $matches) !== FALSE) {
+            $val = 0;
+            $coins = $matches[1];
+            $operator = $matches[2];
+            $thingy = strtoupper($matches[3]);
+            if ($thingy == 'IF'){
+                $val = max($doc['impact'] ?? 0, 1);
+            }
+            if ($thingy == 'SWS'){
+                $val = $author['sws'] ?? 0;
+            }
+            if ($position == 'middle') $coins /= 2;
+            $c = ($coins) * $val;
+            return [
+                'coins' => $c, 'comment' => "$coins &times; $val ($thingy) "
+            ];
+        }
+        return [
+            'coins' => 0, 'comment' => 'Undefined coins'
+        ];
     }
 
     function getCoins($user, $year = null)
@@ -33,7 +88,8 @@ class Coins
         foreach ($this->matrix as $subtype => $coins) {
             $filter = [
                 'subtype' => $subtype,
-                'authors' => ['$elemMatch' => ['user' => $user, 'aoi' => ['$in' => [true, 1, '1']]]]
+                'authors' => ['$elemMatch' => ['user' => $user, 'aoi' => ['$in' => [true, 1, '1']]]],
+                'epub' => ['$ne'=>true]
             ];
             if ($year !== null)
                 $filter['year'] = $year;

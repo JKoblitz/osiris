@@ -421,6 +421,8 @@ class Document extends Settings
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
                     $author = "<u>$author</u>";
                 }
+                if (isset($a['user']))
+                        $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
                 $authors[] = $author;
             } else {
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
@@ -432,7 +434,6 @@ class Document extends Settings
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
                     $author = "<b>$author</b>";
                 }
-
                 if ($first > 1 && $a['position'] == 'first') {
                     $author .= "<sup>#</sup>";
                 }

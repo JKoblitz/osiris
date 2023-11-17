@@ -92,11 +92,15 @@ if (defined('GUEST_FORMS') && GUEST_FORMS) {
 
 Route::get('/test-new-func', function () {
     include_once BASEPATH . "/php/init.php";
-    include BASEPATH . "/header.php";
-    $db = new DB;
-    dump($db->getPerson('juk20'));
+    // include BASEPATH . "/header.php";
+    // $db = new DB;
+    // dump($db->getPerson('juk20'));
 
-    include BASEPATH . "/footer.php";
+    // include BASEPATH . "/footer.php";
+    $id = 'DSMZ';
+    $children = $Groups->getChildren($id);
+    dump($children, true);
+   
 });
 
 include_once BASEPATH . "/routes/admin.php";

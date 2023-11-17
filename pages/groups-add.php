@@ -44,8 +44,8 @@ function sel($index, $value)
 {
     return val($index) == $value ? 'selected' : '';
 }
+// dump($form);
 ?>
-<script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
 <style>
 </style>
@@ -83,7 +83,7 @@ function sel($index, $value)
     <div class="row row-eq-spacing">
         <div class="col-sm-2">
             <label for="name_de" class=""><?= lang('Color', 'Farbe') ?></label>
-            <input type="color" class="form-control" name="type[color]" required>
+            <input type="color" class="form-control" name="type[color]" required value="<?= val('color') ?>">
             <span><?= lang('Note that if the parent has a color other than black, it will be overwritten', 'Bitte beachte, dass dieser Wert überschrieben wird, falls die übergeordnete Gruppe eine andere Farbe als schwarz hat.') ?></span>
         </div>
 
@@ -104,8 +104,29 @@ function sel($index, $value)
             <label for="unit" class="required element-other">
                 <?= lang('Type of group', 'Art der Gruppe') ?>
             </label>
-            <input type="text" class="form-control" name="values[unit]" id="unit" required value="<?= val('unit') ?>" placeholder="<?=lang('Double click to see suggestions', 'Doppelklick für Vorschläge')?>" list="unit-list">
+            <input type="text" class="form-control" name="values[unit]" id="unit" required value="<?= val('unit') ?>" placeholder="<?= lang('Double click to see suggestions', 'Doppelklick für Vorschläge') ?>" list="unit-list">
         </div>
+    </div>
+
+    <div class="form-group">
+        <label for="head">
+            <?= lang('Lead', 'Leitung') ?>
+        </label>
+        <select class="form-control" id="head" name="values[head][]" autocomplete="off" multiple="multiple">
+            <option value=""><?=lang('None', 'Keiner')?></option>
+            <?php
+            $head = $form['head'] ?? [$user];
+            if (is_string($head)) $head = [$head];
+            else $head = DB::doc2Arr($head);
+
+            $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+            foreach ($userlist as $j) { ?>
+                <option value="<?= $j['username'] ?>" <?= in_array($j['username'], $head) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+            <?php } ?>
+        </select>
+        <small class="text-muted">
+            <?=lang('Multiple with <kbd>Ctrl</kbd>', 'Mehrere mit <kbd>Strg</kbd>')?>
+        </small>
     </div>
 
 

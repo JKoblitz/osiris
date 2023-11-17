@@ -83,7 +83,7 @@ Route::post('/auth/new-user', function () {
     $person['roles'] = [];
     if (boolval($person['is_scientist'] ?? false)) $person['roles'][] = 'scientist';
     // if (isset($person['depts'])){
-    //     $person['depts'] = $Groups->getGroupList($person['dept']);
+    //     $person['depts'] = $Groups->getParents($person['dept']);
     // }
     // dump($person, true);
     // die;
