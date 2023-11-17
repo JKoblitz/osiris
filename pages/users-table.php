@@ -43,7 +43,7 @@
         <th>User</th>
         <th><?= lang('Last name', 'Nachname') ?></th>
         <th><?= lang('First name', 'Vorname') ?></th>
-        <th><?= lang('Dept', 'Abteilung') ?></th>
+        <th><?= lang('Units', 'Einheiten') ?></th>
         <th><?= lang('Phone', 'Telefon') ?></th>
         <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
             <th></th>
@@ -77,13 +77,17 @@
                 <td><a href="<?= ROOTPATH ?>/profile/<?= $username ?>"><?= $username ?></a></td>
                 <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
                 <td><?= $document['first'] ?></td>
-                <td class="text-<?= $document['dept'] ?? '' ?>">
-                    <?php if ($document['is_leader'] ?? false) { ?>
-                        <strong><?= $document['dept'] ?? '' ?></strong>
-                    <?php } else { ?>
-                        <?= $document['dept'] ?? '' ?>
-                    <?php } ?>
-
+                <td>
+                
+        <?php
+        foreach ($document['depts'] as $i => $d) {
+            $dept = implode('/', $Groups->getParents($d));
+        ?>
+            <a href="<?= ROOTPATH ?>/groups/view/<?= $d ?>">
+                <?= $dept ?>
+            </a>
+        <?php } ?>
+                    
                 </td>
                 <td><?php
                     if (!empty($document['telephone'] ?? '')) {

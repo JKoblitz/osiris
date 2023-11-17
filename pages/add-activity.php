@@ -54,8 +54,6 @@ function val($index, $default = '')
     return $val;
 }
 
-$dept = $form['dept'] ?? $USER['dept'] ?? '';
-
 ?>
 
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>

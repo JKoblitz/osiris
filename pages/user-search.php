@@ -86,13 +86,13 @@ $Format = new Document(true);
                     type: 'string',
                     default_value: 'Dr.'
                 },
-                {
-                    id: 'dept',
-                    label: lang('Department', 'Abteilung'),
-                    type: 'string',
-                    input: 'select',
-                    values: JSON.parse('<?= json_encode($depts) ?>')
-                },
+                // {
+                //     id: 'depts',
+                //     label: lang('Department', 'Abteilung'),
+                //     type: 'string',
+                //     input: 'select',
+                //     values: JSON.parse('<?= json_encode($depts) ?>')
+                // },
                 {
                     id: 'telephone',
                     label: lang('Telephone', 'Telefon'),

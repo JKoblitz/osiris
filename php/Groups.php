@@ -153,16 +153,18 @@ class Groups
     }
 
 
-    public function getParents($id)
+    public function getParents($id, $to0 = false)
     {
         $groups = [$id];
         $el = $this->getGroup($id);
         $i = 0;
         while (!empty($el['parent'])) {
             $el = $this->getGroup($el['parent']);
+            if (!$to0 && $el['level'] == 0) break; // do not show institute
             $groups[] = $el['id'];
             if ($i++ > 9) break;
         }
+        $groups = array_reverse($groups);
         return $groups;
     }
 

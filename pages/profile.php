@@ -215,7 +215,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             if ($i > 0) echo ', ';
         ?>
             <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
-                <?php if (in_array($user, $dept['head'])) { ?>
+                <?php if (in_array($user, $dept['head']?? [])) { ?>
                     <i class="ph ph-crown"></i>
                 <?php } ?>
                 <?= $dept['name'] ?>

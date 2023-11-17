@@ -16,12 +16,19 @@ $Format = new Document(false, 'portal');
                 <?= $scientist['last'] ?>
             </h1>
 
+
             <?php
-            $dept = $Groups->getGroup($scientist['dept']);
+            foreach ($scientist['depts'] as $i => $d) {
+                $dept = $Groups->getGroup($d);
+                if ($i > 0) echo ', ';
             ?>
-            <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>" class="font-weight-bold">
-                <?= $dept['name'] ?>
-            </a>
+                <a href="<?= ROOTPATH ?>/portal/group/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
+                    <?php if (in_array($user, $dept['head'] ?? [])) { ?>
+                        <i class="ph ph-crown"></i>
+                    <?php } ?>
+                    <?= $dept['name'] ?>
+                </a>
+            <?php } ?>
             <?php if (isset($scientist['position']) && !empty($scientist['position'])) { ?>
                 <p class="my-0 lead"><?= $scientist['position'] ?></p>
             <?php } ?>
@@ -103,7 +110,7 @@ $Format = new Document(false, 'portal');
 
             <?php } ?>
         </div>
-        
+
 
         <div class="col-md-4">
             <h2 class="title">Contact</h2>

@@ -47,9 +47,6 @@ function sel($index, $value)
 // dump($form);
 ?>
 
-<style>
-</style>
-
 <h3 class="title">
     <?= lang('Add new group', 'Neue Gruppe') ?>
 </h3>
@@ -129,6 +126,11 @@ function sel($index, $value)
         </small>
     </div>
 
+
+    <div class="form-group">
+        <label for="description"><?=lang('Description', 'Beschreibung')?></label>
+        <textarea name="values[description]" id="description" cols="30" rows="10" class="form-control"><?=val('description')?></textarea>
+    </div>
 
     <datalist id="unit-list">
         <?php
