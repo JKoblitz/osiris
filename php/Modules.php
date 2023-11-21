@@ -853,7 +853,7 @@ class Modules
                 <div class="data-module col-12 row" data-module="person">
                     <div class="col-sm-5">
                         <label for="guest-name" class="<?= $required ?> element-other">
-                            <?= lang('Name of the student', 'Name des Studierenden') ?>
+                            <?= lang('Name of the person', 'Name der Person') ?>
                             <?= lang('(last name, given name)', '(Nachname, Vorname)') ?>
                         </label>
                         <input type="text" class="form-control" name="values[name]" id="guest-name" <?= $required ?> value="<?= $this->val('name') ?>">

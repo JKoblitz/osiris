@@ -20,6 +20,7 @@
 //  dump($children, true);
 
 //  dump($Groups->tree, true);
+$level = $Groups->getLevel($id);
 ?>
 
 <style>
@@ -65,44 +66,65 @@
     <div class="row row-eq-spacing">
         <div class="col-md-6 col-lg-8">
 
-            <h3><?= lang('Relevant units', 'Verwandte Einheiten') ?></h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Parent unit', 'Übergeordnete Einheit') ?></span>
-                            <?php if ($group['parent']) { ?>
-                                <a href="<?= ROOTPATH ?>/groups/view/<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
-                            <?php } else { ?>
-                                -
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Child units', 'Untereinheiten') ?></span>
-                            <?php
-                            $children = $osiris->groups->find(['parent' => $id])->toArray();
-                            ?>
-                            <?php if (!empty($children)) { ?>
-                                <ul class="list">
-                                    <?php foreach ($children as $child) { ?>
-                                        <li>
-                                            <a href="<?= ROOTPATH ?>/groups/view/<?= $child['id'] ?>" class="colorless font-weight-bold"><?= $child['name'] ?></a><br>
-                                            <span class="text-muted"><?= $child['unit'] ?></span>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            <?php } else { ?>
-                                -
-                            <?php } ?>
+            <h3><?= lang('Information', 'Informationen') ?></h3>
 
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <span class="badge primary">
+                Level <?= $level ?? '?' ?>
+            </span>
 
-            <!-- TODO: hier ist Platz für Auswertungen und Graphen -->
+            <p>
+                <?= $group['description'] ?? '-' ?>
+            </p>
+
+        
+
+
+            <div id="collab">
+                <h3><?= lang('Collaboration with other groups', 'Zusammenarbeit mit anderen Gruppen') ?></h3>
+                <p class="text-muted">
+                    <?= lang('Based on publications within the past 5 years.', 'Basierend auf Publikationen aus den vergangenen 5 Jahren.') ?>
+                </p>
+                <div id="chart" style="max-width: 60rem"></div>
+            </div>
+
+            <script src="<?= ROOTPATH ?>/js/popover.js"></script>
+            <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
+            <script src="<?= ROOTPATH ?>/js/d3-chords.js"></script>
+
+            <script>
+                $.ajax({
+                    type: "GET",
+                    url: ROOTPATH + "/api/dashboard/department-network",
+                    data: {
+                        type: 'publication',
+                        dept: '<?= $id  ?>',
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+                        if (response.count <= 1) {
+                            $('#collab').hide()
+                            return
+                        }
+                        var matrix = response.data.matrix;
+                        var data = response.data.labels;
+
+                        var labels = [];
+                        var colors = [];
+                        data = Object.values(data)
+                        data.forEach(element => {
+                            labels.push(element.id);
+                            colors.push(element.color)
+                        });
+
+
+                        Chords('#chart', matrix, labels, colors, data, links = false, useGradient = true, highlightFirst = false, type = '<?= $_GET['type'] ?? 'publication' ?>');
+                    },
+                    error: function(response) {
+                        console.log(response);
+                    }
+                });
+            </script>
         </div>
 
         <div class="col-md-6 col-lg-4">
@@ -178,6 +200,45 @@
                 <a onclick="$('#person-table').find('tr.hidden').removeClass('hidden');$(this).hide()"><?= lang("Show $n more", "Zeige $n weitere") ?></a>
             <?php } ?>
 
+
+            <h3><?= lang('Relevant units', 'Verwandte Einheiten') ?></h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="key"><?= lang('Parent unit', 'Übergeordnete Einheit') ?></span>
+                            <?php if ($group['parent']) { ?>
+                                <a href="<?= ROOTPATH ?>/groups/view/<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
+                            <?php } else { ?>
+                                -
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="key"><?= lang('Child units', 'Untereinheiten') ?></span>
+                            <?php
+                            $children = $osiris->groups->find(['parent' => $id])->toArray();
+                            ?>
+                            <?php if (!empty($children)) { ?>
+                                <ul class="list">
+                                    <?php foreach ($children as $child) { ?>
+                                        <li>
+                                            <a href="<?= ROOTPATH ?>/groups/view/<?= $child['id'] ?>" class="colorless font-weight-bold"><?= $child['name'] ?></a><br>
+                                            <span class="text-muted"><?= $child['unit'] ?></span>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+                            <?php } else { ?>
+                                -
+                            <?php } ?>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            
         </div>
 
     </div>
@@ -185,13 +246,6 @@
 </div>
 
 
-<div class=" text-danger">
-    <form action="<?= ROOTPATH ?>/groups/delete/<?= $group['_id'] ?>" method="post">
-    <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/groups">
-        <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
-        <?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?>
-    </form>
-</div>
 <?php
 
 if (isset($_GET['verbose'])) {

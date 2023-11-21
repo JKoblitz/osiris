@@ -9,6 +9,8 @@ Biography
 Forschungsportal
 
 Profilseite überarbeitet
+  Nav
+  Zeitstrahl für Projekte
 
 Organisationseinheiten
 
@@ -22,7 +24,7 @@ Project
 
 Restructuring of Code
 
-
+Name in MyActivities
 
 ## 25.10.2023
 <a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>

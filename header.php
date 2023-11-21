@@ -369,7 +369,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     </a>
                     <a href="<?= ROOTPATH ?>/groups" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('groups') ?>">
                         <i class="ph ph-users-three" aria-hidden="true"></i>
-                        <?= lang('Organisational Units', 'Struktureinheiten') ?>
+                        <?= lang('Organisational Units', 'Organisationseinh.') ?>
                     </a>
 
                     <?php if (GUEST_FORMS) { ?>

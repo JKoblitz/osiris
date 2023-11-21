@@ -130,7 +130,7 @@ customChordLayout = function () {
     return chord;
 };
 
-function Chords(selector, matrix, labels, colors, data, links, useGradient, labelBold) {
+function Chords(selector, matrix, labels, colors, data, links, useGradient, labelBold, type = 'publication') {
     var margin = {
         left: 80,
         top: 80,
@@ -141,7 +141,7 @@ function Chords(selector, matrix, labels, colors, data, links, useGradient, labe
         height = Math.min(window.innerWidth, 1000) - margin.top - margin.bottom,
         innerRadius = Math.min(width, height) * .39,
         outerRadius = innerRadius * 1.08;
-        
+
     var opacityDefault = 0.8;
 
     /// Create scale and layout functions ///
@@ -243,38 +243,38 @@ function Chords(selector, matrix, labels, colors, data, links, useGradient, labe
             return colors(d.index);
         })
         .attr("d", arc)
-        // .each(function (d, i) {
-        //     //Search pattern for everything between the start and the first capital L
-        //     var firstArcSection = /(^.+?)L/;
+    // .each(function (d, i) {
+    //     //Search pattern for everything between the start and the first capital L
+    //     var firstArcSection = /(^.+?)L/;
 
-        //     //Grab everything up to the first Line statement
-        //     var newArc = firstArcSection.exec(d3.select(this).attr("d"))[1];
-        //     //Replace all the comma's so that IE can handle it
-        //     newArc = newArc.replace(/,/g, " ");
+    //     //Grab everything up to the first Line statement
+    //     var newArc = firstArcSection.exec(d3.select(this).attr("d"))[1];
+    //     //Replace all the comma's so that IE can handle it
+    //     newArc = newArc.replace(/,/g, " ");
 
-        //     //If the end angle lies beyond a quarter of a circle (90 degrees or pi/2) 
-        //     //flip the end and start position
-        //     if (d.endAngle > 90 * Math.PI / 180 & d.startAngle < 270 * Math.PI / 180) {
-        //         var startLoc = /M(.*?)A/, //Everything between the first capital M and first capital A
-        //             middleLoc = /A(.*?)0 0 1/, //Everything between the first capital A and 0 0 1
-        //             endLoc = /0 0 1 (.*?)$/; //Everything between the first 0 0 1 and the end of the string (denoted by $)
-        //         //Flip the direction of the arc by switching the start en end point (and sweep flag)
-        //         //of those elements that are below the horizontal line
-        //         var newStart = endLoc.exec(newArc)[1];
-        //         var newEnd = startLoc.exec(newArc)[1];
-        //         var middleSec = middleLoc.exec(newArc)[1];
+    //     //If the end angle lies beyond a quarter of a circle (90 degrees or pi/2) 
+    //     //flip the end and start position
+    //     if (d.endAngle > 90 * Math.PI / 180 & d.startAngle < 270 * Math.PI / 180) {
+    //         var startLoc = /M(.*?)A/, //Everything between the first capital M and first capital A
+    //             middleLoc = /A(.*?)0 0 1/, //Everything between the first capital A and 0 0 1
+    //             endLoc = /0 0 1 (.*?)$/; //Everything between the first 0 0 1 and the end of the string (denoted by $)
+    //         //Flip the direction of the arc by switching the start en end point (and sweep flag)
+    //         //of those elements that are below the horizontal line
+    //         var newStart = endLoc.exec(newArc)[1];
+    //         var newEnd = startLoc.exec(newArc)[1];
+    //         var middleSec = middleLoc.exec(newArc)[1];
 
-        //         //Build up the new arc notation, set the sweep-flag to 0
-        //         newArc = "M" + newStart + "A" + middleSec + "0 0 0 " + newEnd;
-        //     } //if
+    //         //Build up the new arc notation, set the sweep-flag to 0
+    //         newArc = "M" + newStart + "A" + middleSec + "0 0 0 " + newEnd;
+    //     } //if
 
-        //     // Create a new invisible arc that the text can flow along
-        //     svg.append("path")
-        //         .attr("class", "hiddenArcs")
-        //         .attr("id", "arc" + i)
-        //         .attr("d", newArc)
-        //         .style("fill", "none");
-        // });
+    //     // Create a new invisible arc that the text can flow along
+    //     svg.append("path")
+    //         .attr("class", "hiddenArcs")
+    //         .attr("id", "arc" + i)
+    //         .attr("d", newArc)
+    //         .style("fill", "none");
+    // });
 
     /// Append labels ///
 
@@ -354,9 +354,10 @@ function Chords(selector, matrix, labels, colors, data, links, useGradient, labe
                 trigger: 'hover',
                 html: true,
                 content: function () {
-                    return "<span style='font-weight:900'>" +
-                        data[d.index]['count'] +
-                        "</span> publications";
+                    return `<span style='font-weight:900'>
+                        ${data[d.index]['count']}
+                    </span> ${type}s
+                    `
                 }
             });
             $(this).popover('show');
@@ -384,9 +385,10 @@ function Chords(selector, matrix, labels, colors, data, links, useGradient, labe
             trigger: 'hover',
             html: true,
             content: function () {
-                var val = d.source.value;
-                // if (d.source.index == d.target.index) val /= 2
-                return "<span style='font-weight:900'>" + val + "</span> publications";
+                return `<span style='font-weight:900'>
+                    ${d.source.value}
+                </span> ${type}s
+                `
             }
         });
         $(this).popover('show');

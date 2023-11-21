@@ -13,7 +13,7 @@ function chart(selector, data) {
 
   const format = d3.format(",d")
   const width = 800
-  const radius = width / 6
+  const radius = width / 8
   const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1))
   const arc = d3.arc()
     .startAngle(d => d.x0)
@@ -38,10 +38,9 @@ function chart(selector, data) {
     .selectAll("path")
     .data(root.descendants().slice(1))
     .join("path")
-    .attr("fill", d => {
-      while (d.depth > 1) d = d.parent;
-      if (DEPTS[d.data.abbr] === undefined) return '#f1f1f1';
-      return DEPTS[d.data.abbr].color ?? '#f1f1f1';
+    .attr("fill", (d) => {
+      while (d.data.color === undefined) d = d.parent;
+      return d.data.color
     })
     .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.8 : 0.5) : 0)
     .attr("pointer-events", d => arcVisible(d.current) ? "auto" : "none")
@@ -49,7 +48,6 @@ function chart(selector, data) {
     .attr("d", d => arc(d.current))
     .style("cursor", "pointer")
     .on('click', function (e, d) {
-      console.log(d);
       if (d.data.link !== undefined) {
         window.location.href = d.data.link;
       }
@@ -76,7 +74,7 @@ function chart(selector, data) {
       trigger: 'hover',
       html: true,
       content: function () {
-        return `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`
+        return `${d.ancestors().map(d => d.data.id).reverse().join("/")}<br>${d.data.name}<br>${format(d.value)}`
       }
     });
     $(this).popover('show');
@@ -100,22 +98,10 @@ function chart(selector, data) {
     .attr("dy", "0.35em")
     .attr("fill-opacity", d => +labelVisible(d.current))
     .attr("transform", d => labelTransform(d.current))
-    .text(d => d.data.name)
-
-
-  //   if (links) {
-  //     function chord_click() {
-  //         return function (g, i) {
-  //             if (links[i]) {
-  //                 window.location.href = links[i];
-  //             }
-  //         };
-  //     }
-
-  //     outerArcs
-  //         .on('click', chord_click())
-  //         .style('cursor', (d, i) => links[i] ? 'pointer' : null)
-  // }
+    .text(d => {
+      if (d.children) return d.data.id;
+      return d.data.name
+    })
 
 
   const parent = g.append("circle")
@@ -182,11 +168,11 @@ function chart(selector, data) {
   }
 
   function arcVisible(d) {
-    return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+    return d.y1 <= 4 && d.y0 >= 1 && d.x1 > d.x0;
   }
 
   function labelVisible(d) {
-    return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+    return d.y1 <= 4 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
   }
 
   function labelTransform(d) {

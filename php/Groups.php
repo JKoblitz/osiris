@@ -181,6 +181,17 @@ class Groups
         return $ids;
     }
 
+    public function getLevel($id)
+    {
+        $group = $this->getGroup($id);
+        $level = $group['level'] ?? null;
+        if ($level === null) {
+            $parents = $this->getParents($id);
+            $level = count($parents);
+        }
+        return $level;
+    }
+
     private function findTreeNode($array, $find)
     {
         if ($array['id'] == $find) {

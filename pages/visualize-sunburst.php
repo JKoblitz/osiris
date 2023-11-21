@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Page to visualize activities of users in a sunburst
+ * Page to visualize activities of units and users in a sunburst
  * 
  * This file is part of the OSIRIS package.
  * Copyright (c) 2023, Julia Koblitz
@@ -17,18 +17,6 @@
  */
 
 $filter = [];
-$filter_dept = $_GET['dept'] ?? '';
-if (!empty($filter_dept) && $filter_dept != 'undefined') {
-
-    $users = [];
-    $cursor = $osiris->persons->find(['dept' => $filter_dept], ['projection' => ['username' => 1]]);
-
-    foreach ($cursor as $u) {
-        if (empty($u['username'] ?? '')) continue;
-        $users[] = strtolower($u['username']);
-    }
-    $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
-}
 
 $links = array();
 
@@ -42,9 +30,15 @@ if (!empty($time) && $time != 'undefined') {
         // echo "Time is invalid.";
         $time = ['', '', '', ''];
     } else {
+        $startmonth = intval($time[0]);
         $startyear = intval($time[1]);
+        $endmonth = intval($time[2]);
         $endyear = intval($time[3]);
-        $filter['year'] = ['$gte' => $startyear, '$lte' => $endyear];
+
+        $filter['$and'] = [
+            ['$or' => [['$and' => [['year' => $startyear], ['month' => ['$gte' => $startmonth]]]], ['$and' => [['year' => ['$gt' => $startyear]]]]]],
+            ['$or' => [['$and' => [['year' => $endyear], ['month' => ['$lte' => $endmonth]]]], ['$and' => [['year' => ['$lt' => $endyear]]]]]],
+        ];
 
         $links[] = 'time=' . implode(',', $time);
     }
@@ -56,10 +50,6 @@ if (!isset($_GET['epub'])) {
     $filter['epub'] = ['$ne' => true];
 }
 
-$filter_year = intval($_GET['year'] ?? 0);
-// if (!empty($filter_year) && $filter_year != 'undefined') {
-//     $filter['year'] = $filter_year;
-// }
 $filter_type = $_GET['type'] ?? 'publication';
 if (!empty($filter_type) && $filter_type != 'undefined') {
     $filter['type'] = $filter_type;
@@ -67,91 +57,58 @@ if (!empty($filter_type) && $filter_type != 'undefined') {
 }
 
 
-$temp = $osiris->persons->find([], ['sort' => ["last" => 1]]);
-$users = [];
-foreach ($temp as $row) {
-    $users[strval($row['username'])] = $row['dept'];
-}
-
 // generate graph json
 
 $departments = [];
 $flare = [];
 
-$cursor = $osiris->activities->find($filter);
-
-$activities = [];
-if (count($time) === 4 && array_sum($time) > 0) {
-
-    // get date and time
-    $start = $time[1] . '-' . $time[0] . '-1';
-    $end = $time[3] . '-' . $time[2] . '-1';
-    $starttime = getDateTime($start . ' 00:00:00');
-    $endtime = getDateTime(date("Y-m-t", strtotime($end)) . ' 23:59:59');
-    // t returns the number of days in the month of a given date
-
-    foreach ($cursor as $doc) {
-        // check if time of activity ist in the correct time range
-        $ds = getDateTime($doc['start'] ?? $doc);
-        if (isset($doc['end']) && !empty($doc['end'])) $de = getDateTime($doc['end'] ?? $doc);
-        else $de = $ds;
-        if (($ds <= $starttime && $starttime <= $de) || ($starttime <= $ds && $ds <= $endtime)) {
-        } else {
-            continue;
-        }
-        $activities[] = $doc;
-    }
-} else {
-    $activities = $cursor->toArray();
-}
-
-
-$index = 0;
-$i = 0;
-$departments = [];
-foreach ($Settings->getDepartments() as $val) {
-    $dept_id = $val['id'];
-    $flare[$i] = [
-        'name' => $dept_id,
-        'abbr' => $dept_id,
-        'children' => [],
-    ];
-    $departments[$dept_id] = $val;
-    $departments[$dept_id]['index'] = $i++;
-}
-
-
-$N = 0;
 $links = implode('&', $links);
 
-foreach ($activities as $doc) {
-    $count = false;
-    foreach ($doc['authors'] as $aut) {
-        if (!($aut['aoi'] ?? false) || empty($aut['user']) || !array_key_exists($aut['user'], $users)) continue;
+$raw = $osiris->activities->aggregate([
+    ['$match' => $filter],
+    ['$project' => ['authors' => 1]],
+    ['$unwind' => '$authors'],
+    ['$match' => ['authors.aoi' => ['$in' => [1, true, '1', 'true']]]],
+    [
+        '$group' => [
+            '_id' => '$authors.user',
+            'count' => ['$sum' => 1],
+        ]
+    ]
+]);
 
-        $username = $aut['user'];
-        $dept = $users[$username];
+$activities = [];
+foreach ($raw as $row) {
+    $activities[$row['_id']] = $row['count'];
+}
 
-        if (!empty($dept)) {
-            $deptindex = $departments[$dept]['index'] ?? null;
-            if (!isset($flare[$deptindex])) continue;
-            $userindex = array_search($username, array_column($flare[$deptindex]['children'], 'abbr'));
-            if ($userindex === false) {
-                $flare[$deptindex]['children'][] = [
-                    'name' => $aut['last'] . ", " . $aut['first'],
-                    'abbr' => $username,
-                    'value' => 0,
-                    'link' => ROOTPATH . '/my-activities?user=' . $username . '#' . $links
-                    // 'color' => $departments[$dept]['color']
-                ];
-                $userindex = count($flare[$deptindex]['children']) - 1;
-            }
-            $flare[$deptindex]['children'][$userindex]['value']++;
-            $count = true;
+function updateRecursive(array &$arr, $activities, $parentusers = [])
+{
+    global $osiris, $links;
+    foreach ($arr as &$val) {
+        $users = $osiris->persons->find(['depts' => $val['id']])->toArray();
+        $usernames = [];
+        // uncomment if users that belong to parent group should be skipped
+        // $usernames = array_column($users, 'username');
+        if (!empty($val['children']))
+            updateRecursive($val['children'], $activities, $usernames);
+        // get all person usernames associated
+        foreach ($users as $u) {
+            if (in_array($u['username'], $parentusers)) continue;
+            if (!isset($activities[$u['username']])) continue;
+            $val['children'][] = [
+                'name' => $u['displayname'],
+                'id' => $u['username'],
+                'value' => $activities[$u['username']],
+                'link' => ROOTPATH . "/my-activities?user=" . $u['username'] . '#' . $links
+            ];
         }
     }
-    if ($count) $N++;
 }
+
+$flare = [$Groups->tree];
+
+updateRecursive($flare, $activities);
 
 ?>
 
@@ -203,7 +160,7 @@ foreach ($activities as $doc) {
 
             <div class="form-group">
                 <div class="custom-checkbox">
-                    <input type="checkbox" id="epub" value="1" name="epub" <?=isset($_GET['epub']) ? 'checked': '' ?>>
+                    <input type="checkbox" id="epub" value="1" name="epub" <?= isset($_GET['epub']) ? 'checked' : '' ?>>
                     <label for="epub"><?= lang('Include online ahead of print', 'Inklusive Online ahead of print') ?></label>
                 </div>
             </div>
@@ -214,32 +171,19 @@ foreach ($activities as $doc) {
 </div>
 
 
-<!-- </div> -->
-
-<p>
-    <?= $N ?> <?= lang('results', 'Ergebnisse') ?>
-</p>
-
 <div id="flare" class="d-flex" style="max-width: 80rem"></div>
-<!-- <svg id="legend" height=300 width=450></svg> -->
-<!-- <div id="flare-info-div" class="tile h-auto" style="display: none;"></div> -->
 
 
-<!-- <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script> -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
-<script src="<?= ROOTPATH ?>/js/d3-sunburst.js?v=2"></script>
+<script src="<?= ROOTPATH ?>/js/d3-sunburst.js?v=3"></script>
 <script>
-    var DEPTS = JSON.parse('<?= json_encode($departments) ?>')
-    // var depts = {}
-    // DEPTS.forEach((d)=>{
-    //     depts[d.id] = d;
-    // })
-    var flare = '<?= json_encode($flare) ?>'
-    data = {
-        name: AFFILIATION,
-        children: JSON.parse(flare)
-    };
-
-    chart('#flare', data);
+    var flare = JSON.parse('<?= json_encode($flare[0]) ?>')
+    chart('#flare', flare);
 </script>
+
+<?php
+if (isset($_GET['verbose'])){
+    dump($flare, true);
+}
+?>

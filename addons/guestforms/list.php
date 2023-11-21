@@ -5,7 +5,7 @@
 
 
 <div class="alert danger mb-20">
-    <p class="text-danger lead">
+    <p class="text-danger">
         Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
     </p>
 </div>

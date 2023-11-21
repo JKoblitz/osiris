@@ -1028,12 +1028,6 @@ td>.module.inactive::after {
     flex-grow: 1;
 }
 
-.profile-widget {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    flex-grow: 1;
-}
-
 /* .profile-widget > .box {
     padding: 1rem;
 } */

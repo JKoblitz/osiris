@@ -30,18 +30,18 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
 <?php } ?>
 
 
-
+<!-- all necessary javascript -->
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<!-- <script src="<?= ROOTPATH ?>/js/plotly-2.27.1.min.js"></script> -->
+<script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/popover.js"></script>
+<script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
 
-
+<!-- all variables for this page -->
 <script>
     const CURRENT_USER = '<?= $user ?>';
 </script>
-
-
 <script src="<?= ROOTPATH ?>/js/profile.js"></script>
 
 
@@ -215,7 +215,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             if ($i > 0) echo ', ';
         ?>
             <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
-                <?php if (in_array($user, $dept['head']?? [])) { ?>
+                <?php if (in_array($user, $dept['head'] ?? [])) { ?>
                     <i class="ph ph-crown"></i>
                 <?php } ?>
                 <?= $dept['name'] ?>
@@ -294,7 +294,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
         </h5>
 
-        <div class="btn-group btn-group-lg mr-5">
+        <div class="btn-group btn-group-lg">
             <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
                 <i class="ph ph-plus-circle text-osiris ph-fw"></i>
                 <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
@@ -425,7 +425,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     </div>
 
 <?php } else { ?>
-    <div class="btn-group btn-group-lg mt-15 ml-5">
+    <div class="btn-group btn-group-lg mt-15">
         <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of ', 'Das Jahr von ') . $scientist['first'] ?> ">
             <i class="ph ph-calendar text-success ph-fw"></i>
         </a>
@@ -464,8 +464,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             echo "<a href='" . ROOTPATH . "/my-year/$user?year=$Q[0]&quarter=$Q[1]' class='badge success ml-5'>$appr</a>";
         }
         echo "</div>";
-    } ?>
-    <br>
+    } ?><br>
 <?php } ?>
 
 
@@ -473,7 +472,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
 <!-- TAB AREA -->
 
-<nav class="pills mt-10 mb-0">
+<nav class="pills mt-20 mb-0">
     <a onclick="navigate('general')" id="btn-general" class="btn active"><?= lang('General', 'Allgemein') ?></a>
 
     <?php
@@ -501,7 +500,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     <?php
     $membership_filter = [
         'authors.user' => "$user",
-        'end' => null,
+        // 'end' => null,
         '$or' => array(
             ['type' => 'misc', 'subtype' => 'misc-annual'],
             ['type' => 'review', 'subtype' =>  'editorial'],
@@ -527,6 +526,22 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <a onclick="navigate('projects')" id="btn-projects" class="btn"><?= lang('Projects', 'Projekte') . " ($count_projects)" ?></a>
     <?php } ?>
 
+    <?php
+    $coauthors = $osiris->activities->aggregate([
+        ['$match' => ['type' => 'publication', 'authors.user' => $user, 'year' => ['$gte' => CURRENTYEAR - 4]]],
+        ['$unwind' => '$authors'],
+        ['$match' => ['authors.user' => ['$ne' => null]]],
+        [
+            '$group' => [
+                '_id' => '$authors.user',
+                'count' => ['$sum' => 1]
+            ]
+        ],
+    ])->toArray();
+    $count_coauthors = count($coauthors) - 1;
+    if ($count_coauthors > 0) { ?>
+        <a onclick="navigate('coauthors')" id="btn-coauthors" class="btn"><?= lang('Coauthors', 'Koautoren') . " ($count_coauthors)" ?></a>
+    <?php } ?>
 </nav>
 
 
@@ -595,7 +610,7 @@ if ($currentuser) { ?>
 <section id="general">
 
     <div class="row row-eq-spacing my-0">
-        <div class="profile-widget col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4">
             <div class="box h-full">
                 <div class="content">
                     <h4 class="title">
@@ -706,7 +721,7 @@ if ($currentuser) { ?>
         </div>
 
 
-        <div class="profile-widget col-md-6 col-lg-8">
+        <div class="col-md-6 col-lg-8">
             <div class="box h-full">
                 <div class="content">
 
@@ -724,16 +739,6 @@ if ($currentuser) { ?>
                     <?php } else { ?>
                         <p><?= lang('No position given.', 'Keine Position angegeben.') ?></p>
                     <?php } ?>
-
-                    <ul class="breadcrumb">
-                        <?php foreach (($scientist['depts'] ?? []) as $D) { ?>
-                            <li>
-                                <a href="<?= ROOTPATH ?>/groups/view/<?= $D ?>">
-                                    <?= $D ?>
-                                </a>
-                            </li>
-                        <?php } ?>
-                    </ul>
 
                 </div>
                 <hr>
@@ -796,7 +801,7 @@ if ($currentuser) { ?>
             $n_scientists = $osiris->persons->count(["roles" => 'scientist', "is_active" => true]);
             $n_approved = $osiris->persons->count(["roles" => 'scientist', "is_active" => true, "approved" => $lastquarter]);
         ?>
-            <div class="col-6 col-md-3 profile-widget">
+            <div class="col-6 col-md-3 ">
                 <div class="box h-full">
                     <div class="chart content">
                         <h5 class="title text-center"><?= $lastquarter ?></h5>
@@ -857,7 +862,7 @@ if ($currentuser) { ?>
 
 
             <?php if ($currentuser && $Settings->hasPermission('reports')) { ?>
-                <div class="col-6 col-md-3 profile-widget ">
+                <div class="col-6 col-md-3 ">
                     <div class=" h-full">
                         <div class="py-10">
                             <div class="link-list">
@@ -917,7 +922,7 @@ if ($currentuser) { ?>
         <?php
         // IMPACT FACTOR WIDGET
         if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics'))) { ?>
-            <div class="profile-widget col-md-6 col-lg-8" id="chart-impact">
+            <div class="col-md-6 col-lg-8" id="chart-impact">
                 <div class="box h-full">
                     <div class="chart content">
                         <h4 class="title mb-0">
@@ -935,7 +940,7 @@ if ($currentuser) { ?>
         <?php
         // ROLE WIDGET
         if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics'))) { ?>
-            <div class="profile-widget col-md-6 col-lg-4" id="chart-authors">
+            <div class="col-md-6 col-lg-4" id="chart-authors">
                 <div class="box h-full">
                     <div class="chart content">
                         <h4 class="title mb-0">
@@ -974,7 +979,7 @@ if ($currentuser) { ?>
     </div>
 
     <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics'))) { ?>
-        <div class="profile-widget" id="chart-activities">
+        <div class="" id="chart-activities">
             <div class="box">
                 <div class="chart content">
                     <h4 class="title mb-0">
@@ -1001,44 +1006,81 @@ if ($currentuser) { ?>
 
     if ($count_memberships > 0) {
         $memberships = $osiris->activities->find($membership_filter, ['sort' => ["type" => 1, "year" => -1, "month" => -1, "day" => -1]]);
+        $ongoing = [];
+        $past = [];
+
+        foreach ($memberships as $doc) {
+            $element = [
+                '_id' => $doc['_id'],
+                'icon' => $doc['rendered']['icon'],
+                'web' => $doc['rendered']['web'],
+            ];
+            if (empty($doc['end']) || new DateTime() < getDateTime($doc['end'])) {
+                $ongoing[] = $element;
+            } else {
+                $past[] = $element;
+            }
+        }
     ?>
 
-        <div class="profile-widget ">
-            <div class="box h-full">
-                <div class="content">
-                    <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
+        <div class="">
+            <?php if (!empty($ongoing)) { ?>
+                <div class="box">
+                    <div class="content">
+                        <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
+                    </div>
+                    <table class="table simple">
+                        <tbody>
+                            <?php
+                            $i = 0;
+                            foreach ($ongoing as $doc) {
+                                $id = $doc['_id'];
+                            ?>
+                                <tr id='tr-<?= $id ?>'>
+                                    <td class="w-50"><?= $doc['icon']; ?></td>
+                                    <td>
+                                        <?= $doc['web'] ?>
+                                    </td>
+                                    <td class="unbreakable w-25">
+                                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                            <i class="ph ph-arrow-fat-line-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
-                <table class="table simple">
-                    <tbody>
-                        <?php
-                        $i = 0;
-                        foreach ($memberships as $doc) {
-                            $id = $doc['_id'];
+            <?php } ?>
+            <?php if (!empty($past)) { ?>
+                <div class="box">
+                    <div class="content">
+                        <h4 class="title"><?= lang('Past memberships', 'Vergangene Mitgliedschaften') ?></h4>
+                    </div>
+                    <table class="table simple">
+                        <tbody>
+                            <?php
+                            $i = 0;
+                            foreach ($past as $doc) {
+                                $id = $doc['_id'];
+                            ?>
+                                <tr id='tr-<?= $id ?>'>
+                                    <td class="w-50"><?= $doc['icon']; ?></td>
+                                    <td>
+                                        <?= $doc['web'] ?>
+                                    </td>
+                                    <td class="unbreakable w-25">
+                                        <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
+                                            <i class="ph ph-arrow-fat-line-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php } ?>
 
-                            $Format->setDocument($doc);
-                        ?>
-                            <tr id='tr-<?= $id ?>'>
-                                <td class="w-50"><?= $Format->activity_icon(); ?></td>
-                                <td>
-                                    <?php
-                                    if ($USER['display_activities'] == 'web') {
-                                        echo $Format->formatShort();
-                                    } else {
-                                        echo $Format->format();
-                                    }
-                                    ?>
-
-                                </td>
-                                <td class="unbreakable w-25">
-                                    <a class="btn link square" href="<?= ROOTPATH . "/activities/view/" . $id ?>">
-                                        <i class="ph ph-arrow-fat-line-right"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
         </div>
 
     <?php } ?>
@@ -1049,6 +1091,14 @@ if ($currentuser) { ?>
 
 
 <section id="projects" style="display:none">
+    <h3 class="title">
+        <?= lang('Timeline of all approved projects', 'Zeitstrahl aller bewilligten Projekte') ?>
+    </h3>
+    <div class="box">
+        <div class="content">
+            <div id="project-timeline"></div>
+        </div>
+    </div>
     <div class="row row-eq-spacing my-0">
         <?php
         if ($count_projects > 0) {
@@ -1070,7 +1120,7 @@ if ($currentuser) { ?>
             $i = 0;
             $breakpoint = ceil($count_projects / 2);
         ?>
-            <div class="profile-widget col-md-6">
+            <div class="col-md-6">
                 <?php if (!empty($ongoing)) { ?>
 
                     <h2><?= lang('Ongoing projects', 'Laufende Projekte') ?></h2>
@@ -1079,7 +1129,7 @@ if ($currentuser) { ?>
                     <?php
                         $i++;
                         if ($i == $breakpoint) {
-                            echo "</div><div class'col-md-6'>";
+                            echo "</div><div class='col-md-6'>";
                         }
                     } ?>
 
@@ -1105,7 +1155,31 @@ if ($currentuser) { ?>
 
         <?php } ?>
     </div>
+
 </section>
+
+
+<section id="coauthors" style="display:none">
+    <h2>
+        <i class="ph ph-graph" aria-hidden="true"></i>
+        <?= lang('Coauthor network of', 'Koautoren-Netzwerk von') ?> <?= $scientist['displayname'] ?>
+    </h2>
+    <p class="text-muted">
+        <?= lang('Based on publications within the past 5 years.', 'Basierend auf Publikationen aus den vergangenen 5 Jahren.') ?>
+    </p>
+    <div class="box">
+        <div class="row">
+            <div class="col-md-8" style="max-width: 80rem">
+                <div id="chord"></div>
+            </div>
+            <div class="col-md-4">
+                <div id="legend"></div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
 
 <?php
 if (isset($_GET['verbose'])) {

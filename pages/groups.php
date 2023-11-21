@@ -21,7 +21,7 @@ $style = $_GET['style'] ?? 'cards';
 
 <h1>
     <i class="ph ph-student"></i>
-    <?= lang('Organisational Units', 'Struktureinheiten') ?>
+    <?= lang('Organisational Units', 'Organisationseinheiten') ?>
 </h1>
 
 <div class="d-flex align-items-center mb-10">

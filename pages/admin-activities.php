@@ -99,7 +99,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                 <div class="row row-eq-spacing px-0" style="margin: 1rem -1rem;">
                     <div class="col-sm">
                         <label for="id" class="required element-time">ID (<?= lang('Abbr.', 'Abk.') ?>)</label>
-                        <input type="text" class="form-control" name="type[id]" required>
+                        <input type="text" class="form-control" name="type[id]" required oninput="lowercaseInput(this)">
                     </div>
                     <div class="col-sm">
                         <label for="icon" class="required element-time">Icon</label>
@@ -154,7 +154,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                     </div>
                     <div class="col-sm">
                         <label for="id" class="required">ID</label>
-                        <input type="text" class="form-control" name="subtype[id]" required>
+                        <input type="text" class="form-control" name="subtype[id]" required oninput="lowercaseInput(this)">
                     </div>
                 </div>
                 <div class="row row-eq-spacing">
@@ -415,6 +415,9 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 
 <script>
+    function lowercaseInput(element){
+        $(element).val(element.value.toLowerCase())
+    }
     function addModule(type, subtype) {
 
         var el = $('#type-' + type).find('#subtype-' + subtype).find('.author-widget')

@@ -40,7 +40,7 @@ function togglePubType(type, callback = () => { }) {
     $('#type').val(type)
 
     if (SETTINGS.activities === undefined) {
-        fetch(ROOTPATH + '/settings')
+        fetch(ROOTPATH + '/settings?v='+Math.random().toString(16).slice(2))
             .then((response) => response.json())
             .then((json) => {
                 SETTINGS = json;

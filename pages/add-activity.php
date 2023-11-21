@@ -341,7 +341,7 @@ function val($index, $default = '')
 
 <div class="box primary add-form" style="display:none" id="publication-form">
     <div class="content">
-        <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
+        <!-- <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button> -->
 
         <?php if (!empty($form) && isset($_GET['epub'])) { ?>
             <div class="alert signal mb-20">
@@ -386,7 +386,7 @@ function val($index, $default = '')
 
 
         <div id="examples" class="mb-20">
-            <?php include BASEPATH . '/components/activity-examples.php' ?>
+            <?php //include BASEPATH . '/components/activity-examples.php' ?>
         </div>
 
 

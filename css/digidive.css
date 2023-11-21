@@ -489,6 +489,9 @@ h1 {
   line-height: 1.3;
   margin-top: 3rem; }
 
+h1:first-of-type {
+  margin-top: 1rem; }
+
 h2 {
   font-size: 2.2rem;
   line-height: 1.35; }
@@ -506,6 +509,11 @@ h5 {
 
 h6 {
   font-size: 1.5rem; }
+
+.subtitle {
+  margin-top: -1rem;
+  color: var(--muted-color);
+  font-size: 1.8rem; }
 
 b {
   font-weight: 500; }
@@ -539,7 +547,7 @@ blockquote {
   color: #464646; }
 
 i.ph {
-  line-height: inherit;
+  line-height: 1;
   font-size: 1.5em;
   vertical-align: -0.2em; }
 
@@ -2376,8 +2384,7 @@ a {
   text-decoration: none;
   cursor: pointer; }
   a:hover {
-    color: #147abd;
-    text-decoration: underline; }
+    color: #147abd; }
   a.link:not(.btn):hover {
     text-decoration: none; }
   a.link:not(.btn)::after {
@@ -2734,20 +2741,22 @@ Buttons
   flex-wrap: wrap;
   -ms-flex-pack: start;
   justify-content: flex-start;
-  align-content: center;
+  align-items: center;
   margin: .5rem 0; }
   .btn-toolbar .input-group {
     width: auto;
     /* Button toolbar minimum width for input groups (Required for IE) */
     min-width: 20rem; }
-  .btn-toolbar .btn, .btn-toolbar span {
+  .btn-toolbar .btn,
+  .btn-toolbar span {
     margin-right: 1rem; }
-  .btn-toolbar .btn:last-child, .btn-toolbar span:last-child {
+  .btn-toolbar .btn:last-child,
+  .btn-toolbar span:last-child {
     margin-right: 0; }
-
-@media (max-width: 767px) {
-  .btn-toolbar .input-group {
-    min-width: 20rem-xs; } }
+  .btn-toolbar .btn-group {
+    margin-right: 1rem; }
+    .btn-toolbar .btn-group .btn {
+      margin-right: 0; }
 
 /*
 -------------------------------------------------------------------------------
@@ -2838,7 +2847,6 @@ code,
   font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
 .code {
-  font-size: 1.2rem;
   line-height: 1.5;
   padding: 0.1rem 0.5rem;
   margin: 0 0.1rem;
@@ -2850,7 +2858,6 @@ code,
 /*  Keyboard input */
 kbd {
   font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 1.2rem;
   line-height: 1.5;
   padding: 0.1rem 0.5rem;
   margin: 0 0.1rem;
@@ -3036,6 +3043,11 @@ Tables
   .table tbody tr.blue td,
   .table tbody tr.blue th {
     background-color: var(--blue-color-very-light); }
+
+td .key {
+  display: block;
+  color: var(--muted-color);
+  font-size: .8em; }
 
 .table-responsive {
   overflow-x: auto;
@@ -4926,6 +4938,9 @@ Alerts
     .alert a:hover {
       color: inherit;
       opacity: 0.75; }
+  .alert a.btn,
+  .alert a.link {
+    text-decoration: none; }
   .alert .title {
     color: inherit;
     font-size: 1.6rem;
@@ -5595,6 +5610,32 @@ Sidebar content
       text-decoration: none;
       border-left-color: var(--primary-color); }
 
+.pills {
+  background: white;
+  padding: .5rem;
+  border-radius: var(--border-radius);
+  display: inline-block;
+  border: 1px solid var(--border-color); }
+  .pills .btn {
+    border: none;
+    border-radius: var(--border-radius);
+    margin: .2rem;
+    color: var(--primary-color);
+    background-color: white;
+    box-shadow: none !important; }
+    .pills .btn:hover {
+      background-color: var(--primary-color-20); }
+    .pills .btn.active, .pills .btn:active {
+      background-color: var(--primary-color);
+      color: white; }
+  .pills .badge {
+    height: 3.2rem;
+    line-height: 3.2rem;
+    padding: 0 1.5rem;
+    border-radius: var(--border-radius);
+    margin: .2rem;
+    cursor: default; }
+
 /*
 -------------------------------------------------------------------------------
 Boxes, tiles, and title bar
@@ -6203,7 +6244,7 @@ Badges
 .badge {
   display: inline-block;
   padding: .2rem .8rem;
-  background: #f1f1f1;
+  background: #53535320;
   border-radius: .5rem; }
   .badge a {
     color: inherit; }

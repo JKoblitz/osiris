@@ -33,6 +33,16 @@ function navigate(key) {
             if (activitiesTable) break;
             initActivities()
             activitiesChart()
+            break;
+            
+        case 'projects':
+            projectTimeline()
+            break;
+
+        case 'coauthors':
+            coauthorNetwork()
+            break;
+
         default:
             break;
     }
@@ -316,44 +326,9 @@ function activitiesChart() {
                 container.classList.add('hidden')
                 return;
             }
-//             var raw_data = Object.values({"2023":{"x":"2023","publication":20,"poster":3,"lecture":8,"review":6,"students":6,"teaching":6,"software":1,"award":0,"misc":26,"Hund":0},"2022":{"x":"2022","publication":23,"poster":2,"lecture":1,"review":5,"students":3,"teaching":0,"software":1,"award":0,"misc":9,"Hund":0},"2021":{"x":"2021","publication":17,"poster":0,"lecture":0,"review":0,"students":0,"teaching":0,"software":0,"award":0,"misc":0,"Hund":0},"2020":{"x":"2020","publication":8,"poster":0,"lecture":0,"review":0,"students":0,"teaching":0,"software":0,"award":0,"misc":0,"Hund":0}});
-                    
-// var olc = [{
-//     label: 'Publications',
-//     data: raw_data,
-//     parsing: {
-//         yAxisKey: 'publication'
-//     },
-//     backgroundColor: '#006eb795',
-//     borderColor: '#464646', //'#006eb7',
-//     borderWidth: 1
-// },
-// {
-//     label: 'Poster',
-//     data: raw_data,
-//     parsing: {
-//         yAxisKey: 'poster'
-//     },
-//     backgroundColor: '#b61f2995',
-//     borderColor: '#464646', //'#b61f29',
-//     borderWidth: 1
-// },
-// {
-//     label: 'Lectures',
-//     data: raw_data,
-//     parsing: {
-//         yAxisKey: 'lecture'
-//     },
-//     backgroundColor: '#ecaf0095',
-//     borderColor: '#464646', //'#ecaf00',
-//     borderWidth: 1
-// },]
-            
+
             var dataset = response.data;
-            // console.log(raw_data);
-            // var datasets = []
-            // var labels = []
-           
+
             var ctx = document.getElementById('chart-activities-canvas')
 
             var data = {
@@ -415,6 +390,280 @@ function activitiesChart() {
             var activityChart = new Chart(ctx, data);
         },
         error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+projectTimelineExists = false;
+function projectTimeline() {
+    if (projectTimelineExists) return;
+    projectTimelineExists=true
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/project-timeline",
+        data: { user: CURRENT_USER },
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            var events = []
+
+            const CURRENT_YEAR = new Date().getFullYear();
+            var startyear = CURRENT_YEAR
+            var endyear = CURRENT_YEAR
+
+            response.data.forEach(element => {
+                var s = element.start
+                var start = new Date(s.year, s.month, s.day)
+                if (start.getFullYear() < startyear)
+                    startyear = start.getFullYear()
+
+                var e = element.end
+                var end = new Date(e.year, e.month, e.day)
+                if (end.getFullYear() > endyear)
+                    endyear = end.getFullYear()
+
+                events.push({
+                    startdate: start,
+                    enddate: end,
+                    title: element.name,
+                    role: element.persons.role,
+                    funder: element.funder
+                })
+            });
+
+            var radius = 3,
+                distance = radius * 2 + 2,
+                divSelector = '#project-timeline'
+
+            var margin = {
+                top: 8,
+                right: 25,
+                bottom: 30,
+                left: 25
+            },
+                width = 600,
+                // height = (distance * types.length) + margin.top + margin.bottom;
+                height = (distance * response.count) - distance + margin.top + margin.bottom;
+
+
+            var svg = d3.select(divSelector).append('svg')
+                .attr("viewBox", `0 0 ${width} ${height}`)
+
+            width = width - margin.left - margin.right
+            height = height - margin.top - margin.bottom;
+
+            var timescale = d3.scaleTime()
+                .domain([new Date(startyear, 0, 1), new Date(endyear, 12, 1)])
+                .range([0, width]);
+
+            const typeInfo = {
+                'PI': { color: '#B61F29', label: lang('Pi', 'PI') },
+                'worker': { color: '#dd590e', label: lang('Worker', 'Projektmitarbeiter:in') },
+                'associate': { color: '#ECAF00', label: lang('Associate', 'Beteiligte Person') },
+            }
+
+            var axisBottom = d3.axisBottom(timescale)
+                .ticks(12)
+            // .tickPadding(5).tickSize(20);
+            svg.append('g').attr('class', 'axes')
+                .attr('transform', `translate(${margin.left}, ${height + margin.top + radius * 2})`)
+                .call(axisBottom);
+
+            var quarter = svg.append('g')
+                .attr('transform', `translate(${margin.left - 6}, ${height + margin.top + radius * 2})`)
+            // .selectAll("g")
+
+            quarter.append('rect')
+                .style("fill", 'rgb(236, 175, 0)')
+                // .attr('height', height+margin.top+radius*4)
+                .attr('height', 8)
+                .attr('width', function (d, i) {
+                    var date = new Date(CURRENT_YEAR, 1, 1)
+                    var x1 = timescale(date)
+                    var date = new Date(CURRENT_YEAR, 12, 31)
+                    var x2 = timescale(date)
+                    return x2 - x1
+                })
+                .style('opacity', .2)
+                .attr('x', (d) => {
+                    var date = new Date(CURRENT_YEAR, 1, 1)
+                    return timescale(date)
+                })
+                // .attr('y', radius*-2)
+                .attr('y', 0)
+
+            quarter.append('text')
+                .attr('x', (d) => {
+                    var date = new Date(CURRENT_YEAR, 1, 1)
+                    var x1 = timescale(date)
+                    var date = new Date(CURRENT_YEAR, 12, 31)
+                    var x2 = timescale(date)
+                    return x1+(x2 - x1)/2
+                })
+                .attr('y', 6)
+                .attr('text-anchor', 'middle')
+                .style('fill', 'rgb(165, 122, 0)')
+                .style('font-size', "5px")
+                .html(lang('Current year', 'Aktuelles Jahr'))
+
+
+            d3.selectAll("g>.tick>text")
+                .each(function (d, i) {
+                    d3.select(this).style("font-size", "8px");
+                });
+
+            var Tooltip = d3.select(divSelector)
+                .append("div")
+                .style("opacity", 0)
+                .attr("class", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+
+
+            function mouseover(d, i) {
+
+                d3.select(this)
+                    .select('circle,rect')
+                    .transition()
+                    .duration(300)
+                    .style('opacity', 1)
+
+                //Define and show the tooltip over the mouse location
+                $(this).popover({
+                    placement: 'auto top',
+                    container: divSelector,
+                    mouseOffset: 10,
+                    followMouse: true,
+                    trigger: 'hover',
+                    html: true,
+                    content: function () {
+                        var role = '';
+                        console.log(d.role);
+                        if (typeInfo[d.role]) {
+                            role = `<span style="color:${typeInfo[d.role].color}">${typeInfo[d.role].label}</span>`
+                        }
+                        return `${d.title ?? 'No title available'}<br>${d.funder}<br>${role}`
+                    }
+                });
+                $(this).popover('show');
+            } //mouseoverChord
+
+            //Bring all chords back to default opacity
+            function mouseout(event, d) {
+                d3.select(this).select('circle,rect')
+                    .transition()
+                    .duration(300)
+                    .style('opacity', .5)
+                //Hide the tooltip
+                $('.popover').each(function () {
+                    $(this).remove();
+                });
+            }
+
+            var eventGroup = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`)
+                .selectAll("g")
+                .data(events)
+                .enter().append("g")
+                .attr('transform', function (d, i) {
+                    var date = d.startdate
+                    var x = timescale(date)
+                    var y = i * distance
+                    return `translate(${x}, ${y})`
+                })
+
+            eventGroup.on("mouseover", mouseover)
+                .on("mouseout", mouseout)
+
+            var lines = eventGroup.append('rect')
+                .style("fill", function (d, i) {
+                    return typeInfo[d.role].color
+                })
+                .attr('height', radius * 2)
+                .attr('width', function (d, i) {
+                    var date = d.startdate
+                    var x1 = timescale(date)
+                    var date = d.enddate
+                    var x2 = timescale(date)
+                    return x2 - x1
+                })
+                .style('opacity', .6)
+                .attr('rx', 3)
+                .attr('y', -radius)
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+coauthorNetworkExists = false;
+function coauthorNetwork(){
+    if (coauthorNetworkExists) return;
+    coauthorNetworkExists=true
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/author-network",
+        data: {
+            user: CURRENT_USER
+        },
+        dataType: "json",
+        success: function(response) {
+            console.log(response);
+            var matrix = response.data.matrix;
+            var DEPTS = response.data.labels;
+
+            var data = Object.values(DEPTS);
+            var labels = data.map(item => item['name']);
+
+            var colors = []
+            var links = []
+            var depts_in_use = {};
+
+            data.forEach(function(d, i) {
+                colors.push(d.dept.color ?? '#cccccc');
+                var link = null
+                if (i !== 0) link = ROOTPATH+"/profile/" + d.user
+                links.push(link)
+
+                if (d.dept.id && depts_in_use[d.dept.id] === undefined)
+                    depts_in_use[d.dept.id] = d.dept;
+            })
+
+            Chords('#chord', matrix, labels, colors, data, links, false, DEPTS[CURRENT_USER]['index']);
+
+
+            var legend = d3.select('#legend')
+                .append('div').attr('class', 'content')
+
+            legend.append('div')
+                .style('font-weight', 'bold')
+                .attr('class', 'mb-5')
+                .text(lang("Departments", "Abteilungen"))
+
+            for (const dept in depts_in_use) {
+                if (Object.hasOwnProperty.call(depts_in_use, dept)) {
+                    const d = depts_in_use[dept];
+                    var row = legend.append('div')
+                        .attr('class', 'd-flex mb-5')
+                        .style('color', d.color)
+                    row.append('div')
+                        .style('background-color', d.color)
+                        .style("width", "2rem")
+                        .style("height", "2rem")
+                        .style("border-radius", ".5rem")
+                        .style("display", "inline-block")
+                        .style("margin-right", "1rem")
+                    row.append('span').text(d.name)
+                }
+            }
+
+        },
+        error: function(response) {
             console.log(response);
         }
     });

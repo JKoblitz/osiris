@@ -473,6 +473,7 @@ Route::post('/groups/create', function () {
     if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
         if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
+        $values['level'] = $parent['level']+1;
     }
 
     $insertOneResult  = $collection->insertOne($values);
@@ -516,6 +517,7 @@ Route::post('/groups/update/([A-Za-z0-9]*)', function ($id) {
     if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
         if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
+        $values['level'] = $parent['level']+1;
     }
 
     // check if head is connected 

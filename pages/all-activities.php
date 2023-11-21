@@ -39,7 +39,9 @@ $user = $user ?? $_SESSION['username'];
 } elseif (isset($_GET['user'])) { ?>
     <h1 class='m-0'>
         <i class="ph ph-folder-user"></i>
-        <?= lang("Activities of $user", "Aktivitäten von $user") ?>
+        
+        <?= lang("Activities of ", "Aktivitäten von ") ?>
+        <a href="<?=ROOTPATH?>/profile/<?=$user?>"><?=$DB->getNameFromId($user)?></a>
     </h1>
     <a href="<?= ROOTPATH ?>/activities" class="btn small mb-10" id="user-btn">
         <i class="ph ph-book-open"></i>
@@ -74,13 +76,6 @@ $user = $user ?? $_SESSION['username'];
             <?php
             }
             ?>
-            
-            <!-- <a data-type="" onclick="selectActivity(this, null)" class="item">
-                <span class="text-">
-                    <span class="mr-5"><i class="ph ph-x-circle"></i></span>
-                    <?=lang('Remove filter', 'Filter entfernen')?>
-                </span>
-            </a> -->
         </div>
     </div>
 

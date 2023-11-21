@@ -735,10 +735,10 @@ Route::get('/api/dashboard/activity-chart', function () {
                 '_id' => '$type',
                 'x' => ['$push' => '$year'],
                 'y' => ['$push' => '$count'],
-                
+
             ]
         ],
-        
+
         // ['$project' => ['_id' => 0, 'data'=>['$arrayToObject' => ['$literal' =>  [
         //     '$x', '$y'
         // ]]]]],
@@ -751,11 +751,11 @@ Route::get('/api/dashboard/activity-chart', function () {
         $group = $Settings->getActivities($d['_id']);
         $element = [
             'label' => $group['name'],
-            'backgroundColor' => $group['color'].'95',
+            'backgroundColor' => $group['color'] . '95',
             'data' => []
         ];
         foreach ($years as $y) {
-            $i = array_search($y, DB::doc2Arr($d['x'])); 
+            $i = array_search($y, DB::doc2Arr($d['x']));
             if ($i === false) $v = 0;
             else $v = $d['y'][$i];
 
@@ -765,6 +765,257 @@ Route::get('/api/dashboard/activity-chart', function () {
     }
 
     echo return_rest($result, count($result));
+});
+
+
+Route::get('/api/dashboard/project-timeline', function () {
+    include(BASEPATH . '/php/init.php');
+
+    $filter = ['status' => 'approved'];
+    if (isset($_GET['user'])) {
+        $filter['persons.user'] = $_GET['user'];
+    }
+
+    $result = $osiris->projects->aggregate([
+        ['$match' => $filter],
+        ['$unwind' => '$persons'],
+        ['$match' => $filter],
+        ['$sort' => ['start' => 1]]
+    ])->toArray();
+    echo return_rest($result, count($result));
+});
+
+
+// helper function for network chord chards
+function combinations($array)
+{
+    $results = array();
+    foreach ($array as $a)
+        foreach ($array as $b) {
+            $t = [$a, $b];
+            sort($t);
+            if ($a == $b || in_array($t, $results)) continue;
+            $results[] = $t;
+        }
+    return $results;
+}
+
+Route::get('/api/dashboard/department-network', function () {
+    include(BASEPATH . '/php/init.php');
+
+    $dept_filter = $_GET['dept'] ?? null;
+    $lvl = 1;
+    if (isset($_GET['level'])) $lvl = intval($_GET['level']);
+    if (!empty($dept_filter)) $lvl = $Groups->getLevel($dept_filter);
+
+    $departments = array_filter($Groups->groups, function ($a) use ($lvl) {
+        return true;
+        // return ($a['level'] ?? '') == $lvl;
+    });
+
+    $dept_users = [];
+    foreach (array_column($departments, 'id') as $id) {
+        $dept_users[$id] = [];
+    }
+    $users = [];
+    $warnings = [];
+    foreach ($osiris->persons->find() as $person) {
+        if (!isset($person['depts'])) continue;
+        $d = [];
+        foreach ($person['depts'] as $key) {
+            // get parent dept
+            $p = $Groups->getParents($key, true);
+            if (!isset($p[$lvl])) $p = end($p);
+            else $p = $p[$lvl];
+            if (!in_array($p, $d)) {
+                if (!empty($d)) $warnings[] =  $person['displayname'] . ' has multiple associations.';
+                $d[] = $p;
+                $dept_users[$p][] = $person['username'];
+                $users[$person['username']] = $p;
+            }
+        }
+    }
+
+
+    // select activities from database
+    $filter = [];
+    if (isset($_GET['type']))
+        $filter['type'] = $_GET['type'];
+    if (!empty($dept_filter)) {
+        $filter['authors.user'] = ['$in' => $dept_users[$dept_filter] ?? []];
+    }
+    if (isset($_GET['year'])) {
+        $filter['year'] = $_GET['year'];
+    } else {
+        // past 5 years is default
+        $filter['year'] = ['$gte' => CURRENTYEAR - 4];
+    }
+    $activities = $osiris->activities->find($filter);
+    $activities = $activities->toArray();
+
+
+    // generate graph json
+    $combinations = [];
+
+    $labels = $departments;
+    foreach ($departments as $dept) {
+        $labels[$dept['id']]['count'] = 0;
+    }
+
+    foreach ($activities as $doc) {
+        $authors = [];
+        foreach ($doc['authors'] as $aut) {
+            if (!($aut['aoi'] ?? false) || empty($aut['user']) || !array_key_exists($aut['user'], $users)) continue;
+
+            $id = $aut['user'];
+
+            // get top level unit
+            $dept = $users[$id];
+
+            if (!empty($dept) && !in_array($dept, $authors)) {
+                if (!isset($labels[$dept])) {
+                    $labels[$dept] = $Groups->getGroup($dept);
+                    $labels[$dept]['count'] = 0;
+                }
+                $labels[$dept]['count']++;
+                $authors[] = $dept;
+            }
+        }
+        if (count($authors) == 1)
+            $combinations = array_merge($combinations, [[$authors[0], $authors[0]]]);
+        else
+            $combinations = array_merge($combinations, combinations($authors));
+    }
+
+    // remove depts without publications
+    $labels = array_filter($labels, function ($d) {
+        return $d['count'] !== 0;
+    });
+
+    // add index (needed for following steps)
+    $i = 0;
+    foreach ($labels as $key => $val) {
+        $labels[$key]['index'] = $i++;
+    }
+
+    // init matrix of n x n
+    $matrix = array_fill(0, count($labels), 0);
+    $matrix = array_fill(0, count($labels), $matrix);
+
+    // fill matrix based on all combinations
+    foreach ($combinations as $c) {
+        $a = $labels[$c[0]]['index'];
+        $b = $labels[$c[1]]['index'];
+
+        $matrix[$a][$b] += 1;
+        if ($a != $b)
+            $matrix[$b][$a] += 1;
+    }
+
+    echo return_rest([
+        'matrix' => $matrix,
+        'labels' => $labels
+    ], count($labels));
+});
+
+
+
+Route::get('/api/dashboard/author-network', function () {
+    include(BASEPATH . '/php/init.php');
+
+    $scientist = $_GET['user'] ?? '';
+    $selectedUser = $osiris->persons->findone(['username' => $scientist]);
+    // generate graph json
+    $labels = [];
+    $combinations = [];
+    $filter = ['authors.user' => $scientist, 'type' => 'publication'];
+
+    if (isset($_GET['year'])) {
+        $filter['year'] = $_GET['year'];
+    } else {
+        // past 5 years is default
+        $filter['year'] = ['$gte' => CURRENTYEAR - 4];
+    }
+    $activities = $osiris->activities->find($filter);
+    $activities = $activities->toArray();
+    // dump($activities, true);
+    $N = count($activities);
+
+    foreach ($activities as $doc) {
+        $authors = [];
+        foreach ($doc['authors'] as $aut) {
+            if (empty($aut['user'])) continue;
+            //!($aut['aoi'] ?? false) || 
+
+            $id = $aut['user'];
+            if (array_key_exists($id, $labels)) {
+                // $name = $labels[$id]['name'];
+                $labels[$id]['count']++;
+            } else {
+                $name = $osiris->persons->findone(['username' => $aut['user']]);
+                if (empty($name)) continue;
+                $abbr_name = Document::abbreviateAuthor($name['last'], $name['first'], true, ' ');
+
+                // get top level unit
+                $dept = [];
+                if (!empty($name['depts'] ?? []) && count($name['depts']) !== 0) {
+                    $d = $Groups->getParents($name['depts'][0]);
+                    $dept = $Groups->getGroup($d[0]);
+                }
+
+                $labels[$id] = [
+                    'name' => $abbr_name,
+                    'id' => $id,
+                    'user' => $aut['user'],
+                    'dept' => $dept,
+                    'count' => 1
+                ];
+            }
+            $authors[] = $id;
+        }
+
+        $combinations = array_merge($combinations, combinations($authors));
+    }
+    $departments = array_filter($Groups->groups, function ($a) {
+        return ($a['level'] ?? '') == 1;
+    });
+    $depts = array_column($departments, 'id');
+    usort($depts, function ($a, $b) use ($selectedUser) {
+        if (in_array($a, DB::doc2Arr($selectedUser['depts']))) return -1;
+        return 1;
+    });
+    // $labels = array_filter($labels, function ($a) {
+    //     return !empty($a['dept']);
+    // });
+    uasort($labels, function ($a, $b) use ($depts) {
+        $a = array_search($a['dept']['id'] ?? '', $depts);
+        $b = array_search($b['dept']['id'] ?? '', $depts);
+        if ($b === false) return -1;
+        if ($a === false) return 1;
+        return ($a < $b ? -1 : 1);
+    });
+
+    $i = 0;
+    foreach ($labels as $key => $val) {
+        $labels[$key]['index'] = $i++;
+    }
+
+    $matrix = array_fill(0, count($labels), 0);
+    $matrix = array_fill(0, count($labels), $matrix);
+
+    foreach ($combinations as $c) {
+        $a = $labels[$c[0]]['index'];
+        $b = $labels[$c[1]]['index'];
+
+        $matrix[$a][$b] += 1;
+        $matrix[$b][$a] += 1;
+    }
+
+
+    echo return_rest([
+        'matrix' => $matrix,
+        'labels' => $labels
+    ], count($labels));
 });
 
 
