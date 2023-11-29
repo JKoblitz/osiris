@@ -399,7 +399,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <a href="<?= ROOTPATH ?>/research-data" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('research-data') ?>">
                         <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
-                        <?= lang('Research data', 'Forschungsdaten') ?>
+                        <?= lang('Tags', 'Schlagwörter') ?>
                     </a>
 
                     <a href="<?= ROOTPATH ?>/concepts" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('concepts') ?>">

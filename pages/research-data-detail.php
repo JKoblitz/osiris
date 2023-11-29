@@ -20,7 +20,7 @@
 
 <h1 class="mt-0">
     <i class="ph ph-circles-three-plus text-osiris" aria-hidden="true"></i>
-    <?= lang('Research data on', 'Forschungsdaten zu') ?>
+    <?= lang('Tags on', 'Schlagwörter zu') ?>
     <span class="badge primary"><?= $name ?></span>
 </h1>
 

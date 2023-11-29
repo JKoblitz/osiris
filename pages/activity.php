@@ -131,7 +131,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </a>
         <a href="#connect" class="btn ">
             <i class="ph ph-plus-circle"></i>
-            <?= lang("Research data", "Forschungsdaten") ?>
+            <?= lang("Tags", "Schlagwörter") ?>
         </a>
     </div>
 
@@ -326,14 +326,14 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     ?>
         <a onclick="navigate('research-data')" id="btn-research-data" class="btn">
             <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
-            <?= lang('Research data', 'Forschungsdaten') ?>
+            <?= lang('Tags', 'Schlagwörter') ?>
             <span class="index"><?= $count_data ?></span>
         </a>
 
     <?php else : ?>
         <a href="#connect" class="btn">
             <i class="ph ph-plus-circle"></i>
-            <?= lang('Add research data', 'Forschungsdaten') ?>
+            <?= lang('Add research data', 'Schlagwörter') ?>
         </a>
     <?php endif; ?>
 
@@ -802,7 +802,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <span aria-hidden="true">&times;</span>
             </a>
             <h5 class="title">
-                <?= lang('Connect research data', 'Forschungsdaten verknüpfen') ?>
+                <?= lang('Connect research data', 'Schlagwörter verknüpfen') ?>
             </h5>
             <div>
                 <?php
@@ -825,7 +825,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </div>
 
     <h2 class="title">
-        <?= lang('Research data', 'Forschungsdaten') ?>
+        <?= lang('Tags', 'Schlagwörter') ?>
     </h2>
 
     <?php if (!empty($doc['connections'] ?? null)) { ?>
@@ -859,7 +859,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
         </table>
     <?php } else { ?>
-        <?= lang('No research data connected.', 'Noch keine Forschungsdaten verknüpft.') ?>
+        <?= lang('No research data connected.', 'Noch keine Schlagwörter verknüpft.') ?>
     <?php } ?>
 </section>
 

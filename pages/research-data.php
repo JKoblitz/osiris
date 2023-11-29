@@ -32,7 +32,7 @@ function val($index, $default = '')
 
 <h1 class="mt-0">
     <i class="ph ph-circles-three-plus text-osiris" aria-hidden="true"></i>
-    <?= lang('Research data', 'Forschungsdaten') ?>
+    <?= lang('Tags', 'Schlagwörter') ?>
 </h1>
 
 <div class="row row-eq-spacing-md">

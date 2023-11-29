@@ -17,7 +17,7 @@
 Route::get('/research-data', function () {
     include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
-        ['name' => lang("Research data", "Forschungsdaten")]
+        ['name' => lang("Tags", "Schlagwörter")]
     ];
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/research-data.php";
@@ -27,7 +27,7 @@ Route::get('/research-data', function () {
 Route::get('/research-data/(.*)', function ($name) {
     include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
-        ['name' => lang("Research data", "Forschungsdaten"), 'path' => "/research-data"],
+        ['name' => lang("Tags", "Schlagwörter"), 'path' => "/research-data"],
         ['name' => $name]
     ];
     include BASEPATH . "/header.php";
