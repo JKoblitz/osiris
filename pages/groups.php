@@ -19,8 +19,10 @@
 $style = $_GET['style'] ?? 'cards';
 ?>
 
+<a href="<?= ROOTPATH ?>/preview/groups" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
+
 <h1>
-    <i class="ph ph-student"></i>
+    <i class="ph ph-users-three"></i>
     <?= lang('Organisational Units', 'Organisationseinheiten') ?>
 </h1>
 
@@ -46,45 +48,146 @@ $style = $_GET['style'] ?? 'cards';
             color: white;
             opacity: .7;
         }
+
+        .table.cards {
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .table.cards thead {
+            display: none;
+        }
+
+        .table.cards tbody {
+            display: flex;
+            flex-grow: column;
+            flex-direction: row;
+            flex-wrap: wrap;
+
+        }
+
+        .table.cards tr {
+            width: 32%;
+            margin: 0.5em;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5em;
+            box-shadow: var(--box-shadow);
+            background: white;
+        }
+
+        .table.cards tr td {
+            border: 0;
+            box-shadow: none;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
     </style>
-    <div class="row row-eq-spacing">
-        <?php foreach ($Groups->groups as $group) { ?>
-            <div class="col-md-6 col-lg-4 mb-20">
-                <div class="alert h-full" id="<?= $group['id'] ?>" <?= $Groups->cssVar($group['id']) ?>>
-                    <a class="title link" href="<?= ROOTPATH ?>/groups/view/<?= $group['id'] ?>">
-                        <span class="badge"><?= $group['id'] ?></span>
-                        <?= $group['name'] ?>
-                    </a>
 
-                    <?php if (!empty($group['parent'])) { ?>
-                        <p class="font-size-12">
-                            <a href="#<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
-                        </p>
-                    <?php } ?>
-
-                    <p class="text-muted">
-                        <?= $group['unit'] ?>
-                    </p>
-
-                    <?php if (isset($group['head'])) {
-                        $heads = $group['head'];
-                        if (is_string($heads)) $heads = [$heads];
-                        $heads = array_map([$DB, 'getNameFromId'], $heads);
-                    ?>
-                        <span class="float-right">
-                            <i class="ph ph-crown text-signal"></i>
-                            <?= implode(', ', $heads) ?>
+    <table class="table cards" id="group-table">
+        <thead>
+            <th></th>
+        </thead>
+        <tbody>
+            <?php foreach ($Groups->groups as $group) { ?>
+                <tr>
+                    <td class="" id="<?= $group['id'] ?>" <?= $Groups->cssVar($group['id']) ?>>
+                        <span style="display:none">
+                            <!-- hidden field for sorting based on level -->
+                            <?= $Groups->getLevel($group['id']) ?>
                         </span>
-                    <?php
-                    } ?>
-                    <?php
-                    $children = $Groups->getChildren($group['id']);
-                    ?>
-                    <?= $osiris->persons->count(['depts' => ['$in' => $children],  'is_active' => true]) ?> <?= lang('Members', 'Mitglieder') ?>
-                </div>
-            </div>
-        <?php } ?>
-    </div>
+                        <a class="title link" href="<?= ROOTPATH ?>/groups/view/<?= $group['id'] ?>">
+                            <span class="badge dept-id"><?= $group['id'] ?></span>
+                            <?= $group['name'] ?>
+                        </a>
+
+                        <?php if (!empty($group['parent'])) { ?>
+                            <p class="font-size-12">
+                                <a href="#<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
+                            </p>
+                        <?php } ?>
+
+                        <p class="text-muted">
+                            <?= $group['unit'] ?>
+                        </p>
+
+                        <?php if (isset($group['head'])) {
+                            $heads = $group['head'];
+                            if (is_string($heads)) $heads = [$heads];
+                            $heads = array_map([$DB, 'getNameFromId'], $heads);
+                        ?>
+                            <span class="float-right">
+                                <i class="ph ph-crown text-signal"></i>
+                                <?= implode(', ', $heads) ?>
+                            </span>
+                        <?php
+                        } ?>
+                        <?php
+                        $children = $Groups->getChildren($group['id']);
+                        ?>
+                        <?= $osiris->persons->count(['depts' => ['$in' => $children],  'is_active' => true]) ?> <?= lang('Members', 'Mitglieder') ?>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
+
+
+    <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $.extend($.fn.DataTable.ext.classes, {
+            sPaging: "pagination mt-10 ",
+            sPageFirst: "direction ",
+            sPageLast: "direction ",
+            sPagePrevious: "direction ",
+            sPageNext: "direction ",
+            sPageButtonActive: "active ",
+            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
+            sLengthSelect: "form-control sm d-inline w-auto",
+            sInfo: "float-right text-muted",
+            sLength: "float-right"
+        });
+        var dataTable;
+        $(document).ready(function() {
+            dataTable = $('#group-table').DataTable({
+                dom: 'frtipP',
+
+                // columnDefs: [{
+                //     targets: [0],
+                //     searchable: false,
+                //     sortable: false,
+                //     visible: true
+                // }],
+                // "order": [
+                //     [0, 'asc'],
+                // ],
+                paging: true,
+                autoWidth: true,
+                pageLength: 12,
+                initComplete: function(settings, json) {
+                    // $(".dt-buttons .btn-group").append(
+                    //     '<a id="cv" class="btn btn-primary" href="#">CARDs VIEW</a>'
+                    // );
+                    // var labels = [];
+                    // $("#result-table thead th").each(function() {
+                    //     labels.push($(this).text());
+                    // });
+                    // $("#result-table tbody tr").each(function() {
+                    //     $(this)
+                    //         .find("td")
+                    //         .each(function(column) {
+                    //             $("<span class='key'>" + labels[column] + "</span>").prependTo(
+                    //                 $(this)
+                    //             );
+                    //         });
+                    // });
+                }
+            });
+        });
+    </script>
+
 
 <?php } else if ($style == 'hirarchy') {
 

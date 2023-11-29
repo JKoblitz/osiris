@@ -17,7 +17,7 @@
 Route::get('/user/browse', function () {
     // if ($page == 'users') 
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen')]
+        ['name' => lang('Users', 'Personen')]
     ];
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
@@ -30,7 +30,7 @@ Route::get('/search/user', function () {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => lang("Search", "Suche")]
     ];
     include BASEPATH . "/header.php";
@@ -65,7 +65,7 @@ Route::get('/user/edit/(.*)', function ($user) {
         die;
     }
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => $data['name'], 'path' => "/profile/$user"],
         ['name' => lang("Edit", "Bearbeiten")]
     ];
@@ -87,7 +87,7 @@ Route::get('/user/edit-bio/(.*)', function ($user) {
         die;
     }
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => $data['name'], 'path' => "/profile/$user"],
         ['name' => lang("Edit Biography", "Biographie bearbeiten")]
     ];
@@ -108,7 +108,7 @@ Route::get('/user/visibility/(.*)', function ($user) {
         die;
     }
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => $data['name'], 'path' => "/profile/$user"],
         ['name' => lang("Configure web view", "Webansicht Konfigurieren")]
     ];
@@ -130,7 +130,7 @@ Route::get('/user/delete/(.*)', function ($user) {
         die;
     }
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => $data['name'], 'path' => "/profile/$user"],
         ['name' => lang("Inactivate", "Inaktivieren")]
     ];
@@ -162,7 +162,7 @@ Route::get('/profile/?(.*)', function ($user) {
     $name = $scientist['displayname'];
 
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => $name]
     ];
 
@@ -183,7 +183,7 @@ Route::get('/my-year/?(.*)', function ($user) {
     $name = $scientist['displayname'];
 
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => lang("$name", "$name"), 'path' => "/profile/$user"],
         ['name' => lang("The Year", "Das Jahr")]
     ];
@@ -230,7 +230,7 @@ Route::get('/achievements/?(.*)', function ($user) {
     $name = $scientist['displayname'];
 
     $breadcrumb = [
-        ['name' => lang('Users', 'Nutzer:innen'), 'path' => "/user/browse"],
+        ['name' => lang('Users', 'Personen'), 'path' => "/user/browse"],
         ['name' => $name, 'path' => "/profile/$user"],
         ['name' => lang('Achievements', 'Errungenschaften')]
 

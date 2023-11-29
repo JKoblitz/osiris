@@ -83,8 +83,8 @@ function togglePubType(type, callback = () => { }) {
         // SELECTED_TYPE = SETTINGS.activities[type];
     }
     console.log(SELECTED_TYPE);
-    if (SELECTED_TYPE === undefined || SELECTED_SUBTYPE === undefined) {
-        toastError('Selected activity type does not exist in settings.json.')
+    if (SELECTED_TYPE === null || SELECTED_SUBTYPE === null) {
+        toastError('Selected activity type does not exist in settings.json.<br> If the activity is new, maybe a reload without cache is needed.')
         return
     }
     const SELECTED_MODULES = SELECTED_SUBTYPE.modules

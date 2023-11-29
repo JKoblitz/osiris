@@ -47,9 +47,9 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
                         "print" => "{authors} ({year}) {title}.",
                         "title" => "{title}",
                         "subtitle" => "{authors}, {date}"
-                    ]
                     ],
                     "coins" => 0
+                ]
             ]
 
         ];
@@ -188,7 +188,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
         ?>
 
         <form action="#" method="post" id="modules-form" class="">
-            <button class="btn success lg position-fixed" style="top: calc(100vh - 10rem);right:0;z-index: 30;margin: 3rem">
+            <button class="btn success large position-fixed" style="top: calc(100vh - 10rem);right:0;z-index: 30;margin: 3rem">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>
@@ -243,7 +243,8 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
 
                         <div class="subtypes">
-                            <?php foreach ($type['subtypes'] as $subtype) {
+                            <?php
+                            foreach ($type['subtypes'] as $subtype) {
                                 $st = $subtype['id'];
                                 $submember = $osiris->activities->count(['type' => $t, 'subtype' => $st]);
                             ?>
@@ -367,9 +368,9 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                     <div class="content">
                                         <label for="coins" class="font-weight-bold">Coins:</label>
                                         <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][coins]" value="<?= $subtype['coins'] ?? '0' ?>">
-                                       <span class="text-muted">
-                                        <?=lang('Please note that regarding publications, first and last authors will receive double the amount.', 'Bitte bemerken Sie, dass bei Publikationen der Erst- und Letztautor die doppelte Menge bekommen.')?>
-                                       </span>
+                                        <span class="text-muted">
+                                            <?= lang('Please note that <q>middle</q> authors will receive half the amount.', 'Bitte bemerken Sie, <q>middle</q>-Autoren nur die Hälfte der Coins bekommen.') ?>
+                                        </span>
                                     </div>
 
                                 </div>
@@ -415,16 +416,17 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 
 <script>
-    function lowercaseInput(element){
+    function lowercaseInput(element) {
         $(element).val(element.value.toLowerCase())
     }
+
     function addModule(type, subtype) {
 
         var el = $('#type-' + type).find('#subtype-' + subtype).find('.author-widget')
         var val = el.find('.module-input').val()
         if (val === undefined || val === null) return;
         console.log(val);
-        var author = $('<div class="author">')
+        var author = $('<div class="author" ondblclick="toggleRequired(this)">')
             .html(val);
         author.append('<input type="hidden" name="activities[' + type + '][subtypes][' + subtype + '][modules][]" value="' + val + '">')
         author.append('<a onclick="$(this).parent().remove()">&times;</a>')

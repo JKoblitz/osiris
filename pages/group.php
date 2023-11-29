@@ -161,7 +161,7 @@ $level = $Groups->getLevel($id);
                     } else foreach ($persons as $i => $person) {
                         $username = strval($person['username']);
 
-                        $img = ROOTPATH . "/img/person.jpg";
+                        $img = ROOTPATH . "/img/no-photo.png";
                         if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
                             $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
                         }

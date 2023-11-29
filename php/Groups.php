@@ -94,11 +94,32 @@ class Groups
     public function personDept($depts, $level = false)
     {
         $result = ['level' => 0, 'name' => '', 'id' => ''];
-        foreach ($depts as $id) {
-            $dept = $this->getGroup($id);
-            if ($dept['level'] === $level) return $dept;
-            if ($dept['level'] > $result['level'])
-                $result = $dept;
+        foreach ($depts as $d) {
+            foreach ($this->getParents($d) as $id) {
+                # code...
+                $dept = $this->getGroup($id);
+                if (!isset($dept['level'])) $dept['level'] = $this->getLevel($id);
+                if ($dept['level'] === $level) return $dept;
+                if ($dept['level'] > $result['level'])
+                    $result = $dept;
+            }
+        }
+        return $result;
+    }
+
+
+    public function getDeptFromAuthors($authors)
+    {
+        $result = [];
+        $authors = DB::doc2Arr($authors);
+        if (empty($authors)) return [];
+        $users = array_filter(array_column($authors, 'user'));
+        foreach ($users as $user) {
+            $user = $this->osiris->getPerson($user);
+            if (empty($user) || empty($user['depts'])) continue;
+            $dept = $this->personDept($user['depts'], 1)['id'];
+            if (in_array($dept, $result)) continue;
+            $result[] = $dept;
         }
         return $result;
     }

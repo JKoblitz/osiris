@@ -28,7 +28,7 @@ $Format = new Document(true);
             <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
         </a>
         <a href="#close-modal" class="btn osiris active">
-            <i class="ph ph-student"></i> <?= lang('Users', 'Nutzer:innen') ?>
+            <i class="ph ph-student"></i> <?= lang('Users', 'Personen') ?>
         </a>
     </div>
 

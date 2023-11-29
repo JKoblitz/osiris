@@ -74,7 +74,7 @@ Es folgen Boxen zu jeder einzelnen Aktivitätskategorie, die wir in OSIRIS haben
 
 Jede Aktivität ist gleich dargestellt. Das führt zu einer verbesserten Übersicht und Struktur. Gleich zu Beginn steht das Quartal, in dem die Aktivität *begonnen* hat. Sollte es sich um eine mehrjährige Aktivität handeln, bei der der Anfang der Aktivität in einem anderen Jahr liegt, ist hier zusätzlich das Jahr angegeben.
 Aktivitäten, die nicht im ausgewählten Quartal gestartet sind, sind leicht ausgegraut. 
-Es folgt die standardmäßige Darstellung der Aktivitäten, die Nutzer:innen im Profil einstellen können. Dann folgen die im Folgenden beschriebenen drei Schaltflächen und die Anzahl an Coins, dir man für die Aktivität erhalten hat. Beim Hovern über die Coins gibt ein Tooltip weitere Informationen.
+Es folgt die standardmäßige Darstellung der Aktivitäten, die Personen im Profil einstellen können. Dann folgen die im Folgenden beschriebenen drei Schaltflächen und die Anzahl an Coins, dir man für die Aktivität erhalten hat. Beim Hovern über die Coins gibt ein Tooltip weitere Informationen.
 
 <i class="ph ph-regular ph-arrow-fat-line-right mr-10 ph-fw ph-lg text-primary"></i> Hier gelangt man zur Übersichtsseite der Aktivität, auf der alle Details dargestellt werden. Außerdem gibt es dort weitere Links zum Bearbeiten und Kopieren einer Aktivität, sowie zum Autoreneditor.
 

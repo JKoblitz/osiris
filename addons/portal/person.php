@@ -1,13 +1,12 @@
 <?php
-
 $Format = new Document(false, 'portal');
 ?>
 
 <div class="container">
 
-    <div class="row align-items-center my-0">
-        <div class="col flex-grow-0">
-            <img src="<?= $img ?>" alt="" class="profile-img" style="max-width: 300px;">
+    <div class="profile-header" style="display: flex; align-items: center;">
+        <div class="col" style="flex-grow: 0;">
+            <img src="<?= $img ?>" alt="" class="profile-img rounded" style="max-width: 100px; margin-right: 2rem;">
         </div>
         <div class="col ml-20">
             <h1 class="m-0">
@@ -22,7 +21,7 @@ $Format = new Document(false, 'portal');
                 $dept = $Groups->getGroup($d);
                 if ($i > 0) echo ', ';
             ?>
-                <a href="<?= ROOTPATH ?>/portal/group/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
+                <a href="<?= PORTALPATH ?>/group/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
                     <?php if (in_array($user, $dept['head'] ?? [])) { ?>
                         <i class="ph ph-crown"></i>
                     <?php } ?>
@@ -67,18 +66,28 @@ $Format = new Document(false, 'portal');
                 </div>
             <?php } ?>
 
-            <?php if (isset($scientist['highlighted']) && !empty($scientist['highlighted'])) { ?>
+            <?php
+            $highlights = DB::doc2Arr( $scientist['highlighted'] ?? array());
+            if (!empty($highlights)) { ?>
                 <div class="pb-10">
 
                     <h2>Highlighted research</h2>
+                    <table class="table simple">
                     <?php
-                    // $scientist['highlighted'] = ['632da4672199cd3df8dbc166'];
+                    // $highlights = ['632da4672199cd3df8dbc166'];
 
-                    foreach ($scientist['highlighted'] as $h) {
+                    foreach ($highlights as $h) {
                         $doc = $DB->getActivity($h);
-                        echo $doc['rendered']['web'];
+                        echo "<tr><td>";
+                        echo $doc['rendered']['icon'];
+                        echo "</td><td>";
+                        // echo $doc['rendered']['web'];
+                        $Format->setDocument($doc);
+                        echo $Format->formatShort();
+                        echo "</td></tr>";
                     } ?>
 
+</table>
                 </div>
             <?php } ?>
 
@@ -94,7 +103,7 @@ $Format = new Document(false, 'portal');
                     <table class="table simple">
                         <?php
                         foreach ($osiris->activities->find($filter, $options) as $doc) {
-                            if (isset($scientist['highlighted']) && !empty($scientist['highlighted']) && in_array(strval($doc['_id']), $scientist['highlighted']))
+                            if (!empty($highlights) && in_array(strval($doc['_id']), $highlights))
                                 continue;
                             echo "<tr><td>";
                             echo $doc['rendered']['icon'];
@@ -181,6 +190,49 @@ $Format = new Document(false, 'portal');
                     <?php } ?>
                 </tbody>
             </table>
+
+            
+    <?php
+    $project_filter = [
+        '$or' => array(
+            ['contact' => $user],
+            ['persons.user' => $user]
+        ),
+        "status" => ['$ne' => "rejected"]
+    ];
+
+    $count_projects = $osiris->projects->count($project_filter);
+    if ($count_projects > 0) { ?>
+
+<h2><?=lang('Projects', 'Projekte')?></h2>
+<?php
+            $projects = $osiris->projects->find($project_filter, ['sort' => ["start" => -1, "end" => -1]]);
+
+            $ongoing = [];
+            $past = [];
+
+            require_once BASEPATH . "/php/Project.php";
+            $Project = new Project();
+            foreach ($projects as $project) {
+                $Project->setProject($project);
+                if ($Project->inPast()) {
+                    $past[] = $Project->widgetPortal($user);
+                } else {
+                    $ongoing[] = $Project->widgetPortal($user);
+                }
+            }
+        ?>
+                <?php if (!empty($ongoing)) { ?>
+
+                    <h3><?= lang('Ongoing projects', 'Laufende Projekte') ?></h3>
+                    <?php foreach ($ongoing as $html) { echo $html; } ?>
+                    <?php } ?>
+                <?php if (!empty($past)) { ?>
+                    <h3><?= lang('Past projects', 'Vergangene Projekte') ?></h3>
+
+                    <?php foreach ($past as $html) { echo $html; } ?>
+        <?php } ?>
+    <?php } ?>
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@
 `Version 1.2.3`
 
 Biography
+  CV export
 
 Forschungsportal
 
@@ -25,6 +26,9 @@ Project
 Restructuring of Code
 
 Name in MyActivities
+
+new user card view
+
 
 ## 25.10.2023
 <a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>

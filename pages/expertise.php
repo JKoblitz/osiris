@@ -38,6 +38,13 @@ $cursor = $osiris->persons->aggregate([
 
 ?>
 
+<style>
+    .badge {
+        color: var(--department-color) !important;
+        font-weight: 500;
+    }
+</style>
+
 <h1 class="mt-0">
     <i class="fal ph-lg ph-barbell text-osiris"></i>
     <?= lang('Expertise search', 'Experten-Suche') ?>
@@ -55,8 +62,11 @@ $cursor = $osiris->persons->aggregate([
             <div class="box mt-0">
                 <div class="content">
                     <h3 class="title"><?= strtoupper($doc['_id']) ?></h3>
-                    <p class="text-muted"><?= $doc['count'] ?> <?= lang('experts found:', 'Experten gefunden:') ?></p>
-                    <?php foreach ($doc['users'] as $u) { ?><a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge badge-<?= $u['depts'][0] ?> mr-5 mb-5"><?= $u['displayname'] ?></a><?php } ?>
+                    <p class="text-muted"><?= $doc['count'] ?> <?= lang('experts found:', 'Expert:innen gefunden:') ?></p>
+                    <?php foreach ($doc['users'] as $u) { 
+                        
+                        ?><a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge mr-5 mb-5" <?=$Groups->cssVar($u['depts'][0])?>><?= $u['displayname'] ?></a><?php 
+                    } ?>
                 </div>
             </div>
         </div>

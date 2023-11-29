@@ -200,7 +200,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             <!-- Accessibility menu -->
             <div class="dropdown">
                 <button class="btn accessibility" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
-                    <span class="sr-only"><?=lang('Accessibility Options', 'Accessibility-Optionen')?></span>
+                    <span class="sr-only"><?= lang('Accessibility Options', 'Accessibility-Optionen') ?></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-center w-300" aria-labelledby="accessibility-menu">
                     <h6 class="header text-primary">Accessibility</h6>
@@ -210,27 +210,27 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <div class="form-group">
                             <div class="custom-checkbox">
                                 <input type="checkbox" id="set-contrast" name="accessibility[contrast]" value="high-contrast" <?= !empty($_COOKIE['D3-accessibility-contrast'] ?? '') ? 'checked' : '' ?>>
-                                <label for="set-contrast"><?=lang('High contrast', 'Erhöhter Kontrast')?></label><br>
+                                <label for="set-contrast"><?= lang('High contrast', 'Erhöhter Kontrast') ?></label><br>
                                 <small class="text-muted">
-                                    <?=lang('Enhance the contrast of the web page for better readability.', 'Erhöht den Kontrast für bessere Lesbarkeit.')?>
+                                    <?= lang('Enhance the contrast of the web page for better readability.', 'Erhöht den Kontrast für bessere Lesbarkeit.') ?>
                                 </small>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-checkbox">
                                 <input type="checkbox" id="set-transitions" name="accessibility[transitions]" value="without-transitions" <?= !empty($_COOKIE['D3-accessibility-transitions'] ?? '') ? 'checked' : '' ?>>
-                                <label for="set-transitions"><?=lang('Reduce motion', 'Verringerte Bewegung')?></label><br>
+                                <label for="set-transitions"><?= lang('Reduce motion', 'Verringerte Bewegung') ?></label><br>
                                 <small class="text-muted">
-                                    <?=lang('Reduce motion and animations on the page.', 'Verringert Animationen und Bewegungen auf der Seite.')?>
+                                    <?= lang('Reduce motion and animations on the page.', 'Verringert Animationen und Bewegungen auf der Seite.') ?>
                                 </small>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-checkbox">
                                 <input type="checkbox" id="set-dyslexia" name="accessibility[dyslexia]" value="dyslexia" <?= !empty($_COOKIE['D3-accessibility-dyslexia'] ?? '') ? 'checked' : '' ?>>
-                                <label for="set-dyslexia"><?=lang('Dyslexia mode', 'Dyslexie-Modus')?></label><br>
+                                <label for="set-dyslexia"><?= lang('Dyslexia mode', 'Dyslexie-Modus') ?></label><br>
                                 <small class="text-muted">
-                                    <?=lang('Use a special font to increase readability for users with dyslexia.', 'OSIRIS nutzt eine spezielle Schriftart, die von manchen Menschen mit Dyslexie besser gelesen werden kann.')?>
+                                    <?= lang('Use a special font to increase readability for users with dyslexia.', 'OSIRIS nutzt eine spezielle Schriftart, die von manchen Menschen mit Dyslexie besser gelesen werden kann.') ?>
                                 </small>
                             </div>
                         </div>
@@ -365,7 +365,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
 
                     <a href="<?= ROOTPATH ?>/user/browse" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('user/browse') ?>">
                         <i class="ph ph-users" aria-hidden="true"></i>
-                        <?= lang('Users', 'Nutzer:innen') ?>
+                        <?= lang('Users', 'Personen') ?>
                     </a>
                     <a href="<?= ROOTPATH ?>/groups" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('groups') ?>">
                         <i class="ph ph-users-three" aria-hidden="true"></i>
@@ -400,6 +400,11 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <a href="<?= ROOTPATH ?>/research-data" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('research-data') ?>">
                         <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
                         <?= lang('Research data', 'Forschungsdaten') ?>
+                    </a>
+
+                    <a href="<?= ROOTPATH ?>/concepts" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('concepts') ?>">
+                        <i class="ph ph-lightbulb" aria-hidden="true"></i>
+                        <?= lang('Concepts', 'Konzepte') ?>
                     </a>
 
 
@@ -513,6 +518,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
         </div>
         <!-- Content wrapper start -->
         <div class="content-wrapper">
+            <?php if ($pageactive('preview')) { ?>
+                <div class="title-bar text-danger text-center font-weight-bold d-block font-size-20">
+                    <b>PREVIEW</b>
+                </div>
+            <?php } ?>
+
 
             <div class="content-container">
                 <?php

@@ -346,7 +346,7 @@ Route::post('/projects/create', function () {
             ['funding' => ['$in' => $values['funding_number']]],
             ['$push' => ['projects' => $values['name']]]
         );
-        dump($test->getModifiedCount());
+        // dump($test->getModifiedCount());
     }
 
     $insertOneResult  = $collection->insertOne($values);
@@ -741,7 +741,7 @@ Route::post('/upload-files/(.*)', function ($id) {
 
     $target_dir = BASEPATH . "/uploads/";
     if (!is_writable($target_dir)) {
-        printMsg("Upload directory is unwritable. Please contact admin.");
+        die("Upload directory $target_dir is unwritable. Please contact admin.");
     }
     $target_dir .= "$id/";
     if (!file_exists($target_dir)) {
@@ -911,10 +911,10 @@ Route::post('/update-user/(.*)', function ($user) {
 
     // dump($person, true);
     // die;
-    if (isset($person['dept'])) {
-        $person['depts'] = $Groups->getParents($person['dept']);
-    }
-    $person['depts'] = array_reverse($person['depts']);
+    // if (isset($person['dept'])) {
+    //     $person['depts'] = $Groups->getParents($person['dept']);
+    //     $person['depts'] = array_reverse($person['depts']);
+    // }
 
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
@@ -1292,3 +1292,34 @@ Route::post('/approve/([A-Za-z0-9]*)', function ($id) {
         'updated' => $updateCount
     ]);
 });
+
+
+
+Route::post('/crud/fav', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['activity'])) die ('Error: no activity given');
+    $id = $_POST['activity'];
+
+    // check if user has id already
+    $user = $_SESSION['username'];
+
+    $scientist = $osiris->persons->findOne(['username'=>$user]);
+    if (empty($scientist)) die('Error: No Scientist found');
+
+    $highlighted = DB::doc2Arr($scientist['highlighted'] ?? []);
+
+    if (in_array($id, $highlighted)){
+        $osiris->persons->updateOne(
+            ['_id' => $scientist['_id']],
+            ['$pull' => ["highlighted" => $id]]
+        );
+        echo '{"fav": false}';
+        // ['$pull' => ["depts" => $group['id']]]['$push' => ['projects' => $values['name']]]
+    } else {
+        $osiris->persons->updateOne(
+            ['_id' => $scientist['_id']],
+            ['$push' => ["highlighted" => $id]]
+        );
+        echo '{"fav": true}';
+    }
+}, 'login');

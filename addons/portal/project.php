@@ -153,7 +153,7 @@ $Format = new Document(false, 'portal');
                     foreach ($project['persons'] as $person) {
                         $username = strval($person['user']);
 
-                        $img = ROOTPATH . "/img/person.jpg";
+                        $img = ROOTPATH . "/img/no-photo.png";
                         if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
                             $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
                         }
@@ -165,7 +165,7 @@ $Format = new Document(false, 'portal');
                                     <img src="<?= $img ?>" alt="" style="max-height: 7rem;" class="mr-20 rounded">
                                     <div class="">
                                         <h5 class="my-0">
-                                            <a href="<?= ROOTPATH ?>/portal/person/<?= $username ?>" class="colorless">
+                                            <a href="<?= PORTALPATH ?>/person/<?= $username ?>" class="colorless">
                                                 <?= $person['name'] ?>
                                             </a>
                                         </h5>

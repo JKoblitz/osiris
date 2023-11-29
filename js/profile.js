@@ -34,7 +34,7 @@ function navigate(key) {
             initActivities()
             activitiesChart()
             break;
-            
+
         case 'projects':
             projectTimeline()
             break;
@@ -43,6 +43,9 @@ function navigate(key) {
             coauthorNetwork()
             break;
 
+        case 'concepts':
+            conceptTooltip()
+            break;
         default:
             break;
     }
@@ -398,7 +401,7 @@ function activitiesChart() {
 projectTimelineExists = false;
 function projectTimeline() {
     if (projectTimelineExists) return;
-    projectTimelineExists=true
+    projectTimelineExists = true
     $.ajax({
         type: "GET",
         url: ROOTPATH + "/api/dashboard/project-timeline",
@@ -459,8 +462,8 @@ function projectTimeline() {
 
             const typeInfo = {
                 'PI': { color: '#B61F29', label: lang('Pi', 'PI') },
-                'worker': { color: '#dd590e', label: lang('Worker', 'Projektmitarbeiter:in') },
-                'associate': { color: '#ECAF00', label: lang('Associate', 'Beteiligte Person') },
+                'worker': { color: '#ECAF00', label: lang('Worker', 'Projektmitarbeiter:in') },
+                'associate': { color: '#AAAAAA', label: lang('Associate', 'Beteiligte Person') },
             }
 
             var axisBottom = d3.axisBottom(timescale)
@@ -499,7 +502,7 @@ function projectTimeline() {
                     var x1 = timescale(date)
                     var date = new Date(CURRENT_YEAR, 12, 31)
                     var x2 = timescale(date)
-                    return x1+(x2 - x1)/2
+                    return x1 + (x2 - x1) / 2
                 })
                 .attr('y', 6)
                 .attr('text-anchor', 'middle')
@@ -602,9 +605,9 @@ function projectTimeline() {
 }
 
 coauthorNetworkExists = false;
-function coauthorNetwork(){
+function coauthorNetwork() {
     if (coauthorNetworkExists) return;
-    coauthorNetworkExists=true
+    coauthorNetworkExists = true
     $.ajax({
         type: "GET",
         url: ROOTPATH + "/api/dashboard/author-network",
@@ -612,7 +615,7 @@ function coauthorNetwork(){
             user: CURRENT_USER
         },
         dataType: "json",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             var matrix = response.data.matrix;
             var DEPTS = response.data.labels;
@@ -624,10 +627,10 @@ function coauthorNetwork(){
             var links = []
             var depts_in_use = {};
 
-            data.forEach(function(d, i) {
+            data.forEach(function (d, i) {
                 colors.push(d.dept.color ?? '#cccccc');
                 var link = null
-                if (i !== 0) link = ROOTPATH+"/profile/" + d.user
+                if (i !== 0) link = ROOTPATH + "/profile/" + d.user
                 links.push(link)
 
                 if (d.dept.id && depts_in_use[d.dept.id] === undefined)
@@ -663,8 +666,43 @@ function coauthorNetwork(){
             }
 
         },
-        error: function(response) {
+        error: function (response) {
             console.log(response);
         }
     });
+}
+
+
+conceptTooltipExists = false;
+function conceptTooltip() {
+    if (conceptTooltipExists) return;
+    conceptTooltipExists = true
+    $('.concept').each(function () {
+        var el = $(this)
+        var data = {
+            score: el.attr('data-score'),
+            name: el.attr('data-name'),
+            count: el.attr('data-count'),
+            wikidata: el.attr('data-wikidata'),
+        }
+        el.popover({
+            placement: 'auto bottom',
+            container: '#concepts',
+            mouseOffset: 10,
+            trigger: 'click',
+            html: true,
+            content: function () {
+                var label = lang('Activities', 'Aktivitäten')
+                if (data.count == 1) label = lang('Activity', 'Aktivität');
+                return `<b>${data.name}</b><br>
+                    Score: ${data.score} %</br>
+                    In ${data.count} ${label}<br>
+                    <hr>
+                    <a href="${ROOTPATH}/concepts/${data.name}" target="_blank" rel="noopener noreferrer"><i class="ph ph-arrow-right"></i> Concept page</a><br>
+                    <a href="${data.wikidata}" target="_blank" rel="noopener noreferrer"><i class="ph ph-arrow-up-right"></i> Wikidata</a>
+                    `;
+            }
+        });
+    }
+    );
 }

@@ -124,7 +124,7 @@
         </h2>
 
         <p>
-            Die Nutzer:innen werden mit LDAP synchronisiert.
+            Die Personen werden mit LDAP synchronisiert.
         </p>
         
         <form action="<?=ROOTPATH?>/ldap/synchonize" method="post">

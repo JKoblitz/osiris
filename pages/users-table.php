@@ -16,48 +16,89 @@
  * @license     MIT
  */
 ?>
+<style>
+    .table.cards {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .table.cards thead {
+        display: none;
+    }
+
+    .table.cards tbody {
+        display: flex;
+        flex-grow: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+    }
+
+    .table.cards tbody tr {
+        width: 100%;
+        margin: 0.5em;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5em;
+        box-shadow: var(--box-shadow);
+        background: white;
+        display: flex;
+        align-items: center;
+    }
+
+    .table.cards tbody tr td {
+        border: 0;
+        box-shadow: none;
+        /* width: 100%; */
+        height: 100%;
+        display: block;
+    }
+
+    .table.cards tbody tr img,
+    .table#persons img {
+        max-height: 6rem;
+    }
+
+    .table.cards tbody tr td {
+        display: flex;
+        align-items: center;
+        border: 0;
+    }
+
+    @media (min-width: 768px) {
+        .table.cards tbody tr {
+            width: 48%;
+        }
+    }
+    @media (min-width: 1200px) {
+        .table.cards tbody tr {
+            width: 31%;
+        }
+    }
+</style>
+<a href="<?= ROOTPATH ?>/preview/persons" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
 
 <h1>
     <i class="ph ph-student"></i>
-    <?= lang('Users', 'Nutzer:innen') ?>
+    <?= lang('Users', 'Personen') ?>
 </h1>
 
 <?php if (isset($_GET['inactive'])) { ?>
-    <a href="?" class="btn float-right active"><?= lang('See inactive users', 'Zeige inaktive Nutzer:innen') ?></a>
+    <a href="?" class="btn float-right active"><?= lang('See inactive users', 'Zeige inaktive Personen') ?></a>
 <?php } else { ?>
-    <a href="?inactive" class="btn float-right"><?= lang('See inactive users', 'Zeige inaktive Nutzer:innen') ?></a>
+    <a href="?inactive" class="btn float-right"><?= lang('See inactive users', 'Zeige inaktive Personen') ?></a>
 <?php } ?>
 
-<style>
-
-    .table img {
-        display: block;
-        width: 4.2rem;
-        border-radius: var(--border-radius);
-    }
-</style>
-
-<table class="table dataTable" id="result-table" id="user-table">
+<table class="table cards" id="result-table" id="user-table">
     <thead>
         <th></th>
-        <th>User</th>
-        <th><?= lang('Last name', 'Nachname') ?></th>
-        <th><?= lang('First name', 'Vorname') ?></th>
-        <th><?= lang('Units', 'Einheiten') ?></th>
-        <th><?= lang('Phone', 'Telefon') ?></th>
-        <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
-            <th></th>
-        <?php
-        }
-        ?>
+        <th></th>
     </thead>
     <tbody>
 
         <?php
         $filter = ['username' => ['$ne' => null]];
         if (!isset($_GET['inactive'])) {
-            // $users = $osiris->account->distinct('username', ['is_active'=>false]);
-            // $filter['username'] = ['$nin'=>$users];
             $filter['is_active'] = true;
         }
         $result = $osiris->persons->find($filter);
@@ -65,47 +106,40 @@
 
         foreach ($result as $document) {
             $username = strval($document['username']);
-            $img = ROOTPATH . "/img/person.jpg";
+            $img = ROOTPATH . "/img/no-photo.png";
             if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
                 $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
             }
         ?>
             <tr class="">
-                <td class="py-5">
-                    <img src="<?= $img ?>" alt="">
-                </td>
-                <td><a href="<?= ROOTPATH ?>/profile/<?= $username ?>"><?= $username ?></a></td>
-                <td><?= $document['academic_title'] ?? '' ?> <?= $document['last'] ?></td>
-                <td><?= $document['first'] ?></td>
                 <td>
-                
-        <?php
-        foreach ($document['depts'] as $i => $d) {
-            $dept = implode('/', $Groups->getParents($d));
-        ?>
-            <a href="<?= ROOTPATH ?>/groups/view/<?= $d ?>">
-                <?= $dept ?>
-            </a>
-        <?php } ?>
-                    
+                    <img src="<?= $img ?>" alt="" class="rounded">
                 </td>
-                <td><?php
-                    if (!empty($document['telephone'] ?? '')) {
-                        $ph = str_replace('+49', '0', $document['telephone']);
-                        $ph = preg_replace('/^0531-?/', '', $ph);
-                        $ph = preg_replace('/^2616-?/', '', $ph);
-                        echo $ph;
-                    }
-                    ?></td>
-                <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
-                    <td>
-                        <btn class="btn link" type="button" onclick="editUser('<?= $username ?>')">
-                            <i class="ph ph-note-pencil"></i>
-                        </btn>
-                    </td>
-                <?php
-                }
-                ?>
+                <td class="flex-grow-1">
+                    <div class="w-full">
+                        <!-- hidden field for sorting without title -->
+                        <div style="display: none;"><?= $document['first'] ?> <?= $document['last'] ?></div>
+                        <span class="float-right text-muted"><?=$document['username']?></span>
+                        <h5 class="my-0">
+                            <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="">
+                                <?= $document['academic_title'] ?? '' ?>
+                                <?= $document['first'] ?>
+                                <?= $document['last'] ?>
+                            </a>
+                        </h5>
+                        <small>
+                            <?php
+                            foreach ($document['depts'] as $i => $d) {
+                                $dept = implode('/', $Groups->getParents($d));
+                            ?>
+                                <a href="<?= ROOTPATH ?>/groups/view/<?= $d ?>">
+                                    <?= $dept ?>
+                                </a>
+                            <?php } ?>
+                        </small>
+                    </div>
+                </td>
+
             </tr>
         <?php
         }
@@ -116,9 +150,9 @@
 
 
 <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
+<!-- <link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
 <script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script> -->
 
 <script>
     $.extend($.fn.DataTable.ext.classes, {
@@ -136,32 +170,35 @@
     var dataTable;
     $(document).ready(function() {
         dataTable = $('#result-table').DataTable({
-            searchPanes: {
-                viewTotal: true,
-                columns: [6]
-            },
-            searchPanes: true,
+            // searchPanes: {
+            //     viewTotal: true,
+            //     columns: [6]
+            // },
+            // searchPanes: true,
             // dom: 'Plfrtip',
             dom: 'frtipP',
-            searchPanes: {
-                initCollapsed: true,
-                columns: [4],
-                // preSelect: [{
-                //     column: 7,
-                //     rows: ['yes']
-                // }]
-            },
+            // searchPanes: {
+            //     initCollapsed: true,
+            //     columns: [4],
+            //     // preSelect: [{
+            //     //     column: 7,
+            //     //     rows: ['yes']
+            //     // }]
+            // },
 
             columnDefs: [{
-                    targets: [0],
-                    searchable: false,
-                    sortable: false,
-                    visible: true
-                }
-            ],
+                targets: [0],
+                searchable: false,
+                sortable: false,
+                visible: true
+            }],
             "order": [
-                [2, 'asc'],
+                [1, 'asc'],
             ],
+
+            paging: true,
+            autoWidth: true,
+            pageLength: 18,
             // "search": {
             //     "search": "1"
             // }

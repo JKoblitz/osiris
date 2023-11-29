@@ -135,7 +135,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
 
     <div class="row align-items-center">
         <div class="col flex-grow-0">
-            <img src="<?= file_exists(BASEPATH . "/img/users/$user.jpg") ? ROOTPATH . "/img/users/$user.jpg" : ROOTPATH . "/img/person.jpg"  ?>" alt="" class="profile-img">
+            <img src="<?= file_exists(BASEPATH . "/img/users/$user.jpg") ? ROOTPATH . "/img/users/$user.jpg" : ROOTPATH . "/img/no-photo.png"  ?>" alt="" class="profile-img">
         </div>
         <div class="col ml-20">
             <h1 class="m-0">

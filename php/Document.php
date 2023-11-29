@@ -26,6 +26,7 @@ class Document extends Settings
     private $schemaType = null;
     public $schema = [];
     private $db = null;
+        private $id = null;
 
 
     function __construct($highlight = true, $usecase = 'web')
@@ -39,7 +40,15 @@ class Document extends Settings
     public function setDocument($doc)
     {
         if (!is_array($doc)) {
-            $doc = iterator_to_array($doc);
+            $doc = DB::doc2Arr($doc);
+        }
+
+        
+        $this->id = $doc['_id'];
+        if (is_array($this->id)){
+            $this->id = $this->id['$oid'];
+        } else {
+            $this->id = strval($this->id);
         }
         // dump(($doc));
         $this->doc = $doc;
@@ -372,7 +381,7 @@ class Document extends Settings
         $fn = "";
         if ($first) :
             foreach (preg_split("/(\s+| |-|\.)/u", $first, -1, PREG_SPLIT_DELIM_CAPTURE) as $name) {
-                if (empty($name) || $name == '.' || $name == ' ') continue;
+                if (empty(trim($name)) || $name == '.' || $name == ' ') continue;
                 if ($name == '-')
                     $fn .= '-';
                 else
@@ -406,13 +415,6 @@ class Document extends Settings
             $corresponding = array_key_exists('corresponding', $pos);
         }
         foreach ($raw_authors as $n => $a) {
-            // if ($this->usecase == 'portal'){
-            //     $author = Document::abbreviateAuthor($a['last'], $a['first']);
-            //     if (isset($a['user'])) 
-            //         $author = "<a href='".ROOTPATH."/portal/person/".$a['user']."'>$author</a>";
-
-            //     $authors[] = $author;
-            // } else 
             if (!$this->full) {
                 if ($n > 9) break;
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
@@ -421,14 +423,18 @@ class Document extends Settings
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
                     $author = "<u>$author</u>";
                 }
-                if (isset($a['user']))
+                if (isset($a['user'])) {
+                    if ($this->usecase == 'portal')
+                        $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
+                    else
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
+                }
                 $authors[] = $author;
             } else {
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
                 if ($this->usecase == 'portal') {
                     if (isset($a['user']))
-                        $author = "<a href='" . ROOTPATH . "/portal/person/" . $a['user'] . "'>$author</a>";
+                        $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
                 } else if ($this->highlight === true) {
                     if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
@@ -645,16 +651,19 @@ class Document extends Settings
 
     private function getVal($field, $default = '')
     {
+        if ($default === '' && $this->usecase == 'list') $default = '-';
         return $this->doc[$field] ?? $default;
     }
 
     public function get_field($module)
     {
+        $default = '';
+        if ($this->usecase == 'list') $default = '-';
         switch ($module) {
             case "affiliation": // ["book"],
                 return $this->getVal('affiliation');
             case "authors": // ["authors"],
-                return $this->formatAuthors($this->getVal('authors'));
+                return $this->formatAuthors($this->getVal('authors', []));
             case "book-series": // ["series"],
                 return $this->getVal('series');
             case "book-title": // ["book"],
@@ -699,11 +708,11 @@ class Document extends Settings
                 return $this->getVal('doc_type');
             case "doi": // ["doi"],
                 $val = $this->getVal('doi');
-                if (empty($val)) return '';
+                if ($val == $default) return '';
                 return "DOI: <a target='_blank' href='https://doi.org/$val'>$val</a>";
             case "edition": // ["edition"],
                 $val = $this->getVal('edition');
-                if (!empty($val)) {
+                if ($val != $default) {
                     if ($val == 1) $val .= "st";
                     elseif ($val == 2) $val .= "nd";
                     elseif ($val == 3) $val .= "rd";
@@ -711,11 +720,11 @@ class Document extends Settings
                 }
                 return $val;
             case "editor": // ["editors"],
-                return $this->formatAuthors($this->getVal('editors'));
+                return $this->formatAuthors($this->getVal('editors', []));
             case "editorial": // ["editor_type"],
                 return $this->getVal('editor_type');
             case "file-icons":
-                // if ($this->usecase == 'portal') return '';
+                if ($this->usecase == 'portal') return '';
                 $files = '';
                 foreach ($this->getVal('files', array()) as $file) {
                     $icon = getFileIcon($file['filetype']);
@@ -735,15 +744,15 @@ class Document extends Settings
             case "iteration": // ["iteration"],
                 return $this->getVal('iteration');
             case "journal": // ["journal", "journal_id"],
-                $val = $this->doc['journal_id'] ?? '';
-                if (!empty($val)) {
+                $val = $this->doc['journal_id'] ?? $default;
+                if ($val != $default) {
                     $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
                     return $j['journal'];
                 }
                 return $this->getVal('journal');
             case "journal-abbr":
-                $val = $this->doc['journal_id'] ?? '';
-                if (!empty($val)) {
+                $val = $this->doc['journal_id'] ?? $default;
+                if ($val != $default) {
                     $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
                     return $j['abbr'];
                 }
@@ -752,7 +761,7 @@ class Document extends Settings
                 $val = $this->getVal('invited_lecture', false);
                 if ($this->usecase == 'list')
                     return bool_icon($val);
-                if ($val)
+                if ($val != $default)
                     return "Invited lecture";
                 else return '';
             case "lecture-type": // ["lecture_type"],
@@ -799,7 +808,7 @@ class Document extends Settings
                 return $this->getVal('publisher');
             case "pubmed": // ["pubmed"],
                 $val = $this->getVal('pubmed');
-                if (empty($val)) return '';
+                if ($val == $default) return $val;
                 return "<a target='_blank' href='https://pubmed.ncbi.nlm.nih.gov/$val'>$val</a>";
             case "pubtype": // ["pubtype"],
                 return $this->getVal('pubtype');
@@ -808,7 +817,7 @@ class Document extends Settings
             case "review-type": // ["title"],
                 return $this->getVal('review-type');
             case "scientist": // ["authors"],
-                return $this->formatAuthors($this->getVal('authors'));
+                return $this->formatAuthors($this->getVal('authors', []));
             case "semester-select": // [],
                 return '';
             case "subtype":
@@ -834,7 +843,7 @@ class Document extends Settings
             case "student-category": // ["category"],
                 return $this->translateCategory($this->getVal('category'));
             case "supervisor": // ["authors"],
-                return $this->formatAuthors($this->getVal('authors'));
+                return $this->formatAuthors($this->getVal('authors', []));
             case "thesis": // ["category"],
                 switch ($this->getVal('thesis')) {
                     case 'doctor':
@@ -865,7 +874,9 @@ class Document extends Settings
             case "university": // ["publisher"],
                 return $this->getVal('publisher');
             case "version": // ["version"],
-                return $this->getVal('version');
+                $val = $this->getVal('version');
+                if ($val == $default) return $default;
+                return "Version ".$val;
             case "volume": // ["volume"],
                 return $this->getVal('volume');
             case "country":
@@ -925,9 +936,10 @@ class Document extends Settings
         $template = $this->subtypeArr['template']['title'] ?? '{title}';
         $title = $this->template($template);
 
-        if ($link) {
-            $id = strval($this->doc['_id']);
-            $line = "<a class='colorless' href='" . ROOTPATH . "/activities/view/$id'>$title</a>";
+        if ($this->usecase == 'portal') {
+            $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$this->id'>$title</a>";
+        } else if ($link) {
+            $line = "<a class='colorless' href='" . ROOTPATH . "/activities/view/$this->id'>$title</a>";
         } else {
             $line = $title;
         }
@@ -952,8 +964,8 @@ class Document extends Settings
         $title = $this->template($template);
 
         $id = strval($this->doc['_id']);
-        $line = "<a class='colorless' href='" . ROOTPATH . "/portal/activity/$id'>$title</a>";
-        $line = "<h1 class='title'>$line</h1>";
+        // $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$id'>$title</a>";
+        $line = "<h2 class='title'>$title</h2>";
 
         $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
         $line .= "<p class='text-muted'>";
@@ -963,23 +975,6 @@ class Document extends Settings
             $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
         }
         $line .= "</p>";
-
-        // List of departments
-        if (isset($this->doc['authors']) && !empty($this->doc['authors'])) {
-            $authors = DB::doc2Arr($this->doc['authors']);
-            // $users = array_column($authors, 'user');
-            $depts = $this->db->getDeptFromAuthors($authors);
-            if (!empty($depts)) {
-
-                foreach ($depts as $i => $dept) {
-                    $name = $this->getDepartments($dept)['name'];
-                    $depts[$i] = "<a class='text-$dept' href='" . ROOTPATH . "/portal/group/$dept'>$name</a>";
-                }
-                $line .= "<p><b>" . lang('Departments', 'Abteilungen') . ':</b><br>';
-                $line .= implode(', ', $depts);
-                $line .= "</p>";
-            }
-        }
 
         return $line;
     }

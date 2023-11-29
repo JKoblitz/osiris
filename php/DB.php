@@ -162,11 +162,14 @@ class DB
         if (strlen($first) == 1) $first .= ".";
 
         try {
-            $regex = new Regex('^' . $first[0]);
+            // $veryfirst = explode(' ', $first)[0];
+            $abbr = $this->abbreviateName($first);
+            // $regex = new Regex('^' . $veryfirst);
             $user = $this->db->persons->findOne([
                 '$or' => [
-                    ['last' => $last, 'first' => $regex],
-                    ['names' => "$last, $first"]
+                    // ['last' => $last, 'first' => $regex],
+                    ['names' => "$last, $first"],
+                    ['names' => "$last, $abbr"]
                 ]
             ]);
         } catch (\Throwable $th) {
@@ -225,14 +228,27 @@ class DB
      * @param string $user Username.
      * @return string Full name.
      */
-    public function getNameFromId($user, $reverse = false)
+    public function getNameFromId($user, $reverse = false, $abbr = false)
     {
         $USER = $this->getPerson($user, true);
-        if (empty($USER['first'])) return $USER['last'] ?? '';
+        $first = $USER['first'] ?? '';
+
+        if ($abbr && !empty($first)) {
+            $fn = "";
+            foreach (preg_split("/(\s+| |-|\.)/u", $first, -1, PREG_SPLIT_DELIM_CAPTURE) as $name) {
+                if (empty(trim($name)) || $name == '.' || $name == ' ') continue;
+                if ($name == '-')
+                    $fn .= '-';
+                else
+                    $fn .= "" . mb_substr($name, 0, 1) . ".";
+            }
+            $first = $fn;
+        }
+        if (empty($first)) return $USER['last'] ?? '';
         if ($reverse) {
-            return $USER['last'] . ', ' . $USER['first'];
+            return $USER['last'] . ', ' . $first;
         } else {
-            return $USER['first'] . ' ' . $USER['last'];
+            return $first . ' ' . $USER['last'];
         }
     }
 
@@ -522,6 +538,8 @@ class DB
      *
      * @param array $authors List of activity authors.
      * @return array unique list of departments.
+     * 
+     * @deprecated 1.3.0
      */
     public function getDeptFromAuthors($authors)
     {
@@ -619,7 +637,7 @@ class DB
             }
         }
         // then find all documents that belong to this
-        $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype'=>['$in'=>$openendtypes]], ['projection' => ['end-delay' => 1]]);
+        $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype' => ['$in' => $openendtypes]], ['projection' => ['end-delay' => 1]]);
         foreach ($docs as $doc) {
             if (isset($doc['end-delay']) && new DateTime() < new DateTime($doc['end-delay'])) continue;
             $issues['openend'][] = strval($doc['_id']);

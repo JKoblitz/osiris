@@ -30,10 +30,11 @@
         </thead>
         <tbody id="connections">
             <?php
-            if (!isset($doc['connections']) || empty($doc['connections'])) {
-                $doc['connections'] = [['entity' => '', 'name' => '', 'link' => '']];
+            $cons =  $doc['connections'] ?? [];
+            if (empty($cons)) {
+                $cons = [['entity' => '', 'name' => '', 'link' => '']];
             }
-            foreach ($doc['connections'] as $i => $con) { ?>
+            foreach ($cons as $i => $con) { ?>
                 <tr>
                     <td>
                         <input name="connections[<?= $i ?>][entity]" type="text" class="form-control" value="<?= $con['entity'] ?? '' ?>" required list="entity-list">

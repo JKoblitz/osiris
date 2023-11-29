@@ -1,6 +1,6 @@
 # <i class="ph ph-exclamation-triangle text-osiris"></i> Warnungen
 
-Um bekannte Fehlerquellen und Probleme zu vermeiden, führt OSIRIS im Hintergrund eine ganze Reihe von Logik-Checks durch. Sollten dabei Probleme gefunden werden, werden diese entweder automatisch behoben (sofern möglich) oder an die Nutzer:innen zurückgespielt. 
+Um bekannte Fehlerquellen und Probleme zu vermeiden, führt OSIRIS im Hintergrund eine ganze Reihe von Logik-Checks durch. Sollten dabei Probleme gefunden werden, werden diese entweder automatisch behoben (sofern möglich) oder an die Personen zurückgespielt. 
 
 # Die Seite "Warnungen"
 

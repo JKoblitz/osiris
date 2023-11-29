@@ -13,6 +13,27 @@ $Format->usecase = "portal";
         <?= $Format->formatPortal($link = false) ?>
     </p>
 
+    <?php
+        // List of departments
+        if (isset($doc['authors']) && !empty($doc['authors'])) {
+            $authors = DB::doc2Arr($doc['authors']);
+            // $users = array_column($authors, 'user');
+            $depts = $Groups->getDeptFromAuthors($authors);
+            if (!empty($depts)) {
+                foreach ($depts as $i => $dept) {
+                    $group = $Groups->getGroup($dept);
+                    $name = $group['name'];
+                    $depts[$i] = "<a style='color:$group[color]' href='" . PORTALPATH . "/group/$dept'>$name</a>";
+                }
+                echo "<p><b>" . lang('Departments', 'Abteilungen') . ':</b><br>';
+                echo implode(', ', $depts);
+                echo "</p>";
+            }
+        }
+
+    ?>
+    
+
     <div class="row row-eq-spacing my-0">
         <div class="col-md-8">
 

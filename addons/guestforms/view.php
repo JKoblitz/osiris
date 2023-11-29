@@ -280,7 +280,7 @@ try {
                     $username = strval($form['username']);
                     $userArr = $DB->getPerson($username);
 
-                    $img = ROOTPATH . "/img/person.jpg";
+                    $img = ROOTPATH . "/img/no-photo.png";
                     if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
                         $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
                     }

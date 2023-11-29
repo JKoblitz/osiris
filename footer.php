@@ -25,7 +25,7 @@
    <a href="<?=ROOTPATH?>/license"><?=lang('License', 'Lizenz')?></a>
    <a href="<?=ROOTPATH?>/impress"><?=lang('Impress', 'Impressum')?></a>
     <span>
-        &copy; Julia Koblitz 2022
+        &copy; Julia Koblitz 2023
     </span>
     <!-- <a href="#close-modal">Imprint</a>
     <a href="#close-modal">Privacy Statement</a>

@@ -143,7 +143,7 @@ Route::get('/api/all-activities', function () {
     header("Pragma: no-cache");
     header("Expires: 0");
 
-    $user = $_GET['user'] ?? $_SESSION['username'];
+    $user = $_GET['user'] ?? $_SESSION['username'] ?? null;
     $page = $_GET['page'] ?? 'all-activities';
     $highlight = true;
     if ($page == 'my-activities') {
@@ -181,6 +181,10 @@ Route::get('/api/all-activities', function () {
         } else {
             $format = $format_full;
         }
+        if ($page == 'portal'){
+            $format = str_replace(ROOTPATH."/activities/view", PORTALPATH."/activity", $format);
+            $format = str_replace(ROOTPATH."/profile", PORTALPATH."/person", $format);
+        }
 
         $active = false;
         // if (!isset($doc['year'])) {dump($doc, true); die;}
@@ -208,7 +212,7 @@ Route::get('/api/all-activities', function () {
 
         $datum = [
             'quarter' => $sq,
-            'type' => $rendered['icon'] . '<span class="hidden">' . $type . " " . $rendered['title'] . '</span>',
+            'type' => $rendered['icon'] . '<span style="display:none">' . $type . " " . $rendered['title'] . '</span>',
             'activity' => $format,
             'links' => '',
             'search-text' => $format_full,
@@ -228,6 +232,7 @@ Route::get('/api/all-activities', function () {
             }
         }
 
+        if (defined('ROOTPATH')){
         $datum['links'] =
             "<a class='btn link square' href='" . ROOTPATH . "/activities/view/$id'>
                 <i class='ph ph-arrow-fat-line-right'></i>
@@ -241,9 +246,39 @@ Route::get('/api/all-activities', function () {
         $datum['links'] .= "<button class='btn link square' onclick='addToCart(this, \"$id\")'>
             <i class='" . (in_array($id, $cart) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus') . "'></i>
         </button>";
+    }
         $result[] = $datum;
     }
     echo return_rest($result, count($result));
+});
+
+
+Route::get('/api/concept-activities', function () {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Document.php";
+
+    $result = [];
+    $name = $_GET['concept'];
+
+    $concepts = $osiris->activities->aggregate(
+    [
+        ['$match' => ['concepts.display_name' => $name]],
+        ['$project' => ['rendered' => 1, 'concepts' => 1]],
+        ['$unwind' => '$concepts'],
+        ['$match' => ['concepts.display_name' => $name]],
+        ['$sort' => ['concepts.score' => -1]],
+        ['$project' => [
+            '_id'=> 0,
+            'score' => '$concepts.score',
+            'icon' => '$rendered.icon',
+            'activity' => '$rendered.web',
+            'type' => '$rendered.type',
+            'id' => ['$toString' => '$_id']
+        ]]
+    ]
+    )->toArray();
+
+    echo return_rest($concepts, count($result));
 });
 
 
@@ -850,6 +885,10 @@ Route::get('/api/dashboard/department-network', function () {
         // past 5 years is default
         $filter['year'] = ['$gte' => CURRENTYEAR - 4];
     }
+    if (isset($_GET['activity'])) {
+        //overwrite
+        $filter = ['_id' => DB::to_ObjectID($_GET['activity'])];
+    }
     $activities = $osiris->activities->find($filter);
     $activities = $activities->toArray();
 
@@ -914,7 +953,8 @@ Route::get('/api/dashboard/department-network', function () {
 
     echo return_rest([
         'matrix' => $matrix,
-        'labels' => $labels
+        'labels' => $labels,
+        'warnings' => $warnings
     ], count($labels));
 });
 
@@ -936,9 +976,9 @@ Route::get('/api/dashboard/author-network', function () {
         // past 5 years is default
         $filter['year'] = ['$gte' => CURRENTYEAR - 4];
     }
+
     $activities = $osiris->activities->find($filter);
     $activities = $activities->toArray();
-    // dump($activities, true);
     $N = count($activities);
 
     foreach ($activities as $doc) {
@@ -1019,6 +1059,135 @@ Route::get('/api/dashboard/author-network', function () {
 });
 
 
+Route::get('/api/dashboard/activity-authors', function () {
+    include(BASEPATH . '/php/init.php');
+
+    if (!isset($_GET['activity'])) return [];
+
+    $lvl = 1;
+
+    // select activities from database
+    $filter = ['_id' => DB::to_ObjectID($_GET['activity'])];
+    $doc = $osiris->activities->findOne($filter);
+
+    $depts = [];
+
+    if (isset($doc['authors']) && !empty($doc['authors'])) {
+        // $users = array_column(DB::doc2Arr($doc['authors']), 'user');
+        foreach ($doc['authors'] as $a) {
+            $user = $a['user'] ?? null;
+            $name = Document::abbreviateAuthor($a['last'], $a['first'] ?? null);
+            if (empty($user)) {
+                $depts['external'][] = $name;
+                continue;
+            }
+
+            // get person group
+            $person = $osiris->persons->findOne(['username' => $user]);
+            if (!isset($person['depts'])) continue;
+            $d = [];
+            foreach ($person['depts'] as $key) {
+                // get parent dept
+                $p = $Groups->getParents($key, true);
+                if (!isset($p[$lvl])) $p = end($p);
+                else $p = $p[$lvl];
+                if (!in_array($p, $d)) {
+                    if (!empty($d)) $warnings[] =  $person['displayname'] . ' has multiple associations.';
+                    $d[] = $p;
+                    $dept_users[$p][] = $person['username'];
+                    $users[$person['username']] = $p;
+                }
+            }
+            $depts[$d[0]][] = $name;
+        }
+    }
+
+    // $depts = array_count_values($depts);
+
+    $labels = [];
+    $y = [];
+    $colors = [];
+    $persons = [];
+    foreach ($depts as $key => $value) {
+        if ($key == 'external') {
+            $labels[] = 'External partners';
+            $colors[] = '#00000095';
+        } else {
+            $group = $Groups->getGroup($key);
+            $labels[] = $group['name'];
+            $colors[] = $group['color'] . '95';
+        }
+        $y[] = count($value);
+        $persons[] = $value;
+    }
+    echo return_rest([
+        'y' => $y,
+        'colors' => $colors,
+        'labels' => $labels,
+        'persons' => $persons
+    ], count($labels));
+});
+
+
+
+Route::get('/api/dashboard/concept-search', function () {
+    include(BASEPATH . '/php/init.php');
+
+    if (!isset($_GET['concept'])) return return_rest([], 0);
+    $name = $_GET['concept'];
+    $active_users = $osiris->persons->distinct('username', ['is_active' => true]);
+    $concepts = $osiris->activities->aggregate(
+        [
+            ['$match' => ['concepts.display_name' => $name]],
+            ['$project' => ['authors' => 1, 'concepts' => 1]],
+            ['$unwind' => '$concepts'],
+            ['$match' => ['concepts.display_name' => $name]],
+            ['$unwind' => '$authors'],
+            ['$match' => ['authors.user' => ['$in' => $active_users]]],
+            [
+                '$group' => [
+                    '_id' => '$authors.user',
+                    'total' => ['$sum' => 1],
+                    'totalScore' => ['$sum' => '$concepts.score'],
+                    'author' => ['$first' => '$authors']
+                ]
+            ],
+            // ['$project' => ['score' => ['$divide' =>], 'concepts' => 1]],
+            ['$match' => ['totalScore' => ['$gte' => 1]]],
+            ['$sort' => ['author.last' => 1]],
+        ]
+    )->toArray();
+
+    // $data = [];
+    $data = [
+        "x" => [],
+        "y" => [],
+        "mode" => 'markers',
+        "marker" => [
+            "size" => [],
+            "sizemode" => 'area',
+            'showlegend'=>true
+        ],
+        'text' => [],
+        'hovertemplate' => '%{x}<br>%{y}<br> Total Score: %{text}'
+    ];
+    foreach ($concepts as $i => $c) {
+        // $author = Document::abbreviateAuthor($c['author']['last'], $c['author']['first'], true, ' ');
+        $author = $DB->getNameFromId($c['_id'], true, true);
+        // $data[] = [
+        //     "x" => $name,
+        //     "y" => $author,
+        //     "r" => $c['totalScore']
+        // ];
+        $data['y'][] = $name;
+        $data['x'][] = $author;
+        $s = round($c['totalScore'], 1);
+        $data['text'][] = "$s<br>$c[total] activities";
+        $data['marker']['size'][] = $c['totalScore'] * 10;
+    }
+
+    echo return_rest($data, count($data['x']));
+});
 
 /**
  * Official interface API endpoints

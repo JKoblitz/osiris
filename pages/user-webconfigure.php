@@ -23,7 +23,7 @@ if ($img_exist) {
     $img = ROOTPATH . "/img/users/$user.jpg";
 } else {
     // standard picture
-    $img = ROOTPATH . "/img/person.jpg";
+    $img = ROOTPATH . "/img/no-photo.png";
 }
 ?>
 <h1 class="mt-0">

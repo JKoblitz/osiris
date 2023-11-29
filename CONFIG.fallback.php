@@ -58,3 +58,7 @@ if (!defined('GUEST_SERVER'))
     define("GUEST_SERVER", false);
 if (!defined('GUEST_FORM_SECRET_KEY'))
     define("GUEST_FORM_SECRET_KEY", "");
+
+    
+if (!defined('PORTALPATH'))
+    define('PORTALPATH', $_GET['path']??(ROOTPATH.'/portal'));

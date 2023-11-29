@@ -885,7 +885,7 @@ label.element-other::before {
 a.module:hover {
     box-shadow: 0 0.3rem 0 rgba(0, 0, 0, 0.05);
     /* transform: translateY(-0.3rem); */
-    color: var(--primary-color);
+    color: var(--blue-color);
     text-decoration: none;
 }
 
@@ -908,7 +908,8 @@ a.module:hover {
 
 td>.module {
     border: none;
-    padding: 0;
+    background-color: var(--body-color);
+    /* padding: 0; */
     box-shadow: none !important;
 }
 
@@ -1067,10 +1068,11 @@ td>.module.inactive::after {
     margin: .2rem;
     color: var(--primary-color);
     background-color: white;
-    box-shadow: none !important;
+    box-shadow: none !important;    
+    position: relative;
 }
 
-.pills .badge {
+.pills .badge, .btn-toolbar .badge {
     height: 3.2rem;
     line-height: 3.2rem;
     padding: 0 1.5rem;
@@ -1098,6 +1100,28 @@ td>.module.inactive::after {
     line-height: 2.6rem;
     padding: 0 1rem;
     font-size: 1.2rem;
+}
+
+.pills .index {
+    background-color: var(--body-color);
+    border-radius: 10px;
+    color: var(--muted-color);
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    min-width: 10px;
+    padding: 3px 7px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+
+.pills .btn.active .index, .pills .btn:active .index {
+    background-color: white;
+    color: var(--primary-color);
+    /* box-shadow: none; */
 }
 
 .alert a.btn, .alert a.link {
@@ -1298,4 +1322,61 @@ fieldset .form-group:last-child {
 
 .text-blue {
     color: var(--color-cold-blue) !important;
+}
+
+
+@property --percentage {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+.concept {
+    margin-right: .5rem;
+    margin-bottom: .5rem;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(0, 110, 183, 0.2);
+    border-radius: .4rem;
+    padding: .2rem .8rem;
+    color: inherit;
+    cursor: pointer;
+}
+
+a.concept:hover {
+    background-color: rgba(0, 110, 183, 0.3);
+    color: inherit;
+}
+.popover {
+    font-family: 'Rubik';
+}
+
+[role="progressbar"] {
+    --percentage: var(--value);
+    --primary: #0065a8;
+    --secondary: rgba(255, 255, 255, 0.6);
+    --size: 1.6rem;
+    /* animation: progress 2s 0.5s forwards; */
+    width: var(--size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    place-items: center;
+    margin-right: .5rem;
+}
+
+[role="progressbar"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(var(--primary) calc(var(--percentage) * 1%), var(--secondary) 0);
+    mask: radial-gradient(white 35%, transparent 0);
+    mask-mode: alpha;
+    -webkit-mask: radial-gradient(#0000 35%, #000 0);
+    -webkit-mask-mode: alpha;
 }

@@ -140,9 +140,9 @@ class Project
 
     public function widgetPortal()
     {
-        $widget = '<a class="module" href="' . ROOTPATH . '/portal/project/' . $this->project['_id'] . '">';
+        $widget = '<a class="module" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
-        $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
+        $widget .= '<p class="d-block text-muted">' . $this->project['title'] . '</p>';
         $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
         $widget .= '<span class="text-muted">' . $this->getDateRange() . '</span>';
         $widget .= '</a>';

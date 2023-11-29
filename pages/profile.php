@@ -137,7 +137,7 @@ if ($img_exist) {
     $img = ROOTPATH . "/img/users/$user.jpg";
 } else {
     // standard picture
-    $img = ROOTPATH . "/img/person.jpg";
+    $img = ROOTPATH . "/img/no-photo.png";
 }
 
 if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
@@ -162,7 +162,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     </div>
 
                     <p>
-                        <?= lang('Please note that your profile picture will be visible to all users of OSIRIS.', 'Bitte beachte, dass dein Profilbild für alle OSIRIS-Nutzer:innen sichtbar sein wird.') ?>
+                        <?= lang('Please note that your profile picture will be visible to all users of OSIRIS.', 'Bitte beachte, dass dein Profilbild für alle OSIRIS-Personen sichtbar sein wird.') ?>
                     </p>
                     <script>
                         var uploadField = document.getElementById("profile-input");
@@ -293,44 +293,57 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <h5 class="title font-size-16">
             <?= lang('This is your personal profile page.', 'Dies ist deine persönliche Profilseite.') ?>
         </h5>
+        <div class="btn-toolbar">
 
-        <div class="btn-group btn-group-lg">
-            <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
-                <i class="ph ph-plus-circle text-osiris ph-fw"></i>
-                <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
-            </a>
-            <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
-                <i class="ph ph-folder-user text-blue ph-fw"></i>
-                <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
-            </a>
-            <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
-                <i class="ph ph-calendar text-success ph-fw"></i>
-                <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
-            </a>
+            <div class="btn-group btn-group-lg">
+                <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
+                    <i class="ph ph-plus-circle text-osiris ph-fw"></i>
+                    <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
+                </a>
+                <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
+                    <i class="ph ph-folder-user text-osiris ph-fw"></i>
+                    <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
+                </a>
+                <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
+                    <i class="ph ph-calendar text-success ph-fw"></i>
+                    <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
+                </a>
 
 
-        </div>
-        <div class="btn-group btn-group-lg mr-5">
-            <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
-                <i class="ph ph-trophy text-signal ph-fw"></i>
-            </a>
+            </div>
+            <div class="btn-group btn-group-lg">
+                <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
+                    <i class="ph ph-trophy text-signal ph-fw"></i>
+                </a>
 
-            <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
-                <i class="ph ph-graph text-osiris ph-fw"></i>
-            </a>
-        </div>
+                <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
+                    <i class="ph ph-graph text-osiris ph-fw"></i>
+                </a>
+            </div>
 
-        <div class="btn-group btn-group-lg">
-            <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                <i class="ph ph-edit text-muted ph-fw"></i>
-                <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
-            </a>
-            <!-- <a class="btn" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
+            <div class="btn-group btn-group-lg">
+                <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                    <i class="ph ph-edit text-muted ph-fw"></i>
+                    <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
+                </a>
+                <!-- <a class="btn" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
                     <i class="ph ph-eye text-muted ph-fw"></i>
                 </a> -->
-            <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
-                <i class="ph ph-eye text-muted ph-fw"></i>
-            </a>
+                <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                    <i class="ph ph-eye text-muted ph-fw"></i>
+                </a>
+            </div>
+            <form action="<?= ROOTPATH ?>/download" method="post">
+
+                <input type="hidden" name="filter[user]" value="<?= $user ?>">
+                <input type="hidden" name="highlight" value="user">
+                <input type="hidden" name="format" value="word">
+                <input type="hidden" name="type" value="cv">
+
+                <button class="btn large" data-toggle="tooltip" data-title="<?= lang('Export CV', 'CV exportieren') ?>">
+                    <i class="ph ph-identification-card text-blue ph-fw"></i>
+                </button>
+            </form>
         </div>
 
 
@@ -342,8 +355,8 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             <div class="alert danger mt-10">
                 <a class="link text-danger text-decoration-none" href='<?= ROOTPATH ?>/issues'>
                     <?= lang(
-                        "You have $issues unresolved " . ($issues == 1 ? 'message' : 'messages') . " with your activities.",
-                        "Du hast $issues " . ($issues == 1 ? 'ungelöste Benachrichtigung' : 'ungelöste Benachrichtigungen') . " zu deinen Aktivitäten."
+                        "You have <b>$issues</b> " . ($issues == 1 ? 'message' : 'messages') . " for your activities.",
+                        "Du hast <b>$issues</b> " . ($issues == 1 ? 'Benachrichtigung' : 'Benachrichtigungen') . " zu deinen Aktivitäten."
                     ) ?>
                 </a>
             </div>
@@ -473,7 +486,10 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 <!-- TAB AREA -->
 
 <nav class="pills mt-20 mb-0">
-    <a onclick="navigate('general')" id="btn-general" class="btn active"><?= lang('General', 'Allgemein') ?></a>
+    <a onclick="navigate('general')" id="btn-general" class="btn active">
+        <i class="ph ph-info" aria-hidden="true"></i>
+        <?= lang('General', 'Allgemein') ?>
+    </a>
 
     <?php
     $publication_filter = [
@@ -483,47 +499,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     $count_publications = $osiris->activities->count($publication_filter);
 
     if ($count_publications > 0) { ?>
-        <a onclick="navigate('publications')" id="btn-publications" class="btn"><?= lang('Publications', 'Publikationen') . " ($count_publications)" ?></a>
-    <?php } ?>
-
-    <?php
-    $activities_filter = [
-        'authors.user' => "$user",
-        'type' => ['$ne' => 'publication']
-    ];
-    $count_activities = $osiris->activities->count($activities_filter);
-
-    if ($count_activities > 0) { ?>
-        <a onclick="navigate('activities')" id="btn-activities" class="btn"><?= lang('Other Activities', 'Andere Aktivitäten') . " ($count_activities)" ?></a>
-    <?php } ?>
-
-    <?php
-    $membership_filter = [
-        'authors.user' => "$user",
-        // 'end' => null,
-        '$or' => array(
-            ['type' => 'misc', 'subtype' => 'misc-annual'],
-            ['type' => 'review', 'subtype' =>  'editorial'],
-        )
-    ];
-    $count_memberships = $osiris->activities->count($membership_filter);
-    if ($count_memberships > 0) { ?>
-        <a onclick="navigate('memberships')" id="btn-memberships" class="btn"><?= lang('Memberships', 'Mitgliedschaften') . " ($count_memberships)" ?></a>
-    <?php } ?>
-
-    <?php
-
-    $project_filter = [
-        '$or' => array(
-            ['contact' => $user],
-            ['persons.user' => $user]
-        ),
-        "status" => ['$ne' => "rejected"]
-    ];
-
-    $count_projects = $osiris->projects->count($project_filter);
-    if ($count_projects > 0) { ?>
-        <a onclick="navigate('projects')" id="btn-projects" class="btn"><?= lang('Projects', 'Projekte') . " ($count_projects)" ?></a>
+        <a onclick="navigate('publications')" id="btn-publications" class="btn">
+            <i class="ph ph-books" aria-hidden="true"></i>
+            <?= lang('Publications', 'Publikationen')  ?>
+            <span class="index"><?= $count_publications ?></span>
+        </a>
     <?php } ?>
 
     <?php
@@ -540,8 +520,102 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     ])->toArray();
     $count_coauthors = count($coauthors) - 1;
     if ($count_coauthors > 0) { ?>
-        <a onclick="navigate('coauthors')" id="btn-coauthors" class="btn"><?= lang('Coauthors', 'Koautoren') . " ($count_coauthors)" ?></a>
+        <a onclick="navigate('coauthors')" id="btn-coauthors" class="btn">
+            <i class="ph ph-users" aria-hidden="true"></i>
+            <?= lang('Coauthors', 'Koautoren')  ?>
+            <span class="index"><?= $count_coauthors ?></span>
+        </a>
     <?php } ?>
+
+    <?php
+    $activities_filter = [
+        'authors.user' => "$user",
+        'type' => ['$ne' => 'publication']
+    ];
+    $count_activities = $osiris->activities->count($activities_filter);
+
+    if ($count_activities > 0) { ?>
+        <a onclick="navigate('activities')" id="btn-activities" class="btn">
+            <i class="ph ph-briefcase" aria-hidden="true"></i>
+            <?= lang('Other Activities', 'Andere Aktivitäten')  ?>
+            <span class="index"><?= $count_activities ?></span>
+        </a>
+    <?php } ?>
+
+    <?php
+    $membership_filter = [
+        'authors.user' => "$user",
+        // 'end' => null,
+        '$or' => array(
+            ['type' => 'misc', 'subtype' => 'misc-annual'],
+            ['type' => 'review', 'subtype' =>  'editorial'],
+        )
+    ];
+    $count_memberships = $osiris->activities->count($membership_filter);
+    if ($count_memberships > 0) { ?>
+        <a onclick="navigate('memberships')" id="btn-memberships" class="btn">
+            <i class="ph ph-user-list" aria-hidden="true"></i>
+            <?= lang('Memberships', 'Mitgliedschaften')  ?>
+            <span class="index"><?= $count_memberships ?></span>
+        </a>
+    <?php } ?>
+
+    <?php
+    $project_filter = [
+        '$or' => array(
+            ['contact' => $user],
+            ['persons.user' => $user]
+        ),
+        "status" => ['$ne' => "rejected"]
+    ];
+
+    $count_projects = $osiris->projects->count($project_filter);
+    if ($count_projects > 0) { ?>
+        <a onclick="navigate('projects')" id="btn-projects" class="btn">
+            <i class="ph ph-tree-structure" aria-hidden="true"></i>
+            <?= lang('Projects', 'Projekte')  ?>
+            <span class="index"><?= $count_projects ?></span>
+        </a>
+    <?php } ?>
+
+
+    <?php
+    $concepts = [];
+    $concepts = $osiris->activities->aggregate(
+        [
+            ['$match' => ['authors.user' => $user, 'concepts' => ['$exists' => true]]],
+            ['$project' => ['concepts' => 1]],
+            [
+                '$group' => [
+                    '_id' => null,
+                    'total' => ['$sum' => 1],
+                    'concepts' => ['$push' => '$concepts']
+                ]
+            ],
+            ['$unwind' => '$concepts'],
+            ['$unwind' => '$concepts'],
+            ['$group' => [
+                '_id' => '$concepts.display_name',
+                'count' => ['$sum' => 1],
+                'score' => ['$sum' => ['$divide' => [
+                    ['$multiply' => ['$concepts.score', ['$sum' => 1]]],
+                    '$total'
+                ]]],
+                'concept' => ['$first' => '$concepts']
+            ]],
+            ['$match' => ['score' => ['$gte' => 0.05]]],
+            ['$sort' => ['score' => -1]]
+        ]
+    )->toArray();
+    $count_concepts = count($concepts);
+    if ($count_concepts > 0) { ?>
+        <a onclick="navigate('concepts')" id="btn-concepts" class="btn">
+            <i class="ph ph-lightbulb" aria-hidden="true"></i>
+            <?= lang('Concepts', 'Konzepte')  ?>
+            <span class="index"><?= $count_concepts ?></span>
+        </a>
+    <?php } ?>
+
 </nav>
 
 
@@ -1179,6 +1253,30 @@ if ($currentuser) { ?>
     </div>
 
 </section>
+
+
+<section id="concepts" style="display:none">
+    <?php if (!empty($concepts)) :
+    ?>
+
+        <h3 class=""><?= lang('Concepts', 'Konzepte') ?></h3>
+        <div class="box" id="concepts">
+            <div class="content">
+                <?php foreach ($concepts as $concept) {
+                    $score =  round($concept['score'] * 100);
+                ?><span class="concept" target="_blank" data-score='<?= $score ?>' data-name='<?= $concept['_id'] ?>' data-count='<?= $concept['count'] ?>' data-wikidata='<?= $concept['concept']['wikidata'] ?>'>
+                        <div role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="--value: <?= $score ?>"></div>
+                        <?= $concept['_id'] ?>
+                    </span><?php } ?>
+            </div>
+        </div>
+    <?php else : ?>
+        <p>
+            <?= lang('No concepts are assigned to this person.', 'Zu dieser Person sind keine Konzepte zugewiesen.') ?>
+        </p>
+    <?php endif; ?>
+</section>
+
 
 
 <?php

@@ -113,6 +113,7 @@ Route::post('/download', function () {
         'teaching',
         'students',
         'software',
+        'award',
         'misc',
     );
     // select data
@@ -221,18 +222,77 @@ Route::post('/download', function () {
         $phpWord->setDefaultFontName('Calibri');
         $phpWord->setDefaultFontSize(11);
 
-        $phpWord->addTitleStyle(1, ["bold" => true, "size" => 16], ["spaceBefore" => 8]);
+        $phpWord->addTitleStyle(1, ["bold" => true, "size" => 16], ["spaceBefore" => 12]);
+        $phpWord->addTitleStyle(2, ["bold" => true, "size" => 14], ["spaceBefore" => 8]);
+        $phpWord->addTitleStyle(3, ["bold" => false, "size" => 11], ["spaceBefore" => 0]);
         // $phpWord->setOutputEscapingEnabled(true);
         /* Note: any element you append to a document must reside inside of a Section. */
+        // $phpWord->addTableStyle('CVTable', ['borderSize' => 0, 'borderColor' => '#ffffff', 'cellMargin' => 60, 'unit' => \PhpOffice\PhpWord\SimpleType\TblWidth::PERCENT, 'width' => 100 * 50]);
+        $table_style = new \PhpOffice\PhpWord\Style\Table;
+        $table_style->setBorderColor('ffffff');
+        $table_style->setBorderSize(0);
+        $table_style->setUnit(\PhpOffice\PhpWord\SimpleType\TblWidth::PERCENT);
+        $table_style->setWidth(100 * 50);
 
+        $styleCell = ['borderColor'=>'ffffff', 'borderSize'=> 0]; //'valign' => 'center'
+        $styleText = [];
+        $styleTextBold = ['bold' => true];
+        $styleParagraph =  ['spaceBefore' => 0, 'spaceAfter' => 0];
+        $styleParagraphCenter =  ['spaceBefore' => 0, 'spaceAfter' => 0, 'align' => 'center'];
+
+
+        $headerlvl = 1;
         // Adding an empty Section to the document...
         $section = $phpWord->addSection();
+        // CV
+        if (isset($_POST['type']) && $_POST['type'] == 'cv') {
+            $headerlvl = 2;
+
+            $scientist = $DB->getPerson($params['user']);
+
+            $section->addTitle($scientist['displayname'], 1);
+            $section->addTitle($scientist['position'] ?? '', 3);
+
+            $filename = "CV_".str_replace(' ', '', $scientist['last']);
+
+            if (isset($scientist['research']) && !empty($scientist['research'])) {
+                $section->addTitle(lang('Research interest', 'Forschungsinteressen'), 2);
+                foreach ($scientist['research'] as $key) {
+                    $paragraph = $section->addListItemRun(0);
+                    $line = clean_comment_export($key, false);
+                    \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+                }
+            }
+
+            if (isset($scientist['cv']) && !empty($scientist['cv'])) {
+                $section->addTitle(lang('Curriculum Vitae'), 2);
+
+                $table = $section->addTable($table_style);
+
+
+                foreach ($scientist['cv'] as $entry) {
+
+                    $table->addRow();
+                    $cell = $table->addCell(1600, $styleCell);
+                    $cell->addText($entry['time'],  ['bold' => false], $styleParagraph);
+                    $cell = $table->addCell(5000, $styleCell);
+                    $cell->addText($entry['position'],  ['bold' => true], $styleParagraph);
+
+                    $table->addRow();
+                    $cell = $table->addCell(1600, $styleCell);
+                    $cell = $table->addCell(5000, $styleCell);
+                    $cell->addText($entry['affiliation'],  ['italic' => true], $styleParagraph);
+                }
+            }
+        }
+
 
         // sort the elements
         if ($cursor instanceof MongoDB\Driver\Cursor) {
             $cursor = $cursor->toArray();
         }
         usort($cursor, function ($a, $b) use ($order) {
+            // TODO: sort undefined to the back
             $pos_a = array_search($a['type'], $order);
             $pos_b = array_search($b['type'], $order);
             return $pos_a - $pos_b;
@@ -247,7 +307,7 @@ Route::post('/download', function () {
             if ($timefilter && $endyear == $doc['year'] && $endmonth < $doc['month']) continue;
             if (!in_array($doc['type'], $headers)) {
                 $headers[] = $doc['type'];
-                $section->addTitle($Settings->getActivities($doc['type'])['name'], 1);
+                $section->addTitle($Settings->getActivities($doc['type'])['name'], $headerlvl);
             }
             $Format->setDocument($doc);
             $paragraph = $section->addTextRun();
@@ -961,7 +1021,7 @@ Route::post('/reports', function () {
                 sort($content);
 
                 foreach ($content ?? [] as $line) {
-                    if(empty($line)) continue;
+                    if (empty($line)) continue;
                     $paragraph = $section->addTextRun();
                     if (!str_ends_with(trim($line), '.')) $line = trim($line) . '.';
                     // $line .= "<br>";

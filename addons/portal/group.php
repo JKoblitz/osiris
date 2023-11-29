@@ -35,9 +35,13 @@
     h1 {
         color: var(--department-color);
     }
+
+    tr.hidden {
+        display: none;
+    }
 </style>
 
-<div <?= $Groups->cssVar($id) ?> class="">
+<div <?= $Groups->cssVar($id) ?> class="container">
 
     <h1>
         <?= $group['name'] ?>
@@ -45,6 +49,10 @@
     <h3 class="subtitle">
         <?= $group['unit'] ?>
     </h3>
+
+    <p>
+        <?=lang($group['description_en'] ?? '', $group['description'] ?? '')?>
+    </p>
     <div class="row row-eq-spacing">
         <div class="col-md-6 col-lg-8">
 
@@ -55,7 +63,7 @@
                         <td>
                             <span class="key"><?= lang('Parent unit', 'Übergeordnete Einheit') ?></span>
                             <?php if ($group['parent']) { ?>
-                                <a href="<?= ROOTPATH ?>/portal/group/<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
+                                <a href="<?= PORTALPATH ?>/group/<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
                             <?php } else { ?>
                                 -
                             <?php } ?>
@@ -71,7 +79,7 @@
                                 <ul class="list">
                                     <?php foreach ($children as $child) { ?>
                                         <li>
-                                            <a href="<?= ROOTPATH ?>/groups/view/<?= $child['id'] ?>" class="colorless font-weight-bold"><?= $child['name'] ?></a><br>
+                                            <a href="<?= PORTALPATH ?>/group/<?= $child['id'] ?>" class="colorless font-weight-bold"><?= $child['name'] ?></a><br>
                                             <span class="text-muted"><?= $child['unit'] ?></span>
                                         </li>
                                     <?php } ?>
@@ -90,7 +98,21 @@
 
         <div class="col-md-6 col-lg-4">
             <?php
-            $persons = $osiris->persons->find(['depts' => $id, 'is_active' => true])->toArray();
+            $children = $Groups->getChildren($group['id']);
+            $persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => true])->toArray();
+            if (isset($group['head'])) {
+
+                $head = $group['head'];
+                if (is_string($head)) $head = [$head];
+                else $head = DB::doc2Arr($head);
+
+
+                usort($persons, function ($a, $b) use ($head) {
+                    return in_array($a['username'], $head)  ? -1 : 1;
+                });
+            } else {
+                $head = [];
+            }
             ?>
             <h3><?= lang('Employees', 'Mitarbeitende') ?></h3>
             <table class="table" id="person-table">
@@ -107,7 +129,7 @@
                     } else foreach ($persons as $i => $person) {
                         $username = strval($person['username']);
 
-                        $img = ROOTPATH . "/img/person.jpg";
+                        $img = ROOTPATH . "/img/no-photo.png";
                         if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
                             $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
                         }
@@ -120,8 +142,8 @@
                                     <img src="<?= $img ?>" alt="" style="max-width: 3rem;" class="mr-20 rounded">
                                     <div class="">
                                         <h5 class="my-0">
-                                            <a href="<?= ROOTPATH ?>/portal/person/<?= $username ?>" class="colorless">
-                                                <?= $person['displayname'] ?>
+                                            <a href="<?= PORTALPATH ?>/person/<?= $username ?>" class="colorless">
+                                              <?= $person['first'] ?>  <?= $person['last'] ?>
                                             </a>
                                         </h5>
                                         <?= $person['position'] ?? '' ?>

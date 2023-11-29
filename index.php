@@ -60,9 +60,9 @@ function lang($en, $de = null)
 {
     if ($de === null) return $en;
     // Standard language = DE
-    if (!isset($_COOKIE['osiris-language'])) return $de;
-    if ($_COOKIE['osiris-language'] == "en") return $en;
-    if ($_COOKIE['osiris-language'] == "de") return $de;
+    $lang = $_GET['lang'] ?? $_COOKIE['osiris-language'] ?? 'de';
+    if ($lang == "en") return $en;
+    if ($lang == "de") return $de;
     return $en;
 }
 
@@ -122,6 +122,7 @@ include_once BASEPATH . "/routes/users.php";
 include_once BASEPATH . "/routes/visualize.php";
 include_once BASEPATH . "/routes/activities.php";
 include_once BASEPATH . "/routes/export.php";
+include_once BASEPATH . "/routes/concepts.php";
 
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/CRUD.php";
