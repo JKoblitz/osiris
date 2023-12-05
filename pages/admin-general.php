@@ -43,7 +43,7 @@ if ($N > 0) {
 
 
 <?php
-    include BASEPATH . "/components/admin-nav.php";
+include BASEPATH . "/components/admin-nav.php";
 ?>
 
 
@@ -68,30 +68,30 @@ if ($N > 0) {
 
             <div class="form-group">
                 <span>
-                <?= lang('Disable coins globally', 'Coins global ausschalten') ?>
+                    <?= lang('Disable coins globally', 'Coins global ausschalten') ?>
                 </span>
                 <?php
-                    $disable_coins = $Settings->hasFeatureDisabled('coins');
+                $disable_coins = $Settings->hasFeatureDisabled('coins');
                 ?>
-                
+
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" id="disable-coins-true" value="true" name="general[disable-coins]" <?= $disable_coins ? 'checked' : '' ?>>
                     <label for="disable-coins-true">ja</label>
                 </div>
-                
+
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" id="disable-coins-false" value="false" name="general[disable-coins]" <?= $disable_coins ? '' : 'checked' ?>>
                     <label for="disable-coins-false">nein</label>
                 </div>
             </div>
-            
-            
+
+
             <div class="form-group">
                 <span>
-                <?= lang('Disable achievements globally', 'Errungenschaften global ausschalten') ?>
+                    <?= lang('Disable achievements globally', 'Errungenschaften global ausschalten') ?>
                 </span>
                 <?php
-                    $disable_achievements = $Settings->hasFeatureDisabled('achievements');
+                $disable_achievements = $Settings->hasFeatureDisabled('achievements');
                 ?>
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" id="disable-achievements-true" value="true" name="general[disable-achievements]" <?= $disable_achievements ? 'checked' : '' ?>>
@@ -104,13 +104,13 @@ if ($N > 0) {
                 </div>
             </div>
 
-            
+
             <div class="form-group">
                 <span>
-                <?= lang('Disable user profile metrics globally', 'Metriken im Nutzerprofil global ausschalten') ?>
+                    <?= lang('Disable user profile metrics globally', 'Metriken im Nutzerprofil global ausschalten') ?>
                 </span>
                 <?php
-                    $disable_user_metrics = $Settings->hasFeatureDisabled('user-metrics');
+                $disable_user_metrics = $Settings->hasFeatureDisabled('user-metrics');
                 ?>
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" id="disable-user-metrics-true" value="true" name="general[disable-user-metrics]" <?= $disable_user_metrics ? 'checked' : '' ?>>
@@ -126,14 +126,21 @@ if ($N > 0) {
                     Wenn diese Funktion ausgeschaltet wird, sind Nutzermetriken (Graphen) nur noch auf der eigenen Profilseite sichtbar.
                 </span>
             </div>
+            <button class="btn success">
+                <i class="ph ph-floppy-disk"></i>
+                Save
+            </button>
 
         </div>
-        <hr>
+    </div>
+
+
+    <div class="box signal">
+        <h2 class="header">
+            Institut
+        </h2>
 
         <div class="content">
-            <h2 class="title">
-                Institut
-            </h2>
 
             <div class="row row-eq-spacing">
                 <div class="col-sm-2">
@@ -145,8 +152,32 @@ if ($N > 0) {
                     <input type="text" class="form-control" name="affiliation[name]" required value="<?= $affiliation['name'] ?? '' ?>">
                 </div>
                 <div class="col-sm">
-                    <label for="name" class="required ">Link</label>
+                    <label for="link" class="required ">Link</label>
                     <input type="text" class="form-control" name="affiliation[link]" required value="<?= $affiliation['link'] ?? '' ?>">
+                </div>
+            </div>
+            <div class="row row-eq-spacing">
+                <div class="col-sm-2">
+                    <label for="ror">ROR (inkl. URL)</label>
+                    <input type="text" class="form-control" name="affiliation[ror]" value="<?= $affiliation['ror'] ?? 'https://ror.org/' ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="location">Location</label>
+                    <input type="text" class="form-control" name="affiliation[location]" value="<?= $affiliation['location'] ?? '' ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="country">Country Code (2lttr)</label>
+                    <input type="text" class="form-control" name="affiliation[country]" value="<?= $affiliation['country'] ?? 'DE' ?>">
+                </div>
+            </div>
+            <div class="row row-eq-spacing">
+                <div class="col-sm">
+                    <label for="lat">Latitude</label>
+                    <input type="number" class="form-control" name="affiliation[lat]" value="<?= $affiliation['lat'] ?? '' ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="lng">Longitude</label>
+                    <input type="number" class="form-control" name="affiliation[lng]" value="<?= $affiliation['lng'] ?? '' ?>">
                 </div>
             </div>
         </div>
@@ -172,19 +203,16 @@ if ($N > 0) {
                 </div>
             </div>
 
-            <button class="btn success">
+            <button class="btn signal">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>
         </div>
 
 
-
     </div>
-
-
-
 </form>
+
 
 
 <div class="box danger">

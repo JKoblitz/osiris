@@ -28,6 +28,11 @@
         background-color: var(--danger-color);
         border-color: var(--danger-color);
     }
+
+    .description {
+        color: var(--primary-color);
+        font-style: italic;
+    }
 </style>
 <?php
 
@@ -53,7 +58,6 @@ function val($index, $default = '')
     }
     return $val;
 }
-
 ?>
 
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
@@ -299,8 +303,19 @@ function val($index, $default = '')
 
     <div class="my-20 select-btns" id="select-btns">
         <?php
-        foreach ($Settings->getActivities() as $id => $a) { ?>
-            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . $Settings->title($id) ?></button>
+        foreach ($Settings->getActivities() as $id => $a) {
+            // check if subtypes are available
+            $subtypes = $a['subtypes'] ?? array();
+            $subtypes = array_filter($subtypes, function ($s) {
+                return !($s['disabled'] ?? false);
+            });
+            if (empty($subtypes)) continue;
+        ?>
+            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn select text-<?= $id ?>" id="<?= $id ?>-btn">
+                <span>
+                    <?= $Settings->icon($id, false) . $Settings->title($id) ?>
+                </span>
+            </button>
         <?php } ?>
     </div>
 
@@ -329,8 +344,19 @@ function val($index, $default = '')
     </a>
     <div class="mb-20 select-btns" id="select-btns" style="display:none">
         <?php
-        foreach ($Settings->getActivities() as $id => $a) { ?>
-            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn mr-5 mb-5 select text-<?= $id ?>" id="<?= $id ?>-btn"><?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?></button>
+        foreach ($Settings->getActivities() as $id => $a) {
+            // check if subtypes are available
+            $subtypes = $a['subtypes'] ?? array();
+            $subtypes = array_filter($subtypes, function ($s) {
+                return !($s['disabled'] ?? false);
+            });
+            if (empty($subtypes)) continue;
+        ?>
+            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn select text-<?= $id ?>" id="<?= $id ?>-btn">
+                <span>
+                    <?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?>
+                </span>
+            </button>
         <?php }
         ?>
     </div>
@@ -371,14 +397,22 @@ function val($index, $default = '')
 
         <!-- SUBTYPES -->
         <?php foreach ($Settings->getActivities() as $t => $a) {
-            $subtypes = array_column($a['subtypes'] ?? array(), 'id');
+            $subtypes = $a['subtypes'] ?? array();
+            $subtypes = array_filter($subtypes, function ($s) {
+                return !($s['disabled'] ?? false);
+            });
             if (count($subtypes) <= 1) continue;
         ?>
 
             <div class="mb-20 select-btns" data-type="<?= $t ?>">
                 <?php foreach ($subtypes as $st) {
+                    $st = $st['id'];
                 ?>
-                    <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>"><?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?></button>
+                    <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>">
+                        <span>
+                            <?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?>
+                        </span>
+                    </button>
                 <?php } ?>
             </div>
 
@@ -386,7 +420,8 @@ function val($index, $default = '')
 
 
         <div id="examples" class="mb-20">
-            <?php //include BASEPATH . '/components/activity-examples.php' ?>
+            <?php //include BASEPATH . '/components/activity-examples.php' 
+            ?>
         </div>
 
 
@@ -416,6 +451,9 @@ function val($index, $default = '')
                 }
             </style>
 
+            <p id="type-description" class="description">
+
+            </p>
             <div id="data-modules" class="row row-eq-spacing">
 
             </div>
@@ -423,7 +461,7 @@ function val($index, $default = '')
             <?php if (empty($form)) { ?>
                 <input type="text" class="hidden" id="funding" name="values[funding]" value="">
             <?php } ?>
-            
+
 
 
             <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
@@ -573,4 +611,4 @@ function val($index, $default = '')
 <?php } ?>
 
 
-<script src="<?= ROOTPATH ?>/js/tour/add-activity.js"></script>
+<script src="<?= ROOTPATH ?>/js/tour/add-activity.js?v=2"></script>

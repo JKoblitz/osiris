@@ -307,8 +307,30 @@ strong {
     color: var(--color-cold-lightblue) !important;
 }
 
+.select-btns {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .btn.select {
     height: auto;
+    display: inline-block;
+
+    text-align: center;
+    white-space: normal;
+    max-width: 12rem;
+    line-height: 1.2;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    margin: 0 .5rem .5rem 0;
+}
+
+.btn.select>span {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .btn.select:not(.disabled):not(:disabled).active {
@@ -316,9 +338,10 @@ strong {
 }
 
 .btn.select i {
-    display: block;
     font-size: 2.5rem;
-    margin-top: .5rem;
+    /* display: block;
+    
+    margin-top: .5rem; */
 }
 
 .btn.tour {
@@ -1068,7 +1091,7 @@ td>.module.inactive::after {
     margin: .2rem;
     color: var(--primary-color);
     background-color: white;
-    box-shadow: none !important;    
+    box-shadow: none !important;
     position: relative;
 }
 
@@ -1130,7 +1153,7 @@ td>.module.inactive::after {
 
 .box>.table.simple th:first-child,
 .box>.table.simple td:first-child {
-    padding: 1rem 1.4rem 1rem 2rem;
+    padding-left: 1.4rem;
 }
 
 
@@ -1347,6 +1370,7 @@ a.concept:hover {
     background-color: rgba(0, 110, 183, 0.3);
     color: inherit;
 }
+
 .popover {
     font-family: 'Rubik';
 }
@@ -1379,4 +1403,60 @@ a.concept:hover {
     mask-mode: alpha;
     -webkit-mask: radial-gradient(#0000 35%, #000 0);
     -webkit-mask-mode: alpha;
+}
+
+
+
+.filter tr:hover {
+    background-color: rgba(0, 110, 183, 0.1);
+}
+
+.filter tr.active {
+    /* background-color: rgba(0, 110, 183, 0.2); */
+    font-weight: bold;
+    position: relative;
+}
+
+.filter tr td {
+    padding: 0 !important;
+    border-left: 5px solid transparent;
+}
+
+.filter tr td a {
+    padding: 0.5rem 1rem;
+    display: block;
+}
+
+.filter tr.active td {
+    border-left-color: var(--highlight-color);
+}
+
+.dt-buttons,
+.dataTables_filter {
+    display: inline-block !important;
+    margin-right: 1rem;
+}
+
+.filter {
+    /* overflow-auto box */
+    max-height: 14rem;
+    overflow-y: auto;
+    width: 100%;
+    /* margin: 20px 0; */
+    border: var(--border-width) solid #afafaf;
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+    background-color: white;
+    padding: 0;
+    border-radius: var(--border-radius);
+}
+
+#active-filters .badge {
+    font-size: 1.2rem;
+    margin: 0 .5rem .5rem 0;
+}
+
+#active-filters a {
+    margin-left: .5rem;
 }

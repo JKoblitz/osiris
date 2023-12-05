@@ -15,8 +15,8 @@
 
 
 Route::get('/rerender', function () {
-    include_once BASEPATH . "/php/init.php";
-    $DB->renderActivities();
+    include_once BASEPATH . "/php/Render.php";
+    renderActivities();
 });
 
 Route::get('/check-duplicate-id', function () {

@@ -19,7 +19,7 @@ $Format = new Document(true);
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <!-- <script src="<?= ROOTPATH ?>/js/query-builder.mongodb-support.js"></script> -->
 
 <div class="content">

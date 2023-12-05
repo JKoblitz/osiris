@@ -182,6 +182,7 @@ function valiDate($date)
 
 Route::post('/create', function () {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
     if (!isset($_POST['values'])) die("no values given");
     // dump($_POST);
     // die();
@@ -234,7 +235,7 @@ Route::post('/create', function () {
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
-    $DB->renderActivities(['_id' => $id]);
+    renderActivities(['_id' => $id]);
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         $red = str_replace("*", $id, $_POST['redirect']);
@@ -686,6 +687,7 @@ Route::post('/create-journal', function () {
 
 Route::post('/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->activities;
     $values = validateValues($_POST['values'], $DB);
@@ -709,7 +711,7 @@ Route::post('/update/([A-Za-z0-9]*)', function ($id) {
         ['$set' => $values]
     );
 
-    $DB->renderActivities(['_id' => $id]);
+    renderActivities(['_id' => $id]);
 
     if (isset($values['doi']) && !empty($values['doi'])) {
         // make sure that there is no duplicate entry in the queue

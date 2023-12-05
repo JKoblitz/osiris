@@ -249,7 +249,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
         <h4 class="title m-0" style="line-height: 1;">
             <span class='mr-10'><?= $Format->activity_icon(false) ?></span>
-            <?= $Format->activity_title() ?>
+            <?= $Format->activity_subtype() ?>
         </h4>
 
         <p class="lead">

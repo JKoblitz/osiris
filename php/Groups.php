@@ -88,7 +88,7 @@ class Groups
     public function cssVar($id)
     {
         $color = $this->getGroup($id)['color'];
-        return "style=\"--department-color: $color;\"";
+        return "style=\"--highlight-color: $color;\"";
     }
 
     public function personDept($depts, $level = false)

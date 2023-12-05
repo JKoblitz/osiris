@@ -159,7 +159,7 @@ function val($index, $default = '')
 
 
 
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 
 <script>
     $.extend($.fn.DataTable.ext.classes, {

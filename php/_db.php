@@ -602,7 +602,7 @@
 //             'web' => $Format->formatShort(),
 //             'depts' => getDeptFromAuthors($doc['authors']),
 //             'icon' => $Format->activity_icon(),
-//             'title' => $Format->activity_title(),
+//             'title' => $Format->activity_subtype(),
 //         ];
 //         $values = ['rendered' => $rendered];
 

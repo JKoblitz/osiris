@@ -24,7 +24,7 @@
         width: 1.6em;
         height: 1.6em;
         display: inline-block;
-        background-color: var(--department-color);
+        background-color: var(--highlight-color);
         text-align: center;
     }
 
@@ -33,7 +33,7 @@
     }
 
     h1 {
-        color: var(--department-color);
+        color: var(--highlight-color);
     }
 
     tr.hidden {

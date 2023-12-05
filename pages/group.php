@@ -30,7 +30,7 @@ $level = $Groups->getLevel($id);
         width: 1.6em;
         height: 1.6em;
         display: inline-block;
-        background-color: var(--department-color);
+        background-color: var(--highlight-color);
         text-align: center;
     }
 
@@ -39,7 +39,7 @@ $level = $Groups->getLevel($id);
     }
 
     h1 {
-        color: var(--department-color);
+        color: var(--highlight-color);
     }
 </style>
 

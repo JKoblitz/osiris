@@ -1,3 +1,7 @@
+<?php
+include_once BASEPATH . "/php/Render.php";
+?>
+
 <h1>
     <?= lang('What\'s up?', 'Was ist los?') ?>
 </h1>
@@ -51,7 +55,7 @@
                 <div class="hidden">
                     <table class="table simple small border-top">
                         <?php foreach ($docs as $doc) :
-                            if (!isset($doc['rendered'])) $DB->renderActivities(['_id' => $doc['_id']]);
+                            if (!isset($doc['rendered'])) renderActivities(['_id' => $doc['_id']]);
                         ?>
                             <tr>
                                 <td>

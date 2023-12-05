@@ -14,7 +14,7 @@ const TYPES = {
     'reviewer': 'review',
     'editor': 'editorial',
     "monograph": "book",
-    "misc": "misc-once",
+    "misc": "misc-annual",
     "edited-book": "book"
 }
 
@@ -38,6 +38,7 @@ function togglePubType(type, callback = () => { }) {
     console.log(type);
 
     $('#type').val(type)
+    $('#type-description').empty()
 
     if (SETTINGS.activities === undefined) {
         fetch(ROOTPATH + '/settings?v='+Math.random().toString(16).slice(2))
@@ -92,7 +93,11 @@ function togglePubType(type, callback = () => { }) {
 
     $('#type').val(SELECTED_TYPE.id)
     $('#subtype').val(SELECTED_SUBTYPE.id)
-    toggleExamples(SELECTED_SUBTYPE.id)
+    // toggleExamples(SELECTED_SUBTYPE.id)
+    var descr = ""
+    descr += lang(SELECTED_SUBTYPE.description??'', SELECTED_SUBTYPE.description_de??'')
+    if (descr != '') descr = "<i class='ph ph-info'></i> "+descr
+    $('#type-description').html(descr)
 
     // show correct subtype buttons
     var form = $('#publication-form')

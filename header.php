@@ -89,7 +89,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
     <link href="<?= ROOTPATH ?>/css/digidive.css?v=3" rel="stylesheet" />
-    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
     <!-- Quill (rich-text editor) -->
     <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/daterangepicker.min.css">
@@ -335,10 +334,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <i class="ph ph-calendar" aria-hidden="true"></i>
                             <?= lang('My year', 'Mein Jahr') ?>
                         </a>
-                        <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-activities') ?>">
+                        <!-- <a href="<?= ROOTPATH ?>/my-activities" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('my-activities') ?>">
                             <i class="ph ph-folder-user" aria-hidden="true"></i>
                             <?= lang('My activities', 'Meine Aktivitäten') ?>
-                        </a>
+                        </a> -->
                     <?php } ?>
 
                     <?php if ($Settings->hasPermission('admin-panel')) { ?>

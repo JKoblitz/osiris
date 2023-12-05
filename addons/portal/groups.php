@@ -24,7 +24,7 @@ $style = $_GET['style'] ?? 'cards';
 
         <style>
             .badge {
-                background: var(--department-color);
+                background: var(--highlight-color);
                 color: white;
                 opacity: .7;
             }
@@ -117,7 +117,7 @@ $style = $_GET['style'] ?? 'cards';
         </table>
 
 
-        <script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+        <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 
         <script>
             $.extend($.fn.DataTable.ext.classes, {

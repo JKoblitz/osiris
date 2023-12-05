@@ -94,6 +94,7 @@ Route::get('/api/activities', function () {
 
 Route::get('/api/html', function () {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
     include_once BASEPATH . "/php/Document.php";
     $Format = new Document(true, 'dsmz.de');
     $Format->full = true;
@@ -112,7 +113,7 @@ Route::get('/api/html', function () {
         if (isset($doc['rendered'])) {
             $rendered = $doc['rendered'];
         } else {
-            $rendered = $DB->renderActivities(['_id' => $id]);
+            $rendered = renderActivities(['_id' => $id]);
         }
 
         $link = null;
@@ -137,6 +138,7 @@ Route::get('/api/html', function () {
 
 Route::get('/api/all-activities', function () {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
     include_once BASEPATH . "/php/Document.php";
 
     header("Content-Type: application/json");
@@ -167,9 +169,10 @@ Route::get('/api/all-activities', function () {
         if (isset($doc['rendered'])) {
             $rendered = $doc['rendered'];
         } else {
-            $rendered = $DB->renderActivities(['_id' => $id]);
+            $rendered = renderActivities(['_id' => $id]);
         }
 
+        // $depts = $Groups->getDeptFromAuthors($doc['authors']??[]);
         $depts = $rendered['depts'];
         if ($depts instanceof MongoDB\Model\BSONArray) {
             $depts = $depts->bsonSerialize();
@@ -212,14 +215,19 @@ Route::get('/api/all-activities', function () {
 
         $datum = [
             'quarter' => $sq,
-            'type' => $rendered['icon'] . '<span style="display:none">' . $type . " " . $rendered['title'] . '</span>',
+            'icon' => $rendered['icon'] . '<span style="display:none">' . $type . " " . $rendered['type'] . '</span>',
             'activity' => $format,
             'links' => '',
             'search-text' => $format_full,
-            'start' => $sy . '-' . ($sm < 10 ? '0' : '') . $sm . '-' . ($doc['day'] ?? '01'),
-            'end' => $ey . '-' . ($em < 10 ? '0' : '') . $em . '-' . ($doc['day'] ?? '01'),
-            'departments' => implode(', ', $depts),
-            'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true' : 'false')
+            'start' => $rendered['start'] ?? '',
+            'end' => $rendered['end'] ?? '',
+            'departments' => $depts,//implode(', ', $depts),
+            'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true' : 'false'),
+            'type' => $rendered['type'],
+            'subtype' => $rendered['subtype'],
+            'year'=> $doc['year'] ?? 0,
+            'authors'=>$rendered['authors'] ?? '',
+            'title'=>$rendered['title'] ?? '',
         ];
 
         if ($active) {
@@ -237,12 +245,12 @@ Route::get('/api/all-activities', function () {
             "<a class='btn link square' href='" . ROOTPATH . "/activities/view/$id'>
                 <i class='ph ph-arrow-fat-line-right'></i>
             </a>";
-        $useractivity = $DB->isUserActivity($doc, $user);
-        if ($useractivity) {
-            $datum['links'] .= " <a class='btn link square' href='" . ROOTPATH . "/activities/edit/$id'>
-                <i class='ph ph-pencil-simple-line'></i>
-            </a>";
-        }
+        // $useractivity = $DB->isUserActivity($doc, $user);
+        // if ($useractivity) {
+        //     $datum['links'] .= " <a class='btn link square' href='" . ROOTPATH . "/activities/edit/$id'>
+        //         <i class='ph ph-pencil-simple-line'></i>
+        //     </a>";
+        // }
         $datum['links'] .= "<button class='btn link square' onclick='addToCart(this, \"$id\")'>
             <i class='" . (in_array($id, $cart) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus') . "'></i>
         </button>";
@@ -787,7 +795,10 @@ Route::get('/api/dashboard/activity-chart', function () {
         $element = [
             'label' => $group['name'],
             'backgroundColor' => $group['color'] . '95',
-            'data' => []
+            'borderColor'=> '#464646', 
+            'borderWidth'=> 1,
+            'borderRadius'=> 4,
+            'data' => [],
         ];
         foreach ($years as $y) {
             $i = array_search($y, DB::doc2Arr($d['x']));

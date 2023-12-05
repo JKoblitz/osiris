@@ -21,7 +21,6 @@
 
 <div class="container">
 
-    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/datatables.css">
 
     <h1 class='m-0'>
         <i class="ph ph-book-open"></i>
@@ -45,7 +44,7 @@
     </div>
 
 </div>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 
 <script>
     const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
@@ -79,7 +78,7 @@
             columnDefs: [
                 {
                     targets: 0,
-                    data: 'type'
+                    data: 'icon'
                 },
                 {
                     targets: 1,

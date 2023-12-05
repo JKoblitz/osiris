@@ -19,6 +19,7 @@ Route::post('/import/google', function () {
         exit - 1;
 
     include(BASEPATH . '/php/init.php');
+    include_once BASEPATH . "/php/Render.php";
     include(BASEPATH . '/php/GoogleScholar.php');
     $user = $_POST["user"];
     $google = new GoogleScholar($user);
@@ -92,7 +93,7 @@ Route::post('/import/google', function () {
     $insertOneResult  = $osiris->activities->insertOne($result);
     $id = $insertOneResult->getInsertedId();
     $result['_id'] = $id;
-    $DB->renderActivities(['_id' => $id]);
+    renderActivities(['_id' => $id]);
 
     $Format = new Document();
     $Format->setDocument($doc);

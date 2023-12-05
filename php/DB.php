@@ -559,46 +559,6 @@ class DB
         return $result;
     }
 
-    public function renderActivities($filter = [])
-    {
-        $Format = new Document(true);
-        $cursor = $this->db->activities->find($filter);
-        $rendered = [
-            'print' => '',
-            'web' => '',
-            'depts' => '',
-            'icon' => '',
-            'title' => '',
-        ];
-        foreach ($cursor as $doc) {
-            $id = $doc['_id'];
-            $Format->setDocument($doc);
-            $rendered = [
-                'print' => $Format->format(),
-                'web' => $Format->formatShort(),
-                'depts' => $this->getDeptFromAuthors($doc['authors']),
-                'icon' => trim($Format->activity_icon()),
-                'title' => $Format->activity_title(),
-            ];
-            $values = ['rendered' => $rendered];
-
-            if ($doc['type'] == 'publication' && isset($doc['journal'])) {
-                // update impact if necessary
-                $if = $this->get_impact($doc);
-                if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])) {
-                    $values['impact'] = $if;
-                }
-            }
-
-            $this->db->activities->updateOne(
-                ['_id' => $id],
-                ['$set' => $values]
-            );
-        }
-        // return last element in case that only one id has been rendered
-        return $rendered;
-    }
-
     public function getUserIssues($user = null)
     {
         if ($user === null) $user = $_SESSION['username'];

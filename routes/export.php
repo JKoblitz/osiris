@@ -940,7 +940,7 @@ Route::post('/reports', function () {
                         $type = 'review';
                         break;
                 }
-                $dept = $DB->getDeptFromAuthors($doc['authors'] ?? array());
+                $dept = $Groups->getDeptFromAuthors($doc['authors'] ?? array());
                 if (!$dept) continue;
                 $dept = $dept[0];
                 if (isset($doc['journal'])) {
@@ -952,10 +952,6 @@ Route::post('/reports', function () {
                     $departmentwise[$dept][$type][$title][] = $DB->getTitleLastname($doc['authors'][0]['user'] ?? '');
                 }
             } else {
-                // $dept = $DB->getDeptFromAuthors($doc['authors'] ?? array());
-                // if (!$dept) continue;
-                // $dept = $dept[0];
-
                 $result[$type][] = $doc['format'];
             }
         }

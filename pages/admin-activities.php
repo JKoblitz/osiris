@@ -199,7 +199,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
                 <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>; <?= isset($type['new']) ? 'opacity:.8;font-style:italic;' : '' ?>">
                     <h2 class="header" style="background-color:<?= $color ?>20">
-                        <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> text-<?= $t ?>"></i>
+                        <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> text-<?= $t ?> mr-10"></i>
                         <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
                         <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
                         <a class="btn link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
@@ -208,6 +208,8 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                         <?php } else { ?>
                             <a class="btn link px-5 ml-20 text-muted " href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $t ?>"}]}' target="_blank" data-toggle="tooltip" data-title="<?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?>"><i class="ph ph-trash"></i></a>
                         <?php } ?>
+
+
                     </h2>
 
                     <div class="content">
@@ -227,7 +229,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                             <div class="col-sm">
                                 <label for="name_de" class="">Color</label>
                                 <input type="color" class="form-control" name="activities[<?= $t ?>][color]" value="<?= $type['color'] ?? '' ?>">
-                            </div>
+                            </div> 
                         </div>
 
                         <div class="row row-eq-spacing">
@@ -248,10 +250,13 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                 $st = $subtype['id'];
                                 $submember = $osiris->activities->count(['type' => $t, 'subtype' => $st]);
                             ?>
-                                <div class="box subtype" id="subtype-<?= $st ?>" style="border-color:<?= $color ?>; <?= isset($subtype['new']) ? 'opacity:.8;font-style:italic;' : '' ?>">
+                                <div class="box subtype" id="subtype-<?= $st ?>" style="border-color:<?= $color ?>; <?= isset($subtype['new']) ? 'opacity:.9;font-style:italic;' : '' ?>">
                                     <h4 class="header" style="background-color:<?= $color ?>20">
                                         <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?> text-<?= $t ?> mr-10"></i>
                                         <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
+                                        <?php if ($subtype['disabled'] ?? false) { ?>
+                                            <span class="badge danger ml-20">DISABLED</span>
+                                        <?php } ?>
 
                                         <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
                                         <a class="btn link px-5 text-primary" onclick="moveElementDown('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
@@ -282,6 +287,18 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                             <div class="col-sm">
                                                 <label for="name_de" class="">Name (de)</label>
                                                 <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name_de]" value="<?= $subtype['name_de'] ?? '' ?>">
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row row-eq-spacing">
+                                            <div class="col-sm">
+                                                <label for="description"><?= lang('Description', 'Beschreibung') ?> (en)</label>
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][description]" value="<?= $subtype['description'] ?? '' ?>">
+                                            </div>
+                                            <div class="col-sm">
+                                                <label for="description_de" class=""><?= lang('Description', 'Beschreibung') ?> (de)</label>
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][description_de]" value="<?= $subtype['description_de'] ?? '' ?>">
                                             </div>
                                         </div>
 
@@ -370,6 +387,19 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                         <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][coins]" value="<?= $subtype['coins'] ?? '0' ?>">
                                         <span class="text-muted">
                                             <?= lang('Please note that <q>middle</q> authors will receive half the amount.', 'Bitte bemerken Sie, <q>middle</q>-Autoren nur die Hälfte der Coins bekommen.') ?>
+                                        </span>
+                                    </div>
+
+                                    <hr>
+
+
+                                    <div class="content">
+                                        <div class="custom-checkbox mb-10 danger">
+                                            <input type="checkbox" id="disable-<?= $t ?>-<?= $st ?>" value="true" name="activities[<?= $t ?>][subtypes][<?= $st ?>][disabled]" <?= ($subtype['disabled'] ?? false) ? 'checked' : '' ?>>
+                                            <label for="disable-<?= $t ?>-<?= $st ?>"><?= lang('Deactivate', 'Deaktivieren') ?></label>
+                                        </div>
+                                        <span class="text-muted">
+                                            <?= lang('Deactivated types are retained for past activities, but no new ones can be added.', 'Deaktivierte Typen bleiben erhalten für vergangene Aktivitäten, es können aber keine neuen hinzugefügt werden.') ?>
                                         </span>
                                     </div>
 

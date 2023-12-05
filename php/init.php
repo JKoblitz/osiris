@@ -68,6 +68,8 @@ $osiris = $DB->db;
 include_once BASEPATH . "/php/Groups.php";
 global $Groups;
 $Groups = new Groups();
+global $Departments;
+$Departments = array_column($Groups->tree['children'], 'name', 'id');
 
 global $USER;
 $USER = $DB->initUser();

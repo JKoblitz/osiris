@@ -40,7 +40,7 @@ $cursor = $osiris->persons->aggregate([
 
 <style>
     .badge {
-        color: var(--department-color) !important;
+        color: var(--highlight-color) !important;
         font-weight: 500;
     }
 </style>

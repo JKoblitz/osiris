@@ -15,6 +15,7 @@
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
+include_once BASEPATH . "/php/Render.php";
 
 $Format = new Document(true);
 $form = $form ?? array();
@@ -172,7 +173,7 @@ function val($index, $default = '')
                     </a>
                         <table class="w-full hidden">
                             <?php foreach ($activities as $n => $doc) :
-                                if (!isset($doc['rendered'])) $DB->renderActivities(['_id' => $doc['_id']]);
+                                if (!isset($doc['rendered'])) renderActivities(['_id' => $doc['_id']]);
                             ?>
                                 <tr>
                                     <td class="pb-5">

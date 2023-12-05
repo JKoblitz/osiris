@@ -33,7 +33,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
 <!-- all necessary javascript -->
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
@@ -452,6 +452,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
             <i class="ph ph-trophy text-signal ph-fw"></i>
         </a>
+    </div>
+    <div class="btn-group btn-group-lg mt-15 ml-5">
+    <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+        <i class="ph ph-eye text-muted ph-fw"></i>
+    </a>
     </div>
     <div class="btn-group btn-group-lg mt-15 ml-5">
         <?php if ($Settings->hasPermission('edit-user-profile')) { ?>

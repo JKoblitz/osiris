@@ -247,7 +247,7 @@ class Document extends Settings
         $type = $this->typeArr['id'];
         $icon = "<i class='ph text-$type ph-$icon'></i>";
         if ($tooltip) {
-            $name = $this->activity_title();
+            $name = $this->activity_subtype();
             return "<span data-toggle='tooltip' data-title='$name'>$icon</span>";
         }
 
@@ -255,7 +255,7 @@ class Document extends Settings
     }
 
 
-    function activity_title()
+    function activity_subtype()
     {
         $name = lang("Other", "Sonstiges");
         if (!empty($this->subtypeArr) && isset($this->subtypeArr['name'])) {
@@ -264,6 +264,19 @@ class Document extends Settings
                 $this->subtypeArr['name_de'] ?? $this->subtypeArr['name']
             );
         } elseif (!empty($this->typeArr) && isset($this->typeArr['name'])) {
+            $name = lang(
+                $this->typeArr['name'],
+                $this->typeArr['name_de'] ?? $this->typeArr['name']
+            );
+        } else {
+            return "ERROR: doc is not defined!";
+        }
+        return $name;
+    }
+    function activity_type()
+    {
+        $name = lang("Other", "Sonstiges");
+        if (!empty($this->typeArr) && isset($this->typeArr['name'])) {
             $name = lang(
                 $this->typeArr['name'],
                 $this->typeArr['name_de'] ?? $this->typeArr['name']
@@ -361,7 +374,7 @@ class Document extends Settings
 
     function activity_badge()
     {
-        $name = $this->activity_title();
+        $name = $this->activity_subtype();
         $icon = $this->activity_icon(false);
         $type = $this->doc['type'];
         return "<span class='badge badge-$type'>$icon $name</span>";
@@ -393,7 +406,7 @@ class Document extends Settings
         return $fn . $space . $last;
     }
 
-    function formatAuthors($raw_authors)
+    function formatAuthors($raw_authors, $withoutlinks=false)
     {
         $this->appendix = '';
         if (empty($raw_authors)) return '';
@@ -423,17 +436,16 @@ class Document extends Settings
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
                     $author = "<u>$author</u>";
                 }
-                if (isset($a['user'])) {
-                    if ($this->usecase == 'portal')
+                if (isset($a['user']) && !empty($a['user'])) {if ($this->usecase == 'portal')
                         $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
-                    else
+                    else if (!$withoutlinks)
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
                 }
                 $authors[] = $author;
             } else {
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
                 if ($this->usecase == 'portal') {
-                    if (isset($a['user']))
+                    if (isset($a['user'])&& !empty($a['user']))
                         $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
                 } else if ($this->highlight === true) {
                     if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
@@ -474,6 +486,14 @@ class Document extends Settings
             $separator = ", ";
         }
         return Document::commalist($authors, $separator) . $append;
+    }
+
+    public function getAuthors(){
+        if (empty($this->doc['authors'])) return '';
+        $full = $this->full;
+        $this->full = true;
+        return $this->formatAuthors($this->doc['authors'], true);
+        $this->full = $full;
     }
 
 
@@ -821,7 +841,7 @@ class Document extends Settings
             case "semester-select": // [],
                 return '';
             case "subtype":
-                return $this->activity_title();
+                return $this->activity_subtype();
             case "software-type": // ["software_type"],
                 $val = $this->getVal('software_type');
                 switch ($val) {
@@ -933,8 +953,7 @@ class Document extends Settings
     {
         $this->full = false;
         $line = "";
-        $template = $this->subtypeArr['template']['title'] ?? '{title}';
-        $title = $this->template($template);
+        $title = $this->getTitle();
 
         if ($this->usecase == 'portal') {
             $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$this->id'>$title</a>";
@@ -944,9 +963,8 @@ class Document extends Settings
             $line = $title;
         }
 
-        $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
         $line .= "<br><small class='text-muted d-block'>";
-        $line .= $this->template($template);
+        $line .= $this->getSubtitle();
         $line .= $this->get_field('file-icons');
         $line .= "</small>";
 
@@ -954,6 +972,18 @@ class Document extends Settings
         //     $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
         // }
         return $line;
+    }
+
+    public function getTitle()
+    {
+        $template = $this->subtypeArr['template']['title'] ?? '{title}';
+        return $this->template($template);
+    }
+
+    public function getSubtitle()
+    {
+        $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
+        return $this->template($template);
     }
 
     public function formatPortal()

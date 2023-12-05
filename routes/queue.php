@@ -37,6 +37,7 @@ Route::get('/queue/(user|editor)', function ($role) {
 
 Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
 
     $mongo_id = $DB->to_ObjectID($id);
 
@@ -54,7 +55,7 @@ Route::post('/queue/(accept|decline)/([a-zA-Z0-9]*)', function ($type, $id) {
 
         $insertOneResult = $osiris->activities->insertOne($new);
         $new_id = $insertOneResult->getInsertedId();
-        $DB->renderActivities(['_id' => $new_id]);
+        renderActivities(['_id' => $new_id]);
 
         $osiris->queue->deleteOne(['_id' => $mongo_id]);
         echo $new_id;

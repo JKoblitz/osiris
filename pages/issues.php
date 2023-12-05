@@ -253,7 +253,7 @@ if (array_sum($a) === 0) {
                     <p>
                         <b class="text-<?=$doc['type']?>">
                         <?= $doc['rendered']['icon'] ?>
-                        <?= $doc['rendered']['title'] ?>
+                        <?= $doc['rendered']['subtype'] ?>
                         </b> <br>
                         <?= $doc['rendered']['web'] ?>
                     </p>

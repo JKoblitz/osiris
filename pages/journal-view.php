@@ -17,8 +17,8 @@
 ?>
 
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.naturalsort.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.naturalsort.js"></script>
 
 
 <?php if ($Settings->hasPermission('edit-journals')) { ?>

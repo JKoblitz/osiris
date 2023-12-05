@@ -115,6 +115,7 @@ Route::get('/activities/(doi|pubmed)/(.*)', function ($type, $identifier) {
 });
 Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
 
     $user = $_SESSION['username'];
     $id = $DB->to_ObjectID($id);
@@ -134,7 +135,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
                 );
             }
         }
-        $DB->renderActivities(['_id' =>  $activity['_id']]);
+        renderActivities(['_id' =>  $activity['_id']]);
         $user_activity = $DB->isUserActivity($doc, $user);
 
         $Format = new Document;

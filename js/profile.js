@@ -71,7 +71,7 @@ function initPublications() {
         columnDefs: [
             {
                 targets: 0,
-                data: 'type',
+                data: 'icon',
                 // className: 'w-50'
             },
             {
@@ -122,7 +122,7 @@ function initActivities() {
         columnDefs: [
             {
                 targets: 0,
-                data: 'type',
+                data: 'icon',
                 // className: 'w-50'
             },
             {
