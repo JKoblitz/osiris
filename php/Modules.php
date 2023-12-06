@@ -157,6 +157,11 @@ class Modules
             "name" => "Lecture-Type",
             "name_de" => "Vortragsart"
         ],
+        "license" => [
+            "fields" => ["license"],
+            "name" => "License",
+            "name_de" => "Lizenz"
+        ],
         "link" => [
             "fields" => ["link"],
             "name" => "Link",
@@ -222,15 +227,20 @@ class Modules
             "name" => "Pubtype",
             "name_de" => "Pubtype"
         ],
-        "review-description" => [
-            "fields" => ["title"],
-            "name" => "Decription",
-            "name_de" => "Beschreibung"
-        ],
+        // "review-description" => [
+        //     "fields" => ["title"],
+        //     "name" => "Decription",
+        //     "name_de" => "Beschreibung"
+        // ],
         "review-type" => [
             "fields" => ["review-type"],
             "name" => "Review Type",
             "name_de" => "Review-Art"
+        ],
+        "role" => [
+            "fields" => ["role"],
+            "name" => "Role/Function",
+            "name_de" => "Rolle/Funktion"
         ],
         "scientist" => [
             "fields" => ["authors"],
@@ -241,6 +251,11 @@ class Modules
             "fields" => [],
             "name" => "",
             "name_de" => ""
+        ],
+        "scope" => [
+            "fields" => ["scope"],
+            "name" => "Scope",
+            "name_de" => "Reichweite"
         ],
         "software-link" => [
             "fields" => ["link"],
@@ -1544,20 +1559,55 @@ class Modules
             <?php
                 break;
 
-            case "review-description":
+            case "scope":
+                $scope = $this->val('scope', false);
             ?>
-                <div class="data-module col-sm-8" data-module="review-description">
-                    <label class="<?= $required ?> element-title" for="title-input">
-                        <?= lang('Title/Description/Details', 'Titel/Beschreibung/Details') ?>
+                <div class="data-module col-sm-4" data-module="scope">
+                    <label class="<?= $required ?>" for="scope">
+                        <?= lang('Scope', 'Reichweite') ?>
                     </label>
-                    <input type="text" class="form-control" id="title-input" value="<?= $this->val('title') ?>" name="values[title]" <?= $required ?>>
+                    <select class="form-control" id="scope" name="values[scope]" <?= $required ?> autocomplete="off">
+                        <option <?= $scope == 'local' ? 'selected' : '' ?>>local</option>
+                        <option <?= $scope == 'regional' ? 'selected' : '' ?>>regional</option>
+                        <option <?= $scope == 'national' ? 'selected' : '' ?>>national</option>
+                        <option <?= $scope == 'international' ? 'selected' : '' ?>>international</option>
+                    </select>
+                </div>
+            <?php
+                break;
+
+            case "role":
+            ?>
+                <div class="data-module col-sm-6" data-module="role">
+                    <label class="<?= $required ?>" for="role">
+                        <?= lang('Role/Function', 'Rolle/Funktion') ?>
+                    </label>
+                    <input type="text" class="form-control" id="role" value="<?= $this->val('role') ?>" name="values[role]" <?= $required ?>>
+                </div>
+            <?php
+                break;
+
+            case "license":
+            ?>
+                <div class="data-module col-sm-6" data-module="license">
+                    <label class="<?= $required ?>" for="license">
+                        <?= lang('License', 'Lizenz') ?>
+                    </label>
+                    <input type="text" class="form-control" id="license" value="<?= $this->val('license') ?>" name="values[license]" <?= $required ?>>
+                    <small class="text-muted">
+                        <?=lang('If applicable, enter', 'Falls möglich, die')?>
+                        <a href="https://opensource.org/licenses/" target="_blank" rel="noopener noreferrer"><?=lang('SPDX-ID from', 'SPDX-ID der')?> OSI</a>
+                        <?=lang('or CC license from', 'oder die CC-Lizenz von')?>
+                        <a href="https://creativecommons.org/share-your-work/cclicenses/" target="_blank" rel="noopener noreferrer">Creative Commons</a>.
+                        <?=lang('', 'angeben')?>.
+                    </small>
                 </div>
             <?php
                 break;
 
             case "review-type":
             ?>
-                <div class="data-module col-sm-8" data-module="review-type">
+                <div class="data-module col-sm-6" data-module="review-type">
                     <label class="element-cat <?= $required ?>" for="review-type">
                         <?= lang('Type of review', 'Art des Review') ?>
                     </label>
