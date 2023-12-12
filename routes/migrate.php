@@ -150,46 +150,70 @@ Route::get('/migrate', function () {
 
     if ($V[1] < 3) {
         echo "<h1>Migrate to Version 1.3.X</h1>";
-        $osiris->groups->deleteMany([]);
+        // $osiris->groups->deleteMany([]);
 
-        // add institute as root level
-        $affiliation = $Settings->get('affiliation_details');
-        $dept = [
-            'id' => $affiliation['id'],
-            'color' => '#000000',
-            'name' => $affiliation['name'],
-            'parent' => null,
-            'level' => 0,
-            'unit' => 'Institute',
-        ];
-        $osiris->groups->insertOne($dept);
+        // // add institute as root level
+        // $affiliation = $Settings->get('affiliation_details');
+        // $dept = [
+        //     'id' => $affiliation['id'],
+        //     'color' => '#000000',
+        //     'name' => $affiliation['name'],
+        //     'parent' => null,
+        //     'level' => 0,
+        //     'unit' => 'Institute',
+        // ];
+        // $osiris->groups->insertOne($dept);
 
-        // add departments as children
-        $depts = $Settings->get('departments');
-        foreach ($depts as $dept) {
-            if ($dept['id'] == 'BIDB') $dept['id'] = 'BID';
-            $dept['parent'] = $affiliation['id'];
-            $dept['level'] = 1;
-            $dept['unit'] = 'Department';
-            $osiris->groups->insertOne($dept);
-        }
+        // // add departments as children
+        // $depts = $Settings->get('departments');
+        // foreach ($depts as $dept) {
+        //     if ($dept['id'] == 'BIDB') $dept['id'] = 'BID';
+        //     $dept['parent'] = $affiliation['id'];
+        //     $dept['level'] = 1;
+        //     $dept['unit'] = 'Department';
+        //     $osiris->groups->insertOne($dept);
+        // }
 
-        // migrate person affiliation
-        $persons = $osiris->persons->find([])->toArray();
-        foreach ($persons as $person) {
-            // dump($person, true);
-            // $dept = [$affiliation['id']];
-            $depts = [];
-            if (isset($person['dept']) && !empty($person['dept'])) {
-                if ($person['dept'] === 'BIDB') $person['dept'] = 'BID';
-                $depts[] = $person['dept'];
+        // // migrate person affiliation
+        // $persons = $osiris->persons->find([])->toArray();
+        // foreach ($persons as $person) {
+        //     // dump($person, true);
+        //     // $dept = [$affiliation['id']];
+        //     $depts = [];
+        //     if (isset($person['dept']) && !empty($person['dept'])) {
+        //         if ($person['dept'] === 'BIDB') $person['dept'] = 'BID';
+        //         $depts[] = $person['dept'];
+        //     }
+        //     dump($depts);
+        //     // die;
+        //     $updated = $osiris->persons->updateOne(
+        //         ['_id' => $person['_id']],
+        //         ['$set' => ['depts' => $depts]]
+        //     );
+        // }
+
+        echo "Update Activity schema";
+        $osiris->categories->deleteMany([]);
+        foreach ($Settings->getActivities() as $t => $type) {
+            $cat = [
+                "id" => $type['id'],
+                "icon" => $type['icon'],
+                "color" => $type['color'],
+                "name" => $type['name'],
+                "name_de" => $type['name_de'],
+                "level" => 1,
+                "parent" => null
+            ];
+            dump($cat, true);
+            $osiris->categories->insertOne($cat);
+            foreach ($type['subtypes'] as $s => $subtype) {
+
+                $subtype['level'] = 2;
+                $subtype['parent'] = $t;
+                
+                dump($subtype, true);
+                $osiris->categories->insertOne($subtype);
             }
-            dump($depts);
-            // die;
-            $updated = $osiris->persons->updateOne(
-                ['_id' => $person['_id']],
-                ['$set' => ['depts' => $depts]]
-            );
         }
     }
 

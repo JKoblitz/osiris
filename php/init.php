@@ -71,6 +71,10 @@ $Groups = new Groups();
 global $Departments;
 $Departments = array_column($Groups->tree['children'], 'name', 'id');
 
+include_once BASEPATH . "/php/Categories.php";
+global $Categories;
+$Categories = new Categories();
+
 global $USER;
 $USER = $DB->initUser();
 

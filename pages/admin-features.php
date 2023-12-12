@@ -20,7 +20,7 @@
 
 
 <?php
-    include BASEPATH . "/components/admin-nav.php";
+    // include BASEPATH . "/components/admin-nav.php";
 ?>
 
 <h1>

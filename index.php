@@ -123,6 +123,7 @@ include_once BASEPATH . "/routes/visualize.php";
 include_once BASEPATH . "/routes/activities.php";
 include_once BASEPATH . "/routes/export.php";
 include_once BASEPATH . "/routes/concepts.php";
+include_once BASEPATH . "/routes/categories.php";
 
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/CRUD.php";

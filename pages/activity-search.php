@@ -22,7 +22,9 @@ $Format = new Document(true);
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
-
+<script>
+    var RULES;
+</script>
 <div class="content">
     <div class="btn-group float-right">
         <a href="#close-modal" class="btn osiris active">
@@ -45,6 +47,19 @@ $Format = new Document(true);
 
     <pre id="result" class="code my-20"></pre>
 
+    <?php if (isset($_GET['expert'])) { ?>
+        <textarea name="expert" id="expert" cols="30" rows="10"></textarea>
+        <button class="btn" onclick="run()">Run!</button>
+        <script>
+            function run() {
+                var rules = $('#expert').val()
+                RULES = JSON.parse(decodeURI(rules))
+                dataTable.ajax.reload()
+            }
+        </script>
+    <?php } ?>
+
+
     <table class="table" id="activity-table">
         <thead>
             <th>Type</th>
@@ -55,20 +70,20 @@ $Format = new Document(true);
         </tbody>
     </table>
 
-<?php
-$activities = $Settings->getActivities();
-$types = array_keys($activities);
-$subtypes = array_map(function($a){
-    return array_column($a['subtypes'], 'id');
-}, $activities);
+    <?php
+    $activities = $Settings->getActivities();
+    $types = array_keys($activities);
+    $subtypes = array_map(function ($a) {
+        return array_column($a['subtypes'], 'id');
+    }, $activities);
 
-$subtypes = flatten($subtypes);
-?>
+    $subtypes = flatten($subtypes);
+    ?>
 
     <script>
         // var mongo = $('#builder').queryBuilder('getMongo');
-        const types = JSON.parse('<?=json_encode($types)?>')
-        const subtypes = JSON.parse('<?=json_encode($subtypes)?>')
+        const types = JSON.parse('<?= json_encode($types) ?>')
+        const subtypes = JSON.parse('<?= json_encode($subtypes) ?>')
         var mongoQuery = $('#builder').queryBuilder({
             filters: [{
                     id: 'type',
@@ -123,7 +138,7 @@ $subtypes = flatten($subtypes);
                 },
                 {
                     id: 'authors.aoi',
-                    label: lang('Author (affiliated)','Autor (Affiliated)'),
+                    label: lang('Author (affiliated)', 'Autor (Affiliated)'),
                     type: 'boolean',
                     values: {
                         'true': 'yes',
@@ -392,9 +407,9 @@ $subtypes = flatten($subtypes);
                     type: 'string'
                 },
                 {
-                        id: 'created',
-                        label: lang('Created at', 'Erstellt am'),
-                        type: 'string'
+                    id: 'created',
+                    label: lang('Created at', 'Erstellt am'),
+                    type: 'string'
                 },
                 {
                     id: 'updated_by',
@@ -436,8 +451,9 @@ $subtypes = flatten($subtypes);
         var dataTable;
 
         function getResult() {
+            var rules = $('#builder').queryBuilder('getMongo')
+            RULES = rules
             dataTable.ajax.reload()
-
         }
 
 
@@ -446,6 +462,7 @@ $subtypes = flatten($subtypes);
             if (hash !== undefined && hash != "") {
                 try {
                     var rules = JSON.parse(decodeURI(hash))
+                    RULES = rules;
                     $('#builder').queryBuilder('setRulesFromMongo', rules);
                 } catch (SyntaxError) {
                     console.info('invalid hash')
@@ -457,7 +474,7 @@ $subtypes = flatten($subtypes);
                     "url": ROOTPATH + '/api/activities',
                     data: function(d) {
                         // https://medium.com/code-kings/datatables-js-how-to-update-your-data-object-for-ajax-json-data-retrieval-c1ac832d7aa5
-                        var rules = $('#builder').queryBuilder('getMongo')
+                        var rules = RULES
                         if (rules === null) rules = []
                         console.log(rules);
 

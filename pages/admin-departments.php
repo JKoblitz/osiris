@@ -77,7 +77,7 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
 
 
 <?php
-    include BASEPATH . "/components/admin-nav.php";
+    // include BASEPATH . "/components/admin-nav.php";
 ?>
 
 <form action="#" method="post" id="modules-form">

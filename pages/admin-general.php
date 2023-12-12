@@ -43,7 +43,7 @@ if ($N > 0) {
 
 
 <?php
-include BASEPATH . "/components/admin-nav.php";
+// include BASEPATH . "/components/admin-nav.php";
 ?>
 
 

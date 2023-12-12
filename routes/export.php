@@ -53,7 +53,7 @@ Route::get('/reports', function () {
 }, 'login');
 
 
-Route::get('/export/title/(.*)', function ($type) {
+Route::get('/export/(.*)/(.*)', function ($field, $type) {
     // error_reporting(E_ERROR | E_PARSE);
 
     require_once BASEPATH . '/php/init.php';
@@ -61,7 +61,7 @@ Route::get('/export/title/(.*)', function ($type) {
 
 
     $collection = $osiris->activities;
-    $options = ['sort' => ["subtype" => 1, "title" => 1], 'projection' => ['title' => 1, 'subtype' => 1]];
+    $options = ['sort' => ["subtype" => 1, $field => 1], 'projection' => [$field => 1, 'subtype' => 1]];
     $filter = [
         "type" => $type
     ];
@@ -76,7 +76,7 @@ Route::get('/export/title/(.*)', function ($type) {
             echo "<h2>$doc[subtype]</h2>";
             $t = $doc['subtype'];
         }
-        echo $doc['title'] . "<br>";
+        echo $doc[$field] . "<br>";
     }
 });
 

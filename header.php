@@ -340,13 +340,6 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         </a> -->
                     <?php } ?>
 
-                    <?php if ($Settings->hasPermission('admin-panel')) { ?>
-                        <a href="<?= ROOTPATH ?>/admin/general" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin') ?>">
-                            <i class="ph ph-gear" aria-hidden="true"></i>
-                            <?= lang('Admin Panel') ?>
-                        </a>
-                    <?php } ?>
-
                     <a href="<?= ROOTPATH ?>/user/logout" class="sidebar-link  with-icon">
                         <i class="ph ph-sign-out" aria-hidden="true"></i>
                         Logout
@@ -478,6 +471,25 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                     <?php } ?>
 
 
+                <?php } ?>
+
+
+                <?php if ($Settings->hasPermission('admin-panel')) { ?>
+                    <div class="title">
+                        ADMIN
+                    </div>
+                    <a href="<?= ROOTPATH ?>/admin/general" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin/general') ?>">
+                        <i class="ph ph-gear" aria-hidden="true"></i>
+                        <?= lang('General settings') ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/admin/roles" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin/roles') ?>">
+                        <i class="ph ph-gear" aria-hidden="true"></i>
+                        <?= lang('Roles', 'Rollen') ?>
+                    </a>
+                    <a href="<?= ROOTPATH ?>/admin/categories" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin/categories') ?>">
+                        <i class="ph ph-gear" aria-hidden="true"></i>
+                        <?= lang('Categories', 'Kategorien') ?>
+                    </a>
                 <?php } ?>
 
                 <div class="title">

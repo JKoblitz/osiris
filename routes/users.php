@@ -324,13 +324,12 @@ Route::get('/synchronize-users', function () {
                 continue;
             }
             dump($new_user, true);
-            $osiris->persons->insertOne($new_user['person']);
-            $osiris->accounts->insertOne($new_user['account']);
+            $osiris->persons->insertOne($new_user);
         } else {
             // user is no longer active
             if (!$active && $USER['is_active']) {
                 echo ('<p>' . $username . ' is no longer active.</p>');
-                $osiris->accounts->updateOne(
+                $osiris->persons->updateOne(
                     ['username' => $username],
                     ['$set' => ['is_active' => false]]
                 );

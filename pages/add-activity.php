@@ -301,19 +301,22 @@ function val($index, $default = '')
     </div>
 
 
-    <div class="my-20 select-btns" id="select-btns">
+    <div class="select-btns" id="select-btns">
         <?php
-        foreach ($Settings->getActivities() as $id => $a) {
+        foreach ($Categories->tree as $type) {
+            $t = $type['id'];
+
             // check if subtypes are available
-            $subtypes = $a['subtypes'] ?? array();
+            $subtypes = $type['children'] ?? array();
             $subtypes = array_filter($subtypes, function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (empty($subtypes)) continue;
         ?>
-            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn select text-<?= $id ?>" id="<?= $id ?>-btn">
+            <button data-type="<?= $t ?>" onclick="togglePubType('<?= $t ?>')" class="btn select" id="<?= $t ?>-btn" <?= $Categories->cssVar($t) ?>>
                 <span>
-                    <?= $Settings->icon($id, false) . $Settings->title($id) ?>
+                    <i class='ph ph-<?= $type['icon'] ?? 'circle' ?>'></i>
+                    <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
                 </span>
             </button>
         <?php } ?>
@@ -335,6 +338,9 @@ function val($index, $default = '')
     </div>
 
 <?php } ?>
+<?php
+// dump($Categories->tree, true);
+?>
 
 <?php if (!empty($form)) { ?>
 
@@ -343,23 +349,27 @@ function val($index, $default = '')
         <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
     </a>
     <div class="mb-20 select-btns" id="select-btns" style="display:none">
+
         <?php
-        foreach ($Settings->getActivities() as $id => $a) {
+        foreach ($Categories->tree as $type) {
+            $t = $type['id'];
+
             // check if subtypes are available
-            $subtypes = $a['subtypes'] ?? array();
+            $subtypes = $type['children'] ?? array();
             $subtypes = array_filter($subtypes, function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (empty($subtypes)) continue;
         ?>
-            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn select text-<?= $id ?>" id="<?= $id ?>-btn">
+            <button data-type="<?= $t ?>" onclick="togglePubType('<?= $t ?>')" class="btn select" id="<?= $t ?>-btn" <?= $Categories->cssVar($t) ?>>
                 <span>
-                    <?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?>
+                    <i class='ph ph-<?= $type['icon'] ?? 'circle' ?>'></i>
+                    <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
                 </span>
             </button>
-        <?php }
-        ?>
+        <?php } ?>
     </div>
+
 
 <?php } ?>
 
@@ -396,34 +406,33 @@ function val($index, $default = '')
         <?php } ?>
 
         <!-- SUBTYPES -->
-        <?php foreach ($Settings->getActivities() as $t => $a) {
-            $subtypes = $a['subtypes'] ?? array();
+        <?php
+        foreach ($Categories->tree as $type) {
+            $t = $type['id'];
+
+            // check if subtypes are available
+            $subtypes = $type['children'] ?? array();
             $subtypes = array_filter($subtypes, function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (count($subtypes) <= 1) continue;
         ?>
-
-            <div class="mb-20 select-btns" data-type="<?= $t ?>">
-                <?php foreach ($subtypes as $st) {
-                    $st = $st['id'];
+            <div class="select-btns" data-type="<?= $t ?>">
+                <?php foreach ($Categories->types as $sub) {
+                    if ($sub['disabled'] ?? false || $sub['parent'] !== $t) continue;
+                    $st = $sub['id'];
                 ?>
-                    <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>">
+                    <button onclick="togglePubType('<?= $st ?>')" class="btn select" id="<?= $st ?>-btn" data-subtype="<?= $st ?>" <?= $Categories->cssVar($t) ?>>
                         <span>
-                            <?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?>
+                            <i class='ph ph-<?= $sub['icon'] ?? 'circle' ?>'></i>
+                            <?= lang($sub['name'], $sub['name_de'] ?? $sub['name']) ?>
                         </span>
                     </button>
                 <?php } ?>
             </div>
-
-        <?php } ?>
-
-
-        <div id="examples" class="mb-20">
-            <?php //include BASEPATH . '/components/activity-examples.php' 
-            ?>
-        </div>
-
+        <?php
+        }
+        ?>
 
         <form action="<?= $formaction ?>" method="post" id="activity-form">
             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
