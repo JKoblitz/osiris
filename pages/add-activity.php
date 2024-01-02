@@ -303,12 +303,12 @@ function val($index, $default = '')
 
     <div class="select-btns" id="select-btns">
         <?php
-        foreach ($Categories->tree as $type) {
+        foreach ($Categories->categories as $type) {
             $t = $type['id'];
 
             // check if subtypes are available
             $subtypes = $type['children'] ?? array();
-            $subtypes = array_filter($subtypes, function ($s) {
+            $subtypes = array_filter(DB::doc2Arr($subtypes), function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (empty($subtypes)) continue;
@@ -338,9 +338,6 @@ function val($index, $default = '')
     </div>
 
 <?php } ?>
-<?php
-// dump($Categories->tree, true);
-?>
 
 <?php if (!empty($form)) { ?>
 
@@ -351,12 +348,12 @@ function val($index, $default = '')
     <div class="mb-20 select-btns" id="select-btns" style="display:none">
 
         <?php
-        foreach ($Categories->tree as $type) {
+        foreach ($Categories->categories as $type) {
             $t = $type['id'];
 
             // check if subtypes are available
             $subtypes = $type['children'] ?? array();
-            $subtypes = array_filter($subtypes, function ($s) {
+            $subtypes = array_filter(DB::doc2Arr($subtypes), function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (empty($subtypes)) continue;
@@ -407,19 +404,19 @@ function val($index, $default = '')
 
         <!-- SUBTYPES -->
         <?php
-        foreach ($Categories->tree as $type) {
+        foreach ($Categories->categories as $type) {
             $t = $type['id'];
 
             // check if subtypes are available
             $subtypes = $type['children'] ?? array();
-            $subtypes = array_filter($subtypes, function ($s) {
+            $subtypes = array_filter(DB::doc2Arr($subtypes), function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (count($subtypes) <= 1) continue;
         ?>
             <div class="select-btns" data-type="<?= $t ?>">
-                <?php foreach ($Categories->types as $sub) {
-                    if ($sub['disabled'] ?? false || $sub['parent'] !== $t) continue;
+                <?php foreach ($subtypes as $sub) {
+                    if ($sub['disabled'] ?? false) continue;
                     $st = $sub['id'];
                 ?>
                     <button onclick="togglePubType('<?= $st ?>')" class="btn select" id="<?= $st ?>-btn" data-subtype="<?= $st ?>" <?= $Categories->cssVar($t) ?>>

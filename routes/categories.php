@@ -24,7 +24,7 @@ Route::get('/admin/categories/new', function () {
 }, 'login');
 
 
-Route::get('/admin/categories/(\d)/(.*)', function ($lvl, $id) {
+Route::get('/admin/categories/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 

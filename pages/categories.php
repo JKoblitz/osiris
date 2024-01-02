@@ -22,21 +22,26 @@
     <i class="ph ph-gear"></i>
     <?= lang('Categories', 'Kategorien') ?>
 </h1>
-<ul>
-    <?php foreach ($Categories->tree as $type) { ?>
-        <li>
-            <a href="<?=ROOTPATH?>/admin/categories/1/<?= $type['id'] ?>" class="font-weight-bold" style="color: <?= $type['color'] ?? 'inherit' ?>">
-                <?= lang($type['name'], $type['name_de'] ?? null) ?>
-            </a>
-            <ul>
-                <?php foreach ($type['children'] as $subtype) { ?>
-                    <li>
-                        <a href="<?=ROOTPATH?>/admin/categories/2/<?= $subtype['id'] ?>" class="" style="color: <?= $type['color'] ?? 'inherit' ?>">
-                            <?= lang($subtype['name'], $subtype['name_de'] ?? null) ?>
-                        </a>
-                    </li>
-                <?php } ?>
-            </ul>
-        </li>
-    <?php } ?>
-</ul>
+<?php foreach ($Categories->categories as $type) { ?>
+    <div class="alert mb-10">
+        <h3 class="title" style="color: <?= $type['color'] ?? 'inherit' ?>">
+            <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> mr-10"></i>
+            <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
+        </h3>
+        <a href="<?= ROOTPATH ?>/admin/categories/<?= $type['id'] ?>">
+            <?= lang('Edit', 'Bearbeiten') ?>
+        </a>
+
+        <hr>
+        <b><?= lang('Subcategories', 'Unterkategorien') ?>:</b>
+        <ul class="horizontal">
+            <?php foreach ($type['children'] as $subtype) { ?>
+                <li>
+
+                    <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?>"></i>
+                    <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
+                </li>
+            <?php } ?>
+        </ul>
+    </div>
+<?php } ?>

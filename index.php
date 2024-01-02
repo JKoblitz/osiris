@@ -83,10 +83,10 @@ Route::get('/', function () {
 
 
 if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
-    require_once 'addons/auth/index.php';
+    require_once BASEPATH.'/addons/auth/index.php';
 }
 if (defined('GUEST_FORMS') && GUEST_FORMS) {
-    require_once 'addons/guestforms/index.php';
+    require_once BASEPATH.'/addons/guestforms/index.php';
 }
 
 

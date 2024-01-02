@@ -1466,3 +1466,19 @@ a.concept:hover {
 #active-filters a {
     margin-left: .5rem;
 }
+
+ul.horizontal {
+    list-style: none;
+}
+ul.horizontal li {
+    display: inline-block;
+    margin: 0;
+}
+ul.horizontal li::after  {
+    content: '';
+    margin: 0 1rem;
+    border: 1px solid var(--border-color);
+}
+ul.horizontal li:last-child::after  {
+    border: none;
+}

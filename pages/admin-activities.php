@@ -19,7 +19,7 @@
 include_once BASEPATH . "/php/Modules.php";
 $Modules = new Modules();
 
-$activities = $Categories->tree;
+$activities = $Categories->categories;
 
 if (isset($_GET['type']) && isset($_GET['type']['id'])) {
     $type = $_GET['type'];

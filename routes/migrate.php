@@ -201,19 +201,14 @@ Route::get('/migrate', function () {
                 "color" => $type['color'],
                 "name" => $type['name'],
                 "name_de" => $type['name_de'],
-                "level" => 1,
-                "parent" => null
+                "children" => $type['subtypes']
             ];
+            // foreach ($type['subtypes'] as $s => $subtype) {                
+            //     dump($subtype, true);
+            //     $cat['children'][]
+            // }
             dump($cat, true);
             $osiris->categories->insertOne($cat);
-            foreach ($type['subtypes'] as $s => $subtype) {
-
-                $subtype['level'] = 2;
-                $subtype['parent'] = $t;
-                
-                dump($subtype, true);
-                $osiris->categories->insertOne($subtype);
-            }
         }
     }
 
