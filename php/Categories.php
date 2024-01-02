@@ -30,7 +30,7 @@ class Categories
     {
         $this->osiris = new DB;
 
-        $categories = $this->osiris->db->categories->find()->toArray();
+        $categories = $this->osiris->db->adminCategories->find()->toArray();
         foreach ($categories as $c) {
             $this->categories[$c['id']] = $c;
         }

@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Page to view a selected group
+ * Page to add and edit categories
  * 
  * This file is part of the OSIRIS package.
  * Copyright (c) 2023, Julia Koblitz
  * 
- * @link        /groups/view/<id>
+ * @link        /admin/categories/new
+ * @link        /admin/categories/<id>
  *
  * @package     OSIRIS
  * @since       1.3.0
@@ -16,239 +17,187 @@
  * @license     MIT
  */
 
-//  $children = $Groups->getChildren($id);
-//  dump($children, true);
+$form = $form ?? array();
 
-//  dump($Groups->tree, true);
-$level = $Groups->getLevel($id);
+$color = $form['color'] ?? '#000000';
+$member = 0;
+
+$id = $form['id'] ?? '';
+
+$formaction = ROOTPATH . "/";
+if (!empty($form) && isset($form['_id'])) {
+    $formaction .= "crud/categories/update/" . $form['_id'];
+    $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
+    $url = ROOTPATH . "/admin/categories/" . $id;
+    $title = $name;
+
+    $member = $osiris->activities->count(['type' => $id]);
+} else {
+    $formaction .= "crud/categories/create";
+    $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
+    $url = ROOTPATH . "/admin/categories/*";
+    $title = lang('New category', 'Neue Kategorie');
+}
+
+function val($index, $default = '')
+{
+    $val = $GLOBALS['form'][$index] ?? $default;
+    if (is_string($val)) {
+        return htmlspecialchars($val);
+    }
+    return $val;
+}
+
+function sel($index, $value)
+{
+    return val($index) == $value ? 'selected' : '';
+}
+
+
 ?>
 
-<style>
-    .dept-icon {
-        border-radius: 10rem;
-        color: white;
-        width: 1.6em;
-        height: 1.6em;
-        display: inline-block;
-        background-color: var(--highlight-color);
-        text-align: center;
-    }
-
-    .dept-icon i.ph {
-        margin: 0;
-    }
-
-    h1 {
-        color: var(--highlight-color);
-    }
-</style>
-
-
-
-<div <?= $Groups->cssVar($id) ?> class="">
-    <div class="btn-group float-right">
-
-        <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
-            <i class="ph ph-note-pencil ph-fw"></i>
-            <?= lang('Edit', 'Bearbeiten') ?>
-        </a>
-        <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
-            <i class="ph ph-eye ph-fw"></i>
-            <?= lang('Preview', 'Vorschau') ?>
-        </a>
-    </div>
-    <h1>
-        <?= $group['name'] ?>
-    </h1>
-    <h3 class="subtitle">
-        <?= $group['unit'] ?>
-    </h3>
-    <div class="row row-eq-spacing">
-        <div class="col-md-6 col-lg-8">
-
-            <h3><?= lang('Information', 'Informationen') ?></h3>
-
-            <span class="badge primary">
-                Level <?= $level ?? '?' ?>
-            </span>
-
+<div class="modal" id="unique" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <a href="#/" class="close" role="button" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+            <h5 class="title"><?= lang('ID must be unique', 'Die ID muss einzigartig sein.') ?></h5>
             <p>
-                <?= $group['description'] ?? '-' ?>
+                <?= lang('Each category and each activity type must have a unique ID with which it is linked to an activity.', 'Jede Kategorie und jeder Aktivitätstyp muss eine einzigartige ID haben, mit der er zu einer Aktivität verknüpft wird.') ?>
             </p>
-
-        
-
-
-            <div id="collab">
-                <h3><?= lang('Collaboration with other groups', 'Zusammenarbeit mit anderen Gruppen') ?></h3>
-                <p class="text-muted">
-                    <?= lang('Based on publications within the past 5 years.', 'Basierend auf Publikationen aus den vergangenen 5 Jahren.') ?>
-                </p>
-                <div id="chart" style="max-width: 60rem"></div>
+            <p>
+                <?= lang('As the ID must be unique, the following previously used IDs and keywords (new) cannot be used as IDs:', 'Da die ID einzigartig sein muss, können folgende bereits verwendete IDs und Schlüsselwörter (new) nicht als ID verwendet werden:') ?>
+            </p>
+            <ul class="list" id="IDLIST">
+                <?php foreach ($osiris->adminCategories->distinct('id') as $k) { ?>
+                    <li><?= $k ?></li>
+                <?php } ?>
+                <li>new</li>
+            </ul>
+            <div class="text-right mt-20">
+                <a href="#/" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
-
-            <script src="<?= ROOTPATH ?>/js/popover.js"></script>
-            <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
-            <script src="<?= ROOTPATH ?>/js/d3-chords.js"></script>
-
-            <script>
-                $.ajax({
-                    type: "GET",
-                    url: ROOTPATH + "/api/dashboard/department-network",
-                    data: {
-                        type: 'publication',
-                        dept: '<?= $id  ?>',
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        console.log(response);
-                        if (response.count <= 1) {
-                            $('#collab').hide()
-                            return
-                        }
-                        var matrix = response.data.matrix;
-                        var data = response.data.labels;
-
-                        var labels = [];
-                        var colors = [];
-                        data = Object.values(data)
-                        data.forEach(element => {
-                            labels.push(element.id);
-                            colors.push(element.color)
-                        });
-
-
-                        Chords('#chart', matrix, labels, colors, data, links = false, useGradient = true, highlightFirst = false, type = '<?= $_GET['type'] ?? 'publication' ?>');
-                    },
-                    error: function(response) {
-                        console.log(response);
-                    }
-                });
-            </script>
         </div>
-
-        <div class="col-md-6 col-lg-4">
-            <?php
-            $children = $Groups->getChildren($group['id']);
-            $persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
-
-            if (isset($group['head'])) {
-
-                $head = $group['head'];
-                if (is_string($head)) $head = [$head];
-                else $head = DB::doc2Arr($head);
-
-
-                usort($persons, function ($a, $b) use ($head) {
-                    return in_array($a['username'], $head)  ? -1 : 1;
-                });
-            } else {
-                $head = [];
-            }
-            ?>
-            <h3><?= lang('Employees', 'Mitarbeitende') ?></h3>
-            <table class="table" id="person-table">
-                <tbody>
-                    <?php
-                    if (empty($persons ?? array())) {
-                    ?>
-                        <tr>
-                            <td>
-                                <?= lang('No persons connected.', 'Keine Personen verknüpft.') ?>
-                            </td>
-                        </tr>
-                    <?php
-                    } else foreach ($persons as $i => $person) {
-                        $username = strval($person['username']);
-
-                        $img = ROOTPATH . "/img/no-photo.png";
-                        if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                            $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                        }
-
-                    ?>
-                        <tr class="<?= $i >= 10 ? 'hidden' : '' ?>">
-                            <td>
-                                <div class="d-flex align-items-center">
-
-                                    <img src="<?= $img ?>" alt="" style="max-width: 3rem;" class="mr-20 rounded">
-                                    <div class="">
-                                        <h5 class="my-0">
-                                            <?php if (in_array($username, $head)) { ?>
-                                                <i class="ph ph-crown text-signal"></i>
-                                            <?php } ?>
-
-                                            <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="colorless">
-                                                <?= $person['first'] ?>
-                                                <?= $person['last'] ?>
-                                            </a>
-                                        </h5>
-                                        <?= $person['position'] ?? '' ?>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
-
-
-
-                </tbody>
-            </table>
-            <?php if (($i ?? 0) >= 10) {
-                $n = $i - 9;
-            ?>
-                <a onclick="$('#person-table').find('tr.hidden').removeClass('hidden');$(this).hide()"><?= lang("Show $n more", "Zeige $n weitere") ?></a>
-            <?php } ?>
-
-
-            <h3><?= lang('Relevant units', 'Verwandte Einheiten') ?></h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Parent unit', 'Übergeordnete Einheit') ?></span>
-                            <?php if ($group['parent']) { ?>
-                                <a href="<?= ROOTPATH ?>/groups/view/<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
-                            <?php } else { ?>
-                                -
-                            <?php } ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Child units', 'Untereinheiten') ?></span>
-                            <?php
-                            $children = $osiris->groups->find(['parent' => $id])->toArray();
-                            ?>
-                            <?php if (!empty($children)) { ?>
-                                <ul class="list">
-                                    <?php foreach ($children as $child) { ?>
-                                        <li>
-                                            <a href="<?= ROOTPATH ?>/groups/view/<?= $child['id'] ?>" class="colorless font-weight-bold"><?= $child['name'] ?></a><br>
-                                            <span class="text-muted"><?= $child['unit'] ?></span>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            <?php } else { ?>
-                                -
-                            <?php } ?>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            
-        </div>
-
     </div>
-
 </div>
 
 
-<?php
 
-if (isset($_GET['verbose'])) {
-    dump($group, true);
-}
-?>
+<form action="<?= $formaction ?>" method="post" id="group-form">
+    <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
+
+    <?php
+    $type = $form;
+    $t = $id;
+    $color = $type['color'] ?? '';
+    $member = $osiris->activities->count(['type' => $t]);
+    ?>
+
+    <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>;">
+
+        <h4 class="header" style="background-color:<?= $color ?>20; color:<?= $color ?>">
+            <?php if (!empty($type)) { ?>
+                <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> mr-10"></i>
+                <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
+                <?php if ($type['disabled'] ?? false) { ?>
+                    <span class="badge danger ml-20">DISABLED</span>
+                <?php } ?>
+
+            <?php } else { ?>
+                <?= lang('New category of activity types', 'Neue Kategorie von Aktivitätstypen') ?>
+            <?php } ?>
+        </h4>
+
+        <div class="content">
+            <input type="hidden" name="values[id]" value="<?= $t ?>">
+            <input type="hidden" name="add" value="type">
+
+            <div class="row row-eq-spacing">
+                <?php if (isset($type['id'])) { ?>
+                    <input type="hidden" name="original_id" value="<?= $type['id'] ?>">
+                <?php } ?>
+
+                <div class="col-sm">
+                    <label for="icon" class="required">ID</label>
+                    <input type="text" class="form-control" name="values[id]" required value="<?= $type['id'] ?? '' ?>" oninput="sanitizeID(this)">
+                    <small><a href="#unique"><i class="ph ph-info"></i> <?= lang('Must be unqiue', 'Muss einzigartig sein') ?></a></small>
+                </div>
+                <div class="col-sm">
+                    <label for="icon" class="required element-time"><a href="https://phosphoricons.com/" class="link" target="_blank" rel="noopener noreferrer">Icon</a> </label>
+                    <input type="text" class="form-control" name="values[icon]" required value="<?= $type['icon'] ?? 'placeholder' ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="name_de" class="">Color</label>
+                    <input type="color" class="form-control" name="values[color]" value="<?= $type['color'] ?? '' ?>">
+                </div>
+            </div>
+
+            <div class="row row-eq-spacing">
+                <div class="col-sm">
+                    <label for="name" class="required ">Name (en)</label>
+                    <input type="text" class="form-control" name="values[name]" required value="<?= $type['name'] ?? '' ?>">
+                </div>
+                <div class="col-sm">
+                    <label for="name_de" class="">Name (de)</label>
+                    <input type="text" class="form-control" name="values[name_de]" value="<?= $type['name_de'] ?? '' ?>">
+                </div>
+            </div>
+
+            <?php if (!empty($type)) { ?>
+
+                <hr>
+                <h5><?= lang('Types', 'Typen') ?>:</h5>
+                <ul class="horizontal">
+                    <?php
+                    $children = $osiris->adminTypes->find(['parent' => $id]);
+                    foreach ($children as $subtype) { ?>
+                        <li>
+                            <a href="<?= ROOTPATH ?>/admin/types/<?= $subtype['id'] ?>">
+                                <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?>"></i>
+                                <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
+                            </a>
+                        </li>
+                    <?php } ?>
+                    <li>
+                        <a class="btn text-<?= $t ?>" href="<?= ROOTPATH ?>/admin/types/new?parent=<?= $id ?>"><i class="ph ph-plus-circle"></i>
+                            <?= lang('Add subtype', 'Neuen Typ hinzufügen') ?>
+                        </a>
+                    </li>
+                </ul>
+            <?php } ?>
+
+        </div>
+
+    </div>
+
+    <button class="btn success" id="submitBtn"><?=$btntext?></button>
+
+</form>
+
+    <?php if (!empty($form)) { ?>
+
+
+        <?php if ($member == 0) { ?>
+            <div class="alert danger mt-20">
+                <form action="<?= ROOTPATH ?>/category/delete/<?= $id ?>" method="post">
+                    <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/groups">
+                    <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
+                    <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>
+                </form>
+            </div>
+        <?php } else { ?>
+
+            <div class="alert danger mt-20">
+                <?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?><br>
+                <a href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $id ?>"}]}' target="_blank"><?= lang('View activities', 'Aktivitäten zeigen') ?></a>
+
+            </div>
+        <?php } ?>
+
+
+    <?php } ?>
+
+
+    <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
+    <script src="<?= ROOTPATH ?>/js/admin-categories.js"></script>

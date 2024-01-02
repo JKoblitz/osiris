@@ -22,8 +22,13 @@
     <i class="ph ph-gear"></i>
     <?= lang('Categories', 'Kategorien') ?>
 </h1>
+<a class="btn" href="<?= ROOTPATH ?>/admin/categories/new">
+    <i class="ph ph-plus-circle"></i>
+    <?= lang('Add category', 'Kategorie hinzufügen') ?>
+</a>
+
 <?php foreach ($Categories->categories as $type) { ?>
-    <div class="alert mb-10">
+    <div class="box px-20 py-10 mb-10">
         <h3 class="title" style="color: <?= $type['color'] ?? 'inherit' ?>">
             <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> mr-10"></i>
             <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
@@ -33,15 +38,26 @@
         </a>
 
         <hr>
-        <b><?= lang('Subcategories', 'Unterkategorien') ?>:</b>
-        <ul class="horizontal">
-            <?php foreach ($type['children'] as $subtype) { ?>
+        <h5><?= lang('Types', 'Typen') ?>:</h5>
+        <ul class="horizontal mb-0">
+            <?php
+            $children = $osiris->adminTypes->find(['parent' => $type['id']]);
+            foreach ($children as $subtype) { ?>
                 <li>
-
-                    <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?>"></i>
-                    <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
+                    <a href="<?= ROOTPATH ?>/admin/types/<?= $subtype['id'] ?>">
+                        <i class="ph ph-<?= $subtype['icon'] ?? 'placeholder' ?>"></i>
+                        <?= lang($subtype['name'], $subtype['name_de'] ?? $subtype['name']) ?>
+                    </a>
                 </li>
             <?php } ?>
+            <li>
+                <a class="btn text-<?= $type['id'] ?>" href="<?= ROOTPATH ?>/admin/types/new?parent=<?= $type['id'] ?>">
+                    <i class="ph ph-plus-circle"></i>
+                    <span class="sr-only">
+                        <?= lang('Add subtype', 'Neuen Typ hinzufügen') ?>
+                    </span>
+                </a>
+            </li>
         </ul>
     </div>
 <?php } ?>

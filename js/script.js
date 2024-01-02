@@ -87,7 +87,8 @@ $('input[name=activity]').on('change', function () {
 
 })
 
-function toastError(msg = "", title = 'Error') {
+function toastError(msg = "", title = null) {
+    if (title === null) title = lang("Error", "Fehler")
     digidive.initStickyAlert({
         content: msg,
         title: title,
@@ -96,7 +97,8 @@ function toastError(msg = "", title = 'Error') {
         timeShown: 10000
     })
 }
-function toastSuccess(msg = "", title = 'Success') {
+function toastSuccess(msg = "", title = null) {
+    if (title === null) title = lang("Success", "Erfolg")
     digidive.initStickyAlert({
         content: msg,
         title: title,
@@ -105,7 +107,8 @@ function toastSuccess(msg = "", title = 'Success') {
         timeShown: 10000
     })
 }
-function toastWarning(msg = "", title = 'Warning') {
+function toastWarning(msg = "", title = null) {
+    if (title === null) title = lang("Warning", "Achtung")
     digidive.initStickyAlert({
         content: msg,
         title: title,
@@ -781,10 +784,10 @@ function getDOI(doi) {
             if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
 
             var funder = [];
-            if (pub.funder !== undefined && pub.funder !== null){
+            if (pub.funder !== undefined && pub.funder !== null) {
                 pub.funder.forEach(f => {
-                    if (f.award){
-                        funder=funder.concat(f.award)
+                    if (f.award) {
+                        funder = funder.concat(f.award)
                     }
                 });
             }
@@ -832,7 +835,7 @@ function getOpenAccessStatus(doi) {
     var url = 'https://api.openalex.org/works'
     var data = { mailto: 'juk20@dsmz.de' }
     url += '/https://doi.org/' + doi
-    
+
     $.ajax({
         type: "GET",
         data: data,
@@ -848,7 +851,7 @@ function getOpenAlexDOI(doi) {
     var url = 'https://api.openalex.org/works'
     var data = { mailto: 'juk20@dsmz.de' }
     url += '/https://doi.org/' + doi
-    
+
     $.ajax({
         type: "GET",
         data: data,
@@ -888,10 +891,10 @@ function getOpenAlexDOI(doi) {
                     authors.push(name)
                 });
             }
-            
+
             var journal = pub.primary_location
             var pages = pub.biblio.first_page
-            if (pub.biblio.last_page) pages += '-'+pub.biblio.last_page
+            if (pub.biblio.last_page) pages += '-' + pub.biblio.last_page
             var pubdata = {
                 title: pub.title,
                 first_authors: first,
@@ -1215,15 +1218,15 @@ function fillForm(pub) {
 
 }
 
-function fillOpenAccess(oa){
-    if (oa === false || oa == 'closed'){
+function fillOpenAccess(oa) {
+    if (oa === false || oa == 'closed') {
         $('#open_access-0').attr('checked', true)
         $('#oa_status option[value=closed]').attr('selected', true)
     } else {
         if (oa === true) oa = 'open'
         console.log(oa);
         $('#open_access').attr('checked', true)
-        $('#oa_status option[value='+oa+']').attr('selected', true)
+        $('#oa_status option[value=' + oa + ']').attr('selected', true)
     }
     $('#oa_status').addClass('is-valid')
 }
@@ -1733,7 +1736,7 @@ function doubletCheck() {
 
     var form = objectifyForm($('#activity-form'))
     console.log(form);
-    if (form['values[start]']){
+    if (form['values[start]']) {
         var start = form['values[start]'].split('-')
         form['values[year]'] = start[0]
         form['values[month]'] = start[1]
@@ -1754,7 +1757,7 @@ function doubletCheck() {
                 // doublet.find('a')
                 // .attr('href', ROOTPATH + '/activities/' + data[])
                 $('.loader').removeClass('show')
-                if (!doubletFound){
+                if (!doubletFound) {
                     doubletFound = true;
                     // toastWarning(lang('Possible douplicate found.', 'Mögliche Dublette gefunden.'))
                 }

@@ -193,7 +193,8 @@ Route::get('/migrate', function () {
         // }
 
         echo "Update Activity schema";
-        $osiris->categories->deleteMany([]);
+        $osiris->adminCategories->deleteMany([]);
+        $osiris->adminTypes->deleteMany([]);
         foreach ($Settings->getActivities() as $t => $type) {
             $cat = [
                 "id" => $type['id'],
@@ -201,14 +202,15 @@ Route::get('/migrate', function () {
                 "color" => $type['color'],
                 "name" => $type['name'],
                 "name_de" => $type['name_de'],
-                "children" => $type['subtypes']
+                // "children" => $type['subtypes']
             ];
-            // foreach ($type['subtypes'] as $s => $subtype) {                
-            //     dump($subtype, true);
-            //     $cat['children'][]
-            // }
             dump($cat, true);
-            $osiris->categories->insertOne($cat);
+            $osiris->adminCategories->insertOne($cat);
+            foreach ($type['subtypes'] as $s => $subtype) {   
+                $subtype['parent'] = $t;             
+                dump($subtype, true);
+                $osiris->adminTypes->insertOne($subtype);
+            }
         }
     }
 
