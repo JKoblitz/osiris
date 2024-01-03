@@ -1,5 +1,6 @@
 <?php
 
+require_once "DB.php";
 include_once "Groups.php";
 
 class Settings
@@ -7,10 +8,14 @@ class Settings
     public $settings = array();
     // private $user = array();
     public $roles = array();
+    private $osiris = null;
 
     function __construct($user = array())
     {
+        // parent::__construct();
         // set user roles
+        $DB = new DB;
+        $this->osiris = $DB->db;
         if (isset($user['roles'])) {
             $this->roles = DB::doc2Arr($user['roles']);
         } else {
@@ -21,9 +26,7 @@ class Settings
         // everyone is a user
         $this->roles[] = 'user';
 
-
-        // dump($this->roles);
-        // get default settings
+        // get default settings from file
         $json = file_get_contents(BASEPATH . "/settings.default.json");
         $default = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
         $this->settings = $default;
@@ -36,6 +39,8 @@ class Settings
             // replace existing keys with new ones
             $this->settings = array_merge($this->settings, $set);
         }
+
+        // TODO: transfer Rights and Roles to DB
     }
 
     function get($key)
@@ -51,7 +56,7 @@ class Settings
             case 'departments':
                 return $s['departments'];
             case 'activities':
-                return $s['activities'];
+                return $this->getActivities();
             case 'general':
                 return $s['general'];
             case 'roles':
@@ -91,9 +96,13 @@ class Settings
     function getActivities($type = null)
     {
         if ($type === null)
-            return $this->settings['activities'];
+            return $this->osiris->adminCategories->find()->toArray();
+            // return $this->settings['activities'];
 
-        return $this->settings['activities'][$type] ?? [
+        $arr = $this->osiris->adminCategories->findOne(['id'=>$type]);
+        if (!empty($arr)) return DB::doc2Arr($arr);
+        // default
+        return [
             'name' => $type,
             'name_de' => $type,
             'color' => '#cccccc',
@@ -101,32 +110,28 @@ class Settings
         ];
     }
 
+    function getActivity($type, $subtype = null){
+        if ($subtype === null){
+            $act = $this->osiris->adminCategories->findOne(['id'=>$type]);
+            return $act;
+        }
+
+        $act = $this->osiris->adminTypes->findOne(['id'=>$subtype]);
+        return $act;
+        
+    }
+
     function title($type, $subtype = null)
     {
-        $act = $this->getActivities($type);
-        if ($subtype === null)
-            return lang($act['name'], $act['name_de'] ?? $act['name']);
-
-        foreach ($act['subtypes'] as $st) {
-            if ($st['id'] == $subtype) {
-                return lang($st['name'], $st['name_de'] ?? $st['name']);
-            }
-        }
+            $act = $this->getActivity($type, $subtype);
+            if (empty($act)) return 'unknown';
+            return lang($act['name'], $act['name_de'] ?? $act['name']);        
     }
 
     function icon($type, $subtype = null, $tooltip = true)
     {
-        $act = $this->getActivities($type);
+        $act = $this->getActivity($type, $subtype);
         $icon = $act['icon'] ?? 'placeholder';
-
-        if ($subtype !== null) {
-            foreach ($act['subtypes'] as $st) {
-                if ($st['id'] == $subtype) {
-                    $icon = $st['icon'] ?? $icon;
-                    break;
-                }
-            }
-        }
 
         $icon = "<i class='ph text-$type ph-$icon'></i>";
         if ($tooltip) {
@@ -135,7 +140,6 @@ class Settings
                 $icon
             </span>";
         }
-
         return $icon;
     }
 

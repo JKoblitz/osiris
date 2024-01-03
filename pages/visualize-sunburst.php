@@ -152,8 +152,8 @@ updateRecursive($flare, $activities);
                 <label for="type-select"><?= lang('Activities', 'Aktivitäten') ?></label>
                 <select name="type" id="type-select" class="form-control ">
                     <option value=""><?= lang('All types', 'Alle Arten') ?></option>
-                    <?php foreach ($Settings->get('activities') as $type => $a) { ?>
-                        <option value="<?= $type ?>" <?= $type == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
+                    <?php foreach ($Settings->getActivities as $a) { ?>
+                        <option value="<?= $a['id'] ?>" <?= $a['id'] == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
                     <?php } ?>
                 </select>
             </div>

@@ -490,6 +490,10 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="ph ph-gear" aria-hidden="true"></i>
                         <?= lang('Categories', 'Kategorien') ?>
                     </a>
+                    <a href="<?= ROOTPATH ?>/admin/features" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('admin/features') ?>">
+                        <i class="ph ph-gear" aria-hidden="true"></i>
+                        <?= lang('Features', 'Funktionen') ?>
+                    </a>
                 <?php } ?>
 
                 <div class="title">

@@ -1,5 +1,8 @@
 
 <?php
+/**
+ * @deprecated 1.3.0
+ */
 
 include_once "DB.php";
 

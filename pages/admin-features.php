@@ -9,18 +9,13 @@
  * @link /admin/features
  *
  * @package OSIRIS
- * @since 1.2.3
+ * @since 1.3.0
  * 
  * @copyright	Copyright (c) 2023, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
 
-?>
-
-
-<?php
-    // include BASEPATH . "/components/admin-nav.php";
 ?>
 
 <h1>
@@ -112,7 +107,7 @@
                 </div>
             </div>
 
-
+<!-- 
             <div class="form-group">
                 <label for="cordis"><a href="https://cordis.europa.eu/user/api/en" target="_blank" rel="noopener noreferrer">CORDIS</a> API-Key (EU)</label>
                 <input type="text" class="form-control" name="features[projects][cordis-api]" id="cordis" value="<?=$features['projects']['cordis-api'] ?? ''?>">
@@ -120,7 +115,7 @@
             <div class="form-group">
                 <label for="gepris">GEPRIS API-Key (DFG)</label>
                 <input type="text" class="form-control" name="features[projects][gepris-api]" id="gepris" value="<?=$features['projects']['gepris-api'] ?? ''?>">
-            </div>
+            </div> -->
         </div>
     </div>
 

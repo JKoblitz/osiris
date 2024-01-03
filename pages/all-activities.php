@@ -100,7 +100,9 @@ $user = $user ?? $_SESSION['username'];
             </h6>
             <div class="filter">
                 <table id="filter-type" class="table small simple">
-                    <?php foreach ($Settings->getActivities() as $id => $a) { ?>
+                    <?php foreach ($Settings->getActivities() as $a) { 
+                        $id = $a['id'];
+                        ?>
                         <tr style="--highlight-color:  <?=$a['color']?>;">
                             <td>
                                 <a data-type="<?= $id ?>" onclick="filterActivities(this, '<?= $id ?>', 1)" class="item" id="<?= $id ?>-btn">

@@ -14,6 +14,8 @@
  * @copyright	Copyright (c) 2023, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
+ * 
+ * @deprecated 1.3.0
  */
 
 include_once BASEPATH . "/php/Modules.php";

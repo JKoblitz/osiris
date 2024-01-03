@@ -23,6 +23,23 @@ $QUARTER = intval($_GET['quarter'] ?? CURRENTQUARTER);
 
 $q = $YEAR . "Q" . $QUARTER;
 
+
+$lastQ = $QUARTER - 1;
+$lastY = $YEAR;
+if ($lastQ < 1) {
+    $lastQ = 4;
+    $lastY -= 1;
+}
+// $lastquarter = $lastY . "Q" . $lastQ;
+
+$nextQ = $QUARTER + 1;
+$nextY = $YEAR;
+if ($nextQ > 4) {
+    $nextQ = 1;
+    $nextY += 1;
+}
+// $nextquarter = $nextY . "Q" . $nextQ;
+
 // include_once BASEPATH . "/php/_lom.php";
 // $LOM = new LOM($user, $osiris);
 
@@ -35,10 +52,9 @@ $coins = $Coins->getCoins($user, $YEAR);
 
 
 $groups = [];
-foreach ($Settings->get('activities') as $key => $value) {
+foreach ($Settings->getActivities() as $value) {
     $groups[$value['id']] = [];
 }
-
 
 $timeline = [];
 $timelineGroups = [];
@@ -198,29 +214,62 @@ if ($Settings->hasFeatureDisabled('coins')) {
                         <?= lang('Change year and quarter', 'Ändere Jahr und Quartal') ?>:
                     </label>
 
-                    <div class="input-group">
 
-                        <div class="input-group-prepend">
-                            <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                                <i class="ph ph-calendar-check"></i>
-                            </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>" >
+                            <a href="?year=<?= $YEAR-1 ?>&quarter=<?= $QUARTER ?>" class="btn text-primary">
+                            <i class="ph ph-caret-double-left"></i>
+                        </a>
                         </div>
-                        <select name="year" id="year" class="form-control">
-                            <?php foreach (range($Settings->get('startyear'), CURRENTYEAR) as $year) { ?>
-                                <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
-                            <?php } ?>
-                        </select>
-                        <select name="quarter" id="quarter" class="form-control">
-                            <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
-                            <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
-                            <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
-                            <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
-                        </select>
-                        <div class="input-group-append">
-                            <button class="btn primary"><i class="ph ph-check"></i></button>
+                        <div class="input-group-prepend" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>" >
+                            <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn text-primary">
+                            <i class="ph ph-caret-left"></i>
+                        </a>
+                        </div>
+                        <div class="input-group-prepend">
+                            <a class="input-group-text text-primary" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>" >
+                                <!-- <i class="ph ph-circle"></i> -->
+                                <?= $YEAR ?>
+                                Q<?= $QUARTER ?>
+                            </a>
+                        </div>
+                        <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>" >
+                            <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn text-primary">
+                            <i class="ph ph-caret-right"></i>
+                        </a>
+                        </div>
+                        <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>" >
+                            <a href="?year=<?= $YEAR+1 ?>&quarter=<?= $QUARTER ?>" class="btn text-primary">
+                            <i class="ph ph-caret-double-right"></i>
+                        </a>
                         </div>
                     </div>
 
+                    <div class="alert w-400 position-absolute" id="detailed" style="display: none">
+                        <div class="input-group">
+
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
+                                    <i class="ph ph-calendar-check"></i>
+                                </div>
+                            </div>
+                            <select name="year" id="year" class="form-control">
+                                <?php foreach (range($Settings->get('startyear'), CURRENTYEAR) as $year) { ?>
+                                    <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
+                                <?php } ?>
+                            </select>
+                            <select name="quarter" id="quarter" class="form-control">
+                                <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
+                                <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
+                                <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
+                                <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn primary"><i class="ph ph-check"></i></button>
+                            </div>
+                        </div>
+                        <a href="?year=<?= CURRENTYEAR ?>&quarter=<?= CURRENTQUARTER ?>"><?=lang('Current quarter', 'Aktuelles Quartal')?></a>
+                    </div>
                 </div>
             </form>
             <div class="text-lg-right">
@@ -274,9 +323,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
         <div class="content my-0">
 
             <h2>
-                <?php
-                echo lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR;
-                ?>
+                <?= lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR ?>
             </h2>
 
 
@@ -286,16 +333,19 @@ if ($Settings->hasFeatureDisabled('coins')) {
     <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
     <script src="<?= ROOTPATH ?>/js/popover.js"></script>
     <script src="<?= ROOTPATH ?>/js/my-year.js"></script>
-    <!-- <script src="<?= ROOTPATH ?>/js/d3-timeline.js"></script> -->
 
     <script>
         let typeInfo = JSON.parse('<?= json_encode($Settings->getActivities(null)) ?>');
+        var typeInfoNew = {}
+        typeInfo.forEach(el => {
+            typeInfoNew[el.id] = el;
+        });
         let events = JSON.parse('<?= json_encode(array_values($timeline)) ?>');
         console.log(events);
         var types = JSON.parse('<?= json_encode($timelineGroups) ?>');
         var year = <?= $YEAR ?>;
         var quarter = <?= $QUARTER ?>;
-        timeline(year, quarter, typeInfo, events, types);
+        timeline(year, quarter, typeInfoNew, events, types);
     </script>
 
 

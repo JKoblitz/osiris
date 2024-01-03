@@ -141,7 +141,7 @@ Route::post('/crud/(categories|types)/create', function ($col) {
     } else {
         $collection = $osiris->adminTypes;
         if (!isset($values['parent'])) {
-            header("Location: " . ROOTPATH . "/types/new?msg=Type must have parent.");
+            header("Location: " . ROOTPATH . "/types/new?msg=Type must have a parent category.");
             die();
         }
     }
@@ -154,7 +154,8 @@ Route::post('/crud/(categories|types)/create', function ($col) {
     }
 
     $insertOneResult  = $collection->insertOne($values);
-    $id = $insertOneResult->getInsertedId();
+    // $id = $insertOneResult->getInsertedId();
+    $id = $values['id'];
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         $red = str_replace("*", $id, $_POST['redirect']);
@@ -174,8 +175,10 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
 
     if ($col == 'categories') {
         $collection = $osiris->adminCategories;
+        $key = 'type';
     } else {
         $collection = $osiris->adminTypes;
+        $key = 'subtype';
     }
 
 
@@ -183,7 +186,11 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
 
     // check if ID has changed
     if (isset($_POST['original_id']) && $_POST['original_id'] != $values['id']) {
-        // TODO: update all activities 
+        // update all connected activities 
+        $osiris->activities->updateMany(
+            [$key => $_POST['original_id']],
+            ['$set' => [$key => $values['id']]]
+        );
     }
 
     if ($col == 'types') {
@@ -193,19 +200,18 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
         }
         // check if parent has changed
         if (isset($_POST['original_parent']) && $_POST['original_parent'] != $values['parent']) {
-            // TODO: update all activities 
+            // update all connected activities 
+            $osiris->activities->updateMany(
+                ['type' => $_POST['original_parent'], 'subtype' => $values['id']],
+                ['$set' => ['type' => $values['parent']]]
+            );
         }
     }
-
-    dump($values, true);
-    die;
-
 
     // add information on updating process
     $values['updated'] = date('Y-m-d');
     $values['updated_by'] = strtolower($_SESSION['username']);
 
-    
     $mongo_id = $DB->to_ObjectID($id);
     $updateResult = $collection->updateOne(
         ['_id' => $mongo_id],

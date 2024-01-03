@@ -55,14 +55,9 @@ $Format = new Document(true);
 </table>
 
 <?php
-$activities = $Settings->getActivities();
-$types = array_keys($activities);
-$subtypes = array_map(function ($a) {
-    return array_column($a['subtypes'], 'id');
-}, $activities);
-
-$subtypes = flatten($subtypes);
-?>
+    $categories = $osiris->adminCategories->distinct('id');
+    $types = $osiris->adminTypes->distinct('id');
+    ?>
 
 <script>
     // var mongo = $('#builder').queryBuilder('getMongo');

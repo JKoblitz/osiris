@@ -587,15 +587,18 @@ class DB
 
         // check ongoing reminder
         // but first get all open end subtypes
-        $Format = new Document();
-        $activities = $Format->getActivities();
+        // $Format = new Document();
+        // $activities = $Format->getActivities();
         $openendtypes = [];
-        foreach ($activities as $typeArr) {
-            foreach ($typeArr['subtypes'] as $subtype => $subArr) {
-                if (in_array('date-range-ongoing', $subArr['modules']) || in_array('date-range-ongoing*', $subArr['modules']))
-                    $openendtypes[] = $subtype;
+        $types = $this->db->adminTypes->find()->toArray();
+        // foreach ($types as $typeArr) {
+            foreach ($types as $typeArr) {
+                $type = $typeArr['id'];
+                $modules = DB::doc2Arr($typeArr['modules']);
+                if (in_array('date-range-ongoing', $modules) || in_array('date-range-ongoing*', $modules))
+                    $openendtypes[] = $type;
             }
-        }
+        // }
         // then find all documents that belong to this
         $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype' => ['$in' => $openendtypes]], ['projection' => ['end-delay' => 1]]);
         foreach ($docs as $doc) {
