@@ -29,11 +29,18 @@ $role_groups = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
     <?=lang('Roles &amp; Rights', 'Rollen &amp; Rechte')?>
 </h1>
 
-<form action="#" method="post" id="role-form">
+<form action="<?=ROOTPATH?>/crud/admin/roles" method="post" id="role-form">
 
     <?php
-    $roles = $Settings->get('roles');
-    $rights = $Settings->get('rights');
+    $req = $osiris->adminGeneral->findOne(['key'=>'roles']);
+    $roles =  DB::doc2Arr($req['value'] ?? array('user', 'scientist', 'admin'));
+
+    $rights = [];
+    
+    foreach ($osiris->adminRights->find([]) as $row) {
+        $rights[$row['right']][$row['role']] = $row['value'];
+    }
+
     ?>
 
     <table class="table my-20">
@@ -57,19 +64,19 @@ $role_groups = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
                 </tr>
                 <?php foreach ($group['fields'] as $field) {
                     $right = $field['id'];
-                    $values = $rights[$right];
+                    $values = $rights[$right] ?? array();
                 ?>
                     <tr>
                         <td class="pl-20">
                             <?= lang($field['en'], $field['de']) ?> 
                             <code class="code font-size-12 text-muted"><?=$right?></code>
                     </td>
-                        <?php foreach ($roles as $n => $key) {
-                            $val = $values[$n];
+                        <?php foreach ($roles as $role) {
+                            $val = $values[$role] ?? false;
                         ?>
                             <td>
                                 <input type="checkbox" <?= $val ? 'checked' : '' ?> onchange="$(this).next().val(Number(this.checked))">
-                                <input type="hidden" name="roles[rights][<?= $right ?>][]" value="<?= $val ? 1 : 0 ?>">
+                                <input type="hidden" name="values[<?= $right ?>][<?=$role?>]" value="<?= $val ? 1 : 0 ?>">
                             </td>
                         <?php } ?>
 

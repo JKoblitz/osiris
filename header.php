@@ -75,11 +75,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
-    <style>
-        :root {
-            --affiliation: "<?= $Settings->get('affiliation') ?>";
-        }
-    </style>
+
 
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css" />
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css" />
@@ -97,7 +93,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
     <?php
     echo $Settings->generateStyleSheet();
     ?>
-
+    <style>
+        :root {
+            --affiliation: "<?= $Settings->get('affiliation') ?>";
+        }
+    </style>
+    
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
         const AFFILIATION = "<?= $Settings->get('affiliation') ?>";
@@ -160,7 +161,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
-                <img src="<?= ROOTPATH ?>/img/<?= $Settings->get('affiliation_details')['logo'] ?? '#' ?>" alt="<?= $Settings->get('affiliation') ?>">
+                <?=$Settings->printLogo("")?>
             </a>
         </div>
         <nav class="navbar navbar-bottom">

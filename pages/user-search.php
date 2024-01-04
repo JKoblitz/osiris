@@ -56,7 +56,7 @@ $Format = new Document(true);
 
     <?php
     $depts = [];
-    foreach ($Settings->getDepartments() as $dept) {
+    foreach ($Groups->groups as $dept) {
         $depts[$dept['id']] = $dept['name'];
     }
     ?>

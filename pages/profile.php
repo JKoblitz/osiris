@@ -89,10 +89,13 @@ $lastquarter = $Y . "Q" . $Q;
 $currentuser = $user == $_SESSION['username'];
 
 // Check for new achievements
-$Achievement = new Achievement($osiris);
-$Achievement->initUser($user);
-$Achievement->checkAchievements();
-$user_ac = $Achievement->userac;
+
+if ($Settings->featureEnabled('achievements')) {
+    $Achievement = new Achievement($osiris);
+    $Achievement->initUser($user);
+    $Achievement->checkAchievements();
+    $user_ac = $Achievement->userac;
+}
 
 
 include_once BASEPATH . "/php/Coins.php";
@@ -101,7 +104,7 @@ $Coins = new Coins();
 $coins = $Coins->getCoins($user);
 
 // $showcoins = (!($scientist['hide_coins'] ?? true));
-if ($Settings->hasFeatureDisabled('coins')) {
+if (!$Settings->featureEnabled('coins')) {
     $showcoins = false;
 } else {
     $showcoins = ($scientist['show_coins'] ?? 'no');
@@ -270,7 +273,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     </div>
 
     <?php
-    if (!$Settings->hasFeatureDisabled('achievements')) {
+    if ($Settings->featureEnabled('achievements')) {
         if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false) && !($USER['hide_achievements'] ?? false)) {
     ?>
             <div class="achievements text-right" style="max-width: 35rem;">
@@ -312,9 +315,12 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
             </div>
             <div class="btn-group btn-group-lg">
-                <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
-                    <i class="ph ph-trophy text-signal ph-fw"></i>
-                </a>
+                <?php if ($Settings->featureEnabled('achievements')) { ?>
+                    <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
+                        <i class="ph ph-trophy text-signal ph-fw"></i>
+                    </a>
+                <?php } ?>
+
 
                 <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
                     <i class="ph ph-graph text-osiris ph-fw"></i>
@@ -422,16 +428,18 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
 
         <?php
-        $new = $Achievement->new;
+        if ($Settings->featureEnabled('achievements')) {
+            $new = $Achievement->new;
 
-        if (!empty($new)) {
-            echo '<div class="mt-20">';
-            echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
-            foreach ($new as $i => $n) {
-                $Achievement->snack($n);
+            if (!empty($new)) {
+                echo '<div class="mt-20">';
+                echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
+                foreach ($new as $i => $n) {
+                    $Achievement->snack($n);
+                }
+                $Achievement->save();
+                echo '</div>';
             }
-            $Achievement->save();
-            echo '</div>';
         }
         ?>
 
@@ -448,15 +456,17 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
             <i class="ph ph-graph text-danger ph-fw"></i>
         </a>
+        <?php if ($Settings->featureEnabled('achievements')) { ?>
+            <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
+                <i class="ph ph-trophy text-signal ph-fw"></i>
+            </a>
+        <?php } ?>
 
-        <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
-            <i class="ph ph-trophy text-signal ph-fw"></i>
-        </a>
     </div>
     <div class="btn-group btn-group-lg mt-15 ml-5">
-    <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
-        <i class="ph ph-eye text-muted ph-fw"></i>
-    </a>
+        <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+            <i class="ph ph-eye text-muted ph-fw"></i>
+        </a>
     </div>
     <div class="btn-group btn-group-lg mt-15 ml-5">
         <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
@@ -1000,7 +1010,7 @@ if ($currentuser) { ?>
 
         <?php
         // IMPACT FACTOR WIDGET
-        if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics'))) { ?>
+        if (($currentuser || $Settings->featureEnabled('user-metrics'))) { ?>
             <div class="col-md-6 col-lg-8" id="chart-impact">
                 <div class="box h-full">
                     <div class="chart content">
@@ -1018,7 +1028,7 @@ if ($currentuser) { ?>
 
         <?php
         // ROLE WIDGET
-        if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics'))) { ?>
+        if (($currentuser || $Settings->featureEnabled('user-metrics'))) { ?>
             <div class="col-md-6 col-lg-4" id="chart-authors">
                 <div class="box h-full">
                     <div class="chart content">
@@ -1057,7 +1067,7 @@ if ($currentuser) { ?>
         </table>
     </div>
 
-    <?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics'))) { ?>
+    <?php if (($currentuser || $Settings->featureEnabled('user-metrics'))) { ?>
         <div class="" id="chart-activities">
             <div class="box">
                 <div class="chart content">

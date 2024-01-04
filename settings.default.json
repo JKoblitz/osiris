@@ -6,87 +6,26 @@
         "disable-user-metrics": "false"
     },
     "affiliation": {
-        "id": "DSMZ",
-        "name": "Leibniz Institute DSMZ-German Collection of Microorganisms and Cell Cultures GmbH",
-        "link": "https://www.dsmz.de/",
-        "logo": "dsmz.svg",
+        "id": "NONE",
+        "name": "Institute",
+        "link": "https://osiris-app.de",
         "type": "Facility",
-        "ror": "https://ror.org/02tyer376",
-        "location": "Braunschweig, Germany",
-        "country": "DE",
-        "lat": 52.211427,
-        "lng": 10.531188
+        "ror": "",
+        "location": "",
+        "country": "",
+        "lat": null,
+        "lng": null
     },
     "departments": [
         {
-            "id": "MIOS",
+            "id": "SCIENCE",
             "color": "#d31e25",
-            "name": "Mikroorganismen"
+            "name": "Science Department"
         },
         {
-            "id": "BIDB",
-            "color": "#5db5b7",
-            "name": "Bioinformatik & Datenbanken"
-        },
-        {
-            "id": "MIG",
-            "color": "#d2691e",
-            "name": "Mikrobielle Genomforschung"
-        },
-        {
-            "id": "BUG",
-            "color": "#8a3f64",
-            "name": "Bio\u00f6konomie und Gesundheitsforschung"
-        },
-        {
-            "id": "MuTZ",
-            "color": "#31407b",
-            "name": "Menschliche & Tierische Zellkulturen"
-        },
-        {
-            "id": "PFVI",
-            "color": "#369e4b",
-            "name": "Pflanzenviren"
-        },
-        {
-            "id": "M\u00d6D",
-            "color": "#d1c02b",
-            "name": "Mikrobielle \u00d6kologie"
-        },
-        {
-            "id": "Services",
-            "color": "#4f2e39",
-            "name": "Services"
-        },
-        {
-            "id": "NFG",
-            "color": "#5F272A",
-            "name": "Nachwuchsforschungsgruppen"
-        },
-        {
-            "id": "Patente",
-            "color": "#5F272A",
-            "name": "Patente"
-        },
-        {
-            "id": "IT",
-            "color": "#afafaf",
-            "name": "IT"
-        },
-        {
-            "id": "Verwaltung",
+            "id": "ADMIN",
             "color": "#afafaf",
             "name": "Verwaltung"
-        },
-        {
-            "id": "PuK",
-            "color": "#afafaf",
-            "name": "Presse und Kommunikation"
-        },
-        {
-            "id": "SPI",
-            "color": "#f08080",
-            "name": "Science Policy und Internationalisierung"
         }
     ],
     "activities": {
@@ -393,28 +332,29 @@
                 }
             }
         },
-        "students": {
-            "id": "students",
-            "icon": "student",
+        "teaching": {
+            "id": "teaching",
+            "icon": "chalkboard-simple",
             "color": "#5f272a",
-            "name": "Students & Guests",
-            "name_de": "Studierende & G\u00e4ste",
+            "name": "Teaching",
+            "name_de": "Lehre",
             "subtypes": {
-                "students": {
-                    "id": "students",
-                    "icon": "student",
-                    "name": "Students",
-                    "name_de": "Studenten",
+                "teaching": {
+                    "id": "teaching",
+                    "icon": "chalkboard-simple",
+                    "name": "Teaching",
+                    "name_de": "Lehre",
                     "modules": [
                         "teaching-course*",
-                        "person*",
-                        "authors*",
+                        "teaching-category*",
+                        "supervisor*",
+                        "semester-select",
                         "date-range*"
                     ],
                     "template": {
-                        "print": "{person}, {affiliation}.  <i>{teaching-course}</i>, Pflichtpraktikum im Rahmen des Studiums, {date-range}, betreut von {authors}",
-                        "title": "{person}, {affiliation}.  <i>{teaching-course}</i>",
-                        "subtitle": "betreut von {authors}<br> Pflichtpraktikum im Rahmen des Studiums, {date-range} ({status})"
+                        "print": "{supervisor} {teaching-category} - <i>{teaching-course}</i>. {date-range}.",
+                        "title": "{teaching-category} - {teaching-course}",
+                        "subtitle": "{supervisor} ({date-range}) "
                     }
                 },
                 "theses": {
@@ -435,52 +375,6 @@
                         "print": "{person}, {affiliation}. {title}; {category} ({details}), {date-range} ({status}), betreut von {authors}",
                         "title": "{person}, {affiliation}. <i>{title}</i>",
                         "subtitle": "betreut von {authors}<br> {category} ({details}), {date-range} ({status})"
-                    }
-                },
-                "guests": {
-                    "id": "guests",
-                    "icon": "users",
-                    "name": "Guests",
-                    "name_de": "G\u00e4ste",
-                    "modules": [
-                        "title*",
-                        "authors*",
-                        "person*",
-                        "details",
-                        "guest*",
-                        "date-range*"
-                    ],
-                    "template": {
-                        "print": "{person}, {affiliation}. {title}. {guest} ({date-range})",
-                        "title": "{person}, {affiliation}. <i>{title}</i>",
-                        "subtitle": "betreut von {authors}<br>{guest} ({date-range})"
-                    }
-                }
-            }
-        },
-        "teaching": {
-            "id": "teaching",
-            "icon": "chalkboard-simple",
-            "color": "#000000",
-            "name": "Teaching",
-            "name_de": "Lehre",
-            "subtypes": {
-                "teaching": {
-                    "id": "teaching",
-                    "icon": "chalkboard-simple",
-                    "name": "Teaching",
-                    "name_de": "Lehre",
-                    "modules": [
-                        "teaching-course*",
-                        "teaching-category*",
-                        "supervisor*",
-                        "semester-select",
-                        "date-range*"
-                    ],
-                    "template": {
-                        "print": "{supervisor} {teaching-category} - <i>{teaching-course}</i>. {date-range}.",
-                        "title": "{teaching-category} - {teaching-course}",
-                        "subtitle": "{supervisor} ({date-range}) "
                     }
                 }
             }

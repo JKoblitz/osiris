@@ -404,6 +404,7 @@ function val($index, $default = '')
 
         <!-- SUBTYPES -->
         <?php
+       
         foreach ($Categories->categories as $type) {
             $t = $type['id'];
 

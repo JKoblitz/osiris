@@ -103,7 +103,7 @@ Route::get('/test-new-func', function () {
    
 });
 
-include_once BASEPATH . "/routes/admin.php";
+// include_once BASEPATH . "/routes/admin.php";
 include_once BASEPATH . "/routes/components.php";
 include_once BASEPATH . "/routes/controlling.php";
 include_once BASEPATH . "/routes/database.php";
@@ -123,7 +123,9 @@ include_once BASEPATH . "/routes/visualize.php";
 include_once BASEPATH . "/routes/activities.php";
 include_once BASEPATH . "/routes/export.php";
 include_once BASEPATH . "/routes/concepts.php";
-include_once BASEPATH . "/routes/categories.php";
+include_once BASEPATH . "/routes/adminCategories.php";
+// include_once BASEPATH . "/routes/adminGeneral.php";
+// include_once BASEPATH . "/routes/adminRoles.php";
 
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/CRUD.php";

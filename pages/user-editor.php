@@ -248,7 +248,7 @@
 
 
             <?php
-            if (!$Settings->hasFeatureDisabled('coins')) {
+            if ($Settings->featureEnabled('coins')) {
             ?>
 
                 <div class="mt-10">
@@ -276,7 +276,7 @@
 
 
             <?php
-            if (!$Settings->hasFeatureDisabled('achievements')) {
+            if ($Settings->featureEnabled('achievements')) {
             ?>
                 <div class="mt-10">
                     <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>

@@ -22,7 +22,7 @@ $affiliation = $Settings->get('affiliation_details');
 $Format = new Document();
 
 $N = 0;
-$activities = $osiris->activities->find([]);
+$activities = $osiris->activities->find(['subtype' => ['$exists' => false]]);
 foreach ($activities as $doc) {
     if (isset($doc['subtype'])) continue;
 
@@ -42,12 +42,7 @@ if ($N > 0) {
 ?>
 
 
-<?php
-// include BASEPATH . "/components/admin-nav.php";
-?>
-
-
-<form action="#" method="post" id="modules-form" enctype="multipart/form-data">
+<form action="<?=ROOTPATH?>/crud/admin/general" method="post" id="modules-form">
 
 
     <div class="box success">
@@ -59,73 +54,13 @@ if ($N > 0) {
                 <input type="year" class="form-control" name="general[startyear]" required value="<?= $Settings->get('startyear') ?? '2022' ?>">
                 <span class="text-muted">
                     <?= lang(
-                        'The start year defines the beginning of many charts in OSIRIS. It is possible to add activities that occur befor that year though.',
+                        'The start year defines the beginning of many charts in OSIRIS. It is possible to add activities that occured befor that year though.',
                         'Das Startjahr bestimmt den Anfang vieler Abbildungen in OSIRIS. Man kann jedoch auch Aktivitäten hinzufügen, die vor dem Startjahr geschehen sind.'
                     ) ?>
                 </span>
             </div>
 
 
-            <div class="form-group">
-                <span>
-                    <?= lang('Disable coins globally', 'Coins global ausschalten') ?>
-                </span>
-                <?php
-                $disable_coins = $Settings->hasFeatureDisabled('coins');
-                ?>
-
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" id="disable-coins-true" value="true" name="general[disable-coins]" <?= $disable_coins ? 'checked' : '' ?>>
-                    <label for="disable-coins-true">ja</label>
-                </div>
-
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" id="disable-coins-false" value="false" name="general[disable-coins]" <?= $disable_coins ? '' : 'checked' ?>>
-                    <label for="disable-coins-false">nein</label>
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                <span>
-                    <?= lang('Disable achievements globally', 'Errungenschaften global ausschalten') ?>
-                </span>
-                <?php
-                $disable_achievements = $Settings->hasFeatureDisabled('achievements');
-                ?>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" id="disable-achievements-true" value="true" name="general[disable-achievements]" <?= $disable_achievements ? 'checked' : '' ?>>
-                    <label for="disable-achievements-true">ja</label>
-                </div>
-
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" id="disable-achievements-false" value="false" name="general[disable-achievements]" <?= $disable_achievements ? '' : 'checked' ?>>
-                    <label for="disable-achievements-false">nein</label>
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                <span>
-                    <?= lang('Disable user profile metrics globally', 'Metriken im Nutzerprofil global ausschalten') ?>
-                </span>
-                <?php
-                $disable_user_metrics = $Settings->hasFeatureDisabled('user-metrics');
-                ?>
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" id="disable-user-metrics-true" value="true" name="general[disable-user-metrics]" <?= $disable_user_metrics ? 'checked' : '' ?>>
-                    <label for="disable-user-metrics-true">ja</label>
-                </div>
-
-                <div class="custom-radio d-inline-block ml-10">
-                    <input type="radio" id="disable-user-metrics-false" value="false" name="general[disable-user-metrics]" <?= $disable_user_metrics ? '' : 'checked' ?>>
-                    <label for="disable-user-metrics-false">nein</label>
-                </div>
-
-                <span class="font-size-12 d-block text-muted">
-                    Wenn diese Funktion ausgeschaltet wird, sind Nutzermetriken (Graphen) nur noch auf der eigenen Profilseite sichtbar.
-                </span>
-            </div>
             <button class="btn success">
                 <i class="ph ph-floppy-disk"></i>
                 Save
@@ -180,18 +115,31 @@ if ($N > 0) {
                     <input type="number" class="form-control" name="affiliation[lng]" value="<?= $affiliation['lng'] ?? '' ?>">
                 </div>
             </div>
+
+            <button class="btn signal">
+                <i class="ph ph-floppy-disk"></i>
+                Save
+            </button>
         </div>
-        <hr>
-        <div class="content">
-            <h2 class="title">
+
+
+    </div>
+</form>
+
+
+<form action="<?=ROOTPATH?>/crud/admin/general" method="post" id="modules-form" enctype="multipart/form-data">
+
+
+    <div class="box signal">
+            <h2 class="header">
                 Logo
             </h2>
 
+        <div class="content">
             <div class="row">
                 <div class="col-sm">
                     <b><?= lang('Current Logo', 'Derzeitiges Logo') ?>: <br></b>
-                    <img src="<?= ROOTPATH . '/img/' . $affiliation['logo'] ?>" alt="No logo available" class="img-fluid w-300 mw-full mb-20">
-
+                    <?= $Settings->printLogo("img-fluid w-300 mw-full mb-20") ?>
                 </div>
                 <div class="col-sm text-right">
                     <div class="custom-file mb-20" id="file-input-div">
@@ -208,13 +156,9 @@ if ($N > 0) {
                 Save
             </button>
         </div>
-
-
     </div>
 </form>
-
-
-
+<!-- 
 <div class="box danger">
     <h2 class="header">
         <?= lang('Export/Import Settings', 'Exportiere und importiere Einstellungen') ?>
@@ -241,4 +185,4 @@ if ($N > 0) {
         </form>
     </div>
 
-</div>
+</div> -->

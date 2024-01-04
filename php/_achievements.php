@@ -53,7 +53,7 @@ class Achievement
         // check if user disabled coins
         // $this->showcoins = !($this->userdata['hide_coins'] ?? true);
         global $Settings;
-        if ($Settings->hasFeatureDisabled('coins')) {
+        if (!$Settings->featureEnabled('coins')) {
             $showcoins = false;
         } else {
             $showcoins = ($this->userdata['show_coins'] ?? 'no');

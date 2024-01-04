@@ -1032,7 +1032,7 @@ Route::post('/reports', function () {
     // $section->addTitle('Editorial Boards of Scientific Journals and Reviewing for Scientific Journals', 2);
 
     foreach ($departmentwise as $dept => $data) {
-        $department = $Settings->getDepartments($dept)['name'];
+        $department = $Groups->getName($dept);
         $section->addTitle($department, 1);
         foreach ([
             "editorial" => "Editorenschaften in Zeitschriften:",

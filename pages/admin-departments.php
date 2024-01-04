@@ -18,7 +18,7 @@
  * @deprecated 1.3.0
  */
 
-$departments = $Settings->getDepartments();
+// $departments = $Settings->getDepartments();
 
 
 if (isset($_GET['type']) && isset($_GET['type']['id'])) {

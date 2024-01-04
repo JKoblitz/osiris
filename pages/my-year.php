@@ -117,7 +117,7 @@ foreach ($cursor as $doc) {
 
 // dump($timeline, true);
 // $showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? false));
-if ($Settings->hasFeatureDisabled('coins')) {
+if (!$Settings->featureEnabled('coins')) {
     $showcoins = false;
 } else {
     $showcoins = ($scientist['show_coins'] ?? 'no');

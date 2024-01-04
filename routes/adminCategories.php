@@ -1,31 +1,66 @@
 <?php
 
+/**
+ * Routing file for admin category settings
+ * 
+ * This file is part of the OSIRIS package.
+ * Copyright (c) 2023, Julia Koblitz
+ *
+ * @package     OSIRIS
+ * @since       1.3.0
+ * 
+ * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @license     MIT
+ */
+
+
+Route::get('/admin/(general|roles|features)', function ($page) {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
+    $breadcrumb = [
+        ['name' => lang("Admin Panel $page")]
+    ];
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/admin/$page.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/admin/categories', function () {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang("Categories", "Kategorien")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/categories.php";
+    include BASEPATH . "/pages/admin/categories.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 Route::get('/admin/categories/new', function () {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     $user = $_SESSION['username'];
     $breadcrumb = [
         ['name' => lang("Categories", "Kategorien"), 'path' => "/admin/categories"],
         ['name' => lang("New", "Neu")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/category.php";
+    include BASEPATH . "/pages/admin/category.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
 
 Route::get('/admin/categories/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     $user = $_SESSION['username'];
 
     $id = urldecode($id);
@@ -44,7 +79,7 @@ Route::get('/admin/categories/(.*)', function ($id) {
     $form = DB::doc2Arr($category);
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/category.php";
+    include BASEPATH . "/pages/admin/category.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -52,6 +87,8 @@ Route::get('/admin/categories/(.*)', function ($id) {
 
 Route::get('/admin/types/new', function () {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     $user = $_SESSION['username'];
 
     $breadcrumb = [
@@ -82,7 +119,7 @@ Route::get('/admin/types/new', function () {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/category-type.php";
+    include BASEPATH . "/pages/admin/category-type.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -90,6 +127,8 @@ Route::get('/admin/types/new', function () {
 
 Route::get('/admin/types/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     $user = $_SESSION['username'];
 
     $id = urldecode($id);
@@ -116,7 +155,7 @@ Route::get('/admin/types/(.*)', function ($id) {
     $form = DB::doc2Arr($type);
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/category-type.php";
+    include BASEPATH . "/pages/admin/category-type.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -128,8 +167,120 @@ Route::get('/admin/types/(.*)', function ($id) {
  * CRUD routes
  */
 
+
+
+Route::post('/crud/admin/general', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
+    // $json = $Settings->settings
+    if (isset($_POST['general'])) {
+        if (isset($_POST['general']['startyear'])) {
+            $updateResult = $osiris->adminGeneral->updateOne(
+                ['key' => 'startyear'],
+                ['$set' => ['value' => $_POST['general']['startyear']]]
+            );
+        }
+    }
+    if (isset($_POST['affiliation'])) {
+        $updateResult = $osiris->adminGeneral->updateOne(
+            ['key' => 'affiliation'],
+            ['$set' => ['value' => $_POST['affiliation']]]
+        );
+    }
+
+    $msg = 'settings-saved';
+
+    if (isset($_FILES["logo"])) {
+        $filename = htmlspecialchars(basename($_FILES["logo"]["name"]));
+        $filetype = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $filesize = $_FILES["logo"]["size"];
+        $filepath = BASEPATH . "/img/logo-custom." . $filetype;
+
+        // $filepath = ROOTPATH . "/uploads/$id/$filename";
+
+        if ($_FILES['logo']['error'] != UPLOAD_ERR_OK) {
+            $msg = match ($_FILES['logo']['error']) {
+                1 => lang('The uploaded file exceeds the upload_max_filesize directive in php.ini', 'Die hochgeladene Datei überschreitet die Richtlinie upload_max_filesize in php.ini'),
+                2 => lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."),
+                3 => lang('The uploaded file was only partially uploaded.', 'Die hochgeladene Datei wurde nur teilweise hochgeladen.'),
+                4 => lang('No file was uploaded.', 'Es wurde keine Datei hochgeladen.'),
+                6 => lang('Missing a temporary folder.', 'Der temporäre Ordner fehlt.'),
+                7 => lang('Failed to write file to disk.', 'Datei konnte nicht auf die Festplatte geschrieben werden.'),
+                8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
+                default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
+            };
+        } else if ($filesize > 2000000) {
+            $msg = lang("File is too big: max 2 MB is allowed.", "Die Datei ist zu groß: maximal 2 MB sind erlaubt.");
+        } else {
+            $val = new MongoDB\BSON\Binary(file_get_contents($_FILES["logo"]["tmp_name"]), MongoDB\BSON\Binary::TYPE_GENERIC);
+            // first: delete logo, then: insert new one
+            $osiris->adminGeneral->deleteOne(['key' => 'logo']);
+            $updateResult = $osiris->adminGeneral->insertOne([
+                'key' => 'logo',
+                'value' => $val,
+                'ext' => $filetype
+            ]);
+        }
+    }
+
+    header("Location: " . ROOTPATH . "/admin/general?msg=" . $msg);
+}, 'login');
+
+
+Route::post('/crud/admin/roles', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
+
+    if (isset($_POST['values'])) {
+        $osiris->adminRights->deleteMany([]);
+        $rights = $_POST['values'];
+        foreach ($rights as $right => $roles) {
+            foreach ($roles as $role => $perm) {
+                $r = [
+                    'role' => $role,
+                    'right' => $right,
+                    'value' => boolval($perm)
+                ];
+                $osiris->adminRights->insertOne($r);
+            }
+        }
+    }
+
+    $msg = 'settings-saved';
+
+    header("Location: " . ROOTPATH . "/admin/roles?msg=" . $msg);
+}, 'login');
+
+
+Route::post('/crud/admin/features', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
+
+    if (isset($_POST['values'])) {
+        $osiris->adminFeatures->deleteMany([]);
+        $features = $_POST['values'];
+        foreach ($features as $feature => $enabled) {
+            $r = [
+                'feature' => $feature,
+                'enabled' => boolval($enabled)
+            ];
+            $osiris->adminFeatures->insertOne($r);
+        }
+    }
+
+    $msg = 'settings-saved';
+
+    header("Location: " . ROOTPATH . "/admin/features?msg=" . $msg);
+}, 'login');
+
+
 Route::post('/crud/(categories|types)/create', function ($col) {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     if (!isset($_POST['values'])) die("no values given");
 
     $values = validateValues($_POST['values'], $DB);
@@ -171,6 +322,8 @@ Route::post('/crud/(categories|types)/create', function ($col) {
 
 Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $id) {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     if (!isset($_POST['values'])) die("no values given");
 
     if ($col == 'categories') {
@@ -231,6 +384,8 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
 
 Route::post('/crud/categories/delete/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+
     // select the right collection
 
     // prepare id

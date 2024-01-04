@@ -9,13 +9,17 @@ class Settings
     // private $user = array();
     public $roles = array();
     private $osiris = null;
+    private $features = array();
+
+    public const FEATURES = ['coins', 'achievements', 'user-metrics', 'projects', 'guests'];
 
     function __construct($user = array())
     {
-        // parent::__construct();
-        // set user roles
+        // construct database object 
         $DB = new DB;
         $this->osiris = $DB->db;
+
+        // set user roles
         if (isset($user['roles'])) {
             $this->roles = DB::doc2Arr($user['roles']);
         } else {
@@ -40,7 +44,11 @@ class Settings
             $this->settings = array_merge($this->settings, $set);
         }
 
-        // TODO: transfer Rights and Roles to DB
+        // init Features
+        $featList = $this->osiris->adminFeatures->find([]);
+        foreach ($featList as $f) {
+            $this->features[$f['feature']] = boolval($f['enabled']);
+        }
     }
 
     function get($key)
@@ -48,56 +56,80 @@ class Settings
         $s = $this->settings;
         switch ($key) {
             case 'affiliation':
-                return $s['affiliation']['id'] ?? '';
             case 'affiliation_details':
-                return $s['affiliation'];
+                // return $s['affiliation']['id'] ?? '';
+                $req = $this->osiris->adminGeneral->findOne(['key'=>'affiliation']);
+                if ($key == 'affiliation') return $req['value']['id'] ?? '';
+                return DB::doc2Arr($req['value'] ?? array());
             case 'startyear':
-                return intval($s['general']['startyear'] ?? 2020);
+                $req = $this->osiris->adminGeneral->findOne(['key'=>'startyear']);
+                return intval($req['value'] ?? 2020);
             case 'departments':
-                return $s['departments'];
+                dump("DEPARTMENTS sollten nicht mehr hierüber abgefragt werden.");
+                return '';
             case 'activities':
                 return $this->getActivities();
-            case 'general':
-                return $s['general'];
-            case 'roles':
-                return $s['roles']['roles'];
-            case 'rights':
-                return $s['roles']['rights'];
+            // case 'general':
+            //     return $s['general'];
             case 'features':
-                return $s['features'];
+                return $this->features;
             default:
                 return '';
                 break;
         }
     }
 
-    function hasPermission($right)
+    function printLogo($class=""){
+        $logo = $this->osiris->adminGeneral->findOne(['key'=>'logo']);
+        if (empty($logo)) return '';
+        if ($logo['ext'] == 'svg'){ $logo['ext'] = 'svg+xml';}
+            // return '<img src="data:svg;'.base64_encode($logo['value']).' " class="'.$class.'" />';
+
+        // } else {
+            return '<img src="data:image/'.$logo['ext'].';base64,'.base64_encode($logo['value']).' " class="'.$class.'" />';
+
+        // }
+    }
+    /**
+     * Checks if current user has a permission
+     *
+     * @param string $right
+     * @return boolean
+     */
+    function hasPermission(string $right)
     {
-        $rights = $this->settings['roles']['rights'][$right] ?? array();
-        foreach ($this->roles as $role) {
-            $index = array_search($role, $this->settings['roles']['roles']);
-            if ($index === false) continue;
-            if ($rights[$index] ?? false) return true;
-        }
-        return false;
+        $permission = $this->osiris->adminRights->findOne([
+            'role'=>['$in'=>$this->roles],
+            'right'=>$right,
+            'value'=>true
+        ]);
+        return !empty($permission);
     }
 
-    function hasFeatureDisabled($feature)
-    {
-        return ($this->settings['general']['disable-' . $feature] ?? 'false') == 'true';
+    /**
+     * Check if feature is active
+     *
+     * @param string $feature
+     * @return boolean
+     */
+    function featureEnabled($feature){
+        return $this->features[$feature] ?? false;
+        // $active = $this->osiris->adminFeatures->findOne([
+        //     'feature'=>$feature
+        // ]);
+        // return boolval($active['enabled'] ?? false);
     }
 
-    function featureActive($name){
-        $f = $this->settings['features'][$name] ?? array();
-        if (($f['active'] ?? 'false') == 'true') return true;
-        return false;
-    }
-
+    /**
+     * Get Activity categories
+     *
+     * @param $type
+     * @return array
+     */
     function getActivities($type = null)
     {
         if ($type === null)
             return $this->osiris->adminCategories->find()->toArray();
-            // return $this->settings['activities'];
 
         $arr = $this->osiris->adminCategories->findOne(['id'=>$type]);
         if (!empty($arr)) return DB::doc2Arr($arr);
@@ -110,32 +142,53 @@ class Settings
         ];
     }
 
-    function getActivity($type, $subtype = null){
-        if ($subtype === null){
-            $act = $this->osiris->adminCategories->findOne(['id'=>$type]);
-            return $act;
+    /**
+     * Get Activity settings for cat and type
+     *
+     * @param string $cat
+     * @param string $type
+     * @return array
+     */
+    function getActivity($cat, $type = null){
+        if ($type === null){
+            $act = $this->osiris->adminCategories->findOne(['id'=>$cat]);
+            return DB::doc2Arr($act);
         }
 
-        $act = $this->osiris->adminTypes->findOne(['id'=>$subtype]);
-        return $act;
+        $act = $this->osiris->adminTypes->findOne(['id'=>$type]);
+        return DB::doc2Arr($act);
         
     }
 
-    function title($type, $subtype = null)
+    /**
+     * Helper function to get the label of an activity type
+     *
+     * @param [type] $cat
+     * @param [type] $type
+     * @return string
+     */
+    function title($cat, $type = null)
     {
-            $act = $this->getActivity($type, $subtype);
+            $act = $this->getActivity($cat, $type);
             if (empty($act)) return 'unknown';
             return lang($act['name'], $act['name_de'] ?? $act['name']);        
     }
 
-    function icon($type, $subtype = null, $tooltip = true)
+    /**
+     * Helper function to get the icon of an activity type
+     *
+     * @param [type] $cat
+     * @param [type] $type
+     * @return string
+     */
+    function icon($cat, $type = null, $tooltip = true)
     {
-        $act = $this->getActivity($type, $subtype);
+        $act = $this->getActivity($cat, $type);
         $icon = $act['icon'] ?? 'placeholder';
 
-        $icon = "<i class='ph text-$type ph-$icon'></i>";
+        $icon = "<i class='ph text-$cat ph-$icon'></i>";
         if ($tooltip) {
-            $name = $this->title($type);
+            $name = $this->title($cat);
             return "<span data-toggle='tooltip' data-title='$name'>
                 $icon
             </span>";
@@ -144,38 +197,25 @@ class Settings
     }
 
 
-    function getDepartments($dept = null)
-    {
-
-        if ($dept === null) return $this->settings['departments'];
-        foreach ($this->settings['departments'] as $d) {
-            if ($d['id'] == $dept) return $d;
-        }
-        return $this->settings['departments'][$dept] ?? [
-            "color" => '#cccccc',
-            'name' => $dept
-        ];
-    }
-
     function generateStyleSheet()
     {
         $style = "";
 
-        foreach ($this->settings['departments'] as $val) {
-            $style .= "
-            .text-$val[id] {
-                color: $val[color] !important;
-            }
-            .row-$val[id] {
-                border-left: 3px solid $val[color] !important;
-            }
-            .badge-$val[id] {
-                color:  $val[color] !important;
-                background-color:  $val[color]20 !important;
-            }
-            ";
-        }
-        foreach ($this->settings['activities'] as $val) {
+        // foreach ($this->settings['departments'] as $val) {
+        //     $style .= "
+        //     .text-$val[id] {
+        //         color: $val[color] !important;
+        //     }
+        //     .row-$val[id] {
+        //         border-left: 3px solid $val[color] !important;
+        //     }
+        //     .badge-$val[id] {
+        //         color:  $val[color] !important;
+        //         background-color:  $val[color]20 !important;
+        //     }
+        //     ";
+        // }
+        foreach ($this->getActivities() as $val) {
             $style .= "
             .text-$val[id] {
                 color: $val[color] !important;

@@ -27,7 +27,8 @@
     <?= lang('Add category', 'Kategorie hinzufügen') ?>
 </a>
 
-<?php foreach ($Categories->categories as $type) { ?>
+<?php 
+foreach ($Categories->categories as $type) { ?>
     <div class="box px-20 py-10 mb-10">
         <h3 class="title" style="color: <?= $type['color'] ?? 'inherit' ?>">
             <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> mr-10"></i>

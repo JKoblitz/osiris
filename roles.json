@@ -118,5 +118,47 @@
                 "en": "See raw data for activities"
             }
         ]
+    },
+    {
+        "de": "Projekte",
+        "en": "Projects",
+        "fields": [
+            {
+                "id": "add-projects",
+                "de": "Projekte anlegen",
+                "en": "Add new projects"
+            },
+            {
+                "id": "see-all-projects",
+                "de": "Alle existierende Projekte sehen",
+                "en": "See all existing projects"
+            },
+            {
+                "id": "edit-projects",
+                "de": "Existierende Projekte editieren",
+                "en": "Edit existing projects"
+            },
+            {
+                "id": "add-collaborators",
+                "de": "Kooperationspartner zu Projekten hinzufügen",
+                "en": "Add partners to projects"
+            }
+        ]
+    },
+    {
+        "de": "Gäste",
+        "en": "Guests",
+        "fields": [
+            {
+                "id": "add-guests",
+                "de": "Gäste anmelden",
+                "en": "Add new guests"
+            },
+            {
+                "id": "see-all-guests",
+                "de": "Existierende Projekte editieren",
+                "en": "Edit existing projects"
+            }
+        ]
     }
 ]

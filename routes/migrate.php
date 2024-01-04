@@ -15,6 +15,31 @@
  */
 
 
+Route::get('/install', function () {
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+
+    echo "<h1>Willkommen bei OSIRIS</h>";
+
+    // check version
+    $version = $osiris->system->findOne(['key' => 'version']);
+    if (!empty($version) && !isset($_GET['force'])) {
+        echo "<p>Es sieht so aus, als wäre OSIRIS bereits initialisiert. Falls du eine Neu-Initialisierung erzwingen möchtest, klicke bitte <a href='?force'>hier</a>.</p>";
+        include BASEPATH . "/footer.php";
+        die;
+    }
+
+    echo "<p>Ich initialisiere die Datenbank für Euch und werde erst mal die Standardeinstellungen übernehmen. Du kannst alles Weitere später anpassen.</p>";
+
+    $json = file_get_contents(BASEPATH . "/settings.default.json");
+    $default = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+
+
+    // last step: write Version number to database
+
+    include BASEPATH . "/footer.php";
+});
+
 Route::get('/migrate', function () {
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
@@ -150,6 +175,67 @@ Route::get('/migrate', function () {
 
     if ($V[1] < 3) {
         echo "<h1>Migrate to Version 1.3.X</h1>";
+
+        $json = file_get_contents(BASEPATH . "/settings.default.json");
+        $settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+        // get custom settings
+        $file_name = BASEPATH . "/settings.json";
+        if (file_exists($file_name)) {
+            $json = file_get_contents($file_name);
+            $set = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+            // replace existing keys with new ones
+            $settings = array_merge($settings, $set);
+        }
+        // dump($settings, true);
+
+
+        echo "<p>Update general settings</p>";
+        $osiris->adminGeneral->deleteMany([]);
+
+        $osiris->adminGeneral->insertOne([
+            'key' => 'affiliation',
+            'value' => $settings['affiliation']
+        ]);
+
+        $osiris->adminGeneral->insertOne([
+            'key' => 'startyear',
+            'value' => $settings['general']['startyear']
+        ]);
+        $roles = $settings['roles']['roles'];
+        $osiris->adminGeneral->insertOne([
+            'key' => 'roles',
+            'value' => $roles
+        ]);
+
+
+        echo "<p>Update Features</p>";
+        $osiris->adminFeatures->deleteMany([]);
+        foreach (["coins", "achievements", "user-metrics"] as $key) {
+            $osiris->adminFeatures->insertOne([
+                'feature' => $key,
+                'enabled' => boolval(!$settings['general']['disable-'.$key])
+            ]);
+        }
+
+
+        echo "<p>Update Rights and Roles</p>";
+
+
+        $osiris->adminRights->deleteMany([]);
+        $rights = $settings['roles']['rights'];
+        foreach ($rights as $right => $perm) {
+            foreach ($roles as $n => $role) {
+                $r = [
+                    'role' => $role,
+                    'right' => $right,
+                    'value' => $perm[$n]
+                ];
+                $osiris->adminRights->insertOne($r);
+            }
+        }
+
+        die;
+
         // $osiris->groups->deleteMany([]);
 
         // // add institute as root level
@@ -192,11 +278,10 @@ Route::get('/migrate', function () {
         //     );
         // }
 
-        echo "Update Activity schema";
+        echo "<p>Update Activity schema</p>";
         $osiris->adminCategories->deleteMany([]);
         $osiris->adminTypes->deleteMany([]);
-        // TODO: read from JSON 
-        foreach ($Settings->getActivities() as $type) {
+        foreach ($Settings->settings['activities'] as $type) {
             $t = $type['id'];
             $cat = [
                 "id" => $type['id'],
@@ -206,14 +291,14 @@ Route::get('/migrate', function () {
                 "name_de" => $type['name_de'],
                 // "children" => $type['subtypes']
             ];
-            dump($cat, true);
             $osiris->adminCategories->insertOne($cat);
             foreach ($type['subtypes'] as $s => $subtype) {   
                 $subtype['parent'] = $t;             
-                dump($subtype, true);
+                // dump($subtype, true);
                 $osiris->adminTypes->insertOne($subtype);
             }
         }
+
     }
 
     echo "<p>Done.</p>";

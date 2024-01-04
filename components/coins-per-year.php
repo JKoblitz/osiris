@@ -1,4 +1,4 @@
-<?php if (($currentuser || !$Settings->hasFeatureDisabled('user-metrics')) && $showcoins) { ?>
+<?php if (($currentuser || $Settings->featureEnabled('user-metrics')) && $showcoins) { ?>
     <div class="profile-widget col-md-6 col-lg-3">
         <div class="box h-full">
             <div class="chart content">
