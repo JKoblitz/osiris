@@ -11,6 +11,13 @@ $(document).ready(function () {
     //     var element = this;
     //     initQuill(element)
     // })
+
+    // scroll to active sidebar menu if available
+    if ($('.sidebar-menu a.active').length !== 0){
+    $('.sidebar').animate({
+        scrollTop: $(".sidebar-menu a.active").offset().top -200
+    }, 100);
+}
 })
 
 function initQuill(element) {
