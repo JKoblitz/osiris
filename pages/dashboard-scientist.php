@@ -41,10 +41,10 @@
             var ctx = document.getElementById('chart-impact')
             var labels = JSON.parse('<?= json_encode($x) ?>');
             var colors = [
-                '#83D0F595',
-                '#006EB795',
-                '#13357A95',
-                '#00162595'
+                '#3fd7d995',
+                '#00808395',
+                '#03383995',
+                '#04232395'
             ]
             var i = 0
 
@@ -148,8 +148,8 @@
                             label: '# of Scientists',
                             data: [<?= $authors['firstorlast'] ?>, <?= $authors['middle'] ?>],
                             backgroundColor: [
-                                '#006EB795',
-                                '#83D0F595',
+                                '#005f6095',
+                                '#249ea095',
                             ],
                             borderColor: '#464646', //'',
                             borderWidth: 1,
@@ -205,7 +205,7 @@
                     <canvas id="chart-<?= $type ?>"></canvas>
 
                     <div class="mt-5 text-right">
-                        <a href="<?= ROOTPATH ?>/activities/new?type=<?= $type ?>" class="btn small">
+                        <a href="<?= ROOTPATH ?>/add-activity?type=<?= $type ?>" class="btn small">
                             <i class="ph ph-plus"></i>
                             <?= lang('Add new', 'Neu anlegen') ?>
                         </a>

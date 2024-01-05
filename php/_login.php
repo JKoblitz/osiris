@@ -22,15 +22,7 @@ function login($username, $password)
     $return = array("msg" => '', "success" => false);
 
     if (!defined('LDAP_IP')) {
-        // LEGACY: try to read from settings.json
-        if (!isset($Settings->settings['ldap'])) {
-            die("LDAP Settings are missing. Please enter details in CONFIG.php");
-        }
-        $set = $Settings->settings['ldap'];
-        $ip = $set['ip'];
-        $ldap_port = $set['port'];
-        $dn = $username . $set['domain'];
-        $base_dn = $set['basedn']; // ldap rdn oder dn
+        die("LDAP Settings are missing. Please enter details in CONFIG.php");
     } else {
         $ip = LDAP_IP;
         $ldap_port = LDAP_PORT;
@@ -83,17 +75,7 @@ function login($username, $password)
 function getUser($name)
 {
     if (!defined('LDAP_IP')) {
-        global $Settings;
-        // LEGACY: try to read from settings.json
-        if (!isset($Settings->settings['ldap'])) {
-            die("LDAP Settings are missing. Please enter details in CONFIG.php");
-        }
-        $set = $Settings->settings['ldap'];
-        $ip = $set['ip'];
-        $ldap_port = $set['port'];
-        $password = $set['password'];
-        $dn = $set['user'] . $set['domain'];
-        $base_dn = $set['basedn'];
+        die("LDAP Settings are missing. Please enter details in CONFIG.php");
     } else {
         $ip = LDAP_IP;
         $ldap_port = LDAP_PORT;
@@ -146,17 +128,7 @@ function getUser($name)
 function getUsers()
 {
     if (!defined('LDAP_IP')) {
-        global $Settings;
-        // LEGACY: try to read from settings.json
-        if (!isset($Settings->settings['ldap'])) {
-            die("LDAP Settings are missing. Please enter details in CONFIG.php");
-        }
-        $set = $Settings->settings['ldap'];
-        $ip = $set['ip'];
-        $ldap_port = $set['port'];
-        $password = $set['password'];
-        $dn = $set['user'] . $set['domain'];
-        $base_dn = $set['basedn'];
+        die("LDAP Settings are missing. Please enter details in CONFIG.php");
     } else {
         $ip = LDAP_IP;
         $ldap_port = LDAP_PORT;
@@ -249,8 +221,6 @@ function newUser($username)
         $departments[strtolower($D['name'])] = $D['id'];
     }
     $unit = strtolower($person['unit']);
-    $departments['science policy'] = 'SPI';
-    $departments['bid'] = 'BIDB';
     if (array_key_exists($unit, $departments))
         $person['dept'] = $departments[$unit];
     else {
@@ -259,11 +229,6 @@ function newUser($username)
             $person['dept'] = $departments[$unit];
     }
 
-
-    // $person['is_admin'] = false;
-    // $person['is_controlling'] = $person['department'] == "Controlling";
-    // $person['is_scientist'] = false;
-    // $person['is_leader'] = str_contains($person['unit'], "leitung");
     $person['is_active'] = !str_contains($ldap_user['dn'], 'DeaktivierteUser');
     $person['created'] = date('Y-m-d');
     $person['roles'] = [];

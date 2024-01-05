@@ -184,7 +184,7 @@ if (isset($_FILES["file"])) {
                         <?= $Format->formatShort(false) ?>
                     </td>
                     <td>
-                        <form action="<?= ROOTPATH ?>/activities/new" method="post" target="_blank">
+                        <form action="<?= ROOTPATH ?>/add-activity" method="post" target="_blank">
 
                             <input type="hidden" name="form" value='<?= $dataString ?>'>
                             <button class="btn"><i class="ph ph-plus"></i></button>

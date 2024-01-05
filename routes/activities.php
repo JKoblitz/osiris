@@ -52,7 +52,7 @@ Route::get('/search/activities', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/activities/new', function () {
+Route::get('/add-activity', function () {
     include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];
@@ -65,7 +65,7 @@ Route::get('/activities/new', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::post('/activities/new', function () {
+Route::post('/add-activity', function () {
     include_once BASEPATH . "/php/init.php";
 
     $user = $_SESSION['username'];

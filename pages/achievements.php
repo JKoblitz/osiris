@@ -1,5 +1,5 @@
 <?php
-    
+
 /**
  * Page to show user achievements
  * 
@@ -25,7 +25,16 @@
 
     <?php
     // SassCompiler::run("scss/", "css/");
-    ?>
+    if ($scientist['hide_achievements'] ?? false) { ?>
+        <div class="alert signal">
+            <?= lang('This person has disabled achievements in their profile.', 'Diese Person hat Errungenschaften im Profil ausgeschaltet.') ?>
+        </div>
+
+    <?php
+        echo "</div>";
+        include BASEPATH . "/footer.php";
+        die;
+    } ?>
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
 

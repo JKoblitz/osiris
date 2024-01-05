@@ -6,7 +6,7 @@
  * This file is part of the OSIRIS package.
  * Copyright (c) 2023, Julia Koblitz
  * 
- * @link /activities/new
+ * @link /add-activity
  * @link /activities/edit/<activity_id>
  *
  * @package OSIRIS

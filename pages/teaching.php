@@ -148,7 +148,7 @@ function val($index, $default = '')
                             <i class="ph ph-edit"></i>
                             <span class="sr-only"><?= lang('Edit course', 'Veranstaltung bearbeiten') ?></span>
                         </a>
-                        <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching small">
+                        <a href="<?= ROOTPATH ?>/add-activity?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching small">
                             <i class="ph ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>

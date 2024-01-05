@@ -47,17 +47,17 @@ if (!defined('ORCID_APP_ID'))
 if (!defined('ORCID_SECRET_KEY'))
     define("ORCID_SECRET_KEY", null);
 
-// activate IDA integration here
-if (!defined('IDA_INTEGRATION'))
-    define("IDA_INTEGRATION", false);
+// // activate IDA integration here
+// if (!defined('IDA_INTEGRATION'))
+//     define("IDA_INTEGRATION", false);
 
 
-// if (!defined('GUEST_FORMS'))
-//     define('GUEST_FORMS', false);
-if (!defined('GUEST_SERVER'))
-    define("GUEST_SERVER", false);
-if (!defined('GUEST_FORM_SECRET_KEY'))
-    define("GUEST_FORM_SECRET_KEY", "");
+// // if (!defined('GUEST_FORMS'))
+// //     define('GUEST_FORMS', false);
+// if (!defined('GUEST_SERVER'))
+//     define("GUEST_SERVER", false);
+// if (!defined('GUEST_FORM_SECRET_KEY'))
+//     define("GUEST_FORM_SECRET_KEY", "");
 
     
 if (!defined('PORTALPATH'))

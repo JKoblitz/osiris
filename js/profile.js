@@ -461,8 +461,8 @@ function projectTimeline() {
                 .range([0, width]);
 
             const typeInfo = {
-                'PI': { color: '#B61F29', label: lang('Pi', 'PI') },
-                'worker': { color: '#ECAF00', label: lang('Worker', 'Projektmitarbeiter:in') },
+                'PI': { color: '#f78104', label: lang('Pi', 'PI') },
+                'worker': { color: '#008083', label: lang('Worker', 'Projektmitarbeiter:in') },
                 'associate': { color: '#AAAAAA', label: lang('Associate', 'Beteiligte Person') },
             }
 

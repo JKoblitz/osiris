@@ -31,7 +31,7 @@ $user = $user ?? $_SESSION['username'];
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a> -->
 
-    <a class="mt-10" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
+    <a class="mt-10" href="<?= ROOTPATH ?>/add-activity"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
 <?php
 } elseif (isset($_GET['user'])) { ?>
@@ -448,7 +448,11 @@ $user = $user ?? $_SESSION['username'];
             "order": [
                 [5, 'desc'],
                 [1, 'asc']
-            ],
+            ],  
+            <?php if (isset($_GET['q'])) { ?> "oSearch": {
+                    "sSearch": "<?= $_GET['q'] ?>"
+                }
+            <?php } ?>
 
         });
 

@@ -215,34 +215,24 @@ if (!$Settings->featureEnabled('coins')) {
                     </label>
 
 
-                    <div class="input-group">
-                        <div class="input-group-prepend" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>" >
-                            <a href="?year=<?= $YEAR-1 ?>&quarter=<?= $QUARTER ?>" class="btn text-primary">
+                    <div class="btn-group">
+                            <a href="?year=<?= $YEAR-1 ?>&quarter=<?= $QUARTER ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>">
                             <i class="ph ph-caret-double-left"></i>
                         </a>
-                        </div>
-                        <div class="input-group-prepend" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>" >
-                            <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn text-primary">
+                            <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>">
                             <i class="ph ph-caret-left"></i>
                         </a>
-                        </div>
-                        <div class="input-group-prepend">
-                            <a class="input-group-text text-primary" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>" >
+                            <a class="btn text-blue border-blue" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>" >
                                 <!-- <i class="ph ph-circle"></i> -->
                                 <?= $YEAR ?>
                                 Q<?= $QUARTER ?>
                             </a>
-                        </div>
-                        <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>" >
-                            <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn text-primary">
+                            <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>">
                             <i class="ph ph-caret-right"></i>
                         </a>
-                        </div>
-                        <div class="input-group-append" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>" >
-                            <a href="?year=<?= $YEAR+1 ?>&quarter=<?= $QUARTER ?>" class="btn text-primary">
+                            <a href="?year=<?= $YEAR+1 ?>&quarter=<?= $QUARTER ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>">
                             <i class="ph ph-caret-double-right"></i>
                         </a>
-                        </div>
                     </div>
 
                     <div class="alert w-400 position-absolute" id="detailed" style="display: none">
@@ -471,7 +461,7 @@ if (!$Settings->featureEnabled('coins')) {
                             <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
                                 <i class="ph ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
                             </a>
-                            <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
+                            <a href="<?= ROOTPATH . "/add-activity?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
                             <?php if ($col == 'publication') { ?>
                                 <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
                                     <i class="ph ph-magnifying-glass-plus mr-5"></i>

@@ -22,7 +22,7 @@
     <?= lang('Search in Pubmed', 'Suche in Pubmed') ?>
 </h1>
 
-<a href="<?= ROOTPATH ?>/activities/new" class="link mb-10 d-block"><?= lang('Add manually', 'Füge manuell hinzu') ?></a>
+<a href="<?= ROOTPATH ?>/add-activity" class="link mb-10 d-block"><?= lang('Add manually', 'Füge manuell hinzu') ?></a>
 
 
 <form action="#" class="form-inline w-500 mw-full" onsubmit="searchLiterature(event)">
@@ -166,7 +166,7 @@
                     var content = $('<div class="content">')
 
                     content.append(`
-                    <a href="${ROOTPATH}/activities/new?${link}" target='_blank' class="btn primary float-right"><i class="ph ph-plus"></i></a>
+                    <a href="${ROOTPATH}/add-activity?${link}" target='_blank' class="btn primary float-right"><i class="ph ph-plus"></i></a>
                     `)
                     content.append(
                         `

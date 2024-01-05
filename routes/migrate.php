@@ -281,7 +281,7 @@ Route::get('/migrate', function () {
         echo "<p>Update Activity schema</p>";
         $osiris->adminCategories->deleteMany([]);
         $osiris->adminTypes->deleteMany([]);
-        foreach ($Settings->settings['activities'] as $type) {
+        foreach ($settings['activities'] as $type) {
             $t = $type['id'];
             $cat = [
                 "id" => $type['id'],

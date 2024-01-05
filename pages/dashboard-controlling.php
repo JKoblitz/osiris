@@ -50,8 +50,8 @@
                                     data: Object.values(raw_data),
                                     backgroundColor: [
                                         "#006EB795",
-                                        "#B61F2995",
-                                        "#ECAF0095",
+                                        "#f7810495",
+                                        "#00808395",
                                         "#1FA13895",
                                         "#00000095",
                                         "#5F272A95",
@@ -127,8 +127,8 @@
                                     label: '# of Scientists',
                                     data: [<?= $n_approved ?>, <?= $n_scientists - $n_approved ?>],
                                     backgroundColor: [
-                                        '#ECAF0095',
-                                        '#B61F2995',
+                                        '#00808395',
+                                        '#f7810495',
                                     ],
                                     borderColor: '#464646', //'',
                                     borderWidth: 1,

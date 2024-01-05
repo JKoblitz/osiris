@@ -87,21 +87,6 @@ if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
 }
 
 
-
-Route::get('/test-new-func', function () {
-    include_once BASEPATH . "/php/init.php";
-    // include BASEPATH . "/header.php";
-    // $db = new DB;
-    // dump($db->getPerson('juk20'));
-
-    // include BASEPATH . "/footer.php";
-    $id = 'DSMZ';
-    $children = $Groups->getChildren($id);
-    dump($children, true);
-   
-});
-
-// include_once BASEPATH . "/routes/admin.php";
 include_once BASEPATH . "/routes/components.php";
 include_once BASEPATH . "/routes/controlling.php";
 include_once BASEPATH . "/routes/database.php";
@@ -121,7 +106,7 @@ include_once BASEPATH . "/routes/visualize.php";
 include_once BASEPATH . "/routes/activities.php";
 include_once BASEPATH . "/routes/export.php";
 include_once BASEPATH . "/routes/concepts.php";
-include_once BASEPATH . "/routes/adminCategories.php";
+include_once BASEPATH . "/routes/admin.php";
 // include_once BASEPATH . "/routes/adminGeneral.php";
 // include_once BASEPATH . "/routes/adminRoles.php";
 

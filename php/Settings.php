@@ -5,6 +5,9 @@ include_once "Groups.php";
 
 class Settings
 {
+    /**
+     * @deprecated 1.3.0
+     */
     public $settings = array();
     // private $user = array();
     public $roles = array();
@@ -30,20 +33,6 @@ class Settings
         // everyone is a user
         $this->roles[] = 'user';
 
-        // get default settings from file
-        $json = file_get_contents(BASEPATH . "/settings.default.json");
-        $default = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
-        $this->settings = $default;
-
-        // get custom settings
-        $file_name = BASEPATH . "/settings.json";
-        if (file_exists($file_name)) {
-            $json = file_get_contents($file_name);
-            $set = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
-            // replace existing keys with new ones
-            $this->settings = array_merge($this->settings, $set);
-        }
-
         // init Features
         $featList = $this->osiris->adminFeatures->find([]);
         foreach ($featList as $f) {
@@ -53,7 +42,6 @@ class Settings
 
     function get($key)
     {
-        $s = $this->settings;
         switch ($key) {
             case 'affiliation':
             case 'affiliation_details':

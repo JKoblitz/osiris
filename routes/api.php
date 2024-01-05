@@ -588,7 +588,7 @@ Route::get('/api/dashboard/collaborators', function () {
                 $data['lon'][] = $c['lng'];
                 $data['lat'][] = $c['lat'];
                 $data['text'][] = "<b>$c[name]</b><br>$c[location]";
-                $color = ($c['role'] == 'Partner' ? '#ECAF00' : '#B61F29');
+                $color = ($c['role'] == 'Partner' ? '#008083' : '#f78104');
                 $data['marker']['color'][] = $color;
             }
             $result['collaborators'] = $data;

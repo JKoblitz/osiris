@@ -56,7 +56,7 @@ class Document extends Settings
         $this->initSchema();
 
         $this->modules = [];
-        foreach ($this->subtypeArr['modules'] as $m) {
+        foreach (($this->subtypeArr['modules'] ??array()) as $m) {
             $this->modules[] = str_replace('*', '', $m);
         }
     }

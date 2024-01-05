@@ -95,6 +95,9 @@ if ($Settings->featureEnabled('achievements')) {
     $Achievement->initUser($user);
     $Achievement->checkAchievements();
     $user_ac = $Achievement->userac;
+    $show_achievements =  !empty($user_ac) && !($scientist['hide_achievements'] ?? false);
+} else {
+    $show_achievements = false;
 }
 
 
@@ -228,18 +231,18 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <br>
 
         <?php if (!($scientist['is_active'] ?? true)) { ?>
-            <span class="text-danger user-role">
+            <span class="text-danger badge">
                 <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
             </span>
         <?php } else { ?>
             <?php foreach ($scientist['roles'] as $role) { ?>
-                <span class="user-role">
+                <span class="badge">
                     <?= strtoupper($role) ?>
                 </span>
             <?php } ?>
-            <!-- <span class="user-role">Last login: <?= $scientist['lastlogin'] ?></span> -->
+            <!-- <span class="badge">Last login: <?= $scientist['lastlogin'] ?></span> -->
             <?php if ($currentuser && !empty($scientist['maintenance'] ?? null)) { ?>
-                <span class="user-role">
+                <span class="badge">
                     <?= lang('Maintainer: ' . $DB->getNameFromId($scientist['maintenance'])) ?>
                 </span>
             <?php } ?>
@@ -250,7 +253,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         if ($Settings->featureEnabled('guests')) {
             $guestState = $osiris->guests->findOne(['username' => $user]);
             if (!empty($guestState)) { ?>
-                <span class="user-role">
+                <span class="badge">
                     <?= lang('Guest:', 'Gast:') ?>
                     <?= fromToDate($guestState['start'], $guestState['end'] ?? null) ?>
                 </span>
@@ -273,18 +276,16 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     </div>
 
     <?php
-    if ($Settings->featureEnabled('achievements')) {
-        if (!empty($user_ac) && !($scientist['hide_achievements'] ?? false) && !($USER['hide_achievements'] ?? false)) {
+    if ($show_achievements) {
     ?>
-            <div class="achievements text-right" style="max-width: 35rem;">
-                <h5 class="m-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
+        <div class="achievements text-right" style="max-width: 35rem;">
+            <h5 class="m-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
 
-                <?php
-                $Achievement->widget();
-                ?>
-            </div>
+            <?php
+            $Achievement->widget();
+            ?>
+        </div>
     <?php
-        }
     } ?>
 </div>
 
@@ -299,47 +300,44 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <div class="btn-toolbar">
 
             <div class="btn-group btn-group-lg">
-                <a class="btn" href="<?= ROOTPATH ?>/activities/new" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
-                    <i class="ph ph-plus-circle text-osiris ph-fw"></i>
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/add-activity" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
+                    <i class="ph ph-plus-circle ph-fw"></i>
                     <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
                 </a>
-                <a href="<?= ROOTPATH ?>/my-activities" class="btn" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
-                    <i class="ph ph-folder-user text-osiris ph-fw"></i>
+                <a href="<?= ROOTPATH ?>/my-activities" class="btn text-blue border-blue" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
+                    <i class="ph ph-folder-user ph-fw"></i>
                     <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
                 </a>
-                <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
-                    <i class="ph ph-calendar text-success ph-fw"></i>
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
+                    <i class="ph ph-calendar ph-fw"></i>
                     <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
                 </a>
 
-
-            </div>
-            <div class="btn-group btn-group-lg">
-                <?php if ($Settings->featureEnabled('achievements')) { ?>
-                    <a class="btn" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
-                        <i class="ph ph-trophy text-signal ph-fw"></i>
+                <?php if ($Settings->featureEnabled('portal')) { ?>
+                    <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                        <i class="ph ph-eye ph-fw"></i>
                     </a>
                 <?php } ?>
 
+            </div>
+            <div class="btn-group btn-group-lg">
+                <?php if ($show_achievements) { ?>
+                    <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
+                        <i class="ph ph-trophy ph-fw"></i>
+                    </a>
+                <?php } ?>
 
-                <a class="btn" href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Coauthor network', 'Mein Koautoren-Netzwerk') ?>">
-                    <i class="ph ph-graph text-osiris ph-fw"></i>
-                </a>
             </div>
 
             <div class="btn-group btn-group-lg">
-                <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                    <i class="ph ph-edit text-muted ph-fw"></i>
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                    <i class="ph ph-edit ph-fw"></i>
                     <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                 </a>
-                <!-- <a class="btn" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
-                    <i class="ph ph-eye text-muted ph-fw"></i>
+                <!-- <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
+                    <i class="ph ph-eye ph-fw"></i>
                 </a> -->
-                <?php if ($Settings->featureEnabled('portal')) { ?>
-                    <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
-                        <i class="ph ph-eye text-muted ph-fw"></i>
-                    </a>
-                <?php } ?>
+
             </div>
             <form action="<?= ROOTPATH ?>/download" method="post">
 
@@ -348,7 +346,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 <input type="hidden" name="format" value="word">
                 <input type="hidden" name="type" value="cv">
 
-                <button class="btn large" data-toggle="tooltip" data-title="<?= lang('Export CV', 'CV exportieren') ?>">
+                <button class="btn text-blue border-blue large" data-toggle="tooltip" data-title="<?= lang('Export CV', 'CV exportieren') ?>">
                     <i class="ph ph-identification-card text-blue ph-fw"></i>
                 </button>
             </form>
@@ -430,7 +428,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
 
         <?php
-        if ($Settings->featureEnabled('achievements')) {
+        if ($show_achievements) {
             $new = $Achievement->new;
 
             if (!empty($new)) {
@@ -448,42 +446,44 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     </div>
 
 <?php } else { ?>
-    <div class="btn-group btn-group-lg mt-15">
-        <a class="btn" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of ', 'Das Jahr von ') . $scientist['first'] ?> ">
-            <i class="ph ph-calendar text-success ph-fw"></i>
-        </a>
-        <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
-            <i class="ph ph-folder-user text-primary ph-fw"></i>
-        </a>
-        <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
-            <i class="ph ph-graph text-danger ph-fw"></i>
-        </a>
-        <?php if ($Settings->featureEnabled('achievements')) { ?>
-            <a class="btn" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
-                <i class="ph ph-trophy text-signal ph-fw"></i>
+    <div class="btn-toolbar">
+        <div class="btn-group btn-group-lg">
+            <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of ', 'Das Jahr von ') . $scientist['first'] ?> ">
+                <i class="ph ph-calendar ph-fw"></i>
             </a>
-        <?php } ?>
+            <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn text-blue border-blue" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
+                <i class="ph ph-folder-user ph-fw"></i>
+            </a>
+            <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn text-blue border-blue" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
+                <i class="ph ph-graph ph-fw"></i>
+            </a>
+            <?php if ($show_achievements) { ?>
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
+                    <i class="ph ph-trophy ph-fw"></i>
+                </a>
+            <?php } ?>
 
-    </div>
-    <?php if ($Settings->featureEnabled('portal')) { ?>
-        <div class="btn-group btn-group-lg mt-15 ml-5">
-            <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
-                <i class="ph ph-eye text-muted ph-fw"></i>
-            </a>
         </div>
-    <?php } ?>
-    <div class="btn-group btn-group-lg mt-15 ml-5">
-        <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
-            <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
-                <i class="ph ph-edit text-muted ph-fw"></i>
-            </a>
+        <?php if ($Settings->featureEnabled('portal')) { ?>
+            <div class="btn-group btn-group-lg">
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                    <i class="ph ph-eye ph-fw"></i>
+                </a>
+            </div>
         <?php } ?>
-        <?php if (($scientist['is_active'] ?? true) && $Settings->hasPermission('set-user-inactive')) { ?>
-            <a class="btn" href="<?= ROOTPATH ?>/user/delete/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Inactivate user', 'Nutzer:in inaktivieren') ?>">
-                <i class="ph ph-trash text-danger ph-fw"></i>
-            </a>
-        <?php } ?>
+        <div class="btn-group btn-group-lg">
+            <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                    <i class="ph ph-edit ph-fw"></i>
+                </a>
+            <?php } ?>
+            <?php if (($scientist['is_active'] ?? true) && $Settings->hasPermission('set-user-inactive')) { ?>
+                <a class="btn text-blue border-blue" href="<?= ROOTPATH ?>/user/delete/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Inactivate user', 'Nutzer:in inaktivieren') ?>">
+                    <i class="ph ph-trash ph-fw"></i>
+                </a>
+            <?php } ?>
 
+        </div>
     </div>
 
     <?php if (($Settings->hasPermission('complete-dashboard')) && isset($scientist['approved'])) {
@@ -496,7 +496,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             echo "<a href='" . ROOTPATH . "/my-year/$user?year=$Q[0]&quarter=$Q[1]' class='badge success ml-5'>$appr</a>";
         }
         echo "</div>";
-    } ?><br>
+    } ?>
 <?php } ?>
 
 
@@ -920,8 +920,8 @@ if ($currentuser) { ?>
                                         label: '# of Scientists',
                                         data: [<?= $n_approved ?>, <?= $n_scientists - $n_approved ?>],
                                         backgroundColor: [
-                                            '#ECAF0095',
-                                            '#B61F2995',
+                                            '#00808395',
+                                            '#f7810495',
                                         ],
                                         borderColor: '#464646', //'',
                                         borderWidth: 1,
