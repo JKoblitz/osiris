@@ -65,14 +65,16 @@
 
             <div class="text-divider"><?= lang('OR', 'ODER') ?></div>
 
+            
             <div class="col">
                 <div class="ml-20">
                     <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
                     <select name="filter[dept]" id="dept" class="form-control">
                         <option value=""><?= lang('All departments', 'Alle Abteilungen') ?></option>
                         <?php
+
                         foreach ($Departments as $d => $dept) { ?>
-                            <option value="<?= $dept['id'] ?>"><?= $dept['name'] ?></option>
+                            <option value="<?= $d ?>"><?= $dept ?></option>
                         <?php } ?>
                     </select>
                 </div>
