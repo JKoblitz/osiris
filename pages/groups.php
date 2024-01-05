@@ -19,8 +19,9 @@
 $style = $_GET['style'] ?? 'cards';
 ?>
 
-<a href="<?= ROOTPATH ?>/preview/groups" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
-
+<?php if ($Settings->featureEnabled('portal')) { ?>
+    <a href="<?= ROOTPATH ?>/preview/groups" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
+<?php } ?>
 <h1>
     <i class="ph ph-users-three"></i>
     <?= lang('Organisational Units', 'Organisationseinheiten') ?>

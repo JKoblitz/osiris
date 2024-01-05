@@ -58,11 +58,13 @@ Route::post('/create', function () {
     }
 
     // add projects if possible
-    if (isset($values['funding'])) {
-        $values['funding'] = explode(',', $values['funding']);
-        foreach ($values['funding'] as $key) {
-            $project = $osiris->projects->findOne(['funding_number' => $key]);
-            if (isset($project['name'])) $values['projects'][] = $project['name'];
+    if ($Settings->featureEnabled('projects')) {
+        if (isset($values['funding'])) {
+            $values['funding'] = explode(',', $values['funding']);
+            foreach ($values['funding'] as $key) {
+                $project = $osiris->projects->findOne(['funding_number' => $key]);
+                if (isset($project['name'])) $values['projects'][] = $project['name'];
+            }
         }
     }
 
@@ -308,7 +310,7 @@ Route::post('/groups/create', function () {
     if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
         if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
-        $values['level'] = $parent['level']+1;
+        $values['level'] = $parent['level'] + 1;
     }
 
     $insertOneResult  = $collection->insertOne($values);
@@ -340,26 +342,26 @@ Route::post('/groups/update/([A-Za-z0-9]*)', function ($id) {
 
     // check if ID has changes
     $group = $osiris->groups->findOne(['_id' => $id]);
-    if ($group['id'] != $values['id']){
+    if ($group['id'] != $values['id']) {
         // change IDs of Members
         $osiris->persons->updateMany(
-            ['depts'=>$group['id']],
-            [ '$set' => [ 'depts.$[elem]'=> $values['id'] ] ],
-            [ 'arrayFilters'=> [ [ 'elem'=> [ '$eq'=> $group['id'] ] ] ], 'multi'=> true ]
+            ['depts' => $group['id']],
+            ['$set' => ['depts.$[elem]' => $values['id']]],
+            ['arrayFilters' => [['elem' => ['$eq' => $group['id']]]], 'multi' => true]
         );
     }
 
     if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
         if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
-        $values['level'] = $parent['level']+1;
+        $values['level'] = $parent['level'] + 1;
     }
 
     // check if head is connected 
-    if (isset($values['head'])){
+    if (isset($values['head'])) {
         foreach ($values['head'] as $head) {
-            $N = $osiris->persons->count(['username' => $head, 'depts'=>$values['id']]);
-            if ($N == 0){
+            $N = $osiris->persons->count(['username' => $head, 'depts' => $values['id']]);
+            if ($N == 0) {
                 $osiris->persons->updateOne(
                     ['username' => $head],
                     ['$push' => ["depts" => $values['id']]]
@@ -393,7 +395,7 @@ Route::post('/groups/delete/([A-Za-z0-9]*)', function ($id) {
 
     // prepare id
     $id = $DB->to_ObjectID($id);
-    
+
     // remove from all users
     $group = $osiris->groups->findOne(['_id' => $id]);
     $osiris->persons->updateOne(
@@ -1133,18 +1135,18 @@ Route::post('/approve/([A-Za-z0-9]*)', function ($id) {
 
 Route::post('/crud/fav', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['activity'])) die ('Error: no activity given');
+    if (!isset($_POST['activity'])) die('Error: no activity given');
     $id = $_POST['activity'];
 
     // check if user has id already
     $user = $_SESSION['username'];
 
-    $scientist = $osiris->persons->findOne(['username'=>$user]);
+    $scientist = $osiris->persons->findOne(['username' => $user]);
     if (empty($scientist)) die('Error: No Scientist found');
 
     $highlighted = DB::doc2Arr($scientist['highlighted'] ?? []);
 
-    if (in_array($id, $highlighted)){
+    if (in_array($id, $highlighted)) {
         $osiris->persons->updateOne(
             ['_id' => $scientist['_id']],
             ['$pull' => ["highlighted" => $id]]

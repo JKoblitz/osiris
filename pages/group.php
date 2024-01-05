@@ -52,10 +52,12 @@ $level = $Groups->getLevel($id);
             <i class="ph ph-note-pencil ph-fw"></i>
             <?= lang('Edit', 'Bearbeiten') ?>
         </a>
-        <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
-            <i class="ph ph-eye ph-fw"></i>
-            <?= lang('Preview', 'Vorschau') ?>
-        </a>
+        <?php if ($Settings->featureEnabled('portal')) { ?>
+            <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
+                <i class="ph ph-eye ph-fw"></i>
+                <?= lang('Preview', 'Vorschau') ?>
+            </a>
+        <?php } ?>
     </div>
     <h1>
         <?= $group['name'] ?>
@@ -76,7 +78,7 @@ $level = $Groups->getLevel($id);
                 <?= $group['description'] ?? '-' ?>
             </p>
 
-        
+
 
 
             <div id="collab">
@@ -238,7 +240,7 @@ $level = $Groups->getLevel($id);
                 </tbody>
             </table>
 
-            
+
         </div>
 
     </div>

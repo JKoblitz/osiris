@@ -30,10 +30,12 @@ $Project = new Project($project);
 </style>
 
 
-<a class="btn float-right" href="<?= ROOTPATH ?>/preview/project/<?= $id ?>">
-    <i class="ph ph-eye ph-fw"></i>
-    <?= lang('Preview', 'Vorschau') ?>
-</a>
+<?php if ($Settings->featureEnabled('portal')) { ?>
+    <a class="btn float-right" href="<?= ROOTPATH ?>/preview/project/<?= $id ?>">
+        <i class="ph ph-eye ph-fw"></i>
+        <?= lang('Preview', 'Vorschau') ?>
+    </a>
+<?php } ?>
 
 <h1>
     <?= $project['name'] ?>

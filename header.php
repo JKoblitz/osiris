@@ -383,11 +383,13 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <i class="ph ph-chalkboard-simple" aria-hidden="true"></i>
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
+                    <?php if ($Settings->featureEnabled('projects')) { ?>                    
                     <a href="<?= ROOTPATH ?>/projects" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('projects') ?>">
                         <i class="ph ph-tree-structure" aria-hidden="true"></i>
                         <?= lang('Projects', 'Projekte') ?>
                         <!-- <span class="badge ml-10">SOON</span> -->
                     </a>
+                    <?php } ?>
 
 
                     <a href="<?= ROOTPATH ?>/research-data" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('research-data') ?>">
@@ -395,10 +397,12 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Tags', 'Schlagwörter') ?>
                     </a>
 
+                    <?php if ($Settings->featureEnabled('concepts')) { ?>                    
                     <a href="<?= ROOTPATH ?>/concepts" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('concepts') ?>">
                         <i class="ph ph-lightbulb" aria-hidden="true"></i>
                         <?= lang('Concepts', 'Konzepte') ?>
                     </a>
+                    <?php } ?>
 
 
                     <div class="title">

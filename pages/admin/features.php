@@ -147,11 +147,11 @@
                     </div>
                     <div class="row mt-10">
                         <label for="guest-forms-server" class="w-150 col flex-reset"><?= lang('Server address', 'Server-Adresse') ?></label>
-                        <input type="text" class="form-control small col" name="general[guest-forms-server]" id="guest-forms-server" value="<?=$Settings->get('guest-forms-server')?>">
+                        <input type="text" class="form-control small col" name="general[guest-forms-server]" id="guest-forms-server" value="<?= $Settings->get('guest-forms-server') ?>">
                     </div>
                     <div class="row mt-10">
                         <label for="guest-forms-secret-key" class="w-150 col flex-reset"><?= lang('Secret key') ?></label>
-                        <input type="text" class="form-control small col" name="general[guest-forms-secret-key]" id="guest-forms-secret-key" value="<?=$Settings->get('guest-forms-secret-key')?>">
+                        <input type="text" class="form-control small col" name="general[guest-forms-secret-key]" id="guest-forms-secret-key" value="<?= $Settings->get('guest-forms-secret-key') ?>">
                     </div>
                 </td>
             </tr>
@@ -206,6 +206,32 @@
                     </div>
                 </td>
             </tr>
+
+            <tr>
+                <th colspan="2">
+                    <?= lang('Concepts', 'Konzepte') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
+                    <?= lang('Show concepts', 'Zeige Konzepte') ?>
+                </td>
+                <?php
+                $concepts = $Settings->featureEnabled('concepts');
+                ?>
+                <td>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="concepts-true" value="1" name="values[concepts]" <?= $concepts ? 'checked' : '' ?>>
+                        <label for="concepts-true"><?= lang('enabled', 'aktiviert') ?></label>
+                    </div>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="concepts-false" value="0" name="values[concepts]" <?= $concepts ? '' : 'checked' ?>>
+                        <label for="concepts-false"><?= lang('disabled', 'deaktiviert') ?></label>
+                    </div>
+                </td>
+            </tr>
+
 
             <tr>
                 <th colspan="2">

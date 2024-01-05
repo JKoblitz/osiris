@@ -77,18 +77,13 @@
         }
     }
 </style>
-<a href="<?= ROOTPATH ?>/preview/persons" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
-
+<?php if ($Settings->featureEnabled('portal')) { ?>
+    <a href="<?= ROOTPATH ?>/preview/persons" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
+<?php } ?>
 <h1>
     <i class="ph ph-student"></i>
     <?= lang('Users', 'Personen') ?>
 </h1>
-
-<!-- <?php if (isset($_GET['inactive'])) { ?>
-    <a href="?" class="btn active"><?= lang('See inactive users', 'Zeige inaktive Personen') ?></a>
-<?php } else { ?>
-    <a href="?inactive" class="btn"><?= lang('See inactive users', 'Zeige inaktive Personen') ?></a>
-<?php } ?> -->
 
 <div class="row row-eq-spacing">
     <div class="col-lg-9">
@@ -179,7 +174,7 @@
             <div class="filter">
                 <table id="filter-unit" class="table simple">
                     <?php foreach ($Departments as $id => $dept) { ?>
-                        <tr <?=$Groups->cssVar($id)?>>
+                        <tr <?= $Groups->cssVar($id) ?>>
                             <td>
                                 <a data-type="<?= $id ?>" onclick="filterUnit(this, '<?= $id ?>')" class="item d-block colorless" id="<?= $id ?>-btn">
                                     <span><?= $dept ?></span>

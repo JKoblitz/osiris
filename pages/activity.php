@@ -125,10 +125,12 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <?= lang('Upload file', 'Datei hochladen') ?>
     </a>
     <div class="btn-group">
-        <a href="#projects" class="btn ">
-            <i class="ph ph-plus-circle"></i>
-            <?= lang("Project", "Projekt") ?>
-        </a>
+        <?php if ($Settings->featureEnabled('projects')) { ?>
+            <a href="#projects" class="btn ">
+                <i class="ph ph-plus-circle"></i>
+                <?= lang("Project", "Projekt") ?>
+            </a>
+        <?php } ?>
         <a href="#connect" class="btn ">
             <i class="ph ph-plus-circle"></i>
             <?= lang("Tags", "Schlagwörter") ?>
@@ -173,11 +175,12 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <?php } ?>
 
 
-
-    <a class="btn text-blue ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
-        <i class="ph ph-eye ph-fw"></i>
-        <?= lang('Preview', 'Vorschau') ?>
-    </a>
+    <?php if ($Settings->featureEnabled('portal')) { ?>
+        <a class="btn text-blue ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
+            <i class="ph ph-eye ph-fw"></i>
+            <?= lang('Preview', 'Vorschau') ?>
+        </a>
+    <?php } ?>
 </div>
 
 <!-- HEAD -->
@@ -286,22 +289,24 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </a>
     <?php } ?>
 
-    <?php
-    $count_projects = count($doc['projects'] ?? []);
-    if ($count_projects) :
-    ?>
-        <a onclick="navigate('projects')" id="btn-projects" class="btn">
-            <i class="ph ph-tree-structure" aria-hidden="true"></i>
-            <?= lang('Projects', 'Projekte') ?>
-            <span class="index"><?= $count_projects ?></span>
-        </a>
+    <?php if ($Settings->featureEnabled('projects')) { ?>
+        <?php
+        $count_projects = count($doc['projects'] ?? []);
+        if ($count_projects) :
+        ?>
+            <a onclick="navigate('projects')" id="btn-projects" class="btn">
+                <i class="ph ph-tree-structure" aria-hidden="true"></i>
+                <?= lang('Projects', 'Projekte') ?>
+                <span class="index"><?= $count_projects ?></span>
+            </a>
 
-    <?php else : ?>
-        <a href="#projects" class="btn">
-            <i class="ph ph-plus-circle"></i>
-            <?= lang('Add projects', 'Projekt verknüpfen') ?>
-        </a>
-    <?php endif; ?>
+        <?php else : ?>
+            <a href="#projects" class="btn">
+                <i class="ph ph-plus-circle"></i>
+                <?= lang('Add projects', 'Projekt verknüpfen') ?>
+            </a>
+        <?php endif; ?>
+    <?php } ?>
 
     <?php
     $count_files = count($doc['files'] ?? []);
@@ -337,16 +342,18 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </a>
     <?php endif; ?>
 
-    <?php
-    $count_concepts = count($doc['concepts'] ?? []);
-    if ($count_concepts) :
-    ?>
-        <a onclick="navigate('concepts')" id="btn-concepts" class="btn">
-            <i class="ph ph-lightbulb" aria-hidden="true"></i>
-            <?= lang('Concepts', 'Konzepte') ?>
-            <span class="index"><?= $count_concepts ?></span>
-        </a>
-    <?php endif; ?>
+    <?php if ($Settings->featureEnabled('concepts')) { ?>
+        <?php
+        $count_concepts = count($doc['concepts'] ?? []);
+        if ($count_concepts) :
+        ?>
+            <a onclick="navigate('concepts')" id="btn-concepts" class="btn">
+                <i class="ph ph-lightbulb" aria-hidden="true"></i>
+                <?= lang('Concepts', 'Konzepte') ?>
+                <span class="index"><?= $count_concepts ?></span>
+            </a>
+        <?php endif; ?>
+    <?php } ?>
 
     <?php if ($Settings->hasPermission('see-raw-data') || isset($_GET['verbose'])) { ?>
         <a onclick="navigate('raw')" id="btn-raw" class="btn">
@@ -692,57 +699,61 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
 
-<div class="modal" id="projects" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
-                <span aria-hidden="true">&times;</span>
-            </a>
-            <h5 class="title">
-                <?= lang('Connect projects', 'Projekte verknüpfen') ?>
-                <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
-            </h5>
-            <div>
-                <?php
-                include BASEPATH . "/components/connect-projects.php";
-                ?>
+<?php if ($Settings->featureEnabled('projects')) { ?>
+    <div class="modal" id="projects" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+                <h5 class="title">
+                    <?= lang('Connect projects', 'Projekte verknüpfen') ?>
+                    <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
+                </h5>
+                <div>
+                    <?php
+                    include BASEPATH . "/components/connect-projects.php";
+                    ?>
+                </div>
             </div>
         </div>
     </div>
-</div>
+<?php } ?>
 
 
-<section id="projects" style="display: none;">
-    <div class="btn-toolbar float-sm-right">
-        <a href="#projects" class="btn primary mr-5">
-            <i class="ph ph-tree-structure"></i>
-            <?= lang("Connect", "Verknüpfen") ?>
-        </a>
-    </div>
+<?php if ($Settings->featureEnabled('projects')) { ?>
+    <section id="projects" style="display: none;">
+        <div class="btn-toolbar float-sm-right">
+            <a href="#projects" class="btn primary mr-5">
+                <i class="ph ph-tree-structure"></i>
+                <?= lang("Connect", "Verknüpfen") ?>
+            </a>
+        </div>
 
-    <h2 class="title">
-        <?= lang('Projects', 'Projekte') ?>
-        <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
-    </h2>
+        <h2 class="title">
+            <?= lang('Projects', 'Projekte') ?>
+            <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
+        </h2>
 
-    <?php if (!empty($doc['projects'] ?? '') && !empty($doc['projects'][0])) {
+        <?php if (!empty($doc['projects'] ?? '') && !empty($doc['projects'][0])) {
 
-        require_once BASEPATH . "/php/Project.php";
-        $Project = new Project();
+            require_once BASEPATH . "/php/Project.php";
+            $Project = new Project();
 
-        foreach ($doc['projects'] as $project_id) {
-            $project = $osiris->projects->findOne(['name' => $project_id]);
-            if (empty($project)) continue;
-            $Project->setProject($project);
-    ?>
-            <?= $Project->widgetSmall(true) ?>
+            foreach ($doc['projects'] as $project_id) {
+                $project = $osiris->projects->findOne(['name' => $project_id]);
+                if (empty($project)) continue;
+                $Project->setProject($project);
+        ?>
+                <?= $Project->widgetSmall(true) ?>
+            <?php } ?>
+
+        <?php } else { ?>
+            <?= lang('No projects connected.', 'Noch keine Projekte verknüpft.') ?>
         <?php } ?>
 
-    <?php } else { ?>
-        <?= lang('No projects connected.', 'Noch keine Projekte verknüpft.') ?>
-    <?php } ?>
-
-</section>
+    </section>
+<?php } ?>
 
 
 
@@ -863,28 +874,30 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <?php } ?>
 </section>
 
-<section id="concepts" style="display:none">
-    <?php if (isset($doc['concepts'])) :
-    ?>
+<?php if ($Settings->featureEnabled('concepts')) { ?>
+    <section id="concepts" style="display:none">
+        <?php if (isset($doc['concepts'])) :
+        ?>
 
-        <h3 class=""><?= lang('Concepts', 'Konzepte') ?></h3>
-        <div class="box">
-            <div class="content">
-                <?php foreach ($doc['concepts'] as $concept) {
-                    $score =  round($concept['score'] * 100);
-                    // if ($concept['score'] < .3) continue;
-                ?><span class="concept" target="_blank" data-score='<?= $score ?>' data-name='<?= $concept['display_name'] ?>' data-wikidata='<?= $concept['wikidata'] ?>'>
-                        <div role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="--value: <?= $score ?>"></div>
-                        <?= $concept['display_name'] ?>
-                    </span><?php } ?>
+            <h3 class=""><?= lang('Concepts', 'Konzepte') ?></h3>
+            <div class="box">
+                <div class="content">
+                    <?php foreach ($doc['concepts'] as $concept) {
+                        $score =  round($concept['score'] * 100);
+                        // if ($concept['score'] < .3) continue;
+                    ?><span class="concept" target="_blank" data-score='<?= $score ?>' data-name='<?= $concept['display_name'] ?>' data-wikidata='<?= $concept['wikidata'] ?>'>
+                            <div role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="--value: <?= $score ?>"></div>
+                            <?= $concept['display_name'] ?>
+                        </span><?php } ?>
+                </div>
             </div>
-        </div>
-    <?php else : ?>
-        <p>
-            <?= lang('No concepts are assigned to this activity.', 'Zu dieser Aktivität sind keine Konzepte zugewiesen.') ?>
-        </p>
-    <?php endif; ?>
-</section>
+        <?php else : ?>
+            <p>
+                <?= lang('No concepts are assigned to this activity.', 'Zu dieser Aktivität sind keine Konzepte zugewiesen.') ?>
+            </p>
+        <?php endif; ?>
+    </section>
+<?php } ?>
 
 
 <section id="coauthors" style="display:none">

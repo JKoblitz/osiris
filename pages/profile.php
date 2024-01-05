@@ -335,9 +335,11 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 <!-- <a class="btn" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
                     <i class="ph ph-eye text-muted ph-fw"></i>
                 </a> -->
-                <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
-                    <i class="ph ph-eye text-muted ph-fw"></i>
-                </a>
+                <?php if ($Settings->featureEnabled('portal')) { ?>
+                    <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                        <i class="ph ph-eye text-muted ph-fw"></i>
+                    </a>
+                <?php } ?>
             </div>
             <form action="<?= ROOTPATH ?>/download" method="post">
 
@@ -463,11 +465,13 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <?php } ?>
 
     </div>
-    <div class="btn-group btn-group-lg mt-15 ml-5">
-        <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
-            <i class="ph ph-eye text-muted ph-fw"></i>
-        </a>
-    </div>
+    <?php if ($Settings->featureEnabled('portal')) { ?>
+        <div class="btn-group btn-group-lg mt-15 ml-5">
+            <a class="btn" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                <i class="ph ph-eye text-muted ph-fw"></i>
+            </a>
+        </div>
+    <?php } ?>
     <div class="btn-group btn-group-lg mt-15 ml-5">
         <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
             <a class="btn" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
@@ -575,60 +579,64 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         </a>
     <?php } ?>
 
-    <?php
-    $project_filter = [
-        '$or' => array(
-            ['contact' => $user],
-            ['persons.user' => $user]
-        ),
-        "status" => ['$ne' => "rejected"]
-    ];
+    <?php if ($Settings->featureEnabled('projects')) { ?>
+        <?php
+        $project_filter = [
+            '$or' => array(
+                ['contact' => $user],
+                ['persons.user' => $user]
+            ),
+            "status" => ['$ne' => "rejected"]
+        ];
 
-    $count_projects = $osiris->projects->count($project_filter);
-    if ($count_projects > 0) { ?>
-        <a onclick="navigate('projects')" id="btn-projects" class="btn">
-            <i class="ph ph-tree-structure" aria-hidden="true"></i>
-            <?= lang('Projects', 'Projekte')  ?>
-            <span class="index"><?= $count_projects ?></span>
-        </a>
+        $count_projects = $osiris->projects->count($project_filter);
+        if ($count_projects > 0) { ?>
+            <a onclick="navigate('projects')" id="btn-projects" class="btn">
+                <i class="ph ph-tree-structure" aria-hidden="true"></i>
+                <?= lang('Projects', 'Projekte')  ?>
+                <span class="index"><?= $count_projects ?></span>
+            </a>
+        <?php } ?>
     <?php } ?>
 
 
-    <?php
-    $concepts = [];
-    $concepts = $osiris->activities->aggregate(
-        [
-            ['$match' => ['authors.user' => $user, 'concepts' => ['$exists' => true]]],
-            ['$project' => ['concepts' => 1]],
+    <?php if ($Settings->featureEnabled('concepts')) { ?>
+        <?php
+        $concepts = [];
+        $concepts = $osiris->activities->aggregate(
             [
-                '$group' => [
-                    '_id' => null,
-                    'total' => ['$sum' => 1],
-                    'concepts' => ['$push' => '$concepts']
-                ]
-            ],
-            ['$unwind' => '$concepts'],
-            ['$unwind' => '$concepts'],
-            ['$group' => [
-                '_id' => '$concepts.display_name',
-                'count' => ['$sum' => 1],
-                'score' => ['$sum' => ['$divide' => [
-                    ['$multiply' => ['$concepts.score', ['$sum' => 1]]],
-                    '$total'
-                ]]],
-                'concept' => ['$first' => '$concepts']
-            ]],
-            ['$match' => ['score' => ['$gte' => 0.05]]],
-            ['$sort' => ['score' => -1]]
-        ]
-    )->toArray();
-    $count_concepts = count($concepts);
-    if ($count_concepts > 0) { ?>
-        <a onclick="navigate('concepts')" id="btn-concepts" class="btn">
-            <i class="ph ph-lightbulb" aria-hidden="true"></i>
-            <?= lang('Concepts', 'Konzepte')  ?>
-            <span class="index"><?= $count_concepts ?></span>
-        </a>
+                ['$match' => ['authors.user' => $user, 'concepts' => ['$exists' => true]]],
+                ['$project' => ['concepts' => 1]],
+                [
+                    '$group' => [
+                        '_id' => null,
+                        'total' => ['$sum' => 1],
+                        'concepts' => ['$push' => '$concepts']
+                    ]
+                ],
+                ['$unwind' => '$concepts'],
+                ['$unwind' => '$concepts'],
+                ['$group' => [
+                    '_id' => '$concepts.display_name',
+                    'count' => ['$sum' => 1],
+                    'score' => ['$sum' => ['$divide' => [
+                        ['$multiply' => ['$concepts.score', ['$sum' => 1]]],
+                        '$total'
+                    ]]],
+                    'concept' => ['$first' => '$concepts']
+                ]],
+                ['$match' => ['score' => ['$gte' => 0.05]]],
+                ['$sort' => ['score' => -1]]
+            ]
+        )->toArray();
+        $count_concepts = count($concepts);
+        if ($count_concepts > 0) { ?>
+            <a onclick="navigate('concepts')" id="btn-concepts" class="btn">
+                <i class="ph ph-lightbulb" aria-hidden="true"></i>
+                <?= lang('Concepts', 'Konzepte')  ?>
+                <span class="index"><?= $count_concepts ?></span>
+            </a>
+        <?php } ?>
     <?php } ?>
 
 </nav>
@@ -1179,73 +1187,75 @@ if ($currentuser) { ?>
 
 
 
-<section id="projects" style="display:none">
-    <h3 class="title">
-        <?= lang('Timeline of all approved projects', 'Zeitstrahl aller bewilligten Projekte') ?>
-    </h3>
-    <div class="box">
-        <div class="content">
-            <div id="project-timeline"></div>
-        </div>
-    </div>
-    <div class="row row-eq-spacing my-0">
-        <?php
-        if ($count_projects > 0) {
-            $projects = $osiris->projects->find($project_filter, ['sort' => ["start" => -1, "end" => -1]]);
-
-            $ongoing = [];
-            $past = [];
-
-            require_once BASEPATH . "/php/Project.php";
-            $Project = new Project();
-            foreach ($projects as $project) {
-                $Project->setProject($project);
-                if ($Project->inPast()) {
-                    $past[] = $Project->widgetLarge($user);
-                } else {
-                    $ongoing[] = $Project->widgetLarge($user);
-                }
-            }
-            $i = 0;
-            $breakpoint = ceil($count_projects / 2);
-        ?>
-            <div class="col-md-6">
-                <?php if (!empty($ongoing)) { ?>
-
-                    <h2><?= lang('Ongoing projects', 'Laufende Projekte') ?></h2>
-                    <?php foreach ($ongoing as $html) { ?>
-                        <?= $html ?>
-                    <?php
-                        $i++;
-                        if ($i == $breakpoint) {
-                            echo "</div><div class='col-md-6'>";
-                        }
-                    } ?>
-
-                <?php } ?>
-
-
-                <?php if (!empty($past)) { ?>
-                    <h3><?= lang('Past projects', 'Vergangene Projekte') ?></h3>
-
-                    <?php foreach ($past as $html) { ?>
-                        <?= $html ?>
-                    <?php
-                        $i++;
-                        if ($i == $breakpoint) {
-                            echo "</div><div class'col-md-6'>";
-                        }
-                    } ?>
-
-                <?php } ?>
+<?php if ($Settings->featureEnabled('projects')) { ?>
+    <section id="projects" style="display:none">
+        <h3 class="title">
+            <?= lang('Timeline of all approved projects', 'Zeitstrahl aller bewilligten Projekte') ?>
+        </h3>
+        <div class="box">
+            <div class="content">
+                <div id="project-timeline"></div>
             </div>
+        </div>
+        <div class="row row-eq-spacing my-0">
+            <?php
+            if ($count_projects > 0) {
+                $projects = $osiris->projects->find($project_filter, ['sort' => ["start" => -1, "end" => -1]]);
+
+                $ongoing = [];
+                $past = [];
+
+                require_once BASEPATH . "/php/Project.php";
+                $Project = new Project();
+                foreach ($projects as $project) {
+                    $Project->setProject($project);
+                    if ($Project->inPast()) {
+                        $past[] = $Project->widgetLarge($user);
+                    } else {
+                        $ongoing[] = $Project->widgetLarge($user);
+                    }
+                }
+                $i = 0;
+                $breakpoint = ceil($count_projects / 2);
+            ?>
+                <div class="col-md-6">
+                    <?php if (!empty($ongoing)) { ?>
+
+                        <h2><?= lang('Ongoing projects', 'Laufende Projekte') ?></h2>
+                        <?php foreach ($ongoing as $html) { ?>
+                            <?= $html ?>
+                        <?php
+                            $i++;
+                            if ($i == $breakpoint) {
+                                echo "</div><div class='col-md-6'>";
+                            }
+                        } ?>
+
+                    <?php } ?>
+
+
+                    <?php if (!empty($past)) { ?>
+                        <h3><?= lang('Past projects', 'Vergangene Projekte') ?></h3>
+
+                        <?php foreach ($past as $html) { ?>
+                            <?= $html ?>
+                        <?php
+                            $i++;
+                            if ($i == $breakpoint) {
+                                echo "</div><div class'col-md-6'>";
+                            }
+                        } ?>
+
+                    <?php } ?>
+                </div>
 
 
 
-        <?php } ?>
-    </div>
+            <?php } ?>
+        </div>
 
-</section>
+    </section>
+<?php } ?>
 
 
 <section id="coauthors" style="display:none">
@@ -1270,27 +1280,29 @@ if ($currentuser) { ?>
 </section>
 
 
-<section id="concepts" style="display:none">
-    <?php if (!empty($concepts)) :
-    ?>
+<?php if ($Settings->featureEnabled('concepts')) { ?>
+    <section id="concepts" style="display:none">
+        <?php if (!empty($concepts)) :
+        ?>
 
-        <h3 class=""><?= lang('Concepts', 'Konzepte') ?></h3>
-        <div class="box" id="concepts">
-            <div class="content">
-                <?php foreach ($concepts as $concept) {
-                    $score =  round($concept['score'] * 100);
-                ?><span class="concept" target="_blank" data-score='<?= $score ?>' data-name='<?= $concept['_id'] ?>' data-count='<?= $concept['count'] ?>' data-wikidata='<?= $concept['concept']['wikidata'] ?>'>
-                        <div role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="--value: <?= $score ?>"></div>
-                        <?= $concept['_id'] ?>
-                    </span><?php } ?>
+            <h3 class=""><?= lang('Concepts', 'Konzepte') ?></h3>
+            <div class="box" id="concepts">
+                <div class="content">
+                    <?php foreach ($concepts as $concept) {
+                        $score =  round($concept['score'] * 100);
+                    ?><span class="concept" target="_blank" data-score='<?= $score ?>' data-name='<?= $concept['_id'] ?>' data-count='<?= $concept['count'] ?>' data-wikidata='<?= $concept['concept']['wikidata'] ?>'>
+                            <div role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="--value: <?= $score ?>"></div>
+                            <?= $concept['_id'] ?>
+                        </span><?php } ?>
+                </div>
             </div>
-        </div>
-    <?php else : ?>
-        <p>
-            <?= lang('No concepts are assigned to this person.', 'Zu dieser Person sind keine Konzepte zugewiesen.') ?>
-        </p>
-    <?php endif; ?>
-</section>
+        <?php else : ?>
+            <p>
+                <?= lang('No concepts are assigned to this person.', 'Zu dieser Person sind keine Konzepte zugewiesen.') ?>
+            </p>
+        <?php endif; ?>
+    </section>
+<?php } ?>
 
 
 
