@@ -22,7 +22,7 @@
     <?= lang('Features', 'Funktionen') ?>
 </h1>
 
-<form action="<?=ROOTPATH?>/crud/admin/features" method="post" id="role-form">
+<form action="<?= ROOTPATH ?>/crud/admin/features" method="post" id="role-form">
 
     <?php
     $features = $Settings->get('features');
@@ -31,9 +31,13 @@
 
     <table class="table my-20">
         <tbody>
-
             <tr>
-                <td>
+                <th colspan="2">
+                    <?= lang('General features', 'Generelle Funktionen') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
                     <?= lang('Coins', 'Coins') ?>
                 </td>
                 <?php
@@ -55,7 +59,7 @@
 
 
             <tr>
-                <td>
+                <td class="pl-20">
                     <?= lang('Achievements', 'Errungenschaften') ?>
                 </td>
                 <?php
@@ -76,7 +80,7 @@
 
 
             <tr>
-                <td>
+                <td class="pl-20">
                     <?= lang('User profile metrics', 'Metriken im Nutzerprofil') ?>
                 </td>
                 <?php
@@ -101,8 +105,13 @@
 
 
             <tr>
-                <td>
-                    <?= lang('Guest forms', 'Gäste-Formulare') ?>
+                <th colspan="2">
+                    <?= lang('Guests', 'Gäste') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
+                    <?= lang('Guests can be registered in OSIRIS', 'Gäste können in OSIRIS angemeldet werden') ?>
                 </td>
                 <?php
                 $guests = $Settings->featureEnabled('guests');
@@ -119,10 +128,42 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="pl-20">
+                    <?= lang('External guest forms to complete registration', 'Externe Gästeformulare, um die Registration abzuschließen') ?>
+                </td>
+                <?php
+                $guests = $Settings->featureEnabled('guest-forms');
+                ?>
+                <td>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="guest-forms-true" value="1" name="values[guest-forms]" <?= $guests ? 'checked' : '' ?>>
+                        <label for="guest-forms-true"><?= lang('enabled', 'aktiviert') ?></label>
+                    </div>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="guest-forms-false" value="0" name="values[guest-forms]" <?= $guests ? '' : 'checked' ?>>
+                        <label for="guest-forms-false"><?= lang('disabled', 'deaktiviert') ?></label>
+                    </div>
+                    <div class="row mt-10">
+                        <label for="guest-forms-server" class="w-150 col flex-reset"><?= lang('Server address', 'Server-Adresse') ?></label>
+                        <input type="text" class="form-control small col" name="general[guest-forms-server]" id="guest-forms-server" value="<?=$Settings->get('guest-forms-server')?>">
+                    </div>
+                    <div class="row mt-10">
+                        <label for="guest-forms-secret-key" class="w-150 col flex-reset"><?= lang('Secret key') ?></label>
+                        <input type="text" class="form-control small col" name="general[guest-forms-secret-key]" id="guest-forms-secret-key" value="<?=$Settings->get('guest-forms-secret-key')?>">
+                    </div>
+                </td>
+            </tr>
 
 
             <tr>
-                <td>
+                <th colspan="2">
+                    <?= lang('Reporting', 'Berichterstattung') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
                     <?= lang('IDA Integration') ?>
                 </td>
                 <?php
@@ -141,10 +182,14 @@
                 </td>
             </tr>
 
-            
             <tr>
-                <td>
+                <th colspan="2">
                     <?= lang('Projects', 'Projekte') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
+                    <?= lang('Projects in OSIRIS', 'Projekte in OSIRIS') ?>
                 </td>
                 <?php
                 $projects = $Settings->featureEnabled('projects');
@@ -158,6 +203,31 @@
                     <div class="custom-radio d-inline-block ml-10">
                         <input type="radio" id="projects-false" value="0" name="values[projects]" <?= $projects ? '' : 'checked' ?>>
                         <label for="projects-false"><?= lang('disabled', 'deaktiviert') ?></label>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="2">
+                    <?= lang('OSIRIS Portal') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
+                    <?= lang('Portal previews and API', 'Portal-Vorschau und API') ?>
+                </td>
+                <?php
+                $portal = $Settings->featureEnabled('portal');
+                ?>
+                <td>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="portal-true" value="1" name="values[portal]" <?= $portal ? 'checked' : '' ?>>
+                        <label for="portal-true"><?= lang('enabled', 'aktiviert') ?></label>
+                    </div>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="portal-false" value="0" name="values[portal]" <?= $portal ? '' : 'checked' ?>>
+                        <label for="portal-false"><?= lang('disabled', 'deaktiviert') ?></label>
                     </div>
                 </td>
             </tr>

@@ -174,20 +174,31 @@ Route::post('/crud/admin/general', function () {
     if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
 
     // $json = $Settings->settings
+    // if (isset($_POST['general'])) {
+    //     if (isset($_POST['general']['startyear'])) {
+    //         $updateResult = $osiris->adminGeneral->updateOne(
+    //             ['key' => 'startyear'],
+    //             ['$set' => ['value' => $_POST['general']['startyear']]]
+    //         );
+    //     }
+    // }
+    // if (isset($_POST['affiliation'])) {
+    //     $updateResult = $osiris->adminGeneral->updateOne(
+    //         ['key' => 'affiliation'],
+    //         ['$set' => ['value' => $_POST['affiliation']]]
+    //     );
+    // }
+    
     if (isset($_POST['general'])) {
-        if (isset($_POST['general']['startyear'])) {
-            $updateResult = $osiris->adminGeneral->updateOne(
-                ['key' => 'startyear'],
-                ['$set' => ['value' => $_POST['general']['startyear']]]
-            );
+        foreach ($_POST['general'] as $key => $value) {
+            $osiris->adminGeneral->deleteOne(['key'=>$key]);
+            $osiris->adminGeneral->insertOne([
+                'key' => $key,
+                'value' => $value
+            ]);
         }
     }
-    if (isset($_POST['affiliation'])) {
-        $updateResult = $osiris->adminGeneral->updateOne(
-            ['key' => 'affiliation'],
-            ['$set' => ['value' => $_POST['affiliation']]]
-        );
-    }
+
 
     $msg = 'settings-saved';
 
@@ -270,6 +281,18 @@ Route::post('/crud/admin/features', function () {
             $osiris->adminFeatures->insertOne($r);
         }
     }
+
+    if (isset($_POST['general'])) {
+        foreach ($_POST['general'] as $key => $value) {
+            $osiris->adminGeneral->deleteOne(['key'=>$key]);
+            $osiris->adminGeneral->insertOne([
+                'key' => $key,
+                'value' => $value
+            ]);
+        }
+    }
+
+
 
     $msg = 'settings-saved';
 

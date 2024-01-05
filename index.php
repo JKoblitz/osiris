@@ -85,9 +85,7 @@ Route::get('/', function () {
 if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
     require_once BASEPATH.'/addons/auth/index.php';
 }
-if (defined('GUEST_FORMS') && GUEST_FORMS) {
-    require_once BASEPATH.'/addons/guestforms/index.php';
-}
+
 
 
 Route::get('/test-new-func', function () {
@@ -127,12 +125,18 @@ include_once BASEPATH . "/routes/adminCategories.php";
 // include_once BASEPATH . "/routes/adminGeneral.php";
 // include_once BASEPATH . "/routes/adminRoles.php";
 
+
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/CRUD.php";
 
 if (IDA_INTEGRATION) {
     include_once BASEPATH . "/addons/ida/index.php";
 }
+
+
+// if ($Settings->featureEnabled('guests')) {
+    require_once BASEPATH.'/addons/guestforms/index.php';
+// }
 
 /**
  * Routes for OSIRIS Portal

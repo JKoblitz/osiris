@@ -247,7 +247,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
         <?php
         // show current guest state
-        if (defined('GUEST_FORMS') && GUEST_FORMS) {
+        if ($Settings->featureEnabled('guests')) {
             $guestState = $osiris->guests->findOne(['username' => $user]);
             if (!empty($guestState)) { ?>
                 <span class="user-role">

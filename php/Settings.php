@@ -74,6 +74,8 @@ class Settings
             case 'features':
                 return $this->features;
             default:
+                $req = $this->osiris->adminGeneral->findOne(['key'=>$key]);
+                if (!empty($req)) return $req['value'];
                 return '';
                 break;
         }

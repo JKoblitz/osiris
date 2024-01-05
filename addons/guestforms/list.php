@@ -16,6 +16,10 @@
     <?= lang('Add new guest', 'Neuen Gast anmelden') ?>
 </a>
 
+<?php
+$guest_forms = $Settings->featureEnabled('guest-forms');
+?>
+
 
 <table class="table mt-10">
     <thead>
@@ -26,7 +30,10 @@
             <th><?= lang('Affiliation', 'Affiliation') ?></th>
             <th><?= lang('Time of stay', 'Zeitraum des Aufenthalts') ?></th>
             <th><?= lang('Supervisor', 'Betreuer:in') ?></th>
-            <th><?= lang('Complete', 'Vollständig') ?></th>
+            <?php if ($guest_forms) { ?>
+                <th><?= lang('Complete', 'Vollständig') ?></th>
+            <?php } ?>
+
         </tr>
     </thead>
     <tbody>
@@ -49,13 +56,14 @@
                 <td>
                     <?= $entry['supervisor']['name'] ?>
                 </td>
-                <td>
-                    <?php
-                    $finished = ($entry['legal']['general'] ?? false);
-                    echo bool_icon($finished);
-                    ?>
-
-                </td>
+                <?php if ($guest_forms) { ?>
+                    <td>
+                        <?php
+                        $finished = ($entry['legal']['general'] ?? false);
+                        echo bool_icon($finished);
+                        ?>
+                    </td>
+                <?php } ?>
             </tr>
         <?php } ?>
 

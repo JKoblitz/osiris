@@ -365,7 +365,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                         <?= lang('Organisational Units', 'Organisationseinh.') ?>
                     </a>
 
-                    <?php if (GUEST_FORMS) { ?>
+                    <?php if ($Settings->featureEnabled('guests')) { ?>
                         <a href="<?= ROOTPATH ?>/guests" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('guests') ?>">
                             <i class="ph ph-user-switch" aria-hidden="true"></i>
                             <?= lang('Guests', 'Gäste') ?>

@@ -107,16 +107,28 @@ Route::post('/guests/save', function () {
         ];
     }
 
-    // dump($values, true);
-    if (!$finished) {
-        // send data to guest server
-        $URL = GUEST_SERVER . '/api/post';
-        $postData = $values;
-        $postData['secret'] = GUEST_FORM_SECRET_KEY;
-        $postRes = CallAPI('JSON', $URL, $postData);
-        $postRes = json_decode($postRes, true);
-        if ($postRes['message'] != 'Success') {
-            die($postRes['message']);
+    $msg = "success";
+    
+    if (!$finished && $Settings->featureEnabled('guest-forms')) {
+
+        // check if server and secret key are defined
+        $guest_server = $Settings->get('guest-forms-server');
+        $guest_secret = $Settings->get('guest-forms-secret-key');
+        if (empty($guest_server)) {
+            $msg = "Guest+server+is+not+defined.+Please+contact+admin.";
+        } else if (empty($guest_secret)) {
+            $msg = "Secret+key+is+not+defined.+Please+contact+admin.";
+        } else {
+            // if server and key is defined:
+            // send data to guest server
+            $URL = $guest_server . '/api/post';
+            $postData = $values;
+            $postData['secret'] = $guest_secret;
+            $postRes = CallAPI('JSON', $URL, $postData);
+            $postRes = json_decode($postRes, true);
+            if ($postRes['message'] != 'Success') {
+                die($postRes['message']);
+            }
         }
     }
 
@@ -131,7 +143,7 @@ Route::post('/guests/save', function () {
         $insertOneResult  = $collection->insertOne($values);
     }
 
-    header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
+    header("Location: " . ROOTPATH . "/guests/view/$id?msg=$msg");
 }, 'login');
 
 
@@ -143,11 +155,22 @@ Route::post('/guests/synchronize/([a-z0-9]*)', function ($id) {
 
     $collection = $osiris->guests;
 
+    $guest_server = $Settings->get('guest-forms-server');
+    if (empty($guest_server)) {
+        header("Location: " . ROOTPATH . "/guests?msg=Guest+server+is+not+defined.+Please+contact+admin.");
+        die;
+    }
+    $guest_secret = $Settings->get('guest-forms-secret-key');
+    if (empty($guest_secret)) {
+        header("Location: " . ROOTPATH . "/guests?msg=Secret+key+is+not+defined.+Please+contact+admin.");
+        die;
+    }
+
     // send data to guest server
-    $URL = GUEST_SERVER . '/api/get/' . $id;
+    $URL = $guest_server . '/api/get/' . $id;
     if (!str_contains($URL, '//')) $URL = "https://" . $URL;
     $postData = [];
-    $postData['secret'] = GUEST_FORM_SECRET_KEY;
+    $postData['secret'] = $guest_secret;
     $postRes = CallAPI('GET', $URL, $postData);
     $values = json_decode($postRes, true);
 

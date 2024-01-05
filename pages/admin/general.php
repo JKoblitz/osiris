@@ -80,39 +80,39 @@ if ($N > 0) {
             <div class="row row-eq-spacing">
                 <div class="col-sm-2">
                     <label for="icon" class="required">ID</label>
-                    <input type="text" class="form-control" name="affiliation[id]" required value="<?= $affiliation['id'] ?>">
+                    <input type="text" class="form-control" name="general[affiliation][id]" required value="<?= $affiliation['id'] ?>">
                 </div>
                 <div class="col-sm">
                     <label for="name" class="required ">Name</label>
-                    <input type="text" class="form-control" name="affiliation[name]" required value="<?= $affiliation['name'] ?? '' ?>">
+                    <input type="text" class="form-control" name="general[affiliation][name]" required value="<?= $affiliation['name'] ?? '' ?>">
                 </div>
                 <div class="col-sm">
                     <label for="link" class="required ">Link</label>
-                    <input type="text" class="form-control" name="affiliation[link]" required value="<?= $affiliation['link'] ?? '' ?>">
+                    <input type="text" class="form-control" name="general[affiliation][link]" required value="<?= $affiliation['link'] ?? '' ?>">
                 </div>
             </div>
             <div class="row row-eq-spacing">
                 <div class="col-sm-2">
                     <label for="ror">ROR (inkl. URL)</label>
-                    <input type="text" class="form-control" name="affiliation[ror]" value="<?= $affiliation['ror'] ?? 'https://ror.org/' ?>">
+                    <input type="text" class="form-control" name="general[affiliation][ror]" value="<?= $affiliation['ror'] ?? 'https://ror.org/' ?>">
                 </div>
                 <div class="col-sm">
                     <label for="location">Location</label>
-                    <input type="text" class="form-control" name="affiliation[location]" value="<?= $affiliation['location'] ?? '' ?>">
+                    <input type="text" class="form-control" name="general[affiliation][location]" value="<?= $affiliation['location'] ?? '' ?>">
                 </div>
                 <div class="col-sm">
                     <label for="country">Country Code (2lttr)</label>
-                    <input type="text" class="form-control" name="affiliation[country]" value="<?= $affiliation['country'] ?? 'DE' ?>">
+                    <input type="text" class="form-control" name="general[affiliation][country]" value="<?= $affiliation['country'] ?? 'DE' ?>">
                 </div>
             </div>
             <div class="row row-eq-spacing">
                 <div class="col-sm">
                     <label for="lat">Latitude</label>
-                    <input type="number" class="form-control" name="affiliation[lat]" value="<?= $affiliation['lat'] ?? '' ?>">
+                    <input type="number" class="form-control" name="general[affiliation][lat]" value="<?= $affiliation['lat'] ?? '' ?>">
                 </div>
                 <div class="col-sm">
                     <label for="lng">Longitude</label>
-                    <input type="number" class="form-control" name="affiliation[lng]" value="<?= $affiliation['lng'] ?? '' ?>">
+                    <input type="number" class="form-control" name="general[affiliation][lng]" value="<?= $affiliation['lng'] ?? '' ?>">
                 </div>
             </div>
 

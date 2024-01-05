@@ -33,7 +33,7 @@ define("ORCID_SECRET_KEY", null);
 define("IDA_INTEGRATION", false);
 
 // Guest forms
-define('GUEST_FORMS', false);
-define("GUEST_SERVER", 'guests-osiris.dsmz.de');
-define("GUEST_FORM_SECRET_KEY", "THIS-is-A-secret");
+// define('GUEST_FORMS', false);
+// define("GUEST_SERVER", 'guests-osiris.dsmz.de');
+// define("GUEST_FORM_SECRET_KEY", "THIS-is-A-secret");
 
