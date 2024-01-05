@@ -818,7 +818,7 @@ if ($currentuser) { ?>
                     <h4 class="title">
                         <?= lang('Position', 'Position') ?>
                         <?php if ($currentuser) { ?>
-                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>">
+                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>#position">
                                 <i class="ph ph-note-pencil ph-lg"></i>
                             </a>
                         <?php } ?>
@@ -836,7 +836,7 @@ if ($currentuser) { ?>
                     <h4 class="title">
                         <?= lang('Research interest', 'Forschungsinteressen') ?>
                         <?php if ($currentuser) { ?>
-                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>">
+                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>#research">
                                 <i class="ph ph-note-pencil ph-lg"></i>
                             </a>
                         <?php } ?>
@@ -858,7 +858,7 @@ if ($currentuser) { ?>
                     <h4 class="title">
                         <?= lang('Curriculum Vitae') ?>
                         <?php if ($currentuser) { ?>
-                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>">
+                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>#cv">
                                 <i class="ph ph-note-pencil ph-lg"></i>
                             </a>
                         <?php } ?>

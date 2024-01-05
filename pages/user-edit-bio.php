@@ -32,7 +32,7 @@
                 <b>Username:</b> <?= $data['username'] ?? '' ?>
             </p>
 
-            <h4 class="title mt-0">
+            <h4 class="title mt-0" id="position">
                 <?= lang('Current Position', 'Aktuelle Position') ?>
             </h4>
 
@@ -43,7 +43,7 @@
         <hr>
         <div class="content">
 
-            <h4 class="title mt-0">
+            <h4 class="title mt-0" id="research">
                 <?= lang('Research interest', 'Forschungsinteressen') ?>
             </h4>
             <small class="text-muted">Max. 5</small><br>
@@ -96,7 +96,7 @@
         <hr>
         <div class="content">
 
-            <h4 class="title mt-0">
+            <h4 class="title mt-0" id="cv">
                 <?= lang('Curriculum Vitae') ?>
             </h4>
 
