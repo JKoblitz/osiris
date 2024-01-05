@@ -1,4 +1,7 @@
 
+<h1>
+    <?=lang('Log-in to IDA', 'IDA Log-in')?>
+</h1>
 <form action="<?= ROOTPATH ?>/ida/auth" method="POST" class="w-400 mw-full">
     <input type="hidden" name="redirect" value="<?= $_GET['redirect'] ?? $_SERVER['REQUEST_URI'] ?>">
     <div class="form-group">

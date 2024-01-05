@@ -30,7 +30,7 @@ define("ORCID_APP_ID", null);
 define("ORCID_SECRET_KEY", null);
 
 // activate IDA integration here
-define("IDA_INTEGRATION", false);
+// define("IDA_INTEGRATION", false);
 
 // Guest forms
 // define('GUEST_FORMS', false);

@@ -129,9 +129,9 @@ include_once BASEPATH . "/routes/adminCategories.php";
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/CRUD.php";
 
-if (IDA_INTEGRATION) {
+// if (IDA_INTEGRATION) {
     include_once BASEPATH . "/addons/ida/index.php";
-}
+// }
 
 
 // if ($Settings->featureEnabled('guests')) {

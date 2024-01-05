@@ -3,6 +3,10 @@ define('IDA_PATH', BASEPATH . '/addons/ida');
 
 
 Route::get('/ida/auth', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->featureEnabled('ida')) {
+        die('IDA Integration is not enabled. Please contact admin.');
+    }
     include BASEPATH . "/header.php";
     include IDA_PATH . "/pages/ida-login.php";
     include BASEPATH . "/footer.php";
@@ -10,7 +14,10 @@ Route::get('/ida/auth', function () {
 
 Route::post('/ida/auth', function () {
 
-include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->featureEnabled('ida')) {
+        die('IDA Integration is not enabled. Please contact admin.');
+    }
 
     require_once IDA_PATH . "/php/IDA.php";
     // Borsigstr3!?
@@ -29,6 +36,9 @@ include_once BASEPATH . "/php/init.php";
 
 Route::get('/ida/dashboard', function () {
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->featureEnabled('ida')) {
+        die('IDA Integration is not enabled. Please contact admin.');
+    }
     require_once IDA_PATH . "/php/IDA.php";
 
     // init IDA and check authorization status
@@ -53,7 +63,10 @@ Route::get('/ida/dashboard', function () {
 
 Route::post('/ida/update-institute', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!isset($_POST['institute'])) die ('No institute selected');
+    if (!$Settings->featureEnabled('ida')) {
+        die('IDA Integration is not enabled. Please contact admin.');
+    }
+    if (!isset($_POST['institute'])) die('No institute selected');
     $_SESSION['ida-institute_id'] = $_POST['institute'];
     redirect('/ida/dashboard');
 });
@@ -62,6 +75,9 @@ Route::post('/ida/update-institute', function () {
 Route::get('/ida/formular/(\d+)', function ($formular_id) {
 
     include_once BASEPATH . "/php/init.php";
+    if (!$Settings->featureEnabled('ida')) {
+        die('IDA Integration is not enabled. Please contact admin.');
+    }
 
     require_once IDA_PATH . "/php/IDA.php";
 
@@ -78,10 +94,10 @@ Route::get('/ida/formular/(\d+)', function ($formular_id) {
     $formular = $IDA->formular($formular_id);
     include BASEPATH . "/header.php";
 
-    if (!empty($IDA->msg)){
+    if (!empty($IDA->msg)) {
         printMsg($IDA->msg, 'error');
     }
-    if (!empty($formular)){
+    if (!empty($formular)) {
         include IDA_PATH . "/pages/ida-formular.php";
     }
 

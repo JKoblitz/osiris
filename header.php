@@ -462,7 +462,7 @@ $pageactive = function ($p) use ($page, $breadcrumb) {
                             <?= lang('Reports', 'Berichte') ?>
                         </a>
 
-                        <?php if (IDA_INTEGRATION) { ?>
+                        <?php if ($Settings->featureEnabled('ida')) { ?>
                             <a href="<?= ROOTPATH ?>/ida/dashboard" class="sidebar-link sidebar-link-osiris with-icon <?= $pageactive('ida') ?>">
                                 <i class="ph ph-clipboard-text" aria-hidden="true"></i>
                                 <?= lang('IDA-Integration') ?>
