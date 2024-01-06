@@ -40,7 +40,7 @@
                 </a>
             </div>
             <div class="col">
-                <h3>OSIRIS</h3>
+                <h3>OSIRIS v<?= OSIRIS_VERSION ?></h3>
                 <a href="<?= ROOTPATH ?>/about" class="">
                     <?= lang('About OSIRIS', 'Über OSIRIS') ?>
                 </a>

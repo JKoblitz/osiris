@@ -98,7 +98,7 @@ $pageactive = function ($p) use ($page) {
             --affiliation: "<?= $Settings->get('affiliation') ?>";
         }
     </style>
-    
+
     <script>
         const ROOTPATH = "<?= ROOTPATH ?>";
         const AFFILIATION = "<?= $Settings->get('affiliation') ?>";
@@ -157,11 +157,10 @@ $pageactive = function ($p) use ($page) {
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
                 <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
-                <span style="position: absolute;bottom: 0;font-size: 1.3rem;color: var(--signal-color);">v<?= OSIRIS_VERSION ?></span>
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
-                <?=$Settings->printLogo("")?>
+                <?= $Settings->printLogo("") ?>
             </a>
         </div>
         <nav class="navbar navbar-bottom">
@@ -198,7 +197,7 @@ $pageactive = function ($p) use ($page) {
             </ul>
 
             <!-- Accessibility menu -->
-           
+
             <div class="dropdown">
                 <button class="btn text-blue border-blue square mr-5" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
                     <i class="ph ph- ph-person-arms-spread"></i>
@@ -242,10 +241,10 @@ $pageactive = function ($p) use ($page) {
             </div>
 
             <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="btn text-blue border-blue mr-5">
-                    <i class="ph ph-translate" aria-hidden="true"></i>
-                    <span class="sr-only"><?= lang('Change language', 'Sprache ändern') ?></span>
-<?= lang('DE', 'EN') ?>
-                </a>
+                <i class="ph ph-translate" aria-hidden="true"></i>
+                <span class="sr-only"><?= lang('Change language', 'Sprache ändern') ?></span>
+                <?= lang('DE', 'EN') ?>
+            </a>
 
             <form id="navbar-search" action="<?= ROOTPATH ?>/activities" method="get" class="nav-search">
                 <div class="input-group">
@@ -267,12 +266,18 @@ $pageactive = function ($p) use ($page) {
                 <!-- Sidebar links and titles -->
                 <?php if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] === false) { ?>
 
-                    <div class="cta">
-                        <a href="<?= ROOTPATH ?>/" class="btn" style="">
-                            <i class="ph ph-sign-in mr-10" aria-hidden="true"></i>
-                            <?= lang('Log in') ?>
+                    <a href="<?= ROOTPATH ?>/" class="cta with-icon <?= $pageactive('add-activity') ?>">
+                        <i class="ph ph-sign-in mr-10" aria-hidden="true"></i>
+                        <?= lang('Log in') ?>
+                    </a>
+
+                    <?php if (strtoupper(USER_MANAGEMENT) === 'AUTH') { ?>
+                        <a href="<?= ROOTPATH ?>/auth/new-user" class="with-icon <?= $pageactive('auth/new-user') ?>">
+                            <i class="ph ph-user-plus" aria-hidden="true"></i>
+                            <?= lang('Register', 'Registrieren') ?>
                         </a>
-                    </div>
+                    <?php } ?>
+
 
                 <?php } else { ?>
 
@@ -293,9 +298,9 @@ $pageactive = function ($p) use ($page) {
 
 
                     <a href="<?= ROOTPATH ?>/add-activity" class="cta with-icon <?= $pageactive('add-activity') ?>">
-                            <i class="ph ph-plus-circle mr-10" aria-hidden="true"></i>
-                            <?= lang('Add activity', 'Aktivität hinzuf.') ?>
-                        </a>
+                        <i class="ph ph-plus-circle mr-10" aria-hidden="true"></i>
+                        <?= lang('Add activity', 'Aktivität hinzuf.') ?>
+                    </a>
                     <div class="title">
                         <!-- <?= lang('User', 'Nutzer') ?> -->
                         <?= $USER["displayname"] ?? 'User' ?>
@@ -341,14 +346,8 @@ $pageactive = function ($p) use ($page) {
                         </a> -->
                     <?php } ?>
 
-                    
-                <!-- <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="with-icon">
-                    <i class="ph ph-translate" aria-hidden="true"></i>
-                    <?= lang('Deutsch', 'English') ?>
-                </a> -->
 
-
-                    <a href="<?= ROOTPATH ?>/user/logout" class=" with-icon">
+                    <a href="<?= ROOTPATH ?>/user/logout" class=" with-icon" style="--blue-color:var(--danger-color);">
                         <i class="ph ph-sign-out" aria-hidden="true"></i>
                         Logout
                     </a>
@@ -364,13 +363,13 @@ $pageactive = function ($p) use ($page) {
                     </a>
 
                     <?php
-                        $active =  $pageactive('user/browse');
-                        if (empty($active) && !str_contains($uri, "profile/".$_SESSION['username'])){
-                            $active = $pageactive('profile');
-                        }
+                    $active =  $pageactive('user/browse');
+                    if (empty($active) && !str_contains($uri, "profile/" . $_SESSION['username'])) {
+                        $active = $pageactive('profile');
+                    }
                     ?>
-                    
-                    <a href="<?= ROOTPATH ?>/user/browse" class="with-icon <?=$active ?>">
+
+                    <a href="<?= ROOTPATH ?>/user/browse" class="with-icon <?= $active ?>">
                         <i class="ph ph-users" aria-hidden="true"></i>
                         <?= lang('Users', 'Personen') ?>
                     </a>
@@ -397,12 +396,12 @@ $pageactive = function ($p) use ($page) {
                         <i class="ph ph-chalkboard-simple" aria-hidden="true"></i>
                         <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
                     </a>
-                    <?php if ($Settings->featureEnabled('projects')) { ?>                    
-                    <a href="<?= ROOTPATH ?>/projects" class="with-icon <?= $pageactive('projects') ?>">
-                        <i class="ph ph-tree-structure" aria-hidden="true"></i>
-                        <?= lang('Projects', 'Projekte') ?>
-                        <!-- <span class="badge ml-10">SOON</span> -->
-                    </a>
+                    <?php if ($Settings->featureEnabled('projects')) { ?>
+                        <a href="<?= ROOTPATH ?>/projects" class="with-icon <?= $pageactive('projects') ?>">
+                            <i class="ph ph-tree-structure" aria-hidden="true"></i>
+                            <?= lang('Projects', 'Projekte') ?>
+                            <!-- <span class="badge ml-10">SOON</span> -->
+                        </a>
                     <?php } ?>
 
 
@@ -411,11 +410,11 @@ $pageactive = function ($p) use ($page) {
                         <?= lang('Tags', 'Schlagwörter') ?>
                     </a>
 
-                    <?php if ($Settings->featureEnabled('concepts')) { ?>                    
-                    <a href="<?= ROOTPATH ?>/concepts" class="with-icon <?= $pageactive('concepts') ?>">
-                        <i class="ph ph-lightbulb" aria-hidden="true"></i>
-                        <?= lang('Concepts', 'Konzepte') ?>
-                    </a>
+                    <?php if ($Settings->featureEnabled('concepts')) { ?>
+                        <a href="<?= ROOTPATH ?>/concepts" class="with-icon <?= $pageactive('concepts') ?>">
+                            <i class="ph ph-lightbulb" aria-hidden="true"></i>
+                            <?= lang('Concepts', 'Konzepte') ?>
+                        </a>
                     <?php } ?>
 
 
@@ -515,7 +514,7 @@ $pageactive = function ($p) use ($page) {
                     </a>
                 <?php } ?>
 
-               
+
 
             </div>
         </div>

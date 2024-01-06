@@ -10,6 +10,27 @@
     --color-6: #005f60;
     --color-7: #042323;
 
+    /* --success-color: #08A353;
+    --success-color-light: #0ec767;
+    --success-color-very-light: #c3f2da;
+    --success-color-dark: #067b3f;
+    --success-color-very-dark: #022010;
+    --success-color-20: rgba(8, 163, 83, 0.2);
+    --success-color-30: rgba(8, 163, 83, 0.3);
+    --success-color-60: rgba(8, 163, 83, 0.6); */
+
+/* Kelly green */
+    --success-color: #63a308;
+    --success-color-light: #78c40e;
+    --success-color-very-light: #d9f5b2;
+    --success-color-dark: #4f8306;
+    --success-color-very-dark: #1c2d03;
+    --success-color-20: rgba(99, 163, 8, 0.2);
+    --success-color-30: rgba(99, 163, 8, 0.3);
+    --success-color-60: rgba(99, 163, 8, 0.6);
+
+
+
     --osiris-color: var(--color-2);
     --affiliation: "*";
     --primary-color: var(--color-2);
@@ -1601,4 +1622,17 @@ ul.horizontal li:last-child::after {
 
 .navbar .nav-search > .input-group {
     min-width: 25rem;
+}
+.navbar-bottom {
+    /* border-bottom: 1px solid var(--border-color); */
+    box-shadow: var(--button-box-shadow);
+}
+
+/* gray filter for achievements on profile page */
+.achievements .achievement-widget {
+    filter: grayscale(1);
+    transition: all .5s linear;
+}
+.achievements .achievement-widget:hover {
+    filter: grayscale(0);
 }
