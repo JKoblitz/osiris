@@ -168,7 +168,7 @@ if ($N > 0) {
     </div>
     <hr>
     <div class="content">
-        <form action="<?= ROOTPATH ?>/reset-settings" method="post" id="modules-form" enctype="multipart/form-data">
+        <form action="<?= ROOTPATH ?>/crud/admin/reset-settings" method="post" id="modules-form" enctype="multipart/form-data">
             <div class="custom-file mb-20" id="settings-input-div">
                 <input type="file" id="settings-input" name="settings" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
                 <label for="settings-input"><?= lang('Upload settings (as JSON)', 'Lade Einstellungen hoch (als JSON)') ?></label>
@@ -178,7 +178,7 @@ if ($N > 0) {
     </div>
     <hr>
     <div class="content">
-        <form action="<?= ROOTPATH ?>/reset-settings" method="post">
+        <form action="<?= ROOTPATH ?>/crud/admin/reset-settings" method="post">
             <button class="btn danger">
                 <?= lang('Reset all settings to the default value.', 'Setze alle Einstellungen auf den Standardwert zurück.') ?>
             </button>

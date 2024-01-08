@@ -51,7 +51,7 @@ function val($index, $default = '')
             </p>
 
 
-            <form action="<?= ROOTPATH ?>/create-teaching" method="post" enctype="multipart/form-data" id="activity-form">
+            <form action="<?= ROOTPATH ?>/crud/teaching/create" method="post" enctype="multipart/form-data" id="activity-form">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                 <div class="form-group lang-<?= lang('en', 'de') ?>">
@@ -188,7 +188,7 @@ function val($index, $default = '')
                     <?php } else { ?>
 
                         <?= lang('No activities connected.', 'Keine Aktivitäten verknüpft.') ?>
-                        <form action="<?= ROOTPATH ?>/delete-teaching/<?= strval($module['_id']) ?>" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/teaching/delete/<?= strval($module['_id']) ?>" method="post">
                             <input type="hidden" name="redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
                             <button class="btn danger small">
                                 <i class="ph ph-trash"></i>

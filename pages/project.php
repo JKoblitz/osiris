@@ -190,7 +190,7 @@ $Project = new Project($project);
                     </h5>
                     <div>
 
-                        <form action="<?= ROOTPATH ?>/projects/update-persons/<?= $id ?>" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/projects/update-persons/<?= $id ?>" method="post">
 
                             <table class="table simple">
                                 <thead>

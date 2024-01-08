@@ -394,7 +394,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             <?= lang('End activity', 'Beenden') ?> <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-center w-200" aria-labelledby="update-end-date">
-                            <form action="<?= ROOTPATH . "/update/" . $id ?>" method="POST" class="content">
+                            <form action="<?= ROOTPATH . "/crud/activities/update/" . $id ?>" method="POST" class="content">
                                 <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities/view/" . $id ?>">
                                 <div class="form-group">
                                     <label for="date_end"><?= lang('Activity ended at:', 'Aktivität beendet am:') ?></label>
@@ -541,7 +541,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                     <p class="mt-0">
                         <?= lang('You have permission to delete this activity:', 'Du hast die nötigen Rechte, um diese Aktivität zu löschen:') ?>
                     </p>
-                    <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
+                    <form action="<?= ROOTPATH ?>/crud/activities/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                         <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
                         <button type="submit" class="btn danger">
                             <i class="ph ph-trash"></i>
@@ -565,7 +565,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             'Dies ist deine eigene Aktivität und sie ist noch nicht gesperrt worden. Du kannst sie also löschen.'
                         ) ?>
                     </p>
-                    <form action="<?= ROOTPATH ?>/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
+                    <form action="<?= ROOTPATH ?>/crud/activities/delete/<?= $id ?>" method="post" class="d-inline-block ml-auto">
                         <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH . "/activities" ?>">
                         <button type="submit" class="btn danger">
                             <i class="ph ph-trash"></i>

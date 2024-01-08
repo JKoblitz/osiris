@@ -21,16 +21,16 @@ $form = $form ?? array();
 
 $level = 0;
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH ;
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "groups/update/" . $form['_id'];
+    $formaction .= "/crud/groups/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/groups/view/" . $form['_id'];
     $title = lang('Edit group: ', 'Gruppe bearbeiten: '). $id;
 
     $level = $Groups->getLevel($id);
 } else {
-    $formaction .= "groups/create";
+    $formaction .= "/crud/groups/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/groups/view/*";
     $title = lang('New group', 'Neue Gruppe');
@@ -182,7 +182,7 @@ function sel($index, $value)
 
 
     <div class="alert danger mt-20">
-        <form action="<?= ROOTPATH ?>/groups/delete/<?= $group['_id'] ?>" method="post">
+        <form action="<?= ROOTPATH ?>/crud/groups/delete/<?= $group['_id'] ?>" method="post">
             <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/groups">
             <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
             <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>

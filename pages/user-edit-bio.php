@@ -22,7 +22,7 @@
     <?= $data['name'] ?>
 </h1>
 
-<form action="<?= ROOTPATH ?>/update-user/<?= $data['username'] ?>" method="post">
+<form action="<?= ROOTPATH ?>/crud/users/update/<?= $data['username'] ?>" method="post">
     <div class="box w-500 mw-full">
         <div class="content">
 

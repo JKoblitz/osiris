@@ -159,7 +159,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     <?= lang('Change profile picture', 'Profilbild ändern') ?>
                 </h2>
 
-                <form action="<?= ROOTPATH ?>/update-profile/<?= $user ?>" method="post" enctype="multipart/form-data">
+                <form action="<?= ROOTPATH ?>/crud/users/profile-picture/<?= $user ?>" method="post" enctype="multipart/form-data">
                     <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                     <div class="custom-file mb-20" id="file-input-div">
                         <input type="file" id="profile-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
@@ -188,7 +188,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 
                 <?php if ($img_exist) { ?>
                     <hr>
-                    <form action="<?= ROOTPATH ?>/update-profile/<?= $user ?>" method="post">
+                    <form action="<?= ROOTPATH ?>/crud/users/update-profile/<?= $user ?>" method="post">
                         <input type="hidden" name="delete" value="true">
                         <button class="btn danger">
                             <i class="ph ph-trash"></i>
@@ -656,7 +656,7 @@ if ($currentuser) { ?>
                     <?= lang('Expertise') ?>
                 </h4>
 
-                <form action="<?= ROOTPATH ?>/update-expertise/<?= $user ?>" method="post" id="expertise-form">
+                <form action="<?= ROOTPATH ?>/crud/users/update-expertise/<?= $user ?>" method="post" id="expertise-form">
                     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                     <?php foreach ($expertise as $n) { ?>

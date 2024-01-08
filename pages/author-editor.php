@@ -34,7 +34,7 @@
         <?= lang('Edit editors', 'Bearbeite die Editoren') ?>
         <?php } ?>
     </h1>
-    <form action="<?= ROOTPATH ?>/update-authors/<?= $id ?>" method="post">
+    <form action="<?= ROOTPATH ?>/crud/activities/update-authors/<?= $id ?>" method="post">
 
         <table class="table">
             <thead>

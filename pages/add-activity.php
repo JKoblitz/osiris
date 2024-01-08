@@ -39,13 +39,13 @@
 $form = $form ?? array();
 $copy = $copy ?? false;
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH ;
 if (!empty($form) && isset($form['_id']) && !$copy) {
-    $formaction .= "update/" . $form['_id'];
+    $formaction .= "/crud/activities/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
-    $formaction .= "create";
+    $formaction .= "/crud/activities/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/activities/view/*";
 }

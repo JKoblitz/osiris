@@ -228,7 +228,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-2">
                     <div class="content">
-                        <form action="<?= ROOTPATH ?>/update-journal/<?= $id ?>" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/journal/update/<?= $id ?>" method="post">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <div class="form-group">
                                 <label for="year"><?= lang('Year', 'Jahr') ?></label>

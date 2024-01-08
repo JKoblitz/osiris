@@ -356,3 +356,225 @@ Route::get('/synchronize-users', function () {
     echo "User synchronization successful";
     include BASEPATH . "/footer.php";
 });
+
+
+/** 
+ * CRUD routes
+ */
+
+Route::post('/crud/users/update/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die("no values given");
+
+    $values = $_POST['values'];
+    $values = validateValues($values, $DB);
+    // separate personal and account information
+    $person = $values;
+    // $account = [];
+
+    // update name information
+    if (isset($values['last']) && isset($values['first'])) {
+
+        $person['displayname'] = "$values[first] $values[last]";
+        $person['formalname'] = "$values[last], $values[first]";
+        $person['first_abbr'] = "";
+        foreach (explode(" ", $values['first']) as $name) {
+            $person['first_abbr'] .= " " . $name[0] . ".";
+        }
+    }
+
+
+    if (isset($values['cv'])) {
+        $cv = $values['cv'];
+        foreach ($values['cv'] as $key => $entry) {
+            // add time text to entry
+            $fromto = $entry['from']['month'] . '/' . $entry['from']['year'];
+            $fromto .= " - ";
+            if (empty($entry['to']['year'])) {
+                $fromto .= "Current";
+            } else {
+                if (!empty($entry['to']['month'])) {
+                    $fromto .= $entry['to']['month'] . '/';
+                }
+                $fromto .= $entry['to']['year'];
+            }
+            $cv[$key]['time'] = $fromto;
+        }
+        // sort cv descending
+        usort($cv, function ($a, $b) {
+            $a = $a['from']['year'] . '.' . $a['from']['month'];
+            $b = $b['from']['year'] . '.' . $b['from']['month'];
+            return strnatcmp($b, $a);
+        });
+        $person['cv'] = $cv;
+    }
+
+    // dump($person, true);
+    // die;
+    // if (isset($person['dept'])) {
+    //     $person['depts'] = $Groups->getParents($person['dept']);
+    //     $person['depts'] = array_reverse($person['depts']);
+    // }
+
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
+        ['$set' => $person]
+    );
+
+    // if (!empty($account)) $updateResult = $osiris->account->updateOne(
+    //     ['username' => $user],
+    //     ['$set' => $account]
+    // );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount()
+    ]);
+});
+
+
+Route::post('/crud/users/delete/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+
+
+    $data = $DB->getPerson($user);
+
+    $keep = [
+        '_id',
+        'displayname',
+        'formalname',
+        'first_abbr',
+        'updated', 'updated_by',
+        "academic_title",
+        "first",
+        "last",
+        "name",
+        "dept",
+        "username"
+    ];
+    $arr = [];
+    foreach ($data as $key => $value) {
+        if (in_array($key, $keep)) continue;
+        $arr[$key] = null;
+    }
+    $arr['is_active'] = false;
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
+        ['$set' => $arr]
+    );
+
+
+
+    if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
+        unlink(BASEPATH . "/img/users/$user.jpg");
+    }
+    if (file_exists(BASEPATH . "/img/users/" . $user . "_sm.jpg")) {
+        unlink(BASEPATH . "/img/users/" . $user . "_sm.jpg");
+    }
+
+    header("Location: " . ROOTPATH . "/profile/" . $user . "?msg=user-inactivated");
+    die();
+});
+
+
+/**
+ * Update profile picture
+ * TODO: transfer to database
+ */
+Route::post('/crud/users/profile-picture/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+
+    $target_dir = BASEPATH . "/img/users";
+    if (!is_writable($target_dir)) {
+        die("User image directory is unwritable. Please contact admin.");
+    }
+    $target_dir .= "/";
+    $filename = "$user.jpg";
+
+    if (isset($_FILES["file"])) {
+        if ($_FILES['file']['type'] != 'image/jpeg') die('Wrong extension, only JPEG is allowed.');
+
+        if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
+            $errorMsg = match ($_FILES['file']['error']) {
+                1 => lang('The uploaded file exceeds the upload_max_filesize directive in php.ini', 'Die hochgeladene Datei überschreitet die Richtlinie upload_max_filesize in php.ini'),
+                2 => lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."),
+                3 => lang('The uploaded file was only partially uploaded.', 'Die hochgeladene Datei wurde nur teilweise hochgeladen.'),
+                4 => lang('No file was uploaded.', 'Es wurde keine Datei hochgeladen.'),
+                6 => lang('Missing a temporary folder.', 'Der temporäre Ordner fehlt.'),
+                7 => lang('Failed to write file to disk.', 'Datei konnte nicht auf die Festplatte geschrieben werden.'),
+                8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
+                default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
+            };
+            printMsg($errorMsg, "error");
+        } else if ($_FILES["file"]["size"] > 2000000) {
+            printMsg(lang("File is too big: max 2 MB is allowed.", "Die Datei ist zu groß: maximal 2 MB sind erlaubt."), "error");
+        } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            header("Location: " . ROOTPATH . "/profile/$user?msg=success");
+            die;
+        } else {
+            printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
+        }
+    } else if (isset($_POST['delete'])) {
+        $filename = "$user.jpg";
+        if (file_exists($target_dir . $filename)) {
+            // Use unlink() function to delete a file
+            if (!unlink($target_dir . $filename)) {
+                printMsg("$filename cannot be deleted due to an error.", "error");
+            } else {
+                header("Location: " . ROOTPATH . "/profile/$user?msg=deleted");
+                die;
+            }
+        }
+        // printMsg("File has been deleted from the database.", "success");
+    }
+});
+
+
+Route::post('/crud/users/update-expertise/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['values'])) die("no values given");
+
+    $values = $_POST['values'];
+    $values = validateValues($values, $DB);
+
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
+        ['$set' => $values]
+    );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=update-success");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount()
+    ]);
+});
+
+
+Route::post('/crud/users/approve', function () {
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
+    if (!isset($_POST['quarter'])) {
+        echo "Quarter was not defined";
+        die();
+    }
+    $q = $_POST['quarter'];
+
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $user],
+        ['$push' => ["approved" => $q]]
+    );
+
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=approved");
+        die();
+    }
+    echo json_encode([
+        'updated' => $updateResult->getModifiedCount()
+    ]);
+});
+

@@ -20,13 +20,13 @@ $Format = new Document(true);
 $form = $form ?? array();
 
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH ;
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "projects/update/" . $form['_id'];
+    $formaction .= "/crud/activities/projects/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/projects/view/" . $form['_id'];
 } else {
-    $formaction .= "projects/create";
+    $formaction .= "/crud/activities/projects/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/projects/view/*";
 }

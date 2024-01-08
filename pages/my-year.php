@@ -551,7 +551,7 @@ if (!$Settings->featureEnabled('coins')) {
                             ') ?>
                         </p>
 
-                        <form action="<?= ROOTPATH ?>/approve" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/users/approve" method="post">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="quarter" class="hidden" value="<?= $YEAR . "Q" . $QUARTER ?>">
                             <button class="btn success"><?= lang('Approve', 'Freigeben') ?></button>

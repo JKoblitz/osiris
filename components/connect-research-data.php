@@ -17,7 +17,7 @@
  */
 ?>
 
-<form action="<?= ROOTPATH ?>/update-research-data/<?= $id ?>" method="post">
+<form action="<?= ROOTPATH ?>/crud/activities/update-research-data/<?= $id ?>" method="post">
 
     <table class="table simple">
         <thead>

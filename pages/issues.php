@@ -197,7 +197,7 @@ if (array_sum($a) === 0) {
         </button>
         <div class="dropdown-menu w-300" aria-labelledby="dropdown-1">
             <div class="content">
-                <form action="<?= ROOTPATH ?>/approve-all" method="post">
+                <form action="<?= ROOTPATH ?>/crud/activities/approve-all" method="post">
                     <input type="hidden" name="user" value="<?= $user ?>">
                     <?= lang(
                         'I confirm that I am the author of <b>all</b> of the following publications and that my affiliation has always been the ' . $Settings->get('affiliation') . '.',
@@ -321,7 +321,7 @@ if (array_sum($a) === 0) {
                             'Diese Aktivität ist markiert als <q>Online ahead of print</q>. Ist sie noch nicht offiziell publiziert?'
                         ) ?>
                         <br>
-                        <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
+                        <form action="<?= ROOTPATH ?>/crud/activities/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[epub-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn small">
@@ -379,7 +379,7 @@ if (array_sum($a) === 0) {
                             "Die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
                         )  ?>
                         <br>
-                        <form action="update/<?= $id ?>" method="post" class="form-inline mt-5">
+                        <form action="<?=ROOTPATH?>/crud/activities/update/<?= $id ?>" method="post" class="form-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                             <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
@@ -437,7 +437,7 @@ if (array_sum($a) === 0) {
                     <?= $doc['rendered']['web'] ?>
                     <div class='alert mt-10 signal' id="approve-<?= $id ?>">
 
-                        <form action="<?= ROOTPATH ?>/update/<?= $id ?>" method="post" class="d-inline mt-5">
+                        <form action="<?= ROOTPATH ?>/crud/activities/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
                             <button class="btn small text-success">
