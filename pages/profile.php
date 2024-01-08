@@ -138,13 +138,13 @@ if (!$Settings->featureEnabled('coins')) {
 
 <?php
 
-$img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
-if ($img_exist) {
-    $img = ROOTPATH . "/img/users/$user.jpg";
-} else {
-    // standard picture
-    $img = ROOTPATH . "/img/no-photo.png";
-}
+// $img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
+// if ($img_exist) {
+//     $img = ROOTPATH . "/img/users/$user.jpg";
+// } else {
+//     // standard picture
+//     $img = ROOTPATH . "/img/no-photo.png";
+// }
 
 if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     <!-- Modal for updating the profile picture -->
@@ -186,7 +186,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                     </button>
                 </form>
 
-                <?php if ($img_exist) { ?>
+                <?php if (true) { ?>
                     <hr>
                     <form action="<?= ROOTPATH ?>/crud/users/update-profile/<?= $user ?>" method="post">
                         <input type="hidden" name="delete" value="true">
@@ -206,7 +206,8 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 <div class="row align-items-center my-0">
     <div class="col flex-grow-0">
         <div class="position-relative">
-            <img src="<?= $img ?>" alt="" class="profile-img">
+            <?=$DB->printProfilePicture($user, 'profile-img')?>
+            <!-- <img src="<?= $img ?>" alt="" class="profile-img"> -->
             <?php if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 <a href="#change-picture" class="position-absolute p-10 bottom-0 right-0 text-white"><i class="ph ph-edit"></i></a>
             <?php } ?>

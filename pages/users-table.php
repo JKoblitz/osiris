@@ -106,14 +106,15 @@
 
                 foreach ($result as $document) {
                     $username = strval($document['username']);
-                    $img = ROOTPATH . "/img/no-photo.png";
-                    if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                        $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                    }
+                    // $img = ROOTPATH . "/img/no-photo.png";
+                    // if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
+                    //     $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
+                    // }
                 ?>
                     <tr class="">
                         <td>
-                            <img src="<?= $img ?>" alt="" class="rounded">
+                            <!-- <img src="<?= ROOTPATH ?>/user/picture/<?=$username?>" alt="" class="rounded"> -->
+                            <?=$DB->printProfilePicture($username, 'profile-img')?>
                         </td>
                         <td class="flex-grow-1">
                             <div class="w-full">

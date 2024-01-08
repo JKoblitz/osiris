@@ -243,6 +243,21 @@ Route::get('/achievements/?(.*)', function ($user) {
 
 
 
+Route::get('/user/picture/(.*)', function ($user) {
+    include_once BASEPATH . "/php/init.php";
+    $img = $osiris->userImages->findOne(['user' => $user]);
+
+    image_type_to_mime_type($img['ext']);
+    // echo file_get_contents(base64_encode($img['img']));
+    if (empty($img)) {
+        echo ' <img src="' . ROOTPATH . '/img/no-photo.png" alt="Profilbild" class="">';
+        die;
+    }
+    if ($img['ext'] == 'svg') {
+        $img['ext'] = 'svg+xml';
+    }
+    echo '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="" />';
+});
 
 // Synchronize users
 
@@ -482,7 +497,6 @@ Route::post('/crud/users/delete/(.*)', function ($user) {
 
 /**
  * Update profile picture
- * TODO: transfer to database
  */
 Route::post('/crud/users/profile-picture/(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
@@ -495,7 +509,7 @@ Route::post('/crud/users/profile-picture/(.*)', function ($user) {
     $filename = "$user.jpg";
 
     if (isset($_FILES["file"])) {
-        if ($_FILES['file']['type'] != 'image/jpeg') die('Wrong extension, only JPEG is allowed.');
+        // if ($_FILES['file']['type'] != 'image/jpeg') die('Wrong extension, only JPEG is allowed.');
 
         if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
             $errorMsg = match ($_FILES['file']['error']) {
@@ -511,23 +525,34 @@ Route::post('/crud/users/profile-picture/(.*)', function ($user) {
             printMsg($errorMsg, "error");
         } else if ($_FILES["file"]["size"] > 2000000) {
             printMsg(lang("File is too big: max 2 MB is allowed.", "Die Datei ist zu groß: maximal 2 MB sind erlaubt."), "error");
-        } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            // } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            //     header("Location: " . ROOTPATH . "/profile/$user?msg=success");
+            //     die;
+        } else {
+            $img = new MongoDB\BSON\Binary(file_get_contents($_FILES["file"]["tmp_name"]), MongoDB\BSON\Binary::TYPE_GENERIC);
+            // first: delete old image, then: insert new one
+            $osiris->userImages->deleteOne(['user' => $user]);
+            $updateResult = $osiris->userImages->insertOne([
+                'user' => $user,
+                'img' => $img,
+                'ext' => $filetype
+            ]);
             header("Location: " . ROOTPATH . "/profile/$user?msg=success");
             die;
-        } else {
-            printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
+            // printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
         }
     } else if (isset($_POST['delete'])) {
-        $filename = "$user.jpg";
-        if (file_exists($target_dir . $filename)) {
-            // Use unlink() function to delete a file
-            if (!unlink($target_dir . $filename)) {
-                printMsg("$filename cannot be deleted due to an error.", "error");
-            } else {
-                header("Location: " . ROOTPATH . "/profile/$user?msg=deleted");
-                die;
-            }
-        }
+        // $filename = "$user.jpg";
+        $osiris->userImages->deleteOne(['user' => $user]);
+        // if (file_exists($target_dir . $filename)) {
+        //     // Use unlink() function to delete a file
+        //     if (!unlink($target_dir . $filename)) {
+        //         printMsg("$filename cannot be deleted due to an error.", "error");
+        //     } else {
+        header("Location: " . ROOTPATH . "/profile/$user?msg=deleted");
+        die;
+        //     }
+        // }
         // printMsg("File has been deleted from the database.", "success");
     }
 });
@@ -577,4 +602,3 @@ Route::post('/crud/users/approve', function () {
         'updated' => $updateResult->getModifiedCount()
     ]);
 });
-

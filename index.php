@@ -112,7 +112,7 @@ include_once BASEPATH . "/routes/admin.php";
 
 
 include_once BASEPATH . "/routes/api.php";
-include_once BASEPATH . "/routes/CRUD.php";
+// include_once BASEPATH . "/routes/CRUD.php";
 
 // if (IDA_INTEGRATION) {
     include_once BASEPATH . "/addons/ida/index.php";

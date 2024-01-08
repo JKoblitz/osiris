@@ -120,6 +120,16 @@ class DB
         return $doc;
     }
 
+    function printProfilePicture($user, $class = "")
+    {
+        $img = $this->db->userImages->findOne(['user' => $user]);
+        if (empty($img)) return ' <img src="'.ROOTPATH .'/img/no-photo.png" alt="Profilbild" class="'.$class.'">';
+        if ($img['ext'] == 'svg') {
+            $img['ext'] = 'svg+xml';
+        }
+        return '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="' . $class . '" />';
+    }
+
     // methods to query documents
     // function getAllPersons(bool $only_user=false){
     //     $filter = [];
@@ -592,12 +602,12 @@ class DB
         $openendtypes = [];
         $types = $this->db->adminTypes->find()->toArray();
         // foreach ($types as $typeArr) {
-            foreach ($types as $typeArr) {
-                $type = $typeArr['id'];
-                $modules = DB::doc2Arr($typeArr['modules']);
-                if (in_array('date-range-ongoing', $modules) || in_array('date-range-ongoing*', $modules))
-                    $openendtypes[] = $type;
-            }
+        foreach ($types as $typeArr) {
+            $type = $typeArr['id'];
+            $modules = DB::doc2Arr($typeArr['modules']);
+            if (in_array('date-range-ongoing', $modules) || in_array('date-range-ongoing*', $modules))
+                $openendtypes[] = $type;
+        }
         // }
         // then find all documents that belong to this
         $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype' => ['$in' => $openendtypes]], ['projection' => ['end-delay' => 1]]);
