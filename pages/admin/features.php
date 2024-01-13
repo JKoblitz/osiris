@@ -22,6 +22,19 @@
     <?= lang('Features', 'Funktionen') ?>
 </h1>
 
+<style>
+    .table td.description {
+        color: var(--muted-color);
+        padding-top: 0;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .with-description td {
+        border-bottom: 0;
+    }
+</style>
+
 <form action="<?= ROOTPATH ?>/crud/admin/features" method="post" id="role-form">
 
     <?php
@@ -36,18 +49,18 @@
                     <?= lang('General features', 'Generelle Funktionen') ?>
                 </th>
             </tr>
-            <tr>
+            <tr class="with-description">
                 <td class="pl-20">
                     <?= lang('Coins', 'Coins') ?>
                 </td>
                 <?php
                 $coins = $Settings->featureEnabled('coins');
                 ?>
-                <td>
+                <td class="">
 
-                    <div class="custom-radio d-inline-block ml-10">
-                        <input type="radio" id="coins-true" value="1" name="values[coins]" <?= $coins ? 'checked' : '' ?>>
-                        <label for="coins-true"><?= lang('enabled', 'aktiviert') ?></label>
+                    <div class=" custom-radio d-inline-block ml-10">
+                    <input type="radio" id="coins-true" value="1" name="values[coins]" <?= $coins ? 'checked' : '' ?>>
+                    <label for="coins-true"><?= lang('enabled', 'aktiviert') ?></label>
                     </div>
 
                     <div class="custom-radio d-inline-block ml-10">
@@ -56,9 +69,13 @@
                     </div>
                 </td>
             </tr>
-
-
             <tr>
+                <td colspan="2" class="description">
+                    <small> Coins werden nirgendwo gespeichert, sondern on-demand berechnet. Wenn ihr Coins global ausschaltet, werden sie also gar nicht erst berechnet und nirgendwo gezeigt.</small>
+                </td>
+            </tr>
+
+            <tr class="">
                 <td class="pl-20">
                     <?= lang('Achievements', 'Errungenschaften') ?>
                 </td>
@@ -79,26 +96,59 @@
             </tr>
 
 
-            <tr>
+            <tr class="with-description">
                 <td class="pl-20">
                     <?= lang('User profile metrics', 'Metriken im Nutzerprofil') ?>
                 </td>
                 <?php
                 $user_metrics = $Settings->featureEnabled('user-metrics');
                 ?>
-                <td>
-                    <div class="custom-radio d-inline-block ml-10">
-                        <input type="radio" id="user-metrics-true" value="1" name="values[user-metrics]" <?= $user_metrics ? 'checked' : '' ?>>
-                        <label for="user-metrics-true"><?= lang('enabled', 'aktiviert') ?></label>
+                <td class="">
+                    <div class=" custom-radio d-inline-block ml-10">
+                    <input type="radio" id="user-metrics-true" value="1" name="values[user-metrics]" <?= $user_metrics ? 'checked' : '' ?>>
+                    <label for="user-metrics-true"><?= lang('enabled', 'aktiviert') ?></label>
                     </div>
 
                     <div class="custom-radio d-inline-block ml-10">
                         <input type="radio" id="user-metrics-false" value="0" name="values[user-metrics]" <?= $user_metrics ? '' : 'checked' ?>>
                         <label for="user-metrics-false"><?= lang('disabled', 'deaktiviert') ?></label>
                     </div>
-                    <span class="font-size-12 d-block text-muted">
-                        Wenn diese Funktion ausgeschaltet wird, sind Nutzermetriken (Graphen) nur noch auf der eigenen Profilseite sichtbar.
-                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="description">
+                    <small> Wenn diese Funktion ausgeschaltet wird, sind Nutzermetriken (Graphen) nur noch auf der eigenen Profilseite sichtbar.</small>
+                </td>
+            </tr>
+
+            <tr class="with-description">
+                <td class="pl-20">
+                    <?= lang('Profile images', 'Profilbilder der Nutzenden') ?>
+                </td>
+                <?php
+                $db_pictures = $Settings->featureEnabled('db_pictures');
+                ?>
+                <td class="">
+
+                    <div class=" custom-radio d-inline-block ml-10">
+                    <input type="radio" id="db_pictures-true" value="1" name="values[db_pictures]" <?= $db_pictures ? 'checked' : '' ?>>
+                    <label for="db_pictures-true"><?= lang('Save in database', 'In Datenbank speichern') ?></label>
+                    </div>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="db_pictures-false" value="0" name="values[db_pictures]" <?= $db_pictures ? '' : 'checked' ?>>
+                        <label for="db_pictures-false"><?= lang('Save in file system', 'Im Dateisystem speichern') ?></label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="description">
+                    <small>
+                        <?= lang(
+                            'Saving the profile pictures in the database is recommended if the pictures are maintained exclusively via OSIRIS. If the images are saved in the file system, they can be uploaded more easily (into the folder <code>/img/users</code>) and, for example, updated automatically. However, they must then have the user name as the name and be in JPEG format!',
+                            'Die Profilbilder in der Datenbank zu speichern wird empfohlen, wenn die Bilder ausschließlich über OSIRIS gepflegt werden. Wenn die Bilder im Dateisystem gespeichert werden, kann man sie leichter anders hochladen (in den Ordner <code>/img/users</code>) und z.B. automatisch aktualisieren. Sie müssen dann aber den Username als Namen haben und im JPEG-Format sein!'
+                        ) ?>
+                    </small>
                 </td>
             </tr>
 

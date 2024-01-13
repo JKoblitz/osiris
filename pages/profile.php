@@ -206,8 +206,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
 <div class="row align-items-center my-0">
     <div class="col flex-grow-0">
         <div class="position-relative">
-            <?=$DB->printProfilePicture($user, 'profile-img')?>
-            <!-- <img src="<?= $img ?>" alt="" class="profile-img"> -->
+            <?= $Settings->printProfilePicture($user, 'profile-img') ?>
             <?php if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
                 <a href="#change-picture" class="position-absolute p-10 bottom-0 right-0 text-white"><i class="ph ph-edit"></i></a>
             <?php } ?>
@@ -217,7 +216,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         <h1 class="m-0"><?= $name ?></h1>
 
         <?php
-        foreach ($scientist['depts'] as $i => $d) {
+        if (!empty($scientist['depts'])) foreach ($scientist['depts'] as $i => $d) {
             $dept = $Groups->getGroup($d);
             if ($i > 0) echo ', ';
         ?>

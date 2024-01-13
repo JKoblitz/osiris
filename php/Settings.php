@@ -46,40 +46,67 @@ class Settings
             case 'affiliation':
             case 'affiliation_details':
                 // return $s['affiliation']['id'] ?? '';
-                $req = $this->osiris->adminGeneral->findOne(['key'=>'affiliation']);
+                $req = $this->osiris->adminGeneral->findOne(['key' => 'affiliation']);
                 if ($key == 'affiliation') return $req['value']['id'] ?? '';
                 return DB::doc2Arr($req['value'] ?? array());
             case 'startyear':
-                $req = $this->osiris->adminGeneral->findOne(['key'=>'startyear']);
+                $req = $this->osiris->adminGeneral->findOne(['key' => 'startyear']);
                 return intval($req['value'] ?? 2020);
             case 'departments':
                 dump("DEPARTMENTS sollten nicht mehr hierüber abgefragt werden.");
                 return '';
             case 'activities':
                 return $this->getActivities();
-            // case 'general':
-            //     return $s['general'];
+                // case 'general':
+                //     return $s['general'];
             case 'features':
                 return $this->features;
             default:
-                $req = $this->osiris->adminGeneral->findOne(['key'=>$key]);
+                $req = $this->osiris->adminGeneral->findOne(['key' => $key]);
                 if (!empty($req)) return $req['value'];
                 return '';
                 break;
         }
     }
 
-    function printLogo($class=""){
-        $logo = $this->osiris->adminGeneral->findOne(['key'=>'logo']);
+    function printLogo($class = "")
+    {
+        $logo = $this->osiris->adminGeneral->findOne(['key' => 'logo']);
         if (empty($logo)) return '';
-        if ($logo['ext'] == 'svg'){ $logo['ext'] = 'svg+xml';}
-            // return '<img src="data:svg;'.base64_encode($logo['value']).' " class="'.$class.'" />';
+        if ($logo['ext'] == 'svg') {
+            $logo['ext'] = 'svg+xml';
+        }
+        // return '<img src="data:svg;'.base64_encode($logo['value']).' " class="'.$class.'" />';
 
         // } else {
-            return '<img src="data:image/'.$logo['ext'].';base64,'.base64_encode($logo['value']).' " class="'.$class.'" />';
+        return '<img src="data:image/' . $logo['ext'] . ';base64,' . base64_encode($logo['value']) . ' " class="' . $class . '" />';
 
         // }
     }
+
+    function printProfilePicture($user, $class = "")
+    {
+        $default = '<img src="' . ROOTPATH . '/img/no-photo.png" alt="Profilbild" class="' . $class . '">';
+        if ($this->featureEnabled('db_pictures')) {
+            $img = $this->osiris->userImages->findOne(['user' => $user]);
+            
+            if (empty($img)) {
+                return $default;
+            }
+            if ($img['ext'] == 'svg') {
+                $img['ext'] = 'svg+xml';
+            }
+            return '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="' . $class . '" />';
+        } else {
+            $img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
+            if (!$img_exist) {
+                return $default;
+            }
+            $img = ROOTPATH . "/img/users/$user.jpg";
+            return ' <img src="' . $img . '" alt="Profilbild" class="' . $class . '">';
+        }
+    }
+
     /**
      * Checks if current user has a permission
      *
@@ -89,9 +116,9 @@ class Settings
     function hasPermission(string $right)
     {
         $permission = $this->osiris->adminRights->findOne([
-            'role'=>['$in'=>$this->roles],
-            'right'=>$right,
-            'value'=>true
+            'role' => ['$in' => $this->roles],
+            'right' => $right,
+            'value' => true
         ]);
         return !empty($permission);
     }
@@ -102,7 +129,8 @@ class Settings
      * @param string $feature
      * @return boolean
      */
-    function featureEnabled($feature){
+    function featureEnabled($feature)
+    {
         return $this->features[$feature] ?? false;
         // $active = $this->osiris->adminFeatures->findOne([
         //     'feature'=>$feature
@@ -121,7 +149,7 @@ class Settings
         if ($type === null)
             return $this->osiris->adminCategories->find()->toArray();
 
-        $arr = $this->osiris->adminCategories->findOne(['id'=>$type]);
+        $arr = $this->osiris->adminCategories->findOne(['id' => $type]);
         if (!empty($arr)) return DB::doc2Arr($arr);
         // default
         return [
@@ -139,15 +167,15 @@ class Settings
      * @param string $type
      * @return array
      */
-    function getActivity($cat, $type = null){
-        if ($type === null){
-            $act = $this->osiris->adminCategories->findOne(['id'=>$cat]);
+    function getActivity($cat, $type = null)
+    {
+        if ($type === null) {
+            $act = $this->osiris->adminCategories->findOne(['id' => $cat]);
             return DB::doc2Arr($act);
         }
 
-        $act = $this->osiris->adminTypes->findOne(['id'=>$type]);
+        $act = $this->osiris->adminTypes->findOne(['id' => $type]);
         return DB::doc2Arr($act);
-        
     }
 
     /**
@@ -159,9 +187,9 @@ class Settings
      */
     function title($cat, $type = null)
     {
-            $act = $this->getActivity($cat, $type);
-            if (empty($act)) return 'unknown';
-            return lang($act['name'], $act['name_de'] ?? $act['name']);        
+        $act = $this->getActivity($cat, $type);
+        if (empty($act)) return 'unknown';
+        return lang($act['name'], $act['name_de'] ?? $act['name']);
     }
 
     /**

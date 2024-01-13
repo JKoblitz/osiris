@@ -606,6 +606,6 @@ function getFileIcon($type)
         case 'json':
             return 'file-code';
         default:
-            return 'file-exclamation';
+            return 'file-text';
     }
 }

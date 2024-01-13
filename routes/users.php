@@ -242,21 +242,32 @@ Route::get('/achievements/?(.*)', function ($user) {
 });
 
 
-
-Route::get('/user/picture/(.*)', function ($user) {
+// not in use
+Route::get('/user/picture/(.*)', function ($user, $cls = 'profile-img') {
     include_once BASEPATH . "/php/init.php";
-    $img = $osiris->userImages->findOne(['user' => $user]);
+    $default = '<img src="' . ROOTPATH . '/img/no-photo.png" alt="Profilbild" class="' . $cls . '">';
+    if ($Settings->featureEnabled('db_pictures')) {
+        $img = $osiris->userImages->findOne(['user' => $user]);
 
-    image_type_to_mime_type($img['ext']);
-    // echo file_get_contents(base64_encode($img['img']));
-    if (empty($img)) {
-        echo ' <img src="' . ROOTPATH . '/img/no-photo.png" alt="Profilbild" class="">';
-        die;
+        image_type_to_mime_type($img['ext']);
+        if (empty($img)) {
+            echo $default;
+            return;
+        }
+        if ($img['ext'] == 'svg') {
+            $img['ext'] = 'svg+xml';
+        }
+        echo '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="' . $cls . '" />';
+        return;
+    } else {
+        $img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
+        if (!$img_exist) {
+            echo $default;
+            return;
+        }
+        $img = ROOTPATH . "/img/users/$user.jpg";
+        echo ' <img src="' . $img . '" alt="Profilbild" class="' . $cls . '">';
     }
-    if ($img['ext'] == 'svg') {
-        $img['ext'] = 'svg+xml';
-    }
-    echo '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="" />';
 });
 
 // Synchronize users

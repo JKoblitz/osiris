@@ -1636,3 +1636,27 @@ ul.horizontal li:last-child::after {
 .achievements .achievement-widget:hover {
     filter: grayscale(0);
 }
+
+.alert.blue {
+    background-color: var(--blue-color-20);
+}
+
+.alert.primary {
+    background-color: var(--primary-color-20);
+}
+
+blockquote.blue {
+    border-color: var(--blue-color);
+    background-color: var(--blue-color-20);
+}
+
+blockquote.blue h6 {
+    margin: 0;
+    font-size: small;
+    text-transform: uppercase;
+    color: var(--blue-color-light);
+}
+
+blockquote.blue hr {
+    background-color: var(--blue-color-30);
+}

@@ -1,12 +1,16 @@
 <?php
 $Format = new Document(false, 'portal');
 ?>
-
+<style>
+    .profile-img {
+        max-width: 100px; margin-right: 2rem;
+    }
+</style>
 <div class="container">
 
     <div class="profile-header" style="display: flex; align-items: center;">
         <div class="col" style="flex-grow: 0;">
-            <img src="<?= $img ?>" alt="" class="profile-img rounded" style="max-width: 100px; margin-right: 2rem;">
+        <?=$Settings->printProfilePicture($user, 'profile-img rounded')?>
         </div>
         <div class="col ml-20">
             <h1 class="m-0">

@@ -333,7 +333,6 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
         $key = 'subtype';
     }
 
-
     $values = validateValues($_POST['values'], $DB);
 
     // check if ID has changed
@@ -357,6 +356,18 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
                 ['type' => $_POST['original_parent'], 'subtype' => $values['id']],
                 ['$set' => ['type' => $values['parent']]]
             );
+        }
+        // add example
+        include_once BASEPATH . "/php/__example.php";
+        $values['example'] = '';
+        if (isset($EXAMPLE)){
+            include_once BASEPATH . "/php/Document.php";
+            $Document = new Document(false, 'print');
+            $EXAMPLE['type']= $values['parent'];
+            $EXAMPLE['subtype'] = $values['id'];
+            $Document->setDocument($EXAMPLE);
+            $values['example'] = $Document->format();
+            $values['example_web'] = $Document->formatShort(false);
         }
     }
 

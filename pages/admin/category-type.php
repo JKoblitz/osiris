@@ -182,19 +182,35 @@ if (!empty($form) && isset($form['_id'])) {
 
             <div class="input-group mb-10">
                 <div class="input-group-prepend">
-                    <span class="input-group-text w-100">Title</span>
+                    <span class="input-group-text w-100">Web Title</span>
                 </div>
                 <input type="text" class="form-control" name="values[template][title]" value="<?= $type['template']['title'] ?? '{title}' ?>">
             </div>
 
             <div class="input-group mb-10">
                 <div class="input-group-prepend">
-                    <span class="input-group-text w-100">Subtitle</span>
+                    <span class="input-group-text w-100">Web Subtitle</span>
                 </div>
                 <input type="text" class="form-control" name="values[template][subtitle]" value="<?= $type['template']['subtitle'] ?? '{authors}' ?>">
             </div>
 
+
+            <blockquote class="blue ">
+                <h5 class="title text-blue">
+                    <?= lang('Example', 'Beispiel') ?>
+                    <span data-toggle="tooltip"  data-title="<?= lang('Will be updated as soon as you save the type.', 'Wird aktualisiert, sobald der Typ gespeichert wird.') ?>">
+                        <i class="ph ph-question"></i>
+                    </span>
+                </h5>
+                <h6>Print</h6>
+                <?= $type['example'] ?? '- save current form to generate an example -' ?>
+                <hr>
+
+                <h6>Web</h6>
+                <?= $type['example_web'] ?? '- save current form to generate an example -' ?>
+            </blockquote>
         </div>
+
 
 
         <hr>
