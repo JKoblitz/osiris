@@ -451,6 +451,9 @@ class Document extends Settings
                 if ($this->usecase == 'portal') {
                     if (isset($a['user']) && !empty($a['user']))
                         $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
+                 } else if (!$withoutlinks){
+                        $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
+  
                 } else if ($this->highlight === true) {
                     if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
                 } else if ($this->highlight && $a['user'] == $this->highlight) {

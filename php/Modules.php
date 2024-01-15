@@ -3,6 +3,29 @@ include_once "_config.php";
 include_once "init.php";
 include_once "Country.php";
 
+$defaultauthors = [
+    [
+        "last" => "Koblitz",
+        "first" => "Julia",
+        "aoi" => true,
+        "position" => "first",
+        "user" => "juk20",
+        "approved" => true,
+        "sws" => 2
+    ],
+    [
+        "last" => "Koblitz",
+        "first" => "Dominic",
+        "aoi" => true,
+        "position" => "last",
+        "user" => "dok21",
+        "approved" => true,
+        "sws" => 0.3
+    ]
+];
+$defaultstart = ["year" => 2022,"month" => 9,"day" => 6];
+$defaultend = ["year" => 2022,"month" => 9,"day" => 8];
+
 class Modules
 {
     public $form = array();
@@ -18,232 +41,299 @@ class Modules
 
     public $all_modules = array(
         "authors" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+                [
+                    "last" => "Koblitz",
+                    "first" => "Dominic",
+                    "aoi" => true,
+                    "position" => "last",
+                    "user" => "dok21",
+                    "approved" => true,
+                    "sws" => 0.3
+                ]
+            ]],
             "name" => "Authors",
             "name_de" => "Autoren"
         ],
         "author-table" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+                [
+                    "last" => "Koblitz",
+                    "first" => "Dominic",
+                    "aoi" => true,
+                    "position" => "last",
+                    "user" => "dok21",
+                    "approved" => true,
+                    "sws" => 0.3
+                ]
+            ]],
             "name" => "Authors",
             "name_de" => "Autoren"
         ],
         "book-series" => [
-            "fields" => ["series"],
+            "fields" => ["series" => 'Book Series on Open Source Systems'],
             "name" => "Book-Series",
             "name_de" => "Bücherreihe"
         ],
         "book-title" => [
-            "fields" => ["book"],
+            "fields" => ["book" => 'Research Information Systems'],
             "name" => "Book Title",
             "name_de" => "Buchtitel"
         ],
         "city" => [
-            "fields" => ["city"],
+            "fields" => ["city" => 'Helmstedt, Deutschland'],
             "name" => "City",
             "name_de" => "Stadt"
         ],
         "conference" => [
-            "fields" => ["conference"],
+            "fields" => ["conference" => '1st CRIS Conference'],
             "name" => "Conference",
             "name_de" => "Konferenz"
         ],
         "correction" => [
-            "fields" => ["correction"],
+            "fields" => ["correction" => true],
             "name" => "Correction",
             "name_de" => "Correction"
         ],
         "date-range" => [
-            "fields" => ["start", "end"],
+            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => ["year" => 2022,"month" => 9,"day" => 8]],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
         "date-range-ongoing" => [
-            "fields" => ["start", "end"],
+            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => ["year" => 2022,"month" => 9,"day" => 8]],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
         "date" => [
-            "fields" => ["year", "month", "day"],
+            "fields" => ["year" => 2023, "month" => 5, "day" => 4],
             "name" => "Date",
             "name_de" => "Datum"
         ],
         "details" => [
-            "fields" => ["details"],
+            "fields" => ["details" => "Weitere Details"],
             "name" => "Details",
             "name_de" => "Details"
         ],
         "doctype" => [
-            "fields" => ["doc_type"],
+            "fields" => ["doc_type" => 'White Paper'],
             "name" => "Doctype",
             "name_de" => "Doctype"
         ],
         "doi" => [
-            "fields" => ["doi"],
+            "fields" => ["doi" => '10.1234/idk/invalid'],
             "name" => "DOI",
             "name_de" => "DOI"
         ],
         "edition" => [
-            "fields" => ["edition"],
+            "fields" => ["edition" => 2],
             "name" => "Edition",
             "name_de" => "Edition"
         ],
         "editor" => [
-            "fields" => ["editors"],
+            "fields" => ["editors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+                [
+                    "last" => "Koblitz",
+                    "first" => "Dominic",
+                    "aoi" => true,
+                    "position" => "last",
+                    "user" => "dok21",
+                    "approved" => true,
+                    "sws" => 0.3
+                ]
+            ]],
             "name" => "Editors",
             "name_de" => "Editoren"
         ],
         "editorial" => [
-            "fields" => ["editor_type"],
+            "fields" => ["editor_type" => 'Guest Editor'],
             "name" => "Editorial",
             "name_de" => "Editorenschaft"
         ],
         "guest" => [
-            "fields" => ["category"],
+            "fields" => ["category" => 'guest scientist'],
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
         "gender" => [
-            "fields" => ["gender"],
+            "fields" => ["gender" => 'f'],
             "name" => "Gender",
             "name_de" => "Geschlecht"
         ],
         "nationality" => [
-            "fields" => ["country"],
+            "fields" => ["country" => 'DE'],
             "name" => "Nationality",
             "name_de" => "Nationalität"
         ],
         "country" => [
-            "fields" => ["country"],
+            "fields" => ["country" => 'DE'],
             "name" => "Country",
             "name_de" => "Land"
         ],
         "abstract" => [
-            "fields" => ["abstract"],
+            "fields" => ["abstract" => 'OSIRIS ist einzigartig in seinen Konfigurationsmöglichkeiten. Während sich viele andere CRIS nur auf Publikationen beschränken, kann in OSIRIS eine Vielzahl an Aktivitäten hinzugefügt werden.'],
             "name" => "Abstract",
             "name_de" => "Abstract"
         ],
         "isbn" => [
-            "fields" => ["isbn"],
+            "fields" => ["isbn" => '979-8716615502'],
             "name" => "ISBN",
             "name_de" => "ISBN"
         ],
         "issn" => [
-            "fields" => ["issn"],
+            "fields" => ["issn" => ["1362-4962", "0305-1048"]],
             "name" => "ISSN",
             "name_de" => "ISSN"
         ],
         "issue" => [
-            "fields" => ["issue"],
+            "fields" => ["issue" => "D1"],
             "name" => "Issue",
             "name_de" => "Issue"
         ],
         "iteration" => [
-            "fields" => ["iteration"],
+            "fields" => ["iteration" => "annual"],
             "name" => "Iteration",
             "name_de" => "Häufigkeit"
         ],
         "journal" => [
-            "fields" => ["journal", "journal_id"],
+            "fields" => ["journal" => 'Information Systems Research', "journal_id" => null],
             "name" => "Journal",
             "name_de" => "Journal"
         ],
         "lecture-invited" => [
-            "fields" => ["invited_lecture"],
+            "fields" => ["invited_lecture" => true],
             "name" => "Invited lecture",
             "name_de" => "Eingeladener Vortrag"
         ],
         "lecture-type" => [
-            "fields" => ["lecture_type"],
+            "fields" => ["lecture_type" => 'short'],
             "name" => "Lecture-Type",
             "name_de" => "Vortragsart"
         ],
         "license" => [
-            "fields" => ["license"],
+            "fields" => ["license" => 'MIT'],
             "name" => "License",
             "name_de" => "Lizenz"
         ],
         "link" => [
-            "fields" => ["link"],
+            "fields" => ["link" => 'https://osiris-app.de'],
             "name" => "Link",
             "name_de" => "Link"
         ],
         "location" => [
-            "fields" => ["location"],
+            "fields" => ["location" => 'Braunschweig, Germany'],
             "name" => "Location",
             "name_de" => "Ort"
         ],
         "magazine" => [
-            "fields" => ["magazine"],
+            "fields" => ["magazine" => 'Apothekenumschau'],
             "name" => "Magazine",
             "name_de" => "Magazin"
         ],
         "online-ahead-of-print" => [
-            "fields" => ["epub"],
+            "fields" => ["epub" => true],
             "name" => "Online Ahead Of Print",
             "name_de" => "Online Ahead Of Print"
         ],
         "openaccess" => [
-            "fields" => ["open_access"],
+            "fields" => ["open_access" => true],
             "name" => "Open-Access",
             "name_de" => "Open-Access"
         ],
         "openaccess-status" => [
-            "fields" => ["open_access"],
+            "fields" => ["open_access" => true],
             "name" => "Open-Access",
             "name_de" => "Open-Access"
         ],
         "oa_status" => [
-            "fields" => ["oa_status"],
+            "fields" => ["oa_status" => 'gold'],
             "name" => "Open-Access Status",
             "name_de" => "Open-Access Status"
         ],
         "pages" => [
-            "fields" => ["pages"],
+            "fields" => ["pages" => 'D1531-8'],
             "name" => "Pages",
             "name_de" => "Seiten"
         ],
         "peer-reviewed" => [
-            "fields" => ["peer-reviewed"],
+            "fields" => ["peer-reviewed" => true],
             "name" => "Peer-Reviewed",
             "name_de" => "Peer-Reviewed"
         ],
         "person" => [
-            "fields" => ["name", "affiliation", "academic_title"],
+            "fields" => ["name" => "Koblitz, Julia", "affiliation" => "DSMZ", "academic_title" => "Dr."],
             "name" => "Person",
             "name_de" => "Person"
         ],
         "publisher" => [
-            "fields" => ["publisher"],
+            "fields" => ["publisher" => 'Oxford'],
             "name" => "Publisher",
             "name_de" => "Verlag"
         ],
         "pubmed" => [
-            "fields" => ["pubmed"],
+            "fields" => ["pubmed" => 1234567],
             "name" => "Pubmed-ID",
             "name_de" => "Pubmed-ID"
         ],
         "pubtype" => [
-            "fields" => ["pubtype"],
+            "fields" => ["pubtype" => "article"],
             "name" => "Pubtype",
             "name_de" => "Pubtype"
         ],
         // "review-description" => [
-        //     "fields" => ["title"],
+        //     "fields" => ["title" => null],
         //     "name" => "Decription",
         //     "name_de" => "Beschreibung"
         // ],
         "review-type" => [
-            "fields" => ["review-type"],
+            "fields" => ["review-type" => "Begutachtung eines Forschungsantrages"],
             "name" => "Review Type",
             "name_de" => "Review-Art"
         ],
         "role" => [
-            "fields" => ["role"],
+            "fields" => ["role" => "Organisator:in"],
             "name" => "Role/Function",
             "name_de" => "Rolle/Funktion"
         ],
         "scientist" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" =>
+            [
+                "last" => "Koblitz",
+                "first" => "Dominic",
+                "aoi" => true,
+                "position" => "last",
+                "user" => "dok21",
+                "approved" => true,
+                "sws" => 0.3
+
+            ],],
             "name" => "Scientist",
             "name_de" => "Wissenschaftler_in"
         ],
@@ -253,72 +343,82 @@ class Modules
             "name_de" => ""
         ],
         "scope" => [
-            "fields" => ["scope"],
+            "fields" => ["scope" => "national"],
             "name" => "Scope",
             "name_de" => "Reichweite"
         ],
         "software-link" => [
-            "fields" => ["link"],
+            "fields" => ["link" => "https://osiris-app.de"],
             "name" => "Link",
             "name_de" => "Link"
         ],
         "software-type" => [
-            "fields" => ["software_type"],
+            "fields" => ["software_type" => "Database"],
             "name" => "Type",
             "name_de" => "Type"
         ],
         "software-venue" => [
-            "fields" => ["software_venue"],
+            "fields" => ["software_venue" => "GitHub"],
             "name" => "Venue",
             "name_de" => "Veröffentlichungsort"
         ],
         "status" => [
-            "fields" => ["status"],
+            "fields" => ["status" => 'completed'],
             "name" => "Status",
             "name_de" => "Status"
         ],
         "student-category" => [
-            "fields" => ["category"],
+            "fields" => ["category" => "doctoral thesis"],
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
         "thesis" => [
-            "fields" => ["category"],
+            "fields" => ["category" => 'doctor'],
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
         "supervisor" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+            ]],
             "name" => "Supervisor",
             "name_de" => "Betreuer_in"
         ],
         "teaching-category" => [
-            "fields" => ["category"],
+            "fields" => ["category" => 'practical-lecture'],
             "name" => "Category",
             "name_de" => "Category"
         ],
         "teaching-course" => [
-            "fields" => ["title", "module", "module_id"],
+            "fields" => ["title" => "Einführung in die Forschungsinformation", "module" => null, "module_id" => null],
             "name" => "Course",
             "name_de" => "Modul"
         ],
         "title" => [
-            "fields" => ["title"],
+            "fields" => ["title" => "OSIRIS - the Open, Smart, and Intuitive Research Information System"],
             "name" => "Title",
             "name_de" => "Titel"
         ],
         "university" => [
-            "fields" => ["publisher"],
+            "fields" => ["publisher" => 'Technische Universität Braunschweig'],
             "name" => "University",
             "name_de" => "Universität"
         ],
         "version" => [
-            "fields" => ["version"],
+            "fields" => ["version" => OSIRIS_VERSION],
             "name" => "Version",
             "name_de" => "Version"
         ],
         "volume" => [
-            "fields" => ["volume"],
+            "fields" => ["volume" => 51],
             "name" => "Volume",
             "name_de" => "Volume"
         ],
@@ -398,7 +498,7 @@ class Modules
         $return = array();
         foreach ($modules as $module) {
             $fields = $this->all_modules[$module]['fields'] ?? array();
-            foreach ($fields as $field) {
+            foreach ($fields as $field => $default) {
                 $val = $this->form[$field] ?? '';
                 if (!is_array($val))
                     $return[ucfirst($field)] = $val;
@@ -1595,11 +1695,11 @@ class Modules
                     </label>
                     <input type="text" class="form-control" id="license" value="<?= $this->val('license') ?>" name="values[license]" <?= $required ?>>
                     <small class="text-muted">
-                        <?=lang('If applicable, enter', 'Falls möglich, die')?>
-                        <a href="https://opensource.org/licenses/" target="_blank" rel="noopener noreferrer"><?=lang('SPDX-ID from', 'SPDX-ID der')?> OSI</a>
-                        <?=lang('or CC license from', 'oder die CC-Lizenz von')?>
+                        <?= lang('If applicable, enter', 'Falls möglich, die') ?>
+                        <a href="https://opensource.org/licenses/" target="_blank" rel="noopener noreferrer"><?= lang('SPDX-ID from', 'SPDX-ID der') ?> OSI</a>
+                        <?= lang('or CC license from', 'oder die CC-Lizenz von') ?>
                         <a href="https://creativecommons.org/share-your-work/cclicenses/" target="_blank" rel="noopener noreferrer">Creative Commons</a>.
-                        <?=lang('', 'angeben')?>.
+                        <?= lang('', 'angeben') ?>.
                     </small>
                 </div>
             <?php

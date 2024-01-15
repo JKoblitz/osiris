@@ -234,6 +234,27 @@ Route::get('/migrate', function () {
             }
         }
 
+        echo "<p>Update Activity schema</p>";
+        $osiris->adminCategories->deleteMany([]);
+        $osiris->adminTypes->deleteMany([]);
+        foreach ($settings['activities'] as $type) {
+            $t = $type['id'];
+            $cat = [
+                "id" => $type['id'],
+                "icon" => $type['icon'],
+                "color" => $type['color'],
+                "name" => $type['name'],
+                "name_de" => $type['name_de'],
+                // "children" => $type['subtypes']
+            ];
+            $osiris->adminCategories->insertOne($cat);
+            foreach ($type['subtypes'] as $s => $subtype) {   
+                $subtype['parent'] = $t;             
+                // dump($subtype, true);
+                $osiris->adminTypes->insertOne($subtype);
+            }
+        }
+
         die;
 
         // $osiris->groups->deleteMany([]);
@@ -278,26 +299,7 @@ Route::get('/migrate', function () {
         //     );
         // }
 
-        echo "<p>Update Activity schema</p>";
-        $osiris->adminCategories->deleteMany([]);
-        $osiris->adminTypes->deleteMany([]);
-        foreach ($settings['activities'] as $type) {
-            $t = $type['id'];
-            $cat = [
-                "id" => $type['id'],
-                "icon" => $type['icon'],
-                "color" => $type['color'],
-                "name" => $type['name'],
-                "name_de" => $type['name_de'],
-                // "children" => $type['subtypes']
-            ];
-            $osiris->adminCategories->insertOne($cat);
-            foreach ($type['subtypes'] as $s => $subtype) {   
-                $subtype['parent'] = $t;             
-                // dump($subtype, true);
-                $osiris->adminTypes->insertOne($subtype);
-            }
-        }
+      
 
     }
 

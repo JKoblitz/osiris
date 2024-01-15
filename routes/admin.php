@@ -161,6 +161,36 @@ Route::get('/admin/types/(.*)', function ($id) {
 
 
 
+Route::get('/settings/activities', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    $t = urldecode($_GET['type']);
+    $type = $osiris->adminTypes->findOne(['id' => $t]);
+    $parent = $osiris->adminCategories->findone(['id'=>$type['parent']]);
+    echo return_rest([
+        'category' => DB::doc2Arr($parent),
+        'type'=> DB::doc2Arr($type)
+    ]);
+});
+
+Route::get('/settings/modules', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    include_once BASEPATH . "/php/Modules.php";
+    $form = array();
+    if (isset($_GET['id']) && !empty($_GET['id'])) {
+        $mongoid = $DB->to_ObjectID($_GET['id']);
+        $form = $osiris->activities->findOne(['_id' => $mongoid]);
+    }
+    $Modules = new Modules($form, $_GET['copy'] ?? false);
+
+    if (isset($_GET['modules'])) {
+        $Modules->print_modules($_GET['modules']);
+    } else {
+        $Modules->print_all_modules();
+    }
+});
+
 
 /**
  * CRUD routes
@@ -169,11 +199,11 @@ Route::get('/admin/types/(.*)', function ($id) {
 Route::post('/crud/admin/general', function () {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
-    
+
     $msg = 'settings-saved';
     if (isset($_POST['general'])) {
         foreach ($_POST['general'] as $key => $value) {
-            $osiris->adminGeneral->deleteOne(['key'=>$key]);
+            $osiris->adminGeneral->deleteOne(['key' => $key]);
             $osiris->adminGeneral->insertOne([
                 'key' => $key,
                 'value' => $value
@@ -260,7 +290,7 @@ Route::post('/crud/admin/features', function () {
 
     if (isset($_POST['general'])) {
         foreach ($_POST['general'] as $key => $value) {
-            $osiris->adminGeneral->deleteOne(['key'=>$key]);
+            $osiris->adminGeneral->deleteOne(['key' => $key]);
             $osiris->adminGeneral->insertOne([
                 'key' => $key,
                 'value' => $value
@@ -358,17 +388,25 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
             );
         }
         // add example
-        include_once BASEPATH . "/php/__example.php";
+        include_once BASEPATH . "/php/Modules.php";
+        $Modules = new Modules();
         $values['example'] = '';
-        if (isset($EXAMPLE)){
-            include_once BASEPATH . "/php/Document.php";
-            $Document = new Document(false, 'print');
-            $EXAMPLE['type']= $values['parent'];
-            $EXAMPLE['subtype'] = $values['id'];
-            $Document->setDocument($EXAMPLE);
-            $values['example'] = $Document->format();
-            $values['example_web'] = $Document->formatShort(false);
+        $EXAMPLE = ['_id' => 1, 'type' => $values['parent'], 'subtype' => $values['id']];
+        foreach ($values['modules'] ?? array() as $module) {
+            $name = trim($module);
+            if (str_ends_with($name, '*') || in_array($name, ['title', 'authors', 'date', 'date-range'])) {
+                $name = str_replace('*', '', $name);
+            }
+            $f = $Modules->all_modules[$name] ?? array();
+            $EXAMPLE = array_merge($f['fields'], $EXAMPLE);
         }
+        include_once BASEPATH . "/php/Document.php";
+        $Document = new Document(false, 'print');
+        $Document->setDocument($EXAMPLE);
+        $values['example'] = $Document->format();
+        $values['example_web'] = $Document->formatShort(false);
+        // dump($values, true);
+        // die;
     }
 
     // add information on updating process

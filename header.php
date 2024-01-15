@@ -179,13 +179,12 @@ $pageactive = function ($p) use ($page) {
                             <?php
                             $breadcrumb = $breadcrumb ?? [];
                             if (!empty($breadcrumb)) {
-                                // array_unshift($breadcrumb , 'Home');
-                                echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . '/">Home</a></li>';
+                                echo '<li class=""><a href="' . ROOTPATH . '/"><i class="ph ph-house" aria-label="Home"></i></a></li>';
                                 foreach ($breadcrumb as $crumb) {
                                     if (!isset($crumb['path'])) {
-                                        echo '<li class="breadcrumb-item active" aria-current="page"><a href="#">' . $crumb['name'] . '</a></li>';
+                                        echo '<li class="active" aria-current="page"><a href="#">' . $crumb['name'] . '</a></li>';
                                     } else {
-                                        echo '<li class="breadcrumb-item"><a href="' . ROOTPATH . $crumb['path'] . '">' . $crumb['name'] . '</a></li>';
+                                        echo '<li class=""><a href="' . ROOTPATH . $crumb['path'] . '">' . $crumb['name'] . '</a></li>';
                                     }
                                 }
                             }

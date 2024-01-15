@@ -65,12 +65,14 @@
     src: url("Young\ Serif/YoungSerif-Regular.ttf") format("truetype");
 }
 
-.page-wrapper:not(.dyslexia) h1,
-.page-wrapper:not(.dyslexia) h2,
-.page-wrapper:not(.dyslexia) h3,
-.page-wrapper:not(.dyslexia) h4 {
+.page-wrapper:not(.dyslexia) h1
+/* .page-wrapper:not(.dyslexia) h2 */
+/* .page-wrapper:not(.dyslexia) h3 */
+/* .page-wrapper:not(.dyslexia) h4  */
+{
     font-family: "Young Serif", "Rubik";
     font-weight: 500;
+    /* font-size: 3rem; */
 }
 
 .text-normal {
@@ -150,6 +152,15 @@ blockquote {
     margin-left: 0;
 }
 
+.breadcrumb.category {
+    font-size: small;
+    font-weight: bold;
+    letter-spacing: 1pt;
+    color: var(--highlight-color);
+}
+.breadcrumb li::before, .breadcrumb button::before {
+    color: var(--border-color);
+}
 .author-widget {
     position: relative;
     background-color: white;
@@ -695,14 +706,14 @@ label.element-other::before {
     box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
 }
 
-.show-examples label.element-author::before,
+/* .show-examples label.element-author::before,
 .show-examples label.element-title::before,
 .show-examples label.element-time::before,
 .show-examples label.element-cat::before,
 .show-examples label.element-link::before,
 .show-examples label.element-other::before {
     visibility: visible;
-}
+} */
 
 #publication-form #examples {
     display: none;
@@ -1032,8 +1043,8 @@ td>.module.inactive::after {
     vertical-align: -0.15em;
     color: #878787;
     content: '\ea00';
-    margin-left: 1rem;
-    margin-right: 1.5rem;
+    margin-left: .5rem;
+    margin-right: .5rem;
 }
 
 .dropdown-menu .item {
@@ -1659,4 +1670,11 @@ blockquote.blue h6 {
 
 blockquote.blue hr {
     background-color: var(--blue-color-30);
+}
+#type-examples {
+    display: none;
+}
+.show-examples #type-examples {
+    display: block;
+
 }

@@ -174,6 +174,65 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </script>
     <?php } ?>
 
+    <div class="btn-group">
+        <button class="btn text-blue border-blue" onclick="addToCart(this, '<?= $id ?>')">
+            <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
+            <?= lang('Add to cart', 'Für Download sammeln') ?>
+        </button>
+        <div class=" dropdown with-arrow btn-group ">
+            <button class="btn text-blue border-blue" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                <i class="ph ph-download"></i> Download
+                <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
+                <div class="content">
+                    <form action="<?= ROOTPATH ?>/download" method="post">
+
+                        <input type="hidden" name="filter[id]" value="<?= $id ?>">
+
+                        <div class="form-group">
+
+                            <?= lang('Highlight:', 'Hervorheben:') ?>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
+                                <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                            </div>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
+                                <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
+                            </div>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="highlight" id="highlight-none" value="">
+                                <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <?= lang('File format:', 'Dateiformat:') ?>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="format" id="format-word" value="word" checked="checked">
+                                <label for="format-word">Word</label>
+                            </div>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="format" id="format-bibtex" value="bibtex">
+                                <label for="format-bibtex">BibTex</label>
+                            </div>
+
+                        </div>
+                        <button class="btn text-blue border-blue">Download</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>
         <a class="btn text-blue border-blue ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
@@ -184,92 +243,20 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 </div>
 
 <!-- HEAD -->
-<div class="box">
-    <div class="content">
+<div class="my-20 pt-20">
+    
+<ul class="breadcrumb category" style="--highlight-color:<?=$Format->typeArr['color']??''?>">
+    <li><?= $Format->activity_type() ?></li>
+    <!-- <span class='mr-10'><?= $Format->activity_icon(false) ?></span> -->
+    <li><?= $Format->activity_subtype() ?></li>
+</ul>
+<h1 class="mt-10">
+    <?= $Format->getTitle() ?>
+</h1>
 
-        <div class="float-sm-right">
-            <div class="btn-group">
-                <button class="btn text-blue border-blue" onclick="addToCart(this, '<?= $id ?>')">
-                    <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
-                    <?= lang('Add to cart', 'Für Download sammeln') ?>
-                </button>
-                <div class=" dropdown with-arrow btn-group ">
-                    <button class="btn text-blue border-blue" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
-                        <i class="ph ph-download"></i> Download
-                        <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="download-btn">
-                        <div class="content">
-                            <form action="<?= ROOTPATH ?>/download" method="post">
+<p class="lead"><?= $Format->getSubtitle() ?></p>
 
-                                <input type="hidden" name="filter[id]" value="<?= $id ?>">
-
-                                <div class="form-group">
-
-                                    <?= lang('Highlight:', 'Hervorheben:') ?>
-
-                                    <div class="custom-radio ml-10">
-                                        <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
-                                        <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
-                                    </div>
-
-                                    <div class="custom-radio ml-10">
-                                        <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                                        <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
-                                    </div>
-
-                                    <div class="custom-radio ml-10">
-                                        <input type="radio" name="highlight" id="highlight-none" value="">
-                                        <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
-                                    </div>
-
-                                </div>
-
-
-                                <div class="form-group">
-
-                                    <?= lang('File format:', 'Dateiformat:') ?>
-
-                                    <div class="custom-radio ml-10">
-                                        <input type="radio" name="format" id="format-word" value="word" checked="checked">
-                                        <label for="format-word">Word</label>
-                                    </div>
-
-                                    <div class="custom-radio ml-10">
-                                        <input type="radio" name="format" id="format-bibtex" value="bibtex">
-                                        <label for="format-bibtex">BibTex</label>
-                                    </div>
-
-                                </div>
-                                <button class="btn text-blue border-blue">Download</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <h4 class="title m-0" style="line-height: 1;">
-            <span class='mr-10'><?= $Format->activity_icon(false) ?></span>
-            <?= $Format->activity_subtype() ?>
-        </h4>
-
-        <p class="lead">
-            <?= $Format->formatShort($link = false) ?>
-        </p>
-    </div>
-    <hr>
-    <div class="content">
-        <span class="flag"><?= lang('Formatted entry', 'Formatierter Eintrag') ?></span>
-        <p>
-            <?php
-            echo $Format->format();
-            ?>
-        </p>
-    </div>
 </div>
-
 
 
 
@@ -414,7 +401,8 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
                 <tr>
                     <td>
-                        <?= $Format->activity_badge() ?>
+                        <span class="key"><?= lang('Formatted entry', 'Formatierter Eintrag') ?></span>
+                        <?= $Format->format() ?>
                     </td>
                 </tr>
                 <?php
