@@ -39,7 +39,7 @@
 $form = $form ?? array();
 $copy = $copy ?? false;
 
-$formaction = ROOTPATH ;
+$formaction = ROOTPATH;
 if (!empty($form) && isset($form['_id']) && !$copy) {
     $formaction .= "/crud/activities/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
@@ -404,7 +404,7 @@ function val($index, $default = '')
 
         <!-- SUBTYPES -->
         <?php
-       
+
         foreach ($Categories->categories as $type) {
             $t = $type['id'];
 
@@ -459,12 +459,14 @@ function val($index, $default = '')
             </style>
 
             <p id="type-description" class="description">
+                <!-- filled by togglePubType() in add-activity.js -->
             </p>
-            
+
             <p id="type-examples" class="examples">
+                <!-- filled by togglePubType() in add-activity.js -->
             </p>
             <div id="data-modules" class="row row-eq-spacing">
-
+                <!-- filled by togglePubType() in add-activity.js -->
             </div>
 
             <?php if (empty($form)) { ?>
@@ -523,7 +525,7 @@ function val($index, $default = '')
                     <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
                 </h4>
                 <p class="m-0">
-
+                    <!-- filled by doubletCheck() in script.js -->
                 </p>
             </div>
 
