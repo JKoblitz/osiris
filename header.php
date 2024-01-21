@@ -75,19 +75,11 @@ $pageactive = function ($p) use ($page) {
     <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
-
-
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css" />
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css" />
-
-    <!-- <link href="<?= ROOTPATH ?>/css/phosphoricons/style.css" rel="stylesheet" /> -->
-    <!-- <link href="<?= ROOTPATH ?>/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" /> -->
-    <!-- <link href="<?= ROOTPATH ?>/css/fontawesome/css/all.css" rel="stylesheet" /> -->
+<!-- Icon font -->
+<link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css" rel="stylesheet" />
+<link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css" rel="stylesheet" />
+    <!-- for open access icons -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
-    <!-- <link href="<?= ROOTPATH ?>/css/digidive.css?v=3" rel="stylesheet" /> -->
-    <!-- Quill (rich-text editor) -->
-    <!-- <link href="<?= ROOTPATH ?>/css/quill.snow.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/daterangepicker.min.css">
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/main.css?<?= filemtime(BASEPATH . '/css/main.css') ?>">
     <?php
@@ -104,16 +96,13 @@ $pageactive = function ($p) use ($page) {
         const AFFILIATION = "<?= $Settings->get('affiliation') ?>";
     </script>
 
-    <link rel="stylesheet" href="<?= ROOTPATH ?>/css/shepherd.css" />
-    <script src="<?= ROOTPATH ?>/js/digidive.js?v=4"></script>
+<script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
+
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
 
-    <!-- <link rel="stylesheet" href="shepherd.js/dist/css/shepherd.css"/> -->
-    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/js/shepherd.min.js"></script>
 
     <script src="<?= ROOTPATH ?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
-    <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
-
+    
 
     <?php if (isset($additionalHead)) {
         echo $additionalHead;
@@ -151,7 +140,7 @@ $pageactive = function ($p) use ($page) {
         </div>
 
         <!-- Sidebar overlay -->
-        <div class="sidebar-overlay" onclick="digidive.toggleSidebar()"></div>
+        <div class="sidebar-overlay" onclick="osirisJS.toggleSidebar()"></div>
 
         <!-- Navbar start -->
         <div class="navbar navbar-top">
@@ -165,7 +154,7 @@ $pageactive = function ($p) use ($page) {
         </div>
         <nav class="navbar navbar-bottom">
             <!-- Button to toggle sidebar -->
-            <button class="btn btn-action active" type="button" onclick="digidive.toggleSidebar(this);" aria-label="Toggle sidebar"></button>
+            <button class="btn btn-action active" type="button" onclick="osirisJS.toggleSidebar(this);" aria-label="Toggle sidebar"></button>
             <ul class="navbar-nav">
                 <?php if (false) { ?>
                     <!-- set to true during maintenance -->

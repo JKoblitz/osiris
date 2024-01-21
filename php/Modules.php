@@ -1106,7 +1106,6 @@ class Modules
                 break;
 
             case "date-range":
-                // $ui_id = rand(1000, 9999);
             ?>
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range">
                     <label class="<?= $required ?> element-time" for="date_start">
@@ -1118,147 +1117,14 @@ class Modules
                         <input type="date" class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
                         <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
                     </div>
-                    <!-- <div class="input-group" id="date-range-picker">
-                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?>>
-                        <input class="form-control" name="values[end]" id="date_end">
-                    </div>
-                    <script>
-                        var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
-                        const DOUBLETCHECK = <?= empty($this->form) ? 'true' : 'false' ?>;
-                        // console.log(SINGLE);
-                        var dateRange = {
-                            // format: 'DD.MM.YYYY',
-                            separator: ' to ',
-                            autoClose: true,
-                            singleDate: SINGLE,
-                            singleMonth: SINGLE,
-                            monthSelect: true,
-                            yearSelect: true,
-                            startOfWeek: 'monday',
-                            getValue: function() {
-                                if (SINGLE) return $('#date_start').val();
-
-                                if ($('#date_start').val() && $('#date_end').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_end').val();
-                                else if ($('#date_start').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_start').val();
-                                else
-                                    return '';
-                            },
-                            setValue: function(s, s1, s2) {
-                                $('#date_start').val(s1);
-                                if (DOUBLETCHECK)
-                                    doubletCheck()
-                                if (SINGLE) return;
-                                $('#date_end').val(s2);
-                            }
-                        }
-
-                        // $("#date_start")
-                        //     .dateRangePicker(dateRange)
-                        rebuild_datepicker(document.getElementById('daterange-toggle-btn'))
-
-                        <?php if (!empty($this->form)) { ?>
-                            $('#date-range-picker').data('dateRangePicker')
-                                .setStart('<?= valueFromDateArray($this->val('start')) ?>')
-                                .setEnd('<?= valueFromDateArray($this->val('end')) ?>');
-
-                        <?php } ?>
-
-                        function rebuild_datepicker(btn) {
-                            if ($('#date-range-picker').data('dateRangePicker')) {
-                                $('#date-range-picker').data('dateRangePicker').destroy()
-                                SINGLE = !SINGLE
-                            }
-                            dateRange.singleDate = SINGLE;
-                            dateRange.singleMonth = SINGLE;
-                            $("#date_end").attr('readonly', SINGLE)
-                            if (SINGLE) {
-                                $("#date_end").val('').addClass('disabled')
-                                $(btn).html(lang('One day', 'Eintägig'))
-                            } else {
-                                $("#date_end").val($("#date_start").val()).removeClass('disabled')
-                                $(btn).html(lang('Multiple days', 'Mehrtägig'))
-                            }
-                            $("#date-range-picker").dateRangePicker(dateRange)
-                        }
-                    </script> -->
+                   
                 </div>
             <?php
                 break;
 
             case "date-range-ongoing":
             ?>
-                <!-- <div class="data-module col-sm-8 col-md-6" data-module="date-range">
-                    <label class="<?= $required ?> element-time" for="date_start">
-                        <?= lang('Date range', "Zeitraum") ?>
-                        <button class="btn small" id="ongoing-toggle-btn" type="button" onclick="rebuild_ongoing_datepicker(this);">
-                            <?= lang('Ongoing', 'Fortlaufend') ?>
-                        </button>
-
-                    </label>
-                    <div class="input-group" id="date-range-ongoing-picker">
-                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
-                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
-                    </div>
-                    <script>
-                        var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
-
-                        var dateRange = {
-                            separator: ' to ',
-                            autoClose: true,
-                            singleDate: SINGLE,
-                            singleMonth: SINGLE,
-                            monthSelect: true,
-                            yearSelect: true,
-                            startOfWeek: 'monday',
-                            getValue: function() {
-                                if (SINGLE) return $('#date_start').val();
-                                if ($('#date_start').val() && $('#date_end').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_end').val();
-                                else if ($('#date_start').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_start').val();
-                                else
-                                    return '';
-                            },
-                            setValue: function(s, s1, s2) {
-                                $('#date_start').val(s1);
-                                if (SINGLE) return;
-                                $('#date_end').val(s2);
-                            },
-                        }
-
-                        // $("#date_start")
-                        //     .dateRangePicker(dateRange)
-                        rebuild_ongoing_datepicker(document.getElementById('ongoing-toggle-btn'))
-
-                        <?php if (!empty($this->form)) { ?>
-                            $('#date-range-ongoing-picker').data('dateRangePicker')
-                                .setStart('<?= valueFromDateArray($this->val('start')) ?>')
-                                .setEnd('<?= valueFromDateArray($this->val('end')) ?>');
-
-                        <?php } ?>
-
-                        function rebuild_ongoing_datepicker(btn = null) {
-                            if ($('#date-range-ongoing-picker').data('dateRangePicker')) {
-                                $('#date-range-ongoing-picker').data('dateRangePicker').destroy()
-                                SINGLE = !SINGLE
-                            }
-                            dateRange.singleDate = SINGLE;
-                            dateRange.singleMonth = SINGLE;
-                            $("#date_end").attr('readonly', SINGLE)
-                            if (SINGLE) {
-                                $("#date_end").val(lang('ongoing', 'fortlaufend')).addClass('disabled')
-                                if (btn !== null) $(btn).html(lang('Ongoing', 'Fortlaufend'))
-                            } else {
-                                $("#date_end").val($("#date_start").val()).removeClass('disabled')
-                                if (btn !== null) $(btn).html(lang('Finished', 'Abgeschlossen'))
-                            }
-                            $("#date-range-ongoing-picker").dateRangePicker(dateRange)
-
-                        }
-                    </script>
-                </div> -->
+                
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>

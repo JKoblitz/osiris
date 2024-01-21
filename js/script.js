@@ -96,7 +96,7 @@ $('input[name=activity]').on('change', function () {
 
 function toastError(msg = "", title = null) {
     if (title === null) title = lang("Error", "Fehler")
-    digidive.initStickyAlert({
+    osirisJS.initStickyAlert({
         content: msg,
         title: title,
         alertType: "danger",
@@ -106,7 +106,7 @@ function toastError(msg = "", title = null) {
 }
 function toastSuccess(msg = "", title = null) {
     if (title === null) title = lang("Success", "Erfolg")
-    digidive.initStickyAlert({
+    osirisJS.initStickyAlert({
         content: msg,
         title: title,
         alertType: "success",
@@ -116,7 +116,7 @@ function toastSuccess(msg = "", title = null) {
 }
 function toastWarning(msg = "", title = null) {
     if (title === null) title = lang("Warning", "Achtung")
-    digidive.initStickyAlert({
+    osirisJS.initStickyAlert({
         content: msg,
         title: title,
         alertType: "signal",
@@ -1450,7 +1450,7 @@ function removeAuthor(event, el) {
 // }
 
 function todo() {
-    digidive.initStickyAlert({
+    osirisJS.initStickyAlert({
         content: lang('Sorry, but this button does not work yet.', 'Sorry, aber der Knopf funktioniert noch nicht.'),
         title: '<i class="ph ph-smiley-sad ph-3x text-signal"></i>',
         alertType: "",
@@ -1604,7 +1604,7 @@ function updateCart(add = true) {
 
 function addToCart(el, id) {//.addClass('animate__flip')
     // document.cookie = "username=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC"; 
-    var fav = digidive.readCookie('osiris-cart')
+    var fav = osirisJS.readCookie('osiris-cart')
     if (fav) {
         var favlist = fav.split(',')
         console.log(favlist);
@@ -1628,7 +1628,7 @@ function addToCart(el, id) {//.addClass('animate__flip')
         console.info("add");
         updateCart(true)
     }
-    digidive.createCookie('osiris-cart', fav, 30)
+    osirisJS.createCookie('osiris-cart', fav, 30)
     if (el === null) {
         location.reload()
     } else {
