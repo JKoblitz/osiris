@@ -40,11 +40,6 @@ if ($nextQ > 4) {
 }
 // $nextquarter = $nextY . "Q" . $nextQ;
 
-// include_once BASEPATH . "/php/_lom.php";
-// $LOM = new LOM($user, $osiris);
-
-// $_lom = 0;
-
 include_once BASEPATH . "/php/Coins.php";
 $Coins = new Coins();
 
@@ -168,7 +163,7 @@ if (!$Settings->featureEnabled('coins')) {
             <?php if ($showcoins) { ?>
                 <p class="lead m-0">
                     <i class="ph ph-lg ph-coin text-signal"></i>
-                    <b id="lom-points"><?= $coins ?></b>
+                    <b id="coin-number"><?= $coins ?></b>
                     Coins in <?= $YEAR ?>
                     <a href='#coins' class="text-muted">
                         <i class="ph ph-question text-muted"></i>
@@ -217,21 +212,21 @@ if (!$Settings->featureEnabled('coins')) {
 
 
                     <div class="btn-group">
-                        <a href="?year=<?= $YEAR - 1 ?>&quarter=<?= $QUARTER ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>">
+                        <a href="?year=<?= $YEAR - 1 ?>&quarter=<?= $QUARTER ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>">
                             <i class="ph ph-caret-double-left"></i>
                         </a>
-                        <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>">
+                        <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>">
                             <i class="ph ph-caret-left"></i>
                         </a>
-                        <a class="btn text-blue border-blue" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>">
+                        <a class="btn text-secondary border-secondary" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>">
                             <!-- <i class="ph ph-circle"></i> -->
                             <?= $YEAR ?>
                             Q<?= $QUARTER ?>
                         </a>
-                        <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>">
+                        <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>">
                             <i class="ph ph-caret-right"></i>
                         </a>
-                        <a href="?year=<?= $YEAR + 1 ?>&quarter=<?= $QUARTER ?>" class="btn blue" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>">
+                        <a href="?year=<?= $YEAR + 1 ?>&quarter=<?= $QUARTER ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>">
                             <i class="ph ph-caret-double-right"></i>
                         </a>
                     </div>
@@ -440,7 +435,7 @@ if (!$Settings->featureEnabled('coins')) {
                                         <?php } ?>
                                     </td>
                                     <?php if ($showcoins) { ?>
-                                        <td class='lom unbreakable'>
+                                        <td class='coins unbreakable'>
                                             <span data-toggle='tooltip' data-title='<?= $l['comment'] ?>'>
                                                 <?= round($l["coins"]) ?>
                                             </span>

@@ -69,7 +69,7 @@ $style = $_GET['style'] ?? 'cards';
         }
 
         .table.cards tr {
-            width: 32%;
+            width: 100%;
             margin: 0.5em;
             border: 1px solid var(--border-color);
             border-radius: 0.5em;
@@ -83,6 +83,19 @@ $style = $_GET['style'] ?? 'cards';
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+
+        @media (min-width: 768px) {
+            .table.cards tbody tr {
+                width: calc(50% - 1.4rem);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .table.cards tbody tr {
+                width: calc(33.3% - 1.4rem);
+            }
         }
     </style>
 

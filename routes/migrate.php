@@ -255,6 +255,11 @@ Route::get('/migrate', function () {
             }
         }
 
+        // set up indices
+        $indexNames = $osiris->adminCategories->createIndexes([
+            [ 'key' => [ 'id' => 1 ], 'unique' => true ],
+        ]);
+        
         die;
 
         // $osiris->groups->deleteMany([]);

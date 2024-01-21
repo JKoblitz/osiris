@@ -94,7 +94,7 @@ function sel($index, $value)
     $member = $osiris->activities->count(['type' => $t]);
     ?>
 
-    <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>;">
+    <div class="box type" id="type-<?= $t ?>" style="">
 
         <h4 class="header" style="background-color:<?= $color ?>20; color:<?= $color ?>">
             <?php if (!empty($type)) { ?>
@@ -160,7 +160,7 @@ function sel($index, $value)
                         </li>
                     <?php } ?>
                     <li>
-                        <a class="btn text-<?= $t ?>" href="<?= ROOTPATH ?>/admin/types/new?parent=<?= $id ?>"><i class="ph ph-plus-circle"></i>
+                        <a class="btn" href="<?= ROOTPATH ?>/admin/types/new?parent=<?= $id ?>"><i class="ph ph-plus-circle"></i>
                             <?= lang('Add subtype', 'Neuen Typ hinzufügen') ?>
                         </a>
                     </li>
@@ -190,7 +190,10 @@ function sel($index, $value)
 
             <div class="alert danger mt-20">
                 <?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?><br>
-                <a href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $id ?>"}]}' target="_blank"><?= lang('View activities', 'Aktivitäten zeigen') ?></a>
+                <a href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $id ?>"}]}' target="_blank" class="text-danger">
+                <i class="ph ph-search"></i>
+                <?= lang('View activities', 'Aktivitäten zeigen') ?>
+            </a>
 
             </div>
         <?php } ?>

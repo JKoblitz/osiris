@@ -78,7 +78,7 @@ function val($index, $default = '')
                                 <td>
                                     <?php if (!empty($doc['connections']['link'])) { ?>
                                         <a href="<?= $doc['connections']['link'] ?>" class="badge " target="_blank">
-                                            <i class="ph ph-link text-blue" style="line-height: 0;"></i>
+                                            <i class="ph ph-link text-secondary" style="line-height: 0;"></i>
                                             <?= $doc['connections']['name'] ? $doc['connections']['name'] : $doc['connections']['link'] ?>
                                         </a>
                                     <?php } else { ?>

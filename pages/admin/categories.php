@@ -52,7 +52,7 @@ foreach ($Categories->categories as $type) { ?>
                 </li>
             <?php } ?>
             <li>
-                <a class="btn text-<?= $type['id'] ?>" href="<?= ROOTPATH ?>/admin/types/new?parent=<?= $type['id'] ?>">
+                <a class="btn" href="<?= ROOTPATH ?>/admin/types/new?parent=<?= $type['id'] ?>">
                     <i class="ph ph-plus-circle"></i>
                     <span class="sr-only">
                         <?= lang('Add subtype', 'Neuen Typ hinzufügen') ?>

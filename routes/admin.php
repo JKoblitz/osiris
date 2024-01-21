@@ -387,6 +387,8 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
                 ['$set' => ['type' => $values['parent']]]
             );
         }
+        // checkbox default
+        $values['disabled'] = $values['disabled'] ?? false;
         // add example
         include_once BASEPATH . "/php/Modules.php";
         $Modules = new Modules();

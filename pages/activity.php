@@ -107,31 +107,31 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
     <div class="btn-group">
         <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
-            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-blue border-blue">
+            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-secondary border-secondary">
                 <i class="ph ph-pencil-simple-line"></i>
                 <?= lang('Edit', 'Bearbeiten') ?>
             </a>
         <?php } ?>
         <?php if (!in_array($doc['type'], ['publication'])) { ?>
-            <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn text-blue border-blue">
+            <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn text-secondary border-secondary">
                 <i class="ph ph-copy"></i>
                 <?= lang("Copy", "Kopie") ?>
             </a>
         <?php } ?>
     </div>
 
-    <a href="#upload-files" class="btn text-blue border-blue">
+    <a href="#upload-files" class="btn text-secondary border-secondary">
         <i class="ph ph-upload"></i>
         <?= lang('Upload file', 'Datei hochladen') ?>
     </a>
     <div class="btn-group">
         <?php if ($Settings->featureEnabled('projects')) { ?>
-            <a href="#projects" class="btn text-blue border-blue">
+            <a href="#projects" class="btn text-secondary border-secondary">
                 <i class="ph ph-plus-circle"></i>
                 <?= lang("Project", "Projekt") ?>
             </a>
         <?php } ?>
-        <a href="#connect" class="btn text-blue border-blue">
+        <a href="#connect" class="btn text-secondary border-secondary">
             <i class="ph ph-plus-circle"></i>
             <?= lang("Tags", "Schlagwörter") ?>
         </a>
@@ -175,12 +175,12 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <?php } ?>
 
     <div class="btn-group">
-        <button class="btn text-blue border-blue" onclick="addToCart(this, '<?= $id ?>')">
+        <button class="btn text-secondary border-secondary" onclick="addToCart(this, '<?= $id ?>')">
             <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
             <?= lang('Add to cart', 'Für Download sammeln') ?>
         </button>
         <div class=" dropdown with-arrow btn-group ">
-            <button class="btn text-blue border-blue" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+            <button class="btn text-secondary border-secondary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
                 <i class="ph ph-download"></i> Download
                 <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
             </button>
@@ -227,7 +227,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             </div>
 
                         </div>
-                        <button class="btn text-blue border-blue">Download</button>
+                        <button class="btn text-secondary border-secondary">Download</button>
                     </form>
                 </div>
             </div>
@@ -235,7 +235,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </div>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>
-        <a class="btn text-blue border-blue ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
+        <a class="btn text-secondary border-secondary ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
             <i class="ph ph-eye ph-fw"></i>
             <?= lang('Preview', 'Vorschau') ?>
         </a>
@@ -846,7 +846,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         <td>
                             <?php if (!empty($con['link'])) { ?>
                                 <a href="<?= $con['link'] ?>" class="badge " target="_blank">
-                                    <i class="ph ph-link text-blue" style="line-height: 0;"></i>
+                                    <i class="ph ph-link text-secondary" style="line-height: 0;"></i>
                                     <?= $con['link'] ?>
                                 </a>
                             <?php } ?>

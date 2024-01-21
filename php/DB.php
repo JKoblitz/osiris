@@ -177,7 +177,9 @@ class DB
             // $regex = new Regex('^' . $veryfirst);
             $user = $this->db->persons->findOne([
                 '$or' => [
-                    // ['last' => $last, 'first' => $regex],
+                    // if user has not set alternative names yet
+                    ['last' => $last, 'first' => $first, 'names'=>['$exist'=>false]],
+                    // otherwise, we respect the names that have been set
                     ['names' => "$last, $first"],
                     ['names' => "$last, $abbr"]
                 ]

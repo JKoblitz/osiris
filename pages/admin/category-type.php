@@ -195,20 +195,20 @@ if (!empty($form) && isset($form['_id'])) {
             </div>
 
 
-            <blockquote class="blue ">
-                <h5 class="title text-blue">
+            <div class="alert secondary ">
+                <h3 class="title text-secondary">
                     <?= lang('Example', 'Beispiel') ?>
                     <span data-toggle="tooltip"  data-title="<?= lang('Will be updated as soon as you save the type.', 'Wird aktualisiert, sobald der Typ gespeichert wird.') ?>">
                         <i class="ph ph-question"></i>
                     </span>
-                </h5>
-                <h6>Print</h6>
+                </h3>
+                <b>Print</b> <br>
                 <?= $type['example'] ?? '- save current form to generate an example -' ?>
                 <hr>
 
-                <h6>Web</h6>
+                <b>Web</b> <br>
                 <?= $type['example_web'] ?? '- save current form to generate an example -' ?>
-            </blockquote>
+            </div>
         </div>
 
 
