@@ -567,7 +567,7 @@ Route::post('/crud/activities/upload-files/(.*)', function ($id) {
 
 
 
-Route::post('/crud/activities/update-research-data/(.*)', function ($id) {
+Route::post('/crud/activities/update-tags/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['connections'])) {
         $osiris->activities->updateOne(

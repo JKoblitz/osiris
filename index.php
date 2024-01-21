@@ -98,7 +98,7 @@ include_once BASEPATH . "/routes/login.php";
 include_once BASEPATH . "/routes/migrate.php";
 include_once BASEPATH . "/routes/projects.php";
 include_once BASEPATH . "/routes/queue.php";
-include_once BASEPATH . "/routes/research-data.php";
+include_once BASEPATH . "/routes/tags.php";
 include_once BASEPATH . "/routes/static.php";
 include_once BASEPATH . "/routes/teaching.php";
 include_once BASEPATH . "/routes/users.php";

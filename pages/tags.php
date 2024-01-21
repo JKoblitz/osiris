@@ -6,7 +6,7 @@
  * This file is part of the OSIRIS package.
  * Copyright (c) 2023, Julia Koblitz
  * 
- * @link        /research-data
+ * @link        /tags
  *
  * @package     OSIRIS
  * @since       1.2.0
@@ -63,7 +63,7 @@ function val($index, $default = '')
             <div class="box" id="<?= $con['_id'] ?>">
                 <div class="content">
                     <h5 class="mt-0">
-                        <a href="<?=ROOTPATH?>/research-data/<?= $con['_id'] ?>" class="link"><?= $con['_id'] ?></a>
+                        <a href="<?=ROOTPATH?>/tags/<?= $con['_id'] ?>" class="link"><?= $con['_id'] ?></a>
                         <span class="badge primary float-right"><?= $con['count'] ?></span>
                     </h5>
                 </div>

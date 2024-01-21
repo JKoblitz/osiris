@@ -394,7 +394,7 @@ $pageactive = function ($p) use ($page) {
                         <?php } ?>
 
 
-                        <a href="<?= ROOTPATH ?>/research-data" class="with-icon <?= $pageactive('research-data') ?>">
+                        <a href="<?= ROOTPATH ?>/tags" class="with-icon <?= $pageactive('tags') ?>">
                             <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
                             <?= lang('Tags', 'Schlagwörter') ?>
                         </a>

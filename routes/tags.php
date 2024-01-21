@@ -14,23 +14,23 @@
  * @license     MIT
  */
 
-Route::get('/research-data', function () {
+Route::get('/tags', function () {
     include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
         ['name' => lang("Tags", "Schlagwörter")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/research-data.php";
+    include BASEPATH . "/pages/tags.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/research-data/(.*)', function ($name) {
+Route::get('/tags/(.*)', function ($name) {
     include_once BASEPATH . "/php/init.php";
     $breadcrumb = [
-        ['name' => lang("Tags", "Schlagwörter"), 'path' => "/research-data"],
+        ['name' => lang("Tags", "Schlagwörter"), 'path' => "/tags"],
         ['name' => $name]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/research-data-detail.php";
+    include BASEPATH . "/pages/tags-detail.php";
     include BASEPATH . "/footer.php";
 }, 'login');

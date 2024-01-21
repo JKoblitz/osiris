@@ -6,7 +6,7 @@
  * This file is part of the OSIRIS package.
  * Copyright (c) 2023, Julia Koblitz
  * 
- * @link        /research-data/<name>
+ * @link        /tags/<name>
  *
  * @package     OSIRIS
  * @since       1.2.0

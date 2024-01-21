@@ -316,7 +316,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     $count_data = count($doc['connections'] ?? []);
     if ($count_data) :
     ?>
-        <a onclick="navigate('research-data')" id="btn-research-data" class="btn">
+        <a onclick="navigate('tags')" id="btn-tags" class="btn">
             <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
             <?= lang('Tags', 'Schlagwörter') ?>
             <span class="index"><?= $count_data ?></span>
@@ -805,7 +805,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             </h5>
             <div>
                 <?php
-                include BASEPATH . "/components/connect-research-data.php";
+                include BASEPATH . "/components/connect-tags.php";
                 ?>
 
             </div>
@@ -813,7 +813,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </div>
 </div>
 
-<section id="research-data" style="display: none;">
+<section id="tags" style="display: none;">
 
 
     <div class="btn-toolbar float-sm-right">
