@@ -28,7 +28,7 @@ $quarters = [];
 $years = [$y];
 
 for ($i = 0; $i < 4; $i++) {
-    $quarters["${y}Q$q"] = [
+    $quarters["{$y}Q$q"] = [
         'year' => $y,
         'quarter' => $q,
         'activities' => array(
@@ -82,7 +82,7 @@ foreach ($cursor as $doc) {
     if (in_array($year, $years)) {
         $q = getQuarter($doc);
         if (empty($q)) continue;
-        $yq = "${year}Q$q";
+        $yq = "{$year}Q$q";
         if (!isset($quarters[$yq])) continue;
 
         if (!isset($quarters[$yq]['activities'][$type]))

@@ -57,11 +57,11 @@ Route::get('/dashboard', function () {
     if ($Settings->hasPermission('report.dashboard')) {
         echo '<a href="' . ROOTPATH . '/controlling" class="btn danger lg float-right">Controlling</a>';
 
-        echo '<h1 class="m-0">Controlling Dashboard</h1>';
+        echo '<h1 class="m-0">Controlling-Dashboard</h1>';
         include BASEPATH . "/pages/dashboard-controlling.php";
         include BASEPATH . "/pages/dashboard-scientist.php";
     } else {
-        echo '<h1 class="m-0">' . lang('Scientist', 'Wissenschaftler') . 'Dashboard</h1>';
+        echo '<h1 class="m-0">' . lang('Scientist', 'Wissenschaftler') . '-Dashboard</h1>';
         include BASEPATH . "/pages/dashboard-scientist.php";
     }
     include BASEPATH . "/footer.php";
