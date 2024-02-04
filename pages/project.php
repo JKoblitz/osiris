@@ -4,14 +4,14 @@
  * Page to see details on a single project
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /project/<id>
  *
  * @package     OSIRIS
  * @since       1.2.2
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -42,8 +42,8 @@ $institute = $Settings->get('affiliation_details');
         mapbox: {
             style: "open-street-map",
             center: {
-                lat: <?=$institute['lat']??52?>,
-                lon: <?=$institute['lng']??10?>
+                lat: <?= $institute['lat'] ?? 52 ?>,
+                lon: <?= $institute['lng'] ?? 10 ?>
             },
             zoom: 1
         },
@@ -59,7 +59,7 @@ $institute = $Settings->get('affiliation_details');
     };
 </script>
 
-<script src="<?=ROOTPATH?>/js/plotly-2.27.1.min.js" charset="utf-8"></script>
+<script src="<?= ROOTPATH ?>/js/plotly-2.27.1.min.js" charset="utf-8"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/projects.js?v=1"></script>
 
@@ -262,8 +262,8 @@ $institute = $Settings->get('affiliation_details');
         <div class="col-md-6">
 
             <h2>
-            <?= lang('Project members', 'Projektmitarbeiter') ?> @
-            <?=$Settings->get('affiliation')?>
+                <?= lang('Project members', 'Projektmitarbeiter') ?> @
+                <?= $Settings->get('affiliation') ?>
             </h2>
 
             <?php if ($edit_perm) { ?>
@@ -436,7 +436,7 @@ $institute = $Settings->get('affiliation_details');
 
     <div class="row row-eq-spacing">
         <div class="col-lg-4">
-            
+
             <table class="table">
                 <tbody>
                     <?php
@@ -495,7 +495,7 @@ $institute = $Settings->get('affiliation_details');
             </div>
             <p>
                 <i class="ph ph-fill ph-circle" style="color:#f78104"></i>
-                <?=lang('Coordinator', 'Koordinator')?>
+                <?= lang('Coordinator', 'Koordinator') ?>
                 <br>
                 <i class="ph ph-fill ph-circle" style="color:#008083"></i>
                 Partner
@@ -506,7 +506,6 @@ $institute = $Settings->get('affiliation_details');
     <script>
         const id = '<?= $_GET['project'] ?? null ?>';
         console.log(id);
-        
     </script>
 
 
