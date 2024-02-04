@@ -13,6 +13,8 @@ if (!empty($form) && isset($form['_id'])) {
     $url = ROOTPATH . "/admin/types/*";
     $title = lang('New category', 'Neue Kategorie');
 }
+
+$member = $osiris->activities->count(['subtype' => $id]);
 ?>
 
 <div class="modal" id="unique" tabindex="-1" role="dialog">
@@ -198,7 +200,7 @@ if (!empty($form) && isset($form['_id'])) {
             <div class="alert secondary ">
                 <h3 class="title text-secondary">
                     <?= lang('Example', 'Beispiel') ?>
-                    <span data-toggle="tooltip"  data-title="<?= lang('Will be updated as soon as you save the type.', 'Wird aktualisiert, sobald der Typ gespeichert wird.') ?>">
+                    <span data-toggle="tooltip" data-title="<?= lang('Will be updated as soon as you save the type.', 'Wird aktualisiert, sobald der Typ gespeichert wird.') ?>">
                         <i class="ph ph-question"></i>
                     </span>
                 </h3>
@@ -241,6 +243,32 @@ if (!empty($form) && isset($form['_id'])) {
     <button class="btn success" id="submitBtn"><?= $btntext ?></button>
 </form>
 
+
+<?php if (!empty($form)) { ?>
+
+
+    <?php if ($member == 0) { ?>
+        <div class="alert danger mt-20">
+            <form action="<?= ROOTPATH ?>/crud/types/delete/<?= $id ?>" method="post">
+                <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/admin/categories/<?=$type['parent']?>">
+                <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
+                <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>
+            </form>
+        </div>
+    <?php } else { ?>
+
+        <div class="alert danger mt-20">
+            <?= lang("Can\'t delete type: $member activities associated.", "Kann Typ nicht löschen: $member Aktivitäten zugeordnet.") ?><br>
+            <a href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $id ?>"}]}' target="_blank" class="text-danger">
+                <i class="ph ph-search"></i>
+                <?= lang('View activities', 'Aktivitäten zeigen') ?>
+            </a>
+
+        </div>
+    <?php } ?>
+
+
+<?php } ?>
 
 
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>

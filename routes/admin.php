@@ -313,8 +313,6 @@ Route::post('/crud/(categories|types)/create', function ($col) {
     if (!isset($_POST['values'])) die("no values given");
 
     $values = validateValues($_POST['values'], $DB);
-    dump($values, true);
-    die;
 
     if ($col == 'categories') {
         $collection = $osiris->adminCategories;
@@ -432,24 +430,26 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
     ]);
 });
 
-Route::post('/crud/categories/delete/([A-Za-z0-9]*)', function ($id) {
+Route::post('/crud/(categories|types)/delete/(.*)', function ($col, $id) {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     // select the right collection
 
+    if ($col == 'categories') {
+        $collection = $osiris->adminCategories;
+        $member = $osiris->activities->count(['type' => $id]);
+    } else {
+        $collection = $osiris->adminTypes;
+        $member = $osiris->activities->count(['subtype' => $id]);
+    }
+
+    // check that no activities are connected
+    if ($member !== 0) die('Cannot delete as long as activities are connected.');
+
     // prepare id
-    $id = $DB->to_ObjectID($id);
-
-    // remove from all users
-    $category = $osiris->adminCategories->findOne(['_id' => $id]);
-    $osiris->persons->updateOne(
-        ['depts' => $category['id']],
-        ['$pull' => ["depts" => $category['id']]]
-    );
-
-    $updateResult = $osiris->adminCategories->deleteOne(
-        ['_id' => $id]
+    $updateResult = $collection->deleteOne(
+        ['id' => $id]
     );
 
     $deletedCount = $updateResult->getDeletedCount();

@@ -171,36 +171,36 @@ function sel($index, $value)
 
     </div>
 
-    <button class="btn success" id="submitBtn"><?=$btntext?></button>
+    <button class="btn success" id="submitBtn"><?= $btntext ?></button>
 
 </form>
 
-    <?php if (!empty($form)) { ?>
+<?php if (!empty($form)) { ?>
 
 
-        <?php if ($member == 0) { ?>
-            <div class="alert danger mt-20">
-                <form action="<?= ROOTPATH ?>/crud/category/delete/<?= $id ?>" method="post">
-                    <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/groups">
-                    <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
-                    <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>
-                </form>
-            </div>
-        <?php } else { ?>
+    <?php if ($member == 0) { ?>
+        <div class="alert danger mt-20">
+            <form action="<?= ROOTPATH ?>/crud/categories/delete/<?= $id ?>" method="post">
+                <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/admin/categories">
+                <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
+                <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>
+            </form>
+        </div>
+    <?php } else { ?>
 
-            <div class="alert danger mt-20">
-                <?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?><br>
-                <a href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $id ?>"}]}' target="_blank" class="text-danger">
+        <div class="alert danger mt-20">
+            <?= lang("Can\'t delete category: $member activities associated.", "Kann Kategorie nicht löschen: $member Aktivitäten zugeordnet.") ?><br>
+            <a href='<?= ROOTPATH ?>/search/activities#{"$and":[{"type":"<?= $id ?>"}]}' target="_blank" class="text-danger">
                 <i class="ph ph-search"></i>
                 <?= lang('View activities', 'Aktivitäten zeigen') ?>
             </a>
 
-            </div>
-        <?php } ?>
-
-
+        </div>
     <?php } ?>
 
 
-    <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
-    <script src="<?= ROOTPATH ?>/js/admin-categories.js"></script>
+<?php } ?>
+
+
+<script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/admin-categories.js"></script>

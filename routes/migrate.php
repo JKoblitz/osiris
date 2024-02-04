@@ -16,10 +16,19 @@
 
 
 Route::get('/install', function () {
-    include_once BASEPATH . "/php/init.php";
-    include BASEPATH . "/header.php";
+    // include_once BASEPATH . "/php/init.php";
+    // include BASEPATH . "/header.php";
 
-    echo "<h1>Willkommen bei OSIRIS</h>";
+    include_once BASEPATH . "/php/DB.php";
+
+    // Database connection
+    global $DB;
+    $DB = new DB;
+
+    global $osiris;
+    $osiris = $DB->db;
+
+    echo "<h1>Willkommen bei OSIRIS</h1>";
 
     // check version
     $version = $osiris->system->findOne(['key' => 'version']);
@@ -29,15 +38,131 @@ Route::get('/install', function () {
         die;
     }
 
-    echo "<p>Ich initialisiere die Datenbank für Euch und werde erst mal die Standardeinstellungen übernehmen. Du kannst alles Weitere später anpassen.</p>";
+    echo "<p>Ich initialisiere die Datenbank für dich und werde erst mal die Standardeinstellungen übernehmen. Du kannst alles Weitere später anpassen.</p>";
 
     $json = file_get_contents(BASEPATH . "/settings.default.json");
-    $default = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+    $settings = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+    $file_name = BASEPATH . "/settings.json";
+    if (file_exists($file_name)) {
+        echo "<p>Ich habe bereits vorhandene Einstellungen in <code>settings.json</code> gefunden. Ich werde versuchen, diese zu übernehmen.</p>";
+        $json = file_get_contents($file_name);
+        $set = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+        // replace existing keys with new ones
+        $settings = array_merge($settings, $set);
+    }
 
+    // echo "<h3>Generelle Einstellungen</h3>";
+    $osiris->adminGeneral->deleteMany([]);
+    $affiliation = $settings['affiliation'];
+    $osiris->adminGeneral->insertOne([
+        'key' => 'affiliation',
+        'value' => $affiliation
+    ]);
+
+    $osiris->adminGeneral->insertOne([
+        'key' => 'startyear',
+        'value' => date('Y')
+    ]);
+    $roles = $settings['roles']['roles'];
+    $osiris->adminGeneral->insertOne([
+        'key' => 'roles',
+        'value' => $roles
+    ]);
+    echo "<p>";
+    echo "Ich habe die generellen Einstellungen vorgenommen. ";
+
+
+    // echo "<h3>Features</h3>";
+    // $osiris->adminFeatures->deleteMany([]);
+    // foreach (["coins", "achievements", "user-metrics"] as $key) {
+    //     $osiris->adminFeatures->insertOne([
+    //         'feature' => $key,
+    //         'enabled' => boolval(!$settings['general']['disable-' . $key])
+    //     ]);
+    // }
+
+
+    // echo "<h3>Rechte und Rollen</h3>";
+
+    $json = file_get_contents(BASEPATH . "/roles.json");
+    $rights = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+
+    $osiris->adminRights->deleteMany([]);
+    $rights = $settings['roles']['rights'];
+    foreach ($rights as $right => $perm) {
+        foreach ($roles as $n => $role) {
+            $r = [
+                'role' => $role,
+                'right' => $right,
+                'value' => $perm[$n]
+            ];
+            $osiris->adminRights->insertOne($r);
+        }
+    }
+    echo "Ich habe Rechte und Rollen etabliert. ";
+
+    // echo "<h3>Aktivitäten</h3>";
+    $osiris->adminCategories->deleteMany([]);
+    $osiris->adminTypes->deleteMany([]);
+    foreach ($settings['activities'] as $type) {
+        $t = $type['id'];
+        $cat = [
+            "id" => $type['id'],
+            "icon" => $type['icon'],
+            "color" => $type['color'],
+            "name" => $type['name'],
+            "name_de" => $type['name_de']
+        ];
+        $osiris->adminCategories->insertOne($cat);
+        foreach ($type['subtypes'] as $s => $subtype) {
+            $subtype['parent'] = $t;
+            $osiris->adminTypes->insertOne($subtype);
+        }
+    }
+
+    // set up indices
+    $indexNames = $osiris->adminCategories->createIndexes([
+        ['key' => ['id' => 1], 'unique' => true],
+    ]);
+    $indexNames = $osiris->adminTypes->createIndexes([
+        ['key' => ['id' => 1], 'unique' => true],
+    ]);
+
+    echo "Ich habe die Standard-Aktivitäten hinzugefügt. ";
+
+
+    
+    // echo "<h3>Organisationseinheiten</h3>";
+     $osiris->groups->deleteMany([]);
+
+        // add institute as root level
+        $dept = [
+            'id' => $affiliation['id'],
+            'color' => '#000000',
+            'name' => $affiliation['name'],
+            'parent' => null,
+            'level' => 0,
+            'unit' => 'Institute',
+        ];
+        $osiris->groups->insertOne($dept);
+        echo "Ich die Organisationseinheiten initialisiert, indem ich eine übergeordnete Einheit hinzugefügt habe. 
+        Bitte bearbeite diese und füge weitere Einheiten hinzu. ";
 
     // last step: write Version number to database
+    $osiris->system->deleteMany(['key' => 'version']);
+    $osiris->system->insertOne(
+        ['key' => 'version', 'value' => OSIRIS_VERSION]
+    );
 
-    include BASEPATH . "/footer.php";
+    echo "<h3>Fertig</h3>";
+    echo "<p>
+        Ich habe alle Einstellungen gespeichert und OSIRIS erfolgreich initialisiert.
+        Am besten gehst du als nächstes zum <a href='".ROOTPATH."/admin/general'>Admin-Dashboard</a> und nimmst dort die wichtigsten Einstellungen vor.
+    </p>";
+
+    if (strtoupper(USER_MANAGEMENT) == 'AUTH'){
+        echo '<b>Wichtig:</b> Wie ich sehe benutzt du das Auth-Addon für die Nutzer-Verwaltung. Wenn du deinen Account anlegst, achte bitte darauf, dass der Nutzername mit dem vorkonfigurierten Admin-Namen (in <code>CONFIG.php</code>)  exakt übereinstimmt. Nur der vorkonfigurierte Admin kann die Ersteinstellung übernehmen und weiteren Personen diese Rolle übertragen.';
+    }
 });
 
 Route::get('/migrate', function () {
@@ -213,7 +338,7 @@ Route::get('/migrate', function () {
         foreach (["coins", "achievements", "user-metrics"] as $key) {
             $osiris->adminFeatures->insertOne([
                 'feature' => $key,
-                'enabled' => boolval(!$settings['general']['disable-'.$key])
+                'enabled' => boolval(!$settings['general']['disable-' . $key])
             ]);
         }
 
@@ -248,8 +373,8 @@ Route::get('/migrate', function () {
                 // "children" => $type['subtypes']
             ];
             $osiris->adminCategories->insertOne($cat);
-            foreach ($type['subtypes'] as $s => $subtype) {   
-                $subtype['parent'] = $t;             
+            foreach ($type['subtypes'] as $s => $subtype) {
+                $subtype['parent'] = $t;
                 // dump($subtype, true);
                 $osiris->adminTypes->insertOne($subtype);
             }
@@ -257,9 +382,9 @@ Route::get('/migrate', function () {
 
         // set up indices
         $indexNames = $osiris->adminCategories->createIndexes([
-            [ 'key' => [ 'id' => 1 ], 'unique' => true ],
+            ['key' => ['id' => 1], 'unique' => true],
         ]);
-        
+
         die;
 
         // $osiris->groups->deleteMany([]);
@@ -304,7 +429,7 @@ Route::get('/migrate', function () {
         //     );
         // }
 
-      
+
 
     }
 

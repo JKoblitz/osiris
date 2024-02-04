@@ -18,9 +18,8 @@
 ?>
 
 <?php
-// get OSIRIS version
-$version = $osiris->system->findOne(['key' => 'version']);
-if ($version['value'] != OSIRIS_VERSION) { ?>
+
+if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
     <div class="alert danger mb-20">
         <h3 class="title"><?= lang('Warning', 'Warnung') ?></h3>
         <?= lang('
