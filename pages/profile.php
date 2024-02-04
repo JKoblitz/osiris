@@ -146,7 +146,7 @@ if (!$Settings->featureEnabled('coins')) {
 //     $img = ROOTPATH . "/img/no-photo.png";
 // }
 
-if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
+if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     <!-- Modal for updating the profile picture -->
     <div class="modal modal-lg" id="change-picture" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -207,7 +207,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
     <div class="col flex-grow-0">
         <div class="position-relative">
             <?= $Settings->printProfilePicture($user, 'profile-img') ?>
-            <?php if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
+            <?php if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                 <a href="#change-picture" class="position-absolute p-10 bottom-0 right-0 text-white"><i class="ph ph-edit"></i></a>
             <?php } ?>
         </div>
@@ -472,12 +472,12 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
             </div>
         <?php } ?>
         <div class="btn-group btn-group-lg">
-            <?php if ($Settings->hasPermission('edit-user-profile')) { ?>
+            <?php if ($Settings->hasPermission('user.edit')) { ?>
                 <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="ph ph-edit ph-fw"></i>
                 </a>
             <?php } ?>
-            <?php if (($scientist['is_active'] ?? true) && $Settings->hasPermission('set-user-inactive')) { ?>
+            <?php if (($scientist['is_active'] ?? true) && $Settings->hasPermission('user.inactive')) { ?>
                 <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/user/delete/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Inactivate user', 'Nutzer:in inaktivieren') ?>">
                     <i class="ph ph-trash ph-fw"></i>
                 </a>
@@ -486,7 +486,7 @@ if ($currentuser || $Settings->hasPermission('upload-user-picture')) { ?>
         </div>
     </div>
 
-    <?php if (($Settings->hasPermission('complete-dashboard')) && isset($scientist['approved'])) {
+    <?php if (($Settings->hasPermission('report.dashboard')) && isset($scientist['approved'])) {
         $approvedQ = $scientist['approved']->bsonSerialize();
         sort($approvedQ);
         echo "<div class='mt-20'>";
@@ -893,7 +893,7 @@ if ($currentuser) { ?>
     </div>
 
     <div class="row row-eq-spacing">
-        <?php if ($currentuser && $Settings->hasPermission('complete-dashboard')) {
+        <?php if ($currentuser && $Settings->hasPermission('report.dashboard')) {
 
             $n_scientists = $osiris->persons->count(["roles" => 'scientist', "is_active" => true]);
             $n_approved = $osiris->persons->count(["roles" => 'scientist', "is_active" => true, "approved" => $lastquarter]);
@@ -958,28 +958,28 @@ if ($currentuser) { ?>
             </div>
 
 
-            <?php if ($currentuser && $Settings->hasPermission('reports')) { ?>
+            <?php if ($currentuser && $Settings->hasPermission('report.generate')) { ?>
                 <div class="col-6 col-md-3 ">
                     <div class=" h-full">
                         <div class="py-10">
                             <div class="link-list">
-                                <?php if ($Settings->hasPermission('complete-dashboard')) { ?>
+                                <?php if ($Settings->hasPermission('report.dashboard')) { ?>
                                     <a class="border" href="<?= ROOTPATH ?>/dashboard"><?= lang('Dashboard', 'Dashboard') ?></a>
                                 <?php } ?>
 
-                                <?php if ($Settings->hasPermission('complete-queue')) { ?>
+                                <?php if ($Settings->hasPermission('report.queue')) { ?>
                                     <a class="border" href="<?= ROOTPATH ?>/queue/editor"><?= lang('Queue', 'Warteschlange') ?></a>
                                 <?php } ?>
 
-                                <?php if ($Settings->hasPermission('reports')) { ?>
+                                <?php if ($Settings->hasPermission('report.generate')) { ?>
                                     <a class="border" href="<?= ROOTPATH ?>/reports"><?= lang('Reports', 'Berichte') ?></a>
                                 <?php } ?>
 
-                                <?php if ($Settings->hasPermission('lock-activities')) { ?>
+                                <?php if ($Settings->hasPermission('activities.lock')) { ?>
                                     <a class="border" href="<?= ROOTPATH ?>/controlling"><?= lang('Lock activities', 'Aktivitäten sperren') ?></a>
                                 <?php } ?>
 
-                                <?php if ($Settings->hasPermission('admin-panel')) { ?>
+                                <?php if ($Settings->hasPermission('admin.see')) { ?>
                                     <a class="border" href="<?= ROOTPATH ?>/admin/general"><?= lang('Admin-Panel') ?></a>
                                 <?php } ?>
                             </div>

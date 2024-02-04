@@ -211,9 +211,9 @@
             $has_role = in_array($role, DB::doc2Arr($data['roles'] ?? array()));
 
             $disable = false;
-            if (!$Settings->hasPermission('edit-roles')) $disable = true;
+            if (!$Settings->hasPermission('user.roles')) $disable = true;
             // only admin can make others admins
-            if ($role == 'admin' && !$Settings->hasPermission('admin')) $disable = true;
+            if ($role == 'admin' && !$Settings->hasPermission('admin.give-right')) $disable = true;
         ?>
             <div class="form-group custom-checkbox d-inline-block ml-10 mb-10 <?= $disable ? 'text-muted' : '' ?>">
                 <input type="checkbox" id="role-<?= $role ?>" value="<?= $role ?>" name="values[roles][]" <?= ($has_role) ? 'checked' : '' ?> <?= $disable ? 'onclick="return false;"' : '' ?>>
@@ -224,7 +224,7 @@
 
     </fieldset>
 
-    <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('edit-user-settings')) { ?>
+    <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('user.settings')) { ?>
 
         <fieldset class="alert">
             <legend><?= lang('Profile preferences', 'Profil-Einstellungen') ?></legend>

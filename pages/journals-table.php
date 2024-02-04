@@ -15,7 +15,7 @@
  * @license     MIT
  */
 
-if ($Settings->hasPermission('edit-journals')) { ?>
+if ($Settings->hasPermission('journals.edit')) { ?>
     <a href="<?= ROOTPATH ?>/journal/add" class="btn osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
 <?php } ?>
 

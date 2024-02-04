@@ -21,7 +21,7 @@
 <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.naturalsort.js"></script>
 
 
-<?php if ($Settings->hasPermission('edit-journals')) { ?>
+<?php if ($Settings->hasPermission('journals.edit')) { ?>
     <a href="<?= ROOTPATH ?>/journal/edit/<?= $id ?>" class="btn osiris float-right"><?= lang('Edit Journal', 'Journal bearbeiten') ?></a>
 <?php } ?>
 
@@ -221,7 +221,7 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
 <div class="box">
     <div class="content">
 
-        <?php if ($Settings->hasPermission('edit-journals')) { ?>
+        <?php if ($Settings->hasPermission('journals.edit')) { ?>
             <div class="dropdown with-arrow float-right mb-20">
                 <button class="btn osiris" data-toggle="dropdown" type="button" id="dropdown-2" aria-haspopup="true" aria-expanded="false">
                     <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="ph ph-fill ph-angle-down ml-5" aria-hidden="true"></i>

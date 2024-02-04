@@ -192,7 +192,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)', function ($id) {
     global $form;
     $form = $osiris->activities->findOne(['_id' => $mongoid]);
     $copy = false;
-    if (($form['locked'] ?? false) && !$Settings->hasPermission('edit-locked')) {
+    if (($form['locked'] ?? false) && !$Settings->hasPermission('activities.edit-locked')) {
         header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
     }
 
@@ -304,7 +304,7 @@ Route::get('/activities/edit/([a-zA-Z0-9]*)/(authors|editors)', function ($id, $
     $id = $DB->to_ObjectID($id);
 
     $form = $osiris->activities->findOne(['_id' => $id]);
-    if (($form['locked'] ?? false) && !$Settings->hasPermission('edit-locked')) {
+    if (($form['locked'] ?? false) && !$Settings->hasPermission('activities.edit-locked')) {
         header("Location: " . ROOTPATH . "/activities/view/$id?msg=locked");
     }
 

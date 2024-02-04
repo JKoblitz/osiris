@@ -132,6 +132,7 @@ Route::get('/projects/collaborators/([a-zA-Z0-9]*)', function ($id) {
 
     // add information on creating process
     $values['created'] = date('Y-m-d');
+    $values['end-delay'] = endOfCurrentQuarter(true);
     $values['created_by'] = strtolower($_SESSION['username']);
 
     // add false checkbox values

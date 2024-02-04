@@ -54,7 +54,7 @@ Route::get('/dashboard', function () {
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/dashboard.php";
 
-    if ($Settings->hasPermission('complete-dashboard')) {
+    if ($Settings->hasPermission('report.dashboard')) {
         echo '<a href="' . ROOTPATH . '/controlling" class="btn danger lg float-right">Controlling</a>';
 
         echo '<h1 class="m-0">Controlling Dashboard</h1>';

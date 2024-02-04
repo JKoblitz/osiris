@@ -133,56 +133,6 @@ function readCart()
     return $cart;
 }
 
-function hiddenFieldsFromGet($exclude = array())
-{
-    if (empty($_GET)) return;
-    if (is_string($exclude)) $exclude = array($exclude);
-
-    foreach ($_GET as $name => $value) {
-        if (in_array($name, $exclude) || $name == 'msg') continue;
-        if (is_array($value)) {
-            foreach ($value as $k => $v) {
-                // if (empty($v)) continue;
-                echo '<input type="hidden" name="' . $name . '[' . $k . ']" value="' . $v . '">';
-            }
-        } elseif (!empty($value)) {
-            echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
-        }
-    }
-}
-
-function hiddenFieldsFromPost($exclude = array())
-{
-    if (empty($_POST)) return;
-    if (is_string($exclude)) $exclude = array($exclude);
-
-    foreach ($_POST as $name => $value) {
-        if (in_array($name, $exclude) || $name == 'msg') continue;
-        if (is_array($value)) {
-            foreach ($value as $v) {
-                // if (empty($v)) continue;
-                echo '<input type="hidden" name="' . $name . '[]" value="' . $v . '">';
-            }
-        } elseif (!empty($value)) {
-            echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
-        }
-    }
-}
-
-function sortbuttons(string $colname)
-{
-    $order = $_GET["order"] ?? "";
-    $asc = $_GET["asc"] ?? 1;
-    $get = currentGET(['order', 'asc']);
-    // $get = $_SERVER['REQUEST_URI'] . $get;
-    if ($order == $colname && $asc == 1) {
-        echo "<a href='$get&order=$colname&asc=0'><i class='ph ph-fill ph-sort-up'></i></a>";
-    } elseif ($order == $colname && $asc == 0) {
-        echo "<a href='$get'><i class='ph ph-fill ph-sort-down'></i></a>";
-    } else {
-        echo "<a href='$get&order=$colname&asc=1'><i class='ph ph-fill ph-sort'></i></a>";
-    }
-}
 
 function currentGET(array $exclude = [], array $include = [])
 {
@@ -203,68 +153,6 @@ function currentGET(array $exclude = [], array $include = [])
         }
     }
     return $get;
-}
-
-function addJournal($journal)
-{
-    global $db;
-    $journal_id = null;
-    if (!empty($journal)) {
-        $stmt = $db->prepare("SELECT journal_id FROM `journal` WHERE journal LIKE ? OR abbr LIKE ?");
-        $stmt->execute([$journal, $journal]);
-        $journal_id = $stmt->fetch(PDO::FETCH_COLUMN);
-        if (empty($journal_id)) {
-            $stmt = $db->prepare("INSERT INTO `journal` (journal, abbr) VALUES (?,?)");
-            $stmt->execute([$journal, $journal]);
-            $journal_id = $db->lastInsertId();
-        }
-    }
-    return $journal_id;
-}
-
-function addAuthors($authors, $first, $table, $id)
-{
-    global $db;
-
-    $find = $db->prepare('SELECT `user` FROM users WHERE last_name LIKE ? AND first_name LIKE ?');
-    $insert = $db->prepare(
-        "INSERT INTO `authors` 
-        (`${table}_id`, last_name, first_name, aoi, position, `user`) 
-        VALUES (?, ?, ?, ?, ?, ?)
-        "
-    );
-
-    foreach ($authors as $i => $author) {
-        $author = explode(';', $author, 3);
-        if ($i < $first) {
-            $pos = 'first';
-        } elseif ($i + 1 == count($authors)) {
-            $pos = 'last';
-        } else {
-            $pos = 'middle';
-        }
-        $find->execute([
-            $author[0],
-            $author[1][0] . "%"
-        ]);
-        $user = $find->fetch(PDO::FETCH_COLUMN);
-        if (empty($user)) $user = null;
-        $insert->execute([
-            $id,
-            $author[0],
-            $author[1],
-            $author[2],
-            $pos,
-            $user
-        ]);
-    }
-}
-
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return $needle !== '' && strpos($haystack, $needle) !== false;
-    }
 }
 
 function CallAPI($method, $url, $data = [])
@@ -486,13 +374,6 @@ function dump($element, $as_json = false)
             var_dump(json_last_error_msg()) . PHP_EOL;
             var_export($element);
         }
-        // } else if ($as_json) {
-
-        //     echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        //     if (!empty(json_last_error())) {
-        //         var_dump(json_last_error_msg()) . PHP_EOL;
-        //         var_export($element);
-        //     }
     } else {
         var_dump($element);
     }
@@ -608,4 +489,53 @@ function getFileIcon($type)
         default:
             return 'file-text';
     }
+}
+
+/**
+ * Return the last day of the Week/Month/Quarter/Year that the
+ * current/provided date falls within
+ *
+ * @param string   $period The period to find the last day of. ('year', 'quarter', 'month', 'week')
+ * @param DateTime $date   The date to use instead of the current date
+ *
+ * @return DateTime
+ * @throws InvalidArgumentException
+ */
+function lastDayOf($period, DateTime $date = null)
+{
+    $period = strtolower($period);
+    $validPeriods = array('year', 'quarter', 'month', 'week');
+
+    if ( ! in_array($period, $validPeriods))
+        throw new InvalidArgumentException('Period must be one of: ' . implode(', ', $validPeriods));
+
+    $newDate = ($date === null) ? new DateTime() : clone $date;
+
+    switch ($period)
+    {
+        case 'year':
+            $newDate->modify('last day of december ' . $newDate->format('Y'));
+            break;
+        case 'quarter':
+            $month = $newDate->format('n') ;
+
+            if ($month < 4) {
+                $newDate->modify('last day of march ' . $newDate->format('Y'));
+            } elseif ($month > 3 && $month < 7) {
+                $newDate->modify('last day of june ' . $newDate->format('Y'));
+            } elseif ($month > 6 && $month < 10) {
+                $newDate->modify('last day of september ' . $newDate->format('Y'));
+            } elseif ($month > 9) {
+                $newDate->modify('last day of december ' . $newDate->format('Y'));
+            }
+            break;
+        case 'month':
+            $newDate->modify('last day of this month');
+            break;
+        case 'week':
+            $newDate->modify(($newDate->format('w') === '0') ? 'now' : 'sunday this week');
+            break;
+    }
+
+    return $newDate;
 }

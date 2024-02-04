@@ -17,7 +17,7 @@
 
 Route::get('/admin/(general|roles|features)', function ($page) {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $breadcrumb = [
         ['name' => lang("Admin Panel $page")]
@@ -31,7 +31,7 @@ Route::get('/admin/(general|roles|features)', function ($page) {
 
 Route::get('/admin/categories', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $user = $_SESSION['username'];
     $breadcrumb = [
@@ -44,7 +44,7 @@ Route::get('/admin/categories', function () {
 
 Route::get('/admin/categories/new', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $user = $_SESSION['username'];
     $breadcrumb = [
@@ -59,7 +59,7 @@ Route::get('/admin/categories/new', function () {
 
 Route::get('/admin/categories/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $user = $_SESSION['username'];
 
@@ -87,7 +87,7 @@ Route::get('/admin/categories/(.*)', function ($id) {
 
 Route::get('/admin/types/new', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $user = $_SESSION['username'];
 
@@ -127,7 +127,7 @@ Route::get('/admin/types/new', function () {
 
 Route::get('/admin/types/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $user = $_SESSION['username'];
 
@@ -198,7 +198,7 @@ Route::get('/settings/modules', function () {
 
 Route::post('/crud/admin/general', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     $msg = 'settings-saved';
     if (isset($_POST['general'])) {
@@ -247,7 +247,7 @@ Route::post('/crud/admin/general', function () {
 
 Route::post('/crud/admin/roles', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
 
     if (isset($_POST['values'])) {
@@ -273,7 +273,7 @@ Route::post('/crud/admin/roles', function () {
 
 Route::post('/crud/admin/features', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
 
     if (isset($_POST['values'])) {
@@ -308,7 +308,7 @@ Route::post('/crud/admin/features', function () {
 
 Route::post('/crud/(categories|types)/create', function ($col) {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     if (!isset($_POST['values'])) die("no values given");
 
@@ -351,7 +351,7 @@ Route::post('/crud/(categories|types)/create', function ($col) {
 
 Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $id) {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     if (!isset($_POST['values'])) die("no values given");
 
@@ -434,7 +434,7 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
 
 Route::post('/crud/categories/delete/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('admin-panel')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
     // select the right collection
 
@@ -462,4 +462,23 @@ Route::post('/crud/categories/delete/([A-Za-z0-9]*)', function ($id) {
     echo json_encode([
         'deleted' => $deletedCount
     ]);
+});
+
+
+Route::post('/crud/categories/update-order', function () {
+    include_once BASEPATH . "/php/init.php";
+    // select the right collection
+
+    foreach ($_POST['order'] as $i => $id) {
+        $osiris->adminCategories->updateOne(
+            ['id' => $id],
+            ['$set' => ['order'=>$i]]
+        );
+        # code...
+    }
+   
+    if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
+        header("Location: " . $_POST['redirect'] . "?msg=deleted-" . $deletedCount);
+        die();
+    }
 });

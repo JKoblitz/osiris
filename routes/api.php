@@ -588,10 +588,22 @@ Route::get('/api/dashboard/collaborators', function () {
                 $data['lon'][] = $c['lng'];
                 $data['lat'][] = $c['lat'];
                 $data['text'][] = "<b>$c[name]</b><br>$c[location]";
-                $color = ($c['role'] == 'Partner' ? '#008083' : '#f78104');
+                $color = ($c['role'] == 'partner' ? '#008083' : '#f78104');
                 $data['marker']['color'][] = $color;
             }
+            $institute = $Settings->get('affiliation_details');
+            $institute['role'] = $project['role'];
+            if (isset($institute['lat']) && isset($institute['lng'])){
+                
+                $data['lon'][] = $institute['lng'];
+                $data['lat'][] = $institute['lat'];
+                $data['text'][] = "<b>$institute[name]</b><br>$institute[location]";
+                $color = ($institute['role'] == 'partner' ? '#008083' : '#f78104');
+                $data['marker']['color'][] = $color;
+            }
+
             $result['collaborators'] = $data;
+
         }
     } else {
         $result = $osiris->projects->aggregate([
@@ -607,16 +619,20 @@ Route::get('/api/dashboard/collaborators', function () {
                     ]
                 ]
             ],
-            // ['$project' => ['_id' => 0, 'status' => '$_id.status', 'year' => '$_id.year', 'count' => 1]],
-            // ['$sort' => ['year' => 1]],
-            // [
-            //     '$group' => [
-            //         '_id' => '$status',
-            //         'data' => ['$push' => '$$ROOT']
-            //     ]
-            // ],
         ])->toArray();
+
+        $institute = $Settings->get('affiliation_details');
+        if (isset($institute['lat']) && isset($institute['lng'])){
+            $result[] = [
+                '_id' => $institute['ror'] ?? '',
+                'count' => count($result)/2,
+                'data' => $institute,
+                'color' => '#f78104'
+            ];
+        }
+
     }
+
 
 
 

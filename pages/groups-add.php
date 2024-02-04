@@ -16,6 +16,11 @@
  * @license     MIT
  */
 
+ if (!$Settings->hasPermission('guests.add')){
+    echo "You have no right to be here.";
+    die;
+ }
+ 
 $Format = new Document(true);
 $form = $form ?? array();
 

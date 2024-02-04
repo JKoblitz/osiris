@@ -34,9 +34,6 @@
 
         <h3><?= lang('Export activities', 'Exportiere Aktivitäten') ?></h3>
 
-        <p class="text-danger">Die Download-Funktion ist noch im Beta-Status. Bug reports gern an <a href="mailto:julia.koblitz@dsmz.de?subject=[OSIRIS] Bug Report Downloads">mich</a>.</p>
-
-
         <div class="form-group">
             <label for="filter-type"><?= lang('Filter by type', 'Filter nach Art der Aktivität') ?></label>
             <select name="filter[type]" id="filter-type" class="form-control">

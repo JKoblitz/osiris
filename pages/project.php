@@ -18,6 +18,17 @@
 
 require_once BASEPATH . "/php/Project.php";
 $Project = new Project($project);
+
+$user_project = false;
+$persons = $project['persons'] ?? array();
+foreach ($persons as $p) {
+    if (strval($p['user']) == $_SESSION['username']){
+        $user_project = True;
+        break;
+    }
+}
+$edit_perm = ($Settings->hasPermission('projects.edit') || ($Settings->hasPermission('projects.edit-own') && $user_project));
+
 ?>
 
 
@@ -39,7 +50,6 @@ $Project = new Project($project);
 
 <h1>
     <?= $project['name'] ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
 </h1>
 
 <?= $Project->getStatus() ?>
@@ -52,10 +62,14 @@ $Project = new Project($project);
         </h2>
 
         <div class="btn-toolbar mb-10">
-            <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn primary">
-                <i class="ph ph-edit"></i>
-                <?= lang('Edit', 'Bearbeiten') ?>
-            </a>
+
+            <?php if ($edit_perm) { ?>
+                <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn primary">
+                    <i class="ph ph-edit"></i>
+                    <?= lang('Edit', 'Bearbeiten') ?>
+                </a>
+            <?php } ?>
+
         </div>
 
         <table class="table">
@@ -111,7 +125,7 @@ $Project = new Project($project);
                 <tr>
                     <td>
                         <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
-                        <?= $project['purpose'] ?? '-' ?>
+                        <?= $Project->getPurpose() ?>
                     </td>
                 </tr>
                 <tr>
@@ -179,6 +193,7 @@ $Project = new Project($project);
             <?= lang('Persons', 'Personen') ?>
         </h2>
 
+            <?php if ($edit_perm) { ?>
         <div class="modal" id="persons" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -268,12 +283,15 @@ $Project = new Project($project);
                 </div>
             </div>
         </div>
+            <?php } ?>
 
         <div class="btn-toolbar mb-10">
+            <?php if ($edit_perm) { ?>
             <a href="#persons" class="btn primary">
                 <i class="ph ph-edit"></i>
                 <?= lang('Edit', 'Bearbeiten') ?>
             </a>
+            <?php } ?>
         </div>
 
         <table class="table">
@@ -323,6 +341,7 @@ $Project = new Project($project);
             <?= lang('Collaborators', 'Kooperationspartner') ?>
         </h2>
 
+            <?php if ($edit_perm) { ?>
         <div class="btn-toolbar mb-10">
             <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn primary">
                 <i class="ph ph-edit"></i>
@@ -341,7 +360,7 @@ $Project = new Project($project);
             <?php } ?>
 
         </div>
-
+            <?php } ?>
 
         <table class="table">
             <tbody>
@@ -379,7 +398,7 @@ $Project = new Project($project);
             </tbody>
         </table>
 
-        <div class="alert mt-20">
+        <div class="alert secondary mt-20">
 
             <small class="text-muted float-right">
                 <?= lang('Based on partners', 'Basierend auf Partnern') ?>

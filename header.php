@@ -299,13 +299,13 @@ $pageactive = function ($p) use ($page) {
                         </a>
 
 
-                        <?php if ($Settings->hasPermission('complete-dashboard')) { ?>
+                        <?php if ($Settings->hasPermission('report.dashboard')) { ?>
                             <a href="<?= ROOTPATH ?>/dashboard" class="with-icon <?= $pageactive('dashboard') ?>">
                                 <i class="ph ph-chart-line" aria-hidden="true"></i>
                                 <?= lang('Dashboard') ?>
                             </a>
                         <?php } ?>
-                        <?php if ($Settings->hasPermission('complete-queue')) { ?>
+                        <?php if ($Settings->hasPermission('report.queue')) { ?>
                             <?php
                             $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
                             ?>
@@ -466,7 +466,7 @@ $pageactive = function ($p) use ($page) {
                             <?= lang('Import') ?>
                         </a>
 
-                        <?php if ($Settings->hasPermission('reports')) { ?>
+                        <?php if ($Settings->hasPermission('report.generate')) { ?>
 
                             <a href="<?= ROOTPATH ?>/reports" class="with-icon <?= $pageactive('reports') ?>">
                                 <i class="ph ph-printer" aria-hidden="true"></i>
@@ -488,7 +488,7 @@ $pageactive = function ($p) use ($page) {
                 <?php } ?>
 
 
-                <?php if ($Settings->hasPermission('admin-panel')) { ?>
+                <?php if ($Settings->hasPermission('admin.see')) { ?>
 
                     <div class="title collapse open" onclick="toggleSidebar(this);"  id="sidebar-admin">
                         ADMIN
@@ -558,7 +558,7 @@ $pageactive = function ($p) use ($page) {
                     printMsg();
                 }
 
-                if ($Settings->hasPermission('admin') && isset($Settings->errors) && !empty($Settings->errors)) {
+                if ($Settings->hasPermission('admin.give-right') && isset($Settings->errors) && !empty($Settings->errors)) {
                 ?>
                     <div class="alert danger mb-20">
                         <h3 class="title">There are errors in your settings:</h3>

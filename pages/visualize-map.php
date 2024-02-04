@@ -16,6 +16,7 @@
  * @license     MIT
  */
 
+$institute = $Settings->get('affiliation_details');
 ?>
 
  <script src="<?=ROOTPATH?>/js/plotly-2.27.1.min.js" charset="utf-8"></script>
@@ -26,8 +27,8 @@
         mapbox: {
             style: "open-street-map",
             center: {
-                lat: 52,
-                lon: 10
+                lat: <?=$institute['lat']??52?>,
+                lon: <?=$institute['lng']??10?>
             },
             zoom: 1
         },
@@ -143,7 +144,7 @@
                 data.mode = 'markers'
                 data.hoverinfo = 'text',
 
-                    Plotly.newPlot('map', [data], layout);
+                Plotly.newPlot('map', [data], layout);
             },
             error: function(response) {
                 console.log(response);
@@ -184,15 +185,17 @@
                     text: [],
                     marker: {
                         size: [],
-                        color: 'rgba(182, 31, 41, 0.7)'
+                        color: []
                     }
                 }
 
                 response.data.forEach(item => {
                     data.marker.size.push(item.count + 10)
+                    data.marker.color.push(item.color ?? 'rgba(0, 128, 131, 0.7)')
                     data.lon.push(item.data.lng)
                     data.lat.push(item.data.lat)
                     data.text.push(`<b>${item.data.name}</b><br>${item.data.location}`)
+
                 });
                 console.log(data);
 

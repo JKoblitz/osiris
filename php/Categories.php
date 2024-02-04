@@ -44,7 +44,7 @@ class Categories
     {
         $this->osiris = new DB;
 
-        $categories = $this->osiris->db->adminCategories->find()->toArray();
+        $categories = $this->osiris->db->adminCategories->find([], ['sort'=>['order'=>1]])->toArray();
         foreach ($categories as $c) {
             $c['children'] = [];
             $this->categories[$c['id']] = $c;

@@ -251,9 +251,9 @@ if (array_sum($a) === 0) {
                         ?>
                     </p>
                     <p>
-                        <b class="text-<?=$doc['type']?>">
-                        <?= $doc['rendered']['icon'] ?>
-                        <?= $doc['rendered']['subtype'] ?>
+                        <b class="text-<?= $doc['type'] ?>">
+                            <?= $doc['rendered']['icon'] ?>
+                            <?= $doc['rendered']['subtype'] ?>
                         </b> <br>
                         <?= $doc['rendered']['web'] ?>
                     </p>
@@ -264,17 +264,17 @@ if (array_sum($a) === 0) {
                             <?= lang('Is this your activity?', 'Ist dies deine Aktivität?') ?>
                         <?php } ?>
                         <br>
-                       
+
                         <div class="btn-group mr-10">
-                        <button class="btn small text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->get('affiliation'), 'Ja, und ich war der ' . $Settings->get('affiliation') . ' angehörig') ?>">
-                            <i class="ph ph-check ph-fw"></i>
-                        </button>
-                        <button class="btn small text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->get('affiliation'), 'Ja, aber ich war nicht der ' . $Settings->get('affiliation') . ' angehörig') ?>">
-                            <i class="ph ph-push-pin-slash ph-fw"></i>
-                        </button>
-                        <button class="btn small text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
-                            <i class="ph ph-x ph-fw"></i>
-                        </button>
+                            <button class="btn small text-success" onclick="_approve('<?= $id ?>', 1)" data-toggle="tooltip" data-title="<?= lang('Yes, and I was affiliated to the' . $Settings->get('affiliation'), 'Ja, und ich war der ' . $Settings->get('affiliation') . ' angehörig') ?>">
+                                <i class="ph ph-check ph-fw"></i>
+                            </button>
+                            <button class="btn small text-signal" onclick="_approve('<?= $id ?>', 2)" data-toggle="tooltip" data-title="<?= lang('Yes, but I was not affiliated to the ' . $Settings->get('affiliation'), 'Ja, aber ich war nicht der ' . $Settings->get('affiliation') . ' angehörig') ?>">
+                                <i class="ph ph-push-pin-slash ph-fw"></i>
+                            </button>
+                            <button class="btn small text-danger" onclick="_approve('<?= $id ?>', 3)" data-toggle="tooltip" data-title="<?= lang('No, this is not me', 'Nein, das bin ich nicht') ?>">
+                                <i class="ph ph-x ph-fw"></i>
+                            </button>
                         </div>
 
                         <?php if (!($doc['locked'] ?? false)) { ?>
@@ -323,7 +323,7 @@ if (array_sum($a) === 0) {
                         <br>
                         <form action="<?= ROOTPATH ?>/crud/activities/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                            <input type="hidden" name="values[epub-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
+                            <input type="hidden" name="values[epub-delay]" value="<?= endOfCurrentQuarter(true) ?>" class="hidden">
                             <button class="btn small">
                                 <i class="ph ph-check"></i>
                                 <?= lang('Yes, still epub (ask again later).', 'Ja, noch immer Epub (frag später noch mal).') ?>
@@ -379,7 +379,7 @@ if (array_sum($a) === 0) {
                             "Die Abschlussarbeit von $doc[name] ist zu Ende. Bitte bestätige den Erfolg/Misserfolg der Arbeit oder verlängere den Zeitraum."
                         )  ?>
                         <br>
-                        <form action="<?=ROOTPATH?>/crud/activities/update/<?= $id ?>" method="post" class="form-inline mt-5">
+                        <form action="<?= ROOTPATH ?>/crud/activities/update/<?= $id ?>" method="post" class="form-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                             <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
@@ -431,7 +431,6 @@ if (array_sum($a) === 0) {
             $type = $doc['type'];
         ?>
             <tr id="tr-<?= $id ?>">
-            <tr id="tr-<?= $id ?>">
                 <td class="w-50"><?= $doc['rendered']['icon'] ?></td>
                 <td>
                     <?= $doc['rendered']['web'] ?>
@@ -439,7 +438,7 @@ if (array_sum($a) === 0) {
 
                         <form action="<?= ROOTPATH ?>/crud/activities/update/<?= $id ?>" method="post" class="d-inline mt-5">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                            <input type="hidden" name="values[end-delay]" value="<?= date('Y-m-d') ?>" class="hidden">
+                            <input type="hidden" name="values[end-delay]" value="<?= endOfCurrentQuarter(true) ?>" class="hidden">
                             <button class="btn small text-success">
                                 <i class="ph ph-check"></i>
                                 <?= lang('Yes', 'Ja') ?>
@@ -454,7 +453,88 @@ if (array_sum($a) === 0) {
                     </div>
                 </td>
             </tr>
-            </tr>
         <?php } ?>
     </table>
+<?php } ?>
+
+<?php if ($Settings->hasPermission('projects.edit') || $Settings->hasPermission('projects.edit-own')) { ?>
+
+    <?php if (!empty($issues['project-open']) || !empty($issues['project-end'])) {
+        $projects = array_merge($issues['project-open'] ?? [], $issues['project-end'] ?? [])
+    ?>
+        <h2 class="mb-0">
+            <?= lang(
+                'Please have a look at the following projects:',
+                'Bitte schau dir die folgenden Projekte an:'
+            ) ?>
+        </h2>
+
+        <table class="table">
+            <?php
+            if (isset($issues['project-open']))
+                foreach ($issues['project-open'] as $id) {
+                    $doc = $osiris->projects->findOne(['_id' => DB::to_ObjectID($id)]);
+            ?>
+                <tr id="tr-<?= $id ?>">
+                    <td>
+                        <?= lang('The project', 'Das Projekt') ?>
+                        <b><?= $doc['name'] ?></b>
+                        <?= lang('still has the status <q>applied</q>. Do you have news on this? ', 'hat noch immer den Status <q>beantragt</q>. Weißt du mittlerweile etwas Neues?') ?>
+                        <div class='alert mt-10 signal' id="approve-<?= $id ?>">
+
+                            <form action="<?= ROOTPATH ?>/crud/projects/update/<?= $id ?>" method="post" class="d-inline mt-5">
+                                <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                                <input type="hidden" name="values[end-delay]" value="<?= endOfCurrentQuarter(true) ?>" class="hidden">
+                                <button class="btn small text-success">
+                                    <i class="ph ph-x"></i>
+                                    <?= lang('No, ask again later.', 'Nein, frag später erneut.') ?>
+                                </button>
+                            </form>
+
+                            <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn small text-success">
+                                <i class="ph ph-edit"></i>
+                                <?= lang('Yes (Edit)', 'Ja (Bearbeiten)') ?>
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+            <?php } ?>
+
+            <?php
+            if (isset($issues['project-end']))
+                foreach ($issues['project-end'] as $id) {
+                    $doc = $osiris->projects->findOne(['_id' => DB::to_ObjectID($id)]);
+            ?>
+                <tr id="tr-<?= $id ?>">
+                    <td>
+                        <?= lang('The project', 'Das Projekt') ?>
+                        <b><?= $doc['name'] ?></b>
+                        <?= lang('has ended. You can either prolong it or end it:', 'ist zu Ende. Du kannst es entweder verlängern oder als beendet markieren:') ?>
+                        <div class='alert mt-10 signal' id="approve-<?= $id ?>">
+
+
+                            <form action="<?= ROOTPATH ?>/crud/projects/update/<?= $id ?>" method="post" class="form-inline mt-5">
+                                <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+
+                                <label class="required" for="end"><?= lang('Ended at / Extend until', 'Geendet am / Verlängern bis') ?>:</label>
+                                <input type="date" class="form-control w-200" name="values[end]" id="date_end" value="<?= valueFromDateArray($doc['end'] ?? '') ?>" required>
+                                <div>
+                                    <select class="form-control" id="status-<?= $id ?>" name="values[status]" required>
+                                        <option value="applied" ><?= lang('applied', 'beantragt') ?></option>
+                                        <option value="approved" selected><?= lang('approved', 'bewilligt') ?></option>
+                                        <option value="rejected" ><?= lang('rejected', 'abgelehnt') ?></option>
+                                        <option value="finished" ><?= lang('finished', 'abgeschlossen') ?></option>
+                                    </select>
+                                </div>
+                                <button class="btn ml-10" type="submit"><?= lang('Submit', 'Bestätigen') ?></button>
+                            </form>
+
+                        </div>
+                    </td>
+                </tr>
+            <?php } ?>
+        </table>
+    <?php } ?>
+
 <?php } ?>

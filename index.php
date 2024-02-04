@@ -81,6 +81,74 @@ Route::get('/', function () {
     }
 });
 
+Route::get('/sws-analysis', function () {
+    include_once BASEPATH . "/php/init.php";
+    $year = ['$exists' => true];
+    if (isset($_GET['year'])){
+        $year = intval($_GET['year']);
+    }
+    $sws = $osiris->activities->aggregate([
+        ['$match' => ['authors.sws' => ['$exists' => true], 'year'=> $year]],
+        // ['$project' => ['authors' => 1, 'title'=>1, 'start'=>1]],
+        ['$unwind' => '$authors'],
+        ['$match' => ['authors.aoi' => ['$in' => [true, 'true', 1, '1']]]],
+    ])->toArray();
+    echo "<table>";
+    echo "<tr><thead>";
+    echo "<th>Titel</th>";
+    echo "<th>Start</th>";
+    echo "<th>Ende</th>";
+    echo "<th>Betreuende Person</th>";
+    echo "<th>SWS</th>";
+    echo "</tr></thead>";
+    foreach ($sws as $a) {
+        echo "<tr>";
+        echo "<td>$a[title]</td>";
+        echo "<td>".format_date($a['start'])."</td>";
+        echo "<td>".format_date($a['end'] ?? $a['start'])."</td>";
+        echo "<td>".$a["authors"]["last"].", ".$a["authors"]["first"]."</td>";
+        echo "<td>".$a["authors"]["sws"]."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    // dump($sws, true);
+});
+
+
+Route::get('/guest-analysis', function () {
+    include_once BASEPATH . "/php/init.php";
+    $year = ['$exists' => true];
+    if (isset($_GET['year'])){
+        $year = intval($_GET['year']);
+    }
+    $sws = $osiris->activities->aggregate([
+        ['$match' => ['subtype' => 'guests', 'year'=> $year]],
+        // ['$project' => ['authors' => 1, 'title'=>1, 'start'=>1]],
+        ])->toArray();
+    echo "<table>";
+    echo "<tr><thead>";
+    echo "<th>Titel</th>";
+    echo "<th>Start</th>";
+    echo "<th>Ende</th>";
+    echo "<th>Name der Person</th>";
+    echo "<th>Affiliation</th>";
+    echo "<th>Land</th>";
+    echo "</tr></thead>";
+    foreach ($sws as $a) {
+        echo "<tr>";
+        echo "<td>$a[title]</td>";
+        echo "<td>".format_date($a['start'])."</td>";
+        echo "<td>".format_date($a['end'] ?? $a['start'])."</td>";
+        echo "<td>".$a['name']."</td>";
+        echo "<td>".($a["affiliation"]??'')."</td>";
+        echo "<td>".($a["country"]??'')."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    // dump($sws, true);
+});
+
+
 
 if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
     require_once BASEPATH.'/addons/auth/index.php';

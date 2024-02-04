@@ -31,6 +31,15 @@ function val($index, $default = '')
     return $val;
 }
 
+$pagetitle = lang('Projects', 'Projekte');
+$filter = [];
+if (!$Settings->hasPermission('projects.view')) {
+    $filter = [
+        'persons.user' => $_SESSION['username']
+    ];
+    $pagetitle = lang('My projects', 'Meine Projekte');
+}
+
 ?>
 
 <style>
@@ -55,24 +64,25 @@ function val($index, $default = '')
         <i class="ph ph-map-trifold"></i>
         <?= lang('Show on map', 'Zeige auf Karte') ?>
     </a>
-    <a href="#<?= ROOTPATH ?>/visualize/projects" class="btn primary" onclick="todo()">
+    <!-- <a href="#<?= ROOTPATH ?>/visualize/projects" class="btn primary" onclick="todo()">
         <i class="ph ph-chart-line-up"></i>
         <?= lang('Show metrics', 'Zeige Metriken') ?>
-    </a>
+    </a> -->
 </div>
 
 <h1 class="mt-0">
     <i class="ph ph-tree-structure text-osiris"></i>
-    <?= lang('Projects', 'Projekte') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
+    <?= $pagetitle ?>
 </h1>
 
 
+<?php if ($Settings->hasPermission('projects.add')) { ?>
+    <a href="<?= ROOTPATH ?>/projects/new" class="mb-10 d-inline-block">
+        <i class="ph ph-plus"></i>
+        <?= lang('Add new project', 'Neues Projekt anlegen') ?>
+    </a>
+<?php } ?>
 
-<a href="<?= ROOTPATH ?>/projects/new" class="mb-10 d-inline-block">
-    <i class="ph ph-plus"></i>
-    <?= lang('Add new project', 'Neues Projekt anlegen') ?>
-</a>
 
 <div class="btn-toolbar float-sm-right filters">
     <span>
@@ -87,6 +97,7 @@ function val($index, $default = '')
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filter-status-btn" style="min-width: auto;">
             <a onclick="filterStatus(this, '<?= lang('approved', 'bewilligt') ?>')" class="item"><span class='badge success'><?= lang('approved', 'bewilligt') ?></span></a>
+            <a onclick="filterStatus(this, '<?= lang('finished', 'abgeschlossen') ?>')" class="item"><span class='badge success'><?= lang('finished', 'abgeschlossen') ?></span></a>
             <a onclick="filterStatus(this, '<?= lang('applied', 'beantragt') ?>')" class="item"><span class='badge signal'><?= lang('applied', 'beantragt') ?></span></a>
             <a onclick="filterStatus(this, '<?= lang('rejected', 'abgelehnt') ?>')" class="item"><span class='badge danger'><?= lang('rejected', 'abgelehnt') ?></span></a>
             <a onclick="filterStatus(this, '<?= lang('expired', 'abgelaufen') ?>')" class="item"><span class='badge dark'><?= lang('expired', 'abgelaufen') ?></span></a>
@@ -120,7 +131,7 @@ function val($index, $default = '')
     </thead>
     <tbody>
         <?php
-        $projects = $osiris->projects->find([]);
+        $projects = $osiris->projects->find($filter);
         foreach ($projects as $project) {
             $Project->setProject($project);
         ?>

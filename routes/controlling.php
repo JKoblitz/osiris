@@ -17,7 +17,7 @@
 
 Route::get('/controlling', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('lock-activities')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('activities.lock')) die('You have no permission to be here.');
     $breadcrumb = [
         ['name' => lang("Controlling")]
     ];
@@ -29,7 +29,7 @@ Route::get('/controlling', function () {
 
 Route::post('/controlling', function () {
     include_once BASEPATH . "/php/init.php";
-    if (!$Settings->hasPermission('lock-activities')) die('You have no permission to be here.');
+    if (!$Settings->hasPermission('activities.lock')) die('You have no permission to be here.');
 
     $breadcrumb = [
         ['name' => lang("Controlling")]

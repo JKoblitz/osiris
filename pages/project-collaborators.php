@@ -1,7 +1,8 @@
 <?php
+$institute = $Settings->get('affiliation_details');
+$institute['role'] = $project['role'];
 if (!isset($project['collaborators']) || empty($project['collaborators'])){
-    $collaborators = [$Settings->get('affiliation_details')];
-    $collaborators[0]['role'] = $project['role'];
+    $collaborators = [];
 } else {
     $collaborators = $project['collaborators'];
 }
@@ -68,6 +69,35 @@ if (!isset($project['collaborators']) || empty($project['collaborators'])){
             </tr>
         </thead>
         <tbody id="collaborators">
+        <tr id="collab-<?= $i ?>">
+                    <td>
+                        <span data-toggle="tooltip" data-title="<?=lang('This is your institute.', 'Dies ist dein Institut.')?>"><i class="ph ph-info text-muted"></i></span>
+                        <?= $institute['name'] ?? '' ?>
+                    </td>
+                    <td>
+                        <?= ucfirst($institute['role'] ?? '') ?>
+                    </td>
+                    <td>
+                        <?=$institute['type'] ?? ''?>
+                    </td>
+                    <td class="hidden">
+                        <?= $institute['ror'] ?? '' ?>
+                    </td>
+                    <td>
+                        <?= $institute['location'] ?? '' ?>
+                    </td>
+                    <td>
+                        <?= $institute['country'] ?? '' ?>
+                    </td>
+                    <td>
+                        <?= $institute['lat'] ?? '' ?>
+                    </td>
+                    <td>
+                        <?= $institute['lng'] ?? '' ?>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
             <?php
             foreach ($collaborators as $i => $con) {
             ?>
@@ -123,6 +153,11 @@ if (!isset($project['collaborators']) || empty($project['collaborators'])){
         Save
     </button>
 </form>
+
+<!-- 
+<small class="text-muted">
+    <?=lang('Your institute is shown for , it will automatically appear in the ', 'de')?>
+</small> -->
 
 
 

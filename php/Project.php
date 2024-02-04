@@ -43,6 +43,8 @@ class Project
                 return "<span class='badge success'>" . lang('approved', 'bewilligt') . "</span>";
             case 'rejected':
                 return "<span class='badge danger'>" . lang('rejected', 'abgelehnt') . "</span>";
+            case 'finished':
+                return "<span class='badge success'>" . lang('finished', 'abgeschlossen') . "</span>";
             default:
                 return "<span class='badge'>-</span>";
         }
@@ -80,6 +82,23 @@ class Project
         }
     }
 
+    public function getPurpose()
+    {
+        switch ($this->project['purpose'] ?? '') {
+            case "research":
+                return lang('Research', 'Forschung');
+            case "teaching":
+                return lang('Teaching', 'Lehre');
+            case "promotion":
+                return lang('Promotion of young scientists', 'Förderung des wissenschaftlichen Nachwuchs');
+            case "transfer":
+                return lang('Transfer', 'Transfer');
+            case "others":
+                return lang('Other purpose', 'Sonstiger Zweck');
+            default:
+                return '-';
+        }
+    }
     function getFundingNumbers($seperator)
     {
         if (!isset($this->project['funding_number']) || empty($this->project['funding_number']))
@@ -119,7 +138,7 @@ class Project
     {
         switch ($role) {
             case 'PI':
-                return '<i class="ph ph-crown text-signal"></i>'. lang('Project lead', 'Projektleitung');
+                return '<i class="ph ph-crown text-signal"></i>' . lang('Project lead', 'Projektleitung');
             case 'worker':
                 return lang('Project member', 'Projektmitarbeiter');
             default:
@@ -182,7 +201,15 @@ class Project
 
     public function getScope()
     {
+        $DB = new DB();
+        $req = $DB->db->adminGeneral->findOne(['key' => 'affiliation']);
+        $institute = DB::doc2Arr($req['value']);
+        $institute['role'] = $this->project['role'] ?? 'Partner';
+
         $collaborators = DB::doc2Arr($this->project['collaborators'] ?? []);
+        if (!empty($collaborators)){
+            $collaborators = array_merge($collaborators, [$institute]);
+        }
 
         $scope = 'local';
         $countries = array_column($collaborators, 'country');

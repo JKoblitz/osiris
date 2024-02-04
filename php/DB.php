@@ -575,6 +575,7 @@ class DB
     {
         if ($user === null) $user = $_SESSION['username'];
         $issues = array();
+        $now = new DateTime();
 
         // check if new activity was added for user
         $docs = $this->db->activities->distinct(
@@ -586,14 +587,14 @@ class DB
         // CHECK student status issue
         $docs = $this->db->activities->find(['authors.user' => $user, 'status' => 'in progress', 'end.year' => ['$lte' => CURRENTYEAR]], ['projection' => ['end' => 1]]);
         foreach ($docs as $doc) {
-            if (new DateTime() < getDateTime($doc['end'])) continue;
+            if ($now < getDateTime($doc['end'])) continue;
             $issues['students'][] = strval($doc['_id']);
         }
 
         // check EPUB issue
         $docs = $this->db->activities->find(['authors.user' => $user, 'epub' => true], ['projection' => ['epub-delay' => 1]]);
         foreach ($docs as $doc) {
-            if (isset($doc['epub-delay']) && new DateTime() < new DateTime($doc['epub-delay'])) continue;
+            if (isset($doc['epub-delay']) && $now < new DateTime($doc['epub-delay'])) continue;
             $issues['epub'][] = strval($doc['_id']);
         }
 
@@ -614,8 +615,27 @@ class DB
         // then find all documents that belong to this
         $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype' => ['$in' => $openendtypes]], ['projection' => ['end-delay' => 1]]);
         foreach ($docs as $doc) {
-            if (isset($doc['end-delay']) && new DateTime() < new DateTime($doc['end-delay'])) continue;
+            if (isset($doc['end-delay']) && $now < new DateTime($doc['end-delay'])) continue;
             $issues['openend'][] = strval($doc['_id']);
+        }
+
+        // find all projects that need attention
+        $projects = $this->db->projects->find([
+            'persons.user' => $user,
+            'status' => 'applied'
+        ]);
+        foreach ($projects as $project) {
+            if (isset($project['end-delay']) && $now < new DateTime($project['end-delay'])) continue;
+            $issues['project-open'][] = strval($project['_id']);
+        }
+        $projects = $this->db->projects->find([
+            'persons.user' => $user,
+            'status' => 'approved',
+            'end.year' => ['$lte' => CURRENTYEAR]
+        ]);
+        foreach ($projects as $project) {
+            if ($now < getDateTime($project['end'])) continue;
+            $issues['project-end'][] = strval($project['_id']);
         }
 
         return $issues;

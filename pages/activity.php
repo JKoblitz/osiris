@@ -106,7 +106,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <?php } ?>
 
     <div class="btn-group">
-        <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
+        <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
             <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-secondary border-secondary">
                 <i class="ph ph-pencil-simple-line"></i>
                 <?= lang('Edit', 'Bearbeiten') ?>
@@ -342,7 +342,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <?php endif; ?>
     <?php } ?>
 
-    <?php if ($Settings->hasPermission('see-raw-data') || isset($_GET['verbose'])) { ?>
+    <?php if ($Settings->hasPermission('raw-data') || isset($_GET['verbose'])) { ?>
         <a onclick="navigate('raw')" id="btn-raw" class="btn">
             <i class="ph ph-code" aria-hidden="true"></i>
             <?= lang('Raw data', 'Rohdaten')  ?>
@@ -357,7 +357,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <div class="col-lg-7">
 
             <div class="btn-toolbar float-sm-right">
-                <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
+                <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
                     <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn primary">
                         <i class="ph ph-pencil-simple-line"></i>
                         <?= lang('Edit', 'Bearbeiten') ?>
@@ -462,7 +462,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php } ?>
 
 
-                <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && isset($doc['comment'])) : ?>
+                <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && isset($doc['comment'])) : ?>
                     <tr class="text-muted">
                         <td>
                             <span class="key" style="text-decoration: 1px dotted underline;" data-toggle="tooltip" data-title="<?= lang('Only visible for authors and editors.', 'Nur sichtbar für Autoren und Editor-MA.') ?>">
@@ -509,7 +509,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php
 
                 // $in_quarter = inCurrentQuarter($doc['year'], $doc['month']);
-                if ($locked && !$Settings->hasPermission('delete-locked')) : ?>
+                if ($locked && !$Settings->hasPermission('activities.delete-locked')) : ?>
                     <p class="mt-0">
                         <?= lang(
                             'This activity has been locked because it was already used by Controlling in a report. Due to the documentation and verification obligation, activities may not be easily changed or deleted after the report. However, if a change is necessary, please contact the responsible persons.',
@@ -524,7 +524,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                     <?= lang('Contact controlling', 'Controlling kontaktieren') ?>
                 </a> -->
                 <?php
-                elseif ($Settings->hasPermission('delete-activities')) :
+                elseif ($Settings->hasPermission('activities.delete')) :
                 ?>
                     <p class="mt-0">
                         <?= lang('You have permission to delete this activity:', 'Du hast die nötigen Rechte, um diese Aktivität zu löschen:') ?>
@@ -576,7 +576,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             ?>
 
                 <div class="btn-toolbar mb-10 float-sm-right">
-                    <?php if (($user_activity || $Settings->hasPermission('edit-activities')) && (!$locked || $Settings->hasPermission('edit-locked'))) { ?>
+                    <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
                         <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>/<?= $role ?>" class="btn primary">
                             <i class="ph ph-pencil-simple-line"></i>
                             <?= lang("Edit", "Bearbeiten") ?>
@@ -667,7 +667,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 ?>
 
                     <h3>
-                        <?= lang('Organizational units involved', 'Involvierte Organisationseinheiten') ?>
+                        <?= lang('Organisational units involved', 'Involvierte Organisationseinheiten') ?>
                     </h3>
                     <p>
                         <?php foreach ($depts as $g) {
@@ -696,7 +696,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 </a>
                 <h5 class="title">
                     <?= lang('Connect projects', 'Projekte verknüpfen') ?>
-                    <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
                 </h5>
                 <div>
                     <?php
@@ -720,7 +719,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
         <h2 class="title">
             <?= lang('Projects', 'Projekte') ?>
-            <span class="badge danger text-normal font-size-14" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
         </h2>
 
         <?php if (!empty($doc['projects'] ?? '') && !empty($doc['projects'][0])) {

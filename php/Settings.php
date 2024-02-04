@@ -115,6 +115,8 @@ class Settings
      */
     function hasPermission(string $right)
     {
+        if (!isset($_SESSION['username'])) return false;
+        if ($right == 'admin.see'  && ADMIN == $_SESSION['username']) return true;
         $permission = $this->osiris->adminRights->findOne([
             'role' => ['$in' => $this->roles],
             'right' => $right,

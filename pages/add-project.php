@@ -22,11 +22,11 @@ $form = $form ?? array();
 
 $formaction = ROOTPATH ;
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "/crud/activities/projects/update/" . $form['_id'];
+    $formaction .= "/crud/projects/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/projects/view/" . $form['_id'];
 } else {
-    $formaction .= "/crud/activities/projects/create";
+    $formaction .= "/crud/projects/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/projects/view/*";
 }
@@ -57,7 +57,6 @@ function sel($index, $value)
 
 <h3 class="title">
     <?= lang('Add new project', 'Neues Projekt') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
 </h3>
 
 <form action="<?= $formaction ?>" method="post" id="project-form">
@@ -120,6 +119,7 @@ function sel($index, $value)
                 <option value="applied" <?= sel('status', 'applied') ?>><?= lang('applied', 'beantragt') ?></option>
                 <option value="approved" <?= sel('status', 'approved') ?>><?= lang('approved', 'bewilligt') ?></option>
                 <option value="rejected" <?= sel('status', 'rejected') ?>><?= lang('rejected', 'abgelehnt') ?></option>
+                <option value="finished" <?= sel('status', 'abgeschlossen') ?>><?= lang('finished', 'abgeschlossen') ?></option>
             </select>
         </div>
 
@@ -172,9 +172,6 @@ function sel($index, $value)
                 <option value="transfer" <?= sel('purpose', 'transfer') ?>><?= lang('Transfer', 'Transfer') ?></option>
                 <option value="others" <?= sel('purpose', 'others') ?>><?= lang('Other purpose', 'Sonstiger Zweck') ?></option>
             </select>
-            <small class="text-danger">
-                Steht im KDSF. Können wir das aufnehmen?
-            </small>
         </div>
         <div class="col-sm-4">
             <label for="role">
