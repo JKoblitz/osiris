@@ -51,7 +51,7 @@ $pageactive = function ($p) use ($page) {
     <!-- Favicon and title -->
     <link rel="icon" href="img/favicon.png">
     <title><?= $pagetitle ?? 'OSIRIS-App' ?></title>
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="<?=ROOTPATH?>/manifest.json">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content="OSIRIS - the open, smart and intuitive research information system" />

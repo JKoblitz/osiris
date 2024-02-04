@@ -113,7 +113,7 @@
                 "en": "See the scientist view"
             },
             {
-                "id": "see-raw-data",
+                "id": "raw-data",
                 "de": "Die Rohdaten in der Aktivität sehen",
                 "en": "See raw data for activities"
             }

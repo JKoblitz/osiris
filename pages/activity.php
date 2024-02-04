@@ -912,7 +912,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <?= lang('Raw data', 'Rohdaten') ?>
     </h2>
 
-    <?= lang('Raw data as they are stored in the database - for admins only.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden - nur für Admins.') ?>
+    <?= lang('Raw data as they are stored in the database.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden.') ?>
 
     <div class="box overflow-x-scroll">
         <?php

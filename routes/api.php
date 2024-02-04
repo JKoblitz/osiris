@@ -154,6 +154,7 @@ Route::get('/api/all-activities', function () {
     // $Format = new Document($highlight);
 
     $filter = [];
+    if (isset($_GET['filter'])) $filter = $_GET['filter'];
     $result = [];
     if ($page == "my-activities") {
         // only own work
