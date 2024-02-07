@@ -31,7 +31,7 @@
     </p>
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Name and personal information', 'Name und persönliche Informationen') ?></legend>
 
         <div class="form-row row-eq-spacing">
@@ -120,7 +120,7 @@
 
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Organisational unit', 'Organisationseinheiten') ?></legend>
 
         <?php
@@ -143,7 +143,7 @@
     </fieldset>
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Contact', 'Kontakt') ?></legend>
         <div class="form-row row-eq-spacing">
 
@@ -186,7 +186,7 @@
     </fieldset>
 
     <?php if (!($data['is_active'] ?? true)) { ?>
-        <fieldset class="alert">
+        <fieldset >
             <legend>
                 <?= lang('Reactivate inactive user account', 'Inaktiven Account reaktivieren') ?>
             </legend>
@@ -199,7 +199,7 @@
 
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Roles', 'Rollen') ?></legend>
         <?php
         // dump($data['roles']);
@@ -226,7 +226,7 @@
 
     <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('user.settings')) { ?>
 
-        <fieldset class="alert">
+        <fieldset >
             <legend><?= lang('Profile preferences', 'Profil-Einstellungen') ?></legend>
 
 
@@ -298,7 +298,7 @@
             ?>
         </fieldset>
 
-        <fieldset class="alert">
+        <fieldset >
             <legend>
                 <?= lang('Transfer the maintenance of your profile', 'Übertrage die Pflege deines Profils') ?>
             </legend>

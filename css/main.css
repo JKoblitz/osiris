@@ -3241,9 +3241,11 @@ Fieldsets, form-groups, form-rows and cols, labels, legends, form-text,
 invalid-feedback, inline-form
 */
 fieldset {
-  padding: 0;
-  border-width: 0;
   margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
 }
 fieldset legend {
   font-weight: 500;
@@ -5331,10 +5333,11 @@ Alerts
 .alert {
   margin: 0;
   padding: 1rem 2rem;
-  border-left: 6px solid var(--primary-color);
+  border-left: 6px solid var(--muted-color);
   font-style: inherit;
   position: relative;
   border-radius: 0.5rem;
+  background-color: rgba(204, 204, 204, 0.4392156863);
 }
 .alert p:first-child {
   margin-top: 0;

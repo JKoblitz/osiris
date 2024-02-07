@@ -34,10 +34,10 @@ dump($data, true);
 
 <?php
     if ($id === null || empty($data)){
-        $formaction = ROOTPATH."/create-journal";
+        $formaction = ROOTPATH."/crud/journal/create";
         $url = ROOTPATH."/crud/journal/view/*";
     } else {
-        $formaction = ROOTPATH."/update-journal/$id";
+        $formaction = ROOTPATH."/journal/update/$id";
         $url = ROOTPATH."/crud/journal/view/$id";
     }
 

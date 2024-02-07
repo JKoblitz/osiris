@@ -1,7 +1,7 @@
 # Neuigkeiten
 
 ## soon
-<a class="anchor" href="#version-1.2.3" id="version-1.2.3"></a>
+<a class="anchor" href="#version-1.3.0" id="version-1.3.0"></a>
 `Version 1.2.3`
 
 Biography

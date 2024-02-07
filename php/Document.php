@@ -409,7 +409,7 @@ class Document extends Settings
         return $fn . $space . $last;
     }
 
-    function formatAuthors($raw_authors, $withoutlinks = false)
+    function formatAuthors($raw_authors)
     {
         $this->appendix = '';
         if (empty($raw_authors)) return '';
@@ -442,7 +442,7 @@ class Document extends Settings
                 if (isset($a['user']) && !empty($a['user'])) {
                     if ($this->usecase == 'portal')
                         $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
-                    else if (!$withoutlinks)
+                    else if (!$this->full)
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
                 }
                 $authors[] = $author;
@@ -451,7 +451,7 @@ class Document extends Settings
                 if ($this->usecase == 'portal') {
                     if (isset($a['user']) && !empty($a['user']))
                         $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
-                 } else if (!$withoutlinks){
+                 } else if (!$this->full){
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
   
                 } else if ($this->highlight === true) {
@@ -500,7 +500,7 @@ class Document extends Settings
         if (empty($this->doc['authors'])) return '';
         $full = $this->full;
         $this->full = true;
-        return $this->formatAuthors($this->doc['authors'], true);
+        return $this->formatAuthors($this->doc['authors']);
         $this->full = $full;
     }
 
@@ -945,11 +945,13 @@ class Document extends Settings
     {
         $this->full = true;
         $template = '{title}';
+
+        // $this->usecase = 'print';
         $template = $this->subtypeArr['template']['print'] ?? $template;
 
         $line = $this->template($template);
-        if ($this->usecase == 'web')
-            $line .= $this->get_field('file-icons');
+        // if ($this->usecase == 'web')
+        //     $line .= $this->get_field('file-icons');
 
         if (!empty($this->appendix)) {
             $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";

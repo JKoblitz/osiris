@@ -1231,32 +1231,3 @@ Route::get('/api/dashboard/concept-search', function () {
  * The following endpoints are used for querying activities.
  */
 
-/**
- * @api {get} /media All media
- * @apiName GetAllMedia
- * @apiGroup Medium
- * 
- * @apiParam {Integer} [limit] Max. number of results
- * @apiParam {Integer} [offset] Offset of results
- *
- * @apiSampleRequest /download/publications
- * 
- * @apiSuccess {String} id Unique ID of the medium.
- * @apiSuccess {String} name  Name of the medium.
- * @apiSuccess {Boolean} complex_medium True if the medium is complex
- * @apiSuccess {String} source Collection where the medium originates from 
- * @apiSuccess {String} link Original URL
- * @apiSuccess {Float} min_pH Min. final pH
- * @apiSuccess {Float} max_pH Max final pH
- * @apiSuccess {String} reference URL for original reference (if available)
- * @apiSuccess {String} description Description or additional information (if available)
- * @apiSuccessExample {json} Example data:
- * {
-        "id": "1",
-        "name": "TEST"
-    }
- */
-Route::get('/data/activities', function () {
-    $result = array();
-    echo return_rest($result, count($result));
-});

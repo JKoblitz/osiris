@@ -83,7 +83,7 @@ Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
  * CRUD routes
  */
 
- Route::post('/crud/create-journal', function () {
+ Route::post('/crud/journal/create', function () {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->journals;

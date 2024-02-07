@@ -433,7 +433,7 @@ function selectJournal(j, n = false) {
                 values: j
             },
             dataType: "json",
-            url: ROOTPATH + '/create-journal',
+            url: ROOTPATH + '/crud/journal/create',
             success: function (response) {
                 // $('.loader').removeClass('show')
                 console.log(response);

@@ -131,22 +131,34 @@ Route::get('/install', function () {
     echo "Ich habe die Standard-Aktivitäten hinzugefügt. ";
 
 
-    
     // echo "<h3>Organisationseinheiten</h3>";
-     $osiris->groups->deleteMany([]);
+    $osiris->groups->deleteMany([]);
 
-        // add institute as root level
-        $dept = [
-            'id' => $affiliation['id'],
-            'color' => '#000000',
-            'name' => $affiliation['name'],
-            'parent' => null,
-            'level' => 0,
-            'unit' => 'Institute',
-        ];
-        $osiris->groups->insertOne($dept);
-        echo "Ich die Organisationseinheiten initialisiert, indem ich eine übergeordnete Einheit hinzugefügt habe. 
+    // add institute as root level
+    $dept = [
+        'id' => $affiliation['id'],
+        'color' => '#000000',
+        'name' => $affiliation['name'],
+        'parent' => null,
+        'level' => 0,
+        'unit' => 'Institute',
+    ];
+    $osiris->groups->insertOne($dept);
+    echo "Ich die Organisationseinheiten initialisiert, indem ich eine übergeordnete Einheit hinzugefügt habe. 
         Bitte bearbeite diese und füge weitere Einheiten hinzu. ";
+
+
+    $json = file_get_contents(BASEPATH . "/achievements.json");
+    $achievements = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
+
+    $osiris->achievements->deleteMany([]);
+    $osiris->achievements->insertMany($achievements);
+    $osiris->achievements->createIndexes([
+        ['key' => ['id' => 1], 'unique' => true],
+    ]);
+    echo "Zu guter Letzt habe ich die Achievements initialisiert. ";
+
+    echo "</p>";
 
     // last step: write Version number to database
     $osiris->system->deleteMany(['key' => 'version']);
@@ -157,11 +169,11 @@ Route::get('/install', function () {
     echo "<h3>Fertig</h3>";
     echo "<p>
         Ich habe alle Einstellungen gespeichert und OSIRIS erfolgreich initialisiert.
-        Am besten gehst du als nächstes zum <a href='".ROOTPATH."/admin/general'>Admin-Dashboard</a> und nimmst dort die wichtigsten Einstellungen vor.
+        Am besten gehst du als nächstes zum <a href='" . ROOTPATH . "/admin/general'>Admin-Dashboard</a> und nimmst dort die wichtigsten Einstellungen vor.
     </p>";
 
-    if (strtoupper(USER_MANAGEMENT) == 'AUTH'){
-        echo '<b>Wichtig:</b> Wie ich sehe benutzt du das Auth-Addon für die Nutzer-Verwaltung. Wenn du deinen Account anlegst, achte bitte darauf, dass der Nutzername mit dem vorkonfigurierten Admin-Namen (in <code>CONFIG.php</code>)  exakt übereinstimmt. Nur der vorkonfigurierte Admin kann die Ersteinstellung übernehmen und weiteren Personen diese Rolle übertragen.';
+    if (strtoupper(USER_MANAGEMENT) == 'AUTH') {
+        echo '<b style="color:#e95709;">Wichtig:</b> Wie ich sehe benutzt du das Auth-Addon für die Nutzer-Verwaltung. Wenn du deinen Account anlegst, achte bitte darauf, dass der Nutzername mit dem vorkonfigurierten Admin-Namen (in <code>CONFIG.php</code>)  exakt übereinstimmt. Nur der vorkonfigurierte Admin kann die Ersteinstellung übernehmen und weiteren Personen diese Rolle übertragen.';
     }
 });
 

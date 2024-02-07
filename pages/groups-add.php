@@ -64,7 +64,7 @@ function sel($index, $value)
 <form action="<?= $formaction ?>" method="post" id="group-form">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('General', 'Allgemein') ?></legend>
         <div class="row row-eq-spacing mt-0">
             <div class="col-md-2">
@@ -109,7 +109,7 @@ function sel($index, $value)
 
     <div class="row row-eq-spacing mb-0">
         <div class="col-md-6">
-            <fieldset class="alert">
+            <fieldset >
                 <legend><?= lang('German', 'Deutsch') ?></legend>
                 <div class="form-group">
                     <label for="name" class="required">
@@ -124,7 +124,7 @@ function sel($index, $value)
             </fieldset>
         </div>
         <div class="col-md-6">
-            <fieldset class="alert">
+            <fieldset >
                 <legend><?= lang('English', 'Englisch') ?></legend>
                 <div class="form-group">
                     <label for="name_en" class="required">
@@ -142,7 +142,7 @@ function sel($index, $value)
     </div>
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend>
             <?= lang('Staff', 'Personal') ?>
         </legend>
