@@ -30,6 +30,7 @@ Route::get('/visualize/(\w*)', function ($page) {
         "sunburst" => lang('Department overview', 'Abteilungs-Übersicht'),
         "departments" => lang('Department network', 'Abteilungs-netzwerk'),
         "openaccess" => lang('Open Access'),
+        "wordcloud" => lang('Word cloud'),
         "map" => lang('Map', 'Karte'),
     ];
     if (!array_key_exists($page, $names)) {

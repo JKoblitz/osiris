@@ -36,6 +36,7 @@ if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
 <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
+<script src="<?= ROOTPATH ?>/js/d3.layout.cloud.js"></script>
 
 <!-- all variables for this page -->
 <script>
@@ -555,7 +556,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     if ($count_activities > 0) { ?>
         <a onclick="navigate('activities')" id="btn-activities" class="btn">
             <i class="ph ph-briefcase" aria-hidden="true"></i>
-            <?= lang('Other Activities', 'Andere Aktivitäten')  ?>
+            <?= lang('Activities', 'Aktivitäten')  ?>
             <span class="index"><?= $count_activities ?></span>
         </a>
     <?php } ?>
@@ -598,6 +599,17 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <?php } ?>
     <?php } ?>
 
+
+    <?php if ($Settings->featureEnabled('wordcloud')) { ?>
+        <?php
+        $count_wordcloud = $osiris->activities->count(['title'=> ['$exists'=> true]]);
+        if ($count_wordcloud > 0) { ?>
+            <a onclick="navigate('wordcloud')" id="btn-wordcloud" class="btn">
+                <i class="ph ph-cloud" aria-hidden="true"></i>
+                <?= lang('Word cloud')  ?>
+            </a>
+        <?php } ?>
+    <?php } ?>
 
     <?php if ($Settings->featureEnabled('concepts')) { ?>
         <?php
@@ -1300,6 +1312,18 @@ if ($currentuser) { ?>
                 <?= lang('No concepts are assigned to this person.', 'Zu dieser Person sind keine Konzepte zugewiesen.') ?>
             </p>
         <?php endif; ?>
+    </section>
+<?php } ?>
+
+
+<?php if ($Settings->featureEnabled('wordcloud')) { ?>
+    <section id="wordcloud" style="display:none" >
+            <h3 class=""><?= lang('Word cloud') ?></h3>
+
+            <p class="text-muted">
+        <?= lang('Based on the title and abstract (if available) of publications in OSIRIS.', 'Basierend auf dem Titel und Abstract (falls verfügbar) von Publikationen in OSIRIS.') ?>
+    </p>
+            <div id="wordcloud-chart" style="max-width: 80rem";></div>
     </section>
 <?php } ?>
 

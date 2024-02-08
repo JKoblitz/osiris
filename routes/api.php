@@ -56,9 +56,30 @@ function return_rest($data, $count = 0, $status = 200)
 
 
 /**
- * Internally used API end points
+ * @api {get} /media All media
+ * @apiName GetAllMedia
+ * @apiGroup Medium
+ * 
+ * @apiParam {String} apikey Your API key
+ * @apiParam {String} [filter] Filter string from the advanced search
+ *
+ * @apiSampleRequest /download/publications
+ * 
+ * @apiSuccess {String} id Unique ID of the medium.
+ * @apiSuccess {String} name  Name of the medium.
+ * @apiSuccess {Boolean} complex_medium True if the medium is complex
+ * @apiSuccess {String} source Collection where the medium originates from 
+ * @apiSuccess {String} link Original URL
+ * @apiSuccess {Float} min_pH Min. final pH
+ * @apiSuccess {Float} max_pH Max final pH
+ * @apiSuccess {String} reference URL for original reference (if available)
+ * @apiSuccess {String} description Description or additional information (if available)
+ * @apiSuccessExample {json} Example data:
+ * {
+        "id": "1",
+        "name": "TEST"
+    }
  */
-
 Route::get('/api/activities', function () {
     include_once BASEPATH . "/php/init.php";
     $filter = [];
@@ -834,7 +855,7 @@ Route::get('/api/dashboard/activity-chart', function () {
 Route::get('/api/dashboard/project-timeline', function () {
     include(BASEPATH . '/php/init.php');
 
-    $filter = ['status' => 'approved'];
+    $filter = ['status' => ['$in'=>['approved', 'finished']]];
     if (isset($_GET['user'])) {
         $filter['persons.user'] = $_GET['user'];
     }
@@ -846,6 +867,65 @@ Route::get('/api/dashboard/project-timeline', function () {
         ['$sort' => ['start' => 1]]
     ])->toArray();
     echo return_rest($result, count($result));
+});
+
+
+Route::get('/api/dashboard/wordcloud', function () {
+    include(BASEPATH . '/php/init.php');
+    function mb_preg_match_all($ps_pattern, $ps_subject, &$pa_matches, $pn_flags = PREG_PATTERN_ORDER, $pn_offset = 0, $ps_encoding = NULL) {
+        // WARNING! - All this function does is to correct offsets, nothing else:
+        //
+        if (is_null($ps_encoding))
+            $ps_encoding = mb_internal_encoding();
+    
+        $pn_offset = strlen(mb_substr($ps_subject, 0, $pn_offset, $ps_encoding));
+        $ret = preg_match_all($ps_pattern, $ps_subject, $pa_matches, $pn_flags, $pn_offset);
+    
+        if ($ret && ($pn_flags & PREG_OFFSET_CAPTURE))
+            foreach($pa_matches as &$ha_match)
+                foreach($ha_match as &$ha_match)
+                    $ha_match[1] = mb_strlen(substr($ps_subject, 0, $ha_match[1]), $ps_encoding);
+            //
+            // (code is independent of PREG_PATTER_ORDER / PREG_SET_ORDER)
+    
+        return $ret;
+    }
+    
+    $filter = ['status' => 'approved'];
+    if (isset($_GET['user'])) {
+        $filter['persons.user'] = $_GET['user'];
+    }
+
+    $result = $osiris->activities->find(
+        ['authors.user' => $_GET['user'] ?? $_SESSION['username'] ?? '', 'type'=>'publication'],
+        ['projection' => ['title' => 1, 'abstract'=> 1, '_id'=>0]]
+        // ['$unwind' => '$persons'],
+        // ['$match' => $filter],
+        // ['$sort' => ['start' => 1]]
+    )->toArray();
+
+    $text = "";
+    foreach ($result as $a) {
+
+        if (isset($a['title']) && is_string($a['title']))
+            $text .= " ".$a['title'];
+        if (isset($a['abstract']) && is_string($a['abstract']))
+            $text .= " ".$a['abstract'];            
+        
+    }
+    $text = strip_tags($text);
+    $pattern = "~\b\w+\b~u";
+    mb_preg_match_all($pattern, $text, $words_raw);
+
+    $words = [];
+    include_once BASEPATH."/php/stopwords.php";
+    foreach ($words_raw[0] as $word) {
+        if (in_array(strtolower($word), $stopwords) || is_numeric($word) || strlen($word)<2) continue;
+        $words[] = strtolower($word);
+    }
+    $words = array_count_values($words);
+    arsort($words);
+    echo return_rest($words, count($result));
 });
 
 

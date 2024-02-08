@@ -333,7 +333,7 @@ $pageactive = function ($p) use ($page) {
                         <?php } ?>
 
 
-                        <a href="<?= ROOTPATH ?>/user/logout" class=" with-icon" style="--secondary-color:var(--danger-color);">
+                        <a href="<?= ROOTPATH ?>/user/logout" class=" with-icon" style="--secondary-color:var(--danger-color);--secondary-color-20:var(--danger-color-20);">
                             <i class="ph ph-sign-out" aria-hidden="true"></i>
                             Logout
                         </a>

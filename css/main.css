@@ -6066,6 +6066,10 @@ Sidebar content
   background-color: var(--primary-color);
   text-decoration: none;
 }
+.sidebar-menu > a.cta:hover > i,
+.sidebar-menu nav > a.cta:hover > i {
+  box-shadow: none !important;
+}
 .sidebar-menu > a.active,
 .sidebar-menu nav > a.active {
   background-color: var(--secondary-color-20);
@@ -6088,7 +6092,6 @@ Sidebar content
   left: 2.5rem;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
   background-color: #efefef;
   top: calc(50% - 4px);
   -webkit-transition: background-color 0.5s linear;
@@ -6123,6 +6126,8 @@ Sidebar content
   background-color: var(--secondary-color-20);
   border: none;
   border-radius: 0.5rem;
+  -webkit-transition: box-shadow 0.5s, background-color 0.5s, color 0.5s;
+  transition: box-shadow 0.5s, background-color 0.5s, color 0.5s;
 }
 .sidebar-menu > a.with-icon:hover > i,
 .sidebar-menu nav > a.with-icon:hover > i {
@@ -6133,78 +6138,6 @@ Sidebar content
 .sidebar-menu nav > a.with-icon.active i {
   background-color: var(--secondary-color);
   border-color: transparent;
-}
-.sidebar-menu > a.with-icon.primary i,
-.sidebar-menu nav > a.with-icon.primary i {
-  color: var(--primary-color);
-}
-.sidebar-menu > a.with-icon.primary.active i,
-.sidebar-menu nav > a.with-icon.primary.active i {
-  background-color: var(--primary-color);
-}
-.sidebar-menu > a.with-icon.primary:hover i,
-.sidebar-menu nav > a.with-icon.primary:hover i {
-  border-color: var(--primary-color);
-}
-.sidebar-menu > a.with-icon.secondary i,
-.sidebar-menu nav > a.with-icon.secondary i {
-  color: var(--secondary-color);
-}
-.sidebar-menu > a.with-icon.secondary.active i,
-.sidebar-menu nav > a.with-icon.secondary.active i {
-  background-color: var(--secondary-color);
-}
-.sidebar-menu > a.with-icon.secondary:hover i,
-.sidebar-menu nav > a.with-icon.secondary:hover i {
-  border-color: var(--secondary-color);
-}
-.sidebar-menu > a.with-icon.success i,
-.sidebar-menu nav > a.with-icon.success i {
-  color: var(--success-color);
-}
-.sidebar-menu > a.with-icon.success.active i,
-.sidebar-menu nav > a.with-icon.success.active i {
-  background-color: var(--success-color);
-}
-.sidebar-menu > a.with-icon.success:hover i,
-.sidebar-menu nav > a.with-icon.success:hover i {
-  border-color: var(--success-color);
-}
-.sidebar-menu > a.with-icon.danger i,
-.sidebar-menu nav > a.with-icon.danger i {
-  color: var(--danger-color);
-}
-.sidebar-menu > a.with-icon.danger.active i,
-.sidebar-menu nav > a.with-icon.danger.active i {
-  background-color: var(--danger-color);
-}
-.sidebar-menu > a.with-icon.danger:hover i,
-.sidebar-menu nav > a.with-icon.danger:hover i {
-  border-color: var(--danger-color);
-}
-.sidebar-menu > a.with-icon.signal i,
-.sidebar-menu nav > a.with-icon.signal i {
-  color: var(--signal-color);
-}
-.sidebar-menu > a.with-icon.signal.active i,
-.sidebar-menu nav > a.with-icon.signal.active i {
-  background-color: var(--signal-color);
-}
-.sidebar-menu > a.with-icon.signal:hover i,
-.sidebar-menu nav > a.with-icon.signal:hover i {
-  border-color: var(--signal-color);
-}
-.sidebar-menu > a.with-icon.muted i,
-.sidebar-menu nav > a.with-icon.muted i {
-  color: var(--muted-color);
-}
-.sidebar-menu > a.with-icon.muted.active i,
-.sidebar-menu nav > a.with-icon.muted.active i {
-  background-color: var(--muted-color);
-}
-.sidebar-menu > a.with-icon.muted:hover i,
-.sidebar-menu nav > a.with-icon.muted:hover i {
-  border-color: var(--muted-color);
 }
 .sidebar-menu > a.with-icon.active i,
 .sidebar-menu nav > a.with-icon.active i {

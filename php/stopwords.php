@@ -1162,5 +1162,8 @@ $stopwords = [
     "yourself",
     "yourselves",
     "z",
-    "zero"
+    "zero",
+    "sp",
+    "nov",
+    "gen"
 ];

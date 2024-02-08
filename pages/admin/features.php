@@ -281,11 +281,35 @@
                     </div>
                 </td>
             </tr>
+ <tr>
+                <th colspan="2">
+                    <?= lang('Word cloud') ?>
+                </th>
+            </tr>
+            <tr>
+                <td class="pl-20">
+                    <?= lang('Show word clouds in user profiles', 'Zeige Word Clouds in Nutzerprofilen') ?>
+                </td>
+                <?php
+                $wordcloud = $Settings->featureEnabled('wordcloud');
+                ?>
+                <td>
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="wordcloud-true" value="1" name="values[wordcloud]" <?= $wordcloud ? 'checked' : '' ?>>
+                        <label for="wordcloud-true"><?= lang('enabled', 'aktiviert') ?></label>
+                    </div>
+
+                    <div class="custom-radio d-inline-block ml-10">
+                        <input type="radio" id="wordcloud-false" value="0" name="values[wordcloud]" <?= $wordcloud ? '' : 'checked' ?>>
+                        <label for="wordcloud-false"><?= lang('disabled', 'deaktiviert') ?></label>
+                    </div>
+                </td>
+            </tr>
 
 
             <tr>
                 <th colspan="2">
-                    <?= lang('OSIRIS Portal') ?>
+                    <?= lang('OSIRIS Portfolio') ?>
                 </th>
             </tr>
             <tr>
