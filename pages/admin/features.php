@@ -152,6 +152,27 @@
                 </td>
             </tr>
 
+<?php if (strtoupper(USER_MANAGEMENT) == 'AUTH') { ?>
+    <tr>
+                <td class="pl-20">
+                    <?= lang('LDAP user synchronization', 'LDAP-Nutzersynchronisierung') ?>
+                </td>
+                <?php
+                $sync = $Settings->featureEnabled('ldap-sync');
+                ?>
+                <td>
+                    <div class="form-">
+                        <label for="ldap-sync-blacklist" class=""><?= lang('Username Blacklist (separated by comma)', 'Username-Blacklist (Komma-getrennt)') ?></label>
+                        <textarea class="form-control small" name="general[ldap-sync-blacklist]" id="ldap-sync-blacklist"><?= $Settings->get('ldap-sync-blacklist') ?></textarea>
+                    </div>
+                    <div class="form-">
+                        <label for="ldap-sync-whitelist" class=""><?= lang('Username whitelist (separated by comma)', 'Username-Whitelist (Komma-getrennt)') ?></label>
+                        <textarea class="form-control small" name="general[ldap-sync-whitelist]" id="ldap-sync-whitelist"><?= $Settings->get('ldap-sync-whitelist') ?></textarea>
+                    </div>
+                </td>
+            </tr>
+
+<?php } ?>
 
 
             <tr>

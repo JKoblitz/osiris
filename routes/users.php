@@ -277,57 +277,24 @@ Route::get('/synchronize-users', function () {
     include_once BASEPATH . "/php/_login.php";
     include BASEPATH . "/header.php";
 
-
-    $blacklist = [
-        "webkalender",
-        "sequenzer",
-        "pvnano",
-        "pre19", //presse praktikant
-        "pacbio",
-        "xcu",
-        "guest",
-        "hplce35",
-        "dsmzmutz",
-        "SNA",
-        "dsmzplant",
-        "jkipv",
-        "dsmzpv",
-        "root",
-        "oxadmin",
-        "dau2", //Dummy Ata
-        "admin-mas19",
-        "dsc20", // DSMZ SCAN
-        "femto",
-        "robo20",
-        "dsmzbug",
-        "lagerk16",
-        "services",
-        "admin-maa21",
-        "admin-vig21",
-        "bug-hplc",
-        "dsmzmebo",
-        "mutz-prakt",
-        "gramnegative",
-        "spi", //Science Policy
-        "christian.quast",
-        "admin-ols23",
-        "pan-test23",
-        "admin-pie23",
-        "admin-lla16",
-        "kodierstation",
-        "mi03-prakt1",
-        "mi03-prakt2",
-        "mi03-prakt3",
-        "mi03-prakt4",
-        "mi03-prakt5",
-        "mi03-prakt6",
-        "mi03-prakt7",
-        "pan-test24",
-        "pan-test25",
-        "pan-test26",
-        "pan-test27",
-        "johnwick",
-    ];
+    $blacklist = [];
+    $bl = $Settings->get('ldap-sync-blacklist');
+    if (!empty($bl)){
+        $bl = explode(',', $bl);
+        $blacklist = array_filter(array_map('trim', $bl));
+        echo "<p> There are ".count($blacklist). " usernames on your blacklist.</p>";
+    } else {
+        echo "<p>Your blacklist is empty, all users are synchronized.</p>";
+    }
+    $whitelist = [];
+    $bl = $Settings->get('ldap-sync-whitelist');
+    if (!empty($bl)){
+        $bl = explode(',', $bl);
+        $whitelist = array_filter(array_map('trim', $bl));
+        echo "<p> There are ".count($whitelist). " usernames on your whitelist.</p>";
+    } else {
+        echo "<p>Your whitelist is empty, ignored users are not synchronized.</p>";
+    }
 
     $users = getUsers();
     // dump($users);
@@ -344,21 +311,33 @@ Route::get('/synchronize-users', function () {
 
             // else: add new user
             $new_user = newUser($username);
+
             if (empty($new_user)) {
                 // this should never happen
-                echo "<p>$username did not exist.</p>";
+                echo "<p><i class='ph ph-warning text-danger'></i> $username did not exist.</p>";
                 continue;
             }
-            dump($new_user, true);
-            $osiris->persons->insertOne($new_user);
+
+            if (empty($new_user['first']) || empty($new_user['last'])) {
+                if (in_array($username, $whitelist)){
+                    echo "<p><i class='ph ph-user-plus text-success'></i> New user created: $new_user[displayname] ($new_user[username]) (username was on the whitelist).</p>";
+                } else {
+                    echo "<p><i class='ph ph-warning text-signal'></i> $username had no first or last name and is probably a test account. Add to whitelist to sync nonetheless.</p>";
+                    continue;
+                }
+            } else {
+                echo "<p><i class='ph ph-user-plus text-success'></i> New user created: $new_user[displayname] ($new_user[username])</p>";
+            }
+                        
+            // $osiris->persons->insertOne($new_user);
         } else {
             // user is no longer active
             if (!$active && $USER['is_active']) {
-                echo ('<p>' . $username . ' is no longer active.</p>');
-                $osiris->persons->updateOne(
-                    ['username' => $username],
-                    ['$set' => ['is_active' => false]]
-                );
+                echo ('<p><i class="ph ph-user-minus text-danger"></i> ' . $USER['displayname'] . ' (' . $username . ') is no longer active.</p>');
+                // $osiris->persons->updateOne(
+                //     ['username' => $username],
+                //     ['$set' => ['is_active' => false]]
+                // );
             }
 
             // if (empty($USER['dept'])){

@@ -125,7 +125,7 @@
                                 </h5>
                                 <small>
                                     <?php
-                                    foreach ($document['depts'] as $i => $d) {
+                                    foreach (($document['depts']??[]) as $i => $d) {
                                         $dept = implode('/', $Groups->getParents($d));
                                     ?>
                                         <a href="<?= ROOTPATH ?>/groups/view/<?= $d ?>">
