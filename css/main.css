@@ -12016,7 +12016,7 @@ img.profile-img {
 .modulea:hover {
   box-shadow: 0 0.3rem 0 rgba(0, 0, 0, 0.05);
   /* transform: translateY(-0.3rem); */
-  color: var(--blue-color);
+  color: var(--secondary-color);
   text-decoration: none;
 }
 .module.inactive {
@@ -12120,7 +12120,7 @@ a.concept:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: conic-gradient(var(--blue-color) calc(var(--percentage) * 1%), var(--secondary) 0);
+  background: conic-gradient(var(--secondary-color) calc(var(--percentage) * 1%), var(--secondary) 0);
   mask: radial-gradient(white 35%, transparent 0);
   mask-mode: alpha;
   -webkit-mask: radial-gradient(rgba(0, 0, 0, 0) 35%, #000 0);
