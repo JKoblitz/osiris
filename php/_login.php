@@ -28,8 +28,8 @@ function login($username, $password)
         $dn = $username . LDAP_DOMAIN;
         $base_dn = LDAP_BASEDN;
     }
-
-    $ldap_address = "ldap://" . $ip;
+    if ($ldap_port == 636) $ldap_address = "ldaps://" . $ip;
+    else $ldap_address = "ldap://" . $ip;
 
 
 
@@ -86,8 +86,8 @@ function getUser($name)
         $base_dn = LDAP_BASEDN;
         $password = LDAP_PASSWORD;
     }
-
-    $ldap_address = "ldap://" . $ip;
+    if ($ldap_port == 636) $ldap_address = "ldaps://" . $ip;
+    else $ldap_address = "ldap://" . $ip;
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -142,8 +142,8 @@ function getUsers()
         $base_dn = LDAP_BASEDN;
         $password = LDAP_PASSWORD;
     }
-
-    $ldap_address = "ldap://" . $ip;
+    if ($ldap_port == 636) $ldap_address = "ldaps://" . $ip;
+    else $ldap_address = "ldap://" . $ip;
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich

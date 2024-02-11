@@ -25,6 +25,7 @@ if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
         <?= lang('
         A new OSIRIS-Version has been found. Please click <a href="' . ROOTPATH . '/migrate">here</a> to migrate', '
         Eine neue OSIRIS-Version wurde gefunden. Bitte klicke <a href="' . ROOTPATH . '/migrate">hier</a>, um zu migrieren.') ?>
+        <small>Installed: <?=OSIRIS_DB_VERSION?></small>
     </div>
 <?php } ?>
 
@@ -602,7 +603,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
 
     <?php if ($Settings->featureEnabled('wordcloud')) { ?>
         <?php
-        $count_wordcloud = $osiris->activities->count(['title'=> ['$exists'=> true]]);
+        $count_wordcloud = $osiris->activities->count(['title'=> ['$exists'=> true], 'authors.user'=>$user, 'type'=>'publication']);
         if ($count_wordcloud > 0) { ?>
             <a onclick="navigate('wordcloud')" id="btn-wordcloud" class="btn">
                 <i class="ph ph-cloud" aria-hidden="true"></i>

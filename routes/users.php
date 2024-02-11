@@ -329,15 +329,15 @@ Route::get('/synchronize-users', function () {
                 echo "<p><i class='ph ph-user-plus text-success'></i> New user created: $new_user[displayname] ($new_user[username])</p>";
             }
                         
-            // $osiris->persons->insertOne($new_user);
+            $osiris->persons->insertOne($new_user);
         } else {
             // user is no longer active
             if (!$active && $USER['is_active']) {
                 echo ('<p><i class="ph ph-user-minus text-danger"></i> ' . $USER['displayname'] . ' (' . $username . ') is no longer active.</p>');
-                // $osiris->persons->updateOne(
-                //     ['username' => $username],
-                //     ['$set' => ['is_active' => false]]
-                // );
+                $osiris->persons->updateOne(
+                    ['username' => $username],
+                    ['$set' => ['is_active' => false]]
+                );
             }
 
             // if (empty($USER['dept'])){

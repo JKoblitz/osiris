@@ -60,8 +60,9 @@ include_once BASEPATH . "/php/Groups.php";
 global $Groups;
 $Groups = new Groups();
 global $Departments;
+if (!empty($Groups->tree)){
 $Departments = array_column($Groups->tree['children'], 'name', 'id');
-
+} else $Departments = [];
 // Activity categories and types
 include_once BASEPATH . "/php/Categories.php";
 global $Categories;

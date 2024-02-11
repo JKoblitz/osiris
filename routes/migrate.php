@@ -413,7 +413,7 @@ Route::get('/migrate', function () {
         $osiris->groups->insertOne($dept);
 
         // add departments as children
-        $depts = $Settings->get('departments');
+        $depts = $settings['departments'];
         foreach ($depts as $dept) {
             if ($dept['id'] == 'BIDB') $dept['id'] = 'BID';
             $dept['parent'] = $affiliation['id'];

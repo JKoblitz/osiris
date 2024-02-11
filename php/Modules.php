@@ -119,7 +119,7 @@ class Modules
             "name_de" => "Zeitspanne"
         ],
         "date-range-ongoing" => [
-            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => ["year" => 2022,"month" => 9,"day" => 8]],
+            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => null],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
@@ -324,7 +324,7 @@ class Modules
         ],
         "scientist" => [
             "fields" => ["authors" =>
-            [
+            [[
                 "last" => "Koblitz",
                 "first" => "Dominic",
                 "aoi" => true,
@@ -333,7 +333,7 @@ class Modules
                 "approved" => true,
                 "sws" => 0.3
 
-            ],],
+            ]],],
             "name" => "Scientist",
             "name_de" => "Wissenschaftler_in"
         ],

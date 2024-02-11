@@ -18,6 +18,7 @@ Route::get('/rerender', function () {
     set_time_limit(6000);
     include_once BASEPATH . "/php/Render.php";
     renderActivities();
+    echo "Done.";
 });
 
 Route::get('/check-duplicate-id', function () {

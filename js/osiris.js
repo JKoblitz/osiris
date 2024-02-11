@@ -773,7 +773,7 @@ function _approve(id, approval) {
             approval: approval
         },
         dataType: "html",
-        url: ROOTPATH + '/approve/' + id,
+        url: ROOTPATH + '/crud/activities/approve/' + id,
         success: function (response) {
             $('.loader').removeClass('show')
             var loc = location.pathname.split('/')
