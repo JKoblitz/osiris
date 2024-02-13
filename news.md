@@ -26,10 +26,14 @@
 - Eine Einheit kann einen oder mehrere Leiter:innen haben
 - Eine Person kann mehreren Einheiten zugeordnet werden
 - Übersichtsseite:
+  - Beschreibung auf deutsch und englisch
+  - Forschungsinteressen
+  - Lister der Mitarbeitenden Personen
+  - Übersicht aller Publikationen und anderer Aktivitäten
+  - Projekte der Gruppe
+  - Word Cloud
   - Zusammenarbeit mit anderen Gruppen (falls vorhanden)
-  - Mitarbeitende
-  - Beschreibung
-- Weiteres folgt in Kürze
+- Zugangsbeschränkung und Rechte wurden hinzugefügt
 
 #### <i class="ph ph-tree-structure text-osiris"></i> Projekte wurden hinzugefügt
 - Projekte anzeigen, hinzufügen, bearbeiten, löschen
@@ -45,7 +49,7 @@
 #### <i class="ph ph-circles-three-plus text-osiris"></i> Verschlagwortung von Aktivitäten ist möglich
 - Rudimentäre Verknüpfung von Schlagwörtern (mit Links und Kategorien)
 - Gruppierung nach Entität
-- Soll später noch weiter ausgebaut werden
+- **Achtung**: Es handelt sich um einen sehr rudimentären Prototypen, der später noch weiter ausgebaut werden soll
 
 #### <i class="ph ph-lightbulb text-osiris"></i> Concepts wurden eingeführt
 - Konzepte werden von [OpenAlex](https://docs.openalex.org/api-entities/concepts) bezogen
@@ -63,6 +67,7 @@
 <!-- - *Emails werden an Betreuer und Verantwortliche geschickt* -->
 <!-- - *Im Profil des Betreuers finden sich Infos zu momentanen Gästen* -->
 - Die Gästeliste ist zugangsbeschränkt
+- **Achtung**: die Gästeliste ist noch nicht 100%ig fertig. Es fehlen noch Email-Benachrichtigungen und es können noch keine Dokumente und keine Schlüsselcodes hinterlegt werden.
 
 #### <i class="ph ph-eye text-osiris"></i> Port*folio*: das Forschungs-Portal
 - Die Darstellung von Forschungsinformationen nach außen soll durch das Port*folio* möglich werden
@@ -113,12 +118,14 @@
 - Inaktive Mitarbeiter:innen lassen sich jetzt einfacher finden
 
 #### <i class="ph ph-star text-osiris"></i> Weiteres
+- Das Ergebnis der Erweiterten Suche lässt sich ebenfalls in die Zwischenablage kopieren und als Excel bzw. CSV herunterladen
 - Name in MyActivities
 <!-- - *Neue Achievements* -->
 - Der Code wurde umstrukturiert, sodass die Routes jetzt in mehrere Dateien gesplittet wurden
   - Die `index.php` ist jetzt weniger überladen
   - Die routes sind nun nach Thema sortiert
   - POST routes wurden besser benannt und mit `/crud` geprefixt und finden sich nun ebenfalls in den thematischen routes
+  - Die verschiedenen JavaScript-Funktionen wurden in osiris.js ausgegliedert und verallgemeinert.
 
 #### ⚠ Breaking Changes
 
