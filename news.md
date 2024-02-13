@@ -35,13 +35,12 @@
   - Zusammenarbeit mit anderen Gruppen (falls vorhanden)
 - Zugangsbeschränkung und Rechte wurden hinzugefügt
 
-#### <i class="ph ph-tree-structure text-osiris"></i> Projekte wurden hinzugefügt
-- Projekte anzeigen, hinzufügen, bearbeiten, löschen
-- Personen mit Rolle im Projekt verknüpfen
+#### <i class="ph ph-tree-structure text-osiris"></i> Projekte wurden weiter ausgebaut
+- Projekte lassen sich anzeigen, hinzufügen, bearbeiten, löschen, Personen lassen sich mit ihrer Rolle im Projekt verknüpfen
 - Kooperationspartner verknüpfen (semi-automatisch dank ROR-Intergration)
   - Visualisierung auf einer Karte
   - Gesamtübersicht auf Karte
-- Aktivitäten verknüpfen
+- Aktivitäten verknüpfen wurde verbessert:
   - Wenn in Crossref der Funder hinterlegt ist und die Fundingnummer existiert, wird das Projekt automatisch verknüpft
   - Download aller verknüpften Aktivitäten
 <!-- - *Metriken und Visualisierung* -->
