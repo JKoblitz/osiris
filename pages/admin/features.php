@@ -171,7 +171,6 @@
                     </div>
                 </td>
             </tr>
-
 <?php } ?>
 
 
@@ -368,3 +367,8 @@
 
 
 </form>
+
+
+<?php if (strtoupper(USER_MANAGEMENT) == 'AUTH') { ?>
+    <a href="<?=ROOTPATH?>/synchronize-users" class="btn">Synchronize LDAP Users</a>
+<?php } ?>
