@@ -82,6 +82,7 @@ function return_rest($data, $count = 0, $status = 200)
  */
 Route::get('/api/activities', function () {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Render.php";
     $filter = [];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -91,18 +92,26 @@ Route::get('/api/activities', function () {
     }
     $result = $osiris->activities->find($filter)->toArray();
 
-
     if (isset($_GET['formatted']) && $_GET['formatted']) {
         include_once BASEPATH . "/php/Document.php";
         $table = [];
-        $Format = new Document(true, 'web');
-
         foreach ($result as $doc) {
-            $Format->setDocument($doc);
+            if (isset($doc['rendered'])) {
+                $rendered = $doc['rendered'];
+            } else {
+                $rendered = renderActivities(['_id' => $doc['_id']]);
+            }
+
             $table[] = [
                 'id' => strval($doc['_id']),
-                'activity' => $Format->format(),
-                'icon' => $Format->activity_icon()
+                'activity' => $rendered['web'],
+                'print' => $rendered['print'],
+                'icon' => $rendered['icon'] ?? '',
+                'type' => $rendered['type'] ?? '',
+                'subtype' => $rendered['subtype'] ?? '',
+                'year' => $doc['year'] ?? 0,
+                'authors' => $rendered['authors'] ?? '',
+                'title' => $rendered['title'] ?? '',
             ];
         }
 
@@ -127,7 +136,6 @@ Route::get('/api/html', function () {
         'year' => ['$gte' => 2023]
     ]);
 
-
     foreach ($docs as $i => $doc) {
         if (isset($_GET['limit']) && $i >= $_GET['limit']) break;
 
@@ -142,6 +150,8 @@ Route::get('/api/html', function () {
             $link = "https://dx.doi.org/" . $doc['doi'];
         } elseif (!empty($doc['pubmed'] ?? null)) {
             $link = "https://www.ncbi.nlm.nih.gov/pubmed/" . $doc['pubmed'];
+        } elseif (!empty($doc['link'] ?? null)) {
+            $link = $doc['link'];
         }
 
         $entry = [
@@ -941,10 +951,11 @@ Route::get('/api/dashboard/wordcloud', function () {
     }
 
     $result = $osiris->activities->find(
-        ['authors.user' => $_GET['user'] ?? $_SESSION['username'] ?? '', 
-        // 'type' => ['$in' => ['publication', 'poster', 'lecture']]
-        'type' => 'publication'
-    ],
+        [
+            'authors.user' => $_GET['user'] ?? $_SESSION['username'] ?? '',
+            // 'type' => ['$in' => ['publication', 'poster', 'lecture']]
+            'type' => 'publication'
+        ],
         ['projection' => ['title' => 1, 'abstract' => 1, '_id' => 0]]
         // ['$unwind' => '$persons'],
         // ['$match' => $filter],

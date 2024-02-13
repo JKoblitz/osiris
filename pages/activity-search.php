@@ -21,6 +21,10 @@ $Format = new Document(true);
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jszip.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/dataTables.buttons.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/buttons.html5.min.js"></script>
+
 <script>
     var RULES;
 </script>
@@ -61,9 +65,15 @@ $Format = new Document(true);
 
     <table class="table" id="activity-table">
         <thead>
-            <th>Type</th>
-            <th>Activity</th>
+            <th><?= lang('Type', 'Typ') ?></th>
+            <th><?= lang('Activity', 'Aktivität') ?></th>
             <th>Link</th>
+            <th><?= lang('Year', 'Jahr') ?></th>
+            <th><?= lang('Print', 'Print') ?></th>
+            <th><?= lang('Type', 'Typ') ?></th>
+            <th><?= lang('Subtype', 'Subtyp') ?></th>
+            <th><?= lang('Title', 'Titel') ?></th>
+            <th><?= lang('Authors', 'Autoren') ?></th>
         </thead>
         <tbody>
         </tbody>
@@ -96,6 +106,11 @@ $Format = new Document(true);
                 {
                     id: 'title',
                     label: lang('Title', 'Titel'),
+                    type: 'string'
+                },
+                {
+                    id: 'abstract',
+                    label: lang('Abstract', 'Abstract'),
                     type: 'string'
                 },
                 {
@@ -200,6 +215,13 @@ $Format = new Document(true);
                     values: ['article', 'book', 'chapter', 'preprint', 'magazine', 'dissertation', 'others']
                 },
                 {
+                    id: 'gender',
+                    label: lang('Gender', 'Geschlecht'),
+                    type: 'string',
+                    input: 'select',
+                    values: ['f', 'm', 'd']
+                },
+                {
                     id: 'issue',
                     label: lang('Issue'),
                     type: 'string'
@@ -278,11 +300,11 @@ $Format = new Document(true);
                 //         label: lang('Affiliation', ''),
                 //         type: 'string'
                 // },
-                {
-                    id: 'sws',
-                    label: lang('SWS'),
-                    type: 'string'
-                },
+                // {
+                //     id: 'sws',
+                //     label: lang('SWS'),
+                //     type: 'string'
+                // },
                 {
                     id: 'category',
                     label: lang('Category (students/guests)', 'Kategorie (Studenten/Gäste)'),
@@ -354,6 +376,13 @@ $Format = new Document(true);
                         'false': 'no'
                     },
                     input: 'radio'
+                },
+                {
+                    id: 'oa_status',
+                    label: lang('Open Access'),
+                    type: 'string',
+                    values: ['gold', 'green', 'bronze', 'hybrid', 'open', 'closed'],
+                    input: 'select'
                 },
                 {
                     id: 'epub',
@@ -467,10 +496,38 @@ $Format = new Document(true);
                         window.location.hash = rules
                     },
                 },
+                buttons: [{
+                        extend: 'copyHtml5',
+                        exportOptions: {
+                            columns: [4]
+                        },
+                        className: 'btn small'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: [3, 4, 5, 6, 7, 8]
+                        },
+                        className: 'btn small',
+                        title: "OSIRIS Search"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            // columns: ':visible'
+                            columns: [3, 4, 5, 6, 7, 8]
+                        },
+                        className: 'btn small',
+                        title: "OSIRIS Search"
+                    }
+                ],
+                dom: 'fBrtip',
                 language: {
                     "zeroRecords": lang("No matching records found", 'Keine passenden Aktivitäten gefunden'),
                     "emptyTable": lang('No activities found for your filters.', 'Für diese Filter konnten keine Aktivitäten gefunden werden.'),
                 },
+                deferRender: true,
+                responsive: true,
                 // "pageLength": 5,
                 columnDefs: [{
                         targets: 0,
@@ -482,10 +539,48 @@ $Format = new Document(true);
                     },
                     {
                         "targets": 2,
-                        "data": "name",
+                        "data": "id",
                         "render": function(data, type, full, meta) {
-                            return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-arrow-fat-line-right"></a>`;
-                        }
+                            return `<a href="${ROOTPATH}/activities/view/${data}"><i class="ph ph-arrow-fat-line-right"></a>`;
+                        },
+                        sortable: false,
+                        className: 'unbreakable'
+                    },
+                    {
+                        targets: 3,
+                        data: 'year',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 4,
+                        data: 'print',
+                        searchable: true,
+                        visible: false
+                    },
+                    {
+                        targets: 5,
+                        data: 'type',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 6,
+                        data: 'subtype',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 7,
+                        data: 'title',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 8,
+                        data: 'authors',
+                        searchable: true,
+                        visible: false,
                     },
                 ]
             });
