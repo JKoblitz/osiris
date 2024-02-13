@@ -1,4 +1,7 @@
 <?php
+
+
+
 $color = $color ?? '#000000';
 
 $formaction = ROOTPATH;
@@ -7,6 +10,33 @@ if (!empty($form) && isset($form['_id'])) {
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/admin/types/" . $form['id'];
     $title = $name;
+
+    // render example
+    include_once BASEPATH . "/php/Modules.php";
+    $Modules = new Modules();
+    $EXAMPLE = ['_id' => 1, 'type' => $form['parent'], 'subtype' => $form['id']];
+    foreach ($form['modules'] ?? array() as $module) {
+        $name = trim($module);
+        if (str_ends_with($name, '*') || in_array($name, ['title', 'authors', 'date', 'date-range'])) {
+            $name = str_replace('*', '', $name);
+        }
+        $f = $Modules->all_modules[$name] ?? array();
+        $EXAMPLE = array_merge($f['fields'], $EXAMPLE);
+    }
+    include_once BASEPATH . "/php/Document.php";
+    $Document = new Document(false, 'print');
+    $Document->setDocument($EXAMPLE);
+    $type['example'] = $Document->format();
+    $type['example_web'] = $Document->formatShort(false);
+
+    $osiris->adminTypes->updateOne(
+        ['_id' => $form['_id']],
+        ['$set' => [
+            'example' => $type['example'],
+            'example_web' => $type['example_web'],
+        ]]
+    );
+    
 } else {
     $formaction .= "/crud/types/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
@@ -250,7 +280,7 @@ $member = $osiris->activities->count(['subtype' => $id]);
     <?php if ($member == 0) { ?>
         <div class="alert danger mt-20">
             <form action="<?= ROOTPATH ?>/crud/types/delete/<?= $id ?>" method="post">
-                <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/admin/categories/<?=$type['parent']?>">
+                <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/admin/categories/<?= $type['parent'] ?>">
                 <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
                 <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>
             </form>

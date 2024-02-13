@@ -387,26 +387,7 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
         }
         // checkbox default
         $values['disabled'] = $values['disabled'] ?? false;
-        // add example
-        include_once BASEPATH . "/php/Modules.php";
-        $Modules = new Modules();
-        $values['example'] = '';
-        $EXAMPLE = ['_id' => 1, 'type' => $values['parent'], 'subtype' => $values['id']];
-        foreach ($values['modules'] ?? array() as $module) {
-            $name = trim($module);
-            if (str_ends_with($name, '*') || in_array($name, ['title', 'authors', 'date', 'date-range'])) {
-                $name = str_replace('*', '', $name);
-            }
-            $f = $Modules->all_modules[$name] ?? array();
-            $EXAMPLE = array_merge($f['fields'], $EXAMPLE);
-        }
-        include_once BASEPATH . "/php/Document.php";
-        $Document = new Document(false, 'print');
-        $Document->setDocument($EXAMPLE);
-        $values['example'] = $Document->format();
-        $values['example_web'] = $Document->formatShort(false);
-        // dump($values, true);
-        // die;
+        
     }
 
     // add information on updating process
