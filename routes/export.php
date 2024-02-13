@@ -4,12 +4,12 @@
  * Routing for export
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -53,7 +53,7 @@ Route::get('/reports', function () {
 }, 'login');
 
 
-Route::get('/export/title/(.*)', function ($type) {
+Route::get('/export/(.*)/(.*)', function ($field, $type) {
     // error_reporting(E_ERROR | E_PARSE);
 
     require_once BASEPATH . '/php/init.php';
@@ -61,7 +61,7 @@ Route::get('/export/title/(.*)', function ($type) {
 
 
     $collection = $osiris->activities;
-    $options = ['sort' => ["subtype" => 1, "title" => 1], 'projection' => ['title' => 1, 'subtype' => 1]];
+    $options = ['sort' => ["subtype" => 1, $field => 1], 'projection' => [$field => 1, 'subtype' => 1]];
     $filter = [
         "type" => $type
     ];
@@ -76,8 +76,77 @@ Route::get('/export/title/(.*)', function ($type) {
             echo "<h2>$doc[subtype]</h2>";
             $t = $doc['subtype'];
         }
-        echo $doc['title'] . "<br>";
+        echo $doc[$field] . "<br>";
     }
+});
+
+
+
+Route::get('/sws-analysis', function () {
+    include_once BASEPATH . "/php/init.php";
+    $year = ['$exists' => true];
+    if (isset($_GET['year'])){
+        $year = intval($_GET['year']);
+    }
+    $sws = $osiris->activities->aggregate([
+        ['$match' => ['authors.sws' => ['$exists' => true], 'year'=> $year]],
+        // ['$project' => ['authors' => 1, 'title'=>1, 'start'=>1]],
+        ['$unwind' => '$authors'],
+        ['$match' => ['authors.aoi' => ['$in' => [true, 'true', 1, '1']]]],
+    ])->toArray();
+    echo "<table>";
+    echo "<tr><thead>";
+    echo "<th>Titel</th>";
+    echo "<th>Start</th>";
+    echo "<th>Ende</th>";
+    echo "<th>Betreuende Person</th>";
+    echo "<th>SWS</th>";
+    echo "</tr></thead>";
+    foreach ($sws as $a) {
+        echo "<tr>";
+        echo "<td>$a[title]</td>";
+        echo "<td>".format_date($a['start'])."</td>";
+        echo "<td>".format_date($a['end'] ?? $a['start'])."</td>";
+        echo "<td>".$a["authors"]["last"].", ".$a["authors"]["first"]."</td>";
+        echo "<td>".$a["authors"]["sws"]."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    // dump($sws, true);
+});
+
+
+Route::get('/guest-analysis', function () {
+    include_once BASEPATH . "/php/init.php";
+    $year = ['$exists' => true];
+    if (isset($_GET['year'])){
+        $year = intval($_GET['year']);
+    }
+    $sws = $osiris->activities->aggregate([
+        ['$match' => ['subtype' => 'guests', 'year'=> $year]],
+        // ['$project' => ['authors' => 1, 'title'=>1, 'start'=>1]],
+        ])->toArray();
+    echo "<table>";
+    echo "<tr><thead>";
+    echo "<th>Titel</th>";
+    echo "<th>Start</th>";
+    echo "<th>Ende</th>";
+    echo "<th>Name der Person</th>";
+    echo "<th>Affiliation</th>";
+    echo "<th>Land</th>";
+    echo "</tr></thead>";
+    foreach ($sws as $a) {
+        echo "<tr>";
+        echo "<td>$a[title]</td>";
+        echo "<td>".format_date($a['start'])."</td>";
+        echo "<td>".format_date($a['end'] ?? $a['start'])."</td>";
+        echo "<td>".$a['name']."</td>";
+        echo "<td>".($a["affiliation"]??'')."</td>";
+        echo "<td>".($a["country"]??'')."</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    // dump($sws, true);
 });
 
 
@@ -1032,7 +1101,7 @@ Route::post('/reports', function () {
     // $section->addTitle('Editorial Boards of Scientific Journals and Reviewing for Scientific Journals', 2);
 
     foreach ($departmentwise as $dept => $data) {
-        $department = $Settings->getDepartments($dept)['name'];
+        $department = $Groups->getName($dept);
         $section->addTitle($department, 1);
         foreach ([
             "editorial" => "Editorenschaften in Zeitschriften:",

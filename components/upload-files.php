@@ -3,14 +3,14 @@
  * Component to upload files for an activity
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /activities/view/<activity_id>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -33,7 +33,7 @@ $files = $doc['files'] ?? array();
                             <a href="<?= $file['filepath'] ?>"><i class="ph ph-download"></i></a>
                         </td>
                         <td>
-                            <form action="<?=ROOTPATH?>/upload-files/<?=$id?>" method="post">
+                            <form action="<?=ROOTPATH?>/crud/activities/upload-files/<?=$id?>" method="post">
                                 <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
 
                                 <button class="btn link" type="submit">
@@ -58,7 +58,7 @@ $files = $doc['files'] ?? array();
         <div class="title">
             <?= lang('Add new file', 'Füge Datei hinzu') ?>
         </div>
-        <form action="<?=ROOTPATH?>/upload-files/<?=$id?>" method="post" enctype="multipart/form-data">
+        <form action="<?=ROOTPATH?>/crud/activities/upload-files/<?=$id?>" method="post" enctype="multipart/form-data">
             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
             <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                 <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">

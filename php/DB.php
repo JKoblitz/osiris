@@ -5,7 +5,7 @@
  *
  * This file is part of the OSIRIS package 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @link		https://github.com/JKoblitz/osiris
  * @version		1.2
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
@@ -120,6 +120,16 @@ class DB
         return $doc;
     }
 
+    function printProfilePicture($user, $class = "")
+    {
+        $img = $this->db->userImages->findOne(['user' => $user]);
+        if (empty($img)) return ' <img src="'.ROOTPATH .'/img/no-photo.png" alt="Profilbild" class="'.$class.'">';
+        if ($img['ext'] == 'svg') {
+            $img['ext'] = 'svg+xml';
+        }
+        return '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="' . $class . '" />';
+    }
+
     // methods to query documents
     // function getAllPersons(bool $only_user=false){
     //     $filter = [];
@@ -167,7 +177,9 @@ class DB
             // $regex = new Regex('^' . $veryfirst);
             $user = $this->db->persons->findOne([
                 '$or' => [
-                    // ['last' => $last, 'first' => $regex],
+                    // if user has not set alternative names yet
+                    ['last' => $last, 'first' => $first, 'names'=>['$exist'=>false]],
+                    // otherwise, we respect the names that have been set
                     ['names' => "$last, $first"],
                     ['names' => "$last, $abbr"]
                 ]
@@ -563,6 +575,7 @@ class DB
     {
         if ($user === null) $user = $_SESSION['username'];
         $issues = array();
+        $now = new DateTime();
 
         // check if new activity was added for user
         $docs = $this->db->activities->distinct(
@@ -574,33 +587,55 @@ class DB
         // CHECK student status issue
         $docs = $this->db->activities->find(['authors.user' => $user, 'status' => 'in progress', 'end.year' => ['$lte' => CURRENTYEAR]], ['projection' => ['end' => 1]]);
         foreach ($docs as $doc) {
-            if (new DateTime() < getDateTime($doc['end'])) continue;
+            if ($now < getDateTime($doc['end'])) continue;
             $issues['students'][] = strval($doc['_id']);
         }
 
         // check EPUB issue
         $docs = $this->db->activities->find(['authors.user' => $user, 'epub' => true], ['projection' => ['epub-delay' => 1]]);
         foreach ($docs as $doc) {
-            if (isset($doc['epub-delay']) && new DateTime() < new DateTime($doc['epub-delay'])) continue;
+            if (isset($doc['epub-delay']) && $now < new DateTime($doc['epub-delay'])) continue;
             $issues['epub'][] = strval($doc['_id']);
         }
 
         // check ongoing reminder
         // but first get all open end subtypes
-        $Format = new Document();
-        $activities = $Format->getActivities();
+        // $Format = new Document();
+        // $activities = $Format->getActivities();
         $openendtypes = [];
-        foreach ($activities as $typeArr) {
-            foreach ($typeArr['subtypes'] as $subtype => $subArr) {
-                if (in_array('date-range-ongoing', $subArr['modules']) || in_array('date-range-ongoing*', $subArr['modules']))
-                    $openendtypes[] = $subtype;
-            }
+        $types = $this->db->adminTypes->find()->toArray();
+        // foreach ($types as $typeArr) {
+        foreach ($types as $typeArr) {
+            $type = $typeArr['id'];
+            $modules = DB::doc2Arr($typeArr['modules']);
+            if (in_array('date-range-ongoing', $modules) || in_array('date-range-ongoing*', $modules))
+                $openendtypes[] = $type;
         }
+        // }
         // then find all documents that belong to this
         $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype' => ['$in' => $openendtypes]], ['projection' => ['end-delay' => 1]]);
         foreach ($docs as $doc) {
-            if (isset($doc['end-delay']) && new DateTime() < new DateTime($doc['end-delay'])) continue;
+            if (isset($doc['end-delay']) && $now < new DateTime($doc['end-delay'])) continue;
             $issues['openend'][] = strval($doc['_id']);
+        }
+
+        // find all projects that need attention
+        $projects = $this->db->projects->find([
+            'persons.user' => $user,
+            'status' => 'applied'
+        ]);
+        foreach ($projects as $project) {
+            if (isset($project['end-delay']) && $now < new DateTime($project['end-delay'])) continue;
+            $issues['project-open'][] = strval($project['_id']);
+        }
+        $projects = $this->db->projects->find([
+            'persons.user' => $user,
+            'status' => 'approved',
+            'end.year' => ['$lte' => CURRENTYEAR]
+        ]);
+        foreach ($projects as $project) {
+            if ($now < getDateTime($project['end'])) continue;
+            $issues['project-end'][] = strval($project['_id']);
         }
 
         return $issues;

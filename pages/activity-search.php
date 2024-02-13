@@ -4,14 +4,14 @@
  * Page to perform advanced activity search
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /search/activities
  *
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -21,8 +21,13 @@ $Format = new Document(true);
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jszip.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/dataTables.buttons.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/buttons.html5.min.js"></script>
 
+<script>
+    var RULES;
+</script>
 <div class="content">
     <div class="btn-group float-right">
         <a href="#close-modal" class="btn osiris active">
@@ -45,30 +50,44 @@ $Format = new Document(true);
 
     <pre id="result" class="code my-20"></pre>
 
+    <?php if (isset($_GET['expert'])) { ?>
+        <textarea name="expert" id="expert" cols="30" rows="10"></textarea>
+        <button class="btn" onclick="run()">Run!</button>
+        <script>
+            function run() {
+                var rules = $('#expert').val()
+                RULES = JSON.parse(decodeURI(rules))
+                dataTable.ajax.reload()
+            }
+        </script>
+    <?php } ?>
+
+
     <table class="table" id="activity-table">
         <thead>
-            <th>Type</th>
-            <th>Activity</th>
+            <th><?= lang('Type', 'Typ') ?></th>
+            <th><?= lang('Activity', 'Aktivität') ?></th>
             <th>Link</th>
+            <th><?= lang('Year', 'Jahr') ?></th>
+            <th><?= lang('Print', 'Print') ?></th>
+            <th><?= lang('Type', 'Typ') ?></th>
+            <th><?= lang('Subtype', 'Subtyp') ?></th>
+            <th><?= lang('Title', 'Titel') ?></th>
+            <th><?= lang('Authors', 'Autoren') ?></th>
         </thead>
         <tbody>
         </tbody>
     </table>
 
-<?php
-$activities = $Settings->getActivities();
-$types = array_keys($activities);
-$subtypes = array_map(function($a){
-    return array_column($a['subtypes'], 'id');
-}, $activities);
-
-$subtypes = flatten($subtypes);
-?>
+    <?php
+    $categories = $osiris->adminCategories->distinct('id');
+    $types = $osiris->adminTypes->distinct('id');
+    ?>
 
     <script>
         // var mongo = $('#builder').queryBuilder('getMongo');
-        const types = JSON.parse('<?=json_encode($types)?>')
-        const subtypes = JSON.parse('<?=json_encode($subtypes)?>')
+        const types = JSON.parse('<?= json_encode($categories) ?>')
+        const subtypes = JSON.parse('<?= json_encode($types) ?>')
         var mongoQuery = $('#builder').queryBuilder({
             filters: [{
                     id: 'type',
@@ -87,6 +106,11 @@ $subtypes = flatten($subtypes);
                 {
                     id: 'title',
                     label: lang('Title', 'Titel'),
+                    type: 'string'
+                },
+                {
+                    id: 'abstract',
+                    label: lang('Abstract', 'Abstract'),
                     type: 'string'
                 },
                 {
@@ -123,7 +147,7 @@ $subtypes = flatten($subtypes);
                 },
                 {
                     id: 'authors.aoi',
-                    label: lang('Author (affiliated)','Autor (Affiliated)'),
+                    label: lang('Author (affiliated)', 'Autor (Affiliated)'),
                     type: 'boolean',
                     values: {
                         'true': 'yes',
@@ -189,6 +213,13 @@ $subtypes = flatten($subtypes);
                     type: 'string',
                     input: 'select',
                     values: ['article', 'book', 'chapter', 'preprint', 'magazine', 'dissertation', 'others']
+                },
+                {
+                    id: 'gender',
+                    label: lang('Gender', 'Geschlecht'),
+                    type: 'string',
+                    input: 'select',
+                    values: ['f', 'm', 'd']
                 },
                 {
                     id: 'issue',
@@ -269,11 +300,11 @@ $subtypes = flatten($subtypes);
                 //         label: lang('Affiliation', ''),
                 //         type: 'string'
                 // },
-                {
-                    id: 'sws',
-                    label: lang('SWS'),
-                    type: 'string'
-                },
+                // {
+                //     id: 'sws',
+                //     label: lang('SWS'),
+                //     type: 'string'
+                // },
                 {
                     id: 'category',
                     label: lang('Category (students/guests)', 'Kategorie (Studenten/Gäste)'),
@@ -347,6 +378,13 @@ $subtypes = flatten($subtypes);
                     input: 'radio'
                 },
                 {
+                    id: 'oa_status',
+                    label: lang('Open Access'),
+                    type: 'string',
+                    values: ['gold', 'green', 'bronze', 'hybrid', 'open', 'closed'],
+                    input: 'select'
+                },
+                {
                     id: 'epub',
                     label: lang('Online ahead of print'),
                     type: 'boolean',
@@ -392,9 +430,9 @@ $subtypes = flatten($subtypes);
                     type: 'string'
                 },
                 {
-                        id: 'created',
-                        label: lang('Created at', 'Erstellt am'),
-                        type: 'string'
+                    id: 'created',
+                    label: lang('Created at', 'Erstellt am'),
+                    type: 'string'
                 },
                 {
                     id: 'updated_by',
@@ -420,24 +458,12 @@ $subtypes = flatten($subtypes);
             default_filter: 'type'
         });
 
-        $.extend($.fn.DataTable.ext.classes, {
-            sPaging: "pagination mt-10 ",
-            sPageFirst: "direction ",
-            sPageLast: "direction ",
-            sPagePrevious: "direction ",
-            sPageNext: "direction ",
-            sPageButtonActive: "active ",
-            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control sm d-inline w-auto",
-            sInfo: "float-right text-muted",
-            sLength: "float-right"
-        });
-
         var dataTable;
 
         function getResult() {
+            var rules = $('#builder').queryBuilder('getMongo')
+            RULES = rules
             dataTable.ajax.reload()
-
         }
 
 
@@ -446,6 +472,7 @@ $subtypes = flatten($subtypes);
             if (hash !== undefined && hash != "") {
                 try {
                     var rules = JSON.parse(decodeURI(hash))
+                    RULES = rules;
                     $('#builder').queryBuilder('setRulesFromMongo', rules);
                 } catch (SyntaxError) {
                     console.info('invalid hash')
@@ -457,7 +484,7 @@ $subtypes = flatten($subtypes);
                     "url": ROOTPATH + '/api/activities',
                     data: function(d) {
                         // https://medium.com/code-kings/datatables-js-how-to-update-your-data-object-for-ajax-json-data-retrieval-c1ac832d7aa5
-                        var rules = $('#builder').queryBuilder('getMongo')
+                        var rules = RULES
                         if (rules === null) rules = []
                         console.log(rules);
 
@@ -469,10 +496,38 @@ $subtypes = flatten($subtypes);
                         window.location.hash = rules
                     },
                 },
+                buttons: [{
+                        extend: 'copyHtml5',
+                        exportOptions: {
+                            columns: [4]
+                        },
+                        className: 'btn small'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: [3, 4, 5, 6, 7, 8]
+                        },
+                        className: 'btn small',
+                        title: "OSIRIS Search"
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            // columns: ':visible'
+                            columns: [3, 4, 5, 6, 7, 8]
+                        },
+                        className: 'btn small',
+                        title: "OSIRIS Search"
+                    }
+                ],
+                dom: 'fBrtip',
                 language: {
                     "zeroRecords": lang("No matching records found", 'Keine passenden Aktivitäten gefunden'),
                     "emptyTable": lang('No activities found for your filters.', 'Für diese Filter konnten keine Aktivitäten gefunden werden.'),
                 },
+                deferRender: true,
+                responsive: true,
                 // "pageLength": 5,
                 columnDefs: [{
                         targets: 0,
@@ -484,10 +539,48 @@ $subtypes = flatten($subtypes);
                     },
                     {
                         "targets": 2,
-                        "data": "name",
+                        "data": "id",
                         "render": function(data, type, full, meta) {
-                            return `<a href="${ROOTPATH}/activities/view/${full.id}"><i class="ph ph-arrow-fat-line-right"></a>`;
-                        }
+                            return `<a href="${ROOTPATH}/activities/view/${data}"><i class="ph ph-arrow-fat-line-right"></a>`;
+                        },
+                        sortable: false,
+                        className: 'unbreakable'
+                    },
+                    {
+                        targets: 3,
+                        data: 'year',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 4,
+                        data: 'print',
+                        searchable: true,
+                        visible: false
+                    },
+                    {
+                        targets: 5,
+                        data: 'type',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 6,
+                        data: 'subtype',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 7,
+                        data: 'title',
+                        searchable: true,
+                        visible: false,
+                    },
+                    {
+                        targets: 8,
+                        data: 'authors',
+                        searchable: true,
+                        visible: false,
                     },
                 ]
             });

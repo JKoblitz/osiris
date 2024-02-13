@@ -4,14 +4,14 @@
  * Page to edit user information
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /user/edit/<username>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -23,7 +23,7 @@
 </h1>
 
 
-<form action="<?= ROOTPATH ?>/update-user/<?= $data['username'] ?>" method="post">
+<form action="<?= ROOTPATH ?>/crud/users/update/<?= $data['username'] ?>" method="post">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
     <p>
@@ -31,7 +31,7 @@
     </p>
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Name and personal information', 'Name und persönliche Informationen') ?></legend>
 
         <div class="form-row row-eq-spacing">
@@ -120,7 +120,7 @@
 
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Organisational unit', 'Organisationseinheiten') ?></legend>
 
         <?php
@@ -143,7 +143,7 @@
     </fieldset>
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Contact', 'Kontakt') ?></legend>
         <div class="form-row row-eq-spacing">
 
@@ -186,7 +186,7 @@
     </fieldset>
 
     <?php if (!($data['is_active'] ?? true)) { ?>
-        <fieldset class="alert">
+        <fieldset >
             <legend>
                 <?= lang('Reactivate inactive user account', 'Inaktiven Account reaktivieren') ?>
             </legend>
@@ -199,7 +199,7 @@
 
 
 
-    <fieldset class="alert">
+    <fieldset >
         <legend><?= lang('Roles', 'Rollen') ?></legend>
         <?php
         // dump($data['roles']);
@@ -211,9 +211,9 @@
             $has_role = in_array($role, DB::doc2Arr($data['roles'] ?? array()));
 
             $disable = false;
-            if (!$Settings->hasPermission('edit-roles')) $disable = true;
+            if (!$Settings->hasPermission('user.roles')) $disable = true;
             // only admin can make others admins
-            if ($role == 'admin' && !$Settings->hasPermission('admin')) $disable = true;
+            if ($role == 'admin' && !$Settings->hasPermission('admin.give-right')) $disable = true;
         ?>
             <div class="form-group custom-checkbox d-inline-block ml-10 mb-10 <?= $disable ? 'text-muted' : '' ?>">
                 <input type="checkbox" id="role-<?= $role ?>" value="<?= $role ?>" name="values[roles][]" <?= ($has_role) ? 'checked' : '' ?> <?= $disable ? 'onclick="return false;"' : '' ?>>
@@ -224,9 +224,9 @@
 
     </fieldset>
 
-    <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('edit-user-settings')) { ?>
+    <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('user.settings')) { ?>
 
-        <fieldset class="alert">
+        <fieldset >
             <legend><?= lang('Profile preferences', 'Profil-Einstellungen') ?></legend>
 
 
@@ -248,7 +248,7 @@
 
 
             <?php
-            if (!$Settings->hasFeatureDisabled('coins')) {
+            if ($Settings->featureEnabled('coins')) {
             ?>
 
                 <div class="mt-10">
@@ -276,7 +276,7 @@
 
 
             <?php
-            if (!$Settings->hasFeatureDisabled('achievements')) {
+            if ($Settings->featureEnabled('achievements')) {
             ?>
                 <div class="mt-10">
                     <span><?= lang('Show achievements', 'Zeige Errungenschaften') ?>:</span>
@@ -298,7 +298,7 @@
             ?>
         </fieldset>
 
-        <fieldset class="alert">
+        <fieldset >
             <legend>
                 <?= lang('Transfer the maintenance of your profile', 'Übertrage die Pflege deines Profils') ?>
             </legend>

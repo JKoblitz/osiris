@@ -1,6 +1,6 @@
 <?php
 include_once 'DB.php';
-include_once 'Settings.php';
+// include_once 'Settings.php';
 
 class Coins
 {
@@ -13,17 +13,19 @@ class Coins
     {
         $db = new DB;
         $this->db = $db->db;
-        $Settings = new Settings;
+        // $Settings = new Settings;
 
-        $activities = $Settings->getActivities();
+        // $activities = $Settings->getActivities();
 
-        foreach ($activities as $type => $typeArr) {
-            foreach ($typeArr['subtypes'] as $subtype => $subArr) {
-                if (is_numeric($subArr['coins']))
-                    $subArr['coins'] = floatval($subArr['coins']);
-                $this->matrix[$subtype] = $subArr['coins'];
+        $types = $this->db->adminTypes->find()->toArray();
+        // foreach ($activities as $type => $typeArr) {
+            foreach ($types as $typeArr) {
+                $type = $typeArr['id'];
+                if (is_numeric($typeArr['coins']))
+                    $typeArr['coins'] = floatval($typeArr['coins']);
+                $this->matrix[$type] = $typeArr['coins'];
             }
-        }
+        // }
     }
 
     function activityCoins($doc, $user)

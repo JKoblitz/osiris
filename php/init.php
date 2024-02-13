@@ -1,27 +1,11 @@
 <?php
 
-// implement newer functions in case they don't exist
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return $needle !== '' && strpos($haystack, $needle) !== false;
-    }
-}
-if (!function_exists('str_starts_with')) {
-    function str_starts_with($haystack, $needle)
-    {
-        return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
-    }
-}
-if (!function_exists('str_ends_with')) {
-    function str_ends_with($haystack, $needle)
-    {
-        return $needle !== '' && substr($haystack, -strlen($needle)) === (string)$needle;
-    }
-}
+require_once BASEPATH . '/php/Settings.php';
+include_once BASEPATH . "/php/_config.php";
+include_once BASEPATH . "/php/DB.php";
 
 // Language settings and cookies
-if (!empty($_GET['language'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('language', $_GET)) {
     $_COOKIE['osiris-language'] = $_GET['language'] === 'en' ? 'en' : 'de';
     $domain = ($_SERVER['HTTP_HOST'] != 'testserver') ? $_SERVER['HTTP_HOST'] : false;
     setcookie('osiris-language', $_COOKIE['osiris-language'], [
@@ -55,26 +39,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('accessibility', $_
     setcookie('D3-accessibility-transitions', $_COOKIE['D3-accessibility-transitions'], $cookie_settings);
 }
 
-require_once BASEPATH . '/php/Settings.php';
-include_once BASEPATH . "/php/_config.php";
-include_once BASEPATH . "/php/DB.php";
-
+// Database connection
 global $DB;
 $DB = new DB;
 
 global $osiris;
 $osiris = $DB->db;
 
+
+// get installed OSIRIS version
+$version = $osiris->system->findOne(['key' => 'version']);
+if (empty($version)){ 
+    die ('OSIRIS has not been installed yet. <a href="'.ROOTPATH.'/install">Click here to install it</a>.');
+}
+define('OSIRIS_DB_VERSION', $version['value']);
+
+
+// Get organizational units (Groups)
 include_once BASEPATH . "/php/Groups.php";
 global $Groups;
 $Groups = new Groups();
 global $Departments;
+if (!empty($Groups->tree)){
 $Departments = array_column($Groups->tree['children'], 'name', 'id');
+} else $Departments = [];
+// Activity categories and types
+include_once BASEPATH . "/php/Categories.php";
+global $Categories;
+$Categories = new Categories();
 
+// initialize user
 global $USER;
 $USER = $DB->initUser();
 
-
+// Get all Settings
 global $Settings;
 $Settings = new Settings($USER);
+
 ?>

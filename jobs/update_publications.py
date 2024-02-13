@@ -7,6 +7,17 @@ import os
 
 from diophila import OpenAlex
 
+def getAbstract(inverted_abstract):
+    if not inverted_abstract: return None
+    
+    abstract = []
+    for word in inverted_abstract:
+        occurence = inverted_abstract[word]
+        for oc in occurence:
+            abstract.append((oc, word))
+    abstract = " ".join([i[1] for i in sorted(abstract)])
+    return abstract
+
 REDO = False
 
 # read the config file
@@ -26,15 +37,17 @@ activities = osiris['activities'].find({
     'doi': {'$exists': True, '$nin': [None, '']}, 
     '$or': [
         {'oa_status': {'$exists': False}},
-        {'concepts': {'$exists': False}}
-    ]
+        {'concepts': {'$exists': False}},
+        {'abstract': {'$exists': False}}
+    ],
+    'type': 'publication'
     })
 
 # go through all activities and check if data is complete
 i = 0
 for doc in activities:
     # print(doc['_id'])
-    if doc.get('oa_status') and doc.get('concepts'):
+    if doc.get('oa_status') and doc.get('concepts') and doc.get('abstract'):
         # data is complete so nothing to do
         print(doc['title'])
         continue
@@ -64,6 +77,12 @@ for doc in activities:
             {'_id': doc['_id']},
             {'$set': {'concepts': work.get('concepts')}}
         )
-        
+    if not doc.get('abstract') and work.get('abstract_inverted_index'):
+        abstract = getAbstract(work.get('abstract_inverted_index'))
+        print(abstract)
+        osiris['activities'].update_one(
+            {'_id': doc['_id']},
+            {'$set': {'abstract': abstract}}
+        )
     # print(work.get('concepts'))
     # exit()

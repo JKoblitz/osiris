@@ -3,7 +3,7 @@
     "description": "Open, simple and integrated research information system",
     "type": "project",
     "require": {
-        "mongodb/mongodb": "1.12.0",
+        "mongodb/mongodb": "^1.12.0",
         "phpoffice/phpword": "^0.18.3",
         "renanbr/bibtex-parser": "^2.1",
         "technosophos/libris": "^2.0",

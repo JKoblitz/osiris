@@ -3,7 +3,7 @@
  * Page to add or edit journal
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /journal/add
  * @link        /journal/edit/<journal_id>
@@ -11,7 +11,7 @@
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -34,11 +34,11 @@ dump($data, true);
 
 <?php
     if ($id === null || empty($data)){
-        $formaction = ROOTPATH."/create-journal";
-        $url = ROOTPATH."/journal/view/*";
+        $formaction = ROOTPATH."/crud/journal/create";
+        $url = ROOTPATH."/crud/journal/view/*";
     } else {
-        $formaction = ROOTPATH."/update-journal/$id";
-        $url = ROOTPATH."/journal/view/$id";
+        $formaction = ROOTPATH."/journal/update/$id";
+        $url = ROOTPATH."/crud/journal/view/$id";
     }
 
 ?>

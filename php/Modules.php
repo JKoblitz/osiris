@@ -3,6 +3,29 @@ include_once "_config.php";
 include_once "init.php";
 include_once "Country.php";
 
+$defaultauthors = [
+    [
+        "last" => "Koblitz",
+        "first" => "Julia",
+        "aoi" => true,
+        "position" => "first",
+        "user" => "juk20",
+        "approved" => true,
+        "sws" => 2
+    ],
+    [
+        "last" => "Koblitz",
+        "first" => "Dominic",
+        "aoi" => true,
+        "position" => "last",
+        "user" => "dok21",
+        "approved" => true,
+        "sws" => 0.3
+    ]
+];
+$defaultstart = ["year" => 2022,"month" => 9,"day" => 6];
+$defaultend = ["year" => 2022,"month" => 9,"day" => 8];
+
 class Modules
 {
     public $form = array();
@@ -18,222 +41,299 @@ class Modules
 
     public $all_modules = array(
         "authors" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+                [
+                    "last" => "Koblitz",
+                    "first" => "Dominic",
+                    "aoi" => true,
+                    "position" => "last",
+                    "user" => "dok21",
+                    "approved" => true,
+                    "sws" => 0.3
+                ]
+            ]],
             "name" => "Authors",
             "name_de" => "Autoren"
         ],
         "author-table" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+                [
+                    "last" => "Koblitz",
+                    "first" => "Dominic",
+                    "aoi" => true,
+                    "position" => "last",
+                    "user" => "dok21",
+                    "approved" => true,
+                    "sws" => 0.3
+                ]
+            ]],
             "name" => "Authors",
             "name_de" => "Autoren"
         ],
         "book-series" => [
-            "fields" => ["series"],
+            "fields" => ["series" => 'Book Series on Open Source Systems'],
             "name" => "Book-Series",
             "name_de" => "Bücherreihe"
         ],
         "book-title" => [
-            "fields" => ["book"],
+            "fields" => ["book" => 'Research Information Systems'],
             "name" => "Book Title",
             "name_de" => "Buchtitel"
         ],
         "city" => [
-            "fields" => ["city"],
+            "fields" => ["city" => 'Helmstedt, Deutschland'],
             "name" => "City",
             "name_de" => "Stadt"
         ],
         "conference" => [
-            "fields" => ["conference"],
+            "fields" => ["conference" => '1st CRIS Conference'],
             "name" => "Conference",
             "name_de" => "Konferenz"
         ],
         "correction" => [
-            "fields" => ["correction"],
+            "fields" => ["correction" => true],
             "name" => "Correction",
             "name_de" => "Correction"
         ],
         "date-range" => [
-            "fields" => ["start", "end"],
+            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => ["year" => 2022,"month" => 9,"day" => 8]],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
         "date-range-ongoing" => [
-            "fields" => ["start", "end"],
+            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => null],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
         "date" => [
-            "fields" => ["year", "month", "day"],
+            "fields" => ["year" => 2023, "month" => 5, "day" => 4],
             "name" => "Date",
             "name_de" => "Datum"
         ],
         "details" => [
-            "fields" => ["details"],
+            "fields" => ["details" => "Weitere Details"],
             "name" => "Details",
             "name_de" => "Details"
         ],
         "doctype" => [
-            "fields" => ["doc_type"],
+            "fields" => ["doc_type" => 'White Paper'],
             "name" => "Doctype",
             "name_de" => "Doctype"
         ],
         "doi" => [
-            "fields" => ["doi"],
+            "fields" => ["doi" => '10.1234/idk/invalid'],
             "name" => "DOI",
             "name_de" => "DOI"
         ],
         "edition" => [
-            "fields" => ["edition"],
+            "fields" => ["edition" => 2],
             "name" => "Edition",
             "name_de" => "Edition"
         ],
         "editor" => [
-            "fields" => ["editors"],
+            "fields" => ["editors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+                [
+                    "last" => "Koblitz",
+                    "first" => "Dominic",
+                    "aoi" => true,
+                    "position" => "last",
+                    "user" => "dok21",
+                    "approved" => true,
+                    "sws" => 0.3
+                ]
+            ]],
             "name" => "Editors",
             "name_de" => "Editoren"
         ],
         "editorial" => [
-            "fields" => ["editor_type"],
+            "fields" => ["editor_type" => 'Guest Editor'],
             "name" => "Editorial",
             "name_de" => "Editorenschaft"
         ],
         "guest" => [
-            "fields" => ["category"],
+            "fields" => ["category" => 'guest scientist'],
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
         "gender" => [
-            "fields" => ["gender"],
+            "fields" => ["gender" => 'f'],
             "name" => "Gender",
             "name_de" => "Geschlecht"
         ],
         "nationality" => [
-            "fields" => ["country"],
+            "fields" => ["country" => 'DE'],
             "name" => "Nationality",
             "name_de" => "Nationalität"
         ],
         "country" => [
-            "fields" => ["country"],
+            "fields" => ["country" => 'DE'],
             "name" => "Country",
             "name_de" => "Land"
         ],
         "abstract" => [
-            "fields" => ["abstract"],
+            "fields" => ["abstract" => 'OSIRIS ist einzigartig in seinen Konfigurationsmöglichkeiten. Während sich viele andere CRIS nur auf Publikationen beschränken, kann in OSIRIS eine Vielzahl an Aktivitäten hinzugefügt werden.'],
             "name" => "Abstract",
             "name_de" => "Abstract"
         ],
         "isbn" => [
-            "fields" => ["isbn"],
+            "fields" => ["isbn" => '979-8716615502'],
             "name" => "ISBN",
             "name_de" => "ISBN"
         ],
         "issn" => [
-            "fields" => ["issn"],
+            "fields" => ["issn" => ["1362-4962", "0305-1048"]],
             "name" => "ISSN",
             "name_de" => "ISSN"
         ],
         "issue" => [
-            "fields" => ["issue"],
+            "fields" => ["issue" => "D1"],
             "name" => "Issue",
             "name_de" => "Issue"
         ],
         "iteration" => [
-            "fields" => ["iteration"],
+            "fields" => ["iteration" => "annual"],
             "name" => "Iteration",
             "name_de" => "Häufigkeit"
         ],
         "journal" => [
-            "fields" => ["journal", "journal_id"],
+            "fields" => ["journal" => 'Information Systems Research', "journal_id" => null],
             "name" => "Journal",
             "name_de" => "Journal"
         ],
         "lecture-invited" => [
-            "fields" => ["invited_lecture"],
+            "fields" => ["invited_lecture" => true],
             "name" => "Invited lecture",
             "name_de" => "Eingeladener Vortrag"
         ],
         "lecture-type" => [
-            "fields" => ["lecture_type"],
+            "fields" => ["lecture_type" => 'short'],
             "name" => "Lecture-Type",
             "name_de" => "Vortragsart"
         ],
+        "license" => [
+            "fields" => ["license" => 'MIT'],
+            "name" => "License",
+            "name_de" => "Lizenz"
+        ],
         "link" => [
-            "fields" => ["link"],
+            "fields" => ["link" => 'https://osiris-app.de'],
             "name" => "Link",
             "name_de" => "Link"
         ],
         "location" => [
-            "fields" => ["location"],
+            "fields" => ["location" => 'Braunschweig, Germany'],
             "name" => "Location",
             "name_de" => "Ort"
         ],
         "magazine" => [
-            "fields" => ["magazine"],
+            "fields" => ["magazine" => 'Apothekenumschau'],
             "name" => "Magazine",
             "name_de" => "Magazin"
         ],
         "online-ahead-of-print" => [
-            "fields" => ["epub"],
+            "fields" => ["epub" => true],
             "name" => "Online Ahead Of Print",
             "name_de" => "Online Ahead Of Print"
         ],
         "openaccess" => [
-            "fields" => ["open_access"],
+            "fields" => ["open_access" => true],
             "name" => "Open-Access",
             "name_de" => "Open-Access"
         ],
         "openaccess-status" => [
-            "fields" => ["open_access"],
+            "fields" => ["open_access" => true],
             "name" => "Open-Access",
             "name_de" => "Open-Access"
         ],
         "oa_status" => [
-            "fields" => ["oa_status"],
+            "fields" => ["oa_status" => 'gold'],
             "name" => "Open-Access Status",
             "name_de" => "Open-Access Status"
         ],
         "pages" => [
-            "fields" => ["pages"],
+            "fields" => ["pages" => 'D1531-8'],
             "name" => "Pages",
             "name_de" => "Seiten"
         ],
         "peer-reviewed" => [
-            "fields" => ["peer-reviewed"],
+            "fields" => ["peer-reviewed" => true],
             "name" => "Peer-Reviewed",
             "name_de" => "Peer-Reviewed"
         ],
         "person" => [
-            "fields" => ["name", "affiliation", "academic_title"],
+            "fields" => ["name" => "Koblitz, Julia", "affiliation" => "DSMZ", "academic_title" => "Dr."],
             "name" => "Person",
             "name_de" => "Person"
         ],
         "publisher" => [
-            "fields" => ["publisher"],
+            "fields" => ["publisher" => 'Oxford'],
             "name" => "Publisher",
             "name_de" => "Verlag"
         ],
         "pubmed" => [
-            "fields" => ["pubmed"],
+            "fields" => ["pubmed" => 1234567],
             "name" => "Pubmed-ID",
             "name_de" => "Pubmed-ID"
         ],
         "pubtype" => [
-            "fields" => ["pubtype"],
+            "fields" => ["pubtype" => "article"],
             "name" => "Pubtype",
             "name_de" => "Pubtype"
         ],
-        "review-description" => [
-            "fields" => ["title"],
-            "name" => "Decription",
-            "name_de" => "Beschreibung"
-        ],
+        // "review-description" => [
+        //     "fields" => ["title" => null],
+        //     "name" => "Decription",
+        //     "name_de" => "Beschreibung"
+        // ],
         "review-type" => [
-            "fields" => ["review-type"],
+            "fields" => ["review-type" => "Begutachtung eines Forschungsantrages"],
             "name" => "Review Type",
             "name_de" => "Review-Art"
         ],
+        "role" => [
+            "fields" => ["role" => "Organisator:in"],
+            "name" => "Role/Function",
+            "name_de" => "Rolle/Funktion"
+        ],
         "scientist" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" =>
+            [[
+                "last" => "Koblitz",
+                "first" => "Dominic",
+                "aoi" => true,
+                "position" => "last",
+                "user" => "dok21",
+                "approved" => true,
+                "sws" => 0.3
+
+            ]],],
             "name" => "Scientist",
             "name_de" => "Wissenschaftler_in"
         ],
@@ -242,68 +342,83 @@ class Modules
             "name" => "",
             "name_de" => ""
         ],
+        "scope" => [
+            "fields" => ["scope" => "national"],
+            "name" => "Scope",
+            "name_de" => "Reichweite"
+        ],
         "software-link" => [
-            "fields" => ["link"],
+            "fields" => ["link" => "https://osiris-app.de"],
             "name" => "Link",
             "name_de" => "Link"
         ],
         "software-type" => [
-            "fields" => ["software_type"],
+            "fields" => ["software_type" => "Database"],
             "name" => "Type",
             "name_de" => "Type"
         ],
         "software-venue" => [
-            "fields" => ["software_venue"],
+            "fields" => ["software_venue" => "GitHub"],
             "name" => "Venue",
             "name_de" => "Veröffentlichungsort"
         ],
         "status" => [
-            "fields" => ["status"],
+            "fields" => ["status" => 'completed'],
             "name" => "Status",
             "name_de" => "Status"
         ],
         "student-category" => [
-            "fields" => ["category"],
+            "fields" => ["category" => "doctoral thesis"],
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
         "thesis" => [
-            "fields" => ["category"],
+            "fields" => ["category" => 'doctor'],
             "name" => "Category",
             "name_de" => "Kategorie"
         ],
         "supervisor" => [
-            "fields" => ["authors"],
+            "fields" => ["authors" => [
+                [
+                    "last" => "Koblitz",
+                    "first" => "Julia",
+                    "aoi" => true,
+                    "position" => "first",
+                    "user" => "juk20",
+                    "approved" => true,
+                    "sws" => 2
+                ],
+            ]],
             "name" => "Supervisor",
             "name_de" => "Betreuer_in"
         ],
         "teaching-category" => [
-            "fields" => ["category"],
+            "fields" => ["category" => 'practical-lecture'],
             "name" => "Category",
             "name_de" => "Category"
         ],
         "teaching-course" => [
-            "fields" => ["title", "module", "module_id"],
+            "fields" => ["title" => "Einführung in die Forschungsinformation", "module" => null, "module_id" => null],
             "name" => "Course",
             "name_de" => "Modul"
         ],
         "title" => [
-            "fields" => ["title"],
+            "fields" => ["title" => "OSIRIS - the Open, Smart, and Intuitive Research Information System"],
             "name" => "Title",
             "name_de" => "Titel"
         ],
         "university" => [
-            "fields" => ["publisher"],
+            "fields" => ["publisher" => 'Technische Universität Braunschweig'],
             "name" => "University",
             "name_de" => "Universität"
         ],
         "version" => [
-            "fields" => ["version"],
+            "fields" => ["version" => OSIRIS_VERSION],
             "name" => "Version",
             "name_de" => "Version"
         ],
         "volume" => [
-            "fields" => ["volume"],
+            "fields" => ["volume" => 51],
             "name" => "Volume",
             "name_de" => "Volume"
         ],
@@ -383,7 +498,7 @@ class Modules
         $return = array();
         foreach ($modules as $module) {
             $fields = $this->all_modules[$module]['fields'] ?? array();
-            foreach ($fields as $field) {
+            foreach ($fields as $field => $default) {
                 $val = $this->form[$field] ?? '';
                 if (!is_array($val))
                     $return[ucfirst($field)] = $val;
@@ -991,7 +1106,6 @@ class Modules
                 break;
 
             case "date-range":
-                // $ui_id = rand(1000, 9999);
             ?>
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range">
                     <label class="<?= $required ?> element-time" for="date_start">
@@ -1003,147 +1117,14 @@ class Modules
                         <input type="date" class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
                         <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
                     </div>
-                    <!-- <div class="input-group" id="date-range-picker">
-                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?>>
-                        <input class="form-control" name="values[end]" id="date_end">
-                    </div>
-                    <script>
-                        var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
-                        const DOUBLETCHECK = <?= empty($this->form) ? 'true' : 'false' ?>;
-                        // console.log(SINGLE);
-                        var dateRange = {
-                            // format: 'DD.MM.YYYY',
-                            separator: ' to ',
-                            autoClose: true,
-                            singleDate: SINGLE,
-                            singleMonth: SINGLE,
-                            monthSelect: true,
-                            yearSelect: true,
-                            startOfWeek: 'monday',
-                            getValue: function() {
-                                if (SINGLE) return $('#date_start').val();
-
-                                if ($('#date_start').val() && $('#date_end').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_end').val();
-                                else if ($('#date_start').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_start').val();
-                                else
-                                    return '';
-                            },
-                            setValue: function(s, s1, s2) {
-                                $('#date_start').val(s1);
-                                if (DOUBLETCHECK)
-                                    doubletCheck()
-                                if (SINGLE) return;
-                                $('#date_end').val(s2);
-                            }
-                        }
-
-                        // $("#date_start")
-                        //     .dateRangePicker(dateRange)
-                        rebuild_datepicker(document.getElementById('daterange-toggle-btn'))
-
-                        <?php if (!empty($this->form)) { ?>
-                            $('#date-range-picker').data('dateRangePicker')
-                                .setStart('<?= valueFromDateArray($this->val('start')) ?>')
-                                .setEnd('<?= valueFromDateArray($this->val('end')) ?>');
-
-                        <?php } ?>
-
-                        function rebuild_datepicker(btn) {
-                            if ($('#date-range-picker').data('dateRangePicker')) {
-                                $('#date-range-picker').data('dateRangePicker').destroy()
-                                SINGLE = !SINGLE
-                            }
-                            dateRange.singleDate = SINGLE;
-                            dateRange.singleMonth = SINGLE;
-                            $("#date_end").attr('readonly', SINGLE)
-                            if (SINGLE) {
-                                $("#date_end").val('').addClass('disabled')
-                                $(btn).html(lang('One day', 'Eintägig'))
-                            } else {
-                                $("#date_end").val($("#date_start").val()).removeClass('disabled')
-                                $(btn).html(lang('Multiple days', 'Mehrtägig'))
-                            }
-                            $("#date-range-picker").dateRangePicker(dateRange)
-                        }
-                    </script> -->
+                   
                 </div>
             <?php
                 break;
 
             case "date-range-ongoing":
             ?>
-                <!-- <div class="data-module col-sm-8 col-md-6" data-module="date-range">
-                    <label class="<?= $required ?> element-time" for="date_start">
-                        <?= lang('Date range', "Zeitraum") ?>
-                        <button class="btn small" id="ongoing-toggle-btn" type="button" onclick="rebuild_ongoing_datepicker(this);">
-                            <?= lang('Ongoing', 'Fortlaufend') ?>
-                        </button>
-
-                    </label>
-                    <div class="input-group" id="date-range-ongoing-picker">
-                        <input class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
-                        <input class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
-                    </div>
-                    <script>
-                        var SINGLE = <?= empty($this->val('end')) ? 'true' : 'false' ?>;
-
-                        var dateRange = {
-                            separator: ' to ',
-                            autoClose: true,
-                            singleDate: SINGLE,
-                            singleMonth: SINGLE,
-                            monthSelect: true,
-                            yearSelect: true,
-                            startOfWeek: 'monday',
-                            getValue: function() {
-                                if (SINGLE) return $('#date_start').val();
-                                if ($('#date_start').val() && $('#date_end').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_end').val();
-                                else if ($('#date_start').val())
-                                    return $('#date_start').val() + ' to ' + $('#date_start').val();
-                                else
-                                    return '';
-                            },
-                            setValue: function(s, s1, s2) {
-                                $('#date_start').val(s1);
-                                if (SINGLE) return;
-                                $('#date_end').val(s2);
-                            },
-                        }
-
-                        // $("#date_start")
-                        //     .dateRangePicker(dateRange)
-                        rebuild_ongoing_datepicker(document.getElementById('ongoing-toggle-btn'))
-
-                        <?php if (!empty($this->form)) { ?>
-                            $('#date-range-ongoing-picker').data('dateRangePicker')
-                                .setStart('<?= valueFromDateArray($this->val('start')) ?>')
-                                .setEnd('<?= valueFromDateArray($this->val('end')) ?>');
-
-                        <?php } ?>
-
-                        function rebuild_ongoing_datepicker(btn = null) {
-                            if ($('#date-range-ongoing-picker').data('dateRangePicker')) {
-                                $('#date-range-ongoing-picker').data('dateRangePicker').destroy()
-                                SINGLE = !SINGLE
-                            }
-                            dateRange.singleDate = SINGLE;
-                            dateRange.singleMonth = SINGLE;
-                            $("#date_end").attr('readonly', SINGLE)
-                            if (SINGLE) {
-                                $("#date_end").val(lang('ongoing', 'fortlaufend')).addClass('disabled')
-                                if (btn !== null) $(btn).html(lang('Ongoing', 'Fortlaufend'))
-                            } else {
-                                $("#date_end").val($("#date_start").val()).removeClass('disabled')
-                                if (btn !== null) $(btn).html(lang('Finished', 'Abgeschlossen'))
-                            }
-                            $("#date-range-ongoing-picker").dateRangePicker(dateRange)
-
-                        }
-                    </script>
-                </div> -->
+                
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>
@@ -1544,20 +1525,55 @@ class Modules
             <?php
                 break;
 
-            case "review-description":
+            case "scope":
+                $scope = $this->val('scope', false);
             ?>
-                <div class="data-module col-sm-8" data-module="review-description">
-                    <label class="<?= $required ?> element-title" for="title-input">
-                        <?= lang('Title/Description/Details', 'Titel/Beschreibung/Details') ?>
+                <div class="data-module col-sm-4" data-module="scope">
+                    <label class="<?= $required ?>" for="scope">
+                        <?= lang('Scope', 'Reichweite') ?>
                     </label>
-                    <input type="text" class="form-control" id="title-input" value="<?= $this->val('title') ?>" name="values[title]" <?= $required ?>>
+                    <select class="form-control" id="scope" name="values[scope]" <?= $required ?> autocomplete="off">
+                        <option <?= $scope == 'local' ? 'selected' : '' ?>>local</option>
+                        <option <?= $scope == 'regional' ? 'selected' : '' ?>>regional</option>
+                        <option <?= $scope == 'national' ? 'selected' : '' ?>>national</option>
+                        <option <?= $scope == 'international' ? 'selected' : '' ?>>international</option>
+                    </select>
+                </div>
+            <?php
+                break;
+
+            case "role":
+            ?>
+                <div class="data-module col-sm-6" data-module="role">
+                    <label class="<?= $required ?>" for="role">
+                        <?= lang('Role/Function', 'Rolle/Funktion') ?>
+                    </label>
+                    <input type="text" class="form-control" id="role" value="<?= $this->val('role') ?>" name="values[role]" <?= $required ?>>
+                </div>
+            <?php
+                break;
+
+            case "license":
+            ?>
+                <div class="data-module col-sm-6" data-module="license">
+                    <label class="<?= $required ?>" for="license">
+                        <?= lang('License', 'Lizenz') ?>
+                    </label>
+                    <input type="text" class="form-control" id="license" value="<?= $this->val('license') ?>" name="values[license]" <?= $required ?>>
+                    <small class="text-muted">
+                        <?= lang('If applicable, enter', 'Falls möglich, die') ?>
+                        <a href="https://opensource.org/licenses/" target="_blank" rel="noopener noreferrer"><?= lang('SPDX-ID from', 'SPDX-ID der') ?> OSI</a>
+                        <?= lang('or CC license from', 'oder die CC-Lizenz von') ?>
+                        <a href="https://creativecommons.org/share-your-work/cclicenses/" target="_blank" rel="noopener noreferrer">Creative Commons</a>.
+                        <?= lang('', 'angeben') ?>.
+                    </small>
                 </div>
             <?php
                 break;
 
             case "review-type":
             ?>
-                <div class="data-module col-sm-8" data-module="review-type">
+                <div class="data-module col-sm-6" data-module="review-type">
                     <label class="element-cat <?= $required ?>" for="review-type">
                         <?= lang('Type of review', 'Art des Review') ?>
                     </label>

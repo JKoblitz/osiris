@@ -4,14 +4,14 @@
  * Page to visualize activities of units and users in a sunburst
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /visualize/sunburst
  *
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -152,8 +152,8 @@ updateRecursive($flare, $activities);
                 <label for="type-select"><?= lang('Activities', 'Aktivitäten') ?></label>
                 <select name="type" id="type-select" class="form-control ">
                     <option value=""><?= lang('All types', 'Alle Arten') ?></option>
-                    <?php foreach ($Settings->get('activities') as $type => $a) { ?>
-                        <option value="<?= $type ?>" <?= $type == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
+                    <?php foreach ($Settings->getActivities as $a) { ?>
+                        <option value="<?= $a['id'] ?>" <?= $a['id'] == $filter_type ? 'selected' : '' ?>><?= lang($a['name'], $a['name_de'] ?? $a['name']) ?></option>
                     <?php } ?>
                 </select>
             </div>

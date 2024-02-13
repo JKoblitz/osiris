@@ -3,14 +3,14 @@
  * Page to search users
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /search/user
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -19,8 +19,6 @@ $Format = new Document(true);
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
-<!-- <script src="<?= ROOTPATH ?>/js/query-builder.mongodb-support.js"></script> -->
 
 <div class="content">
     <div class="btn-group float-right">
@@ -56,14 +54,13 @@ $Format = new Document(true);
 
     <?php
     $depts = [];
-    foreach ($Settings->getDepartments() as $dept) {
+    foreach ($Groups->groups as $dept) {
         $depts[$dept['id']] = $dept['name'];
     }
     ?>
 
 
     <script>
-        // var mongo = $('#builder').queryBuilder('getMongo');
         var mongoQuery = $('#builder').queryBuilder({
             filters: [{
                     id: 'username',
@@ -127,19 +124,6 @@ $Format = new Document(true);
             },
             allow_empty: true,
             default_filter: 'is_active'
-        });
-
-        $.extend($.fn.DataTable.ext.classes, {
-            sPaging: "pagination mt-10 ",
-            sPageFirst: "direction ",
-            sPageLast: "direction ",
-            sPagePrevious: "direction ",
-            sPageNext: "direction ",
-            sPageButtonActive: "active ",
-            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control sm d-inline w-auto",
-            sInfo: "float-right text-muted",
-            sLength: "float-right"
         });
 
         var dataTable;

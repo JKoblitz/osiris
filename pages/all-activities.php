@@ -4,7 +4,7 @@
  * Page to see all activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /activities
  * @link /my-activities
@@ -12,7 +12,7 @@
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -31,7 +31,7 @@ $user = $user ?? $_SESSION['username'];
         <?= lang('Show only my own activities', "Zeige nur meine eigenen Aktivitäten") ?>
     </a> -->
 
-    <a class="mt-10" href="<?= ROOTPATH ?>/activities/new"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
+    <a class="mt-10" href="<?= ROOTPATH ?>/add-activity"><i class="ph ph-plus"></i> <?= lang('Add activity', 'Aktivität hinzufügen') ?></a>
 
 <?php
 } elseif (isset($_GET['user'])) { ?>
@@ -100,7 +100,9 @@ $user = $user ?? $_SESSION['username'];
             </h6>
             <div class="filter">
                 <table id="filter-type" class="table small simple">
-                    <?php foreach ($Settings->getActivities() as $id => $a) { ?>
+                    <?php foreach ($Settings->getActivities() as $a) { 
+                        $id = $a['id'];
+                        ?>
                         <tr style="--highlight-color:  <?=$a['color']?>;">
                             <td>
                                 <a data-type="<?= $id ?>" onclick="filterActivities(this, '<?= $id ?>', 1)" class="item" id="<?= $id ?>-btn">
@@ -165,32 +167,12 @@ $user = $user ?? $_SESSION['username'];
 <!-- </div> -->
 
 <script src="<?= ROOTPATH ?>/js/datatables/jszip.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/dataTables.responsive.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/dataTables.buttons.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/buttons.html5.min.js"></script>
-<!-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script> -->
-
-<!-- <link type="css" src="<?= ROOTPATH ?>/css/datatables.buttons.min.css"></link> -->
-<!-- <link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
-<script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script> -->
 
 <script>
     const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control d-inline w-auto ml-10 ",
-        sButtons: "d-inline-block ",
-        sLengthSelect: "form-control d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
+   
     // $.fn.DataTable.moment( 'HH:mm MMM D, YY' );
     var dataTable;
 
@@ -287,14 +269,14 @@ $user = $user ?? $_SESSION['username'];
                     exportOptions: {
                         columns: [4]
                     },
-                    className: 'btn'
+                    className: 'btn small'
                 },
                 {
                     extend: 'excelHtml5',
                     exportOptions: {
                         columns: [0, 4, 5, 6, 9, 10, 11, 12, 13]
                     },
-                    className: 'btn',
+                    className: 'btn small',
                     title: function() {
                         var filters = []
                         activeFilters.find('.badge').find('span').each(function(i, el) {
@@ -311,7 +293,7 @@ $user = $user ?? $_SESSION['username'];
                         // columns: ':visible'
                         columns: [0, 5, 6, 9, 10, 11, 12, 13]
                     },
-                    className: 'btn',
+                    className: 'btn small',
                     title: function() {
                         var filters = []
                         activeFilters.find('.badge').find('span').each(function(i, el) {
@@ -446,7 +428,11 @@ $user = $user ?? $_SESSION['username'];
             "order": [
                 [5, 'desc'],
                 [1, 'asc']
-            ],
+            ],  
+            <?php if (isset($_GET['q'])) { ?> "oSearch": {
+                    "sSearch": "<?= $_GET['q'] ?>"
+                }
+            <?php } ?>
 
         });
 

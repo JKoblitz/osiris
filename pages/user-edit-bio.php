@@ -4,14 +4,14 @@
  * Page to edit user information
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /user/edit/<username>
  *
  * @package     OSIRIS
  * @since       1.2.3
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -22,7 +22,7 @@
     <?= $data['name'] ?>
 </h1>
 
-<form action="<?= ROOTPATH ?>/update-user/<?= $data['username'] ?>" method="post">
+<form action="<?= ROOTPATH ?>/crud/users/update/<?= $data['username'] ?>" method="post">
     <div class="box w-500 mw-full">
         <div class="content">
 
@@ -32,7 +32,7 @@
                 <b>Username:</b> <?= $data['username'] ?? '' ?>
             </p>
 
-            <h4 class="title mt-0">
+            <h4 class="title mt-0" id="position">
                 <?= lang('Current Position', 'Aktuelle Position') ?>
             </h4>
 
@@ -43,7 +43,7 @@
         <hr>
         <div class="content">
 
-            <h4 class="title mt-0">
+            <h4 class="title mt-0" id="research">
                 <?= lang('Research interest', 'Forschungsinteressen') ?>
             </h4>
             <small class="text-muted">Max. 5</small><br>
@@ -96,7 +96,7 @@
         <hr>
         <div class="content">
 
-            <h4 class="title mt-0">
+            <h4 class="title mt-0" id="cv">
                 <?= lang('Curriculum Vitae') ?>
             </h4>
 

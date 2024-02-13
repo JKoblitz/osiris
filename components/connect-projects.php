@@ -4,20 +4,20 @@
  * Component to connect projects to activities.
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /activity
  *
  * @package OSIRIS
  * @since 1.2.2
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
 ?>
 
-<form action="<?= ROOTPATH ?>/update-project-data/<?= $id ?>" method="post">
+<form action="<?= ROOTPATH ?>/crud/activities/update-project-data/<?= $id ?>" method="post">
 
     <table class="table simple">
         <thead>
@@ -37,7 +37,7 @@
                         <select name="projects[<?= $i ?>]" id="projects-<?= $i ?>" class="form-control" required>
                             <option value="" disabled <?= empty($con) ? 'selected' : '' ?>>-- <?= lang('Please select a project', 'Bitte wähle ein Projekt aus') ?> --</option>
                             <?php
-                            foreach ($osiris->projects->distinct('name', ['status' => 'approved']) as $s) { ?>
+                            foreach ($osiris->projects->distinct('name', ['status' => ['$in'=> ['approved', 'finished']]]) as $s) { ?>
                                 <option <?= $con == $s ? 'selected' : '' ?>><?= $s ?></option>
                             <?php } ?>
                         </select>

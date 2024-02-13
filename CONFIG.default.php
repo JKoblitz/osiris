@@ -28,12 +28,3 @@ define("WOS_JOURNAL_INFO", 2021);
 // not needed right now, but planned in the future
 define("ORCID_APP_ID", null);
 define("ORCID_SECRET_KEY", null);
-
-// activate IDA integration here
-define("IDA_INTEGRATION", false);
-
-// Guest forms
-define('GUEST_FORMS', false);
-define("GUEST_SERVER", 'guests-osiris.dsmz.de');
-define("GUEST_FORM_SECRET_KEY", "THIS-is-A-secret");
-

@@ -4,33 +4,38 @@
  * Page to add new groups
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /groups/new
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
+
+if (!$Settings->hasPermission('guests.add') && (!isset($form['head']) || $form['head'] !== $_SESSION['username'])) {
+    echo "You have no right to be here.";
+    die;
+}
 
 $Format = new Document(true);
 $form = $form ?? array();
 
 $level = 0;
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH;
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "groups/update/" . $form['_id'];
+    $formaction .= "/crud/groups/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/groups/view/" . $form['_id'];
-    $title = lang('Edit group: ', 'Gruppe bearbeiten: '). $id;
+    $title = lang('Edit group: ', 'Gruppe bearbeiten: ') . $id;
 
     $level = $Groups->getLevel($id);
 } else {
-    $formaction .= "groups/create";
+    $formaction .= "/crud/groups/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/groups/view/*";
     $title = lang('New group', 'Neue Gruppe');
@@ -59,7 +64,7 @@ function sel($index, $value)
 <form action="<?= $formaction ?>" method="post" id="group-form">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
 
-    <fieldset class="alert">
+    <fieldset>
         <legend><?= lang('General', 'Allgemein') ?></legend>
         <div class="row row-eq-spacing mt-0">
             <div class="col-md-2">
@@ -94,7 +99,7 @@ function sel($index, $value)
 
         </div>
         <div class="form-group" id="color-row" <?= $level != 1 ? 'style="display:none;"' : '' ?>>
-            <label for="name_de" class=""><?= lang('Color', 'Farbe') ?></label>
+            <label for="color" class=""><?= lang('Color', 'Farbe') ?></label>
             <input type="color" class="form-control w-50" name="type[color]" required value="<?= val('color') ?>">
             <span><?= lang('Note that only level 1 groups can have a color.', 'Bitte beachte, dass nur Level 1-Gruppen eine eigene Farbe haben können.') ?></span>
         </div>
@@ -104,13 +109,13 @@ function sel($index, $value)
 
     <div class="row row-eq-spacing mb-0">
         <div class="col-md-6">
-            <fieldset class="alert">
+            <fieldset>
                 <legend><?= lang('German', 'Deutsch') ?></legend>
                 <div class="form-group">
-                    <label for="name" class="required">
+                    <label for="name_de" class="required">
                         <?= lang('Full Name', 'Voller Name') ?> (DE)
                     </label>
-                    <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>">
+                    <input type="text" class="form-control" name="values[name_de]" id="name_de" required value="<?= val('name_de') ?>">
                 </div>
                 <div class="form-group">
                     <label for="description_de"><?= lang('Description', 'Beschreibung') ?> (DE)</label>
@@ -119,13 +124,13 @@ function sel($index, $value)
             </fieldset>
         </div>
         <div class="col-md-6">
-            <fieldset class="alert">
+            <fieldset>
                 <legend><?= lang('English', 'Englisch') ?></legend>
                 <div class="form-group">
-                    <label for="name_en" class="required">
+                    <label for="name" class="required">
                         <?= lang('Full Name', 'Voller Name') ?> (EN)
                     </label>
-                    <input type="text" class="form-control" name="values[name_en]" id="name_en" required value="<?= val('name_en') ?>">
+                    <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>">
                 </div>
 
                 <div class="form-group">
@@ -137,7 +142,7 @@ function sel($index, $value)
     </div>
 
 
-    <fieldset class="alert">
+    <fieldset>
         <legend>
             <?= lang('Staff', 'Personal') ?>
         </legend>
@@ -164,6 +169,63 @@ function sel($index, $value)
         </div>
     </fieldset>
 
+
+    <fieldset>
+        <legend id="research">
+            <?= lang('Research interest', 'Forschungsinteressen') ?>
+        </legend>
+        <div id="research-list">
+            <?php
+            if (isset($form['research']) && !empty($form['research'])) {
+
+                foreach ($form['research'] as $i => $con) { ?>
+
+                    <div class="alert mb-10">
+                      
+                        <div class="form-group my-10">
+                            <input name="values[research][<?= $i ?>][title]" type="text" class="form-control" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
+                        </div>
+                        <div class="form-group mb-0">
+                            <textarea name="values[research][<?= $i ?>][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required><?= htmlspecialchars($con['info'] ?? '') ?></textarea>
+                        </div>
+
+                        <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
+                    </div>
+            <?php }
+            } ?>
+            
+        </div>
+            <button class="btn" type="button" onclick="addResearchrow(event, '#research-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
+
+
+        <script>
+            var i = <?= $i ?? 0 ?>
+
+            var CURRENTYEAR = <?= CURRENTYEAR ?>;
+
+            function addResearchrow(evt, parent) {
+                i++;
+                var el = `
+            <div class="alert mb-10">
+                    
+                    <div class="form-group mb-10">
+                        <input name="values[research][${i}][title]" type="text" class="form-control" placeholder="title *" required>
+                    </div>
+
+                    <div class="form-group mb-0">
+                        <textarea name="values[research][${i}][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required></textarea>
+                       </div>
+
+                    <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
+                </div>
+                `;
+                $(parent).append(el);
+            }
+        </script>
+
+    </fieldset>
+
+
     <button class="btn primary" type="submit" id="submit-btn">
         <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
     </button>
@@ -178,11 +240,13 @@ function sel($index, $value)
 </form>
 
 
+
+
 <?php if (!empty($form) && isset($form['_id'])) { ?>
 
 
     <div class="alert danger mt-20">
-        <form action="<?= ROOTPATH ?>/groups/delete/<?= $group['_id'] ?>" method="post">
+        <form action="<?= ROOTPATH ?>/crud/groups/delete/<?= $group['_id'] ?>" method="post">
             <input type="hidden" class="hidden" name="redirect" value="<?= ROOTPATH ?>/groups">
             <button class="btn danger"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
             <span class="ml-20"><?= lang('Warning! Cannot be undone.', 'Warnung, kann nicht rückgängig gemacht werden!') ?></span>
