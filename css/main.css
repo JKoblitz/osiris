@@ -5567,6 +5567,8 @@ Alerts
   -moz-box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.045);
   -webkit-box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.045);
   box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.045);
+  background-color: white;
+  border: 1px solid var(--border-color);
 }
 .sticky-alerts .alert.show {
   right: 0;
@@ -5584,6 +5586,30 @@ Alerts
 }
 .sticky-alerts .alert.block.dispose {
   display: none;
+}
+.sticky-alerts .alert.primary {
+  background-color: var(--primary-color-very-light);
+  border-color: var(--primary-color);
+}
+.sticky-alerts .alert.secondary {
+  background-color: var(--secondary-color-very-light);
+  border-color: var(--secondary-color);
+}
+.sticky-alerts .alert.success {
+  background-color: var(--success-color-very-light);
+  border-color: var(--success-color);
+}
+.sticky-alerts .alert.danger {
+  background-color: var(--danger-color-very-light);
+  border-color: var(--danger-color);
+}
+.sticky-alerts .alert.signal {
+  background-color: var(--signal-color-very-light);
+  border-color: var(--signal-color);
+}
+.sticky-alerts .alert.muted {
+  background-color: var(--muted-color-very-light);
+  border-color: var(--muted-color);
 }
 
 /*
