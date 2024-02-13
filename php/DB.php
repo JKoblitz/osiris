@@ -5,7 +5,7 @@
  *
  * This file is part of the OSIRIS package 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @link		https://github.com/JKoblitz/osiris
  * @version		1.2
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
@@ -19,8 +19,9 @@ use MongoDB\Client;
 use MongoDB\BSON\Regex;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
+use MongoDB\Driver\Cursor;
 
-require_once BASEPATH . '/php/Document.php';
+require_once 'Document.php';
 
 if (!defined('DB_STRING')) {
     die("DB settings are missing in the CONFIG.php file. Add the DB_STRING constant as defined in the config documentation.");
@@ -113,7 +114,20 @@ class DB
         if ($doc instanceof BSONDocument) {
             return iterator_to_array($doc);
         }
+        if ($doc instanceof Cursor) {
+            return DB::doc2Arr($doc->toArray());
+        }
         return $doc;
+    }
+
+    function printProfilePicture($user, $class = "")
+    {
+        $img = $this->db->userImages->findOne(['user' => $user]);
+        if (empty($img)) return ' <img src="'.ROOTPATH .'/img/no-photo.png" alt="Profilbild" class="'.$class.'">';
+        if ($img['ext'] == 'svg') {
+            $img['ext'] = 'svg+xml';
+        }
+        return '<img src="data:image/' . $img['ext'] . ';base64,' . base64_encode($img['img']) . ' " class="' . $class . '" />';
     }
 
     // methods to query documents
@@ -158,11 +172,16 @@ class DB
         if (strlen($first) == 1) $first .= ".";
 
         try {
-            $regex = new Regex('^' . $first[0]);
+            // $veryfirst = explode(' ', $first)[0];
+            $abbr = $this->abbreviateName($first);
+            // $regex = new Regex('^' . $veryfirst);
             $user = $this->db->persons->findOne([
                 '$or' => [
-                    ['last' => $last, 'first' => $regex],
-                    ['names' => "$last, $first"]
+                    // if user has not set alternative names yet
+                    ['last' => $last, 'first' => $first, 'names'=>['$exist'=>false]],
+                    // otherwise, we respect the names that have been set
+                    ['names' => "$last, $first"],
+                    ['names' => "$last, $abbr"]
                 ]
             ]);
         } catch (\Throwable $th) {
@@ -221,14 +240,27 @@ class DB
      * @param string $user Username.
      * @return string Full name.
      */
-    public function getNameFromId($user, $reverse=false)
+    public function getNameFromId($user, $reverse = false, $abbr = false)
     {
         $USER = $this->getPerson($user, true);
-        if (empty($USER['first'])) return $USER['last'];
-        if ($reverse){
-            return $USER['last'] . ', ' . $USER['first'];
+        $first = $USER['first'] ?? '';
+
+        if ($abbr && !empty($first)) {
+            $fn = "";
+            foreach (preg_split("/(\s+| |-|\.)/u", $first, -1, PREG_SPLIT_DELIM_CAPTURE) as $name) {
+                if (empty(trim($name)) || $name == '.' || $name == ' ') continue;
+                if ($name == '-')
+                    $fn .= '-';
+                else
+                    $fn .= "" . mb_substr($name, 0, 1) . ".";
+            }
+            $first = $fn;
+        }
+        if (empty($first)) return $USER['last'] ?? '';
+        if ($reverse) {
+            return $USER['last'] . ', ' . $first;
         } else {
-            return $USER['first'] . ' ' . $USER['last'];
+            return $first . ' ' . $USER['last'];
         }
     }
 
@@ -385,7 +417,7 @@ class DB
         if (empty($journal)) return null;
 
         if ($year == null) {
-            $year = intval($doc['year'] ?? 1) - 1;
+            $year = intval($doc['year'] ?? 1);
         }
         return $this->impact_from_year($journal, $year);
     }
@@ -518,6 +550,8 @@ class DB
      *
      * @param array $authors List of activity authors.
      * @return array unique list of departments.
+     * 
+     * @deprecated 1.3.0
      */
     public function getDeptFromAuthors($authors)
     {
@@ -537,43 +571,73 @@ class DB
         return $result;
     }
 
-    public function renderActivities($filter = [])
+    public function getUserIssues($user = null)
     {
-        $Format = new Document(true);
-        $cursor = $this->db->activities->find($filter);
-        $rendered = [
-            'print' => '',
-            'web' => '',
-            'depts' => '',
-            'icon' => '',
-            'title' => '',
-        ];
-        foreach ($cursor as $doc) {
-            $id = $doc['_id'];
-            $Format->setDocument($doc);
-            $rendered = [
-                'print' => $Format->format(),
-                'web' => $Format->formatShort(),
-                'depts' => $this->getDeptFromAuthors($doc['authors']),
-                'icon' => trim($Format->activity_icon()),
-                'title' => $Format->activity_title(),
-            ];
-            $values = ['rendered' => $rendered];
+        if ($user === null) $user = $_SESSION['username'];
+        $issues = array();
+        $now = new DateTime();
 
-            if ($doc['type'] == 'publication' && isset($doc['journal'])) {
-                // update impact if necessary
-                $if = $this->get_impact($doc);
-                if (!empty($if) && (!isset($doc['impact']) || $if != $doc['impact'])) {
-                    $values['impact'] = $if;
-                }
-            }
+        // check if new activity was added for user
+        $docs = $this->db->activities->distinct(
+            '_id',
+            ['authors' => ['$elemMatch' => ['user' => $user, 'approved' => ['$nin' => [true, 1, '1']]]]]
+        );
+        if (!empty($docs)) $issues['approval'] = array_map('strval', $docs);
 
-            $this->db->activities->updateOne(
-                ['_id' => $id],
-                ['$set' => $values]
-            );
+        // CHECK student status issue
+        $docs = $this->db->activities->find(['authors.user' => $user, 'status' => 'in progress', 'end.year' => ['$lte' => CURRENTYEAR]], ['projection' => ['end' => 1]]);
+        foreach ($docs as $doc) {
+            if ($now < getDateTime($doc['end'])) continue;
+            $issues['students'][] = strval($doc['_id']);
         }
-        // return last element in case that only one id has been rendered
-        return $rendered;
+
+        // check EPUB issue
+        $docs = $this->db->activities->find(['authors.user' => $user, 'epub' => true], ['projection' => ['epub-delay' => 1]]);
+        foreach ($docs as $doc) {
+            if (isset($doc['epub-delay']) && $now < new DateTime($doc['epub-delay'])) continue;
+            $issues['epub'][] = strval($doc['_id']);
+        }
+
+        // check ongoing reminder
+        // but first get all open end subtypes
+        // $Format = new Document();
+        // $activities = $Format->getActivities();
+        $openendtypes = [];
+        $types = $this->db->adminTypes->find()->toArray();
+        // foreach ($types as $typeArr) {
+        foreach ($types as $typeArr) {
+            $type = $typeArr['id'];
+            $modules = DB::doc2Arr($typeArr['modules']);
+            if (in_array('date-range-ongoing', $modules) || in_array('date-range-ongoing*', $modules))
+                $openendtypes[] = $type;
+        }
+        // }
+        // then find all documents that belong to this
+        $docs = $this->db->activities->find(['authors.user' => $user, 'end' => null, 'subtype' => ['$in' => $openendtypes]], ['projection' => ['end-delay' => 1]]);
+        foreach ($docs as $doc) {
+            if (isset($doc['end-delay']) && $now < new DateTime($doc['end-delay'])) continue;
+            $issues['openend'][] = strval($doc['_id']);
+        }
+
+        // find all projects that need attention
+        $projects = $this->db->projects->find([
+            'persons.user' => $user,
+            'status' => 'applied'
+        ]);
+        foreach ($projects as $project) {
+            if (isset($project['end-delay']) && $now < new DateTime($project['end-delay'])) continue;
+            $issues['project-open'][] = strval($project['_id']);
+        }
+        $projects = $this->db->projects->find([
+            'persons.user' => $user,
+            'status' => 'approved',
+            'end.year' => ['$lte' => CURRENTYEAR]
+        ]);
+        foreach ($projects as $project) {
+            if ($now < getDateTime($project['end'])) continue;
+            $issues['project-end'][] = strval($project['_id']);
+        }
+
+        return $issues;
     }
 }

@@ -3,14 +3,14 @@
  * Page to see the documentation
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /docs
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -143,24 +143,3 @@
     <li><?= lang('Improvement of FAQ', 'Erweiterung des FAQ') ?></li>
     <li><?= lang('Translation in english! Sorry...', 'Übersetzungen ins Englische') ?></li>
 </ul>
-
-
-<h2 id="presentations">
-    <?= lang('Presentations', 'Präsentationen') ?>
-</h2>
-
-<h4 class="mb-0">
-    <?= lang('OSIRIS presentation from the Betriebsversammlung', 'OSIRIS-Präsentation von der Betriebsversammlung') ?>
-</h4>
-
-<small class="text-muted">
-    <?= lang(
-        'The globally selected language affects whether you see the German or English presentation.',
-        'Die global ausgewählte Sprache beeinflusst, ob du die deutsche oder englische Präsentation siehst.'
-    ) ?>
-</small>
-
-<div class="box">
-    <object data="<?= ROOTPATH ?>/uploads/OSIRIS_<?= lang('en', 'de') ?>.pdf" width="100%" height="500">
-    </object>
-</div>

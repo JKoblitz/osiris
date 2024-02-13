@@ -4,14 +4,14 @@
  * Page for dashboard (only controlling)
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /dashboard
  *
  * @package     OSIRIS
  * @since       1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -50,8 +50,8 @@
                                     data: Object.values(raw_data),
                                     backgroundColor: [
                                         "#006EB795",
-                                        "#B61F2995",
-                                        "#ECAF0095",
+                                        "#f7810495",
+                                        "#00808395",
                                         "#1FA13895",
                                         "#00000095",
                                         "#5F272A95",
@@ -127,8 +127,8 @@
                                     label: '# of Scientists',
                                     data: [<?= $n_approved ?>, <?= $n_scientists - $n_approved ?>],
                                     backgroundColor: [
-                                        '#ECAF0095',
-                                        '#B61F2995',
+                                        '#00808395',
+                                        '#f7810495',
                                     ],
                                     borderColor: '#464646', //'',
                                     borderWidth: 1,
@@ -232,21 +232,7 @@ $Format = new Document(true);
     </table>
 </div>
 
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-
 <script>
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control sm d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
     var dataTable;
     $(document).ready(function() {
         dataTable = $('#activity-table').DataTable({

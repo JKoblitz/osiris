@@ -3,14 +3,14 @@
  * Page for overview on visualizations
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /visualize
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -48,6 +48,18 @@ $selectedUser = $osiris->persons->findone(['user' => $scientist]);
                 <?= lang('Department network', 'Abteilungs-Netzwerk') ?>
             </h5>
             <img src="<?= ROOTPATH ?>/img/charts/departments.svg" alt="" class="w-full">
+        </a>
+        <a href="<?= ROOTPATH ?>/visualize/openaccess" class="tile">
+            <h5 class="title">
+                <?= lang('Open Access') ?>
+            </h5>
+            <img src="<?= ROOTPATH ?>/img/charts/open-access.png" alt="" class="w-full">
+        </a>
+        <a href="<?= ROOTPATH ?>/visualize/map" class="tile">
+            <h5 class="title">
+                <?= lang('Collaborator-Map', 'Kooperations-Karte') ?>
+            </h5>
+            <img src="<?= ROOTPATH ?>/img/charts/map.png" alt="" class="w-full">
         </a>
     </div>
 </div>

@@ -1,17 +1,17 @@
 <?php
-    
+
 /**
  * Page to show user achievements
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /achievements/<username>
  *
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -25,7 +25,16 @@
 
     <?php
     // SassCompiler::run("scss/", "css/");
-    ?>
+    if ($scientist['hide_achievements'] ?? false) { ?>
+        <div class="alert signal">
+            <?= lang('This person has disabled achievements in their profile.', 'Diese Person hat Errungenschaften im Profil ausgeschaltet.') ?>
+        </div>
+
+    <?php
+        echo "</div>";
+        include BASEPATH . "/footer.php";
+        die;
+    } ?>
 
     <link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
 

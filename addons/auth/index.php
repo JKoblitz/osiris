@@ -83,6 +83,7 @@ Route::post('/auth/new-user', function () {
     $person['roles'] = [];
     if (boolval($person['is_scientist'] ?? false)) $person['roles'][] = 'scientist';
 
+    // $person['depts'] = array_reverse($person['depts']);
     $person['is_active'] = true;
     $osiris->persons->insertOne($person);
 

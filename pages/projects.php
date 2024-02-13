@@ -4,14 +4,14 @@
  * Page to see all projects
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /projects
  *
  * @package     OSIRIS
  * @since       1.2.2
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -29,6 +29,15 @@ function val($index, $default = '')
         return htmlspecialchars($val);
     }
     return $val;
+}
+
+$pagetitle = lang('Projects', 'Projekte');
+$filter = [];
+if (!$Settings->hasPermission('projects.view')) {
+    $filter = [
+        'persons.user' => $_SESSION['username']
+    ];
+    $pagetitle = lang('My projects', 'Meine Projekte');
 }
 
 ?>
@@ -50,20 +59,32 @@ function val($index, $default = '')
     }
 </style>
 
+<div class="btn-toolbar float-right">
+    <a href="<?= ROOTPATH ?>/visualize/map" class="btn primary">
+        <i class="ph ph-map-trifold"></i>
+        <?= lang('Show on map', 'Zeige auf Karte') ?>
+    </a>
+    <!-- <a href="#<?= ROOTPATH ?>/visualize/projects" class="btn primary" onclick="todo()">
+        <i class="ph ph-chart-line-up"></i>
+        <?= lang('Show metrics', 'Zeige Metriken') ?>
+    </a> -->
+</div>
+
 <h1 class="mt-0">
     <i class="ph ph-tree-structure text-osiris"></i>
-    <?= lang('Projects', 'Projekte') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
+    <?= $pagetitle ?>
 </h1>
 
 
+<?php if ($Settings->hasPermission('projects.add')) { ?>
+    <a href="<?= ROOTPATH ?>/projects/new" class="mb-10 d-inline-block">
+        <i class="ph ph-plus"></i>
+        <?= lang('Add new project', 'Neues Projekt anlegen') ?>
+    </a>
+<?php } ?>
 
-<a href="<?= ROOTPATH ?>/projects/new" class="mb-10 d-inline-block">
-    <i class="ph ph-plus"></i>
-    <?= lang('Add new project', 'Neues Projekt anlegen') ?>
-</a>
 
-<div class="btn-toolbar float-sm-right">
+<div class="btn-toolbar float-sm-right filters">
     <span>
         <i class="ph ph-funnel-simple"></i>
         <span class="sr-only">Filters</span>
@@ -76,6 +97,7 @@ function val($index, $default = '')
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filter-status-btn" style="min-width: auto;">
             <a onclick="filterStatus(this, '<?= lang('approved', 'bewilligt') ?>')" class="item"><span class='badge success'><?= lang('approved', 'bewilligt') ?></span></a>
+            <a onclick="filterStatus(this, '<?= lang('finished', 'abgeschlossen') ?>')" class="item"><span class='badge success'><?= lang('finished', 'abgeschlossen') ?></span></a>
             <a onclick="filterStatus(this, '<?= lang('applied', 'beantragt') ?>')" class="item"><span class='badge signal'><?= lang('applied', 'beantragt') ?></span></a>
             <a onclick="filterStatus(this, '<?= lang('rejected', 'abgelehnt') ?>')" class="item"><span class='badge danger'><?= lang('rejected', 'abgelehnt') ?></span></a>
             <a onclick="filterStatus(this, '<?= lang('expired', 'abgelaufen') ?>')" class="item"><span class='badge dark'><?= lang('expired', 'abgelaufen') ?></span></a>
@@ -100,7 +122,7 @@ function val($index, $default = '')
     <thead>
         <th><?= lang('ID', 'ID') ?></th>
         <!-- <th><?= lang('Title', 'Title') ?></th> -->
-        <th><?= lang('Third-party funder', 'Drittmittelgeber') ?></th>
+        <th><?= lang('Funder', 'Mittelgeber') ?></th>
         <th><?= lang('Project time', 'Projektlaufzeit') ?></th>
         <th><?= lang('Role', 'Rolle') ?></th>
         <th><?= lang('Contact person', 'Kontaktperson') ?></th>
@@ -109,7 +131,7 @@ function val($index, $default = '')
     </thead>
     <tbody>
         <?php
-        $projects = $osiris->projects->find([]);
+        $projects = $osiris->projects->find($filter);
         foreach ($projects as $project) {
             $Project->setProject($project);
         ?>
@@ -121,7 +143,7 @@ function val($index, $default = '')
                 </td>
                 <td>
                     <?= $project['funder'] ?? '-' ?>
-                    (<?= $project['funding_number'] ?? '-' ?>)
+                    (<?= $Project->getFundingNumbers('<br>') ?>)
                 </td>
                 <td>
                     <?= $Project->getDateRange() ?>
@@ -147,22 +169,7 @@ function val($index, $default = '')
 
 
 
-
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-
 <script>
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control sm d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
     var dataTable;
     $(document).ready(function() {
         dataTable = $('#project-table').DataTable({
@@ -171,8 +178,8 @@ function val($index, $default = '')
                 [2, 'desc'],
             ]
         });
-        
-        $('#project-table_wrapper').prepend($('.btn-toolbar'))
+
+        $('#project-table_wrapper').prepend($('.filters'))
     });
 
     function filterStatus(btn, status) {

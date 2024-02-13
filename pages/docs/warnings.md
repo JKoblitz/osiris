@@ -1,6 +1,6 @@
 # <i class="ph ph-exclamation-triangle text-osiris"></i> Warnungen
 
-Um bekannte Fehlerquellen und Probleme zu vermeiden, führt OSIRIS im Hintergrund eine ganze Reihe von Logik-Checks durch. Sollten dabei Probleme gefunden werden, werden diese entweder automatisch behoben (sofern möglich) oder an die Nutzer:innen zurückgespielt. 
+Um bekannte Fehlerquellen und Probleme zu vermeiden, führt OSIRIS im Hintergrund eine ganze Reihe von Logik-Checks durch. Sollten dabei Probleme gefunden werden, werden diese entweder automatisch behoben (sofern möglich) oder an die Personen zurückgespielt. 
 
 # Die Seite "Warnungen"
 
@@ -62,7 +62,7 @@ an denen du ebenfalls beteiligt warst. Das System versucht, diese automatisch zu
 in dieser Liste auftauchen. Allerdings kann dabei sehr viel schief gehen. Für die Berichterstattung ist es z.B. 
 nicht nur wichtig, dass die bibliographischen Daten korrekt sind, die Nutzer müssen auch korrekt zugeordnet sein. 
 Deshalb ist es wichtig, **ob du das überhaupt bist** (oder vielleicht jemand mit einem ähnlichen Namen), 
-dass **dein Name korrekt geschrieben** ist und du außerdem **der DSMZ zugehörig** bist. 
+dass **dein Name korrekt geschrieben** ist und du außerdem **dem Institut zugehörig** bist. 
 
 <q>**Ich habe diese Aktivität doch aber schon einmal bestätigt.**</q><br>
 Das kann sehr gut sein. Denn sobald eine Aktivität bearbeitet wird, und sei es nur, dass ein Dokument hinterlegt oder ein Rechtschreibfehler im Titel korrigiert wurde, wird die Bestätigung aller Autoren zurückgesetzt. Dadurch soll vermieden werden, dass ohne dein Wissen bereits bestätigte Aktivitäten bearbeitet werden. 
@@ -83,10 +83,10 @@ Die Warnmeldung sieht folgendermaßen aus:
     </p>
     <div class="" id="approve-632da4672199cd3df8dbc166">
                                     Bitte bestätige (evtl. erneut), dass du Autor:in bist:                                                <br>
-        <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
+        <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war dem Institut angehörig">
             <i class="ph ph-check ph-fw"></i>
         </span>
-        <span class="btn btn-sm text-signal" data-toggle="tooltip" data-title="Ja, aber ich war nicht der DSMZ angehörig">
+        <span class="btn btn-sm text-signal" data-toggle="tooltip" data-title="Ja, aber ich war nicht dem Institut angehörig">
             <i class="ph ph-push-pin-slash ph-fw"></i>
         </span>
         <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Nein, das bin ich nicht">
@@ -103,9 +103,9 @@ Die Warnmeldung sieht folgendermaßen aus:
 
 Wie man sehen kann, befinden sich unter der Aktivität fünf Knöpfe: die ersten drei führen eine Aktion aus, die anderen beiden sind Links zu anderen Seiten. Bei allen Aktionen wird die Warnung gelöst und verschwindet somit von der Warnungs-Seite. Die Knöpfe tun im Detail folgendes:
 
-<i class="ph ph-check ph-fw text-success mr-10"></i> Hier kannst du die Aktivität bestätigen, wenn das tatsächlich deine Aktivität ist und du dabei Autor der DSMZ warst. Du erhältst Coins für die Aktivität und wirst im Reporting als DSMZ-Autor berichtet.
+<i class="ph ph-check ph-fw text-success mr-10"></i> Hier kannst du die Aktivität bestätigen, wenn das tatsächlich deine Aktivität ist und du dabei Autor mit dem Institut affiliert warst. Du erhältst Coins für die Aktivität und wirst im Reporting berücksichtigt.
 
-<i class="ph ph-push-pin-slash ph-fw text-signal mr-10"></i> Hiermit bestätigst du, dass es sich zwar um deine Aktivität handelt, du aber nicht Autor der DSMZ warst. Die Aktivität taucht in deinem Profil auf, du bekommst aber keine Coins dafür. 
+<i class="ph ph-push-pin-slash ph-fw text-signal mr-10"></i> Hiermit bestätigst du, dass es sich zwar um deine Aktivität handelt, du aber nicht Autor des Instituts warst. Die Aktivität taucht in deinem Profil auf, du bekommst aber keine Coins dafür. 
 
 <i class="ph ph-x ph-fw text-danger mr-10"></i> Das bist du nicht. Hiermit entfernst du die Aktivität aus deinem Profil. 
 

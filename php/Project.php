@@ -4,17 +4,18 @@
  * Class for all project associated methods.
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @package OSIRIS
  * @since 1.2.2
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
 
 require_once "DB.php";
+require_once "Country.php";
 
 class Project
 {
@@ -42,6 +43,8 @@ class Project
                 return "<span class='badge success'>" . lang('approved', 'bewilligt') . "</span>";
             case 'rejected':
                 return "<span class='badge danger'>" . lang('rejected', 'abgelehnt') . "</span>";
+            case 'finished':
+                return "<span class='badge success'>" . lang('finished', 'abgeschlossen') . "</span>";
             default:
                 return "<span class='badge'>-</span>";
         }
@@ -53,6 +56,56 @@ class Project
             return "<span class='badge'>" . '<i class="ph ph-crown text-signal"></i> ' . lang('Coordinator', 'Koordinator') . "</span>";
         }
         return "<span class='badge'>" . '<i class="ph ph-handshake text-muted"></i> ' . lang('Partner') . "</span>";
+    }
+
+    public static function getCollaboratorIcon($collab, $cls = "")
+    {
+        switch ($collab) {
+            case 'Education':
+                return '<i class="ph ' . $cls . ' ph-graduation-cap"></i>';
+            case 'Healthcare':
+                return '<i class="ph ' . $cls . ' ph-heartbeat"></i>';
+            case 'Company':
+                return '<i class="ph ' . $cls . ' ph-buildings"></i>';
+            case 'Archive':
+                return '<i class="ph ' . $cls . ' ph-archive"></i>';
+            case 'Nonprofit':
+                return '<i class="ph ' . $cls . ' ph-hand-coins"></i>';
+            case 'Government':
+                return '<i class="ph ' . $cls . ' ph-bank"></i>';
+            case 'Facility':
+                return '<i class="ph ' . $cls . ' ph-warehouse"></i>';
+            case 'Other':
+                return '<i class="ph ' . $cls . ' ph-house"></i>';
+            default:
+                return '<i class="ph ' . $cls . ' ph-house"></i>';
+        }
+    }
+
+    public function getPurpose()
+    {
+        switch ($this->project['purpose'] ?? '') {
+            case "research":
+                return lang('Research', 'Forschung');
+            case "teaching":
+                return lang('Teaching', 'Lehre');
+            case "promotion":
+                return lang('Promotion of young scientists', 'Förderung des wissenschaftlichen Nachwuchs');
+            case "transfer":
+                return lang('Transfer', 'Transfer');
+            case "others":
+                return lang('Other purpose', 'Sonstiger Zweck');
+            default:
+                return '-';
+        }
+    }
+    function getFundingNumbers($seperator)
+    {
+        if (!isset($this->project['funding_number']) || empty($this->project['funding_number']))
+            return '-';
+        if (is_string($this->project['funding_number']))
+            return $this->project['funding_number'];
+        return implode($seperator, $this->project['funding_number']->bsonSerialize());
     }
 
     /**
@@ -81,11 +134,11 @@ class Project
         return false;
     }
 
-    public static function personRole($role, $gender='n')
+    public static function personRole($role, $gender = 'n')
     {
         switch ($role) {
             case 'PI':
-                return lang('Project lead', 'Projektleitung');
+                return '<i class="ph ph-crown text-signal"></i>' . lang('Project lead', 'Projektleitung');
             case 'worker':
                 return lang('Project member', 'Projektmitarbeiter');
             default:
@@ -95,7 +148,7 @@ class Project
 
     public function widgetSmall()
     {
-        $widget = '<a class="module '.($this->inPast() ? 'inactive': '').'" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
         $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
@@ -104,10 +157,21 @@ class Project
         return $widget;
     }
 
-
-    public function widgetLarge($user=null)
+    public function widgetPortal()
     {
-        $widget = '<a class="module '.($this->inPast() ? 'inactive': '').'" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget = '<a class="module" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
+        $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
+        $widget .= '<p class="d-block text-muted">' . $this->project['title'] . '</p>';
+        $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
+        $widget .= '<span class="text-muted">' . $this->getDateRange() . '</span>';
+        $widget .= '</a>';
+        return $widget;
+    }
+
+
+    public function widgetLarge($user = null)
+    {
+        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
 
         $widget .= '<span class="float-right">' . $this->getDateRange() . '</span>';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
@@ -118,7 +182,7 @@ class Project
         else {
             $userrole = '';
             foreach ($this->project['persons'] as $p) {
-                if ($p['user'] == $user){
+                if ($p['user'] == $user) {
                     $userrole = $p['role'];
                     break;
                 }
@@ -128,10 +192,55 @@ class Project
         $widget .= '<span class="mr-10">' . $this->getStatus() . '</span> ';
         $widget .= '<span class="mr-10">' . $this->project['funder'];
         if (!empty($this->project['funding_number'])) {
-            $widget .= " (" . $this->project['funding_number'] . ")";
+            $widget .= " (" . $this->getFundingNumbers(', ') . ")";
         }
         $widget .=  '</span>';
         $widget .= '</a>';
         return $widget;
+    }
+
+    public function getScope()
+    {
+        $DB = new DB();
+        $req = $DB->db->adminGeneral->findOne(['key' => 'affiliation']);
+        $institute = DB::doc2Arr($req['value']);
+        $institute['role'] = $this->project['role'] ?? 'Partner';
+
+        $collaborators = DB::doc2Arr($this->project['collaborators'] ?? []);
+        if (!empty($collaborators)){
+            $collaborators = array_merge($collaborators, [$institute]);
+        }
+
+        $scope = 'local';
+        $countries = array_column($collaborators, 'country');
+        if (empty($countries)) return ['scope' => $scope, 'region' => '-'];
+
+        $scope = 'national';
+        $countries = array_unique($countries);
+        if (count($countries) == 1) return ['scope' => $scope, 'region' => Country::get($countries[0])];
+
+        $scope = 'continental';
+        $continents = [];
+        foreach ($countries as $code) {
+            $continents[] = Country::countryToContinent($code);
+        }
+        $continents = array_unique($continents);
+        if (count($continents) == 1) return ['scope' => $scope, 'region' => $continents[0]];
+
+        $scope = 'international';
+        return ['scope' => $scope, 'region' => 'world'];
+    }
+
+    public function getContinents()
+    {
+        $collaborators = DB::doc2Arr($this->project['collaborators'] ?? []);
+        $countries = array_column($collaborators, 'country');
+        $countries = array_unique($countries);
+        $continents = [];
+        foreach ($countries as $code) {
+            $continents[] = Country::countryToContinent($code);
+        }
+        $continents = array_unique($continents);
+        return $continents;
     }
 }

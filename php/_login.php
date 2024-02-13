@@ -10,35 +10,26 @@ if (!defined(LDAP_IP)) {
     }
 }
 
-if (!isset($Settings)) {
-    require_once BASEPATH . '/php/Settings.php';
-    global $Settings;
-    $Settings = new Settings();
-}
+require_once BASEPATH . '/php/Groups.php';
+// if (!isset($Groups)) {
+//     global $Groups;
+//     $Groups = new Groups();
+// }
 
 function login($username, $password)
 {
-    global $Settings;
     $return = array("msg" => '', "success" => false);
 
     if (!defined('LDAP_IP')) {
-        // LEGACY: try to read from settings.json
-        if (!isset($Settings->settings['ldap'])) {
-            die("LDAP Settings are missing. Please enter details in CONFIG.php");
-        }
-        $set = $Settings->settings['ldap'];
-        $ip = $set['ip'];
-        $ldap_port = $set['port'];
-        $dn = $username . $set['domain'];
-        $base_dn = $set['basedn']; // ldap rdn oder dn
+        die("LDAP Settings are missing. Please enter details in CONFIG.php");
     } else {
         $ip = LDAP_IP;
         $ldap_port = LDAP_PORT;
         $dn = $username . LDAP_DOMAIN;
         $base_dn = LDAP_BASEDN;
     }
-
-    $ldap_address = "ldap://" . $ip;
+    if ($ldap_port == 636) $ldap_address = "ldaps://" . $ip;
+    else $ldap_address = "ldap://" . $ip;
 
 
 
@@ -56,19 +47,23 @@ function login($username, $password)
             $fields = "(|(samaccountname=$person))";
 
             $search = ldap_search($connect, $base_dn, $fields);
-            $result = ldap_get_entries($connect, $search);
+            if ($search === false) {
+                $return['msg'] = "Login failed or user not found.";
+            } else {
+                $result = ldap_get_entries($connect, $search);
 
-            $ldap_username = $result[0]['samaccountname'][0];
-            $ldap_first_name = $result[0]['givenname'][0];
-            $ldap_last_name = $result[0]['sn'][0];
+                $ldap_username = $result[0]['samaccountname'][0];
+                $ldap_first_name = $result[0]['givenname'][0];
+                $ldap_last_name = $result[0]['sn'][0];
 
-            $_SESSION['username'] = $ldap_username;
-            $_SESSION['name'] = $ldap_first_name . " " . $ldap_last_name;
-            $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $ldap_username;
+                $_SESSION['name'] = $ldap_first_name . " " . $ldap_last_name;
+                $_SESSION['loggedin'] = true;
 
-            $return["status"] = true;
+                $return["status"] = true;
 
-            ldap_close($connect);
+                ldap_close($connect);
+            }
         } else {
             // Login fehlgeschlagen / Benutzer nicht vorhanden
             $return["msg"] = "Login failed or user not found.";
@@ -83,17 +78,7 @@ function login($username, $password)
 function getUser($name)
 {
     if (!defined('LDAP_IP')) {
-        global $Settings;
-        // LEGACY: try to read from settings.json
-        if (!isset($Settings->settings['ldap'])) {
-            die("LDAP Settings are missing. Please enter details in CONFIG.php");
-        }
-        $set = $Settings->settings['ldap'];
-        $ip = $set['ip'];
-        $ldap_port = $set['port'];
-        $password = $set['password'];
-        $dn = $set['user'] . $set['domain'];
-        $base_dn = $set['basedn'];
+        die("LDAP Settings are missing. Please enter details in CONFIG.php");
     } else {
         $ip = LDAP_IP;
         $ldap_port = LDAP_PORT;
@@ -101,8 +86,8 @@ function getUser($name)
         $base_dn = LDAP_BASEDN;
         $password = LDAP_PASSWORD;
     }
-
-    $ldap_address = "ldap://" . $ip;
+    if ($ldap_port == 636) $ldap_address = "ldaps://" . $ip;
+    else $ldap_address = "ldap://" . $ip;
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -120,6 +105,9 @@ function getUser($name)
             $fields = "(|(samaccountname=*$name*))";
 
             $search = ldap_search($connect, $base_dn, $fields);
+            if ($search === false) {
+                return "Login fehlgeschlagen / Benutzer nicht vorhanden";
+            }
             $result = ldap_get_entries($connect, $search);
             // dump(ldap_get_dn($connect, ldap_first_entry($connect, $search)));
             // dump(ldap_first_entry($connect, $search))['uid'];
@@ -146,17 +134,7 @@ function getUser($name)
 function getUsers()
 {
     if (!defined('LDAP_IP')) {
-        global $Settings;
-        // LEGACY: try to read from settings.json
-        if (!isset($Settings->settings['ldap'])) {
-            die("LDAP Settings are missing. Please enter details in CONFIG.php");
-        }
-        $set = $Settings->settings['ldap'];
-        $ip = $set['ip'];
-        $ldap_port = $set['port'];
-        $password = $set['password'];
-        $dn = $set['user'] . $set['domain'];
-        $base_dn = $set['basedn'];
+        die("LDAP Settings are missing. Please enter details in CONFIG.php");
     } else {
         $ip = LDAP_IP;
         $ldap_port = LDAP_PORT;
@@ -164,8 +142,8 @@ function getUsers()
         $base_dn = LDAP_BASEDN;
         $password = LDAP_PASSWORD;
     }
-
-    $ldap_address = "ldap://" . $ip;
+    if ($ldap_port == 636) $ldap_address = "ldaps://" . $ip;
+    else $ldap_address = "ldap://" . $ip;
 
     if ($connect = ldap_connect($ldap_address . ":" . $ldap_port)) {
         // Verbindung erfolgreich
@@ -183,6 +161,9 @@ function getUsers()
             $fields = "(|(samaccountname=*))";
 
             $search = ldap_search($connect, $base_dn, $fields);
+            if ($search === false) {
+                return "Login fehlgeschlagen / Benutzer nicht vorhanden";
+            }
             $result = ldap_get_entries($connect, $search);
             // return $result;
             // $ldap_username = $result[0]['samaccountname'][0];
@@ -217,7 +198,7 @@ function getGroups($v)
 
 function newUser($username)
 {
-    $Settings = new Settings();
+    $Groups = new Groups();
     // get user from ldap
     $ldap_users = getUser($username);
     if (empty($ldap_users) || $ldap_users['count'] == 0) return false;
@@ -244,13 +225,11 @@ function newUser($username)
     $person['dept'] = null;
 
     $departments = [];
-    foreach ($Settings->get('departments') as $D) {
+    foreach ($Groups->groups as $D) {
         $departments[strtolower($D['id'])] = $D['id'];
         $departments[strtolower($D['name'])] = $D['id'];
     }
     $unit = strtolower($person['unit']);
-    $departments['science policy'] = 'SPI';
-    $departments['bid'] = 'BIDB';
     if (array_key_exists($unit, $departments))
         $person['dept'] = $departments[$unit];
     else {
@@ -259,11 +238,6 @@ function newUser($username)
             $person['dept'] = $departments[$unit];
     }
 
-
-    // $person['is_admin'] = false;
-    // $person['is_controlling'] = $person['department'] == "Controlling";
-    // $person['is_scientist'] = false;
-    // $person['is_leader'] = str_contains($person['unit'], "leitung");
     $person['is_active'] = !str_contains($ldap_user['dn'], 'DeaktivierteUser');
     $person['created'] = date('Y-m-d');
     $person['roles'] = [];

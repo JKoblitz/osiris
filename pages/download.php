@@ -3,14 +3,14 @@
  * Page to download activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /download
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -33,9 +33,6 @@
     <form action="<?= ROOTPATH ?>/download" method="post">
 
         <h3><?= lang('Export activities', 'Exportiere Aktivitäten') ?></h3>
-
-        <p class="text-danger">Die Download-Funktion ist noch im Beta-Status. Bug reports gern an <a href="mailto:julia.koblitz@dsmz.de?subject=[OSIRIS] Bug Report Downloads">mich</a>.</p>
-
 
         <div class="form-group">
             <label for="filter-type"><?= lang('Filter by type', 'Filter nach Art der Aktivität') ?></label>
@@ -65,14 +62,16 @@
 
             <div class="text-divider"><?= lang('OR', 'ODER') ?></div>
 
+            
             <div class="col">
                 <div class="ml-20">
                     <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
                     <select name="filter[dept]" id="dept" class="form-control">
                         <option value=""><?= lang('All departments', 'Alle Abteilungen') ?></option>
                         <?php
-                        foreach ($Settings->getDepartments() as $d => $dept) { ?>
-                            <option value="<?= $dept['id'] ?>"><?= $dept['name'] ?></option>
+
+                        foreach ($Departments as $d => $dept) { ?>
+                            <option value="<?= $d ?>"><?= $dept ?></option>
                         <?php } ?>
                     </select>
                 </div>

@@ -1,5 +1,140 @@
 # Neuigkeiten
 
+## 09.02.2024
+<a class="anchor" href="#version-1.3.0" id="version-1.3.0"></a>
+`Version 1.3.0`
+
+
+# Version 1.3.0
+
+
+#### <i class="ph ph-sparkle text-osiris"></i> Neues Design
+- OSIRIS erstrahlt im neuen Design, das jetzt noch moderner (und etwas weniger orange-lastig) ist.
+
+#### <i class="ph ph-user-gear text-osiris"></i> Biographie wurde hinzugefügt
+- Position kann erfasst werden
+- Forschungsinteressen können angegeben werden
+- CV kann hinzugefügt werden (mit Download-Funktion)
+
+#### <i class="ph ph-users-three text-osiris"></i> Organisationseinheiten wurden hinzugefügt
+- Die Hierarchie des Organigramms kann abgebildet werden
+- Anzeige als
+  - Karten
+  - Hierarchie
+  - Organigramm
+- Einheiten anzeigen, hinzufügen, bearbeiten, löschen
+- Eine Einheit kann einen oder mehrere Leiter:innen haben
+- Eine Person kann mehreren Einheiten zugeordnet werden
+- Übersichtsseite:
+  - Beschreibung auf deutsch und englisch
+  - Forschungsinteressen
+  - Lister der Mitarbeitenden Personen
+  - Übersicht aller Publikationen und anderer Aktivitäten
+  - Projekte der Gruppe
+  - Word Cloud
+  - Zusammenarbeit mit anderen Gruppen (falls vorhanden)
+- Zugangsbeschränkung und Rechte wurden hinzugefügt
+
+#### <i class="ph ph-tree-structure text-osiris"></i> Projekte wurden hinzugefügt
+- Projekte anzeigen, hinzufügen, bearbeiten, löschen
+- Personen mit Rolle im Projekt verknüpfen
+- Kooperationspartner verknüpfen (semi-automatisch dank ROR-Intergration)
+  - Visualisierung auf einer Karte
+  - Gesamtübersicht auf Karte
+- Aktivitäten verknüpfen
+  - Wenn in Crossref der Funder hinterlegt ist und die Fundingnummer existiert, wird das Projekt automatisch verknüpft
+  - Download aller verknüpften Aktivitäten
+<!-- - *Metriken und Visualisierung* -->
+
+#### <i class="ph ph-circles-three-plus text-osiris"></i> Verschlagwortung von Aktivitäten ist möglich
+- Rudimentäre Verknüpfung von Schlagwörtern (mit Links und Kategorien)
+- Gruppierung nach Entität
+- **Achtung**: Es handelt sich um einen sehr rudimentären Prototypen, der später noch weiter ausgebaut werden soll
+
+#### <i class="ph ph-lightbulb text-osiris"></i> Concepts wurden eingeführt
+- Konzepte werden von [OpenAlex](https://docs.openalex.org/api-entities/concepts) bezogen
+- Werden *automatisch* zu Publikationen hinzugefügt
+- Ansicht in der Aktivitätenseite
+- Aggregation für Nutzer:innen in der Profilseite
+- Gesamttabelle mit Suchfunktion
+- Detailseiten mit Expert:innen und allen verknüpften Aktivitäten
+  - Weitere Konzepte können zum Graph hinzugefügt werden
+
+#### <i class="ph ph-user-switch text-osiris"></i> Anmeldung von Gästen und externe Gästeformulare
+- Anmeldung von neuen Gästen in OSIRIS
+- Externes Gäste-Formular zur Ergänzung der Details und Kenntnisnahme der Belehrungen
+- Verknüpfung weiterer Daten, z.B. Nutzer:in, Dokumente
+<!-- - *Emails werden an Betreuer und Verantwortliche geschickt* -->
+<!-- - *Im Profil des Betreuers finden sich Infos zu momentanen Gästen* -->
+- Die Gästeliste ist zugangsbeschränkt
+- **Achtung**: die Gästeliste ist noch nicht 100%ig fertig. Es fehlen noch Email-Benachrichtigungen und es können noch keine Dokumente und keine Schlüsselcodes hinterlegt werden.
+
+#### <i class="ph ph-eye text-osiris"></i> Port*folio*: das Forschungs-Portal
+- Die Darstellung von Forschungsinformationen nach außen soll durch das Port*folio* möglich werden
+- Vorschau-Seiten wurden hinzugefügt, um die Außendarstellung zu sehen
+- Übersichtstabellen wurden hinzugefügt
+- Es wurde begonnen, Port*folio* zu implementieren
+
+#### <i class="ph ph-gear text-osiris"></i> Verbessertes Admin-Dashboard
+- Die Einstellungen werden jetzt in der Datenbank gespeichert
+- Das Institutslogo wird nun in der Datenbank gespeichert, was in einigen Fällen Probleme mit Schreibrechten umgeht
+- Features
+  - Einzelne Features (z.B. Projekte) können jetzt zentral deaktiviert werden
+  - Es gibt nun die Möglichkeit, Profilbilder in die Datenbank zu verlagern, was in vielen Fällen Probleme mit Schreibrechten umgeht
+- Aktivitäten können jetzt besser und übersichtlicher aktualisiert werden
+  - Die Menge Coins kann für jede Aktivität definiert werden
+  - Automatisch generierte Beispiele wurden hinzugefügt
+- Rechte und Rollensystem: Detaillierte Definition von Rollen und dazugehörigen Rechten
+
+#### <i class="ph ph-student text-osiris"></i> Verbesserung der Profilseite
+- Bessere Struktur durch Navigation
+- Tabellen und Graphen werden jetzt dynamisch geladen
+- Tabellen enthalten jetzt alle Daten (paginiert und durchsuchbar)
+- Neue Verknüpfungen und Graphen
+  - Das Koautoren-Netzwerk ist hier zu finden
+  - »Andere Aktivitäten« wurde umstrukturiert
+  - Zeitstrahl für Projekte
+  - Wordcloud basierend auf Abstract und Titel von Publikationen
+- Neue Daten: Projekte und Konzepte
+- Inaktivierung von Nutzer:innen jetzt detaillierter möglich
+
+#### <i class="ph ph-folders text-osiris"></i> Aktivitätenseite überarbeitet
+- Bessere Struktur durch Navigation
+- Organisationseinheiten eingepflegt
+- Koautoren-Visualisierung
+- Verknüpfte Projekte
+- Verknüpfte Forschungsdaten
+- Verknüpfte Konzepte
+- Link zur Vorschau-Seite
+
+#### <i class="ph ph-suitcase text-osiris"></i> Aktivitätenübersicht überarbeitet
+- Neue Darstellung mit besseren Filtermöglichkeiten
+- Download der Tabelle als Excel oder CSV möglich
+- Kopieren der Tabelle möglich (Print-Version aller Aktivitäten wird in den Zwischenspeicher geladen)
+
+#### <i class="ph ph-users text-osiris"></i> Personenübersicht verbessert
+- Neue Darstellung mit Karten statt Tabelle
+- Neue Filtermöglichkeiten
+- Inaktive Mitarbeiter:innen lassen sich jetzt einfacher finden
+
+#### <i class="ph ph-star text-osiris"></i> Weiteres
+- Das Ergebnis der Erweiterten Suche lässt sich ebenfalls in die Zwischenablage kopieren und als Excel bzw. CSV herunterladen
+- Name in MyActivities
+<!-- - *Neue Achievements* -->
+- Der Code wurde umstrukturiert, sodass die Routes jetzt in mehrere Dateien gesplittet wurden
+  - Die `index.php` ist jetzt weniger überladen
+  - Die routes sind nun nach Thema sortiert
+  - POST routes wurden besser benannt und mit `/crud` geprefixt und finden sich nun ebenfalls in den thematischen routes
+  - Die verschiedenen JavaScript-Funktionen wurden in osiris.js ausgegliedert und verallgemeinert.
+
+#### ⚠ Breaking Changes
+
+Es kann sein, dass einige wenige Einstellungen von Euch nicht in das neue Format übertragen werden. Dies betrifft z.B. das Institutslogo, das durch die Umstellung auf die Datenbank erneut hochgeladen werden muss.
+
+
+
+
+
 ## 25.10.2023
 <a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>
 `Version 1.2.2`
@@ -7,7 +142,7 @@
 
 #### <i class="ph ph-tree-structure text-osiris"></i> Projekte
 
-Drittmittelprojekte wurden eingeführt.
+Projekte wurden eingeführt.
 - Eine Übersicht über alle Projekte wird als Tabelle dargestellt. Diese ist durchsuchbar und kann nach Status und Rolle des Instituts gefiltert werden.
 - Durch Klick auf den Kurznamen gelangt man zur Übersichtsseite eines Projektes. Hier sind die folgenden Details dargestellt:
   - Eine Übersicht über alle Projektinformationen ist als Tabelle dargestellt

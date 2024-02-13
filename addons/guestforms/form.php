@@ -1,6 +1,5 @@
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/moment.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.daterangepicker.min.js"></script>
 
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/script.js"></script>
@@ -21,7 +20,7 @@
         <?= lang('Guest Forms', 'Gast anmelden') ?>
     </h1>
     <div class="alert danger mb-20">
-    <p class="text-danger lead">
+    <p class="text-danger">
         Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
     </p>
 </div>

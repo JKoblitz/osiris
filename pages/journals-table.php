@@ -3,19 +3,19 @@
  * Page to browse through journals
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /journal
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
 
-if ($Settings->hasPermission('edit-journals')) { ?>
+if ($Settings->hasPermission('journals.edit')) { ?>
     <a href="<?= ROOTPATH ?>/journal/add" class="btn osiris float-right"><?= lang('Add Journal', 'Journal hinzufügen') ?></a>
 <?php } ?>
 
@@ -42,23 +42,10 @@ if ($Settings->hasPermission('edit-journals')) { ?>
 </table>
 
 
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.naturalsort.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.naturalsort.js"></script>
 
 
 <script>
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control sm d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
     var dataTable;
     $(document).ready(function() {
         // dataTable = $('#result-table').DataTable({

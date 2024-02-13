@@ -11,6 +11,13 @@ $(document).ready(function () {
     //     var element = this;
     //     initQuill(element)
     // })
+
+    // scroll to active sidebar menu if available
+    if ($('.sidebar-menu a.active').length !== 0){
+    $('.sidebar').animate({
+        scrollTop: $(".sidebar-menu a.active").offset().top -200
+    }, 100);
+}
 })
 
 function initQuill(element) {
@@ -87,8 +94,9 @@ $('input[name=activity]').on('change', function () {
 
 })
 
-function toastError(msg = "", title = 'Error') {
-    digidive.initStickyAlert({
+function toastError(msg = "", title = null) {
+    if (title === null) title = lang("Error", "Fehler")
+    osirisJS.initStickyAlert({
         content: msg,
         title: title,
         alertType: "danger",
@@ -96,8 +104,9 @@ function toastError(msg = "", title = 'Error') {
         timeShown: 10000
     })
 }
-function toastSuccess(msg = "", title = 'Success') {
-    digidive.initStickyAlert({
+function toastSuccess(msg = "", title = null) {
+    if (title === null) title = lang("Success", "Erfolg")
+    osirisJS.initStickyAlert({
         content: msg,
         title: title,
         alertType: "success",
@@ -105,8 +114,9 @@ function toastSuccess(msg = "", title = 'Success') {
         timeShown: 10000
     })
 }
-function toastWarning(msg = "", title = 'Warning') {
-    digidive.initStickyAlert({
+function toastWarning(msg = "", title = null) {
+    if (title === null) title = lang("Warning", "Achtung")
+    osirisJS.initStickyAlert({
         content: msg,
         title: title,
         alertType: "signal",
@@ -423,7 +433,7 @@ function selectJournal(j, n = false) {
                 values: j
             },
             dataType: "json",
-            url: ROOTPATH + '/create-journal',
+            url: ROOTPATH + '/crud/journal/create',
             success: function (response) {
                 // $('.loader').removeClass('show')
                 console.log(response);
@@ -780,6 +790,16 @@ function getDOI(doi) {
             var issue = null
             if (pub['journal-issue'] !== undefined) issue = pub['journal-issue'].issue
 
+            var funder = [];
+            if (pub.funder !== undefined && pub.funder !== null) {
+                pub.funder.forEach(f => {
+                    if (f.award) {
+                        funder = funder.concat(f.award)
+                    }
+                });
+            }
+            console.log(funder);
+
             var pubdata = {
                 title: pub.title[0],
                 first_authors: first,
@@ -802,6 +822,7 @@ function getDOI(doi) {
                 city: pub['publisher-location'],
                 // open_access: pub.open_access,
                 epub: (pub['published-print'] === undefined && pub['published-online'] === undefined),
+                funding: funder.join(',')
             }
             toggleForm(pubdata)
             getOpenAccessStatus(doi)
@@ -821,7 +842,7 @@ function getOpenAccessStatus(doi) {
     var url = 'https://api.openalex.org/works'
     var data = { mailto: 'juk20@dsmz.de' }
     url += '/https://doi.org/' + doi
-    
+
     $.ajax({
         type: "GET",
         data: data,
@@ -837,7 +858,7 @@ function getOpenAlexDOI(doi) {
     var url = 'https://api.openalex.org/works'
     var data = { mailto: 'juk20@dsmz.de' }
     url += '/https://doi.org/' + doi
-    
+
     $.ajax({
         type: "GET",
         data: data,
@@ -877,10 +898,10 @@ function getOpenAlexDOI(doi) {
                     authors.push(name)
                 });
             }
-            
+
             var journal = pub.primary_location
             var pages = pub.biblio.first_page
-            if (pub.biblio.last_page) pages += '-'+pub.biblio.last_page
+            if (pub.biblio.last_page) pages += '-' + pub.biblio.last_page
             var pubdata = {
                 title: pub.title,
                 first_authors: first,
@@ -1131,12 +1152,15 @@ function fillForm(pub) {
         'date_start',
         'software_doi',
         'open_access',
-        'abstract'
+        'abstract',
+        'funding'
     ]
 
     elements.forEach(element => {
         if (pub[element] !== undefined && !UPDATE || !isEmpty(pub[element]))
             $('#' + element).val(pub[element]).addClass('is-valid')
+        console.log(element);
+        console.log(pub[element]);
         // console.log($('#' + element));
     });
 
@@ -1193,20 +1217,23 @@ function fillForm(pub) {
 
         affiliationCheck();
     }
+    // if (pub.funder.length > 0){
+    //     funder
+    // }
 
     toastSuccess('Bibliographic data were updated.')
 
 }
 
-function fillOpenAccess(oa){
-    if (oa === false || oa == 'closed'){
+function fillOpenAccess(oa) {
+    if (oa === false || oa == 'closed') {
         $('#open_access-0').attr('checked', true)
         $('#oa_status option[value=closed]').attr('selected', true)
     } else {
         if (oa === true) oa = 'open'
         console.log(oa);
         $('#open_access').attr('checked', true)
-        $('#oa_status option[value='+oa+']').attr('selected', true)
+        $('#oa_status option[value=' + oa + ']').attr('selected', true)
     }
     $('#oa_status').addClass('is-valid')
 }
@@ -1423,7 +1450,7 @@ function removeAuthor(event, el) {
 // }
 
 function todo() {
-    digidive.initStickyAlert({
+    osirisJS.initStickyAlert({
         content: lang('Sorry, but this button does not work yet.', 'Sorry, aber der Knopf funktioniert noch nicht.'),
         title: '<i class="ph ph-smiley-sad ph-3x text-signal"></i>',
         alertType: "",
@@ -1577,7 +1604,7 @@ function updateCart(add = true) {
 
 function addToCart(el, id) {//.addClass('animate__flip')
     // document.cookie = "username=John Doe; expires=Thu, 18 Dec 2013 12:00:00 UTC"; 
-    var fav = digidive.readCookie('osiris-cart')
+    var fav = osirisJS.readCookie('osiris-cart')
     if (fav) {
         var favlist = fav.split(',')
         console.log(favlist);
@@ -1601,7 +1628,7 @@ function addToCart(el, id) {//.addClass('animate__flip')
         console.info("add");
         updateCart(true)
     }
-    digidive.createCookie('osiris-cart', fav, 30)
+    osirisJS.createCookie('osiris-cart', fav, 30)
     if (el === null) {
         location.reload()
     } else {
@@ -1716,7 +1743,7 @@ function doubletCheck() {
 
     var form = objectifyForm($('#activity-form'))
     console.log(form);
-    if (form['values[start]']){
+    if (form['values[start]']) {
         var start = form['values[start]'].split('-')
         form['values[year]'] = start[0]
         form['values[month]'] = start[1]
@@ -1737,7 +1764,7 @@ function doubletCheck() {
                 // doublet.find('a')
                 // .attr('href', ROOTPATH + '/activities/' + data[])
                 $('.loader').removeClass('show')
-                if (!doubletFound){
+                if (!doubletFound) {
                     doubletFound = true;
                     // toastWarning(lang('Possible douplicate found.', 'Mögliche Dublette gefunden.'))
                 }

@@ -3,14 +3,14 @@
  * Page for dashboard (general)
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /dashboard
  *
  * @package     OSIRIS
  * @since       1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -28,18 +28,10 @@ $quarters = [];
 $years = [$y];
 
 for ($i = 0; $i < 4; $i++) {
-    $quarters["${y}Q$q"] = [
+    $quarters["{$y}Q$q"] = [
         'year' => $y,
         'quarter' => $q,
         'activities' => array(
-            "publication" => 0,
-            "poster" => 0,
-            "lecture" => 0,
-            "review" => 0,
-            "teaching" => 0,
-            "students" => 0,
-            "software" => 0,
-            "misc" => 0,
         ),
         'impacts' => []
     ];
@@ -90,9 +82,12 @@ foreach ($cursor as $doc) {
     if (in_array($year, $years)) {
         $q = getQuarter($doc);
         if (empty($q)) continue;
-        $yq = "${year}Q$q";
+        $yq = "{$year}Q$q";
         if (!isset($quarters[$yq])) continue;
 
+        if (!isset($quarters[$yq]['activities'][$type]))
+            $quarters[$yq]['activities'][$type] = 0;
+        
         $quarters[$yq]['activities'][$type]++;
 
 
@@ -191,4 +186,7 @@ foreach ($impacts as $vals) {
         }
 
     };
+
+  
+
 </script>

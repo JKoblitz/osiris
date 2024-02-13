@@ -4,17 +4,18 @@
  * Page to see all teaching modules
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /teaching
  *
  * @package     OSIRIS
  * @since       1.1.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
+include_once BASEPATH . "/php/Render.php";
 
 $Format = new Document(true);
 $form = $form ?? array();
@@ -50,7 +51,7 @@ function val($index, $default = '')
             </p>
 
 
-            <form action="<?= ROOTPATH ?>/create-teaching" method="post" enctype="multipart/form-data" id="activity-form">
+            <form action="<?= ROOTPATH ?>/crud/teaching/create" method="post" enctype="multipart/form-data" id="activity-form">
                 <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                 <div class="form-group lang-<?= lang('en', 'de') ?>">
@@ -147,7 +148,7 @@ function val($index, $default = '')
                             <i class="ph ph-edit"></i>
                             <span class="sr-only"><?= lang('Edit course', 'Veranstaltung bearbeiten') ?></span>
                         </a>
-                        <a href="<?= ROOTPATH ?>/activities/new?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching small">
+                        <a href="<?= ROOTPATH ?>/add-activity?type=teaching&teaching=<?= $module['module'] ?>" class="btn text-teaching small">
                             <i class="ph ph-plus"></i>
                             <span class="sr-only"><?= lang('Add course', 'Veranstaltung hinzufügen') ?></span>
                         </a>
@@ -172,7 +173,7 @@ function val($index, $default = '')
                     </a>
                         <table class="w-full hidden">
                             <?php foreach ($activities as $n => $doc) :
-                                if (!isset($doc['rendered'])) $DB->renderActivities(['_id' => $doc['_id']]);
+                                if (!isset($doc['rendered'])) renderActivities(['_id' => $doc['_id']]);
                             ?>
                                 <tr>
                                     <td class="pb-5">
@@ -187,7 +188,7 @@ function val($index, $default = '')
                     <?php } else { ?>
 
                         <?= lang('No activities connected.', 'Keine Aktivitäten verknüpft.') ?>
-                        <form action="<?= ROOTPATH ?>/delete-teaching/<?= strval($module['_id']) ?>" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/teaching/delete/<?= strval($module['_id']) ?>" method="post">
                             <input type="hidden" name="redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
                             <button class="btn danger small">
                                 <i class="ph ph-trash"></i>

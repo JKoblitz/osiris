@@ -1,8 +1,7 @@
 
 # <i class="ph ph-calendar text-osiris"></i> Mein Jahr
 
-
-Der Zweck der Seite "Mein Jahr" ist es, die bis Ende 2022 in der DSMZ verwendeten Excel-Tabellen zur Abfrage der Forschungsaktivitäten abzulösen. Auf dieser Seite sollen alle Aktivitäten des vergangenen Quartals noch einmal überprüft und bestätigt werden. 
+Auf der Seite "Mein Jahr" können Wissenschaftler:innen einen Überblick über alle eigenen Forschungsaktivitäten eines Jahres gewinnen und quartalsweise bestätigen, dass alle Angaben korrekt und vollständig sind. Dabei werden die Daten an die Reportenden übermittelt.
 
 
 ## Die Warnmeldung auf der Profilseite
@@ -13,8 +12,7 @@ Wenn ein Quartal vergangen ist, erscheint auf der Startseite eines jeden Wissens
         <div class="title">Das vergangene Quartal (2022Q4) wurde von dir noch nicht freigegeben.</div>
         <p>Für das Quartalscontrolling musst du bestätigen, dass alle Aktivitäten aus dem vergangenen Quartal in OSIRIS hinterlegt und korrekt gespeichert sind.
         Gehe dazu in dein Jahr und überprüfe deine Aktivitäten. Danach kannst du über den grünen Button das Quartal freigeben.</p>
-        <span class="btn btn-success">
-            Überprüfen &amp; Freigeben</span>
+        <span class="btn btn-success">Überprüfen &amp; Freigeben</span>
     </div>
 </div>
 
@@ -58,9 +56,6 @@ Um nun das korrekte Quartal zu sehen, musst du es in folgendem Formular auswähl
                 <button class="btn btn-primary"><i class="ph ph-check"></i></button>
             </div>
         </div>
-        <p class="text-muted font-size-12 mt-0">
-            Das gesamte Jahr ist hier gezeigt. Aktivitäten außerhalb des gewählten Quartals sind ausgegraut.
-        </p>
     </div>
 </div>
 
@@ -74,7 +69,7 @@ Es folgen Boxen zu jeder einzelnen Aktivitätskategorie, die wir in OSIRIS haben
 
 Jede Aktivität ist gleich dargestellt. Das führt zu einer verbesserten Übersicht und Struktur. Gleich zu Beginn steht das Quartal, in dem die Aktivität *begonnen* hat. Sollte es sich um eine mehrjährige Aktivität handeln, bei der der Anfang der Aktivität in einem anderen Jahr liegt, ist hier zusätzlich das Jahr angegeben.
 Aktivitäten, die nicht im ausgewählten Quartal gestartet sind, sind leicht ausgegraut. 
-Es folgt die standardmäßige Darstellung der Aktivitäten, die Nutzer:innen im Profil einstellen können. Dann folgen die im Folgenden beschriebenen drei Schaltflächen und die Anzahl an Coins, dir man für die Aktivität erhalten hat. Beim Hovern über die Coins gibt ein Tooltip weitere Informationen.
+Es folgt die standardmäßige Darstellung der Aktivitäten, die Personen im Profil einstellen können. Dann folgen die im Folgenden beschriebenen drei Schaltflächen und die Anzahl an Coins, dir man für die Aktivität erhalten hat. Beim Hovern über die Coins gibt ein Tooltip weitere Informationen.
 
 <i class="ph ph-regular ph-arrow-fat-line-right mr-10 ph-fw ph-lg text-primary"></i> Hier gelangt man zur Übersichtsseite der Aktivität, auf der alle Details dargestellt werden. Außerdem gibt es dort weitere Links zum Bearbeiten und Kopieren einer Aktivität, sowie zum Autoreneditor.
 

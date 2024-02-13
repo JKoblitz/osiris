@@ -3,25 +3,24 @@
  * Page to see a journal
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /journal/view/<journal_id>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
 ?>
 
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.dataTables.naturalsort.js"></script>
+<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.naturalsort.js"></script>
 
 
-<?php if ($Settings->hasPermission('edit-journals')) { ?>
+<?php if ($Settings->hasPermission('journals.edit')) { ?>
     <a href="<?= ROOTPATH ?>/journal/edit/<?= $id ?>" class="btn osiris float-right"><?= lang('Edit Journal', 'Journal bearbeiten') ?></a>
 <?php } ?>
 
@@ -96,18 +95,6 @@
     </tbody>
 </table>
 <script>
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control sm d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
     var dataTable;
 
     $(document).ready(function() {
@@ -221,14 +208,14 @@ if ($impacts instanceof MongoDB\Model\BSONArray) {
 <div class="box">
     <div class="content">
 
-        <?php if ($Settings->hasPermission('edit-journals')) { ?>
+        <?php if ($Settings->hasPermission('journals.edit')) { ?>
             <div class="dropdown with-arrow float-right mb-20">
                 <button class="btn osiris" data-toggle="dropdown" type="button" id="dropdown-2" aria-haspopup="true" aria-expanded="false">
                     <?= lang('Add IF', 'Füge IF hinzu') ?> <i class="ph ph-fill ph-angle-down ml-5" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-2">
                     <div class="content">
-                        <form action="<?= ROOTPATH ?>/update-journal/<?= $id ?>" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/journal/update/<?= $id ?>" method="post">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <div class="form-group">
                                 <label for="year"><?= lang('Year', 'Jahr') ?></label>

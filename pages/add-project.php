@@ -4,14 +4,14 @@
  * Page to add new projects
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /projects/new
  *
  * @package     OSIRIS
  * @since       1.2.2
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -20,13 +20,13 @@ $Format = new Document(true);
 $form = $form ?? array();
 
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH ;
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "projects/update/" . $form['_id'];
+    $formaction .= "/crud/projects/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/projects/view/" . $form['_id'];
 } else {
-    $formaction .= "projects/create";
+    $formaction .= "/crud/projects/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/projects/view/*";
 }
@@ -37,6 +37,11 @@ function val($index, $default = '')
     if (is_string($val)) {
         return htmlspecialchars($val);
     }
+    if ($val instanceof MongoDB\Model\BSONArray){
+        return implode(',', DB::doc2Arr($val));
+    }
+
+
     return $val;
 }
 
@@ -51,20 +56,29 @@ function sel($index, $value)
 </style>
 
 <h3 class="title">
-    <?= lang('Add new project', 'Neues Drittmittelprojekt') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?=lang('Not for production usage', 'Nicht für den Produktions-einsatz')?>">BETA</span>
+    <?= lang('Add new project', 'Neues Projekt') ?>
 </h3>
 
 <form action="<?= $formaction ?>" method="post" id="project-form">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
 
-    <!-- <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>"> -->
-
-    <div class="form-group">
-        <label for="project" class="required element-other">
-            <?= lang('Short title', 'Kurztitel') ?>
-        </label>
-        <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>" maxlength="30">
+    <div class="row row-eq-spacing">
+        <div class="col-sm-6">
+            <label for="project" class="required element-other">
+                <?= lang('Short title', 'Kurztitel') ?>
+            </label>
+            <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>" maxlength="30">
+        </div>
+        <div class="col-sm-6">
+            <label class="required" for="type">
+                <?= lang('Type', 'Typ') ?>
+            </label>
+            <select class="form-control" id="type" name="values[type]" required autocomplete="off">
+                <option value="Drittmittel" <?= sel('type', 'Drittmittel') ?>><?= lang('Third-party funded', 'Drittmittel-finanziert') ?></option>
+                <option value="Eigenfinanziert" <?= sel('type', 'Eigenfinanziert') ?>><?= lang('Self-funded', 'Eigenfinanziert') ?></option>
+                <option value="Sonstiges" <?= sel('type', 'Sonstiges') ?>><?= lang('Other', 'Sonstiges') ?></option>
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
@@ -105,6 +119,7 @@ function sel($index, $value)
                 <option value="applied" <?= sel('status', 'applied') ?>><?= lang('applied', 'beantragt') ?></option>
                 <option value="approved" <?= sel('status', 'approved') ?>><?= lang('approved', 'bewilligt') ?></option>
                 <option value="rejected" <?= sel('status', 'rejected') ?>><?= lang('rejected', 'abgelehnt') ?></option>
+                <option value="finished" <?= sel('status', 'abgeschlossen') ?>><?= lang('finished', 'abgeschlossen') ?></option>
             </select>
         </div>
 
@@ -116,11 +131,13 @@ function sel($index, $value)
                 <?= lang('Third-party funder', 'Drittmittelgeber') ?>
             </label>
             <select class="form-control" name="values[funder]" value="<?= val('funder') ?>" required id="funder">
+                <option <?= sel('funder', 'Eigenmittel') ?>>Eigenmittel</option>
                 <option <?= sel('funder', 'DFG') ?>>DFG</option>
                 <option <?= sel('funder', 'Bund') ?>>Bund</option>
                 <option <?= sel('funder', 'Bundesländer') ?>>Bundesländer</option>
                 <option <?= sel('funder', 'Wirtschaft') ?>>Wirtschaft</option>
                 <option <?= sel('funder', 'EU') ?>>EU</option>
+                <option <?= sel('funder', 'Stiftungen') ?>>Stiftungen</option>
                 <option <?= sel('funder', 'Leibniz Wettbewerb') ?>>Leibniz Wettbewerb</option>
                 <option <?= sel('funder', 'Sonstige Drittmittelgeber') ?>>Sonstige Drittmittelgeber</option>
                 <!-- <option>Sonstige öffentliche internationale Förderorganisationen</option> -->
@@ -130,7 +147,7 @@ function sel($index, $value)
         </div>
         <div class="col-sm-4">
             <label for="funding_organization" class="required">
-                <?= lang('Funding organization', 'Förderorganisation') ?>
+                <?= lang('Funding organization', 'Förderorganisation / Zuwendungsgeber') ?>
             </label>
             <input type="text" class="form-control" name="values[funding_organization]" value="<?= val('funding_organization') ?>" id="funding_organization" required>
         </div>
@@ -139,6 +156,7 @@ function sel($index, $value)
                 <?= lang('Funding reference number', 'Förderkennzeichen') ?>
             </label>
             <input type="text" class="form-control" name="values[funding_number]" value="<?= val('funding_number') ?>" id="funding_number">
+            <span class="text-muted"><?=lang('Multiple seperated by comma', 'Mehrere durch Komma getrennt')?></span>
         </div>
     </div>
 
@@ -155,9 +173,6 @@ function sel($index, $value)
                 <option value="transfer" <?= sel('purpose', 'transfer') ?>><?= lang('Transfer', 'Transfer') ?></option>
                 <option value="others" <?= sel('purpose', 'others') ?>><?= lang('Other purpose', 'Sonstiger Zweck') ?></option>
             </select>
-            <small class="text-danger">
-                Steht im KDSF. Können wir das aufnehmen?
-            </small>
         </div>
         <div class="col-sm-4">
             <label for="role">
@@ -178,10 +193,10 @@ function sel($index, $value)
 
     <div class=" row row-eq-spacing align-items-end">
         <div class="col-sm-4">
-            <label for="start">
+            <label for="start" class="required">
                 Projektbeginn
             </label>
-            <input type="date" class="form-control" name="values[start]" value="<?= valueFromDateArray(val('start')) ?>" id="start">
+            <input type="date" class="form-control" name="values[start]" value="<?= valueFromDateArray(val('start')) ?>" id="start" required>
         </div>
         <div class="col-sm-4">
             <label for="">
@@ -195,10 +210,10 @@ function sel($index, $value)
             </div>
         </div>
         <div class="col-sm-4">
-            <label for="end">
+            <label for="end" class="required">
                 Projektende
             </label>
-            <input type="date" class="form-control" name="values[end]" value="<?= valueFromDateArray(val('end')) ?>" id="end">
+            <input type="date" class="form-control" name="values[end]" value="<?= valueFromDateArray(val('end')) ?>" id="end" required>
         </div>
     </div>
 
@@ -219,28 +234,21 @@ function sel($index, $value)
         }
     </script>
 
-    <!-- 
+    
     <div class="row row-eq-spacing">
-
-        <div class="col-sm-4">
-            <label for="">
+        <div class="col-sm-6">
+            <label for="grant_sum">
                 <?= lang('Grant amount', 'Bewilligungssumme') ?> [Euro]
             </label>
-            <input type="number" step="1" class="form-control" name="values[]">
+            <input type="number" step="1" class="form-control" name="values[grant_sum]" id="grant_sum" value="<?=val('grant_sum')?>">
         </div>
-        <div class="col-sm-4">
-            <label for="">
+        <div class="col-sm-6">
+            <label for="grant_income">
                 <?= lang('Funding income', 'Drittmitteleinnahmen') ?> [Euro]
             </label>
-            <input type="number" class="form-control" name="values[]">
+            <input type="number" step="1" class="form-control" name="values[grant_income]" id="grant_income" value="<?=val('grant_income')?>">
         </div>
-        <div class="col-sm-4">
-            <label for="">
-                <?= lang('en', 'Drittmittelerträge') ?> [Euro]
-            </label>
-            <input type="number" class="form-control" name="values[]">
-        </div>
-    </div> -->
+    </div>
 
     <div class="form-group">
         <label for="personal" class="">

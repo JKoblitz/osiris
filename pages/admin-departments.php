@@ -4,19 +4,21 @@
  * Page for admin dashboard to define departments
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /admin/departments
  *
  * @package OSIRIS
  * @since 1.1.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
+ * 
+ * @deprecated 1.3.0
  */
 
-$departments = $Settings->getDepartments();
+// $departments = $Settings->getDepartments();
 
 
 if (isset($_GET['type']) && isset($_GET['type']['id'])) {
@@ -75,7 +77,7 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
 
 
 <?php
-    include BASEPATH . "/components/admin-nav.php";
+    // include BASEPATH . "/components/admin-nav.php";
 ?>
 
 <form action="#" method="post" id="modules-form">
