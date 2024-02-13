@@ -137,6 +137,7 @@ function sel($index, $value)
                 <option <?= sel('funder', 'Bundesländer') ?>>Bundesländer</option>
                 <option <?= sel('funder', 'Wirtschaft') ?>>Wirtschaft</option>
                 <option <?= sel('funder', 'EU') ?>>EU</option>
+                <option <?= sel('funder', 'Stiftungen') ?>>Stiftungen</option>
                 <option <?= sel('funder', 'Leibniz Wettbewerb') ?>>Leibniz Wettbewerb</option>
                 <option <?= sel('funder', 'Sonstige Drittmittelgeber') ?>>Sonstige Drittmittelgeber</option>
                 <!-- <option>Sonstige öffentliche internationale Förderorganisationen</option> -->
@@ -146,7 +147,7 @@ function sel($index, $value)
         </div>
         <div class="col-sm-4">
             <label for="funding_organization" class="required">
-                <?= lang('Funding organization', 'Förderorganisation') ?>
+                <?= lang('Funding organization', 'Förderorganisation / Zuwendungsgeber') ?>
             </label>
             <input type="text" class="form-control" name="values[funding_organization]" value="<?= val('funding_organization') ?>" id="funding_organization" required>
         </div>

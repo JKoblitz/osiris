@@ -93,7 +93,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                     else $alert = 'signal';
                                 ?>
 
-                                    <div class="box <?= $alert ?>">
+                                    <div class="alert <?= $alert ?>">
                                         <p class="mt-0">
                                             <?php if ($sim >= 98) { ?>
                                                 <?= lang('This is a 100% duplicate of the follwing publication:', 'Dies ist ein 100%iges Duplikat der folgenden Publikation:') ?>
@@ -106,12 +106,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                     </div>
                                 <?php } ?>
 
-                                <?php if ($sim >= 98) { ?>
-                                    <!-- <button class="btn" disabled>
-                                    <i class="ph ph-plus"></i>
-                                    <?= lang('Adding duplicates is impossible.', 'de') ?>
-                                </button> -->
-                                <?php } else { ?>
+                                <?php if ($sim < 98) { ?>
                                     <button class="btn mt-5" onclick='addGoogleActivity("<?= $user ?>", "<?= $pub_id ?>")'>
                                         <i class="ph ph-plus"></i>
                                         <?= lang('Add to database', 'Zur DB hinzufügen') ?>
@@ -213,9 +208,9 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                             var td = $('tr#' + doc).find('td:first')
                             td.find('.alert,.btn').remove()
                             var alert = $('<div class="alert success">')
-                            alert.append('<p class="mt-0">' + lang('Publication successfully added. Please review the result carefully.', 'Publikation wurde hinzugefügt. Bitte überprüfe das Ergebnis sorgfältig!') + '</p>')
+                            alert.append('<p class="my-0">' + lang('Publication successfully added. Please review the result carefully.', 'Publikation wurde hinzugefügt. Bitte überprüfe das Ergebnis sorgfältig!') + '</p>')
                             alert.append(response.formatted)
-                            alert.append('<a class="btn mt-5" href="' + ROOTPATH + '/activities/view/' + response.id + '" target="_blank">Review</a>')
+                            alert.append('<br><a class="btn mt-5" href="' + ROOTPATH + '/activities/view/' + response.id + '" target="_blank">Review</a>')
                             td.append(alert)
                         }
                         $('.loader').removeClass('show')
