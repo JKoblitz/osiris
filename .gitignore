@@ -13,3 +13,4 @@ CONFIG.php
 jobs/config.ini
 *.pyc
 composer.lock
+upload.sh
