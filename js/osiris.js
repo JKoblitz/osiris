@@ -340,7 +340,7 @@ function osirisJSOnDOMContentLoaded() {
             osirisJS.pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
             osirisJS.pageWrapper.setAttribute("data-sidebar-first", "first");
         }
-    } 
+    }
     console.log(document.documentElement.clientWidth);
 
     // Adding the click event listener
@@ -699,7 +699,7 @@ function objectifyForm(el) {
 }
 
 
-function _create(data) {
+function _create(data = {}) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
@@ -721,7 +721,7 @@ function _create(data) {
     })
 }
 
-function _update(id, data) {
+function _update(id, data = {}) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
@@ -743,7 +743,7 @@ function _update(id, data) {
     })
 }
 
-function _updateUser(id, data) {
+function _updateUser(id, data = {}) {
     $('.loader').addClass('show')
     $.ajax({
         type: "POST",
@@ -831,4 +831,749 @@ function prependRow(trcontent) {
     tr.html(trcontent)
     table.prepend(tr)
     tr.fadeIn()
+}
+
+
+function initActivities(selector, data = {}) {
+    $(selector).DataTable({
+        "ajax": {
+            "url": ROOTPATH + '/api/all-activities',
+            "data": data,
+            dataSrc: 'data'
+        },
+        deferRender: true,
+        pageLength: 5,
+        columnDefs: [
+            {
+                targets: 0,
+                data: 'icon',
+                // className: 'w-50'
+            },
+            {
+                targets: 1,
+                data: 'activity'
+            },
+            {
+                targets: 2,
+                data: 'links',
+                className: 'unbreakable'
+            },
+            {
+                targets: 3,
+                data: 'search-text',
+                searchable: true,
+                visible: false,
+            },
+            {
+                targets: 4,
+                data: 'start',
+                searchable: true,
+                visible: false,
+            },
+        ],
+        "order": [
+            [4, 'desc'],
+            // [0, 'asc']
+        ]
+    });
+}
+
+
+
+function impactfactors(containerID, canvasID, data = {}) {
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/impact-factor-hist",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            var container = document.getElementById(containerID)
+            if (response.count == 0) {
+                container.classList.add('hidden')
+                return;
+            }
+            var ctx = document.getElementById(canvasID)
+            var data = response.data;
+
+            var labels = data.labels;
+            var colors = [
+                '#006EB795',
+            ]
+            var i = 0
+
+            console.log(labels);
+            var data = {
+                type: 'bar',
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: (items) => {
+                                    if (!items.length) {
+                                        return '';
+                                    }
+                                    const item = items[0];
+                                    const x = item.parsed.x;
+                                    const min = x;
+                                    const max = x + 1;
+                                    return `IF: ${min} - ${max}`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            ticks: {
+                                stepSize: 1
+                            },
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: lang('Impact factor', 'Impact factor')
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: lang('Number of publications', 'Anzahl Publikationen')
+                            },
+                            ticks: {
+                                callback: function (value, index, ticks) {
+                                    // only show full numbers
+                                    if (Number.isInteger(value)) {
+                                        return value
+                                    }
+                                    return "";
+                                }
+                            }
+                        }
+                    },
+                },
+                data: {
+                    labels: data.x,
+                    datasets: [{
+                        data: data.y,
+                        backgroundColor: colors[i++],
+                        borderWidth: 1,
+                        borderColor: '#464646',
+                        borderRadius: 4
+                    },],
+                }
+            }
+
+
+            console.log(data);
+            var myChart = new Chart(ctx, data);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+
+
+
+function authorrole(containerID, canvasID, data = {}) {
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/author-role",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            var container = document.getElementById(containerID)
+            if (response.count == 0) {
+                container.classList.add('hidden')
+                return;
+            }
+            var data = response.data;
+            var ctx = document.getElementById(canvasID)
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: '# of Scientists',
+                        data: data.y,
+                        backgroundColor: data.colors,
+                        borderColor: '#464646', //'',
+                        borderWidth: 1,
+                    }]
+                },
+                plugins: [ChartDataLabels],
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            display: true,
+                        },
+                        title: {
+                            display: false,
+                            text: 'Scientists approvation'
+                        },
+                        datalabels: {
+                            color: 'black',
+                            // anchor: 'end',
+                            // align: 'end',
+                            // offset: 10,
+                            font: {
+                                size: 20
+                            }
+                        }
+                    },
+                }
+            });
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function activitiesChart(containerID, canvasID, data = {}) {
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/activity-chart",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            var container = document.getElementById(containerID)
+            if (response.count == 0) {
+                container.classList.add('hidden')
+                return;
+            }
+
+            var dataset = response.data;
+
+            var ctx = document.getElementById(canvasID)
+
+            var data = {
+                type: 'bar',
+                options: {
+                    plugins: {
+                        title: {
+                            display: false,
+                            text: 'All activities'
+                        },
+                        legend: {
+                            display: true,
+                        }
+                    },
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: lang('Years', 'Jahre')
+                            }
+                        },
+                        y: {
+                            stacked: false,
+                            ticks: {
+                                callback: function (value, index, ticks) {
+                                    // only show full numbers
+                                    if (Number.isInteger(value)) {
+                                        return value
+                                    }
+                                    return "";
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: lang('Number of activities', 'Anzahl der Aktivitäten')
+                            }
+                        }
+                    },
+                    maintainAspectRatio: false,
+                    onClick: (e) => {
+                        const canvasPosition = Chart.helpers.getRelativePosition(e, activityChart);
+                        // Substitute the appropriate scale IDs
+                        const dataX = activityChart.scales.x.getValueForPixel(canvasPosition.x);
+                        const dataY = activityChart.scales.y.getValueForPixel(canvasPosition.y);
+                        window.location = ROOTPATH + "/my-year/" + CURRENT_USER + "?year=" + dataset.labels[dataX]
+                    }
+                },
+                data: {
+                    labels: dataset.labels,
+                    datasets: dataset.data,
+                    // grouped:true
+                },
+            }
+
+
+            console.log(data);
+            var activityChart = new Chart(ctx, data);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function projectTimeline(selector, data = {}) {
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/project-timeline",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            var events = []
+
+            const CURRENT_YEAR = new Date().getFullYear();
+            var startyear = CURRENT_YEAR
+            var endyear = CURRENT_YEAR
+
+            response.data.forEach(element => {
+                var s = element.start
+                var start = new Date(s.year, s.month, s.day)
+                if (start.getFullYear() < startyear)
+                    startyear = start.getFullYear()
+
+                var e = element.end
+                var end = new Date(e.year, e.month, e.day)
+                if (end.getFullYear() > endyear)
+                    endyear = end.getFullYear()
+
+                events.push({
+                    startdate: start,
+                    enddate: end,
+                    title: element.name,
+                    role: element.persons.role,
+                    funder: element.funder
+                })
+            });
+
+            var radius = 3,
+                distance = radius * 2 + 2
+
+            var margin = {
+                top: 8,
+                right: 25,
+                bottom: 30,
+                left: 25
+            },
+                width = 600,
+                // height = (distance * types.length) + margin.top + margin.bottom;
+                height = (distance * response.count) - distance + margin.top + margin.bottom;
+
+
+            var svg = d3.select(selector).append('svg')
+                .attr("viewBox", `0 0 ${width} ${height}`)
+
+            width = width - margin.left - margin.right
+            height = height - margin.top - margin.bottom;
+
+            var timescale = d3.scaleTime()
+                .domain([new Date(startyear, 0, 1), new Date(endyear, 12, 1)])
+                .range([0, width]);
+
+            const typeInfo = {
+                'PI': { color: '#f78104', label: lang('Pi', 'PI') },
+                'worker': { color: '#008083', label: lang('Worker', 'Projektmitarbeiter:in') },
+                'associate': { color: '#AAAAAA', label: lang('Associate', 'Beteiligte Person') },
+            }
+
+            var axisBottom = d3.axisBottom(timescale)
+                .ticks(12)
+            // .tickPadding(5).tickSize(20);
+            svg.append('g').attr('class', 'axes')
+                .attr('transform', `translate(${margin.left}, ${height + margin.top + radius * 2})`)
+                .call(axisBottom);
+
+            var quarter = svg.append('g')
+                .attr('transform', `translate(${margin.left - 6}, ${height + margin.top + radius * 2})`)
+            // .selectAll("g")
+
+            quarter.append('rect')
+                .style("fill", 'rgb(236, 175, 0)')
+                // .attr('height', height+margin.top+radius*4)
+                .attr('height', 8)
+                .attr('width', function (d, i) {
+                    var date = new Date(CURRENT_YEAR, 1, 1)
+                    var x1 = timescale(date)
+                    var date = new Date(CURRENT_YEAR, 12, 31)
+                    var x2 = timescale(date)
+                    return x2 - x1
+                })
+                .style('opacity', .2)
+                .attr('x', (d) => {
+                    var date = new Date(CURRENT_YEAR, 1, 1)
+                    return timescale(date)
+                })
+                // .attr('y', radius*-2)
+                .attr('y', 0)
+
+            quarter.append('text')
+                .attr('x', (d) => {
+                    var date = new Date(CURRENT_YEAR, 1, 1)
+                    var x1 = timescale(date)
+                    var date = new Date(CURRENT_YEAR, 12, 31)
+                    var x2 = timescale(date)
+                    return x1 + (x2 - x1) / 2
+                })
+                .attr('y', 6)
+                .attr('text-anchor', 'middle')
+                .style('fill', 'rgb(165, 122, 0)')
+                .style('font-size', "5px")
+                .html(lang('Current year', 'Aktuelles Jahr'))
+
+
+            d3.selectAll("g>.tick>text")
+                .each(function (d, i) {
+                    d3.select(this).style("font-size", "8px");
+                });
+
+            var Tooltip = d3.select(selector)
+                .append("div")
+                .style("opacity", 0)
+                .attr("class", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+
+
+            function mouseover(d, i) {
+
+                d3.select(this)
+                    .select('circle,rect')
+                    .transition()
+                    .duration(300)
+                    .style('opacity', 1)
+
+                //Define and show the tooltip over the mouse location
+                $(this).popover({
+                    placement: 'auto top',
+                    container: selector,
+                    mouseOffset: 10,
+                    followMouse: true,
+                    trigger: 'hover',
+                    html: true,
+                    content: function () {
+                        var role = '';
+                        console.log(d.role);
+                        if (typeInfo[d.role]) {
+                            role = `<span style="color:${typeInfo[d.role].color}">${typeInfo[d.role].label}</span>`
+                        }
+                        return `<b>${d.title ?? 'No title available'}</b><br>${d.funder}<br>${role}`
+                    }
+                });
+                $(this).popover('show');
+            } //mouseoverChord
+
+            //Bring all chords back to default opacity
+            function mouseout(event, d) {
+                d3.select(this).select('circle,rect')
+                    .transition()
+                    .duration(300)
+                    .style('opacity', .5)
+                //Hide the tooltip
+                $('.popover').each(function () {
+                    $(this).remove();
+                });
+            }
+
+            var eventGroup = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`)
+                .selectAll("g")
+                .data(events)
+                .enter().append("g")
+                .attr('transform', function (d, i) {
+                    var date = d.startdate
+                    var x = timescale(date)
+                    var y = i * distance
+                    return `translate(${x}, ${y})`
+                })
+
+            eventGroup.on("mouseover", mouseover)
+                .on("mouseout", mouseout)
+
+            var lines = eventGroup.append('rect')
+                .style("fill", function (d, i) {
+                    return typeInfo[d.role].color
+                })
+                .attr('height', radius * 2)
+                .attr('width', function (d, i) {
+                    var date = d.startdate
+                    var x1 = timescale(date)
+                    var date = d.enddate
+                    var x2 = timescale(date)
+                    return x2 - x1
+                })
+                .style('opacity', .6)
+                .attr('rx', 3)
+                .attr('y', -radius)
+
+            var labels = eventGroup.append('text')
+                .attr('x', (d) => {
+                    var date = d.startdate
+                    var x1 = timescale(date)
+                    var date = d.enddate
+                    var x2 = timescale(date)
+                    return (x2 - x1) / 2
+                })
+                .attr('y', 2)
+                .attr('text-anchor', 'middle')
+                .style('fill', 'white')
+                .style('font-weight', '600')
+                .style('font-size', "5px")
+                .text((d) => d.title)
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function coauthorNetwork(selector, data = {}) {
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/author-network",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            var matrix = response.data.matrix;
+            var DEPTS = response.data.labels;
+
+            var data = Object.values(DEPTS);
+            var labels = data.map(item => item['name']);
+
+            var colors = []
+            var links = []
+            var depts_in_use = {};
+
+            data.forEach(function (d, i) {
+                colors.push(d.dept.color ?? '#cccccc');
+                var link = null
+                if (i !== 0) link = ROOTPATH + "/profile/" + d.user
+                links.push(link)
+
+                if (d.dept.id && depts_in_use[d.dept.id] === undefined)
+                    depts_in_use[d.dept.id] = d.dept;
+            })
+
+            Chords(selector, matrix, labels, colors, data, links, false, DEPTS[CURRENT_USER]['index']);
+
+
+            var legend = d3.select('#legend')
+                .append('div').attr('class', 'content')
+
+            legend.append('div')
+                .style('font-weight', 'bold')
+                .attr('class', 'mb-5')
+                .text(lang("Departments", "Abteilungen"))
+
+            for (const dept in depts_in_use) {
+                if (Object.hasOwnProperty.call(depts_in_use, dept)) {
+                    const d = depts_in_use[dept];
+                    var row = legend.append('div')
+                        .attr('class', 'd-flex mb-5')
+                        .style('color', d.color)
+                    row.append('div')
+                        .style('background-color', d.color)
+                        .style("width", "2rem")
+                        .style("height", "2rem")
+                        .style("border-radius", ".5rem")
+                        .style("display", "inline-block")
+                        .style("margin-right", "1rem")
+                    row.append('span').text(d.name)
+                }
+            }
+
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+
+function conceptTooltip() {
+    $('.concept').each(function () {
+        var el = $(this)
+        var data = {
+            score: el.attr('data-score'),
+            name: el.attr('data-name'),
+            count: el.attr('data-count'),
+            wikidata: el.attr('data-wikidata'),
+        }
+        el.popover({
+            placement: 'auto bottom',
+            container: '#concepts',
+            mouseOffset: 10,
+            trigger: 'click',
+            html: true,
+            content: function () {
+                var label = lang('Activities', 'Aktivitäten')
+                if (data.count == 1) label = lang('Activity', 'Aktivität');
+                return `<b>${data.name}</b><br>
+                    Score: ${data.score} %</br>
+                    In ${data.count} ${label}<br>
+                    <hr>
+                    <a href="${ROOTPATH}/concepts/${data.name}" target="_blank" rel="noopener noreferrer"><i class="ph ph-arrow-right"></i> Concept page</a><br>
+                    <a href="${data.wikidata}" target="_blank" rel="noopener noreferrer"><i class="ph ph-arrow-up-right"></i> Wikidata</a>
+                    `;
+            }
+        });
+    }
+    );
+}
+
+function wordcloud(selector, data = {}) {
+
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/wordcloud",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            var dat = response.data //
+            var max = 120;
+            var highest = Object.values(dat)[0]
+            var factor = max / highest
+
+            myWords = Object.keys(dat).map(function (key) {
+                return {
+                    text: key,
+                    size: (dat[key] * factor) + 10
+                };
+            });
+            // console.log(myWords);
+            // myWords = myWords.slice(0, 300)
+
+            // set the dimensions and margins of the graph
+            var margin = {
+                top: 10,
+                right: 10,
+                bottom: 10,
+                left: 10
+            },
+                width = 800 - margin.left - margin.right,
+                height = 450 - margin.top - margin.bottom,
+                colors = [
+                    '#f78104',
+                    '#faab36',
+                    '#e95709',
+                    '#008083',
+                    '#249ea0',
+                    '#005f60',
+                    // '#63a308',
+                    // '#ECAF00',
+                ];
+            // Constructs a new cloud layout instance. It run an algorithm to find the position of words that suits your requirements
+            // Wordcloud features that are different from one word to the other must be here
+            var layout = d3.layout.cloud()
+                .size([800, 500])
+                .words(myWords)
+                .padding(0)
+                .rotate(function () {
+                    return (~~(Math.random() * 3) * 45) - 45;
+                })
+                .font("Impact")
+                .fontSize(function (d) {
+                    return d.size;
+                })
+                .on("end", draw);
+
+            layout.start();
+
+            function draw(words) {
+                d3.select(selector).append("svg")
+                    .attr("width", '100%')
+                    .attr("height", '100%')
+                    .attr('viewBox', "0 0 800 500")
+                    .append("g")
+                    .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                    .selectAll("text")
+                    .data(words)
+                    .enter().append("text")
+                    .style("font-size", function (d) {
+                        return d.size + "px";
+                    })
+                    .style("font-family", "Impact")
+                    .attr("text-anchor", "middle")
+                    .attr("fill", (d) => colors[Math.floor(Math.random() * colors.length)])
+                    .attr("transform", function (d) {
+                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                    })
+                    .text(function (d) {
+                        return d.text;
+                    });
+            }
+
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+
+function userTable(selector, data = {}) {
+    data['table'] = true
+    console.log(data)
+    return $(selector).DataTable({
+        "ajax": {
+            "url": ROOTPATH + '/api/users',
+            "data": data,
+            dataSrc: 'data'
+        },
+        dom: 'frtipP',
+        deferRender: true,
+        responsive: true,
+        language: {
+            url: lang(null, ROOTPATH + '/js/datatables/de-DE.json')
+        },
+        columnDefs: [
+            {
+                targets: 0,
+                data: 'img',
+                searchable: false,
+                sortable: false,
+                visible: true
+            },
+            {
+                targets: 1,
+                data: 'html',
+                className: 'flex-grow-1'
+            },
+            {
+                targets: 2,
+                data: 'dept',
+                searchable: true,
+                sortable: false,
+                visible: false
+            },
+            {
+                targets: 3,
+                data: 'active',
+                searchable: true,
+                sortable: false,
+                visible: false
+            }
+
+        ],
+        "order": [
+            [1, 'asc'],
+        ],
+
+        paging: true,
+        autoWidth: true,
+        pageLength: 18,
+    });
 }

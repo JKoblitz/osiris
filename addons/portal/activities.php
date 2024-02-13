@@ -44,22 +44,9 @@
     </div>
 
 </div>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 
 <script>
     const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control sm d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
     var dataTable;
     var rootpath = '<?=ROOTPATH?>'
     $(document).ready(function() {

@@ -149,22 +149,7 @@ $style = $_GET['style'] ?? 'cards';
         </tbody>
     </table>
 
-
-    <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
-
     <script>
-        $.extend($.fn.DataTable.ext.classes, {
-            sPaging: "pagination mt-10 ",
-            sPageFirst: "direction ",
-            sPageLast: "direction ",
-            sPagePrevious: "direction ",
-            sPageNext: "direction ",
-            sPageButtonActive: "active ",
-            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control sm d-inline w-auto",
-            sInfo: "float-right text-muted",
-            sLength: "float-right"
-        });
         var dataTable;
         $(document).ready(function() {
             dataTable = $('#group-table').DataTable({

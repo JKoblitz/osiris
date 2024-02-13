@@ -167,32 +167,13 @@ $user = $user ?? $_SESSION['username'];
 <!-- </div> -->
 
 <script src="<?= ROOTPATH ?>/js/datatables/jszip.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/dataTables.responsive.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/dataTables.buttons.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/datatables/buttons.html5.min.js"></script>
-<!-- <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script> -->
-
-<!-- <link type="css" src="<?= ROOTPATH ?>/css/datatables.buttons.min.css"></link> -->
-<!-- <link rel="stylesheet" href="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/css/searchPanes.dataTables.css">
-<script src="<?= ROOTPATH ?>/js/SearchPanes-2.1.0/js/dataTables.searchPanes.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/Select-1.5.0/js/dataTables.select.min.js"></script> -->
 
 <script>
     const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control d-inline w-auto ml-10 ",
-        sButtons: "d-inline-block ",
-        sLengthSelect: "form-control d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
-    });
+   
     // $.fn.DataTable.moment( 'HH:mm MMM D, YY' );
     var dataTable;
 
@@ -289,14 +270,14 @@ $user = $user ?? $_SESSION['username'];
                     exportOptions: {
                         columns: [4]
                     },
-                    className: 'btn'
+                    className: 'btn small'
                 },
                 {
                     extend: 'excelHtml5',
                     exportOptions: {
                         columns: [0, 4, 5, 6, 9, 10, 11, 12, 13]
                     },
-                    className: 'btn',
+                    className: 'btn small',
                     title: function() {
                         var filters = []
                         activeFilters.find('.badge').find('span').each(function(i, el) {
@@ -313,7 +294,7 @@ $user = $user ?? $_SESSION['username'];
                         // columns: ':visible'
                         columns: [0, 5, 6, 9, 10, 11, 12, 13]
                     },
-                    className: 'btn',
+                    className: 'btn small',
                     title: function() {
                         var filters = []
                         activeFilters.find('.badge').find('span').each(function(i, el) {

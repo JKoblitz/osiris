@@ -60,7 +60,6 @@ $institute = $Settings->get('affiliation_details');
 </script>
 
 <script src="<?= ROOTPATH ?>/js/plotly-2.27.1.min.js" charset="utf-8"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/projects.js?v=1"></script>
 
 <style>

@@ -37,7 +37,7 @@
                         <select name="projects[<?= $i ?>]" id="projects-<?= $i ?>" class="form-control" required>
                             <option value="" disabled <?= empty($con) ? 'selected' : '' ?>>-- <?= lang('Please select a project', 'Bitte wähle ein Projekt aus') ?> --</option>
                             <?php
-                            foreach ($osiris->projects->distinct('name', ['status' => 'approved']) as $s) { ?>
+                            foreach ($osiris->projects->distinct('name', ['status' => ['$in'=> ['approved', 'finished']]]) as $s) { ?>
                                 <option <?= $con == $s ? 'selected' : '' ?>><?= $s ?></option>
                             <?php } ?>
                         </select>

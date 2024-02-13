@@ -206,9 +206,9 @@ Route::get('/api/all-activities', function () {
         } else {
             $format = $format_full;
         }
-        if ($page == 'portal'){
-            $format = str_replace(ROOTPATH."/activities/view", PORTALPATH."/activity", $format);
-            $format = str_replace(ROOTPATH."/profile", PORTALPATH."/person", $format);
+        if ($page == 'portal') {
+            $format = str_replace(ROOTPATH . "/activities/view", PORTALPATH . "/activity", $format);
+            $format = str_replace(ROOTPATH . "/profile", PORTALPATH . "/person", $format);
         }
 
         $active = false;
@@ -243,13 +243,13 @@ Route::get('/api/all-activities', function () {
             'search-text' => $format_full,
             'start' => $rendered['start'] ?? '',
             'end' => $rendered['end'] ?? '',
-            'departments' => $depts,//implode(', ', $depts),
+            'departments' => $depts, //implode(', ', $depts),
             'epub' => (isset($doc['epub']) && boolval($doc['epub']) ? 'true' : 'false'),
             'type' => $rendered['type'],
             'subtype' => $rendered['subtype'],
-            'year'=> $doc['year'] ?? 0,
-            'authors'=>$rendered['authors'] ?? '',
-            'title'=>$rendered['title'] ?? '',
+            'year' => $doc['year'] ?? 0,
+            'authors' => $rendered['authors'] ?? '',
+            'title' => $rendered['title'] ?? '',
         ];
 
         if ($active) {
@@ -262,25 +262,26 @@ Route::get('/api/all-activities', function () {
             }
         }
 
-        if (defined('ROOTPATH')){
-        $datum['links'] =
-            "<a class='btn link square' href='" . ROOTPATH . "/activities/view/$id'>
+        if (defined('ROOTPATH')) {
+            $datum['links'] =
+                "<a class='btn link square' href='" . ROOTPATH . "/activities/view/$id'>
                 <i class='ph ph-arrow-fat-line-right'></i>
             </a>";
-        // $useractivity = $DB->isUserActivity($doc, $user);
-        // if ($useractivity) {
-        //     $datum['links'] .= " <a class='btn link square' href='" . ROOTPATH . "/activities/edit/$id'>
-        //         <i class='ph ph-pencil-simple-line'></i>
-        //     </a>";
-        // }
-        $datum['links'] .= "<button class='btn link square' onclick='addToCart(this, \"$id\")'>
+            // $useractivity = $DB->isUserActivity($doc, $user);
+            // if ($useractivity) {
+            //     $datum['links'] .= " <a class='btn link square' href='" . ROOTPATH . "/activities/edit/$id'>
+            //         <i class='ph ph-pencil-simple-line'></i>
+            //     </a>";
+            // }
+            $datum['links'] .= "<button class='btn link square' onclick='addToCart(this, \"$id\")'>
             <i class='" . (in_array($id, $cart) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus') . "'></i>
         </button>";
-    }
+        }
         $result[] = $datum;
     }
     echo return_rest($result, count($result));
 });
+
 
 
 Route::get('/api/concept-activities', function () {
@@ -291,21 +292,21 @@ Route::get('/api/concept-activities', function () {
     $name = $_GET['concept'];
 
     $concepts = $osiris->activities->aggregate(
-    [
-        ['$match' => ['concepts.display_name' => $name]],
-        ['$project' => ['rendered' => 1, 'concepts' => 1]],
-        ['$unwind' => '$concepts'],
-        ['$match' => ['concepts.display_name' => $name]],
-        ['$sort' => ['concepts.score' => -1]],
-        ['$project' => [
-            '_id'=> 0,
-            'score' => '$concepts.score',
-            'icon' => '$rendered.icon',
-            'activity' => '$rendered.web',
-            'type' => '$rendered.type',
-            'id' => ['$toString' => '$_id']
-        ]]
-    ]
+        [
+            ['$match' => ['concepts.display_name' => $name]],
+            ['$project' => ['rendered' => 1, 'concepts' => 1]],
+            ['$unwind' => '$concepts'],
+            ['$match' => ['concepts.display_name' => $name]],
+            ['$sort' => ['concepts.score' => -1]],
+            ['$project' => [
+                '_id' => 0,
+                'score' => '$concepts.score',
+                'icon' => '$rendered.icon',
+                'activity' => '$rendered.web',
+                'type' => '$rendered.type',
+                'id' => ['$toString' => '$_id']
+            ]]
+        ]
     )->toArray();
 
     echo return_rest($concepts, count($result));
@@ -313,16 +314,60 @@ Route::get('/api/concept-activities', function () {
 
 
 Route::get('/api/users', function () {
+    if (!isset($_POST['debug'])) {
+        error_reporting(E_ERROR);
+        ini_set('display_errors', 0);
+    }
     include_once BASEPATH . "/php/init.php";
-    $filter = [];
+    $filter = ['username' => ['$ne' => null]];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
+        if (is_string($filter)) {
+            $filter = json_decode($filter, true);
+        }
+        if (isset($filter['is_active'])) {
+            $filter['is_active'] = boolval($filter['is_active']);
+        }
     }
     if (isset($_GET['json'])) {
         $filter = json_decode($_GET['json']);
     }
     $result = $osiris->persons->find($filter)->toArray();
 
+    if (isset($_GET['table'])) {
+        $table = [];
+        foreach ($result as $user) {
+            $subtitle = "";
+            if (isset($_GET['subtitle'])) {
+                $subtitle = $user[$_GET['subtitle']] ?? '';
+            } else foreach (($user['depts'] ?? []) as $i => $d) {
+                $dept = implode('/', $Groups->getParents($d));
+                $subtitle .= '<a href="' . ROOTPATH . '/groups/view/' . $d . '">
+                    ' . $dept . '
+                </a>';
+            }
+            $table[] = [
+                'id' => strval($user['_id']),
+                'username' => $user['username'],
+                'img' => $Settings->printProfilePicture($user['username'], 'profile-img'),
+                'html' =>  "<div class='w-full'>
+                    <div style='display: none;'>" . $user['first'] . " " . $user['last'] . "</div>
+                    <span class='float-right text-muted'>" . $user['username'] . "</span>
+                    <h5 class='my-0'>
+                        <a href='" . ROOTPATH . "/profile/" . $user['username'] . "'>
+                            " . ($user['academic_title'] ?? '') . " " . $user['first'] . " " . $user['last'] . "
+                        </a>
+                    </h5>
+                    <small>
+                        " . $subtitle . "
+                    </small>
+                </div>",
+                'dept' => $Groups->personDept($user['depts'], 1)['id'],
+                'active' => ($user['is_active'] ?? true) ? 'yes' : 'no'
+            ];
+        }
+        $result = $table;
+    }
     echo return_rest($result, count($result));
 });
 
@@ -615,8 +660,8 @@ Route::get('/api/dashboard/collaborators', function () {
             }
             $institute = $Settings->get('affiliation_details');
             $institute['role'] = $project['role'];
-            if (isset($institute['lat']) && isset($institute['lng'])){
-                
+            if (isset($institute['lat']) && isset($institute['lng'])) {
+
                 $data['lon'][] = $institute['lng'];
                 $data['lat'][] = $institute['lat'];
                 $data['text'][] = "<b>$institute[name]</b><br>$institute[location]";
@@ -625,7 +670,6 @@ Route::get('/api/dashboard/collaborators', function () {
             }
 
             $result['collaborators'] = $data;
-
         }
     } else {
         $result = $osiris->projects->aggregate([
@@ -644,15 +688,14 @@ Route::get('/api/dashboard/collaborators', function () {
         ])->toArray();
 
         $institute = $Settings->get('affiliation_details');
-        if (isset($institute['lat']) && isset($institute['lng'])){
+        if (isset($institute['lat']) && isset($institute['lng'])) {
             $result[] = [
                 '_id' => $institute['ror'] ?? '',
-                'count' => count($result)/2,
+                'count' => count($result) / 2,
                 'data' => $institute,
                 'color' => '#f78104'
             ];
         }
-
     }
 
 
@@ -833,9 +876,9 @@ Route::get('/api/dashboard/activity-chart', function () {
         $element = [
             'label' => $group['name'],
             'backgroundColor' => $group['color'] . '95',
-            'borderColor'=> '#464646', 
-            'borderWidth'=> 1,
-            'borderRadius'=> 4,
+            'borderColor' => '#464646',
+            'borderWidth' => 1,
+            'borderRadius' => 4,
             'data' => [],
         ];
         foreach ($years as $y) {
@@ -855,7 +898,7 @@ Route::get('/api/dashboard/activity-chart', function () {
 Route::get('/api/dashboard/project-timeline', function () {
     include(BASEPATH . '/php/init.php');
 
-    $filter = ['status' => ['$in'=>['approved', 'finished']]];
+    $filter = ['status' => ['$in' => ['approved', 'finished']]];
     if (isset($_GET['user'])) {
         $filter['persons.user'] = $_GET['user'];
     }
@@ -872,33 +915,37 @@ Route::get('/api/dashboard/project-timeline', function () {
 
 Route::get('/api/dashboard/wordcloud', function () {
     include(BASEPATH . '/php/init.php');
-    function mb_preg_match_all($ps_pattern, $ps_subject, &$pa_matches, $pn_flags = PREG_PATTERN_ORDER, $pn_offset = 0, $ps_encoding = NULL) {
+    function mb_preg_match_all($ps_pattern, $ps_subject, &$pa_matches, $pn_flags = PREG_PATTERN_ORDER, $pn_offset = 0, $ps_encoding = NULL)
+    {
         // WARNING! - All this function does is to correct offsets, nothing else:
         //
         if (is_null($ps_encoding))
             $ps_encoding = mb_internal_encoding();
-    
+
         $pn_offset = strlen(mb_substr($ps_subject, 0, $pn_offset, $ps_encoding));
         $ret = preg_match_all($ps_pattern, $ps_subject, $pa_matches, $pn_flags, $pn_offset);
-    
+
         if ($ret && ($pn_flags & PREG_OFFSET_CAPTURE))
-            foreach($pa_matches as &$ha_match)
-                foreach($ha_match as &$ha_match)
+            foreach ($pa_matches as &$ha_match)
+                foreach ($ha_match as &$ha_match)
                     $ha_match[1] = mb_strlen(substr($ps_subject, 0, $ha_match[1]), $ps_encoding);
-            //
-            // (code is independent of PREG_PATTER_ORDER / PREG_SET_ORDER)
-    
+        //
+        // (code is independent of PREG_PATTER_ORDER / PREG_SET_ORDER)
+
         return $ret;
     }
-    
+
     $filter = ['status' => 'approved'];
     if (isset($_GET['user'])) {
         $filter['persons.user'] = $_GET['user'];
     }
 
     $result = $osiris->activities->find(
-        ['authors.user' => $_GET['user'] ?? $_SESSION['username'] ?? '', 'type'=>'publication'],
-        ['projection' => ['title' => 1, 'abstract'=> 1, '_id'=>0]]
+        ['authors.user' => $_GET['user'] ?? $_SESSION['username'] ?? '', 
+        // 'type' => ['$in' => ['publication', 'poster', 'lecture']]
+        'type' => 'publication'
+    ],
+        ['projection' => ['title' => 1, 'abstract' => 1, '_id' => 0]]
         // ['$unwind' => '$persons'],
         // ['$match' => $filter],
         // ['$sort' => ['start' => 1]]
@@ -908,24 +955,23 @@ Route::get('/api/dashboard/wordcloud', function () {
     foreach ($result as $a) {
 
         if (isset($a['title']) && is_string($a['title']))
-            $text .= " ".$a['title'];
+            $text .= " " . $a['title'];
         if (isset($a['abstract']) && is_string($a['abstract']))
-            $text .= " ".$a['abstract'];            
-        
+            $text .= " " . $a['abstract'];
     }
     $text = strip_tags($text);
     $pattern = "~\b\w+\b~u";
     mb_preg_match_all($pattern, $text, $words_raw);
 
     $words = [];
-    include_once BASEPATH."/php/stopwords.php";
+    include_once BASEPATH . "/php/stopwords.php";
     foreach ($words_raw[0] as $word) {
-        if (in_array(strtolower($word), $stopwords) || is_numeric($word) || strlen($word)<2) continue;
+        if (in_array(strtolower($word), $stopwords) || is_numeric($word) || strlen($word) < 2) continue;
         $words[] = strtolower($word);
     }
     $words = array_count_values($words);
     arsort($words);
-    echo return_rest($words, count($result));
+    echo return_rest(array_slice($words, 0, 300), count($result));
 });
 
 
@@ -1274,7 +1320,7 @@ Route::get('/api/dashboard/concept-search', function () {
         "marker" => [
             "size" => [],
             "sizemode" => 'area',
-            'showlegend'=>true
+            'showlegend' => true
         ],
         'text' => [],
         'hovertemplate' => '%{x}<br>%{y}<br> Total Score: %{text}'
@@ -1310,4 +1356,3 @@ Route::get('/api/dashboard/concept-search', function () {
  *
  * The following endpoints are used for querying activities.
  */
-

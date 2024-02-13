@@ -180,6 +180,8 @@ Route::get('/install', function () {
 Route::get('/migrate', function () {
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
+    
+    set_time_limit(6000);
     $version = $osiris->system->findOne(['key' => 'version']);
     if (empty($version)) {
         $version = "1.0.0";
@@ -440,9 +442,10 @@ Route::get('/migrate', function () {
             );
         }
 
-
-
     }
+    echo "<p>Rerender activities</p>";
+    include_once BASEPATH . "/php/Render.php";
+    renderActivities();
 
     echo "<p>Done.</p>";
     $insertOneResult  = $osiris->system->updateOne(

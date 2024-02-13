@@ -51,7 +51,7 @@ $pageactive = function ($p) use ($page) {
     <!-- Favicon and title -->
     <link rel="icon" href="img/favicon.png">
     <title><?= $pagetitle ?? 'OSIRIS-App' ?></title>
-    <link rel="manifest" href="<?=ROOTPATH?>/manifest.json">
+    <link rel="manifest" href="<?= ROOTPATH ?>/manifest.json">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content="OSIRIS - the open, smart and intuitive research information system" />
@@ -75,9 +75,9 @@ $pageactive = function ($p) use ($page) {
     <link rel="icon" href="<?= ROOTPATH ?>/img/favicon.png">
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
-<!-- Icon font -->
-<link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css" rel="stylesheet" />
-<link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css" rel="stylesheet" />
+    <!-- Icon font -->
+    <link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css" rel="stylesheet" />
     <!-- for open access icons -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
 
@@ -96,13 +96,25 @@ $pageactive = function ($p) use ($page) {
         const AFFILIATION = "<?= $Settings->get('affiliation') ?>";
     </script>
 
-<script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
-
     <script src="<?= ROOTPATH ?>/js/jquery-3.3.1.min.js"></script>
-
-
+    <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
+    <script src="<?= ROOTPATH ?>/js/datatables/dataTables.responsive.min.js"></script>
+    <script>
+        $.extend($.fn.DataTable.ext.classes, {
+            sPaging: "pagination mt-10 ",
+            sPageFirst: "direction ",
+            sPageLast: "direction ",
+            sPagePrevious: "direction ",
+            sPageNext: "direction ",
+            sPageButtonActive: "active ",
+            sFilterInput: "form-control small d-inline w-auto ml-10 ",
+            sLengthSelect: "form-control small d-inline w-auto",
+            sInfo: "float-right text-muted",
+            sLength: "float-right"
+        });
+    </script>
+    <script src="<?= ROOTPATH ?>/js/osiris.js?<?= filemtime(BASEPATH . '/js/osiris.js') ?>"></script>
     <script src="<?= ROOTPATH ?>/js/script.js?<?= filemtime(BASEPATH . '/js/script.js') ?>"></script>
-    
 
     <?php if (isset($additionalHead)) {
         echo $additionalHead;
@@ -121,9 +133,6 @@ $pageactive = function ($p) use ($page) {
         <?= $_COOKIE['D3-accessibility-transitions'] ?? '' ?>
         <?= $_COOKIE['D3-accessibility-dyslexia'] ?? '' ?>
     ">
-        <!-- data-sidebar-hidden="hidden" to hide sidebar on start -->
-
-        <!-- Sticky alerts (toasts), empty container -->
         <div class="sticky-alerts"></div>
 
 
@@ -298,13 +307,6 @@ $pageactive = function ($p) use ($page) {
                             <?= $USER["displayname"] ?? 'User' ?>
                         </a>
 
-
-                        <?php if ($Settings->hasPermission('report.dashboard')) { ?>
-                            <a href="<?= ROOTPATH ?>/dashboard" class="with-icon <?= $pageactive('dashboard') ?>">
-                                <i class="ph ph-chart-line" aria-hidden="true"></i>
-                                <?= lang('Dashboard') ?>
-                            </a>
-                        <?php } ?>
                         <?php if ($Settings->hasPermission('report.queue')) { ?>
                             <?php
                             $n_queue = $osiris->queue->count(['declined' => ['$ne' => true]]);
@@ -490,7 +492,7 @@ $pageactive = function ($p) use ($page) {
 
                 <?php if ($Settings->hasPermission('admin.see')) { ?>
 
-                    <div class="title collapse open" onclick="toggleSidebar(this);"  id="sidebar-admin">
+                    <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-admin">
                         ADMIN
                     </div>
                     <nav>
@@ -500,11 +502,11 @@ $pageactive = function ($p) use ($page) {
                         </a>
                         <a href="<?= ROOTPATH ?>/admin/roles" class="with-icon <?= $pageactive('admin/roles') ?>">
                             <i class="ph ph-gear" aria-hidden="true"></i>
-                            <?= lang('Roles', 'Rollen') ?>
+                            <?= lang('Roles &amp; Rights', 'Rollen &amp; Rechte') ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/admin/categories" class="with-icon <?= $pageactive('admin/categories') ?>">
                             <i class="ph ph-gear" aria-hidden="true"></i>
-                            <?= lang('Categories', 'Kategorien') ?>
+                            <?= lang('Activities', 'Aktivitäten') ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/admin/features" class="with-icon <?= $pageactive('admin/features') ?>">
                             <i class="ph ph-gear" aria-hidden="true"></i>
@@ -530,17 +532,15 @@ $pageactive = function ($p) use ($page) {
                 window.sessionStorage.setItem(id, hide);
             }
 
-            $(function(){
-                console.log($('.title.collapse'))
-                $('.title.collapse').each(function(n, el){
+            $(function() {
+                $('.title.collapse').each(function(n, el) {
                     var hide = window.sessionStorage.getItem($(el).attr('id'));
-                    console.log(el, hide)
-                    if (hide == 'true'){
+                    if (hide == 'true') {
                         $(el).removeClass('open')
                         $(el).next().hide()
                     }
                 })
-            })
+            });
         </script>
 
         <!-- Content wrapper start -->

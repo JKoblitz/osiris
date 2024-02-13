@@ -21,7 +21,6 @@ $Format = new Document(true);
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <script>
     var RULES;
 </script>
@@ -428,19 +427,6 @@ $Format = new Document(true);
             },
             allow_empty: true,
             default_filter: 'type'
-        });
-
-        $.extend($.fn.DataTable.ext.classes, {
-            sPaging: "pagination mt-10 ",
-            sPageFirst: "direction ",
-            sPageLast: "direction ",
-            sPagePrevious: "direction ",
-            sPageNext: "direction ",
-            sPageButtonActive: "active ",
-            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control sm d-inline w-auto",
-            sInfo: "float-right text-muted",
-            sLength: "float-right"
         });
 
         var dataTable;

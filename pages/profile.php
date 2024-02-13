@@ -33,7 +33,6 @@ if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
 <!-- all necessary javascript -->
 <script src="<?= ROOTPATH ?>/js/chart.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/chartjs-plugin-datalabels.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
