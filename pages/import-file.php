@@ -3,14 +3,14 @@
  * Page to import files
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /import
  *
  * @package     OSIRIS
  * @since       1.2.1
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -40,7 +40,7 @@ use \LibRIS\RISReader;
         <h2 class="title">
             <?= lang('Import activities from file', 'Importiere Aktivitäten aus einer Datei') ?>
         </h2>
-        <form action="<?= ROOTPATH ?>/import/file" method="post" enctype="multipart/form-data">
+        <form action="<?= ROOTPATH ?>/crud/import/file" method="post" enctype="multipart/form-data">
             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
             <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                 <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
@@ -184,7 +184,7 @@ if (isset($_FILES["file"])) {
                         <?= $Format->formatShort(false) ?>
                     </td>
                     <td>
-                        <form action="<?= ROOTPATH ?>/activities/new" method="post" target="_blank">
+                        <form action="<?= ROOTPATH ?>/add-activity" method="post" target="_blank">
 
                             <input type="hidden" name="form" value='<?= $dataString ?>'>
                             <button class="btn"><i class="ph ph-plus"></i></button>

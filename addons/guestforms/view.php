@@ -8,15 +8,6 @@ use chillerlan\QRCode\Output\QROutputInterface;
 require_once BASEPATH . "/vendor/autoload.php";
 
 
-
-$url = GUEST_SERVER . "/" . $id;
-$options = new QROptions([]);
-
-try {
-    $qr = (new QRCode($options))->render($url);
-} catch (Throwable $e) {
-    exit($e->getMessage());
-}
 ?>
 
 
@@ -54,37 +45,52 @@ try {
 <div class="row row-eq-spacing mt-0">
 
     <div class="col-md-6">
+        <?php if ($Settings->featureEnabled('guest-forms')) {
 
-        <?php if ($form['legal']['general'] ?? false) { ?>
-            <div class="alert success my-20">
-                <h4 class="title">
-                    Status
-                </h4>
-                Der Gast ist angemeldet und hat alle Belehrungen zur Kenntnis genommen.
-            </div>
-        <?php } else { ?>
-            <div class="box danger">
-                <div class="content">
+
+            $guest_server = $Settings->get('guest-forms-server');
+            $url = $guest_server . "/" . $id;
+            $options = new QROptions([]);
+
+            try {
+                $qr = (new QRCode($options))->render($url);
+            } catch (Throwable $e) {
+                exit($e->getMessage());
+            }
+        ?>
+
+
+            <?php if ($form['legal']['general'] ?? false) { ?>
+                <div class="alert success my-20">
                     <h4 class="title">
                         Status
                     </h4>
-                    <p class="text-danger">
-                        Der Nutzer ist noch nicht vollständig angelegt. Bitte lassen Sie das folgende Formular ausfüllen, um den Vorgang abzuschließen:
-                    </p>
-                    <img src="<?= $qr ?>" alt="<?= $id ?>" class="d-block">
-                    <a href="<?= $url ?>" target="_blank" rel="noopener noreferrer" class="link">
-                        <?= $url ?>
-                    </a>
-
-                    <form action="<?= ROOTPATH ?>/guests/synchronize/<?= $id ?>" method="post">
-                        <button class="btn danger" type="submit">
-                            <?= lang('Refresh', 'Aktualisieren') ?>
-                        </button>
-                    </form>
+                    Der Gast ist angemeldet und hat alle Belehrungen zur Kenntnis genommen.
                 </div>
-            </div>
-        <?php } ?>
+            <?php } else { ?>
+                <div class="box danger">
+                    <div class="content">
+                        <h4 class="title">
+                            Status
+                        </h4>
+                        <p class="text-danger">
+                            Der Nutzer ist noch nicht vollständig angelegt. Bitte lassen Sie das folgende Formular ausfüllen, um den Vorgang abzuschließen:
+                        </p>
+                        <img src="<?= $qr ?>" alt="<?= $id ?>" class="d-block">
+                        <a href="<?= $url ?>" target="_blank" rel="noopener noreferrer" class="link">
+                            <?= $url ?>
+                        </a>
 
+                        <form action="<?= ROOTPATH ?>/guests/synchronize/<?= $id ?>" method="post">
+                            <button class="btn danger" type="submit">
+                                <?= lang('Refresh', 'Aktualisieren') ?>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <?php } ?>
+
+        <?php } ?>
 
 
 

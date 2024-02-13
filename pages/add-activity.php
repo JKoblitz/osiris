@@ -4,15 +4,15 @@
  * Page to add or edit one activity
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
- * @link /activities/new
+ * @link /add-activity
  * @link /activities/edit/<activity_id>
  *
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -39,13 +39,13 @@
 $form = $form ?? array();
 $copy = $copy ?? false;
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH;
 if (!empty($form) && isset($form['_id']) && !$copy) {
-    $formaction .= "update/" . $form['_id'];
+    $formaction .= "/crud/activities/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/activities/view/" . $form['_id'];
 } else {
-    $formaction .= "create";
+    $formaction .= "/crud/activities/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/activities/view/*";
 }
@@ -62,7 +62,6 @@ function val($index, $default = '')
 
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/moment.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.daterangepicker.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
 <script src="<?= ROOTPATH ?>/js/add-activity.js?v=2"></script>
@@ -301,19 +300,22 @@ function val($index, $default = '')
     </div>
 
 
-    <div class="my-20 select-btns" id="select-btns">
+    <div class="select-btns" id="select-btns">
         <?php
-        foreach ($Settings->getActivities() as $id => $a) {
+        foreach ($Categories->categories as $type) {
+            $t = $type['id'];
+
             // check if subtypes are available
-            $subtypes = $a['subtypes'] ?? array();
-            $subtypes = array_filter($subtypes, function ($s) {
+            $subtypes = $type['children'] ?? array();
+            $subtypes = array_filter(DB::doc2Arr($subtypes), function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (empty($subtypes)) continue;
         ?>
-            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn select text-<?= $id ?>" id="<?= $id ?>-btn">
+            <button data-type="<?= $t ?>" onclick="togglePubType('<?= $t ?>')" class="btn select" id="<?= $t ?>-btn" <?= $Categories->cssVar($t) ?>>
                 <span>
-                    <?= $Settings->icon($id, false) . $Settings->title($id) ?>
+                    <i class='ph ph-<?= $type['icon'] ?? 'circle' ?>'></i>
+                    <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
                 </span>
             </button>
         <?php } ?>
@@ -343,23 +345,27 @@ function val($index, $default = '')
         <?= lang('Change type of activity', 'Ändere die Art der Aktivität') ?>
     </a>
     <div class="mb-20 select-btns" id="select-btns" style="display:none">
+
         <?php
-        foreach ($Settings->getActivities() as $id => $a) {
+        foreach ($Categories->categories as $type) {
+            $t = $type['id'];
+
             // check if subtypes are available
-            $subtypes = $a['subtypes'] ?? array();
-            $subtypes = array_filter($subtypes, function ($s) {
+            $subtypes = $type['children'] ?? array();
+            $subtypes = array_filter(DB::doc2Arr($subtypes), function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (empty($subtypes)) continue;
         ?>
-            <button data-type="<?= $id ?>" onclick="togglePubType('<?= $id ?>')" class="btn select text-<?= $id ?>" id="<?= $id ?>-btn">
+            <button data-type="<?= $t ?>" onclick="togglePubType('<?= $t ?>')" class="btn select" id="<?= $t ?>-btn" <?= $Categories->cssVar($t) ?>>
                 <span>
-                    <?= $Settings->icon($id, false) . lang($a['name'], $a['name_de']) ?>
+                    <i class='ph ph-<?= $type['icon'] ?? 'circle' ?>'></i>
+                    <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
                 </span>
             </button>
-        <?php }
-        ?>
+        <?php } ?>
     </div>
+
 
 <?php } ?>
 
@@ -367,7 +373,7 @@ function val($index, $default = '')
 
 <div class="box primary add-form" style="display:none" id="publication-form">
     <div class="content">
-        <!-- <button class="btn osiris sm mb-10" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button> -->
+        <button class="btn osiris small float-right" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
 
         <?php if (!empty($form) && isset($_GET['epub'])) { ?>
             <div class="alert signal mb-20">
@@ -396,34 +402,34 @@ function val($index, $default = '')
         <?php } ?>
 
         <!-- SUBTYPES -->
-        <?php foreach ($Settings->getActivities() as $t => $a) {
-            $subtypes = $a['subtypes'] ?? array();
-            $subtypes = array_filter($subtypes, function ($s) {
+        <?php
+
+        foreach ($Categories->categories as $type) {
+            $t = $type['id'];
+
+            // check if subtypes are available
+            $subtypes = $type['children'] ?? array();
+            $subtypes = array_filter(DB::doc2Arr($subtypes), function ($s) {
                 return !($s['disabled'] ?? false);
             });
             if (count($subtypes) <= 1) continue;
         ?>
-
-            <div class="mb-20 select-btns" data-type="<?= $t ?>">
-                <?php foreach ($subtypes as $st) {
-                    $st = $st['id'];
+            <div class="select-btns" data-type="<?= $t ?>">
+                <?php foreach ($subtypes as $sub) {
+                    if ($sub['disabled'] ?? false) continue;
+                    $st = $sub['id'];
                 ?>
-                    <button onclick="togglePubType('<?= $st ?>')" class="btn select text-<?= $t ?>" id="<?= $st ?>-btn" data-subtype="<?= $st ?>">
+                    <button onclick="togglePubType('<?= $st ?>')" class="btn select" id="<?= $st ?>-btn" data-subtype="<?= $st ?>" <?= $Categories->cssVar($t) ?>>
                         <span>
-                            <?= $Settings->icon($t, $st, false) ?> <?= $Settings->title($t, $st) ?>
+                            <i class='ph ph-<?= $sub['icon'] ?? 'circle' ?>'></i>
+                            <?= lang($sub['name'], $sub['name_de'] ?? $sub['name']) ?>
                         </span>
                     </button>
                 <?php } ?>
             </div>
-
-        <?php } ?>
-
-
-        <div id="examples" class="mb-20">
-            <?php //include BASEPATH . '/components/activity-examples.php' 
-            ?>
-        </div>
-
+        <?php
+        }
+        ?>
 
         <form action="<?= $formaction ?>" method="post" id="activity-form">
             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
@@ -452,10 +458,14 @@ function val($index, $default = '')
             </style>
 
             <p id="type-description" class="description">
+                <!-- filled by togglePubType() in add-activity.js -->
+            </p>
 
+            <p id="type-examples" class="examples">
+                <!-- filled by togglePubType() in add-activity.js -->
             </p>
             <div id="data-modules" class="row row-eq-spacing">
-
+                <!-- filled by togglePubType() in add-activity.js -->
             </div>
 
             <?php if (empty($form)) { ?>
@@ -514,7 +524,7 @@ function val($index, $default = '')
                     <?= lang('Possible doublet found:', 'Mögliche Doublette erkannt:') ?>
                 </h4>
                 <p class="m-0">
-
+                    <!-- filled by doubletCheck() in script.js -->
                 </p>
             </div>
 

@@ -4,14 +4,14 @@
  * Page to add new projects
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /projects/new
  *
  * @package     OSIRIS
  * @since       1.2.2
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -20,13 +20,13 @@ $Format = new Document(true);
 $form = $form ?? array();
 
 
-$formaction = ROOTPATH . "/";
+$formaction = ROOTPATH ;
 if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "projects/update/" . $form['_id'];
+    $formaction .= "/crud/projects/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/projects/view/" . $form['_id'];
 } else {
-    $formaction .= "projects/create";
+    $formaction .= "/crud/projects/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/projects/view/*";
 }
@@ -57,7 +57,6 @@ function sel($index, $value)
 
 <h3 class="title">
     <?= lang('Add new project', 'Neues Projekt') ?>
-    <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="<?= lang('Not for production usage', 'Nicht für den Produktions-einsatz') ?>">BETA</span>
 </h3>
 
 <form action="<?= $formaction ?>" method="post" id="project-form">
@@ -120,6 +119,7 @@ function sel($index, $value)
                 <option value="applied" <?= sel('status', 'applied') ?>><?= lang('applied', 'beantragt') ?></option>
                 <option value="approved" <?= sel('status', 'approved') ?>><?= lang('approved', 'bewilligt') ?></option>
                 <option value="rejected" <?= sel('status', 'rejected') ?>><?= lang('rejected', 'abgelehnt') ?></option>
+                <option value="finished" <?= sel('status', 'abgeschlossen') ?>><?= lang('finished', 'abgeschlossen') ?></option>
             </select>
         </div>
 
@@ -137,6 +137,7 @@ function sel($index, $value)
                 <option <?= sel('funder', 'Bundesländer') ?>>Bundesländer</option>
                 <option <?= sel('funder', 'Wirtschaft') ?>>Wirtschaft</option>
                 <option <?= sel('funder', 'EU') ?>>EU</option>
+                <option <?= sel('funder', 'Stiftungen') ?>>Stiftungen</option>
                 <option <?= sel('funder', 'Leibniz Wettbewerb') ?>>Leibniz Wettbewerb</option>
                 <option <?= sel('funder', 'Sonstige Drittmittelgeber') ?>>Sonstige Drittmittelgeber</option>
                 <!-- <option>Sonstige öffentliche internationale Förderorganisationen</option> -->
@@ -146,7 +147,7 @@ function sel($index, $value)
         </div>
         <div class="col-sm-4">
             <label for="funding_organization" class="required">
-                <?= lang('Funding organization', 'Förderorganisation') ?>
+                <?= lang('Funding organization', 'Förderorganisation / Zuwendungsgeber') ?>
             </label>
             <input type="text" class="form-control" name="values[funding_organization]" value="<?= val('funding_organization') ?>" id="funding_organization" required>
         </div>
@@ -172,9 +173,6 @@ function sel($index, $value)
                 <option value="transfer" <?= sel('purpose', 'transfer') ?>><?= lang('Transfer', 'Transfer') ?></option>
                 <option value="others" <?= sel('purpose', 'others') ?>><?= lang('Other purpose', 'Sonstiger Zweck') ?></option>
             </select>
-            <small class="text-danger">
-                Steht im KDSF. Können wir das aufnehmen?
-            </small>
         </div>
         <div class="col-sm-4">
             <label for="role">

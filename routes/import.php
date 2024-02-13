@@ -1,5 +1,5 @@
 <?php
-    
+
 Route::get('/import', function () {
     $breadcrumb = [
         ['name' => lang('Import')]
@@ -65,15 +65,21 @@ Route::post('/import/google', function () {
 
     // update authors and check if they are in the database
     $result['authors'] = array();
-    foreach ($pub['Autoren'] as $a) {
+    foreach ($pub['Autoren'] as $i => $a) {
         $a = explode(' ', $a);
         $last = array_pop($a);
         $first = implode(' ', $a);
+
+        $pos = 'middle';
+        if ($i == 0) $pos = 'first';
+        elseif ($i == count($pub['Autoren']) - 1) $pos = 'last';
+
         $username = $DB->getUserFromName($last, $first);
         $author = [
             'first' => $first,
             'last' => $last,
             'user' => $username,
+            'position'=>$pos,
             'aoi' => !empty($username)
         ];
         $result['authors'][] = $author;
@@ -96,13 +102,13 @@ Route::post('/import/google', function () {
     renderActivities(['_id' => $id]);
 
     $Format = new Document();
-    $Format->setDocument($doc);
+    $Format->setDocument($result);
 
     echo json_encode([
         'inserted' => $insertOneResult->getInsertedCount(),
         'id' => strval($id),
         'result' => $result,
-        'formatted' => $Format->formatShort()
+        'formatted' => $Format->format()
     ]);
 
     // echo json_encode($result);
@@ -120,6 +126,3 @@ Route::post('/import/file', function () {
     include BASEPATH . "/pages/import-file.php";
     include BASEPATH . "/footer.php";
 }, 'login');
-
-
-?>

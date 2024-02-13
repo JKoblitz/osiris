@@ -1,16 +1,17 @@
 <?php
+
 /**
  * Page for reports
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /controlling
  *
  * @package     OSIRIS
  * @since       1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -79,10 +80,10 @@
         <p>
             Aktivitäten, die nicht report-würdig sind (z.B. Online ahead of print, Akt. ohne affilierte Autoren) werden nicht gesperrt.
         </p>
-        
+
         <form action="#" method="post">
-        
-        <div class="form-row row-eq-spacing-sm">
+
+            <div class="form-row row-eq-spacing-sm">
                 <div class="col-sm">
                     <label class="required" for="start">
                         <?= lang('Beginning', 'Anfang') ?>
@@ -98,7 +99,7 @@
             </div>
             <div class="my-20">
                 <span>Aktion:</span>
-                
+
                 <div class="custom-radio d-inline-block ml-10">
                     <input type="radio" name="action" id="action-lock" value="lock" checked="">
                     <label for="action-lock"><i class="ph ph-fill ph-lock text-danger"></i> Sperren</label>
@@ -116,23 +117,20 @@
 
 
 <?php if (USER_MANAGEMENT != 'Auth') { ?>
-<!--    
-<div class="box box-signal">
-    <div class="content">
-        <h2 class="title">
-            Nutzer-Synchronisation
-        </h2>
 
-        <p>
-            Die Personen werden mit LDAP synchronisiert.
-        </p>
-        
-        <form action="<?=ROOTPATH?>/ldap/synchonize" method="post">
-        
-            <button class="btn signal" type="submit">Synchronisieren</button>
+    <div class="box box-signal">
+        <div class="content">
+            <h2 class="title">
+                Nutzer-Synchronisation
+            </h2>
 
-        </form>
+            <p>
+                Die Personen werden mit LDAP synchronisiert.
+            </p>
+
+            <a class="btn signal" href="<?= ROOTPATH ?>/synchronize-users">Synchronisieren</a>
+
+        </div>
     </div>
-</div> -->
 
 <?php } ?>

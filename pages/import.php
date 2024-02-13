@@ -5,14 +5,14 @@
  * e.g. from file or Google Scholar
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /expertise
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -93,7 +93,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                     else $alert = 'signal';
                                 ?>
 
-                                    <div class="box <?= $alert ?>">
+                                    <div class="alert <?= $alert ?>">
                                         <p class="mt-0">
                                             <?php if ($sim >= 98) { ?>
                                                 <?= lang('This is a 100% duplicate of the follwing publication:', 'Dies ist ein 100%iges Duplikat der folgenden Publikation:') ?>
@@ -106,12 +106,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                                     </div>
                                 <?php } ?>
 
-                                <?php if ($sim >= 98) { ?>
-                                    <!-- <button class="btn" disabled>
-                                    <i class="ph ph-plus"></i>
-                                    <?= lang('Adding duplicates is impossible.', 'de') ?>
-                                </button> -->
-                                <?php } else { ?>
+                                <?php if ($sim < 98) { ?>
                                     <button class="btn mt-5" onclick='addGoogleActivity("<?= $user ?>", "<?= $pub_id ?>")'>
                                         <i class="ph ph-plus"></i>
                                         <?= lang('Add to database', 'Zur DB hinzufügen') ?>
@@ -213,9 +208,9 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                             var td = $('tr#' + doc).find('td:first')
                             td.find('.alert,.btn').remove()
                             var alert = $('<div class="alert success">')
-                            alert.append('<p class="mt-0">' + lang('Publication successfully added. Please review the result carefully.', 'Publikation wurde hinzugefügt. Bitte überprüfe das Ergebnis sorgfältig!') + '</p>')
+                            alert.append('<p class="my-0">' + lang('Publication successfully added. Please review the result carefully.', 'Publikation wurde hinzugefügt. Bitte überprüfe das Ergebnis sorgfältig!') + '</p>')
                             alert.append(response.formatted)
-                            alert.append('<a class="btn mt-5" href="' + ROOTPATH + '/activities/view/' + response.id + '" target="_blank">Review</a>')
+                            alert.append('<br><a class="btn mt-5" href="' + ROOTPATH + '/activities/view/' + response.id + '" target="_blank">Review</a>')
                             td.append(alert)
                         }
                         $('.loader').removeClass('show')
@@ -285,7 +280,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
         <h2 class="title">
             <?= lang('Import activities from file', 'Importiere Aktivitäten aus einer Datei') ?>
         </h2>
-        <form action="<?= ROOTPATH ?>/import/file" method="post" enctype="multipart/form-data">
+        <form action="<?= ROOTPATH ?>/crud/import/file" method="post" enctype="multipart/form-data">
             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
             <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
                 <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">

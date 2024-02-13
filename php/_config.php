@@ -1,5 +1,193 @@
 <?php
 
+
+// implement newer functions in case they don't exist
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle)
+    {
+        return $needle !== '' && strpos($haystack, $needle) !== false;
+    }
+}
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle)
+    {
+        return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle)
+    {
+        return $needle !== '' && substr($haystack, -strlen($needle)) === (string)$needle;
+    }
+}
+
+// helper functions for all CRUD methods
+function validateValues($values, $DB)
+{
+    $first = max(intval($values['first_authors'] ?? 1), 1);
+    unset($values['first_authors']);
+    $last = max(intval($values['last_authors'] ?? 1), 1);
+    unset($values['last_authors']);
+
+    foreach ($values as $key => $value) {
+        if ($key == 'doi') {
+            if (!str_contains($value, '10.')) $value = null;
+            elseif (!str_starts_with($value, '10.')) {
+                $value = explode('10.', $value, 2);
+                $values[$key] = "10." . $value[1];
+            }
+            // dump($value);
+            // die;
+        } else if ($key == 'authors' || $key == "editors") {
+            $values[$key] = array();
+            $i = 0;
+            foreach ($value as $author) {
+                if (is_array($author)) {
+                    $author['approved'] = ($author['user'] ?? '') == $_SESSION['username'];
+                    $values[$key][] = $author;
+                    continue;
+                }
+                $author = explode(';', $author, 3);
+                if (count($author) == 1) {
+                    $user = $author[0];
+                    $temp = $DB->getPerson($user);
+                    $author = [$temp['last'], $temp['first'], true];
+                } else {
+                    $user = $DB->getUserFromName($author[0], $author[1]);
+                }
+                $vals = [
+                    'last' => $author[0],
+                    'first' => $author[1],
+                    'aoi' => boolval($author[2]),
+                    'user' => $user,
+                    'approved' => $user == $_SESSION['username']
+                ];
+                if ($key == "editors") {
+                    $values[$key][] = $vals;
+                } else {
+                    if ($i < $first) {
+                        $pos = 'first';
+                    } elseif ($i + $last >= count($value)) {
+                        $pos = 'last';
+                    } else {
+                        $pos = 'middle';
+                    }
+                    $vals['position'] = $pos;
+                    $values[$key][] = $vals;
+                }
+                $i++;
+            }
+        } else if ($key == 'sws') {
+            foreach ($value as $i => $v) {
+                $values['authors'][$i]['sws'] = $v;
+            }
+            unset($values['sws']);
+        } else if ($key == 'user') {
+            $user = $DB->getPerson($value);
+            $values["authors"] = [
+                [
+                    'last' => $user['last'],
+                    'first' => $user['first'],
+                    'aoi' => true,
+                    'user' => $value,
+                    'approved' => $value == $_SESSION['username']
+                ]
+            ];
+        } else if (is_array($value)) {
+            $values[$key] = validateValues($value, $DB);
+        } else if ($key == 'issn') {
+            if (empty($value)) {
+                $values[$key] = array();
+            } else {
+                $values[$key] = explode(' ', $value);
+                $values[$key] = array_unique($values[$key]);
+            }
+        } else if ($value === 'true') {
+            $values[$key] = true;
+        } else if ($value === 'false') {
+            $values[$key] = false;
+        } else if ($key == 'invited_lecture' || $key == 'open_access') {
+            $values[$key] = boolval($value);
+        } else if ($key == 'oa_status') {
+            $values['open_access'] = $value != 'closed';
+        } else if (in_array($key, ['aoi', 'epub', 'correction'])) {
+            // dump($value);
+            // $values[$key] = boolval($value);
+            $values[$key] = true;
+        } else if ($value === '') {
+            $values[$key] = null;
+        } else if ($key === 'epub-delay' || $key === 'end-delay') {
+            // will be converted otherwise
+            $values[$key] = endOfCurrentQuarter(true);
+        } else if ($key == 'start' || $key == 'end') {
+            if (DateTime::createFromFormat('Y-m-d', $value) !== FALSE) {
+                $values[$key] = valiDate($value);
+                if ($key == 'start') {
+                    if (!isset($values['year']) && isset($values[$key]['year'])) {
+                        $values['year'] = $values[$key]['year'];
+                    }
+                    if (!isset($values['month']) && isset($values[$key]['month'])) {
+                        $values['month'] = $values[$key]['month'];
+                    }
+                }
+            } else {
+                $values[$key] = null;
+            }
+        } else if ($key == 'month' || $key == 'year') {
+            $values[$key] = intval($value);
+        } else if (is_numeric($value)) {
+            // dump($key);
+            // dump($value);
+            // die;
+            if (str_starts_with($value, "0")) {
+                $values[$key] = trim($value);
+            } elseif (is_float($value + 0)) {
+                $values[$key] = floatval($value);
+            } else {
+                $values[$key] = intval($value);
+            }
+        } else if (is_string($value)) {
+            $values[$key] = trim($value);
+        }
+    }
+
+    if (isset($values['journal']) && !isset($values['role']) && isset($values['year'])) {
+        // it is an article
+        // since non-checked boxes are not shown in the posted data,
+        // it is necessary to get false values
+        if (!isset($values['epub'])) $values['epub'] = false;
+        else $values['epub-delay'] = endOfCurrentQuarter(true);
+        if (!isset($values['open_access']) || !$values['open_access']) {
+            $values['open_access'] = $DB->get_oa($values);
+        }
+        if (!isset($values['correction'])) $values['correction'] = false;
+
+        $values['impact'] = $DB->get_impact($values);
+    }
+    if (($values['type'] ?? '') == 'misc' && ($values['iteration'] ?? '') == 'annual') {
+        $values['end-delay'] = endOfCurrentQuarter(true);
+    }
+
+    if (isset($values['year']) && ($values['year'] < 1900 || $values['year'] > (CURRENTYEAR ?? 2055) + 5)) {
+        echo "The year $values[year] is not valid!";
+        die();
+    }
+    // dump($values, true);
+    // die();
+    return $values;
+}
+
+function valiDate($date) 
+{
+    if (empty($date)) return null;
+    $t = explode('-', $date, 3);
+    return array(
+        'year' => intval($t[0]),
+        'month' => intval($t[1] ?? 1),
+        'day' => intval($t[2] ?? 1),
+    );
+}
+
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
     if ($msg === null && isset($_SESSION['msg'])) {
@@ -76,21 +264,21 @@ function printMsg($msg = null, $type = 'info', $header = "default")
 
         case 'add-success':
             $header = lang("Success", "Erfolg");
-            $text = lang("Data set was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
-            $text .= '<br/><a class="btn mt-10" href="' . ROOTPATH . '/activities/new">' . lang('Add another activity', 'Weitere Aktivität hinzufügen') . '</a>';
+            $text = lang("Dataset was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
+            $text .= '<br/><a class="btn mt-10" href="' . ROOTPATH . '/add-activity">' . lang('Add another activity', 'Weitere Aktivität hinzufügen') . '</a>';
             $class = "success";
             break;
 
         case 'update-success':
             $header = lang("Success", "Erfolg");
-            $text = lang("Data set was updated successfully.", "Der Datensatz wurde erfolgreich bearbeitet.");
+            $text = lang("Dataset was updated successfully.", "Der Datensatz wurde erfolgreich bearbeitet.");
             $class = "success";
             break;
 
         case 'deleted':
         case 'deleted-1':
             $header = lang("Deleted", "Gelöscht");
-            $text = lang("You have deleted an activity.", "Du hast eine Aktivität gelöscht.");
+            $text = lang("You have deleted a dataset.", "Du hast einen Datensatz gelöscht.");
             $class = "danger";
             break;
 
@@ -133,56 +321,6 @@ function readCart()
     return $cart;
 }
 
-function hiddenFieldsFromGet($exclude = array())
-{
-    if (empty($_GET)) return;
-    if (is_string($exclude)) $exclude = array($exclude);
-
-    foreach ($_GET as $name => $value) {
-        if (in_array($name, $exclude) || $name == 'msg') continue;
-        if (is_array($value)) {
-            foreach ($value as $k => $v) {
-                // if (empty($v)) continue;
-                echo '<input type="hidden" name="' . $name . '[' . $k . ']" value="' . $v . '">';
-            }
-        } elseif (!empty($value)) {
-            echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
-        }
-    }
-}
-
-function hiddenFieldsFromPost($exclude = array())
-{
-    if (empty($_POST)) return;
-    if (is_string($exclude)) $exclude = array($exclude);
-
-    foreach ($_POST as $name => $value) {
-        if (in_array($name, $exclude) || $name == 'msg') continue;
-        if (is_array($value)) {
-            foreach ($value as $v) {
-                // if (empty($v)) continue;
-                echo '<input type="hidden" name="' . $name . '[]" value="' . $v . '">';
-            }
-        } elseif (!empty($value)) {
-            echo '<input type="hidden" name="' . $name . '" value="' . $value . '">';
-        }
-    }
-}
-
-function sortbuttons(string $colname)
-{
-    $order = $_GET["order"] ?? "";
-    $asc = $_GET["asc"] ?? 1;
-    $get = currentGET(['order', 'asc']);
-    // $get = $_SERVER['REQUEST_URI'] . $get;
-    if ($order == $colname && $asc == 1) {
-        echo "<a href='$get&order=$colname&asc=0'><i class='ph ph-fill ph-sort-up'></i></a>";
-    } elseif ($order == $colname && $asc == 0) {
-        echo "<a href='$get'><i class='ph ph-fill ph-sort-down'></i></a>";
-    } else {
-        echo "<a href='$get&order=$colname&asc=1'><i class='ph ph-fill ph-sort'></i></a>";
-    }
-}
 
 function currentGET(array $exclude = [], array $include = [])
 {
@@ -203,68 +341,6 @@ function currentGET(array $exclude = [], array $include = [])
         }
     }
     return $get;
-}
-
-function addJournal($journal)
-{
-    global $db;
-    $journal_id = null;
-    if (!empty($journal)) {
-        $stmt = $db->prepare("SELECT journal_id FROM `journal` WHERE journal LIKE ? OR abbr LIKE ?");
-        $stmt->execute([$journal, $journal]);
-        $journal_id = $stmt->fetch(PDO::FETCH_COLUMN);
-        if (empty($journal_id)) {
-            $stmt = $db->prepare("INSERT INTO `journal` (journal, abbr) VALUES (?,?)");
-            $stmt->execute([$journal, $journal]);
-            $journal_id = $db->lastInsertId();
-        }
-    }
-    return $journal_id;
-}
-
-function addAuthors($authors, $first, $table, $id)
-{
-    global $db;
-
-    $find = $db->prepare('SELECT `user` FROM users WHERE last_name LIKE ? AND first_name LIKE ?');
-    $insert = $db->prepare(
-        "INSERT INTO `authors` 
-        (`${table}_id`, last_name, first_name, aoi, position, `user`) 
-        VALUES (?, ?, ?, ?, ?, ?)
-        "
-    );
-
-    foreach ($authors as $i => $author) {
-        $author = explode(';', $author, 3);
-        if ($i < $first) {
-            $pos = 'first';
-        } elseif ($i + 1 == count($authors)) {
-            $pos = 'last';
-        } else {
-            $pos = 'middle';
-        }
-        $find->execute([
-            $author[0],
-            $author[1][0] . "%"
-        ]);
-        $user = $find->fetch(PDO::FETCH_COLUMN);
-        if (empty($user)) $user = null;
-        $insert->execute([
-            $id,
-            $author[0],
-            $author[1],
-            $author[2],
-            $pos,
-            $user
-        ]);
-    }
-}
-
-if (!function_exists('str_contains')) {
-    function str_contains($haystack, $needle)
-    {
-        return $needle !== '' && strpos($haystack, $needle) !== false;
-    }
 }
 
 function CallAPI($method, $url, $data = [])
@@ -486,13 +562,6 @@ function dump($element, $as_json = false)
             var_dump(json_last_error_msg()) . PHP_EOL;
             var_export($element);
         }
-        // } else if ($as_json) {
-
-        //     echo json_encode($element, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        //     if (!empty(json_last_error())) {
-        //         var_dump(json_last_error_msg()) . PHP_EOL;
-        //         var_export($element);
-        //     }
     } else {
         var_dump($element);
     }
@@ -606,6 +675,55 @@ function getFileIcon($type)
         case 'json':
             return 'file-code';
         default:
-            return 'file-exclamation';
+            return 'file-text';
     }
+}
+
+/**
+ * Return the last day of the Week/Month/Quarter/Year that the
+ * current/provided date falls within
+ *
+ * @param string   $period The period to find the last day of. ('year', 'quarter', 'month', 'week')
+ * @param DateTime $date   The date to use instead of the current date
+ *
+ * @return DateTime
+ * @throws InvalidArgumentException
+ */
+function lastDayOf($period, DateTime $date = null)
+{
+    $period = strtolower($period);
+    $validPeriods = array('year', 'quarter', 'month', 'week');
+
+    if ( ! in_array($period, $validPeriods))
+        throw new InvalidArgumentException('Period must be one of: ' . implode(', ', $validPeriods));
+
+    $newDate = ($date === null) ? new DateTime() : clone $date;
+
+    switch ($period)
+    {
+        case 'year':
+            $newDate->modify('last day of december ' . $newDate->format('Y'));
+            break;
+        case 'quarter':
+            $month = $newDate->format('n') ;
+
+            if ($month < 4) {
+                $newDate->modify('last day of march ' . $newDate->format('Y'));
+            } elseif ($month > 3 && $month < 7) {
+                $newDate->modify('last day of june ' . $newDate->format('Y'));
+            } elseif ($month > 6 && $month < 10) {
+                $newDate->modify('last day of september ' . $newDate->format('Y'));
+            } elseif ($month > 9) {
+                $newDate->modify('last day of december ' . $newDate->format('Y'));
+            }
+            break;
+        case 'month':
+            $newDate->modify('last day of this month');
+            break;
+        case 'week':
+            $newDate->modify(($newDate->format('w') === '0') ? 'now' : 'sunday this week');
+            break;
+    }
+
+    return $newDate;
 }

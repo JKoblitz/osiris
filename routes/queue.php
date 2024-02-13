@@ -4,12 +4,12 @@
  * Routing file for the OpenAlex queue
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -17,7 +17,7 @@
 Route::get('/queue/(user|editor)', function ($role) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
-    if ($role == 'editor' && ($Settings->hasPermission('complete-dashboard'))) {
+    if ($role == 'editor' && ($Settings->hasPermission('report.dashboard'))) {
         $filter = ['declined' => ['$ne' => true]];
     } else {
         $filter = ['authors.user' => $user, 'declined' => ['$ne' => true]];

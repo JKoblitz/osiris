@@ -4,14 +4,14 @@
  * Page to perform advanced activity search
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /search/activities
  *
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -21,7 +21,6 @@ $Format = new Document(true);
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/query-builder.default.min.css">
 <script src="<?= ROOTPATH ?>/js/query-builder.standalone.js"></script>
-<script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
 
 <div class="btn-group float-right">
     <a href="#close-modal" class="btn osiris active">
@@ -55,14 +54,9 @@ $Format = new Document(true);
 </table>
 
 <?php
-$activities = $Settings->getActivities();
-$types = array_keys($activities);
-$subtypes = array_map(function ($a) {
-    return array_column($a['subtypes'], 'id');
-}, $activities);
-
-$subtypes = flatten($subtypes);
-?>
+    $categories = $osiris->adminCategories->distinct('id');
+    $types = $osiris->adminTypes->distinct('id');
+    ?>
 
 <script>
     // var mongo = $('#builder').queryBuilder('getMongo');
@@ -417,19 +411,6 @@ $subtypes = flatten($subtypes);
         },
         allow_empty: true,
         default_filter: 'type'
-    });
-
-    $.extend($.fn.DataTable.ext.classes, {
-        sPaging: "pagination mt-10 ",
-        sPageFirst: "direction ",
-        sPageLast: "direction ",
-        sPagePrevious: "direction ",
-        sPageNext: "direction ",
-        sPageButtonActive: "active ",
-        sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-        sLengthSelect: "form-control sm d-inline w-auto",
-        sInfo: "float-right text-muted",
-        sLength: "float-right"
     });
 
     var dataTable;

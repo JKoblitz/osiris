@@ -126,13 +126,13 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
 </div>
 
 
-Um einen **Autor hinzuzufügen**, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. Bestätigen kannst du durch Drücken von <kbd>Enter</kbd> oder den <i class="ph ph-plus"></i>-Knopf. DSMZ-Autoren werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zur DSMZ zugeordnet.
+Um einen **Autor hinzuzufügen**, musst du ihn in das Feld eintragen, das mit "Add author ..." gekennzeichnet ist. Nutze dafür bitte das Format <code>Nachname, Vorname</code>, damit OSIRIS die Autoren korrekt zuordnen kann. Bestätigen kannst du durch Drücken von <kbd>Enter</kbd> oder den <i class="ph ph-plus"></i>-Knopf. Autoren deines Instituts werden in einer Liste vorgeschlagen. Ein Autor aus der Liste wird automatisch zum Institut zugeordnet.
 
 Um einen **Autor zu entfernen**, musst du auf das &times; hinter seinem Namen klicken.
 
 Um die **Autorenreihenfolge zu ändern**, kannst du einen Autoren nehmen und ihn mittels Drag & Drop an die gewünschte Position ziehen.
 
-Um einen **Autor zur DSMZ zugehörig zu markieren**, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Wort DSMZ taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte der DSMZ sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht als DSMZ-Autor markiert werden!
+Um einen **Autor zum Institut zugehörig zu markieren**, kannst du ihn einfach mit Doppelklick anklicken. Der Name wird dann blau markiert und das Kürzel des Instituts (oder ein *) taucht davor auf. Es ist wichtig für die Berichterstattung, dass alle Autoren ihrer Zugehörigkeit nach markiert sind! Wenn Autoren zwar Beschäftigte deines Instituts sind, es aber zum Zeitpunkt der Aktivität nicht waren, dürfen sie nicht entsprechend markiert werden!
 
 Verschrieben? Ein Autor wird nicht korrekt einem Nutzer zugeordnet? Nachdem du den Datensatz hinzugefügt hast, kannst du die Autorenliste im Detail noch einmal bearbeiten. Lies dazu den [folgenden Abschnitt](#der-autoren-editor).
 
@@ -160,7 +160,7 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
                 <th>Last name</th>
                 <th>First name</th>
                 <th>Position</th>
-                <th>DSMZ</th>
+                <th>*</th>
                 <th>Username</th>
                 <th></th>
             </tr>
@@ -405,7 +405,7 @@ Gleich am Anfang jeder Zeile gibt es einen sog. Handle (<i class="grip-dots-vert
 
 Die Position des Autors kann durch ein Dropdown-Menü ausgewählt werden. Auf diese Weise können mehrere Autoren als Erst- bzw. Letztautoren festgelegt werden (bei geteilter Autorenschaft). Hier kann auch ein Corresponding author festgelegt werden, falls dieser weder Erst- noch Letztautor ist. 
 
-Es folgt eine Checkbox, in der angegeben wird, ob der Autor beim Zeitpunkt der Veröffentlichung Angehöriger der DSMZ war oder nicht. Im nächsten Feld kann der Nutzeraccount hinterlegt werden, mit dem dieser Autor verknüpft ist. Im oben gezeigten Beispiel ist zu sehen, dass man nicht der DSMZ zugehörig sein muss, um die Aktivitäten mit dem Nutzerprofil zu verknüpfen. Die zweite Erstautorin ist einem Nutzerkonto zugeordnet, war aber zum Zeitpunkt der Arbeit nicht bei der DSMZ angestellt. Die Aktivität ist mit ihrem Account verknüpft und wird in ihrem Profil dargestellt, sie wird jedoch im Report nicht als DSMZ-Autorin markiert und bekommt für die Aktivität keine Coins.
+Es folgt eine Checkbox, in der angegeben wird, ob der Autor beim Zeitpunkt der Veröffentlichung Angehöriger deines Instituts war oder nicht. Im nächsten Feld kann der Nutzeraccount hinterlegt werden, mit dem dieser Autor verknüpft ist. Im oben gezeigten Beispiel ist zu sehen, dass man nicht dem Institut zugehörig sein muss, um die Aktivitäten mit dem Nutzerprofil zu verknüpfen. Die zweite Erstautorin ist einem Nutzerkonto zugeordnet, war aber zum Zeitpunkt der Arbeit nicht mit dem Institut affiliert. Die Aktivität ist mit ihrem Account verknüpft und wird in ihrem Profil dargestellt, sie wird jedoch im Report nicht als affilierte Autorin markiert und bekommt für die Aktivität keine Coins.
 
 Zu guter Letzt ist eine Schaltfläche zu sehen (<i class="ph ph-trash"></i>), mit der ein Autor komplett gelöscht werden kann.
 
@@ -556,10 +556,10 @@ So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
     </p>
     <div class="" id="approve-632da4672199cd3df8dbc166">
     Bitte bestätige (evtl. erneut), dass du Autor:in bist:<br>
-        <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
+        <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war dem Institut angehörig">
             <i class="ph ph-fw ph-check"></i>
         </span>
-        <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Ja, aber ich war nicht der DSMZ angehörig">
+        <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Ja, aber ich war nicht dem Institut angehörig">
             <i class="ph ph-fw ph-push-pin-slash"></i>
         </span>
         <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Nein, das bin ich nicht">

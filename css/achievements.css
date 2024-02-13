@@ -1,4 +1,3 @@
-/* line 10, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 :root {
   --lvl-1: $lvl-1;
   --lvl-2: $lvl-2;
@@ -6,7 +5,6 @@
   --lvl-4: $lvl-4;
 }
 
-/* line 20, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .row .tile.achievement {
   /* height: 100%; */
   -webkit-flex-basis: 0;
@@ -20,14 +18,11 @@
   display: flex;
   flex-direction: column;
 }
-
-/* line 33, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .row .tile.achievement .tile-content {
   flex: 1 1 auto;
 }
 
 @media (min-width: 1200px) {
-  /* line 41, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
   .col-lg-25 {
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 20%;
@@ -36,9 +31,7 @@
     max-width: 20%;
   }
 }
-
 @media (min-width: 1600px) {
-  /* line 51, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
   .col-xl-25 {
     -webkit-box-flex: 0;
     -webkit-flex: 0 0 20%;
@@ -47,8 +40,6 @@
     max-width: 20%;
   }
 }
-
-/* line 60, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .level span {
   width: 2rem;
   height: 2rem;
@@ -60,196 +51,147 @@
   box-shadow: inset 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
 }
 
-/* line 73, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement h3,
 .achievement h5 {
   margin: 0;
   font-weight: 800;
 }
-
-/* line 79, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement h5 {
   text-transform: uppercase;
   color: white;
 }
-
-/* line 84, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement svg {
   height: auto;
   max-height: 100%;
 }
-
-/* line 88, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement svg #color * {
   fill: white !important;
 }
-
-/* line 93, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
-.achievement svg #lvl-1, .achievement svg #lvl-2, .achievement svg #lvl-3, .achievement svg #lvl-max {
+.achievement svg #lvl-1,
+.achievement svg #lvl-2,
+.achievement svg #lvl-3,
+.achievement svg #lvl-max {
   display: none;
 }
-
-/* line 98, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
-.achievement [data-toggle="tooltip"]::after {
+.achievement [data-toggle=tooltip]::after {
   width: 14rem;
 }
-
-/* line 102, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement .thumb svg {
   height: 8rem;
   width: 8rem;
   margin-right: 2rem;
 }
-
-/* line 108, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement .thumb-sm {
   display: inline-block;
   width: 4rem;
   height: 4rem;
 }
-
-/* line 115, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement .lvl0 h3 {
   color: var(--muted-color);
 }
-
-/* line 121, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
-.achievement.lvl1 h5, .achievement.lvl1 i {
+.achievement.lvl1 h5,
+.achievement.lvl1 i {
   color: #b26d47;
 }
-
-/* line 128, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl1 svg #lvl-1 {
   display: block;
 }
-
-/* line 132, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl1 .level span:nth-of-type(1) {
   background-color: #b26d47;
 }
-
-/* line 138, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
-.achievement.lvl2 h5, .achievement.lvl2 i {
+.achievement.lvl2 h5,
+.achievement.lvl2 i {
   color: #aaabaf;
 }
-
-/* line 145, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl2 svg #lvl-2 {
   display: block;
 }
-
-/* line 149, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl2 .level span:nth-of-type(1) {
   background-color: #b26d47;
 }
-
-/* line 153, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl2 .level span:nth-of-type(2) {
   background-color: #aaabaf;
 }
-
-/* line 159, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
-.achievement.lvl3 h5, .achievement.lvl3 i {
+.achievement.lvl3 h5,
+.achievement.lvl3 i {
   color: #c19f3f;
 }
-
-/* line 166, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl3 svg #lvl-3 {
   display: block;
 }
-
-/* line 170, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl3 .level span:nth-of-type(1) {
   background-color: #b26d47;
 }
-
-/* line 174, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl3 .level span:nth-of-type(2) {
   background-color: #aaabaf;
 }
-
-/* line 178, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.lvl3 .level span:nth-of-type(3) {
   background-color: #c19f3f;
 }
-
-/* line 188, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
-.achievement.max-4.lvl4 h5, .achievement.max-4.lvl4 i, .achievement.max-3.lvl3 h5, .achievement.max-3.lvl3 i, .achievement.max-2.lvl2 h5, .achievement.max-2.lvl2 i, .achievement.max-1.lvl1 h5, .achievement.max-1.lvl1 i, .achievement.lvl-max h5, .achievement.lvl-max i {
+.achievement.max-4.lvl4 h5,
+.achievement.max-4.lvl4 i, .achievement.max-3.lvl3 h5,
+.achievement.max-3.lvl3 i, .achievement.max-2.lvl2 h5,
+.achievement.max-2.lvl2 i, .achievement.max-1.lvl1 h5,
+.achievement.max-1.lvl1 i, .achievement.lvl-max h5,
+.achievement.lvl-max i {
   color: #37b6de;
 }
-
-/* line 195, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.max-4.lvl4 svg #lvl-max, .achievement.max-3.lvl3 svg #lvl-max, .achievement.max-2.lvl2 svg #lvl-max, .achievement.max-1.lvl1 svg #lvl-max, .achievement.lvl-max svg #lvl-max {
   display: block;
 }
-
-/* line 199, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.max-4.lvl4 .level span:nth-of-type(1), .achievement.max-3.lvl3 .level span:nth-of-type(1), .achievement.max-2.lvl2 .level span:nth-of-type(1), .achievement.max-1.lvl1 .level span:nth-of-type(1), .achievement.lvl-max .level span:nth-of-type(1) {
   background-color: #b26d47;
 }
-
-/* line 203, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.max-4.lvl4 .level span:nth-of-type(2), .achievement.max-3.lvl3 .level span:nth-of-type(2), .achievement.max-2.lvl2 .level span:nth-of-type(2), .achievement.max-1.lvl1 .level span:nth-of-type(2), .achievement.lvl-max .level span:nth-of-type(2) {
   background-color: #aaabaf;
 }
-
-/* line 207, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.max-4.lvl4 .level span:nth-of-type(3), .achievement.max-3.lvl3 .level span:nth-of-type(3), .achievement.max-2.lvl2 .level span:nth-of-type(3), .achievement.max-1.lvl1 .level span:nth-of-type(3), .achievement.lvl-max .level span:nth-of-type(3) {
   background-color: #c19f3f;
 }
-
-/* line 211, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement.max-4.lvl4 .level span:last-of-type, .achievement.max-3.lvl3 .level span:last-of-type, .achievement.max-2.lvl2 .level span:last-of-type, .achievement.max-1.lvl1 .level span:last-of-type, .achievement.lvl-max .level span:last-of-type {
   background-color: #37b6de;
 }
 
-/* line 219, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget {
   font-weight: 500;
   font-size: 2rem;
 }
-
-/* line 224, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget img {
   height: 4rem;
 }
-
-/* line 228, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget-lg {
   font-size: 3rem;
 }
-
-/* line 231, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget-lg img {
   height: 6rem;
 }
-
-/* line 236, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget .achievement {
   display: flex;
   display: inline-flex;
   align-items: center;
   margin-right: 1rem;
 }
-
-/* line 243, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget .achievement.lvl-1 {
   color: #b26d47;
 }
-
-/* line 246, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget .achievement.lvl-2 {
   color: #aaabaf;
 }
-
-/* line 249, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget .achievement.lvl-3 {
   color: #c19f3f;
 }
-
-/* line 252, ../../Users/juk20/Nextcloud/testserver/osiris/scss/achievements.scss */
 .achievement-widget .achievement.lvl-max {
   color: #37b6de;
+}
+
+/* gray filter for achievements on profile page */
+.achievements .achievement-widget {
+  filter: grayscale(1);
+  transition: all 0.5s linear;
+}
+
+.achievements .achievement-widget:hover {
+  filter: grayscale(0);
 }
 
 /*# sourceMappingURL=achievements.css.map */

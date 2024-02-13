@@ -4,14 +4,14 @@
  * Page to inactive a user
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /user/delete/<username>
  *
  * @package     OSIRIS
  * @since       1.2.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -25,7 +25,7 @@ use function PHPSTORM_META\type;
     <?= $data['name'] ?>
 </h1>
 
-<form action="<?= ROOTPATH ?>/delete-user/<?= $user ?>" method="post">
+<form action="<?= ROOTPATH ?>/crud/users/delete/<?= $user ?>" method="post">
 
     <p class="text-danger">
         <?= lang(

@@ -4,12 +4,12 @@
  * Core routing file
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -27,7 +27,7 @@ if (file_exists('CONFIG.php')) {
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('OSIRIS_VERSION', '1.2.2');
+define('OSIRIS_VERSION', '1.3.0');
 
 // set time constants
 $year = date("Y");
@@ -83,27 +83,10 @@ Route::get('/', function () {
 
 
 if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
-    require_once 'addons/auth/index.php';
-}
-if (defined('GUEST_FORMS') && GUEST_FORMS) {
-    require_once 'addons/guestforms/index.php';
+    require_once BASEPATH.'/addons/auth/index.php';
 }
 
 
-Route::get('/test-new-func', function () {
-    include_once BASEPATH . "/php/init.php";
-    // include BASEPATH . "/header.php";
-    // $db = new DB;
-    // dump($db->getPerson('juk20'));
-
-    // include BASEPATH . "/footer.php";
-    $id = 'DSMZ';
-    $children = $Groups->getChildren($id);
-    dump($children, true);
-   
-});
-
-include_once BASEPATH . "/routes/admin.php";
 include_once BASEPATH . "/routes/components.php";
 include_once BASEPATH . "/routes/controlling.php";
 include_once BASEPATH . "/routes/database.php";
@@ -115,7 +98,7 @@ include_once BASEPATH . "/routes/login.php";
 include_once BASEPATH . "/routes/migrate.php";
 include_once BASEPATH . "/routes/projects.php";
 include_once BASEPATH . "/routes/queue.php";
-include_once BASEPATH . "/routes/research-data.php";
+include_once BASEPATH . "/routes/tags.php";
 include_once BASEPATH . "/routes/static.php";
 include_once BASEPATH . "/routes/teaching.php";
 include_once BASEPATH . "/routes/users.php";
@@ -123,13 +106,23 @@ include_once BASEPATH . "/routes/visualize.php";
 include_once BASEPATH . "/routes/activities.php";
 include_once BASEPATH . "/routes/export.php";
 include_once BASEPATH . "/routes/concepts.php";
+include_once BASEPATH . "/routes/admin.php";
+// include_once BASEPATH . "/routes/adminGeneral.php";
+// include_once BASEPATH . "/routes/adminRoles.php";
+
 
 include_once BASEPATH . "/routes/api.php";
-include_once BASEPATH . "/routes/CRUD.php";
+include_once BASEPATH . "/routes/rest.php";
+// include_once BASEPATH . "/routes/CRUD.php";
 
-if (IDA_INTEGRATION) {
+// if (IDA_INTEGRATION) {
     include_once BASEPATH . "/addons/ida/index.php";
-}
+// }
+
+
+// if ($Settings->featureEnabled('guests')) {
+    require_once BASEPATH.'/addons/guestforms/index.php';
+// }
 
 /**
  * Routes for OSIRIS Portal

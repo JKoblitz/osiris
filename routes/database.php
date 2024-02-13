@@ -3,20 +3,22 @@
  * Routing file for database manipulations
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
 
 
 Route::get('/rerender', function () {
+    set_time_limit(6000);
     include_once BASEPATH . "/php/Render.php";
     renderActivities();
+    echo "Done.";
 });
 
 Route::get('/check-duplicate-id', function () {

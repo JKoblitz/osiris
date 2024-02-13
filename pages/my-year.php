@@ -4,14 +4,14 @@
  * Page to see and approve current quarter
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /my-year/<username>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -23,10 +23,22 @@ $QUARTER = intval($_GET['quarter'] ?? CURRENTQUARTER);
 
 $q = $YEAR . "Q" . $QUARTER;
 
-// include_once BASEPATH . "/php/_lom.php";
-// $LOM = new LOM($user, $osiris);
 
-// $_lom = 0;
+$lastQ = $QUARTER - 1;
+$lastY = $YEAR;
+if ($lastQ < 1) {
+    $lastQ = 4;
+    $lastY -= 1;
+}
+// $lastquarter = $lastY . "Q" . $lastQ;
+
+$nextQ = $QUARTER + 1;
+$nextY = $YEAR;
+if ($nextQ > 4) {
+    $nextQ = 1;
+    $nextY += 1;
+}
+// $nextquarter = $nextY . "Q" . $nextQ;
 
 include_once BASEPATH . "/php/Coins.php";
 $Coins = new Coins();
@@ -35,10 +47,9 @@ $coins = $Coins->getCoins($user, $YEAR);
 
 
 $groups = [];
-foreach ($Settings->get('activities') as $key => $value) {
+foreach ($Settings->getActivities() as $value) {
     $groups[$value['id']] = [];
 }
-
 
 $timeline = [];
 $timelineGroups = [];
@@ -101,7 +112,7 @@ foreach ($cursor as $doc) {
 
 // dump($timeline, true);
 // $showcoins = (!($scientist['hide_coins'] ?? true)  && !($USER['hide_coins'] ?? false));
-if ($Settings->hasFeatureDisabled('coins')) {
+if (!$Settings->featureEnabled('coins')) {
     $showcoins = false;
 } else {
     $showcoins = ($scientist['show_coins'] ?? 'no');
@@ -135,7 +146,8 @@ if ($Settings->hasFeatureDisabled('coins')) {
 
     <div class="row align-items-center">
         <div class="col flex-grow-0">
-            <img src="<?= file_exists(BASEPATH . "/img/users/$user.jpg") ? ROOTPATH . "/img/users/$user.jpg" : ROOTPATH . "/img/no-photo.png"  ?>" alt="" class="profile-img">
+            <?= $Settings->printProfilePicture($user, 'profile-img') ?>
+
         </div>
         <div class="col ml-20">
             <h1 class="m-0">
@@ -151,7 +163,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
             <?php if ($showcoins) { ?>
                 <p class="lead m-0">
                     <i class="ph ph-lg ph-coin text-signal"></i>
-                    <b id="lom-points"><?= $coins ?></b>
+                    <b id="coin-number"><?= $coins ?></b>
                     Coins in <?= $YEAR ?>
                     <a href='#coins' class="text-muted">
                         <i class="ph ph-question text-muted"></i>
@@ -198,29 +210,52 @@ if ($Settings->hasFeatureDisabled('coins')) {
                         <?= lang('Change year and quarter', 'Ändere Jahr und Quartal') ?>:
                     </label>
 
-                    <div class="input-group">
 
-                        <div class="input-group-prepend">
-                            <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
-                                <i class="ph ph-calendar-check"></i>
-                            </div>
-                        </div>
-                        <select name="year" id="year" class="form-control">
-                            <?php foreach (range($Settings->get('startyear'), CURRENTYEAR) as $year) { ?>
-                                <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
-                            <?php } ?>
-                        </select>
-                        <select name="quarter" id="quarter" class="form-control">
-                            <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
-                            <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
-                            <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
-                            <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
-                        </select>
-                        <div class="input-group-append">
-                            <button class="btn primary"><i class="ph ph-check"></i></button>
-                        </div>
+                    <div class="btn-group">
+                        <a href="?year=<?= $YEAR - 1 ?>&quarter=<?= $QUARTER ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>">
+                            <i class="ph ph-caret-double-left"></i>
+                        </a>
+                        <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>">
+                            <i class="ph ph-caret-left"></i>
+                        </a>
+                        <a class="btn text-secondary border-secondary" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>">
+                            <!-- <i class="ph ph-circle"></i> -->
+                            <?= $YEAR ?>
+                            Q<?= $QUARTER ?>
+                        </a>
+                        <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>">
+                            <i class="ph ph-caret-right"></i>
+                        </a>
+                        <a href="?year=<?= $YEAR + 1 ?>&quarter=<?= $QUARTER ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>">
+                            <i class="ph ph-caret-double-right"></i>
+                        </a>
                     </div>
 
+                    <div class="alert w-400 position-absolute" id="detailed" style="display: none">
+                        <div class="input-group">
+
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" data-toggle="tooltip" data-title="<?= lang('Select quarter', 'Wähle ein Quartal aus') ?>">
+                                    <i class="ph ph-calendar-check"></i>
+                                </div>
+                            </div>
+                            <select name="year" id="year" class="form-control">
+                                <?php foreach (range($Settings->get('startyear'), CURRENTYEAR) as $year) { ?>
+                                    <option value="<?= $year ?>" <?= $YEAR == $year ? 'selected' : '' ?>><?= $year ?></option>
+                                <?php } ?>
+                            </select>
+                            <select name="quarter" id="quarter" class="form-control">
+                                <option value="1" <?= $QUARTER == '1' ? 'selected' : '' ?>>Q1</option>
+                                <option value="2" <?= $QUARTER == '2' ? 'selected' : '' ?>>Q2</option>
+                                <option value="3" <?= $QUARTER == '3' ? 'selected' : '' ?>>Q3</option>
+                                <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn primary"><i class="ph ph-check"></i></button>
+                            </div>
+                        </div>
+                        <a href="?year=<?= CURRENTYEAR ?>&quarter=<?= CURRENTQUARTER ?>"><?= lang('Current quarter', 'Aktuelles Quartal') ?></a>
+                    </div>
                 </div>
             </form>
             <div class="text-lg-right">
@@ -274,9 +309,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
         <div class="content my-0">
 
             <h2>
-                <?php
-                echo lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR;
-                ?>
+                <?= lang('Research activities in ', 'Forschungsaktivitäten in ') . $YEAR ?>
             </h2>
 
 
@@ -286,16 +319,19 @@ if ($Settings->hasFeatureDisabled('coins')) {
     <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
     <script src="<?= ROOTPATH ?>/js/popover.js"></script>
     <script src="<?= ROOTPATH ?>/js/my-year.js"></script>
-    <!-- <script src="<?= ROOTPATH ?>/js/d3-timeline.js"></script> -->
 
     <script>
         let typeInfo = JSON.parse('<?= json_encode($Settings->getActivities(null)) ?>');
+        var typeInfoNew = {}
+        typeInfo.forEach(el => {
+            typeInfoNew[el.id] = el;
+        });
         let events = JSON.parse('<?= json_encode(array_values($timeline)) ?>');
         console.log(events);
         var types = JSON.parse('<?= json_encode($timelineGroups) ?>');
         var year = <?= $YEAR ?>;
         var quarter = <?= $QUARTER ?>;
-        timeline(year, quarter, typeInfo, events, types);
+        timeline(year, quarter, typeInfoNew, events, types);
     </script>
 
 
@@ -399,7 +435,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
                                         <?php } ?>
                                     </td>
                                     <?php if ($showcoins) { ?>
-                                        <td class='lom unbreakable'>
+                                        <td class='coins unbreakable'>
                                             <span data-toggle='tooltip' data-title='<?= $l['comment'] ?>'>
                                                 <?= round($l["coins"]) ?>
                                             </span>
@@ -421,7 +457,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
                             <a href="<?= ROOTPATH ?>/my-activities?type=<?= $col ?>" class="btn text-<?= $Settings->getActivities($col)['color'] ?>">
                                 <i class="ph ph-<?= $Settings->getActivities($col)['icon'] ?> mr-5"></i> <?= lang('My ', 'Meine ') ?><?= $Settings->getActivities($col)[lang('name', 'name_de')] ?>
                             </a>
-                            <a href="<?= ROOTPATH . "/activities/new?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
+                            <a href="<?= ROOTPATH . "/add-activity?type=" . $t ?>" class="btn"><i class="ph ph-plus"></i></a>
                             <?php if ($col == 'publication') { ?>
                                 <a class="btn mr-20" href="<?= ROOTPATH ?>/activities/pubmed-search?authors=<?= $scientist['last'] ?>&year=<?= $YEAR ?>">
                                     <i class="ph ph-magnifying-glass-plus mr-5"></i>
@@ -511,7 +547,7 @@ if ($Settings->hasFeatureDisabled('coins')) {
                             ') ?>
                         </p>
 
-                        <form action="<?= ROOTPATH ?>/approve" method="post">
+                        <form action="<?= ROOTPATH ?>/crud/users/approve" method="post">
                             <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                             <input type="hidden" name="quarter" class="hidden" value="<?= $YEAR . "Q" . $QUARTER ?>">
                             <button class="btn success"><?= lang('Approve', 'Freigeben') ?></button>

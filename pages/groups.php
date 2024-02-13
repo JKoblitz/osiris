@@ -4,14 +4,14 @@
  * Page to browse all user groups
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /groups
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -19,8 +19,9 @@
 $style = $_GET['style'] ?? 'cards';
 ?>
 
-<a href="<?= ROOTPATH ?>/preview/groups" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
-
+<?php if ($Settings->featureEnabled('portal')) { ?>
+    <a href="<?= ROOTPATH ?>/preview/groups" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
+<?php } ?>
 <h1>
     <i class="ph ph-users-three"></i>
     <?= lang('Organisational Units', 'Organisationseinheiten') ?>
@@ -28,7 +29,9 @@ $style = $_GET['style'] ?? 'cards';
 
 <div class="d-flex align-items-center mb-10">
 
+<?php if ($Settings->hasPermission('guests.add')) { ?>
     <a href="<?= ROOTPATH ?>/groups/new"><i class="ph ph-plus"></i> <?= lang('New unit', 'Neue Einheit') ?></a>
+<?php } ?>
 
     <div class="pills small ml-auto">
         <span class="badge text-muted"><?= lang('Show as', 'Zeige als') ?></span>
@@ -68,7 +71,7 @@ $style = $_GET['style'] ?? 'cards';
         }
 
         .table.cards tr {
-            width: 32%;
+            width: 100%;
             margin: 0.5em;
             border: 1px solid var(--border-color);
             border-radius: 0.5em;
@@ -82,6 +85,19 @@ $style = $_GET['style'] ?? 'cards';
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+
+        @media (min-width: 768px) {
+            .table.cards tbody tr {
+                width: calc(50% - 1.4rem);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .table.cards tbody tr {
+                width: calc(33.3% - 1.4rem);
+            }
         }
     </style>
 
@@ -133,22 +149,7 @@ $style = $_GET['style'] ?? 'cards';
         </tbody>
     </table>
 
-
-    <script src="<?= ROOTPATH ?>/js/datatables/jquery.dataTables.min.js"></script>
-
     <script>
-        $.extend($.fn.DataTable.ext.classes, {
-            sPaging: "pagination mt-10 ",
-            sPageFirst: "direction ",
-            sPageLast: "direction ",
-            sPagePrevious: "direction ",
-            sPageNext: "direction ",
-            sPageButtonActive: "active ",
-            sFilterInput: "form-control sm d-inline w-auto ml-10 ",
-            sLengthSelect: "form-control sm d-inline w-auto",
-            sInfo: "float-right text-muted",
-            sLength: "float-right"
-        });
         var dataTable;
         $(document).ready(function() {
             dataTable = $('#group-table').DataTable({

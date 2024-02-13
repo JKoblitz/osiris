@@ -4,14 +4,14 @@
  * Page to see latest changes
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link        /new-stuff
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
  */
@@ -24,7 +24,7 @@
 </style>
 
 <?php if (isset($USER) && !empty($USER)) {
-    if ($USER['lastversion'] !== OSIRIS_VERSION) {
+    if (!isset($USER['lastversion']) || $USER['lastversion'] !== OSIRIS_VERSION) {
         $updateResult = $osiris->persons->updateOne(
             ['username' => $_SESSION['username']],
             ['$set' => ['lastversion' => OSIRIS_VERSION]]

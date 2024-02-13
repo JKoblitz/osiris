@@ -4,7 +4,7 @@
         "en": "Access to Settings",
         "fields": [
             {
-                "id": "admin-panel",
+                "id": "admin.see",
                 "de": "Auf das Admin-Panel zugreifen",
                 "en": "Access to the admin panel"
             }
@@ -15,32 +15,32 @@
         "en": "Activities",
         "fields": [
             {
-                "id": "edit-activities",
+                "id": "activities.edit",
                 "de": "Alle Aktivitäten bearbeiten",
                 "en": "Edit all activities"
             },
             {
-                "id": "delete-activities",
+                "id": "activities.delete",
                 "de": "Aktivitäten löschen",
                 "en": "Delete activities"
             },
             {
-                "id": "lock-activities",
+                "id": "activities.lock",
                 "de": "Aktivitäten sperren",
                 "en": "Lock activities"
             },
             {
-                "id": "edit-locked",
+                "id": "activities.edit-locked",
                 "de": "Gesperrte Aktivitäten bearbeiten",
                 "en": "Edit locked activities"
             },
             {
-                "id": "delete-locked",
+                "id": "activities.delete-locked",
                 "de": "Gesperrte Aktivitäten löschen",
                 "en": "Delete locked activities"
             },
             {
-                "id": "edit-journals",
+                "id": "journals.edit",
                 "de": "Journale hinzufügen und bearbeiten",
                 "en": "Add and edit journals"
             }
@@ -51,17 +51,17 @@
         "en": "Metrics and Reports",
         "fields": [
             {
-                "id": "complete-dashboard",
+                "id": "report.dashboard",
                 "de": "Quartalsübersichten sehen (im Dashboard und Profil)",
                 "en": "See quarter overview (in Dashboard and Profile)"
             },
             {
-                "id": "complete-queue",
+                "id": "report.queue",
                 "de": "Die komplette Warteschlange sehen",
                 "en": "See the complete queue"
             },
             {
-                "id": "reports",
+                "id": "report.generate",
                 "de": "Berichte generieren",
                 "en": "Generate reports"
             }
@@ -72,32 +72,32 @@
         "en": "User profiles",
         "fields": [
             {
-                "id": "admin",
+                "id": "admin.give-right",
                 "de": "Adminrechte vergeben",
                 "en": "Give admin rights"
             },
             {
-                "id": "edit-user-profile",
+                "id": "user.edit",
                 "de": "Nutzerprofile bearbeiten",
                 "en": "Edit User profiles"
             },
             {
-                "id": "upload-user-picture",
+                "id": "user.image",
                 "de": "Nutzerbild hochladen",
                 "en": "Upload user picture"
             },
             {
-                "id": "edit-user-settings",
+                "id": "user.settings",
                 "de": "Nutzereinstellungen bearbeiten",
                 "en": "Edit user settings"
             },
             {
-                "id": "edit-roles",
+                "id": "user.roles",
                 "de": "Nutzerrollen vergeben (außer Admin)",
                 "en": "Give users roles (except admin)"
             },
             {
-                "id": "set-user-inactive",
+                "id": "user.inactive",
                 "de": "Nutzer als inaktiv markieren",
                 "en": "Set users to inactive"
             }
@@ -113,9 +113,62 @@
                 "en": "See the scientist view"
             },
             {
-                "id": "see-raw-data",
+                "id": "raw-data",
                 "de": "Die Rohdaten in der Aktivität sehen",
                 "en": "See raw data for activities"
+            }
+        ]
+    },
+    {
+        "de": "Projekte",
+        "en": "Projects",
+        "fields": [
+            {
+                "id": "projects.add",
+                "de": "Projekte anlegen",
+                "en": "Add new projects"
+            },
+            {
+                "id": "projects.view",
+                "de": "Alle existierende Projekte sehen",
+                "en": "See all existing projects"
+            },
+            {
+                "id": "projects.edit",
+                "de": "Existierende Projekte editieren",
+                "en": "Edit existing projects"
+            },
+            {
+                "id": "projects.edit-own",
+                "de": "Eigene Projekte editieren",
+                "en": "Edit own projects"
+            }
+        ]
+    },
+    {
+        "de": "Organisationseinheiten",
+        "en": "Organisational Units",
+        "fields": [
+            {
+                "id": "units.add",
+                "de": "Organisationseinheiten hinzufügen/bearbeiten",
+                "en": "Add/Edit org. units"
+            }
+        ]
+    },
+    {
+        "de": "Gäste",
+        "en": "Guests",
+        "fields": [
+            {
+                "id": "guests.add",
+                "de": "Gäste anmelden",
+                "en": "Add new guests"
+            },
+            {
+                "id": "guests.view",
+                "de": "Alle Gäste sehen",
+                "en": "See all guests"
             }
         ]
     }

@@ -4,22 +4,24 @@
  * Page for admin dashboard to define activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2023, Julia Koblitz
+ * Copyright (c) 2024, Julia Koblitz
  * 
  * @link /admin/activities
  *
  * @package OSIRIS
  * @since 1.1.0
  * 
- * @copyright	Copyright (c) 2023, Julia Koblitz
+ * @copyright	Copyright (c) 2024, Julia Koblitz
  * @author		Julia Koblitz <julia.koblitz@dsmz.de>
  * @license     MIT
+ * 
+ * @deprecated 1.3.0
  */
 
 include_once BASEPATH . "/php/Modules.php";
 $Modules = new Modules();
 
-$activities = $Settings->getActivities();
+$activities = $Categories->categories;
 
 if (isset($_GET['type']) && isset($_GET['type']['id'])) {
     $type = $_GET['type'];
@@ -32,7 +34,7 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
             "name" => $type['name'],
             "name_de" => $type['name_de'] ?? $type['name'],
             "new" => true,
-            "subtypes" => [
+            "children" => [
                 $id => [
                     "id" => $id,
                     "icon" => $type['icon'] ?? 'placeholder',
@@ -51,14 +53,13 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
                     "coins" => 0
                 ]
             ]
-
         ];
 }
 
 if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
     $type = $_GET['subtype'];
     $id = $type['id'];
-    $activities[$type['type']]['subtypes'][$id] = [
+    $activities[$type['type']]['children'][$id] = [
         "id" => $id,
         "icon" => $type['icon'] ?? 'placeholder',
         "name" => $type['name'],
@@ -184,7 +185,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 <div class="row">
     <div class="col-lg-9">
         <?php
-        include BASEPATH . "/components/admin-nav.php";
+        // include BASEPATH . "/components/admin-nav.php";
         ?>
 
         <form action="#" method="post" id="modules-form" class="">
@@ -229,7 +230,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                             <div class="col-sm">
                                 <label for="name_de" class="">Color</label>
                                 <input type="color" class="form-control" name="activities[<?= $t ?>][color]" value="<?= $type['color'] ?? '' ?>">
-                            </div> 
+                            </div>
                         </div>
 
                         <div class="row row-eq-spacing">
@@ -244,9 +245,9 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                         </div>
 
 
-                        <div class="subtypes">
+                        <div class="children">
                             <?php
-                            foreach ($type['subtypes'] as $subtype) {
+                            foreach ($type['children'] as $subtype) {
                                 $st = $subtype['id'];
                                 $submember = $osiris->activities->count(['type' => $t, 'subtype' => $st]);
                             ?>
@@ -267,26 +268,26 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                         <?php } ?>
                                     </h4>
 
-                                    <input type="hidden" name="activities[<?= $t ?>][subtypes][<?= $st ?>][id]" value="<?= $st ?>">
+                                    <input type="hidden" name="activities[<?= $t ?>][children][<?= $st ?>][id]" value="<?= $st ?>">
                                     <div class="content">
 
                                         <div class="row row-eq-spacing">
 
                                             <div class="col-sm-2">
                                                 <label for="icon" class="required">ID</label>
-                                                <input type="text" class="form-control <?= isset($type['new']) ? '' : 'disabled' ?>" name="activities[<?= $t ?>][subtypes][<?= $st ?>][id]" required value="<?= $subtype['id'] ?>" <?= isset($type['new']) ? '' : 'readonly' ?>>
+                                                <input type="text" class="form-control <?= isset($type['new']) ? '' : 'disabled' ?>" name="activities[<?= $t ?>][children][<?= $st ?>][id]" required value="<?= $subtype['id'] ?>" <?= isset($type['new']) ? '' : 'readonly' ?>>
                                             </div>
                                             <div class="col-sm-2">
                                                 <label for="icon" class="required element-time"><a href="https://phosphoricons.com/" class="link" target="_blank" rel="noopener noreferrer">Icon</a> </label>
-                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][icon]" required value="<?= $subtype['icon'] ?? 'placeholder' ?>">
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][icon]" required value="<?= $subtype['icon'] ?? 'placeholder' ?>">
                                             </div>
                                             <div class="col-sm">
                                                 <label for="name" class="required ">Name (en)</label>
-                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name]" required value="<?= $subtype['name'] ?? '' ?>">
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][name]" required value="<?= $subtype['name'] ?? '' ?>">
                                             </div>
                                             <div class="col-sm">
                                                 <label for="name_de" class="">Name (de)</label>
-                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][name_de]" value="<?= $subtype['name_de'] ?? '' ?>">
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][name_de]" value="<?= $subtype['name_de'] ?? '' ?>">
                                             </div>
                                         </div>
 
@@ -294,11 +295,11 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                         <div class="row row-eq-spacing">
                                             <div class="col-sm">
                                                 <label for="description"><?= lang('Description', 'Beschreibung') ?> (en)</label>
-                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][description]" value="<?= $subtype['description'] ?? '' ?>">
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][description]" value="<?= $subtype['description'] ?? '' ?>">
                                             </div>
                                             <div class="col-sm">
                                                 <label for="description_de" class=""><?= lang('Description', 'Beschreibung') ?> (de)</label>
-                                                <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][description_de]" value="<?= $subtype['description_de'] ?? '' ?>">
+                                                <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][description_de]" value="<?= $subtype['description_de'] ?? '' ?>">
                                             </div>
                                         </div>
 
@@ -323,7 +324,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                                 ?>
                                                     <div class='author <?= $req ?>' ondblclick="toggleRequired(this)">
                                                         <?= $name ?>
-                                                        <input type='hidden' name='activities[<?= $t ?>][subtypes][<?= $st ?>][modules][]' value='<?= $module ?>'>
+                                                        <input type='hidden' name='activities[<?= $t ?>][children][<?= $st ?>][modules][]' value='<?= $module ?>'>
                                                         <a onclick='$(this).parent().remove()'>&times;</a>
                                                     </div>
                                                 <?php } ?>
@@ -359,21 +360,21 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text w-100">Print</span>
                                             </div>
-                                            <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][template][print]" value="<?= $subtype['template']['print'] ?? '{title}' ?>">
+                                            <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][template][print]" value="<?= $subtype['template']['print'] ?? '{title}' ?>">
                                         </div>
 
                                         <div class="input-group mb-10">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text w-100">Title</span>
                                             </div>
-                                            <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][template][title]" value="<?= $subtype['template']['title'] ?? '{title}' ?>">
+                                            <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][template][title]" value="<?= $subtype['template']['title'] ?? '{title}' ?>">
                                         </div>
 
                                         <div class="input-group mb-10">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text w-100">Subtitle</span>
                                             </div>
-                                            <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][template][subtitle]" value="<?= $subtype['template']['subtitle'] ?? '{authors}' ?>">
+                                            <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][template][subtitle]" value="<?= $subtype['template']['subtitle'] ?? '{authors}' ?>">
                                         </div>
 
                                     </div>
@@ -384,7 +385,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
                                     <div class="content">
                                         <label for="coins" class="font-weight-bold">Coins:</label>
-                                        <input type="text" class="form-control" name="activities[<?= $t ?>][subtypes][<?= $st ?>][coins]" value="<?= $subtype['coins'] ?? '0' ?>">
+                                        <input type="text" class="form-control" name="activities[<?= $t ?>][children][<?= $st ?>][coins]" value="<?= $subtype['coins'] ?? '0' ?>">
                                         <span class="text-muted">
                                             <?= lang('Please note that <q>middle</q> authors will receive half the amount.', 'Bitte bemerken Sie, <q>middle</q>-Autoren nur die Hälfte der Coins bekommen.') ?>
                                         </span>
@@ -395,7 +396,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
 
                                     <div class="content">
                                         <div class="custom-checkbox mb-10 danger">
-                                            <input type="checkbox" id="disable-<?= $t ?>-<?= $st ?>" value="true" name="activities[<?= $t ?>][subtypes][<?= $st ?>][disabled]" <?= ($subtype['disabled'] ?? false) ? 'checked' : '' ?>>
+                                            <input type="checkbox" id="disable-<?= $t ?>-<?= $st ?>" value="true" name="activities[<?= $t ?>][children][<?= $st ?>][disabled]" <?= ($subtype['disabled'] ?? false) ? 'checked' : '' ?>>
                                             <label for="disable-<?= $t ?>-<?= $st ?>"><?= lang('Deactivate', 'Deaktivieren') ?></label>
                                         </div>
                                         <span class="text-muted">
@@ -432,9 +433,13 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
         <nav class="on-this-page-nav">
             <div class="content">
                 <?php foreach ($activities as $t => $type) { ?>
-                    <a href="#type-<?= $t ?>" class="pl-10 font-weight-bold text-<?= $t ?>"><?= lang($type['name'], $type['name_de'] ?? null) ?></a>
-                    <?php foreach ($type['subtypes'] as $subtype) { ?>
-                        <a href="#subtype-<?= $subtype['id'] ?>" class="pl-20 text-<?= $t ?>"><?= lang($subtype['name'], $subtype['name_de'] ?? null) ?></a>
+                    <a href="#type-<?= $t ?>" class="pl-10 font-weight-bold" style="color: <?= $type['color'] ?? 'inherit' ?>">
+                        <?= lang($type['name'], $type['name_de'] ?? null) ?>
+                    </a>
+                    <?php foreach ($type['children'] as $subtype) { ?>
+                        <a href="#subtype-<?= $subtype['id'] ?>" class="pl-20" style="color: <?= $type['color'] ?? 'inherit' ?>">
+                            <?= lang($subtype['name'], $subtype['name_de'] ?? null) ?>
+                        </a>
                     <?php } ?>
                 <?php } ?>
             </div>
@@ -458,7 +463,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
         console.log(val);
         var author = $('<div class="author" ondblclick="toggleRequired(this)">')
             .html(val);
-        author.append('<input type="hidden" name="activities[' + type + '][subtypes][' + subtype + '][modules][]" value="' + val + '">')
+        author.append('<input type="hidden" name="activities[' + type + '][children][' + subtype + '][modules][]" value="' + val + '">')
         author.append('<a onclick="$(this).parent().remove()">&times;</a>')
         author.appendTo(el.find('.author-list'))
     }
@@ -477,7 +482,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
     function deleteElement(selector) {
         const el = $('#' + selector)
         if (el.hasClass('subtype')) {
-            // check if there are other subtypes
+            // check if there are other children
             const parent = el.closest('.type')
             if (parent.find('.subtype').length <= 1) {
                 toastError(lang('Each category needs at least one Type.', 'Jede Kategorie benötigt mindestens einen Typ.'))

@@ -1,549 +1,547 @@
-[
+[{
+  "id": "create",
+  "icon": "create",
+  "title": {
+    "de": "Erschaffer",
+    "de_f": "Erschafferin",
+    "en": "Creator"
+  },
+  "levels": [
     {
-        "id": "create",
-        "icon": "create",
-        "title": {
-            "de": "Erschaffer",
-            "de_f": "Erschafferin",
-            "en": "Creator"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat das erste Mal eine Aktivität eingetragen.",
-                "en": "* has created an activity for the first time."
-            },
-            {
-                "level": 2,
-                "step": 50,
-                "de": "* hat mehr als 50 Aktivitäten eingetragen.",
-                "en": "* has created more than 50 activities."
-            },
-            {
-                "level": 3,
-                "step": 200,
-                "de": "* hat mehr als 200 Aktivitäten eingetragen.",
-                "en": "* has created more than 200 activities."
-            },
-            {
-                "level": 4,
-                "step": 500,
-                "de": "* hat mehr als 500 Aktivitäten eingetragen.",
-                "en": "* has created more than 500 activities."
-            }
-        ],
-        "maxlvl": 4
+      "level": 1,
+      "step": 1,
+      "de": "* hat das erste Mal eine Aktivität eingetragen.",
+      "en": "* has created an activity for the first time."
     },
     {
-        "id": "publications",
-        "icon": "publication",
-        "title": {
-            "de": "Schreiberling",
-            "de_f": "Schreiberling",
-            "en": "Pen Pusher"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 5,
-                "de": "* hat 5 oder mehr Publikationen in OSIRIS.",
-                "en": "* has 5 or more publications in OSIRIS."
-            },
-            {
-                "level": 2,
-                "step": 10,
-                "de": "* hat 10 oder mehr Publikationen in OSIRIS.",
-                "en": "* has 10 or more publications in OSIRIS."
-            },
-            {
-                "level": 3,
-                "step": 50,
-                "de": "* hat 50 oder mehr Publikationen in OSIRIS.",
-                "en": "* has 50 or more publications in OSIRIS."
-            },
-            {
-                "level": 4,
-                "step": 200,
-                "de": "* hat 200 oder mehr Publikationen in OSIRIS.",
-                "en": "* has 200 or more publications in OSIRIS."
-            }
-        ],
-        "maxlvl": 4
+      "level": 2,
+      "step": 50,
+      "de": "* hat mehr als 50 Aktivitäten eingetragen.",
+      "en": "* has created more than 50 activities."
     },
     {
-        "id": "posters",
-        "icon": "poster",
-        "title": {
-            "de": "Poster-Designer",
-            "de_f": "Poster-Designerin",
-            "en": "Poster Designer"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat mindestens ein Poster in OSIRIS.",
-                "en": "* has at least one poster in OSIRIS."
-            },
-            {
-                "level": 2,
-                "step": 5,
-                "de": "* hat 5 oder mehr Poster in OSIRIS.",
-                "en": "* has 5 or more posters in OSIRIS."
-            },
-            {
-                "level": 3,
-                "step": 20,
-                "de": "* hat 20 oder mehr Poster in OSIRIS.",
-                "en": "* has 20 or more posters in OSIRIS."
-            },
-            {
-                "level": 4,
-                "step": 50,
-                "de": "* hat 50 oder mehr Poster in OSIRIS.",
-                "en": "* has 50 or more posters in OSIRIS."
-            }
-        ],
-        "maxlvl": 4
+      "level": 3,
+      "step": 200,
+      "de": "* hat mehr als 200 Aktivitäten eingetragen.",
+      "en": "* has created more than 200 activities."
     },
     {
-        "id": "lectures",
-        "icon": "lecture",
-        "title": {
-            "de": "Präsentator",
-            "de_f": "Präsentatorin",
-            "en": "Presenter"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat mindestens einen Vortrag in OSIRIS.",
-                "en": "* has at least one lecture in OSIRIS."
-            },
-            {
-                "level": 2,
-                "step": 5,
-                "de": "* hat 5 oder mehr Vorträge in OSIRIS.",
-                "en": "* has 5 or more lectures in OSIRIS."
-            },
-            {
-                "level": 3,
-                "step": 20,
-                "de": "* hat 20 oder mehr Vorträge in OSIRIS.",
-                "en": "* has 20 or more lectures in OSIRIS."
-            },
-            {
-                "level": 4,
-                "step": 50,
-                "de": "* hat 50 oder mehr Vorträge in OSIRIS.",
-                "en": "* has 50 or more lectures in OSIRIS."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "coauthors",
-        "icon": "coauthors",
-        "title": {
-            "de": "Ko-Autor",
-            "de_f": "Ko-Autorin",
-            "en": "Co-Author"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat das erste Mal eine Koautorenschaft bestätigt.",
-                "en": "* has confirmed a co-authorship for the first time."
-            }
-        ],
-        "maxlvl": 1
-    },
-    {
-        "id": "pub-coins",
-        "icon": "publication-star",
-        "title": {
-            "de": "Publikations-Sternchen",
-            "de_f": "Publikations-Sternchen",
-            "en": "Publication Star"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 50,
-                "de": "* hat eine Publikation mit mehr als 50 Coins.",
-                "en": "* has a publication with more than 50 coins."
-            },
-            {
-                "level": 2,
-                "step": 100,
-                "de": "* hat eine Publikation mit mehr als 100 Coins.",
-                "en": "* has a publication with more than 100 coins."
-            },
-            {
-                "level": 3,
-                "step": 200,
-                "de": "* hat eine Publikation mit mehr als 200 Coins.",
-                "en": "* has a publication with more than 200 coins."
-            },
-            {
-                "level": 4,
-                "step": 300,
-                "de": "* hat eine Publikation mit mehr als 300 Coins.",
-                "en": "* has a publication with more than 300 coins."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "pub-impact",
-        "icon": "publication-impact",
-        "title": {
-            "de": "Eindrucksvoller Autor",
-            "de_f": "Eindrucksvolle Autorin",
-            "en": "Impactful Author"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 3,
-                "de": "* hat eine Publikation mit einem Impact von mehr als 3.",
-                "en": "* a publication with an impact of more than 3."
-            },
-            {
-                "level": 2,
-                "step": 5,
-                "de": "* hat eine Publikation mit einem Impact von mehr als 5.",
-                "en": "* a publication with an impact of more than 5."
-            },
-            {
-                "level": 3,
-                "step": 10,
-                "de": "* hat eine Publikation mit einem Impact von mehr als 10.",
-                "en": "* a publication with an impact of more than 10."
-            },
-            {
-                "level": 4,
-                "step": 20,
-                "de": "* hat eine Publikation mit einem Impact von mehr als 20.",
-                "en": "* a publication with an impact of more than 20."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "year-coins",
-        "icon": "year-star",
-        "title": {
-            "de": "Eifriger Sammler",
-            "de_f": "Eifrige Sammlerin",
-            "en": ""
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 100,
-                "de": "* hat mehr als 100 coins in einem Jahr erlangt.",
-                "en": "* has reached more than 100 coins in one year."
-            },
-            {
-                "level": 2,
-                "step": 250,
-                "de": "* hat mehr als 250 coins in einem Jahr erlangt.",
-                "en": "* has reached more than 250 coins in one year."
-            },
-            {
-                "level": 3,
-                "step": 500,
-                "de": "* hat mehr als 500 coins in einem Jahr erlangt.",
-                "en": "* has reached more than 500 coins in one year."
-            },
-            {
-                "level": 4,
-                "step": 1000,
-                "de": "* hat mehr als 1000 coins in einem Jahr erlangt.",
-                "en": "* has reached more than 1000 coins in one year."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "coins",
-        "icon": "coins",
-        "title": {
-            "de": "Münzsammler",
-            "de_f": "Münzsammlerin",
-            "en": "Coin collector"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 200,
-                "de": "* hat mehr als 200 Coins angesammelt.",
-                "en": "* has collected more than 200 coins."
-            },
-            {
-                "level": 2,
-                "step": 1000,
-                "de": "* hat mehr als 1000 Coins angesammelt.",
-                "en": "* has collected more than 1000 coins."
-            },
-            {
-                "level": 3,
-                "step": 5000,
-                "de": "* hat mehr als 5000 Coins angesammelt.",
-                "en": "* has collected more than 5000 coins."
-            },
-            {
-                "level": 4,
-                "step": 10000,
-                "de": "* hat mehr als 10.000 Coins angesammelt.",
-                "en": "* has collected more than 10,000 coins."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "approved",
-        "icon": "quarter",
-        "title": {
-            "de": "Gewissenhafter Nutzer",
-            "de_f": "Gewissenhafte Nutzerin",
-            "en": "Diligent User"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat das erste Mal ein Quartal freigegeben.",
-                "en": "* has approved a quarter for the first time."
-            },
-            {
-                "level": 2,
-                "step": 4,
-                "de": "* hat alle Quartale eines Jahres freigegeben.",
-                "en": "* has approved all quarter of one year."
-            }
-        ],
-        "maxlvl": 2
-    },
-    {
-        "id": "versatile",
-        "icon": "versatile",
-        "title": {
-            "de": "Tausendsassa",
-            "de_f": "Tausendsassa",
-            "en": "Allrounder"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 2,
-                "de": "* hat zwei unterschiedliche Aktivitäten eingetragen.",
-                "en": "* has created two different types of activities."
-            },
-            {
-                "level": 2,
-                "step": 3,
-                "de": "* hat bereits 3 unterschiedliche Arten von Aktivitäten eingetragen.",
-                "en": "* has created three different types of activities."
-            },
-            {
-                "level": 3,
-                "step": 5,
-                "de": "* hat bereits 5 unterschiedliche Arten von Aktivitäten eingetragen.",
-                "en": "* has created three different types of activities."
-            },
-            {
-                "level": 4,
-                "step": 8,
-                "de": "* hat eine Aktivität jeder Art eingetragen.",
-                "en": "* has created an activity of each type."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "reviews",
-        "icon": "review",
-        "title": {
-            "de": "Reviewer",
-            "de_f": "Reviewerin",
-            "en": "Reviewer"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 5,
-                "de": "* hat 5 oder mehr Reviews in OSIRIS.",
-                "en": "* has 5 or more reviews in OSIRIS."
-            },
-            {
-                "level": 2,
-                "step": 10,
-                "de": "* hat 10 oder mehr Reviews in OSIRIS.",
-                "en": "* has 10 or more reviews in OSIRIS."
-            },
-            {
-                "level": 3,
-                "step": 50,
-                "de": "* hat 50 oder mehr Reviews in OSIRIS.",
-                "en": "* has 50 or more reviews in OSIRIS."
-            },
-            {
-                "level": 4,
-                "step": 200,
-                "de": "* hat 200 oder mehr Reviews in OSIRIS.",
-                "en": "* has 200 or more reviews in OSIRIS."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "software",
-        "icon": "software",
-        "title": {
-            "de": "Entwickler",
-            "de_f": "Entwicklerin",
-            "en": "Developer"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat mindestens eine Software/Datensatz in OSIRIS.",
-                "en": "* has at least one software/dataset in OSIRIS."
-            },
-            {
-                "level": 2,
-                "step": 5,
-                "de": "* hat 5 oder mehr eine Software/Datensätze in OSIRIS.",
-                "en": "* has 5 or more software/datasets in OSIRIS."
-            },
-            {
-                "level": 3,
-                "step": 20,
-                "de": "* hat 20 oder mehr Software/Datensätze in OSIRIS.",
-                "en": "* has 20 or more software/datasets in OSIRIS."
-            },
-            {
-                "level": 4,
-                "step": 50,
-                "de": "* hat 50 oder mehr Software/Datensätze in OSIRIS.",
-                "en": "* has 50 or more software/datasets in OSIRIS."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "theses",
-        "icon": "students",
-        "title": {
-            "de": "Mentor",
-            "de_f": "Mentorin",
-            "en": "Mentor"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat erfolgreich eine Abschlussarbeit betreut.",
-                "en": "* has successfully supervised a thesis."
-            },
-            {
-                "level": 2,
-                "step": 3,
-                "de": "* hat bereits 3 abgeschlossene Abschlussarbeiten betreut.",
-                "en": "* has supervised 3 successful theses."
-            },
-            {
-                "level": 3,
-                "step": 10,
-                "de": "* hat bereits 10 abgeschlossene Abschlussarbeiten betreut.",
-                "en": "* has supervised 10 successful theses."
-            },
-            {
-                "level": 4,
-                "step": 20,
-                "de": "* hat mindestens 20 abgeschlossene Abschlussarbeiten betreut.",
-                "en": "* has supervised at least 20 successful theses."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "profile-edit",
-        "icon": "profile-edit",
-        "title": {
-            "de": "Profileditor",
-            "de_f": "Profileditorin",
-            "en": "Profile editor"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat die eigenen Profildetails aktualisiert und die Daten auf den aktuellen Stand gebracht.",
-                "en": "* has update his/her profile kept the data up to date."
-            }
-        ],
-        "maxlvl": 1
-    },
-    {
-        "id": "network",
-        "icon": "network",
-        "title": {
-            "de": "Networker",
-            "de_f": "Networkerin",
-            "en": "Networker"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 10,
-                "de": "* hat mindestens 10 verschiedene Koautoren.",
-                "en": "* has at least 10 different coauthors."
-            },
-            {
-                "level": 2,
-                "step": 50,
-                "de": "* hat mindestens 50 verschiedene Koautoren.",
-                "en": "* has at least 50 different coauthors."
-            },
-            {
-                "level": 3,
-                "step": 100,
-                "de": "* hat mindestens 100 verschiedene Koautoren.",
-                "en": "* has at least 100 different coauthors"
-            },
-            {
-                "level": 4,
-                "step": 250,
-                "de": "* hat mehr als 250 verschiedene Koautoren.",
-                "en": "* has more than 250 different coauthors."
-            }
-        ],
-        "maxlvl": 4
-    },
-    {
-        "id": "betatest",
-        "icon": "person-star",
-        "visible": false,
-        "title": {
-            "de": "Beta-Tester",
-            "de_f": "Beta-Testerin",
-            "en": "Beta Tester"
-        },
-        "levels": [
-            {
-                "level": 1,
-                "step": 1,
-                "de": "* hat am Betatest für OSIRIS teilgenommen. Danke.",
-                "en": "* has enganged in the beta-testing for OSIRIS."
-            }
-        ],
-        "maxlvl": 1
+      "level": 4,
+      "step": 500,
+      "de": "* hat mehr als 500 Aktivitäten eingetragen.",
+      "en": "* has created more than 500 activities."
     }
-]
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "publications",
+  "icon": "publication",
+  "title": {
+    "de": "Schreiberling",
+    "de_f": "Schreiberling",
+    "en": "Pen Pusher"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 5,
+      "de": "* hat 5 oder mehr Publikationen in OSIRIS.",
+      "en": "* has 5 or more publications in OSIRIS."
+    },
+    {
+      "level": 2,
+      "step": 10,
+      "de": "* hat 10 oder mehr Publikationen in OSIRIS.",
+      "en": "* has 10 or more publications in OSIRIS."
+    },
+    {
+      "level": 3,
+      "step": 50,
+      "de": "* hat 50 oder mehr Publikationen in OSIRIS.",
+      "en": "* has 50 or more publications in OSIRIS."
+    },
+    {
+      "level": 4,
+      "step": 200,
+      "de": "* hat 200 oder mehr Publikationen in OSIRIS.",
+      "en": "* has 200 or more publications in OSIRIS."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "posters",
+  "icon": "poster",
+  "title": {
+    "de": "Poster-Designer",
+    "de_f": "Poster-Designerin",
+    "en": "Poster Designer"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat mindestens ein Poster in OSIRIS.",
+      "en": "* has at least one poster in OSIRIS."
+    },
+    {
+      "level": 2,
+      "step": 5,
+      "de": "* hat 5 oder mehr Poster in OSIRIS.",
+      "en": "* has 5 or more posters in OSIRIS."
+    },
+    {
+      "level": 3,
+      "step": 20,
+      "de": "* hat 20 oder mehr Poster in OSIRIS.",
+      "en": "* has 20 or more posters in OSIRIS."
+    },
+    {
+      "level": 4,
+      "step": 50,
+      "de": "* hat 50 oder mehr Poster in OSIRIS.",
+      "en": "* has 50 or more posters in OSIRIS."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "lectures",
+  "icon": "lecture",
+  "title": {
+    "de": "Präsentator",
+    "de_f": "Präsentatorin",
+    "en": "Presenter"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat mindestens einen Vortrag in OSIRIS.",
+      "en": "* has at least one lecture in OSIRIS."
+    },
+    {
+      "level": 2,
+      "step": 5,
+      "de": "* hat 5 oder mehr Vorträge in OSIRIS.",
+      "en": "* has 5 or more lectures in OSIRIS."
+    },
+    {
+      "level": 3,
+      "step": 20,
+      "de": "* hat 20 oder mehr Vorträge in OSIRIS.",
+      "en": "* has 20 or more lectures in OSIRIS."
+    },
+    {
+      "level": 4,
+      "step": 50,
+      "de": "* hat 50 oder mehr Vorträge in OSIRIS.",
+      "en": "* has 50 or more lectures in OSIRIS."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "coauthors",
+  "icon": "coauthors",
+  "title": {
+    "de": "Ko-Autor",
+    "de_f": "Ko-Autorin",
+    "en": "Co-Author"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat das erste Mal eine Koautorenschaft bestätigt.",
+      "en": "* has confirmed a co-authorship for the first time."
+    }
+  ],
+  "maxlvl": 1
+},
+{
+  "id": "pub-coins",
+  "icon": "publication-star",
+  "title": {
+    "de": "Publikations-Sternchen",
+    "de_f": "Publikations-Sternchen",
+    "en": "Publication Star"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 50,
+      "de": "* hat eine Publikation mit mehr als 50 Coins.",
+      "en": "* has a publication with more than 50 coins."
+    },
+    {
+      "level": 2,
+      "step": 100,
+      "de": "* hat eine Publikation mit mehr als 100 Coins.",
+      "en": "* has a publication with more than 100 coins."
+    },
+    {
+      "level": 3,
+      "step": 200,
+      "de": "* hat eine Publikation mit mehr als 200 Coins.",
+      "en": "* has a publication with more than 200 coins."
+    },
+    {
+      "level": 4,
+      "step": 300,
+      "de": "* hat eine Publikation mit mehr als 300 Coins.",
+      "en": "* has a publication with more than 300 coins."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "pub-impact",
+  "icon": "publication-impact",
+  "title": {
+    "de": "Eindrucksvoller Autor",
+    "de_f": "Eindrucksvolle Autorin",
+    "en": "Impactful Author"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 3,
+      "de": "* hat eine Publikation mit einem Impact von mehr als 3.",
+      "en": "* a publication with an impact of more than 3."
+    },
+    {
+      "level": 2,
+      "step": 5,
+      "de": "* hat eine Publikation mit einem Impact von mehr als 5.",
+      "en": "* a publication with an impact of more than 5."
+    },
+    {
+      "level": 3,
+      "step": 10,
+      "de": "* hat eine Publikation mit einem Impact von mehr als 10.",
+      "en": "* a publication with an impact of more than 10."
+    },
+    {
+      "level": 4,
+      "step": 20,
+      "de": "* hat eine Publikation mit einem Impact von mehr als 20.",
+      "en": "* a publication with an impact of more than 20."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "year-coins",
+  "icon": "year-star",
+  "title": {
+    "de": "Eifriger Sammler",
+    "de_f": "Eifrige Sammlerin",
+    "en": ""
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 100,
+      "de": "* hat mehr als 100 coins in einem Jahr erlangt.",
+      "en": "* has reached more than 100 coins in one year."
+    },
+    {
+      "level": 2,
+      "step": 250,
+      "de": "* hat mehr als 250 coins in einem Jahr erlangt.",
+      "en": "* has reached more than 250 coins in one year."
+    },
+    {
+      "level": 3,
+      "step": 500,
+      "de": "* hat mehr als 500 coins in einem Jahr erlangt.",
+      "en": "* has reached more than 500 coins in one year."
+    },
+    {
+      "level": 4,
+      "step": 1000,
+      "de": "* hat mehr als 1000 coins in einem Jahr erlangt.",
+      "en": "* has reached more than 1000 coins in one year."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "coins",
+  "icon": "coins",
+  "title": {
+    "de": "Münzsammler",
+    "de_f": "Münzsammlerin",
+    "en": "Coin collector"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 200,
+      "de": "* hat mehr als 200 Coins angesammelt.",
+      "en": "* has collected more than 200 coins."
+    },
+    {
+      "level": 2,
+      "step": 1000,
+      "de": "* hat mehr als 1000 Coins angesammelt.",
+      "en": "* has collected more than 1000 coins."
+    },
+    {
+      "level": 3,
+      "step": 5000,
+      "de": "* hat mehr als 5000 Coins angesammelt.",
+      "en": "* has collected more than 5000 coins."
+    },
+    {
+      "level": 4,
+      "step": 10000,
+      "de": "* hat mehr als 10.000 Coins angesammelt.",
+      "en": "* has collected more than 10,000 coins."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "approved",
+  "icon": "quarter",
+  "title": {
+    "de": "Gewissenhafter Nutzer",
+    "de_f": "Gewissenhafte Nutzerin",
+    "en": "Diligent User"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat das erste Mal ein Quartal freigegeben.",
+      "en": "* has approved a quarter for the first time."
+    },
+    {
+      "level": 2,
+      "step": 4,
+      "de": "* hat alle Quartale eines Jahres freigegeben.",
+      "en": "* has approved all quarter of one year."
+    }
+  ],
+  "maxlvl": 2
+},
+{
+  "id": "versatile",
+  "icon": "versatile",
+  "title": {
+    "de": "Tausendsassa",
+    "de_f": "Tausendsassa",
+    "en": "Allrounder"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 2,
+      "de": "* hat zwei unterschiedliche Aktivitäten eingetragen.",
+      "en": "* has created two different types of activities."
+    },
+    {
+      "level": 2,
+      "step": 3,
+      "de": "* hat bereits 3 unterschiedliche Arten von Aktivitäten eingetragen.",
+      "en": "* has created three different types of activities."
+    },
+    {
+      "level": 3,
+      "step": 5,
+      "de": "* hat bereits 5 unterschiedliche Arten von Aktivitäten eingetragen.",
+      "en": "* has created three different types of activities."
+    },
+    {
+      "level": 4,
+      "step": 8,
+      "de": "* hat eine Aktivität jeder Art eingetragen.",
+      "en": "* has created an activity of each type."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "reviews",
+  "icon": "review",
+  "title": {
+    "de": "Reviewer",
+    "de_f": "Reviewerin",
+    "en": "Reviewer"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 5,
+      "de": "* hat 5 oder mehr Reviews in OSIRIS.",
+      "en": "* has 5 or more reviews in OSIRIS."
+    },
+    {
+      "level": 2,
+      "step": 10,
+      "de": "* hat 10 oder mehr Reviews in OSIRIS.",
+      "en": "* has 10 or more reviews in OSIRIS."
+    },
+    {
+      "level": 3,
+      "step": 50,
+      "de": "* hat 50 oder mehr Reviews in OSIRIS.",
+      "en": "* has 50 or more reviews in OSIRIS."
+    },
+    {
+      "level": 4,
+      "step": 200,
+      "de": "* hat 200 oder mehr Reviews in OSIRIS.",
+      "en": "* has 200 or more reviews in OSIRIS."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "software",
+  "icon": "software",
+  "title": {
+    "de": "Entwickler",
+    "de_f": "Entwicklerin",
+    "en": "Developer"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat mindestens eine Software/Datensatz in OSIRIS.",
+      "en": "* has at least one software/dataset in OSIRIS."
+    },
+    {
+      "level": 2,
+      "step": 5,
+      "de": "* hat 5 oder mehr eine Software/Datensätze in OSIRIS.",
+      "en": "* has 5 or more software/datasets in OSIRIS."
+    },
+    {
+      "level": 3,
+      "step": 20,
+      "de": "* hat 20 oder mehr Software/Datensätze in OSIRIS.",
+      "en": "* has 20 or more software/datasets in OSIRIS."
+    },
+    {
+      "level": 4,
+      "step": 50,
+      "de": "* hat 50 oder mehr Software/Datensätze in OSIRIS.",
+      "en": "* has 50 or more software/datasets in OSIRIS."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "theses",
+  "icon": "students",
+  "title": {
+    "de": "Mentor",
+    "de_f": "Mentorin",
+    "en": "Mentor"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat erfolgreich eine Abschlussarbeit betreut.",
+      "en": "* has successfully supervised a thesis."
+    },
+    {
+      "level": 2,
+      "step": 3,
+      "de": "* hat bereits 3 abgeschlossene Abschlussarbeiten betreut.",
+      "en": "* has supervised 3 successful theses."
+    },
+    {
+      "level": 3,
+      "step": 10,
+      "de": "* hat bereits 10 abgeschlossene Abschlussarbeiten betreut.",
+      "en": "* has supervised 10 successful theses."
+    },
+    {
+      "level": 4,
+      "step": 20,
+      "de": "* hat mindestens 20 abgeschlossene Abschlussarbeiten betreut.",
+      "en": "* has supervised at least 20 successful theses."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "profile-edit",
+  "icon": "profile-edit",
+  "title": {
+    "de": "Profileditor",
+    "de_f": "Profileditorin",
+    "en": "Profile editor"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat die eigenen Profildetails aktualisiert und die Daten auf den aktuellen Stand gebracht.",
+      "en": "* has update his/her profile kept the data up to date."
+    }
+  ],
+  "maxlvl": 1
+},
+{
+  "id": "network",
+  "icon": "network",
+  "title": {
+    "de": "Networker",
+    "de_f": "Networkerin",
+    "en": "Networker"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 10,
+      "de": "* hat mindestens 10 verschiedene Koautoren.",
+      "en": "* has at least 10 different coauthors."
+    },
+    {
+      "level": 2,
+      "step": 50,
+      "de": "* hat mindestens 50 verschiedene Koautoren.",
+      "en": "* has at least 50 different coauthors."
+    },
+    {
+      "level": 3,
+      "step": 100,
+      "de": "* hat mindestens 100 verschiedene Koautoren.",
+      "en": "* has at least 100 different coauthors"
+    },
+    {
+      "level": 4,
+      "step": 250,
+      "de": "* hat mehr als 250 verschiedene Koautoren.",
+      "en": "* has more than 250 different coauthors."
+    }
+  ],
+  "maxlvl": 4
+},
+{
+  "id": "betatest",
+  "icon": "person-star",
+  "visible": false,
+  "title": {
+    "de": "Beta-Tester",
+    "de_f": "Beta-Testerin",
+    "en": "Beta Tester"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "step": 1,
+      "de": "* hat am Betatest für OSIRIS teilgenommen. Danke.",
+      "en": "* has enganged in the beta-testing for OSIRIS."
+    }
+  ],
+  "maxlvl": 1
+}]

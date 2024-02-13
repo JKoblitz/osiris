@@ -1,6 +1,5 @@
 <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/moment.min.js"></script>
-<script src="<?= ROOTPATH ?>/js/jquery.daterangepicker.min.js"></script>
 
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/script.js"></script>

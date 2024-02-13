@@ -1,5 +1,5 @@
 <?php
-include_once BASEPATH . "/php/_lom.php";
+include_once BASEPATH . "/php/Coins.php";
 include_once BASEPATH . "/php/init.php";
 
 class Achievement
@@ -53,7 +53,7 @@ class Achievement
         // check if user disabled coins
         // $this->showcoins = !($this->userdata['hide_coins'] ?? true);
         global $Settings;
-        if ($Settings->hasFeatureDisabled('coins')) {
+        if (!$Settings->featureEnabled('coins')) {
             $showcoins = false;
         } else {
             $showcoins = ($this->userdata['show_coins'] ?? 'no');
@@ -116,10 +116,10 @@ class Achievement
             $types = array_count_values($types);
         }
 
-        $LOM = new LOM($this->username, $this->osiris);
+        $Coins = new Coins();
         foreach ($activities as $i => $doc) {
-            $l =  $LOM->lom($doc);
-            $activities[$i]['coins'] = $l['lom'] ?? 0;
+            $l =  $Coins->activityCoins($doc, $this->username);
+            $activities[$i]['coins'] = $l['coins'] ?? 0;
         }
 
         foreach ($this->achievements as $key => $achievement) {
