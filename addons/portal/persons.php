@@ -65,14 +65,10 @@
             <?php
             foreach ($data as $document) {
                 $username = strval($document['username']);
-                $img = ROOTPATH . "/img/no-photo.png";
-                if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                    $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                }
             ?>
                 <tr class="">
                     <td>
-                        <img src="<?= $img ?>" alt="" class="rounded">
+                    <?= $Settings->printProfilePicture($username, 'profile-img small') ?>
                     </td>
                     <td>
                         <div class="">

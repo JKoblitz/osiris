@@ -103,16 +103,33 @@ $institute = $Settings->get('affiliation_details');
         <?= lang('Project members', 'Projektmitarbeiter') ?>
         <span class="index"><?= count($project['persons'] ?? array()) ?></span> -->
     </a>
+    <?php if (count($project['collaborators'] ?? []) > 0) { ?>
+        
     <a onclick="navigate('collabs')" id="btn-collabs" class="btn">
         <i class="ph ph-handshake" aria-hidden="true"></i>
         <?= lang('Collaborators', 'Kooperationspartner') ?>
         <span class="index"><?= count($project['collaborators'] ?? array()) ?></span>
     </a>
-    <a onclick="navigate('activities')" id="btn-activities" class="btn">
+    <?php } else { ?>
+    <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" id="btn-collabs" class="btn">
+        <i class="ph ph-plus-circle" aria-hidden="true"></i>
+        <?= lang('Collaborators', 'Kooperationspartner') ?>
+    </a>
+    <?php } ?>
+    <?php if ($N > 0) { ?>
+        <a onclick="navigate('activities')" id="btn-activities" class="btn">
         <i class="ph ph-suitcase" aria-hidden="true"></i>
         <?= lang('Activities', 'Aktivitäten') ?>
         <span class="index"><?= $N ?></span>
     </a>
+    <?php } else { ?>
+        <a id="btn-activities" class="btn disabled">
+        <i class="ph ph-suitcase" aria-hidden="true"></i>
+        <?= lang('Activities', 'Aktivitäten') ?>
+        <span class="index">0</span>
+    </a>
+    <?php } ?>
+    
 
     <?php if ($Settings->hasPermission('raw-data') || isset($_GET['verbose'])) { ?>
         <a onclick="navigate('raw')" id="btn-raw" class="btn">
@@ -380,17 +397,13 @@ $institute = $Settings->get('affiliation_details');
                     } else foreach ($project['persons'] as $person) {
                         $username = strval($person['user']);
 
-                        $img = ROOTPATH . "/img/no-photo.png";
-                        if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                            $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                        }
                     ?>
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
 
-                                    <img src="<?= $img ?>" alt="" style="max-height: 7rem;" class="mr-20 rounded">
-                                    <div class="">
+                                <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
+                                <div class="">
                                         <h5 class="my-0">
                                             <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="colorless">
                                                 <?= $person['name'] ?>

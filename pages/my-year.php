@@ -63,7 +63,7 @@ $filter['$or'] =   array(
             [
                 'end' => null,
                 '$or' => array(
-                    ['type' => 'misc', 'subtype' => 'annual'],
+                    ['type' => 'misc', 'subtype' => 'misc-annual'],
                     ['type' => 'review', 'subtype' =>  'editorial'],
                 )
             ]

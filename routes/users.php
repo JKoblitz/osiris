@@ -476,10 +476,7 @@ Route::post('/crud/users/delete/(.*)', function ($user) {
     if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
         unlink(BASEPATH . "/img/users/$user.jpg");
     }
-    if (file_exists(BASEPATH . "/img/users/" . $user . "_sm.jpg")) {
-        unlink(BASEPATH . "/img/users/" . $user . "_sm.jpg");
-    }
-
+    
     header("Location: " . ROOTPATH . "/profile/" . $user . "?msg=user-inactivated");
     die();
 });

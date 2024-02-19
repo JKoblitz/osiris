@@ -286,14 +286,10 @@ require_once BASEPATH . "/vendor/autoload.php";
                     $username = strval($form['username']);
                     $userArr = $DB->getPerson($username);
 
-                    $img = ROOTPATH . "/img/no-photo.png";
-                    if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                        $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                    }
                 ?>
                     <div class="d-flex align-items-center my-20">
 
-                        <img src="<?= $img ?>" alt="" style="max-height: 7rem;" class="mr-20">
+                    <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
                         <div class="">
 
                             <h5 class="my-0">

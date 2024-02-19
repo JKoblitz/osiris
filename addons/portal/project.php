@@ -152,17 +152,11 @@ $Format = new Document(false, 'portal');
                     <?php
                     foreach ($project['persons'] as $person) {
                         $username = strval($person['user']);
-
-                        $img = ROOTPATH . "/img/no-photo.png";
-                        if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                            $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                        }
                     ?>
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-
-                                    <img src="<?= $img ?>" alt="" style="max-height: 7rem;" class="mr-20 rounded">
+                                <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
                                     <div class="">
                                         <h5 class="my-0">
                                             <a href="<?= PORTALPATH ?>/person/<?= $username ?>" class="colorless">

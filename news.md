@@ -116,9 +116,19 @@
 - Neue Filtermöglichkeiten
 - Inaktive Mitarbeiter:innen lassen sich jetzt einfacher finden
 
+
+## <i class="ph ph-sync text-osiris"></i> Verbesserung der LDAP-Schnittstelle
+- ldaps wurde hinzugefügt (über Port identifiziert)
+- Nutzer, die nicht in der BASEDN sind, wurden vom Log-In ausgeschlossen.
+- Es wurde eine User-Whitelist und eine Blacklist hinzugefügt (in Feature Settings)
+- Aktive LDAP-Synchronisation wurde hinzugefügt (manuell, Knopf findet sich ebenfalls in Feature Settings)
+
+
 #### <i class="ph ph-star text-osiris"></i> Weiteres
 - Das Ergebnis der Erweiterten Suche lässt sich ebenfalls in die Zwischenablage kopieren und als Excel bzw. CSV herunterladen
-- Name in MyActivities
+- Name in MyActivities wurde gefixt
+- Ein Problem wurde behoben, wegen dem der Institutsname in Autorenlisten nicht geändert werden konnte.
+- Es wurden sehr viele weitere kleine Probleme behoben.
 <!-- - *Neue Achievements* -->
 - Der Code wurde umstrukturiert, sodass die Routes jetzt in mehrere Dateien gesplittet wurden
   - Die `index.php` ist jetzt weniger überladen

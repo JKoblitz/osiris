@@ -128,18 +128,14 @@
                     <?php
                     } else foreach ($persons as $i => $person) {
                         $username = strval($person['username']);
-
-                        $img = ROOTPATH . "/img/no-photo.png";
-                        if (file_exists(BASEPATH . "/img/users/" . $username . "_sm.jpg")) {
-                            $img = ROOTPATH . "/img/users/" . $username . "_sm.jpg";
-                        }
-
                     ?>
                         <tr class="<?= $i >= 10 ? 'hidden' : '' ?>">
                             <td>
                                 <div class="d-flex align-items-center">
 
                                     <img src="<?= $img ?>" alt="" style="max-width: 3rem;" class="mr-20 rounded">
+                                    <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
+                                    
                                     <div class="">
                                         <h5 class="my-0">
                                             <a href="<?= PORTALPATH ?>/person/<?= $username ?>" class="colorless">
