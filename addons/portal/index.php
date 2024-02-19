@@ -132,12 +132,6 @@ Route::get('/portal/person/(.*)', function ($user) {
         echo "Person does not exist.";
         die;
     }
-    if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
-        $img = ROOTPATH . "/img/users/$user.jpg";
-    } else {
-        // standard picture
-        $img = ROOTPATH . "/img/no-photo.png";
-    }
     include BASEPATH . "/addons/portal/person.php";
 });
 

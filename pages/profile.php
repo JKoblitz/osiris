@@ -138,13 +138,6 @@ if (!$Settings->featureEnabled('coins')) {
 
 <?php
 
-// $img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
-// if ($img_exist) {
-//     $img = ROOTPATH . "/img/users/$user.jpg";
-// } else {
-//     // standard picture
-//     $img = ROOTPATH . "/img/no-photo.png";
-// }
 
 if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     <!-- Modal for updating the profile picture -->

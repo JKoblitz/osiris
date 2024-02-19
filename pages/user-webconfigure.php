@@ -18,13 +18,6 @@
 
 $scientist = $data;
 
-$img_exist = file_exists(BASEPATH . "/img/users/$user.jpg");
-if ($img_exist) {
-    $img = ROOTPATH . "/img/users/$user.jpg";
-} else {
-    // standard picture
-    $img = ROOTPATH . "/img/no-photo.png";
-}
 ?>
 <h1 class="mt-0">
     <i class="ph ph-eye"></i>

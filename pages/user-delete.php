@@ -85,6 +85,7 @@ use function PHPSTORM_META\type;
                     </td>
                 </tr>
             <?php } ?>
+            <!-- Todo: add delete for DB -->
 
 
         </tbody>
