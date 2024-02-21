@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Page to browse all user groups
+ * Page to browse all categories
  * 
  * This file is part of the OSIRIS package.
  * Copyright (c) 2024, Julia Koblitz
  * 
- * @link        /groups
+ * @link        /admin/categories
  *
  * @package     OSIRIS
  * @since       1.3.0

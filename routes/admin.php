@@ -14,6 +14,7 @@
  * @license     MIT
  */
 
+ include_once BASEPATH . "/routes/admin.fields.php";
 
 Route::get('/admin/(general|roles|features)', function ($page) {
     include_once BASEPATH . "/php/init.php";
@@ -158,7 +159,6 @@ Route::get('/admin/types/(.*)', function ($id) {
     include BASEPATH . "/pages/admin/category-type.php";
     include BASEPATH . "/footer.php";
 }, 'login');
-
 
 
 Route::get('/settings/activities', function () {

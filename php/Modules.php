@@ -23,8 +23,8 @@ $defaultauthors = [
         "sws" => 0.3
     ]
 ];
-$defaultstart = ["year" => 2022,"month" => 9,"day" => 6];
-$defaultend = ["year" => 2022,"month" => 9,"day" => 8];
+$defaultstart = ["year" => 2022, "month" => 9, "day" => 6];
+$defaultend = ["year" => 2022, "month" => 9, "day" => 8];
 
 class Modules
 {
@@ -114,12 +114,12 @@ class Modules
             "name_de" => "Correction"
         ],
         "date-range" => [
-            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => ["year" => 2022,"month" => 9,"day" => 8]],
+            "fields" => ["start" => ["year" => 2022, "month" => 9, "day" => 6], "end" => ["year" => 2022, "month" => 9, "day" => 8]],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
         "date-range-ongoing" => [
-            "fields" => ["start" => ["year" => 2022,"month" => 9,"day" => 6], "end" => null],
+            "fields" => ["start" => ["year" => 2022, "month" => 9, "day" => 6], "end" => null],
             "name" => "Date Range",
             "name_de" => "Zeitspanne"
         ],
@@ -521,6 +521,66 @@ class Modules
         }
     }
 
+
+    function custom_field($DB, $module, $req = false)
+    {
+        $osiris = $DB->db;
+        $field = $osiris->adminFields->findOne(['id' => $module]);
+        if (!isset($field)) {
+            echo '<b>Module <code>' . $module . '</code> is not defined. </b>';
+            return;
+        }
+        $required = ($req ? "required" : "");
+        $label = lang($field['name'], $field['name_de'] ?? $field['name']);
+
+        echo '<div class="data-module col-sm-6" data-module="' . $module . '">';
+        echo '<label for="' . $module . '" class="' . $required . '">' . $label . '</label>';
+        switch ($field['format']) {
+            case 'string':
+                echo '<input type="text" class="form-control" name="values[' . $module . ']" id="' . $module . '" ' . $required . ' value="' . $this->val($module, $field['default'] ?? '') . '">';
+                break;
+            case 'text':
+                echo '<textarea name="values[' . $module . ']" id="' . $module . '" cols="30" rows="5" class="form-control" ' . $required . '>' . $this->val($module, $field['default'] ?? '') . '</textarea>';
+                break;
+            case 'int':
+                echo '<input type="number" step="1" class="form-control" name="values[' . $module . ']" id="' . $module . '" ' . $required . ' value="' . $this->val($module, $field['default'] ?? '') . '">';
+                break;
+            case 'float':
+                echo '<input type="number" class="form-control" name="values[' . $module . ']" id="' . $module . '" ' . $required . ' value="' . $this->val($module, $field['default'] ?? '') . '">';
+                break;
+            case 'list':
+                echo '<select class="form-control" name="values[' . $module . ']" id="' . $module . '" ' . $required . '>';
+                $val = $this->val($module, $field['default'] ?? '');
+                if (!$req) {
+                    '<option value="" ' . (empty($val) ? 'selected' : '') . '>-</option>';
+                }
+                foreach ($field['values'] as $opt) {
+                    echo '<option ' . ($val == $opt ? 'selected' : '') . '>' . $opt . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'date':
+                echo '<input type="date" class="form-control" name="values[' . $module . ']" id="' . $module . '" ' . $required . ' value="' . valueFromDateArray($this->val($module, $field['default'] ?? '')) . '">';
+                break;
+            case 'bool':
+                $val = boolval($this->val($module, $field['default'] ?? ''));
+                echo '<div class="custom-radio d-inline-block">
+                        <input type="radio" id="' . $module . '-false" value="false" name="values[' . $module . ']" ' . ($val == false ? 'checked' : '') . '>
+                        <label for="' . $module . '-false">' . lang('False', 'Falsch') . '</label>
+                    </div>
+                    <div class="custom-radio d-inline-block">
+                    <input type="radio" id="' . $module . '-true" value="true" name="values[' . $module . ']" ' . ($val == true ? 'checked' : '') . '>
+                    <label for="' . $module . '-true">' . lang('True', 'Wahr') . '</label>
+                </div>';
+                break;
+
+            default:
+                echo '<input type="text" class="form-control" name="values[' . $module . ']" id="' . $module . '" ' . $required . ' value="' . $this->val($module, $field['default'] ?? '') . '">';
+                break;
+        }
+        echo '</div>';
+    }
+
     function print_module($module, $req = false)
     {
         $DB = new DB;
@@ -528,8 +588,14 @@ class Modules
             $module = str_replace('*', '', $module);
             $req = true;
         }
+        if (!array_key_exists($module, $this->all_modules)) {
+            return $this->custom_field($DB, $module, $req);
+        }
+
         $required = ($req ? "required" : "");
-        $m = $this->all_modules[$module] ?? '';
+
+
+        $m = $this->all_modules[$module] ?? [];
         $label = lang($m['name'], $m['name_de'] ?? $m['name']);
         switch ($module) {
             case 'gender':
@@ -1117,14 +1183,14 @@ class Modules
                         <input type="date" class="form-control" name="values[start]" id="date_start" <?= $required ?> value="<?= valueFromDateArray($this->val('start')) ?>">
                         <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($this->val('end')) ?>">
                     </div>
-                   
+
                 </div>
             <?php
                 break;
 
             case "date-range-ongoing":
             ?>
-                
+
                 <div class="data-module col-sm-8 col-md-6" data-module="date-range-ongoing">
                     <label class="<?= $required ?> element-time" for="date_start">
                         <?= lang('Date range', "Zeitspanne") ?>

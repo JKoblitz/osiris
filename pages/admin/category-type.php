@@ -21,7 +21,7 @@ if (!empty($form) && isset($form['_id'])) {
             $name = str_replace('*', '', $name);
         }
         $f = $Modules->all_modules[$name] ?? array();
-        $EXAMPLE = array_merge($f['fields'], $EXAMPLE);
+        $EXAMPLE = array_merge($f['fields'] ?? [], $EXAMPLE);
     }
     include_once BASEPATH . "/php/Document.php";
     $Document = new Document(false, 'print');
@@ -182,9 +182,22 @@ $member = $osiris->activities->count(['subtype' => $id]);
                         <select class="module-input form-control">
                             <option value="" disabled selected><?= lang('Add module ...', 'Füge Module hinzu ...') ?></option>
                             <?php
+                            // read custom modules first
+                            $custom_modules = $osiris->adminFields->distinct('id');
+                            if (!empty($custom_modules)){
+                                foreach ($custom_modules as $m) {
+                                    if (in_array($m, $module_lst)) continue;
+                                ?>
+                                    <option><?= $m ?></option>
+                                <?php } ?>
+                                  <option disabled>---</option>
+                              <?php
+                            }
                             include_once BASEPATH . "/php/Modules.php";
                             $Modules = new Modules();
-                            foreach ($Modules->all_modules as $m => $_) {
+                            $all_modules = array_keys($Modules->all_modules);
+                            sort($all_modules);
+                            foreach ($all_modules as $m) {
                                 if (in_array($m, $module_lst)) continue;
                             ?>
                                 <option><?= $m ?></option>

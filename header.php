@@ -501,15 +501,19 @@ $pageactive = function ($p) use ($page) {
                             <?= lang('General settings') ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/admin/roles" class="with-icon <?= $pageactive('admin/roles') ?>">
-                            <i class="ph ph-gear" aria-hidden="true"></i>
+                            <i class="ph ph-shield-check" aria-hidden="true"></i>
                             <?= lang('Roles &amp; Rights', 'Rollen &amp; Rechte') ?>
                         </a>
+                        <a href="<?= ROOTPATH ?>/admin/fields" class="with-icon <?= $pageactive('admin/fields') ?>">
+                            <i class="ph ph-textbox" aria-hidden="true"></i>
+                            <?= lang('Custom fields') ?>
+                        </a>
                         <a href="<?= ROOTPATH ?>/admin/categories" class="with-icon <?= $pageactive('admin/categories') ?>">
-                            <i class="ph ph-gear" aria-hidden="true"></i>
+                            <i class="ph ph-bookmarks" aria-hidden="true"></i>
                             <?= lang('Activities', 'Aktivitäten') ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/admin/features" class="with-icon <?= $pageactive('admin/features') ?>">
-                            <i class="ph ph-gear" aria-hidden="true"></i>
+                            <i class="ph ph-toolbox" aria-hidden="true"></i>
                             <?= lang('Features', 'Funktionen') ?>
                         </a>
                     </nav>

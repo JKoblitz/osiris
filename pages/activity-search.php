@@ -439,6 +439,33 @@ $Format = new Document(true);
                     label: lang('Updated by (Abbreviation)', 'Aktualisiert von (Kürzel)'),
                     type: 'string'
                 },
+                <?php
+                foreach ($osiris->adminFields->find() as $field) {
+                    $f = [
+                        'id'=> $field['id'],
+                        'label'=> lang($field['name'], $field['name_de']??null),
+                        'type'=> $field['format']
+                    ];
+
+                    if ($field['format']=='boolean'){
+                        $f['values'] =  [
+                            'true'=> 'yes',
+                            'false'=> 'no'
+                        ];
+                        $f['input'] = 'radio';
+                    }
+                    
+                    if ($field['format']=='list'){
+                        $f['type'] = 'string';
+                        $f['values'] =  $field['values'];
+                        $f['input'] = 'select';
+                    }
+                    
+                    echo json_encode($f);
+                    echo ',';
+                }
+                
+                ?>
                 // {
                 //         id: 'updated',
                 //         label: lang('Updated', ''),
