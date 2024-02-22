@@ -42,10 +42,10 @@ if ($N > 0) {
 ?>
 
 
-<form action="<?=ROOTPATH?>/crud/admin/general" method="post" id="modules-form">
+<form action="<?= ROOTPATH ?>/crud/admin/general" method="post" id="modules-form">
 
 
-    <div class="box success">
+    <div class="box secondary">
         <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
 
         <div class="content">
@@ -59,9 +59,18 @@ if ($N > 0) {
                     ) ?>
                 </span>
             </div>
+            <div class="form-group">
+                <label for="apikey"><?= lang('API-Key') ?></label>
+                <input type="text" class="form-control" name="general[apikey]" value="<?= $Settings->get('apikey') ?>">
+                <span class="text-muted">
+                    <?= lang(
+                        'If you do not provide an API key, the REST-API will be open to anyone.',
+                        'Falls kein API-Key angegeben wird, ist die REST-API für jeden offen.'
+                    ) ?>
+                </span>
+            </div>
 
-
-            <button class="btn success">
+            <button class="btn secondary">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>
@@ -127,13 +136,13 @@ if ($N > 0) {
 </form>
 
 
-<form action="<?=ROOTPATH?>/crud/admin/general" method="post" id="modules-form" enctype="multipart/form-data">
+<form action="<?= ROOTPATH ?>/crud/admin/general" method="post" id="modules-form" enctype="multipart/form-data">
 
 
     <div class="box signal">
-            <h2 class="header">
-                Logo
-            </h2>
+        <h2 class="header">
+            Logo
+        </h2>
 
         <div class="content">
             <div class="row">
@@ -158,6 +167,7 @@ if ($N > 0) {
         </div>
     </div>
 </form>
+
 <!-- 
 <div class="box danger">
     <h2 class="header">

@@ -14,6 +14,33 @@
  * @license     MIT
  */
 
+function apikey_check($key = null)
+{
+    $Settings = new Settings();
+    $APIKEY = $Settings->get('apikey');
+    // always true if API Key is not set
+    if (!isset($APIKEY) || empty($APIKEY)) return true;
+    // return true for same page origin
+    if (isset($_SERVER['HTTP_SEC_FETCH_SITE']) && $_SERVER['HTTP_SEC_FETCH_SITE'] == 'same-origin') return true;
+    // check if API key is valid
+    if ($APIKEY == $key) return true;
+    // otherwise return false
+    return false;
+}
+
+function return_permission_denied()
+{
+    header("Content-Type: application/json");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    return json_encode(array(
+        'status' => 403,
+        'count' => 0,
+        'error' => 'PermissionDenied',
+        'msg' => 'You need a valid API key for this request.'
+    ), JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+}
+
 function return_rest($data, $count = 0, $status = 200)
 {
     $result = array();
@@ -54,6 +81,24 @@ function return_rest($data, $count = 0, $status = 200)
     return json_encode($result, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 }
 
+Route::get('/api/test', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
+
+    // check if API key is set and request is not cors
+    if (apikey_check($_GET['apikey'] ?? null)) {
+        dump($_SERVER, true);
+    } else {
+
+        echo return_permission_denied();
+        die;
+    }
+});
 
 /**
  * @api {get} /media All media
@@ -63,7 +108,7 @@ function return_rest($data, $count = 0, $status = 200)
  * @apiParam {String} apikey Your API key
  * @apiParam {String} [filter] Filter string from the advanced search
  *
- * @apiSampleRequest /download/publications
+ * @apiSampleRequest /api/activities?formatted=1&filter[type]=publication
  * 
  * @apiSuccess {String} id Unique ID of the medium.
  * @apiSuccess {String} name  Name of the medium.
@@ -82,7 +127,14 @@ function return_rest($data, $count = 0, $status = 200)
  */
 Route::get('/api/activities', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     include_once BASEPATH . "/php/Render.php";
+
     $filter = [];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -93,7 +145,7 @@ Route::get('/api/activities', function () {
     $result = $osiris->activities->find($filter)->toArray();
 
     if (isset($_GET['formatted']) && $_GET['formatted']) {
-        include_once BASEPATH . "/php/Document.php";
+        include_once BASEPATH . "/php/Render.php";
         $table = [];
         foreach ($result as $doc) {
             if (isset($doc['rendered'])) {
@@ -112,6 +164,7 @@ Route::get('/api/activities', function () {
                 'year' => $doc['year'] ?? 0,
                 'authors' => $rendered['authors'] ?? '',
                 'title' => $rendered['title'] ?? '',
+                'departments' => $rendered['depts'],
             ];
         }
 
@@ -124,6 +177,12 @@ Route::get('/api/activities', function () {
 
 Route::get('/api/html', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     include_once BASEPATH . "/php/Render.php";
     include_once BASEPATH . "/php/Document.php";
     $Format = new Document(true, 'dsmz.de');
@@ -169,6 +228,12 @@ Route::get('/api/html', function () {
 
 Route::get('/api/all-activities', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     include_once BASEPATH . "/php/Render.php";
     include_once BASEPATH . "/php/Document.php";
 
@@ -296,6 +361,12 @@ Route::get('/api/all-activities', function () {
 
 Route::get('/api/concept-activities', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     include_once BASEPATH . "/php/Document.php";
 
     $result = [];
@@ -329,6 +400,12 @@ Route::get('/api/users', function () {
         ini_set('display_errors', 0);
     }
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = ['username' => ['$ne' => null]];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -384,6 +461,12 @@ Route::get('/api/users', function () {
 
 Route::get('/api/reviews', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = [];
     if (isset($_GET['filter'])) {
         $filter = $_GET['filter'];
@@ -448,6 +531,12 @@ Route::get('/api/reviews', function () {
 
 Route::get('/api/journal', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = [];
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
@@ -463,6 +552,12 @@ Route::get('/api/journal', function () {
 
 Route::get('/api/teaching', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = [];
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
@@ -477,6 +572,12 @@ Route::get('/api/teaching', function () {
 
 Route::get('/api/projects', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = [];
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
@@ -491,6 +592,12 @@ Route::get('/api/projects', function () {
 
 Route::get('/api/journals', function () {
     include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
@@ -554,6 +661,11 @@ Route::get('/api/google', function () {
 
 Route::get('/api/levenshtein', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
     include(BASEPATH . '/php/Levenshtein.php');
     $levenshtein = new Levenshtein($osiris);
 
@@ -597,6 +709,11 @@ Route::get('/api/levenshtein', function () {
 Route::get('/api/dashboard/oa-status', function () {
     include(BASEPATH . '/php/init.php');
 
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = ['oa_status' => ['$ne' => null]];
     if (isset($_GET['year'])) {
         $filter['year'] = $_GET['year'];
@@ -631,6 +748,11 @@ Route::get('/api/dashboard/oa-status', function () {
 
 Route::get('/api/dashboard/collaborators', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
     include(BASEPATH . '/php/Project.php');
 
     $result = [];
@@ -717,6 +839,11 @@ Route::get('/api/dashboard/collaborators', function () {
 
 Route::get('/api/dashboard/author-role', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
     $result = array(
         'labels' => [],
         'y' => [],
@@ -791,6 +918,11 @@ Route::get('/api/dashboard/author-role', function () {
 Route::get('/api/dashboard/impact-factor-hist', function () {
     include(BASEPATH . '/php/init.php');
 
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = ['year' => ['$gte' => $Settings->get('startyear')], 'impact' => ['$ne' => null]];
     if (isset($_GET['user'])) {
         $filter['authors.user'] = $_GET['user'];
@@ -839,6 +971,11 @@ Route::get('/api/dashboard/impact-factor-hist', function () {
 
 Route::get('/api/dashboard/activity-chart', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
 
     $filter = ['year' => ['$gte' => $Settings->get('startyear')]];
     if (isset($_GET['user'])) {
@@ -908,6 +1045,11 @@ Route::get('/api/dashboard/activity-chart', function () {
 Route::get('/api/dashboard/project-timeline', function () {
     include(BASEPATH . '/php/init.php');
 
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $filter = ['status' => ['$in' => ['approved', 'finished']]];
     if (isset($_GET['user'])) {
         $filter['persons.user'] = $_GET['user'];
@@ -925,6 +1067,11 @@ Route::get('/api/dashboard/project-timeline', function () {
 
 Route::get('/api/dashboard/wordcloud', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
     function mb_preg_match_all($ps_pattern, $ps_subject, &$pa_matches, $pn_flags = PREG_PATTERN_ORDER, $pn_offset = 0, $ps_encoding = NULL)
     {
         // WARNING! - All this function does is to correct offsets, nothing else:
@@ -1002,6 +1149,11 @@ function combinations($array)
 
 Route::get('/api/dashboard/department-network', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
 
     $dept_filter = $_GET['dept'] ?? null;
     $lvl = 1;
@@ -1128,6 +1280,11 @@ Route::get('/api/dashboard/department-network', function () {
 Route::get('/api/dashboard/author-network', function () {
     include(BASEPATH . '/php/init.php');
 
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     $scientist = $_GET['user'] ?? '';
     $selectedUser = $osiris->persons->findone(['username' => $scientist]);
     // generate graph json
@@ -1227,6 +1384,11 @@ Route::get('/api/dashboard/author-network', function () {
 Route::get('/api/dashboard/activity-authors', function () {
     include(BASEPATH . '/php/init.php');
 
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
     if (!isset($_GET['activity'])) return [];
 
     $lvl = 1;
@@ -1297,6 +1459,11 @@ Route::get('/api/dashboard/activity-authors', function () {
 
 Route::get('/api/dashboard/concept-search', function () {
     include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
 
     if (!isset($_GET['concept'])) return return_rest([], 0);
     $name = $_GET['concept'];
