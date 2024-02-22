@@ -101,29 +101,42 @@ Route::get('/api/test', function () {
 });
 
 /**
- * @api {get} /media All media
- * @apiName GetAllMedia
- * @apiGroup Medium
+ * @api {get} /activities All activities
+ * @apiName GetAllActivities
+ * @apiGroup Activities
  * 
- * @apiParam {String} apikey Your API key
- * @apiParam {String} [filter] Filter string from the advanced search
+ * @apiParam {String} [apikey] Your API key, if defined
+ * @apiParam {Object} [filter] Filter as valid params request
+ * @apiParam {String} [json] Filter string from the advanced search (will overwrite filter)
+ * @apiParam {String} [full] If parameter is given, the full database entries are retreived instead of rendered output
  *
- * @apiSampleRequest /api/activities?formatted=1&filter[type]=publication
+ * @apiSampleRequest /api/activities?filter[type]=publication
  * 
- * @apiSuccess {String} id Unique ID of the medium.
- * @apiSuccess {String} name  Name of the medium.
- * @apiSuccess {Boolean} complex_medium True if the medium is complex
- * @apiSuccess {String} source Collection where the medium originates from 
- * @apiSuccess {String} link Original URL
- * @apiSuccess {Float} min_pH Min. final pH
- * @apiSuccess {Float} max_pH Max final pH
- * @apiSuccess {String} reference URL for original reference (if available)
- * @apiSuccess {String} description Description or additional information (if available)
+ * @apiSuccess {String} id Unique ID of the activity.
+ * @apiSuccess {String} activity  Full web formatted activity (with relative links to osiris).
+ * @apiSuccess {String} print Formatted activity for export (print) 
+ * @apiSuccess {String} icon OSIRIS activity icon
+ * @apiSuccess {String} type Type of activity
+ * @apiSuccess {String} subtype Subtype of activity
+ * @apiSuccess {Int} year Year of activity
+ * @apiSuccess {String} authors Formatted authors (affiliated authors are bold)
+ * @apiSuccess {String} title Title of the activity
+ * @apiSuccess {String[]} departments All associated departments, indicated by their ID
  * @apiSuccessExample {json} Example data:
- * {
-        "id": "1",
-        "name": "TEST"
-    }
+ *  {
+        "id": "6458fcb30d695c593828763f",
+        "activity": "<a href='/activities/view/6458fcb30d695c593828763f'>Metabolism from the magic angle</a><br><small class='text-muted d-block'><a href='/osiris/profile/juk20'>Koblitz,&nbsp;J.</a><br> <i>Nature Chemical Biology</i> (2023) <a href='/uploads/6458fcb30d695c593828763f/Metabolism from the magic angle.pdf' target='_blank' data-toggle='tooltip' data-title='pdf: Metabolism from the magic angle.pdf' class='file-link'><i class='ph ph-file ph-file-pdf'></i></a></small>",
+        "print": "<b>Koblitz,&nbsp;J.</b> (2023) Metabolism from the magic angle. <i>Nature Chemical Biology</i> <a target='_blank' href=''></a>",
+        "icon": "<span data-toggle='tooltip' data-title='Non-refereed'><i class='ph text-publication ph-newspaper'></i></span>",
+        "type": "Publikationen",
+        "subtype": "Non-refereed",
+        "year": 2023,
+        "authors": "<b>Koblitz,&nbsp;J.</b>",
+        "title": "Metabolism from the magic angle",
+        "departments": [
+            "BID"
+        ]
+    }, ...
  */
 Route::get('/api/activities', function () {
     include_once BASEPATH . "/php/init.php";
@@ -142,36 +155,34 @@ Route::get('/api/activities', function () {
     if (isset($_GET['json'])) {
         $filter = json_decode($_GET['json']);
     }
-    $result = $osiris->activities->find($filter)->toArray();
+    $result = $osiris->activities->find($filter, ['sort' => ['year' => -1]])->toArray();
 
-    if (isset($_GET['formatted']) && $_GET['formatted']) {
-        include_once BASEPATH . "/php/Render.php";
-        $table = [];
-        foreach ($result as $doc) {
-            if (isset($doc['rendered'])) {
-                $rendered = $doc['rendered'];
-            } else {
-                $rendered = renderActivities(['_id' => $doc['_id']]);
-            }
-
-            $table[] = [
-                'id' => strval($doc['_id']),
-                'activity' => $rendered['web'],
-                'print' => $rendered['print'],
-                'icon' => $rendered['icon'] ?? '',
-                'type' => $rendered['type'] ?? '',
-                'subtype' => $rendered['subtype'] ?? '',
-                'year' => $doc['year'] ?? 0,
-                'authors' => $rendered['authors'] ?? '',
-                'title' => $rendered['title'] ?? '',
-                'departments' => $rendered['depts'],
-            ];
+    if (isset($_GET['full'])) {
+        echo return_rest($result, count($result));
+        die;
+    }
+    $table = [];
+    foreach ($result as $doc) {
+        if (isset($doc['rendered'])) {
+            $rendered = $doc['rendered'];
+        } else {
+            $rendered = renderActivities(['_id' => $doc['_id']]);
         }
 
-        $result = $table;
+        $table[] = [
+            'id' => strval($doc['_id']),
+            'activity' => $rendered['web'],
+            'print' => $rendered['print'],
+            'icon' => $rendered['icon'] ?? '',
+            'type' => $rendered['type'] ?? '',
+            'subtype' => $rendered['subtype'] ?? '',
+            'year' => $doc['year'] ?? 0,
+            'authors' => $rendered['authors'] ?? '',
+            'title' => $rendered['title'] ?? '',
+            'departments' => $rendered['depts'],
+        ];
     }
-
-    echo return_rest($result, count($result));
+    echo return_rest($table, count($table));
 });
 
 
@@ -529,27 +540,6 @@ Route::get('/api/reviews', function () {
 });
 
 
-Route::get('/api/journal', function () {
-    include_once BASEPATH . "/php/init.php";
-
-    if (!apikey_check($_GET['apikey'] ?? null)) {
-        echo return_permission_denied();
-        die;
-    }
-
-    $filter = [];
-    if (isset($_GET['search'])) {
-        $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
-        $filter = ['$or' =>  [
-            ['journal' => ['$regex' => $j]],
-            ['issn' => $_GET['search']]
-        ]];
-    }
-    $result = $osiris->journals->find($filter)->toArray();
-    echo return_rest($result, count($result));
-});
-
-
 Route::get('/api/teaching', function () {
     include_once BASEPATH . "/php/init.php";
 
@@ -570,6 +560,63 @@ Route::get('/api/teaching', function () {
     echo return_rest($result, count($result));
 });
 
+
+/**
+ * @api {get} /projects Get projects based on search criteria
+ * @apiName Projects
+ * @apiGroup Projects
+ * 
+ * @apiParam {String} [apikey] Your API key, if defined
+ * @apiParam {String} [search] Search string (looked for in name and ID of the Project)
+ * @apiParam {Object} [filter] Filter as valid params request
+ * @apiParam {String} [json] Filter string from the advanced search (will overwrite filter)  
+ *
+ * @apiSampleRequest /api/projects?filter[public]=1
+ * 
+ * @apiSuccess {Object} Full Object containing project data, see example.
+
+ * @apiSuccessExample {json} Example data:
+ *  {
+    "_id": {
+        "$oid": "65c9c42f1e82e991fd06f5d2"
+    },
+    "name": "OSIRIS",
+    "type": "Eigenfinanziert",
+    "title": "OSIRIS - das moderne Forschungsinformationssystem",
+    "contact": "juk20",
+    "status": "applied",
+    "funder": "Eigenmittel",
+    "funding_organization": "Eigenmittel",
+    "funding_number": null,
+    "purpose": "others",
+    "role": "coordinator",
+    "coordinator": null,
+    "start": {
+        "year": 2023,
+        "month": 1,
+        "day": 1
+    },
+    "end": {
+        "year": 2025,
+        "month": 12,
+        "day": 31
+    },
+    "grant_sum": null,
+    "grant_income": null,
+    "personal": null,
+    "website": 'https://osiris-app.de',
+    "abstract": null,
+    "created": "2024-02-12",
+    "public": true,
+    "persons": [
+        {
+            "user": "juk20",
+            "role": "PI",
+            "name": "Julia Koblitz"
+        }
+    ]
+}, ...
+ */
 Route::get('/api/projects', function () {
     include_once BASEPATH . "/php/init.php";
 
@@ -579,6 +626,14 @@ Route::get('/api/projects', function () {
     }
 
     $filter = [];
+    if (isset($_GET['filter'])) {
+        $filter = $_GET['filter'];
+    }
+    if (isset($_GET['json'])) {
+        $filter = json_decode($_GET['json']);
+    }
+    if (isset($filter['public'])) $filter['public'] = boolval($filter['public']);
+
     if (isset($_GET['search'])) {
         $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
         $filter = ['$or' =>  [
@@ -590,6 +645,103 @@ Route::get('/api/projects', function () {
     echo return_rest($result, count($result));
 });
 
+/**
+ * @api {get} /journal Find a journal
+ * @apiName FindJournal
+ * @apiGroup Journals
+ * 
+ * @apiParam {String} [apikey] Your API key, if defined
+ * @apiParam {String} [search] Search string (looked for in name and ISSN of the journal)
+ * 
+ * @apiSampleRequest /api/journal?search=Systematic
+ * 
+ * @apiSuccess {String} _id Unique Mongo ID of the journal.
+ * @apiSuccess {String} journal  Full name of the journal
+ * @apiSuccess {String} abbr Official abbreviation of the journal
+ * @apiSuccess {String} publisher Publisher of this journal
+ * @apiSuccess {Object[]} impact All known impact factors of the journal, given as an array of objects with year and impact
+ * @apiSuccess {String[]} issn All ISSN of the journal
+ * @apiSuccess {Boolean|Integer} oa Year of open access start of false
+ * @apiSuccessExample {json} Example data:
+ *  
+    "_id": {
+        "$oid": "6364d153f7323cdc8253104a"
+    },
+    "nlmid": 100899600,
+    "journal": "International journal of systematic and evolutionary microbiology",
+    "abbr": "Int J Syst Evol Microbiol",
+    "publisher": "Microbiology Society",
+    "issn": [
+        "1466-5034",
+        "1466-5026",
+        "0020-7713"
+    ],
+    "impact": [
+        {
+            "year": 2021,
+            "impact": 2.689
+        },
+        {
+            "year": 2020,
+            "impact": 2.747
+        },
+        {
+            "year": 2019,
+            "impact": 2.415
+        }
+    ],
+    "oa": false,
+}, ...
+ */
+Route::get('/api/journal', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
+    $filter = [];
+    if (isset($_GET['search'])) {
+        $j = new \MongoDB\BSON\Regex(trim($_GET['search']), 'i');
+        $filter = ['$or' =>  [
+            ['journal' => ['$regex' => $j]],
+            ['issn' => $_GET['search']]
+        ]];
+    }
+    $result = $osiris->journals->find($filter)->toArray();
+    echo return_rest($result, count($result));
+});
+
+/**
+ * @api {get} /journals All journals
+ * @apiName GetAllJournals
+ * @apiGroup Journals
+ * 
+ * @apiParam {String} [apikey] Your API key, if defined
+ *
+ * @apiSampleRequest /api/journals
+ * 
+ * @apiSuccess {String} id Unique ID of the journal.
+ * @apiSuccess {String} name  Full web formatted journal (with relative links to osiris).
+ * @apiSuccess {String} abbr Formatted journal for export (print) 
+ * @apiSuccess {String} publisher OSIRIS journal icon
+ * @apiSuccess {String} open_access 
+ * @apiSuccess {String} issn All ISSN of the journal, separated by comma
+ * @apiSuccess {Float} if Last year impact factor
+ * @apiSuccess {Integer} count Number of activities associated to this journal
+ * @apiSuccessExample {json} Example data:
+ *  {
+      "id": "6389ae62c902176a283535e2",
+      "name": "Frontiers in Microbiology",
+      "abbr": "Front Microbiol",
+      "publisher": "Frontiers Research Foundation",
+      "open_access": "seit 2010",
+      "issn": "1664-302X",
+      "if": 6.064,
+      "count": 103
+    }, ...
+ */
 Route::get('/api/journals', function () {
     include_once BASEPATH . "/php/init.php";
 
@@ -659,6 +811,28 @@ Route::get('/api/google', function () {
 });
 
 
+/**
+ * @api {get} /levenshtein Search activity by title using the Levenshtein similarity
+ * @apiName Levenshtein
+ * @apiGroup Activities
+ * 
+ * @apiParam {String} [apikey] Your API key, if defined
+ * @apiParam {String} title The title of the activity you are looking for
+ * @apiParam {String} [doi] If available: DOI of activity
+ * @apiParam {Integer} [pubmed] If available: Pubmed-ID of activity
+ *
+ * @apiSampleRequest /api/levenshtein?title=metabolism frm the magic angle
+ * 
+ * @apiSuccess {Float} similarity The Levenshtein Similarity of the title. Will be 100, if ID matches
+ * @apiSuccess {String} id  Unique ID of the found activity
+ * @apiSuccess {String} title Title of the found activity
+ * @apiSuccessExample {json} Example data:
+ *  {
+  "similarity": 98.4,
+  "id": "6458fcb30d695c593828763f",
+  "title": "metabolism from the magic angle"
+}
+ */
 Route::get('/api/levenshtein', function () {
     include(BASEPATH . '/php/init.php');
 
@@ -671,17 +845,29 @@ Route::get('/api/levenshtein', function () {
 
     $result = [];
 
-    $pubmed = $_GET['pubmed'];
     $title = $_GET['title'];
 
-    // $test pubmed
-    $test = $osiris->activities->findOne(['pubmed' => $pubmed]);
-    if (!empty($test)) {
-        $result = [
-            'similarity' => 1.,
-            'id' => strval($test['_id']),
-            'title' => $test['title']
-        ];
+    if (isset($_GET['pubmed'])) {
+        $pubmed = $_GET['pubmed'];
+        $test = $osiris->activities->findOne(['pubmed' => $pubmed]);
+        if (!empty($test)) {
+            $result = [
+                'similarity' => 100,
+                'id' => strval($test['_id']),
+                'title' => $test['title']
+            ];
+        }
+    }
+    if (isset($_GET['doi'])) {
+        $doi = $_GET['doi'];
+        $test = $osiris->activities->findOne(['doi' => $doi]);
+        if (!empty($test)) {
+            $result = [
+                'similarity' => 100,
+                'id' => strval($test['_id']),
+                'title' => $test['title']
+            ];
+        }
     }
 
     $l = $levenshtein->findDuplicate($title);
@@ -694,11 +880,9 @@ Route::get('/api/levenshtein', function () {
         'title' => $levenshtein->found
     ];
 
-
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
-
 
     echo json_encode($result);
 });

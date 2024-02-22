@@ -28,6 +28,12 @@ Route::get('/docs', function () {
     include BASEPATH . "/footer.php";
 });
 
+// Route::get('/docs/api/(.*)', function ($path) {
+//     // header("HTTP/1.0 $error");
+
+//     include BASEPATH . "/pages/docs/api/$path";
+
+// });
 Route::get('/docs/([\w-]+)', function ($doc) {
     // header("HTTP/1.0 $error");
 
