@@ -61,15 +61,35 @@ if ($N > 0) {
             </div>
             <div class="form-group">
                 <label for="apikey"><?= lang('API-Key') ?></label>
-                <input type="text" class="form-control" name="general[apikey]" value="<?= $Settings->get('apikey') ?>">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="general[apikey]" id="apikey" value="<?= $Settings->get('apikey') ?>">
+
+                    <div class="input-group-append">
+                        <button type="button" class="btn" onclick="generateAPIkey()"><i class="ph ph-arrows-clockwise"></i> Generate</button>
+                    </div>
+                </div>
                 <span class="text-muted">
                     <?= lang(
                         'If you do not provide an API key, the REST-API will be open to anyone.',
                         'Falls kein API-Key angegeben wird, ist die REST-API für jeden offen.'
                     ) ?>
                 </span>
-            </div>
 
+            </div>
+            <script>
+                function generateAPIkey() {
+                    let length = 50;
+                    let result = '';
+                    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                    const charactersLength = characters.length;
+                    let counter = 0;
+                    while (counter < length) {
+                        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                        counter += 1;
+                    }
+                    $('#apikey').val(result)
+                }
+            </script>
             <button class="btn secondary">
                 <i class="ph ph-floppy-disk"></i>
                 Save
