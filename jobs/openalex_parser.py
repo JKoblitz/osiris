@@ -246,10 +246,13 @@ class OpenAlexParser():
                 break
         return element
     
-    def get_work(self, id, idtype='doi'):
+    def get_work(self, id, idtype='doi', ignoreDupl=True):
         work = self.openalex.get_single_work(id, idtype)
         element = self.parseWork(work)
         if (element != False):
+            if ignoreDupl and element.get('duplicate'):
+                print(f'Activity might have a duplicate (DOI {element['doi']}) and was omitted.')
+                return
             self.osiris['activities'].insert_one(element)
             print(f'{idtype.upper()} {id} has been added to the database.')
         
