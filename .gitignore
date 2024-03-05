@@ -14,3 +14,4 @@ jobs/config.ini
 *.pyc
 composer.lock
 upload.sh
+.DS_Store

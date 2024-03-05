@@ -513,7 +513,7 @@ $pageactive = function ($p) use ($page) {
                             <?= lang('Activities', 'Aktivitäten') ?>
                         </a>
                         <a href="<?= ROOTPATH ?>/admin/features" class="with-icon <?= $pageactive('admin/features') ?>">
-                            <i class="ph ph-toolbox" aria-hidden="true"></i>
+                            <i class="ph ph-wrench" aria-hidden="true"></i>
                             <?= lang('Features', 'Funktionen') ?>
                         </a>
                     </nav>
