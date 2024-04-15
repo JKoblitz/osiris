@@ -9,23 +9,18 @@ class Coins
     private $db = null;
 
 
-    function __construct($user = null)
+    function __construct()
     {
         $db = new DB;
         $this->db = $db->db;
-        // $Settings = new Settings;
-
-        // $activities = $Settings->getActivities();
 
         $types = $this->db->adminTypes->find()->toArray();
-        // foreach ($activities as $type => $typeArr) {
-            foreach ($types as $typeArr) {
-                $type = $typeArr['id'];
-                if (is_numeric($typeArr['coins']))
-                    $typeArr['coins'] = floatval($typeArr['coins']);
-                $this->matrix[$type] = $typeArr['coins'];
-            }
-        // }
+        foreach ($types as $typeArr) {
+            $type = $typeArr['id'];
+            if (is_numeric($typeArr['coins']))
+                $typeArr['coins'] = floatval($typeArr['coins']);
+            $this->matrix[$type] = $typeArr['coins'];
+        }
     }
 
     function activityCoins($doc, $user)
@@ -47,8 +42,8 @@ class Coins
         ];
         $author = reset($author);
         $position = ($author['position'] ?? '');
-        
-        if (!($author['aoi']?? false)) return [
+
+        if (!($author['aoi'] ?? false)) return [
             'coins' => 0, 'comment' => 'User not affiliated'
         ];
 
@@ -67,10 +62,10 @@ class Coins
             $coins = $matches[1];
             $operator = $matches[2];
             $thingy = strtoupper($matches[3]);
-            if ($thingy == 'IF'){
+            if ($thingy == 'IF') {
                 $val = max($doc['impact'] ?? 0, 1);
             }
-            if ($thingy == 'SWS'){
+            if ($thingy == 'SWS') {
                 $val = $author['sws'] ?? 0;
             }
             if ($position == 'middle') $coins /= 2;
@@ -88,24 +83,42 @@ class Coins
     {
         $total = 0;
         foreach ($this->matrix as $subtype => $coins) {
+            // dump($subtype);
             $filter = [
                 'subtype' => $subtype,
                 'authors' => ['$elemMatch' => ['user' => $user, 'aoi' => ['$in' => [true, 1, '1']]]],
-                'epub' => ['$ne'=>true]
+                'epub' => ['$ne' => true]
             ];
-            if ($year !== null)
-                $filter['year'] = $year;
+            if ($year !== null){
+                $filter['$or'] =   array(
+                    [
+                        "start.year" => array('$lte' => $year),
+                        '$or' => array(
+                            ['end.year' => array('$gte' => $year)],
+                            [
+                                'end' => null,
+                                '$or' => array(
+                                    ['type' => 'misc', 'subtype' => 'misc-annual'],
+                                    ['type' => 'review', 'subtype' =>  'editorial'],
+                                )
+                            ]
+                        )
+                    ],
+                    ['year' => $year]
+                );
+                }
             if (is_numeric($coins)) {
                 // just count the numbers and multiply
                 $N = $this->db->activities->count($filter);
                 if ($N == 0) continue;
 
-                // check for middle authorships
-                $middle = $this->db->activities->count([
-                    'subtype' => $subtype,
-                    'authors' => ['$elemMatch' => ['user' => $user, 'aoi' => true, 'position' => 'middle']]
-                ]);
+                // add new filter for middle authorship
+                $middle_filter = array_merge_recursive($filter, ['authors' => ['$elemMatch' => ['position' => 'middle']]]);
+
+                $middle = $this->db->activities->count($middle_filter);
+                // echo "(($N - $middle) * $coins) + ($middle * $coins / 2)";
                 $total += (($N - $middle) * $coins) + ($middle * $coins / 2);
+                // dump($total);
             } else if (preg_match('/(\d+)(?:\s*)([\+\-\*\/])(?:\s*)\{(if|sws)\}/', $coins, $matches) !== FALSE) {
                 $coins = $matches[1];
                 $operator = $matches[2];
