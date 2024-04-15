@@ -58,7 +58,7 @@
                 <a href="<?= ROOTPATH ?>/impress"><?= lang('Impress', 'Impressum') ?></a>
                 <a href="<?= ROOTPATH ?>/license"><?= lang('License', 'Lizenz') ?></a>
                 <p>
-                    &copy; Julia Koblitz 2023
+                    &copy; Julia Koblitz <?=CURRENTYEAR?>
                 </p>
             </div>
         </div>

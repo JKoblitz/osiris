@@ -137,6 +137,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
         }
         renderActivities(['_id' =>  $activity['_id']]);
         $user_activity = $DB->isUserActivity($doc, $user);
+        if (($doc['created_by'] ?? '') !== $user) $user_activity = true;
 
         $Format = new Document;
         $Format->setDocument($doc);
@@ -340,9 +341,17 @@ Route::post('/crud/activities/create', function () {
 
     $values = validateValues($_POST['values'], $DB);
 
+    $values['history'] = [[
+        'date' => date('Y-m-d'),
+        'user' => $_SESSION['username'],
+        'type' => 'create',
+        'data' => DB::convert4humans(array_filter($values))
+    ]];
+    // dump($values, true);
+    // die;
     // add information on creating process
     $values['created'] = date('Y-m-d');
-    $values['created_by'] = strtolower($_SESSION['username']);
+    $values['created_by'] = ($_SESSION['username']);
 
     if (isset($values['doi']) && !empty($values['doi'])) {
         $doi_exist = $collection->findOne(['doi' => $values['doi']]);
@@ -415,8 +424,12 @@ Route::post('/crud/activities/update/([A-Za-z0-9]*)', function ($id) {
     }
 
     // add information on updating process
-    $values['updated'] = date('Y-m-d');
-    $values['updated_by'] = strtolower($_SESSION['username']);
+    // $values['updated'] = date('Y-m-d');
+    // $values['updated_by'] = strtolower($_SESSION['username']);
+    $values = $DB->updateHistory($values, $id);
+
+    // dump($values, true);
+    // die;
 
     if (is_numeric($id)) {
         $id = intval($id);

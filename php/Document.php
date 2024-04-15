@@ -44,12 +44,7 @@ class Document extends Settings
         }
 
 
-        $this->id = $doc['_id'];
-        if (is_array($this->id)) {
-            $this->id = $this->id['$oid'];
-        } else {
-            $this->id = strval($this->id);
-        }
+       
         // dump(($doc));
         $this->doc = $doc;
         $this->getActivityType();
@@ -709,6 +704,9 @@ class Document extends Settings
                 if ($val)
                     return "<span style='color:#B61F29;'>[Correction]</span>";
                 else return '';
+            case "start": // ["year", "month", "day"],
+            case "end": // ["year", "month", "day"],
+                return Document::format_date($this->getVal($module, null));
             case "date": // ["year", "month", "day"],
             case "date-range": // ["start", "end"],
                 // return $this->fromToDate($this->getVal('start'), $this->getVal('end') ?? null);
@@ -965,10 +963,17 @@ class Document extends Settings
         $line = "";
         $title = $this->getTitle();
 
+        $id = $this->doc['_id'];
+        if (is_array($id)) {
+            $id = $id['$oid'];
+        } else {
+            $id = strval($id);
+        }
+
         if ($this->usecase == 'portal') {
-            $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$this->id'>$title</a>";
+            $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$id'>$title</a>";
         } else if ($link) {
-            $line = "<a class='colorless' href='" . ROOTPATH . "/activities/view/$this->id'>$title</a>";
+            $line = "<a class='colorless' href='" . ROOTPATH . "/activities/view/$id'>$title</a>";
         } else {
             $line = $title;
         }

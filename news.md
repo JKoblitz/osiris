@@ -1,12 +1,56 @@
 # Neuigkeiten
 
-## 09.02.2024
+<span class="badge float-right">15.04.2024</span>
+<a class="anchor" href="#version-1.3.3" id="version-1.3.3"></a>
+
+## Version 1.3.3
+
+#### <i class="ph ph-clock-counter-clockwise text-osiris"></i> Historie
+
+Es wurde eine überarbeitete Historie zu Aktivitäten hinzugefügt, die jetzt alle Ereignisse aufnimmt (zuvor nur jeweils das letzte Ereignis) und auch Änderungen speichert.
+Sie ist auf der Detailseite einer Aktivität unter dem Reiter *Historie* verfügbar.
+
+
+----
+
+<span class="badge float-right">22.02.2024</span>
+<a class="anchor" href="#version-1.3.2" id="version-1.3.2"></a>
+
+## Version 1.3.2
+
+#### <i class="ph ph-code text-osiris"></i> API Changes und API-Key
+
+Es gibt ein paar kleinere Änderungen an der API, hauptsächlich wurden mehr Filtermöglichkeiten hinzugefügt.
+
+Außerdem gibt es jetzt **API-Keys** mit denen sich die API nach außen hin absichern lässt. Erstellt euch einen einzigartigen API-Key und sichert damit eure Daten vor unbefugtem Zugriff. Die Einstellungen dazu findet ihr in den allgemeinen Einstellungen im Admin-Bereich.
+
+#### <i class="ph ph-book text-osiris"></i> API Docs
+In der Dokumentation ist ein neuer Reiter API Docs, unter dem die wichtigsten Endpunkte beschrieben sind.
+
+----
+
+<span class="badge float-right">21.02.2024</span>
+<a class="anchor" href="#version-1.3.1" id="version-1.3.1"></a>
+
+## Version 1.3.1
+
+In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom fields enthalten.
+
+#### <i class="ph ph-textbox text-osiris"></i> Custom Fields
+- definiert **Custom fields** im Admin-Bereich
+- wählt den Typ des Feldes, legt Default-Werte fest und definiert Listen mit Auswahlmöglichkeiten
+- Benutzt die "ID" des neuen Feldes, um es zu den Formularen hinzuzufügen. Geht dazu in den Aktivitäten-Konfigurator im Admin-Bereich und wählt eure eigenen Module aus (custom fields erscheinen ganz oben in der Sortierung)
+- Benutzt die "ID" des neuen Feldes, um den Wert in Templates auszugeben
+- Eure Custom Fields werden ebenfalls in der Erweiterten Suche angezeigt
+
+
+
+----
+
+<span class="badge float-right">09.02.2024</span>
 <a class="anchor" href="#version-1.3.0" id="version-1.3.0"></a>
-`Version 1.3.0`
 
-
-# Version 1.3.0
-
+## Version 1.3.0
 
 #### <i class="ph ph-sparkle text-osiris"></i> Neues Design
 - OSIRIS erstrahlt im neuen Design, das jetzt noch moderner (und etwas weniger orange-lastig) ist.
@@ -117,7 +161,7 @@
 - Inaktive Mitarbeiter:innen lassen sich jetzt einfacher finden
 
 
-## <i class="ph ph-sync text-osiris"></i> Verbesserung der LDAP-Schnittstelle
+#### <i class="ph ph-sync text-osiris"></i> Verbesserung der LDAP-Schnittstelle
 - ldaps wurde hinzugefügt (über Port identifiziert)
 - Nutzer, die nicht in der BASEDN sind, wurden vom Log-In ausgeschlossen.
 - Es wurde eine User-Whitelist und eine Blacklist hinzugefügt (in Feature Settings)
@@ -143,10 +187,12 @@ Es kann sein, dass einige wenige Einstellungen von Euch nicht in das neue Format
 
 
 
+----
 
-## 25.10.2023
+<span class="badge float-right">25.10.2023</span>
 <a class="anchor" href="#version-1.2.2" id="version-1.2.2"></a>
-`Version 1.2.2`
+
+## Version 1.2.2
 
 
 #### <i class="ph ph-tree-structure text-osiris"></i> Projekte
@@ -197,17 +243,21 @@ Es wurden einige generelle Verbesserungen durchgeführt:
 
 
 
+----
 
-## 18.10.2023
+<span class="badge float-right">18.10.2023</span>
 <a class="anchor" href="#version-1.2.1" id="version-1.2.1"></a>
-`Version 1.2.1`
+
+## Version 1.2.1
 
 Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund. Außerdem wurde das Layout einiger Seiten verbessert, sowie die Schriftart für Überschriften verändert. 
 
+----
 
-## 04.10.2023
+<span class="badge float-right">04.10.2023</span>
 <a class="anchor" href="#version-1.2.0" id="version-1.2.0"></a>
-`Version 1.2.0`
+
+## Version 1.2.0
 
 #### <i class="ph ph-users text-osiris"></i> Rollensystem
 
@@ -274,13 +324,15 @@ Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund.
 
 
 
-## 10.07.23
+**10.07.23**
+
 #### <i class="ph ph-briefcase text-osiris"></i> Altdaten-Import
 
 
 Es können jetzt auch Altdaten importiert werden. Wie genau das funktioniert, liest du am besten in der [Anleitung](https://osiris-app.de/install#import). 
 
-## 06.07.23
+**06.07.23**
+
 
 #### <i class="ph ph-swap text-osiris"></i> IDA-Integration
 
@@ -367,19 +419,19 @@ OSIRIS-Aktivitäten sind jetzt auch als Schema.org hinterlegt und exportierbar. 
 ```
 
 
-## 05.06.23
+**05.06.23**
 
 #### <i class="ph ph-queue text-osiris"></i> Neues Feature: Warteschlange
 
 
 OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob es neue Publikationen für die Institution gibt. Wenn für dich neue Publikationen gefunden wurden, erhältst du einen Hinweis auf deiner Startseite.
 
+----
 
-## 12.05.23
-
-`Version 1.1.0`
-
+<span class="badge float-right">12.05.23</span>
 <a class="anchor" href="#version-1.1.0" id="version-1.1.0"></a>
+
+## Version 1.1.0
 Ich habe mehrere kleinere Releases in einem großen zusammengeführt.
 
 #### <i class="ph ph-cake text-osiris"></i> Neue Icons wurden eingeführt
@@ -448,7 +500,7 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Die Konfiguration bei anderen Instituten wird auch bei neuen Updates nicht überschrieben, wodurch sie die maximale Flexibilität haben, OSIRIS nach ihren Wünschen zu gestalten.
 
 
-<div class="alert alert-danger">
+<div class="alert danger">
   <h3 class="title">
     <i class="ph ph-warning"></i>
     Achtung für alle anderen Institute! Breaking Changes!!!
@@ -462,7 +514,7 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 </div>
 
 
-## 31.01.23
+**31.01.23**
 
 - Die Datenbank wurde aufgeräumt: nicht mehr benötigte/gepflegte/gezeigte Datenfelder wurden entfernt. 
 - Beim Hinzufügen von Publikationen via DOI oder PM-ID wird nun das Journal anhand der ISSN gesucht. Dadurch wird eine falsche Journalzuordnung durch unterschiedliche Namen vermieden.
@@ -471,7 +523,8 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
   - Auf der Übersichtsseite eines Journals findet sich bei betroffenen Journalen jetzt ein Link zum Journal Citation Report.
   - Mittels eines selbstgeschriebenen Web Scrapers wurden Impact Factoren von JCR gezogen und gespei
 
-## 25.01.23
+**25.01.23**
+
 
 - Feedback zum Hinzufügen von Editorenschaften wurde eingepflegt (Danke an Andrey)
 - Auf der Profilseite gibt es (wenn vorh.) eine Übersicht mit allen laufenden Mitgliedschaften (Gremien & Editorial Boards)
@@ -479,19 +532,25 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Ein Bug wurde gefixt, bei dem eine Publikation ohne Impact Factor keine Coins gab.
 - Ein Bug wurde gefixt, wegen dem Autoren, deren Vornamen mit einem Sonderzeichen beginnen, das System gebrochen haben.
 
-## 23.01.23
+**23.01.23**
+
 - Der Autoreneditor auf der Seite "Aktivität hinzufügen" wurde verbessert
 - Wenn ein Journal nicht in OSIRIS gefunden wurde, wird automatisch eine Suche in NLM durchgeführt.
 
 
-## 11.01.23
+**11.01.23**
+
 - Es wurde eine Möglichkeit hinzugefügt, den Typ einer Aktivität nachträglich zu bearbeiten
 - In die neue Web-Ansicht wurde das Datum der Aktivität integriert
 - Es wurde ein Bug gefixt, durch den beim Filtern nach Vorträgen in allen Aktivitäten auch bestimmte Studierende gezeigt wurden
 
-## 02.01.23
+----
 
-`Version 1.0`
+<span class="badge float-right">02.01.23</span>
+
+## Version 1.0
+
+
 
 Über die Feiertage habe ich noch ein paar Features hinzugefügt und (nicht aufgeführt) ein paar Bugs entfernt:
 
@@ -543,7 +602,8 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werden natürlich trotzdem weiterhin Feedback einsammeln und an dem Tool weiterentwickeln. Danke an alle, die an der Betaphase beteiligt waren!
 
 
-## 18.12.22
+**18.12.22**
+
 - Neues "Experten-Tool": mit der [erweiterten Suche](search/activities) können jetzt alle Aktivitäten detailliert durchsucht werden. 45 Datenfelder sind mit unterschieldichen Optionen durchsuchbar. Ein Anleitungsvideo folgt in Kürze.
 - In der Übersicht einer Aktivität sind nun alle Autoren aufgeführt
 - Bei Autoren ohne Vornamen (z.B. "The Microbiome Consortium") wird nun kein Komma mehr angezeigt
@@ -553,7 +613,8 @@ OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werd
   - Leerzeile zwischen der Publikation und der Bemerkung "Shared authors" wurde entfernt
   - Wenn in einer Aktivität kein Autor mit DSMZ-Affiliation gefunden wurde, wird sie nicht aufgeführt
 
-## 13.12.22
+**13.12.22**
+
 - Aktivitäten:
   - Zu allen Aktivitäten können nun optional Kommentare hinzugefügt werden
   - Kommentare sind nur für Autoren der Aktivität (und Admins, a.k.a. Julia und das Controlling) sichtbar
@@ -567,15 +628,18 @@ OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werd
   - Die Tabelle mit allen Journalen wurde verbessert und enthält nun eine Anzahl von Aktivitäten in OSIRIS, nach der auch standardmäßig sortiert wird.
   - Auf der Übersicht eines Journals werden jetzt alle Publikationen, sowie Reviewer- und Editortätigkeiten in dem jeweiligen Journal gezeigt.
 
-## 02.12.22
+**02.12.22**
+
 - Beim Hinzufügen von Publikationen werden Journale jetzt standardisiert und verknüpft
 - Neue Journale können anhand des NLM-Katalogs hinzugefügt werden
 - Journale können bearbeitet und um neue Impact Factoren erweitert werden
 
-## 29.11.22
+**29.11.22**
+
 - Neue Visualisierungen wurden hinzugefügt (Abteilungs-Netzwerk und -Übersicht) und die vorhandene (Coautoren-Netzwerk) wurde verbessert
 
-## 24.11.22
+**24.11.22**
+
 - Das Menü wurde umstrukturiert und farblich etwas einfacher gehalten
 - Neue Icons für Aktivitäten wurden eingeführt
 - Der Knopf zum Hinzufügen von Aktivitäten war anscheinend zu fancy, um ihn wahrzunehmen. Er wurde vereinfacht.
@@ -602,7 +666,8 @@ OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werd
   - Eine Aktivität zu kopieren war nicht möglich
   - Viele kleinere Bug Fixes
 
-## 18.11.22
+**18.11.22**
+
 - Ich habe zusätzlich zu Crossref auch DataCite hinzugefügt. Dadurch können jetzt auch **DOIs von anderen Aktivitäten** als nur Publikationen hinzugefügt werden, beispielsweise Software, Datensätze, Poster, Präsentationen, usw. Um eine DOI für eine solche Aktivität zu bekommen, empfehle ich die Aktivität auf einem Datenarchiv wie beispielsweise [Zenodo](https://zenodo.org/) hochzuladen.
 - Die Seite "Mein Jahr" wurde für die neuen Aktivitäten aktualisiert
 - Die Einstellungen im Downloadbereich wurden erweitert:
@@ -611,7 +676,8 @@ OSIRIS geht damit in die Version 1.0 über und verlässt die Betaphase. Wir werd
   - Man kann nun einstellen, ob und was fett markiert werden soll
   - BibTex-Export funktioniert jetzt
 
-## 17.11.22
+**17.11.22**
+
 Ich habe sehr viel User-Feedback aus der Beta-Phase eingearbeitet, u.a. folgendes:
 
 - Neue Aktivitäten wurden hinzugefügt:
@@ -625,38 +691,45 @@ Ich habe sehr viel User-Feedback aus der Beta-Phase eingearbeitet, u.a. folgende
   - Eine Hilfe-Funktion erklärt nun, wie der Autoreneditor funktioniert.
   - Lectures: Es kann jetzt angegeben werden, ob es sich um eine *Invited lecture* handelt
 
-## 15.11.22
+**15.11.22**
+
 - Das Controlling-Dashboard wurde komplett überarbeitet. Neue Metriken werden in verbesserten Graphen dargestellt.
 
-## 07.11.22
+**07.11.22**
+
 - Ich habe auf Anfrage eine Nutzerprofilseite hinzugefügt. Die Seite "Mein Jahr", auf die bisher von der Nutzertabelle verwiesen wurde, hat offenbar zu einiger Verwirrung geführt. "Mein Jahr" soll ausschließlich der Übersicht des aktuellen Jahrs/Quartals dienen und die bekannten Excel-Listen ablösen.
 - Das neue Profil wurde mit Metriken und Graphen ausgestattet. Außerdem findet sich hier eine kurze Übersicht über die neuesten Aktivitäten sowie ein paar Nutzerinfos.
 - Da das Quartal-Auswahlfeld (vorher zu finden oben rechts im Header) nur noch auf der Seite "mein Jahr" verwendet wurde, wurde es dorthin verschoben, um Verwirrung zu vermeiden.
 - Das Dashboard wurde durch das neue Profil abgelöst
 
-## 06.11.22
+**06.11.22**
+
 - Man kann sich nun ein Koautoren-Netzwerk anzeigen lassen. Dort sind alle DSMZ-Wissenschaftler dargestellt, mit denen man zusammen publiziert hat. Die Verknüpfungen sind dabei nach Abteilung gefärbt.
 - Achievements wurden hinzugefügt (im Moment noch low level, sprich nur für erstellte/bearbeitete Datensätze)
 
 
-## 31.10.22
+**31.10.22**
+
 - Journale wurden um alle NLM Journale ergänzt
 - Falls vorhanden wurde der Impact Factor hinzugefügt
 - Der Journal- und Nutzerbrowser wurde optimiert und ist nun komplett durchsuch- und sortierbar
 - Quartale können nicht mehr bestätigt werden, wenn sie noch nicht zu Ende sind
 - Es wird nun am Ende eines Quartals auf weitere mgl. Probleme hingewiesen (z.B. noch laufende Aktivitäten ohne Enddatum)
 
-## 07.10.22
+**07.10.22**
+
 - Nutzer können jetzt bearbeitet werden
 
-## 03.10.22
+**03.10.22**
+
 Der erste Report wurde eingeführt (Research report)
 - Die Zeitspanne kann genau angepasst werden
 - Der Export richtet sich ungefähr nach dem bisherigen Report, Header, Footer und Tabellen müssen manuell angepasst werden
 
 
 
-## 25.09.22
+**25.09.22**
+
 - Die Übersichtsseite für Aktivitäten wurde verbessert (trotzdem noch im Alpha-Status).
 - Man kann nun PDF-Dokumente an Aktivitäten anhängen. Diese können auf der Übersichtsseite heruntergeladen werden.  
 - Eine Übersichtsseite mit allen gefundenen Problemen ermöglicht Wissenschaftlern ihre Aktivitäten zu bereinigen. Folgende "Probleme" gibt es:
@@ -666,10 +739,12 @@ Der erste Report wurde eingeführt (Research report)
 - Im Titel-Editor können jetzt auch ein paar Sonderzeichen hinzugefügt werden.
 - Autoren können nun im Detail-Editor bearbeitet werden. So ist es möglich, z.B. Nutzernamen anzupassen, damit die Aktivitäten auch den richtigen Autoren zugeordnet werden können.
 
-## 24.09.22
+**24.09.22**
+
 - Dashboard hinzugefügt: Das Dashboard ist die neue Startseite. Sie wurde sowohl für Wissenschaftler als auch für das Controlling verbessert und zeigt jetzt eine Übersicht über die Aktivitäten (beim Wissenschaftler nur über eigene). 
 
-## 23.09.22
+**23.09.22**
+
 - Die verschiedenen Aktivitäten wurden alle in einer Tabelle zusammengefasst, die übersichtlicher gestaltet ist
 - Die Aktivitäten lassen sich nach Art der Aktivität und Datum filtern und durchsuchen
 - Die Aktivitäten lassen sich anschauen (über die Lupe) und bearbeiten (über den Stift). Bitte beachten, dass die Ansicht sehr rudimentär ist (die Rohdaten werden gezeigt) und noch verbessert wird.
@@ -678,10 +753,12 @@ Der erste Report wurde eingeführt (Research report)
 - Geteilte Autorenschaften werden dargestellt
 - Für Open-Access-Publikationen wurde ein Icon hinzugefügt
 
-## 21.09.22
+**21.09.22**
+
 - Eine Schnittstelle wurde eingeführt, über die Nutzer aus LDAP bezogen werden können. Die Nutzer wurden aktualisiert und in Abteilungen unterteilt
 
-## 11.09.22
+**11.09.22**
+
 - Titel von Aktivitäten können nun formatiert werden. Dabei ist es möglich, fett, kursiv und unterstrichen zu formatieren. Die Formatierungen sind auch bei den Bearbeitungen möglich und können mit exportiert werden. 
 - Bilder der Nutzer werden jetzt von Gravatar importiert
 - Ich habe angefangen, das Confirmation-System einzuführen. Funktioniert soweit ganz gut.
@@ -689,24 +766,28 @@ Der erste Report wurde eingeführt (Research report)
 - Bei dem LOM-System werden nun keine Punkte vergeben, wenn der Autor als Affiliation nicht die DSMZ hat.
 - Wenn bei dem Hinzufügen einer Aktivität keiner der Autoren der DSMZ zugehörig ist, wird eine Warnmeldung gezeigt.
 
-## 02.09.22
+**02.09.22**
+
 Ich habe ein ganz simples Punkte-System aufgesetzt. 
 - Die Punkte werden in einer von mir definierten Matrix gespeichert, die leicht anzupassen ist. 
 - Über ein Punkte-Portal kann das Controlling einfach die Punkte für die einzelnen Bereiche anpassen. Siehe [hier](lom).
 - Auf der Übersichtsseite eines Wissenschaftlers werden oben die Punkte aufsummiert. Hinter jeder Aktivität stehen die dafür erhaltenen Punkte. Die Punkte für refereed journals errechnen sich mit dem Impact Factor (falls vorhanden)
 
-## 01.09.22
+**01.09.22**
+
 Dieses Update bezieht sich ausschließlich auf die Ansicht des Controllings
 - Auf der Startseite wird nun eine Übersicht aller Wissenschaftler gezeigt, die das aktuelle Quartal "approved" haben 
 - Die Inhaltsseiten (Publikationen, Poster, Vorträge, Reviewsm Misc, Students) zeigen nun alle Aktivitäten des ausgewählten Jahres
 - Inhaltsseiten sind jetzt filterbar (Achtung! Groß- und Kleinschreibung beachten.)
 
-## 31.07.22
+**31.07.22**
+
 - Publikationen können jetzt hinzugefügt werden. Sowohl Journal-Artikel als auch Bücher funktionieren. 
 - Auf das Löschen von Publikationen wurde bewusst verzichtet. Vielleicht fügt man die Funktion ein, ermöglicht es aber nur begrenzten User-Gruppen (z.B. Admin und Controlling)
 - Export von Publikationen in Word und BibTex wurde hinzugefügt.
 
-## 29.07.22
+**29.07.22**
+
 
 Ich habe mal wieder alles auf den Kopf gestellt. Die Datenbank zum Beispiel. Dort läuft jetzt MongoDB anstatt MySQL. Warum? Weil das für mehr Flexibilität, schnellere Ladezeiten und geringere Entwicklungszeit führt. Key-Value for the win :)
 
@@ -723,7 +804,8 @@ Dadurch war jetzt in kürzester Zeit folgender Fortschritt möglich:
 - Die Übersicht der Nutzer ist nun durchsuchbar (Vorname, Nachname, Kürzel) und kann nach Wissenschaftler gefiltert werden.
 - Die Übersicht der Journale ist nun nach Name des Journals und ISSN durchsuchbar.
 
-## 24.07.22
+**24.07.22**
+
 
 - Dieses Changelog wurde hinzugefügt, um den Überblick über die Entwicklung zu behalten
 - Neues Auswahlmenü zur Navigation hinzugefügt: jetzt können Jahr und Quartal präziser ausgewählt werden.

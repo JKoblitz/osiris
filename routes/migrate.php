@@ -14,6 +14,26 @@
  * @license     MIT
  */
 
+// TODO: Add the following routes to the routes/migrate.php file
+Route::get('/migrate/test', function () {
+    include_once BASEPATH . "/php/init.php";
+
+
+
+    // // add current status of rendered to history
+    // $cursor = $osiris->activities->find(['history' => ['$exists' => true]]);
+    // foreach ($cursor as $doc) {
+    //     $id = $doc['_id'];
+    //     $doc['history'][count($doc['history']) - 1]['current'] = $doc['rendered']['print'] ?? 'unknown';
+
+    //     $osiris->activities->updateOne(
+    //         ['_id' => $id],
+    //         ['$set' => ['history' => $doc['history']]]
+    //     );
+    // }
+
+});
+
 
 Route::get('/install', function () {
     // include_once BASEPATH . "/php/init.php";
@@ -180,19 +200,22 @@ Route::get('/install', function () {
 Route::get('/migrate', function () {
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
-    
+
     set_time_limit(6000);
-    $version = $osiris->system->findOne(['key' => 'version']);
-    if (empty($version)) {
-        $version = "1.0.0";
+    $DBversion = $osiris->system->findOne(['key' => 'version']);
+    if (empty($DBversion)) {
+        $DBversion = "1.0.0";
         $osiris->system->insertOne([
             'key' => 'version',
-            'value' => $version
+            'value' => $DBversion
         ]);
-    } else
-        $version = $version['value'];
-    $V = explode('.', $version);
-    if ($V[1] < 2) {
+    } else {
+        $DBversion = $DBversion['value'];
+    }
+
+    // $V = explode('.', $version);
+
+    if (version_compare($DBversion, '1.2.0', '<')) {
         echo "<h1>Migrate to Version 1.2.X</h1>";
         $osiris->teachings->drop();
         $osiris->miscs->drop();
@@ -248,7 +271,6 @@ Route::get('/migrate', function () {
         $osiris->achieved->deleteMany([]);
 
         foreach ($users as $user) {
-            // TODO: create graphic schema of the new structure
             $user = iterator_to_array($user);
             $username = strtolower($user['username']);
 
@@ -288,7 +310,9 @@ Route::get('/migrate', function () {
         }
         echo "Migrated " . count($users) . " users into a new format.<br> Migration successful. You might close this window now.";
     }
-    if ($V[1] < 2 || ($V[1] == 2 && $V[2] < 1)) {
+
+    // if ($V[1] < 2 || ($V[1] == 2 && $V[2] < 1)) {
+    if (version_compare($DBversion, '1.2.1', '<')){
         echo "<p>Migrating persons into new version.</p>";
         $migrated = 0;
 
@@ -312,7 +336,7 @@ Route::get('/migrate', function () {
         echo "<p>Migrated $migrated users.</p>";
     }
 
-    if ($V[1] < 3) {
+    if (version_compare($DBversion, '1.3.0', '<')) {
         echo "<h1>Migrate to Version 1.3.X</h1>";
 
         $json = file_get_contents(BASEPATH . "/settings.default.json");
@@ -441,8 +465,46 @@ Route::get('/migrate', function () {
                 ['$set' => ['depts' => $depts]]
             );
         }
-
     }
+
+    if (version_compare($DBversion, '1.3.3', '<')) {
+        // migrate old documents, convert old history (created_by, edited_by) to new history format
+        $cursor = $osiris->activities->find(['history' => ['$exists' => false], '$or' => [['created_by' => ['$exists' => true]], ['edited_by' => ['$exists' => true]]]]);
+        foreach ($cursor as $doc) {
+            if (isset($doc['history'])) continue;
+            $id = $doc['_id'];
+            $values = ['history' => []];
+            if (isset($doc['created_by'])) {
+                $values['history'][] = [
+                    'date' => $doc['created'],
+                    'user' => $doc['created_by'],
+                    'type' => 'created',
+                    'changes' => []
+                ];
+            }
+            if (isset($doc['edited_by'])) {
+                $values['history'][] = [
+                    'date' => $doc['edited'],
+                    'user' => $doc['edited_by'],
+                    'type' => 'edited',
+                    'changes' => []
+                ];
+            }
+
+            // $values['history'][count($values['history']) - 1]['current'] = $doc['rendered']['print'] ?? 'unknown';
+
+            $osiris->activities->updateOne(
+                ['_id' => $id],
+                ['$set' => $values]
+            );
+            // remove old fields
+            $osiris->activities->updateOne(
+                ['_id' => $id],
+                ['$unset' => ['edited_by' => '', 'created' => '', 'edited' => '']]
+            );
+        }
+    }
+
     echo "<p>Rerender activities</p>";
     include_once BASEPATH . "/php/Render.php";
     renderActivities();

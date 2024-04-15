@@ -82,6 +82,7 @@ function return_rest($data, $count = 0, $status = 200)
 }
 
 Route::get('/api/test', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -139,6 +140,7 @@ Route::get('/api/test', function () {
     }, ...
  */
 Route::get('/api/activities', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -187,6 +189,7 @@ Route::get('/api/activities', function () {
 
 
 Route::get('/api/html', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -238,6 +241,7 @@ Route::get('/api/html', function () {
 });
 
 Route::get('/api/all-activities', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -371,6 +375,7 @@ Route::get('/api/all-activities', function () {
 
 
 Route::get('/api/concept-activities', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -406,6 +411,7 @@ Route::get('/api/concept-activities', function () {
 
 
 Route::get('/api/users', function () {
+    error_reporting(E_ERROR | E_PARSE);
     if (!isset($_POST['debug'])) {
         error_reporting(E_ERROR);
         ini_set('display_errors', 0);
@@ -471,6 +477,7 @@ Route::get('/api/users', function () {
 
 
 Route::get('/api/reviews', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -541,6 +548,7 @@ Route::get('/api/reviews', function () {
 
 
 Route::get('/api/teaching', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -618,6 +626,7 @@ Route::get('/api/teaching', function () {
 }, ...
  */
 Route::get('/api/projects', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -694,6 +703,7 @@ Route::get('/api/projects', function () {
 }, ...
  */
 Route::get('/api/journal', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -743,6 +753,7 @@ Route::get('/api/journal', function () {
     }, ...
  */
 Route::get('/api/journals', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include_once BASEPATH . "/php/init.php";
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -789,6 +800,7 @@ Route::get('/api/journals', function () {
 
 
 Route::get('/api/google', function () {
+    error_reporting(E_ERROR | E_PARSE);
     header("Content-Type: application/json");
     header("Pragma: no-cache");
     header("Expires: 0");
@@ -834,6 +846,7 @@ Route::get('/api/google', function () {
 }
  */
 Route::get('/api/levenshtein', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -891,6 +904,7 @@ Route::get('/api/levenshtein', function () {
 // Dashboard interface
 
 Route::get('/api/dashboard/oa-status', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -931,6 +945,7 @@ Route::get('/api/dashboard/oa-status', function () {
 
 
 Route::get('/api/dashboard/collaborators', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1022,6 +1037,7 @@ Route::get('/api/dashboard/collaborators', function () {
 
 
 Route::get('/api/dashboard/author-role', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1100,6 +1116,7 @@ Route::get('/api/dashboard/author-role', function () {
 
 
 Route::get('/api/dashboard/impact-factor-hist', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1154,6 +1171,7 @@ Route::get('/api/dashboard/impact-factor-hist', function () {
 
 
 Route::get('/api/dashboard/activity-chart', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1227,6 +1245,7 @@ Route::get('/api/dashboard/activity-chart', function () {
 
 
 Route::get('/api/dashboard/project-timeline', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1250,6 +1269,7 @@ Route::get('/api/dashboard/project-timeline', function () {
 
 
 Route::get('/api/dashboard/wordcloud', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1332,6 +1352,7 @@ function combinations($array)
 }
 
 Route::get('/api/dashboard/department-network', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1462,6 +1483,7 @@ Route::get('/api/dashboard/department-network', function () {
 
 
 Route::get('/api/dashboard/author-network', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1566,6 +1588,7 @@ Route::get('/api/dashboard/author-network', function () {
 
 
 Route::get('/api/dashboard/activity-authors', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -1642,6 +1665,7 @@ Route::get('/api/dashboard/activity-authors', function () {
 
 
 Route::get('/api/dashboard/concept-search', function () {
+    error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
     if (!apikey_check($_GET['apikey'] ?? null)) {

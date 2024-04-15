@@ -19,8 +19,13 @@
 
 <style>
     code.code {
-        font-size: 1.4rem;
+        font-size: 1em;
     }
+    h2 {
+        /* font-family: 'Menlo', 'Courier New', Courier, monospace; */
+        color: var(--secondary-color);
+    }
+
 </style>
 
 <?php if (isset($USER) && !empty($USER)) {

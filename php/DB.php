@@ -640,4 +640,93 @@ class DB
 
         return $issues;
     }
+
+
+    public static function arrayRecursiveDiff($aArray1, $aArray2) {
+        $aReturn = array();
+      
+        foreach ($aArray1 as $mKey => $mValue) {
+            if ($aArray2 instanceof BSONArray || $aArray2 instanceof BSONDocument) {
+                $aArray2 = DB::doc2Arr($aArray2);
+            }
+          if (array_key_exists($mKey, $aArray2)) {
+            if (is_array($mValue)) {
+              $aRecursiveDiff = DB::arrayRecursiveDiff($mValue, $aArray2[$mKey]);
+              if (count($aRecursiveDiff)) { $aReturn[$mKey] = $aRecursiveDiff; }
+            } else {
+              if ($mValue != $aArray2[$mKey]) {
+                $aReturn[$mKey] = $mValue;
+              }
+            }
+          } else {
+            $aReturn[$mKey] = $mValue;
+          }
+        }
+        return $aReturn;
+      } 
+
+      /**
+       * Function to convert array into human readable Module fields
+       */
+      public static function convert4humans($doc){
+
+        $omit_fields = ['_id', 'history', 'rendered', 'comment', 'editor-comment', 'journal_id', 'impact'];
+
+        $result = [];
+
+        $Format = new Document();
+        $Format->usecase = "list";
+        $Format->setDocument($doc);
+
+        foreach ($doc as $key => $val){
+            if (in_array($key, $omit_fields)) continue;
+            $val = $Format->get_field($key);
+            if ($val instanceof BSONArray || $val instanceof BSONDocument) {
+                $val = DB::doc2Arr($val);
+            }
+            if (is_array($val)) $val = json_encode($val);
+            $val = strip_tags($val);
+            $result[$key] = $val;
+        }
+        return $result;
+      }
+
+
+    /**
+     * function to add update history in a document
+     */
+    public function updateHistory($new_doc, $id)
+    { 
+        $Format = new Document();
+        $old_doc = $this->getActivity($id);
+        $hist = [
+            'date' => date('Y-m-d'),
+            'user' => $_SESSION['username'] ?? 'system',
+            'type' => 'edited',
+            // 'current' => 'unchanged'
+            'changes' => [],
+            'comment' => $new_doc['editor-comment'] ?? null
+        ];
+        // unset editor comment
+        unset($new_doc['editor-comment']);
+    
+        $new_ = DB::convert4humans($new_doc);
+        $old_ = DB::convert4humans($old_doc);
+        $diff = array_diff_assoc($new_, $old_);
+
+        if (!empty($diff)) {
+            $changes = [];
+            foreach ($diff as $key => $val) {
+                $changes[$key] = ['before' => $old_[$key] ?? null, 'after' => $val];
+            }
+            $hist['changes'] = $changes;
+        }
+        // dump($hist, true);
+        // die;
+        $new_doc['history'] = $old_doc['history'] ?? [];
+        $new_doc['history'][] = $hist;
+        return $new_doc;
+    }
+
+
 }

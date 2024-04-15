@@ -218,6 +218,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                     <i class="ph ph-crown"></i>
                 <?php } ?>
                 <?= $dept['name'] ?>
+                (<?= $dept['unit'] ?>)
             </a>
         <?php } ?>
 

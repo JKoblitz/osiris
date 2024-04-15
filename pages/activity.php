@@ -86,8 +86,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     const TYPE = '<?= $doc['type'] ?>';
 </script>
 
-<!-- 
-<script src="<?= ROOTPATH ?>/js/d3-chords.js"></script> -->
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3.v4.min.js"></script>
 
@@ -177,7 +175,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     <div class="btn-group">
         <button class="btn text-secondary border-secondary" onclick="addToCart(this, '<?= $id ?>')">
             <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
-            <?= lang('Add to cart', 'Für Download sammeln') ?>
+            <?= lang('Collect', 'Sammeln') ?>
         </button>
         <div class=" dropdown with-arrow btn-group ">
             <button class="btn text-secondary border-secondary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
@@ -244,17 +242,17 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 <!-- HEAD -->
 <div class="my-20 pt-20">
-    
-<ul class="breadcrumb category" style="--highlight-color:<?=$Format->typeArr['color']??''?>">
-    <li><?= $Format->activity_type() ?></li>
-    <!-- <span class='mr-10'><?= $Format->activity_icon(false) ?></span> -->
-    <li><?= $Format->activity_subtype() ?></li>
-</ul>
-<h1 class="mt-10">
-    <?= $Format->getTitle() ?>
-</h1>
 
-<p class="lead"><?= $Format->getSubtitle() ?></p>
+    <ul class="breadcrumb category" style="--highlight-color:<?= $Format->typeArr['color'] ?? '' ?>">
+        <li><?= $Format->activity_type() ?></li>
+        <!-- <span class='mr-10'><?= $Format->activity_icon(false) ?></span> -->
+        <li><?= $Format->activity_subtype() ?></li>
+    </ul>
+    <h1 class="mt-10">
+        <?= $Format->getTitle() ?>
+    </h1>
+
+    <p class="lead"><?= $Format->getSubtitle() ?></p>
 
 </div>
 
@@ -341,6 +339,18 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             </a>
         <?php endif; ?>
     <?php } ?>
+
+
+    <?php
+    $count_history = count($doc['history'] ?? []);
+    if ($count_history) :
+    ?>
+        <a onclick="navigate('history')" id="btn-history" class="btn">
+            <i class="ph ph-clock-counter-clockwise" aria-hidden="true"></i>
+            <?= lang('History', 'Historie') ?>
+            <span class="index"><?= $count_history ?></span>
+        </a>
+    <?php endif; ?>
 
     <?php if ($Settings->hasPermission('raw-data') || isset($_GET['verbose'])) { ?>
         <a onclick="navigate('raw')" id="btn-raw" class="btn">
@@ -475,30 +485,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php endif; ?>
 
 
-                <?php if (isset($doc['created_by'])) :
-                    if ($user == $doc['created_by']) $user_activity = true;
-                ?>
-                    <tr class="text-muted">
-                        <td>
-                            <span class="key">Created by</span>
-
-                            <?= $DB->getNameFromId($doc['created_by']) ?> (<?= $doc['created'] ?>)
-                        </td>
-                    </tr>
-                <?php endif; ?>
-
-                <?php if (isset($doc['updated_by'])) : ?>
-                    <tr class="text-muted">
-                        <td>
-                            <span class="key">Last updated</span>
-
-                            <?= $DB->getNameFromId($doc['updated_by']) ?> (<?= $doc['updated'] ?>)
-                        </td>
-                    </tr>
-                <?php endif; ?>
-
-
-
             </table>
 
 
@@ -536,7 +522,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             <?= lang('Delete activity', 'Lösche Aktivität') ?>
                         </button>
                     </form>
-                <?php elseif (!$user_activity && ($doc['created_by'] ?? '') !== $user) : ?>
+                <?php elseif (!$user_activity) : ?>
 
                     <p class="mt-0">
                         <?= lang(
@@ -904,6 +890,125 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </div>
 </section>
 
+
+<!-- new section with history -->
+<section id="history" style="display: none;">
+    <h2 class="title">
+        <?= lang('History', 'Historie') ?>
+    </h2>
+    <p>
+        <?= lang('History of changes to this activity.', 'Historie der Änderungen an dieser Aktivität.') ?>
+    </p>
+
+    <style>
+        .history-list {
+            /* reverse order */
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .history-list .box {
+            margin-top: 0;
+        }
+
+        .del {
+            color: var(--danger-color);
+        }
+
+        .ins {
+            color: var(--success-color);
+        }
+
+        blockquote.signal {
+            border-left: 5px solid var(--signal-color);
+            padding-left: 1rem;
+            margin-top: 1rem;
+            margin-left: 0;
+        }
+
+        blockquote.signal .title {
+            font-weight: bold;
+            color: var(--signal-color);
+        }
+    </style>
+    <?php
+    if (empty($doc['history'] ?? [])) {
+        echo lang('No history available.', 'Keine Historie verfügbar.');
+    } else {
+        // require BASEPATH . "/php/TextDiff/TextDiff.php";
+        // $latest = '';
+    ?>
+        <div class="history-list">
+            <?php foreach (($doc['history']) as $h) {
+                if (!is_array($h)) continue;
+            ?>
+                <div class="box p-20">
+                    <span class="badge secondary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
+                    <h5 class="m-0">
+                        <?php if ($h['type'] == 'create') {
+                            echo lang('Created by ', 'Erstellt von ');
+                        } else {
+                            echo lang('Edited by ', 'Bearbeitet von ');
+                        }
+                        echo $DB->getNameFromId($h['user']);
+                        ?>
+                    </h5>
+
+                    <?php
+                    if (isset($h['comment']) && !empty($h['comment'])) { ?>
+                        <blockquote class=" signal">
+                            <div class="title">
+                                <?= lang('Comment', 'Kommentar') ?>
+                            </div>
+                            <?= $h['comment'] ?>
+                        </blockquote>
+                    <?php
+                    }
+                    if (isset($h['changes']) && !empty($h['changes'])) {
+                        echo '<div class="font-weight-bold mt-10">' .
+                            lang('Changes to the activity:', 'Änderungen an der Aktivität:') .
+                            '</div>';
+                        echo '<table class="table simple w-auto small border px-10">';
+                        foreach ($h['changes'] as $key => $change) {
+                            $before = $change['before'] ?? '<em>empty</em>';
+                            $after = $change['after'] ?? '<em>empty</em>';
+                            if ($before == $after) continue;
+                            if (empty($before)) $before = '<em>empty</em>';
+                            if (empty($after)) $after = '<em>empty</em>';
+                            echo '<tr>
+                                <td class="pl-0">
+                                    <span class="key">' . $Modules->get_name($key) . '</span> 
+                                    <span class="del">' . $before . '</span>
+                                    <i class="ph ph-arrow-right mx-10"></i>
+                                    <span class="ins">' . $after . '</span>
+                                </td>
+                            </tr>';
+                        }
+                        echo '</table>';
+                    } else  if (isset($h['data']) && !empty($h['data'])) {
+                        echo '<div class="font-weight-bold mt-10">' .
+                            lang('Status at this time point:', 'Status zu diesem Zeitpunkt:') .
+                            '</div>';
+
+                        echo '<table class="table simple w-auto small border px-10">';
+                        foreach ($h['data'] as $key => $datum) {
+                            echo '<tr>
+                                <td class="pl-0">
+                                    <span class="key">' . $Modules->get_name($key) . '</span> 
+                                    ' . $datum . ' 
+                                </td>
+                            </tr>';
+                        }
+                        echo '</table>';
+                    } else if ($h['type'] == 'edited') {
+                        echo lang('No changes tracked.', 'Es wurden keine Änderungen verfolgt.');
+                    }
+                    ?>
+                </div>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</section>
 
 
 <section id="raw" style="display:none">
