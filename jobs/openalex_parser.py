@@ -9,7 +9,7 @@ from Levenshtein import ratio
 
 
 class OpenAlexParser():
-    def __init__(self) -> None:
+    def __init__(self, ignore_duplicates=False) -> None:
         self.TYPES = {
             "book-section": "chapter",
             "monograph": "book",
@@ -62,14 +62,17 @@ class OpenAlexParser():
 
         # set up OpenAlex
         self.openalex = OpenAlex(config['DEFAULT'].get('AdminMail'))
-
-        possible_dupl = self.osiris['activities'].find({
-            'type': 'publication',
-                    'year': {'$gte': int(self.startyear)},
-        }, {'title': 1})
-        self.possible_dupl = [
-            (i['_id'], i['title']) for i in possible_dupl
-        ]
+        
+        self.possible_dupl = []
+        if not ignore_duplicates:
+            possible_dupl = self.osiris['activities'].find({
+                'type': 'publication',
+                        'year': {'$gte': int(self.startyear)},
+            }, {'title': 1})
+            self.possible_dupl = [
+                (i['_id'], i['title']) for i in possible_dupl
+            ]
+            
 
 
     def getUserId(self, name, orcid=None):
@@ -251,7 +254,7 @@ class OpenAlexParser():
         element = self.parseWork(work)
         if (element != False):
             if ignoreDupl and element.get('duplicate'):
-                print(f'Activity might have a duplicate (DOI {element['doi']}) and was omitted.')
+                print(f'Activity might have a duplicate (DOI {element["doi"]}) and was omitted.')
                 return
             self.osiris['activities'].insert_one(element)
             print(f'{idtype.upper()} {id} has been added to the database.')
@@ -287,7 +290,7 @@ class OpenAlexParser():
     def importJob(self):
         for element in self.get_works():
             if element.get('duplicate'):
-                print(f'Activity might have a duplicate (DOI {element['doi']}) and was omitted.')
+                print(f'Activity might have a duplicate (DOI {element["doi"]}) and was omitted.')
                 continue
             self.osiris['activities'].insert_one(element)
 
