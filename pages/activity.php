@@ -945,7 +945,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <div class="box p-20">
                     <span class="badge secondary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
                     <h5 class="m-0">
-                        <?php if ($h['type'] == 'create') {
+                        <?php if ($h['type'] == 'created') {
                             echo lang('Created by ', 'Erstellt von ');
                         } else {
                             echo lang('Edited by ', 'Bearbeitet von ');

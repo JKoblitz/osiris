@@ -344,7 +344,7 @@ Route::post('/crud/activities/create', function () {
     $values['history'] = [[
         'date' => date('Y-m-d'),
         'user' => $_SESSION['username'],
-        'type' => 'create',
+        'type' => 'created',
         'data' => DB::convert4humans(array_filter($values))
     ]];
     // dump($values, true);

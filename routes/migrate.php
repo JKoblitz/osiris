@@ -17,20 +17,45 @@
 // TODO: Add the following routes to the routes/migrate.php file
 Route::get('/migrate/test', function () {
     include_once BASEPATH . "/php/init.php";
+    $cursor = $osiris->activities->find(['history' => ['$exists' => false]]);
 
+    foreach ($cursor as $doc) {
+        if (isset($doc['history'])) continue;
+        $id = $doc['_id'];
+        echo "$id<br>";
+        $values = ['history' => []];
+        if (isset($doc['created_by'])) {
+            $values['history'][] = [
+                'date' => $doc['created'],
+                'user' => $doc['created_by'],
+                'type' => 'created',
+                'changes' => []
+            ];
+        }
+        if (isset($doc['edited_by'])) {
+            $values['history'][] = [
+                'date' => $doc['edited'],
+                'user' => $doc['edited_by'],
+                'type' => 'edited',
+                'changes' => []
+            ];
+        }
 
+        if (empty($values['history']) ) continue;
+        // $values['history'][count($values['history']) - 1]['current'] = $doc['rendered']['print'] ?? 'unknown';
 
-    // // add current status of rendered to history
-    // $cursor = $osiris->activities->find(['history' => ['$exists' => true]]);
-    // foreach ($cursor as $doc) {
-    //     $id = $doc['_id'];
-    //     $doc['history'][count($doc['history']) - 1]['current'] = $doc['rendered']['print'] ?? 'unknown';
+        $osiris->activities->updateOne(
+            ['_id' => $id],
+            ['$set' => $values]
+        );
+        // remove old fields
+        // $osiris->activities->updateOne(
+        //     ['_id' => $id],
+        //     ['$unset' => ['edited_by' => '', 'edited' => '']]
+        // );
+    }
 
-    //     $osiris->activities->updateOne(
-    //         ['_id' => $id],
-    //         ['$set' => ['history' => $doc['history']]]
-    //     );
-    // }
+    echo "Done";
 
 });
 

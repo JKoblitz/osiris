@@ -350,7 +350,8 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <?php
         $issues = $DB->getUserIssues($user);
         if (!empty($issues)) {
-            $issues = count(array_merge($issues));
+            // dump(array_merge(array_values($issues)), true;
+            $issues = array_sum(array_map("count", $issues));
         ?>
             <div class="alert danger mt-10">
                 <a class="link text-danger text-decoration-none" href='<?= ROOTPATH ?>/issues'>

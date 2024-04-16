@@ -657,7 +657,7 @@ function adjustPageNav() {
     var navbarTopHeight = document.querySelector('.navbar-top').offsetHeight
     var navbarBottomHeight = document.querySelector('.navbar-bottom').offsetHeight
     var navbarHeight = navbarTopHeight - Math.min(navbarTopHeight, window.scrollY) + navbarBottomHeight
-    console.log(navbarHeight);
+    // console.log(navbarHeight);
     // var offset = wrapper.scrollTop + wrapper.offsetHeight
     // var offset = window.scrollY
     // var footerVisible = offset - footer.offsetTop

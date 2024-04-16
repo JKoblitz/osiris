@@ -2,6 +2,7 @@ python .data/profile_pictures.py
 scp -r php osiris:/var/www/html/
 scp -r pages osiris:/var/www/html/
 scp -r components osiris:/var/www/html/
+scp -r routes osiris:/var/www/html/
 scp -r js osiris:/var/www/html/
 scp -r img osiris:/var/www/html/
 scp -r addons osiris:/var/www/html/
