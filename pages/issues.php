@@ -316,11 +316,12 @@ if (array_sum($a) === 0) {
                                 }
                                 echo '</table>';
                             } else if (isset($h['data']) && !empty($h['data'])) {
-                                echo '<small class="font-weight-bold mt-10">' .
-                                    lang('Status at this time point:', 'Status zu diesem Zeitpunkt:') .
-                                    '</small>';
+                                echo '<a class="font-weight-bold mt-10"  onclick="$(this).next().fadeToggle()">' .
+                                        '<i class="ph ph-caret-down"></i> '.
+                                        lang('Status at this time point', 'Status zu diesem Zeitpunkt') .
+                                    '</a>';
 
-                                echo '<table class="table simple w-auto small border px-10">';
+                                echo '<table class="table simple w-auto small border px-10" style="display:none";>';
                                 foreach ($h['data'] as $key => $datum) {
                                     echo '<tr>
                                         <td class="pl-0" style="font-size: .8em;">
@@ -531,21 +532,21 @@ if (array_sum($a) === 0) {
                         <td>
                             <?= lang('The project', 'Das Projekt') ?>
                             <b><?= $doc['name'] ?></b>
-                            <?= lang('still has the status <q>applied</q>. Do you have news on this? ', 'hat noch immer den Status <q>beantragt</q>. Weißt du mittlerweile etwas Neues?') ?>
+                            <?= lang('still has the status <q>applied</q>. Is this correct? ', 'hat noch immer den Status <q>beantragt</q>. Ist das noch immer so?') ?>
                             <div class='alert mt-10 signal' id="approve-<?= $id ?>">
 
                                 <form action="<?= ROOTPATH ?>/crud/projects/update/<?= $id ?>" method="post" class="d-inline mt-5">
                                     <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
                                     <input type="hidden" name="values[end-delay]" value="<?= endOfCurrentQuarter(true) ?>" class="hidden">
                                     <button class="btn small text-success">
-                                        <i class="ph ph-x"></i>
-                                        <?= lang('No, ask again later.', 'Nein, frag später erneut.') ?>
+                                        <i class="ph ph-check"></i>
+                                        <?= lang('Yes, ask again later', 'Ja, frag später erneut') ?>
                                     </button>
                                 </form>
 
-                                <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn small text-success">
+                                <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn small text-danger">
                                     <i class="ph ph-edit"></i>
-                                    <?= lang('Yes (Edit)', 'Ja (Bearbeiten)') ?>
+                                    <?= lang('No (Edit)', 'Nein (Bearbeiten)') ?>
                                 </a>
 
                             </div>
