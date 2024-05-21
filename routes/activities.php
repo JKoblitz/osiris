@@ -425,7 +425,7 @@ Route::post('/crud/activities/update/([A-Za-z0-9]*)', function ($id) {
 
     // add information on updating process
     // $values['updated'] = date('Y-m-d');
-    // $values['updated_by'] = strtolower($_SESSION['username']);
+    // $values['updated_by'] = $_SESSION['username'];
     $values = $DB->updateHistory($values, $id);
 
     // dump($values, true);

@@ -69,10 +69,10 @@ Route::post('/user/login', function () {
             if (isset($auth["status"]) && $auth["status"] == true) {
 
                 // check if user exists in our database
-                $USER = $DB->getPerson($_POST['username']);
+                $USER = $DB->getPerson($_SESSION['username']);
                 if (empty($USER)) {
                     // create user from LDAP
-                    $new_user = newUser($_POST['username']);
+                    $new_user = newUser($_SESSION['username']);
                     if (empty($new_user)) {
                         die('Sorry, the user does not exist. Please contact system administrator!');
                     }

@@ -39,7 +39,7 @@ Route::get('/teaching', function () {
     $values = validateValues($_POST['values'], $DB);
     // add information on creating process
     $values['created'] = date('Y-m-d');
-    $values['created_by'] = strtolower($_SESSION['username']);
+    $values['created_by'] = $_SESSION['username'];
 
 
     // check if module already exists:

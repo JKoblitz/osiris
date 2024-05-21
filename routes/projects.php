@@ -133,7 +133,7 @@ Route::get('/projects/collaborators/([a-zA-Z0-9]*)', function ($id) {
     // add information on creating process
     $values['created'] = date('Y-m-d');
     $values['end-delay'] = endOfCurrentQuarter(true);
-    $values['created_by'] = strtolower($_SESSION['username']);
+    $values['created_by'] = $_SESSION['username'];
 
     // add false checkbox values
     $values['public'] = boolval($values['public'] ?? false);
@@ -184,7 +184,7 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
     $values = validateValues($_POST['values'], $DB);
     // add information on creating process
     $values['updated'] = date('Y-m-d');
-    $values['updated_by'] = strtolower($_SESSION['username']);
+    $values['updated_by'] = $_SESSION['username'];
 
     $values['public'] = boolval($values['public'] ?? false);
 

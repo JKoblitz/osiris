@@ -108,7 +108,7 @@ Route::post('/crud/groups/create', function () {
 
     // add information on creating process
     $values['created'] = date('Y-m-d');
-    $values['created_by'] = strtolower($_SESSION['username']);
+    $values['created_by'] = $_SESSION['username'];
 
     if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
@@ -153,7 +153,7 @@ Route::post('/crud/groups/update/([A-Za-z0-9]*)', function ($id) {
     $values = validateValues($_POST['values'], $DB);
     // add information on creating process
     $values['updated'] = date('Y-m-d');
-    $values['updated_by'] = strtolower($_SESSION['username']);
+    $values['updated_by'] = $_SESSION['username'];
 
     $id = $DB->to_ObjectID($id);
 

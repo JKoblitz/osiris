@@ -392,7 +392,7 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
 
     // add information on updating process
     $values['updated'] = date('Y-m-d');
-    $values['updated_by'] = strtolower($_SESSION['username']);
+    $values['updated_by'] = $_SESSION['username'];
 
     $mongo_id = $DB->to_ObjectID($id);
     $updateResult = $collection->updateOne(

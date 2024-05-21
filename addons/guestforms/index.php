@@ -92,7 +92,7 @@ Route::post('/guests/save', function () {
     } else {
         // add information on creating process
         $values['created'] = date('Y-m-d');
-        $values['created_by'] = strtolower($_SESSION['username']);
+        $values['created_by'] = $_SESSION['username'];
 
         // check if check boxes are checked
         $values['legal']['general'] = $values['legal']['general'] ?? false;
