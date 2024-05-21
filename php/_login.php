@@ -102,7 +102,7 @@ function getUser($name)
         if ($bind) {
             $res = array();
 
-            $fields = "(|(samaccountname=*$name*))";
+            $fields = "(|(samaccountname=$name))";
 
             $search = ldap_search($connect, $base_dn, $fields);
             if ($search === false) {
