@@ -177,7 +177,7 @@ function validateValues($values, $DB)
     return $values;
 }
 
-function valiDate($date) 
+function valiDate($date)
 {
     if (empty($date)) return null;
     $t = explode('-', $date, 3);
@@ -259,6 +259,12 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'settings-replaced':
             $text = lang("Settings replaced by uploaded file.", "Einstellungen wurden durch den Upload ersetzt.");
             // $text = lang("Thank you.", "Vielen Dank.");
+            $class = "success";
+            break;
+        case 'success':
+            $text = lang("Success", "Erfolg");
+            // $text = lang("Dataset was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
+            // $text .= '<br/><a class="btn mt-10" href="' . ROOTPATH . '/add-activity">' . lang('Add another activity', 'Weitere Aktivität hinzufügen') . '</a>';
             $class = "success";
             break;
 
@@ -543,11 +549,11 @@ function inCurrentQuarter($year, $month)
     return false;
 }
 
-function format_date($date)
+function format_date($date, $format = "d.m.Y")
 {
     // dump($date);
     $d = getDateTime($date);
-    return date_format($d, "d.m.Y");
+    return date_format($d, $format);
 }
 
 function dump($element, $as_json = false)
@@ -694,18 +700,17 @@ function lastDayOf($period, DateTime $date = null)
     $period = strtolower($period);
     $validPeriods = array('year', 'quarter', 'month', 'week');
 
-    if ( ! in_array($period, $validPeriods))
+    if (!in_array($period, $validPeriods))
         throw new InvalidArgumentException('Period must be one of: ' . implode(', ', $validPeriods));
 
     $newDate = ($date === null) ? new DateTime() : clone $date;
 
-    switch ($period)
-    {
+    switch ($period) {
         case 'year':
             $newDate->modify('last day of december ' . $newDate->format('Y'));
             break;
         case 'quarter':
-            $month = $newDate->format('n') ;
+            $month = $newDate->format('n');
 
             if ($month < 4) {
                 $newDate->modify('last day of march ' . $newDate->format('Y'));

@@ -4,9 +4,10 @@ var activitiesTable = false,
     coauthorsExists = false,
     conceptsExists = false,
     collabExists = false,
+    collabGraphExists = false,
     personsExists = false,
     wordcloudExists = false;
-    
+
 function navigate(key) {
     $('section').hide()
     $('section#' + key).show()
@@ -21,7 +22,7 @@ function navigate(key) {
             initActivities('#publication-table', {
                 page: 'my-activities',
                 display_activities: 'web',
-                user: {'$in': USERS},
+                user: { '$in': USERS },
                 type: 'publication'
             })
             // impactfactors('chart-impact', 'chart-impact-canvas', { user: {'$in': USERS} })
@@ -34,7 +35,7 @@ function navigate(key) {
             initActivities('#activities-table', {
                 page: 'my-activities',
                 display_activities: 'web',
-                user: {'$in': USERS},
+                user: { '$in': USERS },
                 type: { '$ne': 'publication' }
             })
             // activitiesChart('chart-activities', 'chart-activities-canvas', { user: {'$in': USERS} })
@@ -51,12 +52,17 @@ function navigate(key) {
         //     coauthorsExists = true;
         //     coauthorNetwork('#chord', { user: {'$in': USERS} })
         //     break;
+        case 'graph':
+            if (collabGraphExists) break;
+            collabGraphExists = true;
+            collabGraph('#collabGraph', { dept: DEPT })
+            break;
 
         case 'persons':
             if (personsExists) break;
             personsExists = true;
             userTable('#user-table', {
-                filter: {depts: {'$in': DEPT_TREE}, 'is_active':true},
+                filter: { depts: { '$in': DEPT_TREE }, 'is_active': true },
                 subtitle: 'position'
             })
             break;
@@ -69,7 +75,7 @@ function navigate(key) {
                 dept: DEPT,
             })
             break;
-    
+
         case 'concepts':
             if (conceptsExists) break;
             conceptsExists = true;
@@ -79,7 +85,7 @@ function navigate(key) {
         case 'wordcloud':
             if (wordcloudExists) break;
             wordcloudExists = true;
-            wordcloud('#wordcloud-chart', { user: {'$in': USERS} })
+            wordcloud('#wordcloud-chart', { user: { '$in': USERS } })
             break;
         default:
             break;
@@ -94,7 +100,7 @@ function collabChart(selector, data) {
         url: ROOTPATH + "/api/dashboard/department-network",
         data: data,
         dataType: "json",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             // if (response.count <= 1) {
             //     $('#collab').hide()
@@ -114,9 +120,25 @@ function collabChart(selector, data) {
 
             Chords(selector, matrix, labels, colors, data, links = false, useGradient = true, highlightFirst = false, type = 'publication');
         },
-        error: function(response) {
+        error: function (response) {
             console.log(response);
         }
     });
 }
-    
+
+
+function collabGraph(selector, data) {
+    $.ajax({
+        type: "GET",
+        url: ROOTPATH + "/api/dashboard/department-graph",
+        data: data,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            Graph(response.data, selector, 800, 500);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}

@@ -44,14 +44,14 @@ class Document extends Settings
         }
 
 
-       
+
         // dump(($doc));
         $this->doc = $doc;
         $this->getActivityType();
         $this->initSchema();
 
         $this->modules = [];
-        foreach (($this->subtypeArr['modules'] ??array()) as $m) {
+        foreach (($this->subtypeArr['modules'] ?? array()) as $m) {
             $this->modules[] = str_replace('*', '', $m);
         }
     }
@@ -446,9 +446,8 @@ class Document extends Settings
                 if ($this->usecase == 'portal') {
                     if (isset($a['user']) && !empty($a['user']))
                         $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
-                 } else if (!$this->full){
-                        $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
-  
+                } else if (!$this->full) {
+                    $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
                 } else if ($this->highlight === true) {
                     if (($a['aoi'] ?? 0) == 1) $author = "<b>$author</b>";
                 } else if ($this->highlight && $a['user'] == $this->highlight) {
@@ -713,11 +712,13 @@ class Document extends Settings
                 return $this->fromToDate($this->getVal('start', $this->doc), $this->getVal('end', null));
             case "date-range-ongoing":
                 if (!empty($this->doc['start'])) {
-                    if (!empty($this->doc['end'])) {
-                        $date = lang("from ", "von ");
-                        $date .= Document::format_month($this->doc['start']['month']) . ' ' . $this->doc['start']['year'];
-                        $date .= lang(" until ", " bis ");
-                        $date .= Document::format_month($this->doc['end']['month']) . ' ' . $this->doc['end']['year'];
+                    if (!empty($this->doc['end'])) { {
+                            return Document::format_month($this->doc['start']['month']) . ' ' . $this->doc['start']['year'];
+                        }
+                        $start = Document::format_month($this->doc['start']['month']) . ' ' . $this->doc['start']['year'];
+                        $end = Document::format_month($this->doc['end']['month']) . ' ' . $this->doc['end']['year'];
+                        if ($start == $end) return $start;
+                        $date = lang("from ", "von ") . $start . lang(" until ", " bis ") . $end;
                     } else {
                         $date = lang("since ", "seit ");
                         $date .= Document::format_month($this->doc['start']['month']) . ' ' . $this->doc['start']['year'];

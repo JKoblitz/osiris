@@ -236,3 +236,20 @@ Route::post('/crud/groups/delete/([A-Za-z0-9]*)', function ($id) {
     ]);
 });
 
+
+Route::post('/crud/groups/addperson/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    // select the right collection
+
+
+    // add id to person dept
+    // $person = $osiris->persons->findOne(['username' => $_POST['username']]);
+    $updateResult = $osiris->persons->updateOne(
+        ['username' => $_POST['username']],
+        ['$push' => ["depts" => $id]]
+    );
+
+    // addUserActivity('delete');
+    header("Location: " . ROOTPATH . "/groups/view/$id?msg=added-person#add-person-modal" );
+});
+

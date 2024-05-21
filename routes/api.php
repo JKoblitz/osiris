@@ -1663,6 +1663,122 @@ Route::get('/api/dashboard/activity-authors', function () {
 });
 
 
+Route::get('/api/dashboard/department-graph', function () {
+    error_reporting(E_ERROR | E_PARSE);
+    include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+    $group = $Groups->getGroup($_GET['dept']);
+    $children = $Groups->getChildren($group['id']);
+    $persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+    $users = array_column($persons, 'username');
+    $nodes = [];
+    $links = [];
+    $linklist = [];
+    $node_users = array_column($persons, 'username');
+
+    function getNode($p)
+    {
+        global $Groups;
+        // $user = $p['username'] ?? null;
+        $name = ($p['first_abbr'] ?? $p['first'][0] . ".") . ' ' . $p['last'];
+        $color = '#000000';
+        if (isset($p['depts'])) {
+            $D = $p['depts'];
+            foreach ($D as $d) {
+                $c = $Groups->getGroup($d)['color'];
+                if (isset($c) && $c != '#000000') {
+                    $color = $c;
+                    break;
+                }
+            }
+        }
+
+        return [
+            'id' => $p['username'],
+            'name' => $name,
+            'group' => 1,
+            'color' => $color,
+            'value' => 0,
+        ];
+    }
+    foreach ($persons as $p) {
+        if (empty($p['username'])) {
+            continue;
+        }
+
+        $node = getNode($p);
+        // get all activities the person has with other authors and aggregate by username
+        $activities = $osiris->activities->aggregate([
+            ['$match' => [
+                'authors' => [
+                    '$elemMatch' => [
+                        'user' => $p['username'],
+                        'aoi' => ['$in' => ['true', true, 1]]
+                    ]
+                ],
+                // 'authors.user' => ['$in' => $users],
+                'type' => 'publication'
+            ]],
+            ['$unwind' => '$authors'],
+            ['$match' => [
+                'authors.user' => ['$in' => $users],
+                // 'authors.user' => ['$ne' => null],
+                'authors.aoi' => ['$in' => ['true', true, 1]]
+            ]],
+            ['$group' => [
+                '_id' => '$authors.user',
+                'count' => ['$sum' => 1]
+            ]]
+        ])->toArray();
+        // dump($activities, true);
+
+        if (empty($activities)) {
+            continue;
+        }
+
+        foreach ($activities as $a) {
+            if (empty($a['_id'])) continue;
+            $user = $a['_id'] ?? null;
+            if ($user == $p['username']) {
+                $node['value'] = $a['count'];
+                continue;
+            }
+            if (in_array($user, $linklist)) {
+                continue;
+            }
+            // add other users
+            if (!in_array($user, $node_users)) {
+                $p2 = $DB->getPerson($user);
+                if (empty($p2)) {
+                    // dump($user, true);
+                    continue;
+                }
+                $n = getNode(DB::doc2Arr($p2));
+                $n['group'] = 2;
+                $nodes[] = $n;
+                $node_users[] = $user;
+            }
+
+            if (in_array($user, $node_users))
+                $links[] = [
+                    'source' => $p['username'],
+                    'target' => $user,
+                    'value' => $a['count']
+                ];
+        }
+
+        $nodes[] = $node;
+        $linklist[] = $p['username'];
+    }
+    echo return_rest([
+        'nodes' => $nodes,
+        'links' => $links
+    ], count($nodes));
+});
 
 Route::get('/api/dashboard/concept-search', function () {
     error_reporting(E_ERROR | E_PARSE);
@@ -1727,6 +1843,20 @@ Route::get('/api/dashboard/concept-search', function () {
     }
 
     echo return_rest($data, count($data['x']));
+});
+
+Route::get('/api/groups', function () {
+    error_reporting(E_ERROR | E_PARSE);
+    include(BASEPATH . '/php/init.php');
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
+    $data = $osiris->groups->find()->toArray();
+
+    echo return_rest($data, count($data));
 });
 
 /**

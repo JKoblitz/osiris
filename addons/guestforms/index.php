@@ -207,3 +207,119 @@ Route::post('/guests/update/([a-z0-9]*)', function ($id) {
 
     header("Location: " . ROOTPATH . "/guests/view/$id?msg=success");
 }, 'login');
+
+
+/**
+ * Cancel guest 
+ */
+Route::post('/guests/cancel/([a-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $collection = $osiris->guests;
+
+    $cancel = boolval($_POST['cancel'] ?? true);
+
+    if ($cancel){
+        $values = [
+            'cancelled' => true,
+            'cancelled_by' => $_SESSION['username'],
+            'cancelled_date' => date('Y-m-d')
+        ];
+    } else {
+        $values = [
+            'cancelled' => false,
+            'cancelled_by' => null,
+            'cancelled_date' => null
+        ];
+    }
+    $collection->updateOne(
+        ['id' => $id],
+        ['$set' => $values]
+    );
+
+    header("Location: " . ROOTPATH . "/guests/view/$id");
+}, 'login');
+
+
+
+Route::post('/guests/upload-files/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $target_dir = BASEPATH . "/uploads/";
+    if (!is_writable($target_dir)) {
+        die("Upload directory $target_dir is unwritable. Please contact admin.");
+    }
+    $target_dir .= "$id/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777);
+        echo "<!-- The directory $target_dir was successfully created.-->";
+    } else {
+        echo "<!-- The directory $target_dir exists.-->";
+    }
+
+
+    if (isset($_FILES["file"])) {
+
+        $filename = htmlspecialchars(basename($_FILES["file"]["name"]));
+        $filetype = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $filesize = $_FILES["file"]["size"];
+        $filepath = ROOTPATH . "/uploads/$id/$filename";
+
+        if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
+            $errorMsg = match ($_FILES['file']['error']) {
+                1 => lang('The uploaded file exceeds the upload_max_filesize directive in php.ini', 'Die hochgeladene Datei überschreitet die Richtlinie upload_max_filesize in php.ini'),
+                2 => lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."),
+                3 => lang('The uploaded file was only partially uploaded.', 'Die hochgeladene Datei wurde nur teilweise hochgeladen.'),
+                4 => lang('No file was uploaded.', 'Es wurde keine Datei hochgeladen.'),
+                6 => lang('Missing a temporary folder.', 'Der temporäre Ordner fehlt.'),
+                7 => lang('Failed to write file to disk.', 'Datei konnte nicht auf die Festplatte geschrieben werden.'),
+                8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
+                default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
+            };
+            printMsg($errorMsg, "error");
+        } else if ($filesize > 16000000) {
+            printMsg(lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."), "error");
+        } else if (file_exists($target_dir . $filename)) {
+            printMsg(lang("Sorry, file already exists.", "Die Datei existiert bereits. Um sie zu überschreiben, muss sie zunächst gelöscht werden."), "error");
+        } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            printMsg(lang("The file $filename has been uploaded.", "Die Datei <q>$filename</q> wurde hochgeladen."), "success");
+            $values = [
+                "filename" => $filename,
+                "filetype" => $filetype,
+                "filesize" => $filesize,
+                "filepath" => $filepath,
+            ];
+
+            $osiris->guests->updateOne(
+                ['id' => $id],
+                ['$push' => ["files" => $values]]
+            );
+            // $files[] = $values;
+        } else {
+            printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
+        }
+    
+        header("Location: " . ROOTPATH . "/guests/view/" . $id . "?msg=upload-successful");
+        die();
+    } else if (isset($_POST['delete'])) {
+        $filename = $_POST['delete'];
+        if (file_exists($target_dir . $filename)) {
+            // Use unlink() function to delete a file
+            if (!unlink($target_dir . $filename)) {
+                printMsg("$filename cannot be deleted due to an error.", "error");
+            } else {
+                printMsg(lang("$filename has been deleted.", "$filename wurde gelöscht."), "success");
+            }
+        }
+
+        $osiris->guests->updateOne(
+            ['id' => $id],
+            ['$pull' => ["files" => ["filename" => $filename]]]
+        );
+        // printMsg("File has been deleted from the database.", "success");
+
+        header("Location: " . ROOTPATH . "/guests/view/" . $id . "?msg=file-deleted-successfully");
+        die();
+    }
+});
+

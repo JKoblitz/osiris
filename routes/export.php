@@ -85,11 +85,11 @@ Route::get('/export/(.*)/(.*)', function ($field, $type) {
 Route::get('/sws-analysis', function () {
     include_once BASEPATH . "/php/init.php";
     $year = ['$exists' => true];
-    if (isset($_GET['year'])){
+    if (isset($_GET['year'])) {
         $year = intval($_GET['year']);
     }
     $sws = $osiris->activities->aggregate([
-        ['$match' => ['authors.sws' => ['$exists' => true], 'year'=> $year]],
+        ['$match' => ['authors.sws' => ['$exists' => true], 'year' => $year]],
         // ['$project' => ['authors' => 1, 'title'=>1, 'start'=>1]],
         ['$unwind' => '$authors'],
         ['$match' => ['authors.aoi' => ['$in' => [true, 'true', 1, '1']]]],
@@ -105,10 +105,10 @@ Route::get('/sws-analysis', function () {
     foreach ($sws as $a) {
         echo "<tr>";
         echo "<td>$a[title]</td>";
-        echo "<td>".format_date($a['start'])."</td>";
-        echo "<td>".format_date($a['end'] ?? $a['start'])."</td>";
-        echo "<td>".$a["authors"]["last"].", ".$a["authors"]["first"]."</td>";
-        echo "<td>".$a["authors"]["sws"]."</td>";
+        echo "<td>" . format_date($a['start']) . "</td>";
+        echo "<td>" . format_date($a['end'] ?? $a['start']) . "</td>";
+        echo "<td>" . $a["authors"]["last"] . ", " . $a["authors"]["first"] . "</td>";
+        echo "<td>" . $a["authors"]["sws"] . "</td>";
         echo "</tr>";
     }
     echo "</table>";
@@ -119,13 +119,13 @@ Route::get('/sws-analysis', function () {
 Route::get('/guest-analysis', function () {
     include_once BASEPATH . "/php/init.php";
     $year = ['$exists' => true];
-    if (isset($_GET['year'])){
+    if (isset($_GET['year'])) {
         $year = intval($_GET['year']);
     }
     $sws = $osiris->activities->aggregate([
-        ['$match' => ['subtype' => 'guests', 'year'=> $year]],
+        ['$match' => ['subtype' => 'guests', 'year' => $year]],
         // ['$project' => ['authors' => 1, 'title'=>1, 'start'=>1]],
-        ])->toArray();
+    ])->toArray();
     echo "<table>";
     echo "<tr><thead>";
     echo "<th>Titel</th>";
@@ -138,11 +138,11 @@ Route::get('/guest-analysis', function () {
     foreach ($sws as $a) {
         echo "<tr>";
         echo "<td>$a[title]</td>";
-        echo "<td>".format_date($a['start'])."</td>";
-        echo "<td>".format_date($a['end'] ?? $a['start'])."</td>";
-        echo "<td>".$a['name']."</td>";
-        echo "<td>".($a["affiliation"]??'')."</td>";
-        echo "<td>".($a["country"]??'')."</td>";
+        echo "<td>" . format_date($a['start']) . "</td>";
+        echo "<td>" . format_date($a['end'] ?? $a['start']) . "</td>";
+        echo "<td>" . $a['name'] . "</td>";
+        echo "<td>" . ($a["affiliation"] ?? '') . "</td>";
+        echo "<td>" . ($a["country"] ?? '') . "</td>";
         echo "</tr>";
     }
     echo "</table>";
@@ -152,7 +152,7 @@ Route::get('/guest-analysis', function () {
 
 
 Route::post('/download', function () {
-    error_reporting(E_ERROR | E_PARSE);
+    // error_reporting(E_ERROR | E_PARSE);
 
     require_once BASEPATH . '/php/init.php';
     require_once BASEPATH . '/php/Document.php';
@@ -303,7 +303,7 @@ Route::post('/download', function () {
         $table_style->setUnit(\PhpOffice\PhpWord\SimpleType\TblWidth::PERCENT);
         $table_style->setWidth(100 * 50);
 
-        $styleCell = ['borderColor'=>'ffffff', 'borderSize'=> 0]; //'valign' => 'center'
+        $styleCell = ['borderColor' => 'ffffff', 'borderSize' => 0]; //'valign' => 'center'
         $styleText = [];
         $styleTextBold = ['bold' => true];
         $styleParagraph =  ['spaceBefore' => 0, 'spaceAfter' => 0];
@@ -322,7 +322,7 @@ Route::post('/download', function () {
             $section->addTitle($scientist['displayname'], 1);
             $section->addTitle($scientist['position'] ?? '', 3);
 
-            $filename = "CV_".str_replace(' ', '', $scientist['last']);
+            $filename = "CV_" . str_replace(' ', '', $scientist['last']);
 
             if (isset($scientist['research']) && !empty($scientist['research'])) {
                 $section->addTitle(lang('Research interest', 'Forschungsinteressen'), 2);
@@ -601,7 +601,7 @@ Route::post('/reports', function () {
 
 
 
-    if ($_POST['style'] == 'research-report') {
+    if ($_POST['style'] === 'research-report') {
 
         $result = [
             'publication' => [],
@@ -610,7 +610,7 @@ Route::post('/reports', function () {
             'review' => [],
             'misc' => [],
             'students' => [],
-            'śoftware' => []
+            'software' => []
         ];
 
         $depts = [
@@ -637,6 +637,7 @@ Route::post('/reports', function () {
             $doc['format'] = $Format->format();
             $doc['file'] = "";
             $type = $doc['type'];
+            if ($type == 'misc' && $doc['subtype'] == 'misc-once') continue;
             if (in_array($type, ["software", "awards"])) {
                 $type = 'misc';
             }
@@ -718,6 +719,9 @@ Route::post('/reports', function () {
 
                 $dept = [];
 
+                if ($type == 'misc') {
+                    $type = $doc['subtype'] ?? 'misc';
+                }
                 foreach ($doc['authors'] as $a) {
                     $aoi = boolval($a['aoi'] ?? false);
                     // $aoi_exists = $aoi_exists || $aoi;
@@ -890,6 +894,9 @@ Route::post('/reports', function () {
         foreach ([
             "Lectures" => ["lecture"],
             "Posters" => ["poster"],
+            "Committee involvement" => ["misc-annual"],
+            "Organisation of events" => ["organisation"],
+            "Public outreach" => ["outreach"],
             "Other activities" => ["misc"]
         ] as $title => $types) {
             $empty = true;
@@ -948,7 +955,7 @@ Route::post('/reports', function () {
         /**
          * ---------------------------------------------
          */
-    } elseif ($_POST['style'] == 'programm-budget') {
+    } elseif ($_POST['style'] === 'programm-budget') {
 
         $result = [];
         $departmentwise = [];
@@ -1024,124 +1031,124 @@ Route::post('/reports', function () {
                 $result[$type][] = $doc['format'];
             }
         }
-    }
 
 
 
 
-    $section->addTitle("Foreword", 1);
+        $section->addTitle("Foreword", 1);
 
-    // publications
-    foreach ([
-        "autonom" => "Eigenständige Forschungstätigkeit",
-        "collab" => "Externe Zusammenarbeit"
-    ] as $cat => $title1) {
-        $section->addTitle($title1, 1);
+        // publications
+        foreach ([
+            "autonom" => "Eigenständige Forschungstätigkeit",
+            "collab" => "Externe Zusammenarbeit"
+        ] as $cat => $title1) {
+            $section->addTitle($title1, 1);
+
+            $section->addTextRun();
+
+            if (isset($result['publication'][$cat])) {
+
+                foreach ([
+                    "chapter" => "Buchkapitel",
+                    "article" => "Referierte Publikationen",
+                    "magazine" => "Nicht-Referierte Publikationen"
+                ] as $pubtype => $title3) {
+
+                    if (isset($result['publication'][$cat][$pubtype])) {
+                        $content = $result['publication'][$cat][$pubtype];
+                        sort($content);
+                        // dump($content);
+                        // usort($content, 'sortByFormat');
+                        $section->addTitle($title3, 2);
+                        foreach ($content as $line) {
+                            $paragraph = $section->addTextRun();
+                            $line = clean_comment_export($line, false);
+                            \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        $section->addTitle("Wissenstransfer", 1);
 
         $section->addTextRun();
 
-        if (isset($result['publication'][$cat])) {
-
-            foreach ([
-                "chapter" => "Buchkapitel",
-                "article" => "Referierte Publikationen",
-                "magazine" => "Nicht-Referierte Publikationen"
-            ] as $pubtype => $title3) {
-
-                if (isset($result['publication'][$cat][$pubtype])) {
-                    $content = $result['publication'][$cat][$pubtype];
-                    sort($content);
+        foreach ([
+            "Vorträge" => ["lecture"],
+            "Poster" => ["poster"]
+        ] as $title => $types) {
+            $empty = true;
+            foreach ($types as $type) {
+                if (!empty($result[$type] ?? [])) $empty = false;
+            }
+            if (!$empty) {
+                $section->addTitle($title, 2);
+                foreach ($types as $type) {
+                    $content = $result[$type] ?? [];
                     // dump($content);
                     // usort($content, 'sortByFormat');
-                    $section->addTitle($title3, 2);
-                    foreach ($content as $line) {
+                    sort($content);
+
+                    foreach ($content ?? [] as $doc) {
+                        $line = $doc['format'];
+                        if (empty($line)) continue;
                         $paragraph = $section->addTextRun();
+                        if (!str_ends_with(trim($line), '.')) $line = trim($line) . '.';
+                        // $line .= "<br>";
                         $line = clean_comment_export($line, false);
-                        \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+                        \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
+                        // $paragraph = $section->addTextRun();
+                    }
+                }
+            }
+        }
+
+        // $section->addTitle('Editorial Boards of Scientific Journals and Reviewing for Scientific Journals', 2);
+
+        foreach ($departmentwise as $dept => $data) {
+            $department = $Groups->getName($dept);
+            $section->addTitle($department, 1);
+            foreach ([
+                "editorial" => "Editorenschaften in Zeitschriften:",
+                "review" => "Peer-Reviews für Zeitschriften:",
+                "gutachten" => "Begutachtungen:",
+                "gremien" => "Beschäftigte der Abteilung $department waren in folgenden Gremien aktiv:"
+            ] as $type => $title) {
+                if (!empty($data[$type])) {
+                    $paragraph = $section->addTextRun()->addText($title, ['underline' => 'single']);
+                    ksort($data[$type]);
+
+                    switch ($type) {
+                        case 'editorial':
+                        case 'gremien':
+                            foreach ($data[$type] as $journal => $authors) {
+                                $paragraph = $section->addListItemRun(0);
+                                $authors = array_unique($authors);
+                                sort($authors);
+                                $line = "$journal (" . implode(", ", $authors) . ")";
+                                $line = clean_comment_export($line, false);
+                                \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+                            }
+                            break;
+                        case 'review':
+                        case 'gutachten':
+                            foreach ($data[$type] as $journal => $authors) {
+                                $paragraph = $section->addListItemRun(0);
+                                $line = "$journal: " . count($authors) . "";
+                                $line = clean_comment_export($line, false);
+                                \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
+                            }
+                            break;
+                        default:
+                            # code...
+                            break;
                     }
                 }
             }
         }
     }
-
-
-    $section->addTitle("Wissenstransfer", 1);
-
-    $section->addTextRun();
-
-    foreach ([
-        "Vorträge" => ["lecture"],
-        "Poster" => ["poster"]
-    ] as $title => $types) {
-        $empty = true;
-        foreach ($types as $type) {
-            if (!empty($result[$type] ?? [])) $empty = false;
-        }
-        if (!$empty) {
-            $section->addTitle($title, 2);
-            foreach ($types as $type) {
-                $content = $result[$type] ?? [];
-                // dump($content);
-                // usort($content, 'sortByFormat');
-                sort($content);
-
-                foreach ($content ?? [] as $line) {
-                    if (empty($line)) continue;
-                    $paragraph = $section->addTextRun();
-                    if (!str_ends_with(trim($line), '.')) $line = trim($line) . '.';
-                    // $line .= "<br>";
-                    $line = clean_comment_export($line, false);
-                    \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line, false, false);
-                    // $paragraph = $section->addTextRun();
-                }
-            }
-        }
-    }
-
-    // $section->addTitle('Editorial Boards of Scientific Journals and Reviewing for Scientific Journals', 2);
-
-    foreach ($departmentwise as $dept => $data) {
-        $department = $Groups->getName($dept);
-        $section->addTitle($department, 1);
-        foreach ([
-            "editorial" => "Editorenschaften in Zeitschriften:",
-            "review" => "Peer-Reviews für Zeitschriften:",
-            "gutachten" => "Begutachtungen:",
-            "gremien" => "Beschäftigte der Abteilung $department waren in folgenden Gremien aktiv:"
-        ] as $type => $title) {
-            if (!empty($data[$type])) {
-                $paragraph = $section->addTextRun()->addText($title, ['underline' => 'single']);
-                ksort($data[$type]);
-
-                switch ($type) {
-                    case 'editorial':
-                    case 'gremien':
-                        foreach ($data[$type] as $journal => $authors) {
-                            $paragraph = $section->addListItemRun(0);
-                            $authors = array_unique($authors);
-                            sort($authors);
-                            $line = "$journal (" . implode(", ", $authors) . ")";
-                            $line = clean_comment_export($line, false);
-                            \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
-                        }
-                        break;
-                    case 'review':
-                    case 'gutachten':
-                        foreach ($data[$type] as $journal => $authors) {
-                            $paragraph = $section->addListItemRun(0);
-                            $line = "$journal: " . count($authors) . "";
-                            $line = clean_comment_export($line, false);
-                            \PhpOffice\PhpWord\Shared\Html::addHtml($paragraph, $line);
-                        }
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
-            }
-        }
-    }
-
     // dump($result, true);
     // die;
 

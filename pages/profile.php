@@ -569,7 +569,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     if ($count_memberships > 0) { ?>
         <a onclick="navigate('memberships')" id="btn-memberships" class="btn">
             <i class="ph ph-user-list" aria-hidden="true"></i>
-            <?= lang('Memberships', 'Mitgliedschaften')  ?>
+            <?= lang('Committee work', 'Gremienarbeit')  ?>
             <span class="index"><?= $count_memberships ?></span>
         </a>
     <?php } ?>
@@ -1130,7 +1130,7 @@ if ($currentuser) { ?>
             <?php if (!empty($ongoing)) { ?>
                 <div class="box">
                     <div class="content">
-                        <h4 class="title"><?= lang('Ongoing memberships', 'Laufende Mitgliedschaften') ?></h4>
+                        <h4 class="title"><?= lang('Ongoing committee works', 'Laufende Gremienarbeit') ?></h4>
                     </div>
                     <table class="table simple">
                         <tbody>
@@ -1158,7 +1158,7 @@ if ($currentuser) { ?>
             <?php if (!empty($past)) { ?>
                 <div class="box">
                     <div class="content">
-                        <h4 class="title"><?= lang('Past memberships', 'Vergangene Mitgliedschaften') ?></h4>
+                        <h4 class="title"><?= lang('Past committee works', 'Vergangene Gremienarbeiten') ?></h4>
                     </div>
                     <table class="table simple">
                         <tbody>

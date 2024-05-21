@@ -6,8 +6,6 @@ use chillerlan\QRCode\Data\QRMatrix;
 use chillerlan\QRCode\Output\QROutputInterface;
 
 require_once BASEPATH . "/vendor/autoload.php";
-
-
 ?>
 
 
@@ -24,6 +22,22 @@ require_once BASEPATH . "/vendor/autoload.php";
     <?php } ?>
 </h1>
 
+<?php if ($form['cancelled'] ?? false) { ?>
+    <div class="alert danger mb-20">
+        <h4 class="title">
+            <?= lang('This guest has been cancelled', 'Dieser Gast wurde abgesagt') ?>
+        </h4>
+        <p>
+            <?= lang('Cancelled by', 'Abgesagt durch') ?>
+            <a href="<?= ROOTPATH ?>/profile/<?= $form['cancelled_by'] ?? '' ?>">
+                <?= $DB->getNameFromId($form['cancelled_by'] ?? '') ?>
+            </a>
+            <?= lang('on', 'am') ?>
+            <?= format_date($form['cancelled_date' ?? '']) ?>.
+        </p>
+    </div>
+<?php } ?>
+
 <div class="d-flex">
 
     <div class="mr-20 badge bg-white">
@@ -38,6 +52,50 @@ require_once BASEPATH . "/vendor/autoload.php";
         <br />
         <b><?= fromToDate($form['start'], $form['end'] ?? null) ?></b>
     </div>
+
+    <div class="mr-20 badge bg-white">
+        <small><?= lang('Cancel guest', 'Gast absagen') ?> </small>
+        <br />
+        <?php if ($form['cancelled'] ?? false) { ?>
+            <form action="<?= ROOTPATH ?>/guests/cancel/<?= $id ?>" method="post">
+                <input type="hidden" name="cancel" value="0">
+                <button class="btn success small" type="submit">
+                    <i class="ph ph-calendar-check"></i> <?= lang('Revoke', 'Zurückziehen') ?>
+                </button>
+            </form>
+        <?php } else { ?>
+            <form action="<?= ROOTPATH ?>/guests/cancel/<?= $id ?>" method="post">
+                <input type="hidden" name="cancel" value="1">
+                <button class="btn danger small" type="submit">
+                    <i class="ph ph-calendar-x"></i> <?= lang('Cancel', 'Absagen') ?>
+                </button>
+            </form>
+        <?php } ?>
+    </div>
+
+    <!-- Add possibility to prolong period -->
+    <div class="mr-20 badge bg-white">
+        <small><?= lang('Prolong stay', 'Aufenthalt verlängern') ?> </small>
+        <br />
+        <!--  dropdown -->
+        <div class="dropdown">
+            <button class="btn primary small dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="ph ph-calendar-plus"></i> <?= lang('Prolong', 'Verlängern') ?>
+            </button>
+            <div class="dropdown-menu p-10" aria-labelledby="dropdownMenuButton">
+                <form action="<?= ROOTPATH ?>/guests/update/<?= $id ?>" method="post">
+                <div class="form-group">
+                <label for="end"><?=lang('End date', 'Neues End-Datum')?></label>
+                    <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($form['end'] ?? null) ?>" required>
+                </div>
+                    <button class="btn primary small" type="submit">
+                        <i class="ph ph-calendar-plus"></i> <?= lang('Prolong', 'Verlängern') ?>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
@@ -258,7 +316,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                         <select class="form-control" id="username" name="values[username]" autocomplete="off">
                             <option value=""><?= lang('-- No user --', '-- Kein Nutzer --') ?></option>
                             <?php
-                            $persons = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ['last' => 1]]);
+                            $persons = $osiris->persons->find(['username' => ['$ne' => null], 'last' => ['$ne' => '']], ['sort' => ['last' => 1]]);
                             foreach ($persons as $j) { ?>
                                 <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['username'] ?? '') ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                             <?php } ?>
@@ -289,7 +347,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                 ?>
                     <div class="d-flex align-items-center my-20">
 
-                    <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
+                        <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
                         <div class="">
 
                             <h5 class="my-0">
@@ -307,6 +365,46 @@ require_once BASEPATH . "/vendor/autoload.php";
         </div>
 
 
+        <?php
+        $files = $form['files'] ?? array();
+        ?>
+
+        <!-- modal to upload documents -->
+        <div class="modal" id="upload-document" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h4 class="title"><?= lang('Upload document', 'Dokument hochladen') ?></h4>
+
+                    <form action="<?= ROOTPATH ?>/guests/upload-files/<?= $id ?>" method="post" enctype="multipart/form-data">
+                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                        <div class="custom-file mb-20" id="file-input-div" data-visible="article,preprint,magazine,book,chapter,lecture,poster,misc-once,misc-annual">
+                            <input type="file" id="file-input" name="file" data-default-value="<?= lang("No file chosen", "Keine Datei ausgewählt") ?>">
+                            <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
+                            <br><small class="text-danger">Max. 16 MB.</small>
+                        </div>
+                        <button class="btn primary">
+                            <i class="ph ph-upload"></i>
+                            Upload
+                        </button>
+                    </form>
+
+                    <script>
+                        var uploadField = document.getElementById("file-input");
+
+                        uploadField.onchange = function() {
+                            if (this.files[0].size > 16777216) {
+                                toastError(lang("File is too large! Max. 16MB is supported!", "Die Datei ist zu groß! Max. 16MB werden unterstützt."));
+                                this.value = "";
+                            };
+                        };
+                    </script>
+                </div>
+            </div>
+        </div>
+
 
         <div class="box">
             <div class="content">
@@ -314,33 +412,98 @@ require_once BASEPATH . "/vendor/autoload.php";
                     Hinterlegte Dokumente
                 </h4>
 
-                <table class="table simple">
-                    <tbody>
+                <table class="table simple w-auto">
+                    <?php if (!empty($files)) : ?>
+                        <?php foreach ($files as $file) : ?>
+                            <tr>
+                                <td><?= $file['filename'] ?></td>
+                                <td><?= $file['filetype'] ?></td>
+                                <td>
+                                    <a href="<?= $file['filepath'] ?>"><i class="ph ph-download"></i></a>
+                                </td>
+                                <td>
+                                    <form action="<?= ROOTPATH ?>/guests/upload-files/<?= $id ?>" method="post">
+                                        <input type="hidden" name="delete" value="<?= $file['filename'] ?>">
+
+                                        <button class="btn link" type="submit">
+                                            <i class="ph ph-trash text-danger"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
                         <tr>
-                            <td>
-                                Es sind keine Dokumente hinterlegt.
-                            </td>
+                            <td><?= lang('No files uploaded', 'Noch keine Dateien hochgeladen') ?></td>
                         </tr>
-                    </tbody>
+                    <?php endif; ?>
                 </table>
-                <button class="btn primary" onclick="todo()">Dokument hochladen</button>
+
+                <a class="btn primary" href="#upload-document">Dokument hochladen</a>
             </div>
         </div>
 
 
+
+        <!-- modal for chip registration -->
+        <div class="modal" id="chip-registration" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h4 class="title"><?= lang('Chip registration', 'Chip hinterlegen') ?></h4>
+
+                    <?php
+                    $chip = $form['chip'] ?? '';
+                    ?>
+
+                    <form action="<?= ROOTPATH ?>/guests/update/<?= $id ?>" method="post">
+                        <div class="form-group">
+                            <label class="element-author" for="chip">
+                                <?= lang('Chip number', 'Chipnummer') ?>
+                            </label>
+                            <input type="text" class="form-control" id="chip" name="values[chip][number]" autocomplete="off" value="<?= $chip['number'] ?? '' ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="element-author" for="registered">
+                                <?= lang('Registered at', 'Registriert am') ?>
+                            </label>
+                            <input type="date" class="form-control" id="registered" name="values[chip][date]" autocomplete="off" value="<?= $chip['date'] ?? date('Y-m-d') ?>">
+                        </div>
+                        <button type="submit" class="btn primary"><?= lang('Register', 'Registrieren') ?></button>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="box">
             <div class="content">
                 <h4 class="title mb-0">
-                    Zugangschips
+                    Zugangschip
                 </h4>
-                <p>
-                    Die Person hat keinen Zugangschip
-                </p>
+                <?php if (isset($form['chip']) && !empty($form['chip'])) { ?>
+                    <ul class="list">
+                        <li>
+                            <b>Chipnummer:</b> <?= $form['chip']['number'] ?>
+                        </li>
+                        <li>
+                            <b>Registriert am:</b> <?= format_date($form['chip']['date']) ?>
+                        </li>
+                    </ul>
+                <?php } else { ?>
+                    <p>
+                        Die Person hat keinen Zugangschip
+                    </p>
+                <?php } ?>
 
-                <button class="btn primary" onclick="todo()">Chip hinterlegen</button>
+                <a class="btn primary" href="#chip-registration">Chip hinterlegen</a>
 
             </div>
         </div>
     </div>
 
 </div>
+
+<?php if (isset($_GET['verbose'])) {
+    dump($form, true);
+} ?>

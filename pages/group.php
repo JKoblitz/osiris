@@ -55,6 +55,7 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
 <script src="<?= ROOTPATH ?>/js/popover.js"></script>
 <script src="<?= ROOTPATH ?>/js/d3-chords.js?v=2"></script>
 <script src="<?= ROOTPATH ?>/js/d3.layout.cloud.js"></script>
+<script src="<?= ROOTPATH ?>/js/d3-graph.js"></script>
 
 <!-- all variables for this page -->
 <script>
@@ -85,14 +86,39 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
     }
 </style>
 
+<!-- modal to add person -->
+<div id="add-person-modal" class="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><?= lang('Add person', 'Person hinzufügen') ?></h2>
+            <form action="<?= ROOTPATH ?>/crud/groups/addperson/<?= $id ?>" method="post">
+                <div class="form-group">
+                    <label for="username"><?= lang('Username', 'Benutzername') ?></label>
+                    <!-- select for distinct user names from DB -->
+                    <select name="username" id="username" class="form-control">
+                        <?php foreach ($osiris->persons->find(['is_active' => true], ['sort' => ['last' => 1]]) as $person) { ?>
+                            <option value="<?= $person['username'] ?>"><?= $person['last'] . ', ' . $person['first'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn"><?= lang('Add', 'Hinzufügen') ?></button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div <?= $Groups->cssVar($id) ?> class="">
     <div class="btn-group float-right">
 
-        <?php if ($Settings->hasPermission('guests.add') || (isset($form['head']) && $form['head'] == $_SESSION['username'])) { ?>
+        <?php if ($Settings->hasPermission('units.add') || (isset($form['head']) && $form['head'] == $_SESSION['username'])) { ?>
             <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
                 <i class="ph ph-note-pencil ph-fw"></i>
                 <?= lang('Edit', 'Bearbeiten') ?>
+            </a>
+            <a class="btn" href="#add-person-modal">
+                <i class="ph ph-user-plus ph-fw"></i>
+                <?= lang('Add person', 'Person hinzufügen') ?>
             </a>
         <?php } ?>
 
@@ -112,6 +138,8 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
         <?= $group['unit'] ?>
     </h3>
 
+
+
     <!-- TAB AREA -->
 
     <nav class="pills mt-20 mb-0">
@@ -127,6 +155,12 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
             <?= lang('Persons', 'Personen') ?>
             <span class="index"><?= count($users) ?></span>
         </a>
+
+        <a onclick="navigate('graph')" id="btn-graph" class="btn">
+            <i class="ph ph-graph" aria-hidden="true"></i>
+            <?= lang('Graph')  ?>
+        </a>
+
         <?php if ($level !== 0) { ?>
 
             <?php
@@ -206,33 +240,73 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
 
     <section id="general">
         <div class="row row-eq-spacing">
-            <?php if (isset($group['description']) || isset($group['description_de'])) { ?>
-                <div class="col-md">
+            <div class="col-md">
+                <?php if (isset($group['description']) || isset($group['description_de'])) { ?>
+
 
                     <h3><?= lang('Information', 'Informationen') ?></h3>
 
-                    <!-- Level <?= $level ?? '?' ?> -->
                     <p>
                         <?= $parsedown->text(lang($group['description'] ?? '-', $group['description_de'] ?? null)) ?>
                     </p>
 
-                </div>
-            <?php } ?>
+                <?php } ?>
+
+                <?php if (!empty($head)) { ?>
+                    <h3><?= lang('Head', 'Leitung') ?></h3>
+                    <div class="list">
+                        <?php foreach ($head as $h) { ?>
+                            <a href="<?= ROOTPATH ?>/profile/<?= $h ?>" class="colorless d-inline-flex align-items-center border bg-white p-10 rounded">
+
+                                <?= $Settings->printProfilePicture($h, 'profile-img small mr-20') ?>
+                                <div class="">
+                                    <h5 class="my-0">
+                                            <?= $DB->getNameFromId($h) ?>
+                                    </h5>
+                                </div>
+                        </a>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
+
+            </div>
+
             <?php if (isset($group['research']) && !empty($group['research'])) {
             ?>
+                <style>
+                    details {
+                        background-color: white;
+                    }
+
+                    .collapse-header,
+                    .collapse-header:focus {
+                        background-color: white;
+                        font-weight: bold;
+                        font-size: 1.6rem;
+                    }
+
+                    .collapse-header:focus::after {
+                        box-shadow: none;
+                    }
+                </style>
                 <div class="col-md">
 
                     <h3><?= lang('Research interests', 'Forschungsinteressen') ?></h3>
 
                     <!-- Level <?= $level ?? '?' ?> -->
-                    <?php foreach ($group['research'] as $r) { ?>
-                        <div class="box px-20 py-10">
-                            <h5 class="title">
-                                <?= $r['title'] ?>
-                            </h5>
-                            <?= $parsedown->text($r['info']) ?>
-                        </div>
-                    <?php } ?>
+                    <div class="collapse-group">
+                        <?php foreach ($group['research'] as $r) { ?>
+                            <details class="collapse-panel">
+                                <summary class="collapse-header">
+                                    <?= $r['title'] ?>
+                                </summary>
+                                <div class="collapse-content">
+                                    <?= $parsedown->text($r['info']) ?>
+                                </div>
+                            </details>
+
+                        <?php } ?>
+                    </div>
 
 
                 </div>
@@ -446,6 +520,17 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
         </div>
 
 
+
+    </section>
+
+
+    <section id="graph" style="display:none">
+        <h3><?= lang('Graph', 'Graph') ?></h3>
+
+        <p class="text-muted m-0">
+            <?= lang('Based on publications with associated affiliations.', 'Basierend auf affilierten Publikationen.') ?>
+        </p>
+        <div id="collabGraph"></div>
 
     </section>
 
