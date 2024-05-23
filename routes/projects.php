@@ -247,3 +247,40 @@ Route::post('/crud/projects/update-collaborators/([A-Za-z0-9]*)', function ($id)
 
     header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
 });
+
+
+
+Route::post('/crud/projects/connect-activities', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    if (!isset($_POST['project']) || empty($_POST['project'])) {
+        header("Location: " . $_POST['redirect'] . "?error=no-project-given");
+        die;
+    }
+    if (!isset($_POST['activity']) || empty($_POST['activity'])) {
+        header("Location: " . $_POST['redirect'] . "?error=no-activity-given");
+        die;
+    }
+
+    $project = $_POST['project'];
+    $activity = $_POST['activity'];
+
+    if (isset($_POST['delete'])){
+        $osiris->activities->updateOne(
+            ['_id' => $DB::to_ObjectID($activity)],
+            ['$pull' => ["projects" => $project]]
+        );
+        header("Location: " . $_POST['redirect'] . "?msg=disconnected-activity-from-project#add-activity");
+        die;
+    }
+
+    $osiris->activities->updateOne(
+        ['_id' => $DB::to_ObjectID($activity)],
+        ['$push' => ["projects" => $project]]
+    );
+    
+    header("Location: " . $_POST['redirect'] . "?msg=connected-activity-to-project#add-activity");
+    die;
+    
+    header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
+});

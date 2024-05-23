@@ -558,7 +558,7 @@ $pageactive = function ($p) use ($page) {
 
             <div class="content-container">
                 <?php
-                if (function_exists('printMsg') && isset($_GET['msg'])) {
+                if (function_exists('printMsg') && (isset($_GET['msg']) || isset($_GET['error']))) {
                     printMsg();
                 }
 

@@ -38,6 +38,7 @@ $institute = $Settings->get('affiliation_details');
 <script>
     const PROJECT = '<?= $project['name'] ?>';
     const CURRENT_USER = '<?= $_SESSION['username'] ?>';
+    const EDIT_PERM = <?= $edit_perm ? 'true' : 'false' ?>;
     var layout = {
         mapbox: {
             style: "open-street-map",
@@ -104,32 +105,37 @@ $institute = $Settings->get('affiliation_details');
         <span class="index"><?= count($project['persons'] ?? array()) ?></span> -->
     </a>
     <?php if (count($project['collaborators'] ?? []) > 0) { ?>
-        
-    <a onclick="navigate('collabs')" id="btn-collabs" class="btn">
-        <i class="ph ph-handshake" aria-hidden="true"></i>
-        <?= lang('Collaborators', 'Kooperationspartner') ?>
-        <span class="index"><?= count($project['collaborators'] ?? array()) ?></span>
-    </a>
+
+        <a onclick="navigate('collabs')" id="btn-collabs" class="btn">
+            <i class="ph ph-handshake" aria-hidden="true"></i>
+            <?= lang('Collaborators', 'Kooperationspartner') ?>
+            <span class="index"><?= count($project['collaborators'] ?? array()) ?></span>
+        </a>
     <?php } else { ?>
-    <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" id="btn-collabs" class="btn">
-        <i class="ph ph-plus-circle" aria-hidden="true"></i>
-        <?= lang('Collaborators', 'Kooperationspartner') ?>
-    </a>
+        <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" id="btn-collabs" class="btn">
+            <i class="ph ph-plus-circle" aria-hidden="true"></i>
+            <?= lang('Collaborators', 'Kooperationspartner') ?>
+        </a>
     <?php } ?>
     <?php if ($N > 0) { ?>
         <a onclick="navigate('activities')" id="btn-activities" class="btn">
-        <i class="ph ph-suitcase" aria-hidden="true"></i>
-        <?= lang('Activities', 'Aktivitäten') ?>
-        <span class="index"><?= $N ?></span>
-    </a>
+            <i class="ph ph-suitcase" aria-hidden="true"></i>
+            <?= lang('Activities', 'Aktivitäten') ?>
+            <span class="index"><?= $N ?></span>
+        </a>
+    <?php } elseif ($edit_perm) { ?>
+        <a id="btn-activities" class="btn" href="#add-activity">
+            <i class="ph ph-plus-circle" aria-hidden="true"></i>
+            <?= lang('Connect Activities', 'Aktivitäten verknüpfen') ?>
+        </a>
     <?php } else { ?>
         <a id="btn-activities" class="btn disabled">
-        <i class="ph ph-suitcase" aria-hidden="true"></i>
-        <?= lang('Activities', 'Aktivitäten') ?>
-        <span class="index">0</span>
-    </a>
+            <i class="ph ph-suitcase" aria-hidden="true"></i>
+            <?= lang('Activities', 'Aktivitäten') ?>
+            <span class="index">0</span>
+        </a>
     <?php } ?>
-    
+
 
     <?php if ($Settings->hasPermission('raw-data') || isset($_GET['verbose'])) { ?>
         <a onclick="navigate('raw')" id="btn-raw" class="btn">
@@ -207,7 +213,7 @@ $institute = $Settings->get('affiliation_details');
                     <tr>
                         <td>
                             <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
-                            <?php $Project->getFundingNumbers('<br>') ?>
+                            <?= $Project->getFundingNumbers('<br>') ?>
                         </td>
                     </tr>
                     <tr>
@@ -402,8 +408,8 @@ $institute = $Settings->get('affiliation_details');
                             <td>
                                 <div class="d-flex align-items-center">
 
-                                <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
-                                <div class="">
+                                    <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
+                                    <div class="">
                                         <h5 class="my-0">
                                             <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="colorless">
                                                 <?= $person['name'] ?>
@@ -525,69 +531,76 @@ $institute = $Settings->get('affiliation_details');
 
 <section id="activities" style="display:none">
 
-
-    <?php
-
-    ?>
-
     <h2>
         <?= lang('Connected activities', 'Verknüpfte Aktivitäten') ?>
         (<?= $N ?>)
     </h2>
 
-    <div class="dropdown with-arrow btn-group ">
-        <button class="btn primary mb-10" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
-            <i class="ph ph-download"></i> Download
-            <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
-        </button>
-        <div class="dropdown-menu" aria-labelledby="download-btn">
-            <div class="content">
-                <form action="<?= ROOTPATH ?>/download" method="post">
 
-                    <input type="hidden" name="filter[project]" value="<?= $project['name'] ?>">
+    <div class="btn-toolbar mb-10">
+        <?php if ($edit_perm) { ?>
+            <a href="#add-activity" class="btn primary">
+                <i class="ph ph-plus"></i>
+                <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
+            </a>
+        <?php } ?>
 
-                    <div class="form-group">
 
-                        <?= lang('Highlight:', 'Hervorheben:') ?>
+        <div class="dropdown with-arrow btn-group ">
+            <button class="btn primary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                <i class="ph ph-download"></i> Download
+                <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="download-btn">
+                <div class="content">
+                    <form action="<?= ROOTPATH ?>/download" method="post">
 
-                        <div class="custom-radio ml-10">
-                            <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
-                            <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                        <input type="hidden" name="filter[project]" value="<?= $project['name'] ?>">
+
+                        <div class="form-group">
+
+                            <?= lang('Highlight:', 'Hervorheben:') ?>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
+                                <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                            </div>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
+                                <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
+                            </div>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="highlight" id="highlight-none" value="">
+                                <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
+                            </div>
+
                         </div>
 
-                        <div class="custom-radio ml-10">
-                            <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                            <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
+
+                        <div class="form-group">
+
+                            <?= lang('File format:', 'Dateiformat:') ?>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="format" id="format-word" value="word" checked="checked">
+                                <label for="format-word">Word</label>
+                            </div>
+
+                            <div class="custom-radio ml-10">
+                                <input type="radio" name="format" id="format-bibtex" value="bibtex">
+                                <label for="format-bibtex">BibTex</label>
+                            </div>
+
                         </div>
-
-                        <div class="custom-radio ml-10">
-                            <input type="radio" name="highlight" id="highlight-none" value="">
-                            <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <?= lang('File format:', 'Dateiformat:') ?>
-
-                        <div class="custom-radio ml-10">
-                            <input type="radio" name="format" id="format-word" value="word" checked="checked">
-                            <label for="format-word">Word</label>
-                        </div>
-
-                        <div class="custom-radio ml-10">
-                            <input type="radio" name="format" id="format-bibtex" value="bibtex">
-                            <label for="format-bibtex">BibTex</label>
-                        </div>
-
-                    </div>
-                    <button class="btn primary">Download</button>
-                </form>
+                        <button class="btn primary">Download</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
 
 
     <h2><?= lang('Other activities', 'Andere Aktivitäten') ?></h2>
@@ -625,3 +638,112 @@ $institute = $Settings->get('affiliation_details');
     </div>
 
 </section>
+
+
+
+<!-- Modal for cennecting activities -->
+
+
+<?php if ($edit_perm) { ?>
+    <div class="modal" id="add-activity" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                    <span aria-hidden="true">&times;</span>
+                </a>
+                <h5 class="modal-title">
+                    <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
+                </h5>
+
+                <form action="<?= ROOTPATH ?>/crud/projects/connect-activities" method="post" class="">
+
+                    <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                    <input type="hidden" name="project" value="<?= $project['name'] ?>">
+
+                    <!-- input field with suggesting activities -->
+                    <div class="form-group" id="activity-suggest">
+                        <!-- <label for="activity-suggested"><?= lang('Activity', 'Aktivität') ?></label> -->
+                        <input type="text" name="activity-suggested" id="activity-suggested" class="form-control" required placeholder="...">
+                        <div class="suggestions on-focus">
+                            <div class="content"><?= lang('Start typing to search for activities', 'Beginne zu tippen, um Aktivitäten zu suchen') ?></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="activity" id="activity-selected" required value="">
+
+                    <button class="btn primary">
+                        <i class="ph ph-check"></i>
+                        <?= lang('Submit', 'Bestätigen') ?>
+                    </button>
+                </form>
+
+                <style>
+                    .suggestions {
+                        color: #464646;
+                        /* position: absolute; */
+                        margin: 10px auto;
+                        top: 100%;
+                        left: 0;
+                        height: 19.2rem;
+                        overflow: auto;
+                        bottom: -3px;
+                        width: 100%;
+                        box-sizing: border-box;
+                        min-width: 12rem;
+                        background-color: white;
+                        border: var(--border-width) solid #afafaf;
+                        /* visibility: hidden; */
+                        /* opacity: 0; */
+                        z-index: 100;
+                        -webkit-transition: opacity 0.4s linear;
+                        transition: opacity 0.4s linear;
+                    }
+
+                    .suggestions a {
+                        display: block;
+                        padding: 0.5rem;
+                        border-bottom: var(--border-width) solid #afafaf;
+                        color: #464646;
+                        text-decoration: none;
+                        width: 100%;
+                    }
+
+                    .suggestions a:hover {
+                        background-color: #f0f0f0;
+                    }
+                </style>
+
+                <!-- script to handle auto suggest by ajax -->
+                <script>
+                    $('#activity-suggested').on('input', function() {
+                        // prevent enter from submitting form
+                        $(this).closest('form').on('keypress', function(event) {
+                            if (event.keyCode == 13) {
+                                event.preventDefault();
+                            }
+                        })
+                        const val = $(this).val();
+                        if (val.length < 3) return;
+                        $.get('<?= ROOTPATH ?>/api/activities-suggest/' + val + '?exclude-project=' + PROJECT, function(data) {
+                            $('#activity-suggest .suggestions').empty();
+                            console.log(data);
+                            data.data.forEach(function(d) {
+                                $('#activity-suggest .suggestions').append(
+                                    `<a onclick="selectActivity(this)" data-id="${d.id.toString()}">${d.details.icon} ${d.details.plain}</a>`
+                                )
+                            })
+                            $('#activity-suggest .suggestions a')
+                                .on('click', function(event) {
+                                    event.preventDefault();
+                                    console.log(this);
+                                    $('#activity-suggested').val($(this).text());
+                                    $('#activity-selected').val($(this).data('id'));
+                                    $('#activity-suggest .suggestions').empty();
+                                })
+                            // $('#activity-suggest .suggest').html(data);
+                        })
+                    })
+                </script>
+            </div>
+        </div>
+    </div>
+<?php } ?>

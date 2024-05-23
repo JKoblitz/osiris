@@ -529,7 +529,10 @@ Route::get('/migrate', function () {
             );
         }
     }
-
+    if (version_compare($DBversion, '1.3.4', '<')) {
+        $osiris->activities->createIndex(['rendered.plain' => 'text']);
+    }
+    
     echo "<p>Rerender activities</p>";
     include_once BASEPATH . "/php/Render.php";
     renderActivities();

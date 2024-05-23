@@ -1,5 +1,40 @@
 # Neuigkeiten
 
+
+<span class="badge float-right">23.05.2024</span>
+<a class="anchor" href="#version-1.3.4" id="version-1.3.4"></a>
+
+## Version 1.3.4
+
+#### <i class="ph ph-users-three text-osiris"></i> Seite für Organisationseinheiten
+Organisationseinheiten haben jetzt eine überarbeitete Seite, die eine Übersicht über die folgenden Punkte bietet:
+
+- Eine Übersicht, gepflegt von den leitenden Personen, die neben einem allgemeinen Beschreibungstext auch Forschungsinteressen enthält
+- Mitarbeitenden Personen werden als Liste und als Interaktionsgraph dargestellt
+- Publikationen und Tabellen der Organisationseinheit werden als Tabellen dargestellt
+- Alle laufenden und abgeschlossenen Projekte der Organisationseinheit
+- Eine Word cloud, die die Forschungsinteressen verschlagwortet
+- Verknüpfung mit anderen Einheiten, z.B. über- und untergeordnete Einheiten, aber auch Zusammenarbeit als Chord-Diagramm
+
+Bitte beachtet, dass sich diese Seite noch immer im Aufbau befindet und sich noch weiter ändern und (hoffentlich) verbessern wird.
+
+
+#### <i class="ph ph-user-plus text-osiris"></i> Personen zu Organisationseinheiten hinzufügen
+Personen können jetzt (mit entsprechenden Rechten) direkt über die Seite der Organisationseinheit zur Einheit hinzugefügt werden.
+
+
+#### <i class="ph ph-plus-circle text-osiris"></i> Aktivitäten über die Projektseite verknüpfen
+
+Um eine Aktivität mit einem Projekt zu verknüpfen, musste man bislang immer jede Aktivität einzeln auswählen und dann das Projekt. Weil das für später hinzugefügte Projekte sehr umständlich war, wurde ein Mechanismus hinzugefügt, um Aktivitäten schnell zu Projekten hinzuzufügen. 
+
+Dazu wählt ihr ein Projekt aus, klickt auf Aktivitäten und dann auf <span class="btn primary small"><i class="ph ph-plus"></i> Aktivitäten verknüpfen</span>. Es öffnet sich ein Fenster, indem ihr Aktivitäten einfach durchsuchen könnt. Klickt die gewünschte Aktivität an und klickt dann auf Bestätigen.
+
+
+#### <i class="ph ph-code text-osiris"></i> Bug Fixes
+Es wurde ein Problem behoben, durch das bei der Nutzung der LDAP-Schnittstelle ein neuer Nutzeraccount angelegt wurde, wenn der Nutzername in Groß- und Kleinschreibung vom gespeicherten Nutzernamen abgewichen ist. Es sollte nun immer der im LDAP hinterlegte Accountname für die Verifizierung gespeichert und verwendet werden.
+
+----
+
 <span class="badge float-right">15.04.2024</span>
 <a class="anchor" href="#version-1.3.3" id="version-1.3.3"></a>
 

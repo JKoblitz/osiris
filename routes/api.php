@@ -1859,6 +1859,40 @@ Route::get('/api/groups', function () {
     echo return_rest($data, count($data));
 });
 
+
+
+Route::get('/api/activities-suggest/(.*)', function ($term) {
+    error_reporting(E_ERROR | E_PARSE);
+    include_once BASEPATH . "/php/init.php";
+
+    // if (!apikey_check($_GET['apikey'] ?? null)) {
+    //     echo return_permission_denied();
+    //     die;
+    // }
+
+    $filter = [ '$text'=> [ '$search'=> $term ]];
+
+    // exclude project id
+    if (isset($_GET['exclude-project'])) {
+        $exclude = DB::doc2Arr($_GET['exclude-project']);
+        $filter['projects'] = ['$ne' => $exclude];
+    }
+
+    // $osiris->activities->createIndex(['rendered.plain' => 'text']);
+
+    $result = $osiris->activities->find(
+        $filter,
+        [
+            'projection'=>['score' => ['$meta' => 'textScore'], 'details'=> '$rendered', 'id'=> ['$toString'=>'$_id']],
+            'sort' => ['score' => ['$meta' => 'textScore']], 
+            'limit' => 10
+        ]
+    )->toArray();
+
+
+    echo return_rest($result, count($result));
+});
+
 /**
  * Official interface API endpoints
  */

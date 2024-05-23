@@ -18,8 +18,10 @@ function renderActivities($filter = [])
         foreach ($cursor as $doc) {
             $id = $doc['_id'];
             $Format->setDocument($doc);
+            $f = $Format->format();
             $rendered = [
-                'print' => $Format->format(),
+                'print' => $f,
+                'plain' => strip_tags($f),
                 'web' => $Format->formatShort(),
                 'depts' => $Groups->getDeptFromAuthors($doc['authors']),
                 'icon' => trim($Format->activity_icon()),

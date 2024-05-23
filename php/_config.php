@@ -194,6 +194,11 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         $msg = $_SESSION['message'];
         unset($_SESSION["message"]);
     }
+    if ($msg === null && isset($_GET['error'])) {
+        $msg = $_GET['error'];
+        $type = 'error';
+        $header = lang('Error', 'Fehler');
+    }
     if ($msg === null && !isset($_GET["msg"])) return;
     $msg = $msg ?? $_GET["msg"];
     $text = "";

@@ -105,7 +105,7 @@ class Project
             return '-';
         if (is_string($this->project['funding_number']))
             return $this->project['funding_number'];
-        return implode($seperator, $this->project['funding_number']->bsonSerialize());
+        return implode($seperator, DB::doc2Arr($this->project['funding_number']));
     }
 
     /**
