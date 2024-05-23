@@ -21,7 +21,7 @@ Route::get('/docs', function () {
     ];
 
     include_once BASEPATH . "/php/init.php";
-    include_once BASEPATH . "/php/MyParsedown.php";
+    // include_once BASEPATH . "/php/MyParsedown.php";
 
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/docs.php";
@@ -40,6 +40,8 @@ Route::get('/docs/([\w-]+)', function ($doc) {
     include BASEPATH . "/php/init.php";
     // SassCompiler::run("scss/", "css/");
 
+    $language = $_SESSION['language'] ?? 'de';
+
     $breadcrumb = [
         ['name' => lang('Documentation', 'Dokumentation'), 'path' => '/docs'],
         ['name' => lang($doc)]
@@ -48,7 +50,7 @@ Route::get('/docs/([\w-]+)', function ($doc) {
     echo '<link href="' . ROOTPATH . '/css/documentation.css" rel="stylesheet">';
     echo '<script src="' . ROOTPATH . '/js/quill.min.js"></script>';
     echo '<script src="' . ROOTPATH . '/js/jquery-ui.min.js"></script>';
-    $path    = BASEPATH . '/pages/docs';
+    $path    = BASEPATH . '/pages/docs/'. $language;
 
 
     if (file_exists("$path/$doc.html")) {
