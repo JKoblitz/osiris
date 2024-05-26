@@ -147,7 +147,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             function fav() {
                 $.ajax({
                     type: "POST",
-                    url: ROOTPATH + "/crud/fav",
+                    url: ROOTPATH + "/crud/activities/fav",
                     data: {
                         activity: ACTIVITY_ID
                     },
