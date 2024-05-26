@@ -98,7 +98,7 @@ Route::get('/activities/pubmed-search', function () {
         ['name' => lang("Search in Pubmed", "Suche in Pubmed")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/search.php";
+    include BASEPATH . "/pages/pubmed-search.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
