@@ -13440,6 +13440,15 @@ a.concept:hover {
   max-width: 12rem;
 }
 
+.query-builder .rule-container, .query-builder .rule-placeholder, .query-builder .rules-group-container {
+  border: none !important;
+  background-color: var(--secondary-color-20) !important;
+}
+
+.query-builder .rules-group-container {
+  border: 1px solid var(--secondary-color) !important;
+}
+
 /* POPOVERS */
 .popover {
   position: absolute;

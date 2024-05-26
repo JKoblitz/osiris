@@ -157,6 +157,33 @@ Route::get('/api/activities', function () {
     if (isset($_GET['json'])) {
         $filter = json_decode($_GET['json']);
     }
+
+    if (isset($_GET['aggregate'])) {
+        // aggregate by one column
+        $group = $_GET['aggregate'];
+        $aggregate = [
+            ['$match' => $filter],
+        ];
+        if (strpos($group, 'authors') !== false) {
+            $aggregate[] = ['$unwind' => '$authors'];
+        }
+        $aggregate[] = 
+            ['$group' => ['_id' => '$' . $group, 'count' => ['$sum' => 1]]];
+
+        $aggregate[] = ['$sort' => ['count' => -1]];
+        $aggregate[] = ['$project' => ['_id' => 0, 'activity' => '$_id', 'count' => 1]];
+        // $aggregate[] = ['$limit' => 10];
+        $aggregate[] = ['$sort' => ['count' => -1]];
+        $aggregate[] = ['$project' => ['_id' => 0, 'activity' => 1, 'count' => 1]];
+        // $aggregate = array_merge($filter);
+        
+
+        $result = $osiris->activities->aggregate(
+            $aggregate
+        )->toArray();
+        echo return_rest($result, count($result));
+        die;
+    }
     $result = $osiris->activities->find($filter, ['sort' => ['year' => -1]])->toArray();
 
     if (isset($_GET['full'])) {
