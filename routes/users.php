@@ -589,3 +589,31 @@ Route::post('/crud/users/approve', function () {
         'updated' => $updateResult->getModifiedCount()
     ]);
 });
+
+
+
+Route::post('/crud/queries', function () {
+    include_once BASEPATH . "/php/init.php";
+    // name: name,
+    // rules: rules,
+    // user: $_SESSION['username'] 
+    // created: new Date(),
+    // aggregate: $('#aggregate').val()
+    if (isset($_POST['id'])) {
+        // delete query with _id
+        $deleteResult = $osiris->queries->deleteOne(['_id' => DB::to_ObjectID($_POST['id'])]);
+        return $deleteResult->getDeletedCount();
+        die;
+    }
+    if (!isset($_POST['name'])) die("no name given");
+    if (!isset($_POST['rules'])) die("no rules given");
+    if (!isset($_SESSION['username'])) die("no user given");
+    $updateResult = $osiris->queries->insertOne([
+        'name' => $_POST['name'],
+        'rules' => json_encode($_POST['rules']),
+        'user' => $_SESSION['username'],
+        'created' => date('Y-m-d'),
+        'aggregate' => $_POST['aggregate'] ?? null
+    ]);
+    return $updateResult->getInsertedId();
+});

@@ -13445,10 +13445,6 @@ a.concept:hover {
   background-color: var(--secondary-color-20) !important;
 }
 
-.query-builder .rules-group-container {
-  border: 1px solid var(--secondary-color) !important;
-}
-
 /* POPOVERS */
 .popover {
   position: absolute;

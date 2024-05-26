@@ -28,7 +28,7 @@ $Format = new Document(true);
 <script>
     var RULES;
 </script>
-<div class="content">
+<div class="container">
     <!-- <div class="btn-group float-right">
         <a href="#close-modal" class="btn osiris active">
             <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
@@ -44,61 +44,115 @@ $Format = new Document(true);
     </h1>
     <!-- <form action="#" method="get"> -->
 
+    <div class="row row-eq-spacing">
+        <div class="col-md-8">
 
+            <div class="box">
+                <div class="content">
 
-    <h3><?=lang('Filter', 'Filtern')?></h3>
-    <div id="builder" class="<?= isset($_GET['expert']) ? 'hidden' : '' ?>"></div>
+                    <h3 class="title"><?= lang('Filter', 'Filtern') ?></h3>
+                    <div id="builder" class="<?= isset($_GET['expert']) ? 'hidden' : '' ?>"></div>
 
-    <?php if (isset($_GET['expert'])) { ?>
-        <textarea name="expert" id="expert" cols="30" rows="10" class="form-control"></textarea>
-    <?php } ?>
+                    <?php if (isset($_GET['expert'])) { ?>
+                        <textarea name="expert" id="expert" cols="30" rows="5" class="form-control"></textarea>
+                    <?php } ?>
 
+                </div>
 
-    <!-- Aggregations -->
-    <h3><?=lang('Aggregate', 'Aggregieren')?></h3>
+                <div class="content">
+                    <!-- Aggregations -->
+                    <h3 class="title"><?= lang('Aggregate', 'Aggregieren') ?></h3>
 
-        <div class="">
-            <select name="aggregate" id="aggregate" class="form-control w-auto">
-                <option value=""><?=lang('Without aggregation (show all)', 'Ohne Aggregation (zeige alles)')?></option>
-            </select>
+                    <div class="input-group">
+                        <select name="aggregate" id="aggregate" class="form-control w-auto">
+                            <option value=""><?= lang('Without aggregation (show all)', 'Ohne Aggregation (zeige alles)') ?></option>
+                        </select>
 
+                        <!-- remove aggregation -->
+                       <div class="input-group-append">
+                       <button class="btn text-danger" onclick="$('#aggregate').val(''); getResult()"><i class="ph ph-x"></i></button>
+
+                       </div>
+                    </div>
+                </div>
+
+                <div class="footer">
+
+                    <div class="btn-toolbar">
+
+                        <?php if (isset($_GET['expert'])) { ?>
+                            <button class="btn primary" onclick="run()"><i class="ph ph-magnifying-glass"></i> <?= lang('Apply', 'Anwenden') ?></button>
+
+                            <script>
+                                function run() {
+                                    var rules = $('#expert').val()
+                                    RULES = JSON.parse(decodeURI(rules))
+                                    dataTable.ajax.reload()
+                                }
+                            </script>
+                            <a class="btn osiris" href="?"><i class="ph ph-search-plus"></i> <?= lang('Sandbox mode', 'Baukasten-Modus') ?></a>
+
+                        <?php } else { ?>
+                            <button class="btn primary" onclick="getResult()"><i class="ph ph-magnifying-glass"></i> <?= lang('Apply', 'Anwenden') ?></button>
+                            <a class="btn osiris" href="?expert"><i class="ph ph-search-plus"></i> <?= lang('Expert mode', 'Experten-Modus') ?></a>
+                        <?php } ?>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- User saved queries -->
+            <div class="box">
+                <div class="content">
+                    <h3 class="title"><?= lang('My saved queries', 'Meine Abfragen') ?></h3>
+                    <?php
+                    $queries = $osiris->queries->find(['user' => $_SESSION['username']])->toArray();
+                    if (empty($queries)) {
+                        echo '<p>' . lang('You have not saved any queries yet.', 'Du hast noch keine Abfragen gespeichert.') . '</p>';
+                    } else { ?>
+                        <div class="list-group" id="saved-queries">
+                            <?php foreach ($queries as $query) { ?>
+                             <!-- use rules (json)  -->
+                                <div class="d-flex justify-content-between" id="query-<?=$query['_id'] ?>">
+                                <a onclick="applyFilter('<?=$query['_id'] ?>', '<?=$query['aggregate']?>')"><?=$query['name'] ?></a>
+                                <a onclick="deleteQuery('<?=$query['_id'] ?>')" class="text-danger"><i class="ph ph-x"></i></a>
+                                </div>
+                           <?php } ?>
+                        </div>
+                    <?php  } ?>
+
+                   <script>
+                    var queries = {};
+                    <?php foreach ($queries as $query) { ?>
+                        queries['<?=$query['_id'] ?>'] = '<?=$query['rules'] ?>';
+                    <?php } ?>
+                   </script>
+
+                </div>
+                <hr>
+                <div class="content">
+                    <!-- save current query -->
+                    <div class="form-group" id="save-query">
+                        <label for="query-name"><?= lang('Save query', 'Abfrage speichern') ?></label>
+                        <input type="text" class="form-control" id="query-name" placeholder="<?= lang('Name of query', 'Name der Abfrage') ?>">
+                        <button class="btn primary mt-10" onclick="saveQuery()"><?= lang('Save query', 'Abfrage speichern') ?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    
-    <div class="btn-toolbar">
-
-        <?php if (isset($_GET['expert'])) { ?>
-            <button class="btn success" onclick="run()"><i class="ph ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
-
-            <script>
-                function run() {
-                    var rules = $('#expert').val()
-                    RULES = JSON.parse(decodeURI(rules))
-                    dataTable.ajax.reload()
-                }
-            </script>
-            <a class="btn osiris" href="?"><i class="ph ph-search-plus"></i> <?= lang('Sandbox mode', 'Baukasten-Modus') ?></a>
-
-        <?php } else { ?>
-            <button class="btn success" onclick="getResult()"><i class="ph ph-magnifying-glass"></i> <?= lang('Search', 'Suchen') ?></button>
-            <a class="btn osiris" href="?expert"><i class="ph ph-search-plus"></i> <?= lang('Expert mode', 'Experten-Modus') ?></a>
-        <?php } ?>
-
-
-    </div>
-
-
-    <hr>
 
     <pre id="result" class="code my-20 hidden"></pre>
 
-
+    <br>
 
     <table class="table" id="activity-table">
         <thead>
             <th><?= lang('Type', 'Typ') ?></th>
-            <th><?= lang('Activity', 'Aktivität') ?></th>
-            <th><?=lang('Count', 'Anzahl')?></th>
+            <th><?= lang('Result', 'Ergebnis') ?></th>
+            <th><?= lang('Count', 'Anzahl') ?></th>
             <th><?= lang('Year', 'Jahr') ?></th>
             <th><?= lang('Print', 'Print') ?></th>
             <th><?= lang('Type', 'Typ') ?></th>
@@ -400,6 +454,11 @@ $Format = new Document(true);
                 type: 'string'
             },
             {
+                id: 'country',
+                label: lang('Country', 'Land'),
+                type: 'string'
+            },
+            {
                 id: 'rendered.depts',
                 label: lang('Department (abbr.)', 'Abteilung (Kürzel)'),
                 type: 'string'
@@ -416,7 +475,7 @@ $Format = new Document(true);
             },
             {
                 id: 'oa_status',
-                label: lang('Open Access'),
+                label: lang('Open Access Status'),
                 type: 'string',
                 values: ['gold', 'green', 'bronze', 'hybrid', 'open', 'closed'],
                 input: 'select'
@@ -507,11 +566,11 @@ $Format = new Document(true);
             filters: filters,
             'lang_code': lang('en', 'de'),
             'icons': {
-                add_group: 'ph ph-plus-circle',
-                add_rule: 'ph ph-plus',
-                remove_group: 'ph ph-x-circle',
-                remove_rule: 'ph ph-x',
-                error: 'ph ph-warning',
+                add_group: 'ph ph-plus-circle text-success',
+                add_rule: 'ph ph-plus text-success',
+                remove_group: 'ph ph-x-circle text-danger',
+                remove_rule: 'ph ph-x text-danger',
+                error: 'ph ph-warning text-danger',
             },
             allow_empty: true,
             default_filter: 'type'
@@ -697,6 +756,71 @@ $Format = new Document(true);
 
             // getResult()
         });
+
+        function saveQuery() {
+            var rules = $('#builder').queryBuilder('getRules')
+            var name = $('#query-name').val()
+            if (name == "") {
+                toastError('Please provide a name for your query.')
+                return
+            }
+            var query = {
+                name: name,
+                rules: rules,
+                user: '<?= $_SESSION['username'] ?>',
+                created: new Date(),
+                aggregate: $('#aggregate').val()
+            }
+            $.post(ROOTPATH + '/crud/queries', query, function(data) {
+                // reload
+                queries[data.id] = JSON.stringify(rules)
+
+                $('#saved-queries').append(`<a class="d-block" onclick="applyFilter(${data.id}, '${$('#aggregate').val()}')">${name}</a>`)
+                $('#query-name').val('')
+                toastSuccess('Query saved successfully.')
+
+            })
+        }
+
+        function applyFilter(id, aggregate) {
+            console.log((id));
+            var filter = queries[id];
+            if (!filter) {
+                toastError('Query not found.')
+                return
+            }
+            $('#aggregate').val(aggregate)
+            var parsedFilter = JSON.parse(filter, (key, value) => {
+                if (typeof value === 'string' && /^\d+$/.test(value)) {
+                    return parseInt(value);
+                } else if (value === 'true') {
+                    return true;
+                } else if (value === 'false') {
+                    return false;
+                }
+                return value;
+            });
+            $('#builder').queryBuilder('setRules', parsedFilter);
+            var rules = $('#builder').queryBuilder('getMongo')
+            RULES = rules
+            dataTable.ajax.reload()
+        }
+
+        function deleteQuery(id) {
+            $.ajax({
+                url: ROOTPATH + '/crud/queries',
+                type: 'POST',
+                data: {
+                    id: id,
+                    type: 'DELETE'
+                },
+                success: function(result) {
+                    delete queries[id]
+                    $('#query-' + id).remove()
+                    toastSuccess('Query deleted successfully.')
+                }
+            });
+        }
     </script>
 
 </div>
