@@ -431,11 +431,7 @@ Route::post('/crud/activities/update/([A-Za-z0-9]*)', function ($id) {
     // dump($values, true);
     // die;
 
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = $DB->to_ObjectID($id);
-    }
+    $id = $DB->to_ObjectID($id);
     $updateResult = $collection->updateOne(
         ['_id' => $id],
         ['$set' => $values]
@@ -451,8 +447,6 @@ Route::post('/crud/activities/update/([A-Za-z0-9]*)', function ($id) {
         // make sure that there is no duplicate entry in the queue
         $osiris->queue->deleteOne(['pubmed' => $values['pubmed']]);
     }
-    // cleanFields($id);
-    // die;
 
     // addUserActivity('update');
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
@@ -470,11 +464,7 @@ Route::post('/crud/activities/delete/([A-Za-z0-9]*)', function ($id) {
     // select the right collection
 
     // prepare id
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = $DB->to_ObjectID($id);
-    }
+    $id = $DB->to_ObjectID($id);
 
     $updateResult = $osiris->activities->deleteOne(
         ['_id' => $id]
@@ -661,11 +651,7 @@ Route::post('/crud/activities/approve/([A-Za-z0-9]*)', function ($id) {
 
     $collection = $osiris->activities;
     // prepare id
-    if (is_numeric($id)) {
-        $id = intval($id);
-    } else {
-        $id = $DB->to_ObjectID($id);
-    }
+    $id = $DB->to_ObjectID($id);
     $approval = intval($_POST['approval'] ?? 0);
     $filter = ['_id' => $id, "authors.user" => $_SESSION['username']];
 
