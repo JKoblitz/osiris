@@ -63,46 +63,4 @@ Autocompletion hilft dir dabei):
 
 Mit Klick auf "Update" bestätigst du die Änderungen.
 
-
-> Der *Maintainer* kann nun oberhalb seiner Menüleiste zwischen seinem eigenen und deinem Profil hin und her schalten:
-
-<div class="w-300 demo">
-    <div class="sidebar-menu position-static">
-        <div action="" class="content">
-            <select class="form-control">
-                <option value="juk20">Julia Koblitz</option>
-                <option value="dok21">Dominic Koblitz</option>
-            </select>
-        </div>
-        <div class="sidebar-title">
-            Julia Koblitz
-        </div>
-        <div class="cta">
-            <a class="btn primary " style="border-radius:2rem">
-                <i class="icon-activity-plus mr-10" aria-hidden="true"></i>
-                Aktivität hinzuf. 
-            </a>
-        </div>
-        <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="ph ph-user-graduate" aria-hidden="true"></i>
-            Julia Koblitz </a>
-        <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="ph ph-calendar" aria-hidden="true"></i>
-            Mein Jahr </a>
-        <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="icon-activity-user" aria-hidden="true"></i>
-            Meine Aktivitäten </a>
-        <a class="sidebar-link sidebar-link-osiris with-icon ">
-            <i class="ph ph-chart-network" aria-hidden="true"></i>
-            Visualisierung </a>
-        <a class="sidebar-link with-icon mt-10">
-            <i class="ph ph-right-from-bracket" aria-hidden="true"></i>
-            Logout
-        </a>
-        <div class="sidebar-title">
-            Weiteres </div>
-        <div class="content">
-            ...
-        </div>
-    </div>
-</div>
+Der *Maintainer* kann nun oberhalb seiner Menüleiste zwischen seinem eigenen und deinem Profil hin und her schalten.

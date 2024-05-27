@@ -25,7 +25,7 @@ OSIRIS sucht die ID in einem von drei verschiedenen Services (CrossRef, DataCite
 
 Wenn OSIRIS die Aktivität im externen Service gefunden hat, wird das Formular so gut es geht vorausgefüllt. Dies klappt mit DOIs meist besser als bei Pubmed, da bei letzterem Autoreninformationen oft nur unzureichend hinterlegt sind. In jedem Fall sollen <b>alle Informationen noch einmal manuell überprüft</b> und ggf. korrigiert werden. Beim Titel ist auch auf eine korrekte Rechtschreibung und Formatierung zu achten. Die Formatierung sollte nach Möglichkeit der Formatierung im Orginaltitel entsprechen.
 
-Einige Felder können nicht automatisch ausgefüllt werden, beispielsweise die Information, ob eine Publikation Open Access ist oder nicht. Automatisch ausgefüllte Felder werden deshalb grün unterlegt, auch wenn die Daten in der öffentlichen Datenbank leer waren (beispielsweise bei fehlenden Seitenzahlen). Nicht markierte Felder müssen ggf. nachgetragen werden.
+Einige Felder können nicht automatisch ausgefüllt werden, insbesondere wenn der Publisher die Informationen nicht in den Metadaten hinterlegt hat. Automatisch ausgefüllte Felder werden deshalb grün unterlegt, auch wenn die Daten in der öffentlichen Datenbank leer waren (beispielsweise bei fehlenden Seitenzahlen). Nicht markierte Felder müssen ggf. nachgetragen werden.
 
 Falls eine Publikation abgerufen wird, deren Journal zurzeit noch nicht in der Datenbank vorhanden ist, öffnet sich das Fenster zur Journal-Auswahl. Mehr Infos dazu gibt es [weiter unten](#das-Journal-bearbeiten).
 
@@ -36,8 +36,8 @@ Selbstverständlich kann eine Aktivität auch manuell hinzugefügt werden.
 ### Eine Kategorie auswählen
 
 Beim manuellen Hinzufügen muss zuerst ausgewählt werden, um welche Art von Aktivität es sich handelt. 
-Zurzeit unterstützt OSIRIS 8 verschiedene Kategorien. 
-Zur Auswahl wird auf die entsprechende Schaltfläche geklickt:
+Welche Kategorien zu finden sind, wurde von deiner Einrichtung konfiguriert. 
+Hier findest du ein Beispiel, wie das aussehen kann. Um eine Aktivität hinzuzufügen, klickst du auf die Schaltfläche.
 
 <div class="demo">
     <div class="select-btns" id="select-btns">
@@ -54,10 +54,7 @@ Zur Auswahl wird auf die entsprechende Schaltfläche geklickt:
 
 Nachdem eine Aktivität ausgewählt wurde, öffnet sich ein Formular mit allen Datenfeldern, die für die Aktivität relevant sein können. Benötigte Datenfelder sind mit <span class="text-danger">*</span> markiert und können nicht leer gelassen werden.
 
-Bei den Aktivitäten 
-<span class="text-publication">Publikation</span>, <span class="text-review">Reviews &amp; Editorials</span>, <span class="text-students">Studierende &amp; Gäste</span>, <span class="text-misc">Misc</span> und <span class="text-software">Software &amp; Data</span> gibt es Unterkategorien, die einen Einfluss auf die Datenfelder haben. So kann man bei <span class="text-publication">Publikationen</span> noch den Publikationstyp auswählen, beispielsweise Journalartikel, Buch oder Dissertation. Bei den <span class="text-review">Reviews</span> kann man zusätzlich zu Peer-Reviews auch Thesis- und Grant-Reviews hinzufügen, sowie Mitgliedschaften im Editorial Board.
-
-Die Unterkategorien werden mit ähnlichen Knöpfen wie oben zu sehen sind gesteuert und können erst ausgewählt werden, nachdem die Oberkategorie ausgewählt wurde. 
+Bei einigen Aktivitäten gibt es Unterkategorien, die einen Einfluss auf die Datenfelder haben. So kann man bei <span class="text-publication">Publikationen</span> noch den Publikationstyp auswählen, beispielsweise Journalartikel, Buch oder Dissertation. Die Unterkategorien werden mit ähnlichen Knöpfen wie oben zu sehen sind gesteuert und können erst ausgewählt werden, nachdem die Oberkategorie ausgewählt wurde. 
 
 
 ### Beispiele nutzen
@@ -73,8 +70,6 @@ Ganz oben im Formular gibt es einen kleinen Knopf, mit dem die <button class="bt
     DOI: http://dx.doi.org/<span class="element-link" data-element="DOI">10.1111/1462-2920.15999</span>
 </div>
 
-Der Text ist einerseits farblich markiert. Die entsprechenden Stellen im Formular, in denen die dafür relevanten Daten eingetragen werden, sind im gleichen Farbschema markiert. So kann auf einen Blick zugeordnet werden, welche Information aus dem Formular in die formatierte Aktivität an welcher Stelle einfließt. Wenn man über ein markiertes Beispiel hovert, bekommt man des Weiteren den genauen Namen des Datenfeldes als Tooltip angezeigt.
-
 
 ### Den Titel formatieren
 
@@ -84,7 +79,7 @@ Der Titel kann über einen Rich-Text-Editor bearbeitet und formatiert werden. Da
     <label for="title" class="required element-title">
         <span style="">Titel</span>
     </label>
-    <div class="form-group title-editor"></div>
+    <div class="form-group" id="title-editor"></div>
     <input type="text" class="form-control hidden" name="values[title]" id="title" required="" value="">  
     <script>
         initQuill(document.getElementById('title-editor'));
@@ -107,7 +102,7 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
             </div>
         </div>
         <div class="footer">
-            <div class="input-group input-group-sm d-inline-flex w-auto">
+            <div class="input-group small d-inline-flex w-auto">
                 <input type="text" placeholder="Füge Autor hinzu ..." onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                 <div class="input-group-append">
                     <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
@@ -138,17 +133,9 @@ Verschrieben? Ein Autor wird nicht korrekt einem Nutzer zugeordnet? Nachdem du d
 
 ### Der Autoren-Editor
 
-Nachdem eine Aktivität hinzugefügt wurde, steht ein detaillierter Autoren-Editor zur Verfügung. Dazu geht man auf der Übersichtsseite auf folgenden Knopf:
+Nachdem eine Aktivität hinzugefügt wurde, steht ein detaillierter Autoren-Editor zur Verfügung. Dazu klickt man auf der Übersichtsseite der Aktivität bei den Autoren auf *Bearbeiten*.
 
-<div class="demo">
-    <h2>Authors</h2>
-    <span class="btn primary active">
-        <i class="ph-regular ph-user-list"></i>
-        Autorenliste bearbeiten
-    </span>
-</div>
-
-Bei editierten Büchern gibt es ein gleichen Pendant für Editoren.
+Bei editierten Büchern gibt es das gleiche auch für Editoren.
 
 Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren einer Aktivität. Diese Tabelle kann folgendermaßen aussehen:
 
@@ -401,7 +388,7 @@ Im Autoreneditor öffnet sich nun eine Tabelle, mit allen Details zu den Autoren
 </div>
 
 
-Gleich am Anfang jeder Zeile gibt es einen sog. Handle (<i class="grip-dots-vertical"></i>), mit dem die Reihenfolge der Autoren durch Drag & Drop verändert werden kann. Es folgen Vor- und Nachname des Autoren. Der Nachname ist ein Pflichtfeld, der Vorname kann (beispielsweise bei Konsortien) weggelassen werden. 
+Gleich am Anfang jeder Zeile gibt es einen sog. Handle (<i class="ph ph-dots-six-vertical text-muted"></i>), mit dem die Reihenfolge der Autoren durch Drag & Drop verändert werden kann. Es folgen Vor- und Nachname des Autoren. Der Nachname ist ein Pflichtfeld, der Vorname kann (beispielsweise bei Konsortien) weggelassen werden. 
 
 Die Position des Autors kann durch ein Dropdown-Menü ausgewählt werden. Auf diese Weise können mehrere Autoren als Erst- bzw. Letztautoren festgelegt werden (bei geteilter Autorenschaft). Hier kann auch ein Corresponding author festgelegt werden, falls dieser weder Erst- noch Letztautor ist. 
 
@@ -474,26 +461,14 @@ Sollte das gesuchte Journal nicht in OSIRIS gefunden werden, kann man durch Klic
 ## Erweiterte Funktionen
 
 ### Dokumente hinterlegen
-Nachdem eine Aktivität hinzugefügt wurde, können Dokumente hinterlegt werden. Idealerweise werden Publikationen, Poster und Vorträge mit einem PDF-Anhang supplementiert. Dafür geht man auf der Detailseite einer Aktivität (auf der man nach dem Erstellen landet), auf den Knopf zum Hochladen von Dateien:
-
-<div class="demo">
-<h2 class="mt-0">Details</h2>
-    <span class="btn primary mr-5">
-        <i class="ph ph-regular ph-pencil-simple-line"></i>
-        Aktivität bearbeiten            
-    </span>
-    <span class="btn primary active">
-        <i class="ph ph-upload"></i>
-        Dateien hochladen
-    </span>
-</div>
+Nachdem eine Aktivität hinzugefügt wurde, können Dokumente hinterlegt werden. Idealerweise werden Publikationen, Poster und Vorträge mit einem PDF-Anhang supplementiert. Dafür geht man auf der Detailseite einer Aktivität (auf der man nach dem Erstellen landet), auf den Knopf **Datei hochladen**.
 
 Auf der folgenden Seite findet sich ganz oben eine Übersicht zu der Aktivität, die man gerade bearbeitet. Es folgt eine Liste mit eventuell bereits vorhandenen Dateien, die an dieser Stelle auch heruntergeladen (<i class="ph ph-download text-primary"></i>) bzw. gelöscht  (<i class="ph ph-trash text-danger"></i>) werden können. 
 
 Weiter unten findet sich ein Formular, mit dem neue Dokumente hochgeladen werden können. Diese dürfen eine Maximalgröße von 16 MB nicht überschreiten und sollten sich nach Möglichkeit in einem Standardformat befinden. Gute Beispiele sind PDF (bevorzugt), PPTX, XLSX, DOCX. 
 
 Bitte bemerke, dass sich PPTX und DOCX über die Exportieren-Funktion in Microsoft Office ganz einfach in PDF umwandeln lassen (Datei > Exportieren > PDF/XPS-Dokument erstellen). **Aus den folgenden Gründen empfehlen wir, PDF-Dokumente hochzuladen**:
-- PDF kann direkt im Browser geöffnet werden
+- PDF kann oftmals direkt im Browser geöffnet werden
 - PDF wird auf allen Geräten gleich dargestellt (unabhängig vom Betriebssystem, veknüpften Bildern und installierten Schriftarten)
 - PDF hat durch die Komprimierung oftmals eine geringere Dateigröße als andere Formate
 - PDF-Dokumente lassen sich nicht so leicht versehentlich bearbeiten
@@ -524,7 +499,7 @@ Beispiele für Notizen ist der Titel von Publikationen, die gereviewed wurden, K
 Wenn du eine Aktivität abänderst, werden alle deine Koautoren darüber benachrichtigt und müssen eventuell erneut bestätigen, dass sie Autoren sind und die Aktivität überprüft haben. Um ihnen diesen Prozess zu vereinfachen, kannst du mitteilen, was genau du geändert hast. Dafür gibt es einen Bearbeitungs-Bereich im Formular, der nur sichtbar wird, wenn du eine vorhandene Aktivität bearbeitest. In folgendem Beispiel wurde nur die Rechtschreibung des Titels verändert:
 
 <div class="demo">
-    <div class="alert alert-signal p-10 mb-10">
+    <div class="alert signal p-10 mb-10">
         <div class="title">
             Bearbeitungs-Bereich 
         </div>
@@ -543,34 +518,67 @@ Wenn du eine Aktivität abänderst, werden alle deine Koautoren darüber benachr
 </div>
 
 So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
-
 <div class="demo">
-    <p class="m-0">
-        Lorenz Christian Reimer hat die folgende Aktivität bearbeitet.<br><b>Editor-Kommentar:</b> <em>Als Open Access markiert.</em> 
-    </p>
-    <p>
-        <span class="mr-20"><span data-toggle="tooltip" data-title="Journal article">
-            <i class="ph text-publication ph-file-lines"></i>
-        </span></span>
-        <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
-    </p>
-    <div class="" id="approve-632da4672199cd3df8dbc166">
-    Bitte bestätige (evtl. erneut), dass du Autor:in bist:<br>
-        <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war dem Institut angehörig">
-            <i class="ph ph-fw ph-check"></i>
-        </span>
-        <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Ja, aber ich war nicht dem Institut angehörig">
-            <i class="ph ph-fw ph-push-pin-slash"></i>
-        </span>
-        <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Nein, das bin ich nicht">
-            <i class="ph ph-fw ph-x"></i>
-        </span>
-        <span class="btn btn-sm text-primary ml-10" data-toggle="tooltip" data-title="Aktivität bearbeiten">
-            <i class="ph ph-regular ph-pencil-simple-line"></i>
-        </span>
-        <span class="btn btn-sm text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
-            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
-        </span>
+    <div class="row py-10 px-20">
+        <div class="col-md-6">
+            <p class="mt-0">
+                <b class="text-lecture">
+                    <span data-toggle="tooltip" data-title="Vortrag"><i
+                            class="ph text-lecture ph-chalkboard-teacher"></i></span> Vortrag </b> <br>
+                <a class="colorless" href="/osiris/activities/view/650449e74430390609471786">Open-Source CRIS am
+                    Beispiel von OSIRIS</a><br><small class="text-muted d-block"><a
+                        href="/osiris/profile/juk20">Koblitz,&nbsp;J.</a> and <a
+                        href="/osiris/profile/dok21">Koblitz,&nbsp;D.</a><br> Workshop-Reihe "Stärkung von CRIS",
+                    Online. 07.09.2023, short <a
+                        href="/uploads/650449e74430390609471786/OSIRIS_Leibniz-CRIS_Open-Source.pdf" target="_blank"
+                        data-toggle="tooltip" data-title="pdf: OSIRIS_Leibniz-CRIS_Open-Source.pdf"
+                        class="file-link"><i class="ph ph-file ph-file-pdf"></i></a></small>
+            </p>
+            <div class="" id="approve-650449e74430390609471786">
+                Ist dies deine Aktivität? <br>
+                <div class="btn-group mr-10">
+                    <button class="btn small text-success" onclick="_approve('650449e74430390609471786', 1)"
+                        data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
+                        <i class="ph ph-check ph-fw"></i>
+                    </button>
+                    <button class="btn small text-signal" onclick="_approve('650449e74430390609471786', 2)"
+                        data-toggle="tooltip" data-title="Ja, aber ich war nicht der DSMZ angehörig">
+                        <i class="ph ph-push-pin-slash ph-fw"></i>
+                    </button>
+                    <button class="btn small text-danger" onclick="_approve('650449e74430390609471786', 3)"
+                        data-toggle="tooltip" data-title="Nein, das bin ich nicht">
+                        <i class="ph ph-x ph-fw"></i>
+                    </button>
+                </div>
+                <a target="_blank" href="/osiris/activities/view/650449e74430390609471786"
+                    class="btn small text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
+                    <i class="ph ph-arrow-fat-line-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <span class="badge secondary float-md-right">27.05.2024</span>
+            <h5 class="m-0">
+                Bearbeitet von Dominic Koblitz </h5>
+            <blockquote class="signal">
+                <div class="title">
+                    Kommentar </div>
+                Ort wurde aktualisiert.
+            </blockquote>
+            <div class="font-weight-bold mt-10">Änderungen an der Aktivität:</div>
+            <table class="table simple w-auto small border px-10">
+                <tbody>
+                    <tr>
+                        <td class="pl-0">
+                            <span class="key">Ort</span>
+                            <span class="del text-danger">-</span>
+                            <i class="ph ph-arrow-right mx-10"></i>
+                            <span class="ins text-success">Online</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -588,19 +596,16 @@ Ein Beispiel:
 Ich halte einen Vortrag auf einer Konferenz. Auf einem Minisymposium ein paar Wochen später halte ich exakt den gleichen Vortrag noch einmal. Dafür gibt es in OSIRIS eine eigene Vortragskategorie, denn neben Kurz- und Langvoträgen gibt es auch noch "Repetitions". Ich gehe also in OSIRIS und wähle den Vortrag bei der Konferenz aus. Dort finde ich folgenden Knopf:
 
 <div class="demo">
-    <h2 class="mt-0">Details</h2>
-    <span class="btn primary mr-5">
+    <div class="btn-group">
+    <span class="btn secondary">
         <i class="ph ph-regular ph-pencil-simple-line"></i>
-        Aktivität bearbeiten            
+        Bearbeiten            
     </span>
-    <span class="btn primary mr-5 active">
+    <span class="btn secondary active">
         <i class="ph ph-copy"></i>
-        Kopie anlegen            
+        Kopie            
     </span>
-    <span class="btn primary">
-        <i class="ph ph-upload"></i>
-        Dateien hochladen
-    </span>
+    </div>
 </div>
 
 Darauf klicke ich und bekomme ein Formular angezeigt, in dem alle Daten zu meinem Vortrag schon vorausgefüllt sind. OSIRIS merkt sogar, dass ich einen Vortrag kopiere und wählt automatisch die Kategorie "Repetition" aus. Ich muss jetzt nur noch das Datum, die Konferenz und den Ort anpassen. Titel und Autoren stimmen. 

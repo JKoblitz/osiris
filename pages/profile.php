@@ -1316,8 +1316,8 @@ if ($currentuser) { ?>
             <h3 class=""><?= lang('Word cloud') ?></h3>
 
             <p class="text-muted">
-        <?= lang('Based on the title and abstract (if available) of publications in OSIRIS.', 'Basierend auf dem Titel und Abstract (falls verfügbar) von Publikationen in OSIRIS.') ?>
-    </p>
+                <?= lang('Based on the title and abstract (if available) of publications in OSIRIS.', 'Basierend auf dem Titel und Abstract (falls verfügbar) von Publikationen in OSIRIS.') ?>
+            </p>
             <div id="wordcloud-chart" style="max-width: 80rem";></div>
     </section>
 <?php } ?>

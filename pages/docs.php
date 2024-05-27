@@ -21,6 +21,12 @@
     <?= lang('Documentation', 'Dokumentation') ?>
 </h1>
 
+<?php if (lang('en', 'de') == 'de') { ?>
+    <div class="alert signal">
+Um die Lesbarkeit zu erhöhen, wird in der Dokumentation das generische Maskulin verwendet. Es sind generell immer alle Geschlechter angesprochen.
+</div>
+<?php } ?>
+
 
 <div class="link-list" style="max-width:50rem">
 
@@ -32,6 +38,11 @@
     <a href="<?= ROOTPATH ?>/docs/my-year">
     <i class="ph mr-10 text-primary ph-calendar"></i>
         <?= lang('My year', 'Mein Jahr') ?>
+    </a>
+
+    <a href="<?= ROOTPATH ?>/docs/search">
+    <i class="ph mr-10 text-primary ph-magnifying-glass-plus"></i>
+        <?= lang('Advanced search', 'Erweiterte Suche') ?>
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/warnings">

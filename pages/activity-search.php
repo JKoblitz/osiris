@@ -28,21 +28,15 @@ $Format = new Document(true);
 <script>
     var RULES;
 </script>
-<div class="container">
-    <!-- <div class="btn-group float-right">
-        <a href="#close-modal" class="btn osiris active">
-            <i class="ph ph-magnifying-glass-plus"></i> <?= lang('Activities', 'Aktivitäten') ?>
-        </a>
-        <a href="<?= ROOTPATH ?>/search/user" class="btn osiris">
-            <i class="ph ph-student"></i> <?= lang('Users', 'Personen') ?>
-        </a>
-    </div> -->
 
+
+
+<div class="container">
+    <a href="<?=ROOTPATH?>/docs/search" class="btn tour float-sm-right"><i class="ph ph-question"></i> <?=lang('Manual', 'Anleitung')?></a>
     <h1>
         <i class="ph ph-magnifying-glass-plus text-osiris"></i>
         <?= lang('Advanced activity search', 'Erweiterte Aktivitäten-Suche') ?>
     </h1>
-    <!-- <form action="#" method="get"> -->
 
     <div class="row row-eq-spacing">
         <div class="col-md-8">
@@ -510,16 +504,6 @@ $Format = new Document(true);
                 },
                 input: 'radio'
             },
-            // {
-            //         id: 'files',
-            //         label: lang('Files', ''),
-            //         type: 'string'
-            // },
-            // {
-            //         id: 'comment',
-            //         label: lang('Comment', ''),
-            //         type: 'string'
-            // },
             {
                 id: 'created_by',
                 label: lang('Created by (Abbreviation)', 'Erstellt von (Kürzel)'),

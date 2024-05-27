@@ -284,7 +284,7 @@ if (array_sum($a) === 0) {
 
                             <?php
                             if (isset($h['comment']) && !empty($h['comment'])) { ?>
-                                <blockquote class=" signal">
+                                <blockquote class="alert signal">
                                     <div class="title">
                                         <?= lang('Comment', 'Kommentar') ?>
                                     </div>

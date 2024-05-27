@@ -27,7 +27,7 @@ In deinem persönlichen Profil gibt es eine Infobox, die neben nützlichen Links
             <i class="ph ph-trophy text-signal ph-fw"></i>
         </span>
     </div>
-    <div class="alert alert-danger mt-20">
+    <div class="alert danger mt-20">
         <a class="link text-danger" href="#test">
             Du hast 6 ungelöste Probleme mit deinen Aktivitäten.
         </a>
@@ -72,32 +72,66 @@ Du kannst übrigens beim Bearbeiten einer Aktivität einen [Editor-Kommentar](ad
 Die Warnmeldung sieht folgendermaßen aus:
 
 <div class="demo">
-    <p class="m-0">
-        Lorenz Christian Reimer hat die folgende Aktivität bearbeitet.<br><b>Editor-Kommentar:</b> <em>Als Open Access markiert.</em> 
-    </p>
-    <p>
-        <span class="mr-20"><span data-toggle="tooltip" data-title="Journal article">
-            <i class="ph ph-lg text-publication ph-file-lines"></i>
-        </span></span>
-        <b>Koblitz, J.</b>, Halama, P., Spring, S., Thiel, V., Baschien, C., Hahnke, R.L., Pester, M., Overmann, J. and Reimer, L.C. (2022) Media<i>Dive</i>: the expert-curated cultivation media database.  <i>Nucleic Acids Research</i> DOI: <a target="_blank" href="https://doi.org/10.1093/nar/gkac803">https://doi.org/10.1093/nar/gkac803</a> <span style="color:#B61F29;">[Online ahead of print]</span> <i class="icon-open-access text-success" title="Open Access"></i> 
-    </p>
-    <div class="" id="approve-632da4672199cd3df8dbc166">
-                                    Bitte bestätige (evtl. erneut), dass du Autor:in bist:                                                <br>
-        <span class="btn btn-sm text-success" data-toggle="tooltip" data-title="Ja, und ich war dem Institut angehörig">
-            <i class="ph ph-check ph-fw"></i>
-        </span>
-        <span class="btn btn-sm text-signal" data-toggle="tooltip" data-title="Ja, aber ich war nicht dem Institut angehörig">
-            <i class="ph ph-push-pin-slash ph-fw"></i>
-        </span>
-        <span class="btn btn-sm text-danger" data-toggle="tooltip" data-title="Nein, das bin ich nicht">
-            <i class="ph ph-x ph-fw"></i>
-        </span>
-        <span class="btn btn-sm text-primary" data-toggle="tooltip" data-title="Aktivität bearbeiten">
-            <i class="ph ph-regular ph-pencil-simple-line"></i>
-        </span>
-        <span class="btn btn-sm text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
-            <i class="ph ph-regular ph-arrow-fat-line-right"></i>
-        </span>
+    <div class="row py-10 px-20">
+        <div class="col-md-6">
+            <p class="mt-0">
+                <b class="text-lecture">
+                    <span data-toggle="tooltip" data-title="Vortrag"><i
+                            class="ph text-lecture ph-chalkboard-teacher"></i></span> Vortrag </b> <br>
+                <a class="colorless" href="/osiris/activities/view/650449e74430390609471786">Open-Source CRIS am
+                    Beispiel von OSIRIS</a><br><small class="text-muted d-block"><a
+                        href="/osiris/profile/juk20">Koblitz,&nbsp;J.</a> and <a
+                        href="/osiris/profile/dok21">Koblitz,&nbsp;D.</a><br> Workshop-Reihe "Stärkung von CRIS",
+                    Online. 07.09.2023, short <a
+                        href="/uploads/650449e74430390609471786/OSIRIS_Leibniz-CRIS_Open-Source.pdf" target="_blank"
+                        data-toggle="tooltip" data-title="pdf: OSIRIS_Leibniz-CRIS_Open-Source.pdf"
+                        class="file-link"><i class="ph ph-file ph-file-pdf"></i></a></small>
+            </p>
+            <div class="" id="approve-650449e74430390609471786">
+                Ist dies deine Aktivität? <br>
+                <div class="btn-group mr-10">
+                    <button class="btn small text-success" onclick="_approve('650449e74430390609471786', 1)"
+                        data-toggle="tooltip" data-title="Ja, und ich war der DSMZ angehörig">
+                        <i class="ph ph-check ph-fw"></i>
+                    </button>
+                    <button class="btn small text-signal" onclick="_approve('650449e74430390609471786', 2)"
+                        data-toggle="tooltip" data-title="Ja, aber ich war nicht der DSMZ angehörig">
+                        <i class="ph ph-push-pin-slash ph-fw"></i>
+                    </button>
+                    <button class="btn small text-danger" onclick="_approve('650449e74430390609471786', 3)"
+                        data-toggle="tooltip" data-title="Nein, das bin ich nicht">
+                        <i class="ph ph-x ph-fw"></i>
+                    </button>
+                </div>
+                <a target="_blank" href="/osiris/activities/view/650449e74430390609471786"
+                    class="btn small text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
+                    <i class="ph ph-arrow-fat-line-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <span class="badge secondary float-md-right">27.05.2024</span>
+            <h5 class="m-0">
+                Bearbeitet von Dominic Koblitz </h5>
+            <blockquote class="signal">
+                <div class="title">
+                    Kommentar </div>
+                Ort wurde aktualisiert.
+            </blockquote>
+            <div class="font-weight-bold mt-10">Änderungen an der Aktivität:</div>
+            <table class="table simple w-auto small border px-10">
+                <tbody>
+                    <tr>
+                        <td class="pl-0">
+                            <span class="key">Ort</span>
+                            <span class="del text-danger">-</span>
+                            <i class="ph ph-arrow-right mx-10"></i>
+                            <span class="ins text-success">Online</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -134,7 +168,7 @@ Diese Warnung wird einmal im Quartal auftauchen, solltet ihr Mitglied in Gremien
 
 <div class="demo">
     <b>Koblitz, J.</b> Mitglied in einem Gremium, von 18.01.2023 bis heute.                    
-    <div class="alert alert-signal">
+    <div class="alert signal">
         <span class="btn btn-sm text-success">
             <i class="ph ph-check"></i>
             Ja                  
@@ -147,23 +181,3 @@ Diese Warnung wird einmal im Quartal auftauchen, solltet ihr Mitglied in Gremien
 </div>
 
 Der <span class="btn btn-sm text-success"><i class="ph ph-check"></i> Ja</span>-Knopf wirkt dabei wie ein Snooze-Button, mit dem die Anzeige der Warnmeldung bis zum nächsten Quartal unterdrückt wird. Wenn ihr jedoch <span class="btn btn-sm text-danger"><i class="ph ph-x"></i> Nein</span> auswählt, werdet ihr auf die "Aktivität bearbeiten"-Seite weitergeleitet, wo ihr das Enddatum der Aktivität festlegen könnt.
-
-
-### Nicht-standardisiertes Journal
-Diese Warnmeldung kann durch zwei Umstände entstehen. 
-
-Einerseits ist sie ein Überbleibsel von der OSIRIS-Beta, als Journale noch nicht standardisiert wurden. Lass mich einen Moment ausholen (oder lies einfach den nächsten Absatz): Seit Dezember 2022 werden alle Aktivitäten, die mit Journalen assoziert sind (Journal-Artikel, Reviews, usw.) auch immer mit der ID des Journals aus der OSIRIS-Datenbank verknüpft. Dadurch kann leichter der Impact Factor oder die Abkürzung des Journals abgerufen werden. Außerdem wird dadurch sichergestellt, dass die Journale in der OSIRIS-Datenbank existieren. Zu diesem Zweck wurde ein spezieller Mechanismus eingebaut, mit dem neue Journale aus der NLM-Datenbank abgefragt werden können. Dazu könnt ihr mehr [hier](add-activities#das-journal-bearbeiten) lesen. Bei einigen älteren Einträgen hat das nachträgliche Matching der Journale jedoch nicht funktioniert. Deshalb tauchen sie hier noch auf. Sorry.
-
-Andererseits entstehen solche Fehler, wenn über die **Import-Funktion** Publikationen hinzugefügt werden, deren Journale entweder noch nicht in OSIRIS sind, oder aufgrund von unterschiedlicher Schreibweise des Titels nicht richtig zugeordnet werden konnten. Das ist sehr schade, da dadurch jetzt leider etwas Aufwand auf euch zukommt. Doch damit OSIRIS und all seine Features gut funktionieren, ist es leider nicht abdingbar.
-
-<div class="demo">
-    <b>Koblitz, J.</b> Reviewer für  <i>Artificial Intelligence Review</i>. September 2022.                    <div class="alert alert-signal" id="approve-632da4672199cd3df8dbc168">
-        <span class="btn btn-sm text-primary">
-            <i class="ph ph-edit"></i>
-            Aktivität bearbeiten
-        </span>
-    </div>
-</div>
-
-Tatsächlich gibt es nur einen Weg, dieses Problem zu lösen: ihr klickt auf  <span class="btn btn-sm text-primary"> <i class="ph ph-edit"></i> Aktivität bearbeiten</span> und editiert das Journal. Klickt dazu auf das Bearbeiten-Icon <i class="ph ph-edit"></i> neben dem Datenfald mit dem Journal und wählt ein Journal aus der Liste aus. Wie das im Detail funktioniert findet ihr  [hier](add-activities#das-journal-bearbeiten).
-
