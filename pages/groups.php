@@ -220,10 +220,22 @@ $style = $_GET['style'] ?? 'cards';
         }
         $value['head'] = implode(', ', $res);
     }
+
+    $g = array_map(function ($a) {
+        return [
+            'id' => $a['id'],
+            'name' => $a['name'],
+            'unit' => $a['unit'],
+            'head' => $a['head'],
+            'color' => $a['color'],
+            'parent' => $a['parent'],
+        ];
+    }, $Groups->groups);
+
     ?>
 
     <script>
-        var tree = JSON.parse('<?= json_encode($Groups->groups) ?>');
+        var tree = JSON.parse('<?= json_encode($g) ?>');
 
         console.log(tree);
         var data = [];

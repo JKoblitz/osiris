@@ -38,7 +38,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             <?= lang('Projects connected', 'Projekte verknüpft') ?>
         </h3>
         <?= lang(
-            'This activity was automaticall connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
+            'This activity was automatically connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
             'Diese Aktivität wurde automatisch anhand von Fördernummern mit Projekten verknüpft. Du kannst weitere Projekte hinzufügen oder die bestehenden entfernen.'
         ) ?>
         <br>
