@@ -1221,7 +1221,7 @@ function fillForm(pub) {
     //     funder
     // }
 
-    toastSuccess('Bibliographic data were updated.')
+    toastSuccess(lang('Publication data was successfully loaded.', 'Publikationsdaten wurden erfolgreich geladen.'))
 
 }
 

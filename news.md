@@ -29,9 +29,32 @@ Um eine Aktivität mit einem Projekt zu verknüpfen, musste man bislang immer je
 
 Dazu wählt ihr ein Projekt aus, klickt auf Aktivitäten und dann auf <span class="btn primary small"><i class="ph ph-plus"></i> Aktivitäten verknüpfen</span>. Es öffnet sich ein Fenster, indem ihr Aktivitäten einfach durchsuchen könnt. Klickt die gewünschte Aktivität an und klickt dann auf Bestätigen.
 
+#### <i class="ph ph-magnifying-glass-plus text-osiris"></i> Überarbeitung der Erweiterten Suche
+Die Erweiterte Suche wurde überarbeitet und bietet jetzt mehr Filtermöglichkeiten und eine verbesserte Benutzeroberfläche.
 
-#### <i class="ph ph-code text-osiris"></i> Bug Fixes
+
+1. **Aggregationen**<br>
+Es wurden Aggregationen hinzugefügt, um Ihnen einen besseren Überblick über die Daten zu geben. Sie können jetzt Daten nach verschiedenen Kategorien gruppieren und aggregieren, um Trends und Muster zu erkennen.
+
+2. **Suchen können jetzt gespeichert werden**<br>
+Sie können jetzt Ihre Suchanfragen speichern, um sie später wieder abzurufen. Dadurch sparen Sie Zeit und können häufig verwendete Suchen schnell wiederholen.
+
+3. **Hinzufügen von Docs**<br>
+Es wurden eine Dokumentationen hinzugefügt, um dir bei der Nutzung des Systems zu helfen. Du kannst jetzt auf detaillierte Anleitungen und Informationen zu den verschiedenen Funktionen zugreifen. Die Dokumentation findest du [hier](docs/search).
+
+
+#### <i class="ph ph-book text-osiris"></i> Documentation in English
+Parts of the documentation has been translated into English. You can now access the English version of the documentation to learn more about the different features of the system, e.g. on how to add activities, how to search and what the warnings mean.
+
+
+#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
 Es wurde ein Problem behoben, durch das bei der Nutzung der LDAP-Schnittstelle ein neuer Nutzeraccount angelegt wurde, wenn der Nutzername in Groß- und Kleinschreibung vom gespeicherten Nutzernamen abgewichen ist. Es sollte nun immer der im LDAP hinterlegte Accountname für die Verifizierung gespeichert und verwendet werden.
+
+Es wurde ein Problem behoben, durch das Aktivitäten mit einer rein numerischen ID nicht bearbeitet werden können.
+
+Es gab außerdem einige UI-Improvements, z.B. beim Festlegen der Leitung einer Organisationseinheit. 
+
+
 
 ----
 
