@@ -174,14 +174,16 @@ class DB
         try {
             // $veryfirst = explode(' ', $first)[0];
             $abbr = $this->abbreviateName($first);
+            // dump($abbr);
             // $regex = new Regex('^' . $veryfirst);
             $user = $this->db->persons->findOne([
                 '$or' => [
-                    // if user has not set alternative names yet
-                    ['last' => $last, 'first' => $first, 'names'=>['$exist'=>false]],
+                    // if user has not set alternative names yet, 'names'=>['$exist'=>false]
+                    ['last' => $last, 'first' => $first],
                     // otherwise, we respect the names that have been set
                     ['names' => "$last, $first"],
-                    ['names' => "$last, $abbr"]
+                    ['names' => "$last, $abbr"],
+                    // ['names' => "$last, $abbr."]
                 ]
             ]);
         } catch (\Throwable $th) {

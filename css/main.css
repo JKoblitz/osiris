@@ -92,6 +92,8 @@ CSS variables (CSS custom properties)
   --secondary-color-20: rgba(0, 128, 131, 0.2);
   --secondary-color-30: rgba(0, 128, 131, 0.3);
   --secondary-color-60: rgba(0, 128, 131, 0.6);
+  --link-color: var(--secondary-color);
+  --link-color-hover: var(--secondary-color-light);
   --success-color: #63a308;
   --success-color-light: #6faa1c;
   --success-color-very-light: #e0edce;
@@ -2470,19 +2472,19 @@ body {
 }
 
 a {
-  color: #008083;
+  color: var(--link-color);
   text-decoration: none;
   cursor: pointer;
 }
 a:hover {
-  color: #148a8d;
+  color: var(--link-color-hover);
 }
 a.link:not(.btn):hover {
   text-decoration: none;
 }
 a.link:not(.btn)::after {
   font-family: "Phosphor";
-  color: #008083;
+  color: var(--link-color);
   content: "\e95c";
   margin-left: 0.5rem;
   line-height: inherit;
@@ -6335,6 +6337,7 @@ Sidebar content
   border-radius: var(--border-radius);
   display: inline-block;
   border: 1px solid var(--border-color);
+  box-shadow: var(--box-shadow);
 }
 .pills .btn {
   border: none;
@@ -7330,40 +7333,40 @@ details * {
   padding: 1.2rem 2rem;
   font-size: var(--base-font-size);
   color: #464646;
-  background-color: #f7f7f7;
+  background-color: white;
   border: var(--border-width) solid #afafaf;
   border-radius: var(--border-radius);
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  -moz-box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
 }
 
 .collapse-header:focus {
   color: #464646;
-  background-color: #f7f7f7;
+  background-color: white;
   border-color: #afafaf;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  -moz-box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
   outline: none;
 }
 
 .collapse-panel[open] .collapse-header {
   color: #464646;
-  background-color: #f7f7f7;
+  background-color: white;
   border-color: #afafaf;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  -moz-box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
 }
 
 .collapse-panel[open] .collapse-header:focus {
   color: #464646;
-  background-color: #f7f7f7;
+  background-color: white;
   border-color: #afafaf;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  -moz-box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
   outline: none;
 }
 
@@ -7435,11 +7438,11 @@ details * {
   padding: 2rem;
   font-size: var(--base-font-size);
   color: #464646;
-  background-color: transparent;
+  background-color: #f7f7f7;
   border: var(--border-width) solid #afafaf;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  -moz-box-shadow: var(--box-shadow);
+  -webkit-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
   border-top: none;
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
@@ -7482,17 +7485,9 @@ details * {
     color: #464646;
     background-color: #f7f7f7;
     border-color: #afafaf;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  .dark-mode .collapse-panel .collapse-header {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: rgba(255, 255, 255, 0.02);
-    border-color: #464646;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
+    -moz-box-shadow: var(--box-shadow);
+    -webkit-box-shadow: var(--box-shadow);
+    box-shadow: var(--box-shadow);
   }
   .collapse-panel .collapse-header {
     border-bottom-left-radius: 0;
@@ -11838,9 +11833,9 @@ img.profile-img {
   max-height: 15rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
-  -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: var(--box-shadow);
+  -moz-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
 }
 
 img.profile-img.small {
@@ -11899,7 +11894,7 @@ img.profile-img.small {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   display: block;
-  box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.05);
+  box-shadow: var(--box-shadow);
 }
 
 .author-widget .footer {
@@ -12038,7 +12033,7 @@ img.profile-img.small {
   text-decoration: none;
   display: block;
   /* transition: 0.5s ease transform; */
-  box-shadow: 0 0.2rem 0 rgba(0, 0, 0, 0.05);
+  box-shadow: var(--box-shadow);
   /* margin-bottom: 2rem; */
   margin-bottom: 1rem;
 }
@@ -12091,9 +12086,9 @@ img.profile-img.small {
 
 .date-picker-wrapper {
   z-index: 10;
-  -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: var(--box-shadow);
+  -moz-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
 }
 
 .data-module {
@@ -12197,9 +12192,9 @@ a.concept:hover {
   width: 100%;
   /* margin: 20px 0; */
   border: var(--border-width) solid #afafaf;
-  -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: var(--box-shadow);
+  -moz-box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow);
   background-color: white;
   padding: 0;
   border-radius: var(--border-radius);

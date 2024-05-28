@@ -323,7 +323,10 @@ Route::get('/api/all-activities', function () {
         } else {
             $format = $format_full;
         }
-        if ($page == 'portal') {
+        if (isset($_GET['path'])) {
+            $format = str_replace(ROOTPATH . "/activities/view", $_GET['path'] . "/activity", $format);
+            $format = str_replace(ROOTPATH . "/profile", $_GET['path'] . "/person", $format);
+        } else if ($page == 'portal') {
             $format = str_replace(ROOTPATH . "/activities/view", PORTALPATH . "/activity", $format);
             $format = str_replace(ROOTPATH . "/profile", PORTALPATH . "/person", $format);
         }
@@ -449,6 +452,10 @@ Route::get('/api/users', function () {
         echo return_permission_denied();
         die;
     }
+    $path = ROOTPATH;
+    if (isset($_GET['path'])) {
+        $path = $_GET['path'];
+    }
 
     $filter = ['username' => ['$ne' => null]];
     if (isset($_GET['filter'])) {
@@ -473,9 +480,13 @@ Route::get('/api/users', function () {
                 $subtitle = $user[$_GET['subtitle']] ?? '';
             } else foreach (($user['depts'] ?? []) as $i => $d) {
                 $dept = implode('/', $Groups->getParents($d));
-                $subtitle .= '<a href="' . ROOTPATH . '/groups/view/' . $d . '">
+                $subtitle .= '<a href="' . $path . '/groups/view/' . $d . '">
                     ' . $dept . '
                 </a>';
+            }
+            $username = "";
+            if (!isset($_GET['hide_usernames']) ) {
+                $username = $user['username'];
             }
             $table[] = [
                 'id' => strval($user['_id']),
@@ -483,9 +494,9 @@ Route::get('/api/users', function () {
                 'img' => $Settings->printProfilePicture($user['username'], 'profile-img'),
                 'html' =>  "<div class='w-full'>
                     <div style='display: none;'>" . $user['first'] . " " . $user['last'] . "</div>
-                    <span class='float-right text-muted'>" . $user['username'] . "</span>
+                    <span class='float-right text-muted'>" . $username . "</span>
                     <h5 class='my-0'>
-                        <a href='" . ROOTPATH . "/profile/" . $user['username'] . "'>
+                        <a href='" . $path . "/profile/" . $user['_id'] . "'>
                             " . ($user['academic_title'] ?? '') . " " . $user['first'] . " " . $user['last'] . "
                         </a>
                     </h5>
@@ -493,6 +504,11 @@ Route::get('/api/users', function () {
                         " . $subtitle . "
                     </small>
                 </div>",
+                'name' => $user['first'] . " " . $user['last'],
+                'first' => $user['first'],
+                'last' => $user['last'],
+                'email' => $user['email'],
+                'academic_title' => $user['academic_title'],
                 'dept' => $Groups->personDept($user['depts'], 1)['id'],
                 'active' => ($user['is_active'] ?? true) ? 'yes' : 'no'
             ];

@@ -31,7 +31,7 @@
     </p>
 
 
-    <fieldset >
+    <fieldset>
         <legend><?= lang('Name and personal information', 'Name und persönliche Informationen') ?></legend>
 
         <div class="form-row row-eq-spacing">
@@ -71,7 +71,6 @@
 
 
         <div class="form-group">
-
             <label for="names" class=""><?= lang('Names for author matching', 'Namen für das Autoren-Matching') ?></label>
 
             <div class="">
@@ -88,6 +87,23 @@
                     <i class="ph ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
                 </button>
             </div>
+
+            <script>
+                function addName(evt, el) {
+                    var group = $('<div class="input-group sm d-inline-flex w-auto"> ')
+                    group.append('<input type="text" name="values[names][]" value="" required class="form-control">')
+                    // var input = $()
+                    var btn = $('<a class="btn">')
+                    btn.on('click', function() {
+                        $(this).closest('.input-group').remove();
+                    })
+                    btn.html('&times;')
+
+                    group.append($('<div class="input-group-append">').append(btn))
+                    // $(el).prepend(group);
+                    $(group).insertBefore(el);
+                }
+            </script>
         </div>
 
 
@@ -120,12 +136,12 @@
 
 
 
-    <fieldset >
+    <fieldset>
         <legend><?= lang('Organisational unit', 'Organisationseinheiten') ?></legend>
 
         <?php
         $tree = $Groups->getHirarchyTree();
-        $depts = DB::doc2Arr($data['depts']??[]);
+        $depts = DB::doc2Arr($data['depts'] ?? []);
         ?>
         <div class="form-group">
             <?= lang('Select multiple with <kbd>Ctrl</kbd>.', 'Wähle mehrere mit <kbd>Strg</kbd>.') ?>
@@ -143,7 +159,7 @@
     </fieldset>
 
 
-    <fieldset >
+    <fieldset>
         <legend><?= lang('Contact', 'Kontakt') ?></legend>
         <div class="form-row row-eq-spacing">
 
@@ -186,7 +202,7 @@
     </fieldset>
 
     <?php if (!($data['is_active'] ?? true)) { ?>
-        <fieldset >
+        <fieldset>
             <legend>
                 <?= lang('Reactivate inactive user account', 'Inaktiven Account reaktivieren') ?>
             </legend>
@@ -199,7 +215,7 @@
 
 
 
-    <fieldset >
+    <fieldset>
         <legend><?= lang('Roles', 'Rollen') ?></legend>
         <?php
         // dump($data['roles']);
@@ -226,7 +242,7 @@
 
     <?php if ($data['username'] == $_SESSION['username'] || $Settings->hasPermission('user.settings')) { ?>
 
-        <fieldset >
+        <fieldset>
             <legend><?= lang('Profile preferences', 'Profil-Einstellungen') ?></legend>
 
 
@@ -298,7 +314,7 @@
             ?>
         </fieldset>
 
-        <fieldset >
+        <fieldset>
             <legend>
                 <?= lang('Transfer the maintenance of your profile', 'Übertrage die Pflege deines Profils') ?>
             </legend>
@@ -334,20 +350,3 @@
         Update
     </button>
 </form>
-
-<script>
-    function addName(evt, el) {
-        var group = $('<div class="input-group sm d-inline-flex w-auto"> ')
-        group.append('<input type="text" name="values[names][]" value="" required class="form-control">')
-        // var input = $()
-        var btn = $('<a class="btn">')
-        btn.on('click', function() {
-            $(this).closest('.input-group').remove();
-        })
-        btn.html('&times;')
-
-        group.append($('<div class="input-group-append">').append(btn))
-        // $(el).prepend(group);
-        $(group).insertBefore(el);
-    }
-</script>

@@ -150,22 +150,57 @@ function sel($index, $value)
             <label for="head">
                 <?= lang('Lead', 'Leitung') ?>
             </label>
+            <div class="author-widget">
+                <div class="author-list p-10">
+                    <?php
+                    $heads = $form['head'] ?? [];
+                    if (is_string($heads)) $heads = [$heads];
+                    else $heads = DB::doc2Arr($heads);
 
-            <select class="form-control" id="head" name="values[head][]" autocomplete="off" multiple="multiple">
-                <option value=""><?= lang('None', 'Keiner') ?></option>
-                <?php
-                $head = $form['head'] ?? [$user];
-                if (is_string($head)) $head = [$head];
-                else $head = DB::doc2Arr($head);
+                    foreach ($heads as $h) {
+                        $person = $osiris->persons->findOne(['username' => $h]);
+                        if (empty($person)) continue;
+                        $name = $person['last'] . ', ' . $person['first'];
+                    ?>
+                        <div class='author'>
+                            <?= $name ?>
+                            <input type='hidden' name='values[head][]' value='<?= $h ?>'>
+                            <a onclick='$(this).parent().remove()'>&times;</a>
+                        </div>
+                    <?php } ?>
 
-                $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
-                foreach ($userlist as $j) { ?>
-                    <option value="<?= $j['username'] ?>" <?= in_array($j['username'], $head) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
-                <?php } ?>
-            </select>
-            <small class="text-muted">
-                <?= lang('Multiple with <kbd>Ctrl</kbd>', 'Mehrere mit <kbd>Strg</kbd>') ?>
-            </small>
+                </div>
+                <div class="footer">
+                    <div class="input-group sm d-inline-flex w-auto">
+                        <select class="head-input form-control">
+                            <option value="" disabled selected><?= lang('Add head ...', 'Füge leitende Person hinzu ...') ?></option>
+                            <?php
+                            $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+                            foreach ($userlist as $j) {
+                                if (in_array($j['username'], $heads) || empty($j['last'])) continue;
+                            ?>
+                                <option value="<?= $j['username'] ?>"><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                            <?php } ?>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn primary h-full" type="button" onclick="addHead();">
+                                <i class="ph ph-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function addHead(t, st) {
+                        var sel = $(`.author-widget .head-input`);
+                        var val = sel.val();
+                        if (val == null) return;
+                        var text = sel.find(`option[value='${val}']`).text();
+                        var el = `<div class='author'>${text}<input type='hidden' name='values[head][]' value='${val}'><a onclick='$(this).parent().remove()'>&times;</a></div>`;
+                        $(`.author-list`).append(el);
+                    }
+                </script>
+            </div>
         </div>
     </fieldset>
 
@@ -181,7 +216,7 @@ function sel($index, $value)
                 foreach ($form['research'] as $i => $con) { ?>
 
                     <div class="alert mb-10">
-                      
+
                         <div class="form-group my-10">
                             <input name="values[research][<?= $i ?>][title]" type="text" class="form-control" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
                         </div>
@@ -193,9 +228,9 @@ function sel($index, $value)
                     </div>
             <?php }
             } ?>
-            
+
         </div>
-            <button class="btn" type="button" onclick="addResearchrow(event, '#research-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
+        <button class="btn" type="button" onclick="addResearchrow(event, '#research-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
 
 
         <script>
