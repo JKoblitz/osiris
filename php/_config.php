@@ -276,7 +276,7 @@ function printMsg($msg = null, $type = 'info', $header = "default")
         case 'add-success':
             $header = lang("Success", "Erfolg");
             $text = lang("Dataset was added successfully.", "Der Datensatz wurde erfolgreich hinzufügt.");
-            $text .= '<br/><a class="btn mt-10" href="' . ROOTPATH . '/add-activity">' . lang('Add another activity', 'Weitere Aktivität hinzufügen') . '</a>';
+            // $text .= '<br/><a class="btn mt-10" href="' . ROOTPATH . '/add-activity">' . lang('Add another activity', 'Weitere Aktivität hinzufügen') . '</a>';
             $class = "success";
             break;
 

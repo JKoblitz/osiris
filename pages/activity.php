@@ -30,6 +30,24 @@ foreach ($M as $m) {
 }
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
+
+
+<?php if ($Settings->featureEnabled('projects') && !empty($doc['projects'] ?? [])) { ?>
+        <div class="alert success mb-20">
+        <h3 class="title">
+            <?= lang('Projects connected', 'Projekte verknüpft') ?>
+        </h3>
+        <?= lang(
+            'This activity was automaticall connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
+            'Diese Aktivität wurde automatisch anhand von Fördernummern mit Projekten verknüpft. Du kannst weitere Projekte hinzufügen oder die bestehenden entfernen.'
+        ) ?>
+        <br>
+        <a href="#projects" class="btn success">
+            <i class="ph ph-tree-structure"></i>
+            <?= lang('Projects', 'Projekte') ?>
+        </a>
+    </div>
+<?php } ?>
     <div class="alert signal mb-20">
         <h3 class="title">
             <?= lang('For the good practice: ', 'Für die gute Praxis:') ?>
@@ -41,11 +59,13 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         <i class="ph ph-smiley"></i>
         <b><?= lang('Thank you!', 'Danke!') ?></b>
         <br>
-        <a href="#upload-files" class="btn">
+        <a href="#upload-files" class="btn signal">
             <i class="ph ph-upload"></i>
             <?= lang('Upload files', 'Dateien hochladen') ?>
         </a>
     </div>
+
+    
 <?php } ?>
 
 <style>
@@ -141,7 +161,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     ?>
         <button class="btn <?= ($highlighted ? 'signal' : '') ?>" onclick="fav()" id="highlighted">
             <i class="ph ph-star <?= ($highlighted ? 'ph-fill' : '') ?>"></i>
-            <?= lang('Highlighted', 'Hervorgehoben') ?>
+            <!-- <?= lang('Highlighted', 'Hervorgehoben') ?> -->
         </button>
         <script>
             function fav() {
