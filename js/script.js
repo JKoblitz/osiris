@@ -1013,7 +1013,7 @@ function getDataciteDOI(doi) {
                 }
                 var pos = a.sequence ?? 'middle'
                 if (i === 0) pos = 'first'
-                else if (i == pub.creator.length - 1) pos = 'last'
+                else if (pub.creator && pub.creator.length && i == pub.creator.length - 1) pos = 'last'
                 console.log(pos);
                 var name = {
                     family: a.familyName,
