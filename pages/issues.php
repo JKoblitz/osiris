@@ -157,7 +157,7 @@ $issues = $DB->getUserIssues($user);
 </div>
 
 
-<a target="_blank" href="<?= ROOTPATH ?>/docs/add-activities" class="btn tour float-right" id="">
+<a target="_blank" href="<?= ROOTPATH ?>/docs/warnings" class="btn tour float-right" id="">
     <i class="ph ph-lg ph-question mr-5"></i>
     <?= lang('Read the Docs', 'Zur Hilfeseite') ?>
 </a>

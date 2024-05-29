@@ -432,6 +432,9 @@ Route::post('/crud/(categories|types)/delete/(.*)', function ($col, $id) {
     $updateResult = $collection->deleteOne(
         ['id' => $id]
     );
+    if ($col == 'categories') {
+        $osiris->adminTypes->deleteMany(['parent' => $id]);
+    }
 
     $deletedCount = $updateResult->getDeletedCount();
 

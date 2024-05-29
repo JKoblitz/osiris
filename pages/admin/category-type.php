@@ -4,8 +4,10 @@
 
 $color = $color ?? '#000000';
 
+
 $formaction = ROOTPATH;
 if (!empty($form) && isset($form['_id'])) {
+    $id = $form['id'];
     $formaction .= "/crud/types/update/" . $form['_id'];
     $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
     $url = ROOTPATH . "/admin/types/" . $form['id'];
@@ -36,15 +38,16 @@ if (!empty($form) && isset($form['_id'])) {
             'example_web' => $type['example_web'],
         ]]
     );
+    $member = $osiris->activities->count(['subtype' => $id]);
     
 } else {
     $formaction .= "/crud/types/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
     $url = ROOTPATH . "/admin/types/*";
     $title = lang('New category', 'Neue Kategorie');
+    $member = 0;
 }
 
-$member = $osiris->activities->count(['subtype' => $id]);
 ?>
 
 <div class="modal" id="unique" tabindex="-1" role="dialog">
