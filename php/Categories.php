@@ -51,6 +51,7 @@ class Categories
         }
         $types = $this->osiris->db->adminTypes->find()->toArray();
         foreach ($types as $c) {
+            if (!isset($this->categories[$c['parent']])) continue;
             $this->types[$c['id']] = $c;
             $this->categories[$c['parent']]['children'][$c['id']] = $c;
         }
