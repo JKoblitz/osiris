@@ -64,6 +64,11 @@
                 "id": "report.generate",
                 "de": "Berichte generieren",
                 "en": "Generate reports"
+            },
+            {
+                "id": "report.templates",
+                "de": "Vorlagen bearbeiten",
+                "en": "Edit templates"
             }
         ]
     },

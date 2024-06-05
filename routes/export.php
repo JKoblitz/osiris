@@ -40,18 +40,6 @@ Route::get('/cart', function () {
 }, 'login');
 
 
-Route::get('/reports', function () {
-    include_once BASEPATH . "/php/init.php";
-    $breadcrumb = [
-        // ['name' => 'Export', 'path' => "/export"],
-        ['name' => lang("Reports", "Berichte")]
-    ];
-
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/reports.php";
-    include BASEPATH . "/footer.php";
-}, 'login');
-
 
 Route::get('/export/(.*)/(.*)', function ($field, $type) {
     // error_reporting(E_ERROR | E_PARSE);
@@ -544,7 +532,7 @@ function clean_comment_export($subject, $front_addition_text = '')
 }
 
 
-Route::post('/reports', function () {
+Route::post('/reports/old', function () {
     // hide errors! otherwise they will break the word document
     if ($_POST['format'] == 'word') {
         error_reporting(E_ERROR);

@@ -32,7 +32,7 @@ $Format = new Document(true);
 
 
 <div class="container">
-    <a href="<?=ROOTPATH?>/docs/search" class="btn tour float-sm-right"><i class="ph ph-question"></i> <?=lang('Manual', 'Anleitung')?></a>
+    <a href="<?= ROOTPATH ?>/docs/search" class="btn tour float-sm-right"><i class="ph ph-question"></i> <?= lang('Manual', 'Anleitung') ?></a>
     <h1>
         <i class="ph ph-magnifying-glass-plus text-osiris"></i>
         <?= lang('Advanced activity search', 'Erweiterte Aktivitäten-Suche') ?>
@@ -63,10 +63,10 @@ $Format = new Document(true);
                         </select>
 
                         <!-- remove aggregation -->
-                       <div class="input-group-append">
-                       <button class="btn text-danger" onclick="$('#aggregate').val(''); getResult()"><i class="ph ph-x"></i></button>
+                        <div class="input-group-append">
+                            <button class="btn text-danger" onclick="$('#aggregate').val(''); getResult()"><i class="ph ph-x"></i></button>
 
-                       </div>
+                        </div>
                     </div>
                 </div>
 
@@ -107,21 +107,21 @@ $Format = new Document(true);
                     } else { ?>
                         <div class="list-group" id="saved-queries">
                             <?php foreach ($queries as $query) { ?>
-                             <!-- use rules (json)  -->
-                                <div class="d-flex justify-content-between" id="query-<?=$query['_id'] ?>">
-                                <a onclick="applyFilter('<?=$query['_id'] ?>', '<?=$query['aggregate']?>')"><?=$query['name'] ?></a>
-                                <a onclick="deleteQuery('<?=$query['_id'] ?>')" class="text-danger"><i class="ph ph-x"></i></a>
+                                <!-- use rules (json)  -->
+                                <div class="d-flex justify-content-between" id="query-<?= $query['_id'] ?>">
+                                    <a onclick="applyFilter('<?= $query['_id'] ?>', '<?= $query['aggregate'] ?>')"><?= $query['name'] ?></a>
+                                    <a onclick="deleteQuery('<?= $query['_id'] ?>')" class="text-danger"><i class="ph ph-x"></i></a>
                                 </div>
-                           <?php } ?>
+                            <?php } ?>
                         </div>
                     <?php  } ?>
 
-                   <script>
-                    var queries = {};
-                    <?php foreach ($queries as $query) { ?>
-                        queries['<?=$query['_id'] ?>'] = '<?=$query['rules'] ?>';
-                    <?php } ?>
-                   </script>
+                    <script>
+                        var queries = {};
+                        <?php foreach ($queries as $query) { ?>
+                            queries['<?= $query['_id'] ?>'] = '<?= $query['rules'] ?>';
+                        <?php } ?>
+                    </script>
 
                 </div>
                 <hr>
@@ -138,7 +138,20 @@ $Format = new Document(true);
     </div>
 
 
-    <pre id="result" class="code my-20 hidden"></pre>
+    <!-- copy to clipboard -->
+    <script>
+        function copyToClipboard() {
+            var text = $('#result').text()
+            navigator.clipboard.writeText(text)
+            toastSuccess('Query copied to clipboard.')
+        }
+    </script>
+
+    <div class="position-relative">
+        <button class="btn primary small position-absolute top-0 right-0 m-10" onclick="copyToClipboard()"><i class="ph ph-clipboard" aria-label="Copy to clipboard"></i></button>
+
+        <pre id="result" class="code p-20"></pre>
+    </div>
 
     <br>
 
@@ -613,10 +626,10 @@ $Format = new Document(true);
                         // https://medium.com/code-kings/datatables-js-how-to-update-your-data-object-for-ajax-json-data-retrieval-c1ac832d7aa5
                         var rules = RULES
                         if (rules === null) rules = []
-                        console.log(rules);
+                        // console.log(rules);
 
                         rules = JSON.stringify(rules)
-                        $('#result').html('filter = ' + rules)
+                        $('#result').html(rules)
                         d.json = rules
                         d.formatted = true
 

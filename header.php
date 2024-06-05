@@ -490,32 +490,42 @@ $pageactive = function ($p) use ($page) {
                 <?php } ?>
 
 
-                <?php if ($Settings->hasPermission('admin.see')) { ?>
 
+                <?php if ($Settings->hasPermission('admin.see') || $Settings->hasPermission('report.templates')) { ?>
                     <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-admin">
                         ADMIN
                     </div>
                     <nav>
-                        <a href="<?= ROOTPATH ?>/admin/general" class="with-icon <?= $pageactive('admin/general') ?>">
-                            <i class="ph ph-gear" aria-hidden="true"></i>
-                            <?= lang('General settings') ?>
-                        </a>
-                        <a href="<?= ROOTPATH ?>/admin/roles" class="with-icon <?= $pageactive('admin/roles') ?>">
-                            <i class="ph ph-shield-check" aria-hidden="true"></i>
-                            <?= lang('Roles &amp; Rights', 'Rollen &amp; Rechte') ?>
-                        </a>
-                        <a href="<?= ROOTPATH ?>/admin/fields" class="with-icon <?= $pageactive('admin/fields') ?>">
-                            <i class="ph ph-textbox" aria-hidden="true"></i>
-                            <?= lang('Custom fields') ?>
-                        </a>
-                        <a href="<?= ROOTPATH ?>/admin/categories" class="with-icon <?= $pageactive('admin/categories') ?>">
-                            <i class="ph ph-bookmarks" aria-hidden="true"></i>
-                            <?= lang('Activities', 'Aktivitäten') ?>
-                        </a>
-                        <a href="<?= ROOTPATH ?>/admin/features" class="with-icon <?= $pageactive('admin/features') ?>">
-                            <i class="ph ph-wrench" aria-hidden="true"></i>
-                            <?= lang('Features', 'Funktionen') ?>
-                        </a>
+                        <?php if ($Settings->hasPermission('admin.see')) { ?>
+                            <a href="<?= ROOTPATH ?>/admin/general" class="with-icon <?= $pageactive('admin/general') ?>">
+                                <i class="ph ph-gear" aria-hidden="true"></i>
+                                <?= lang('General settings') ?>
+                            </a>
+                            <a href="<?= ROOTPATH ?>/admin/roles" class="with-icon <?= $pageactive('admin/roles') ?>">
+                                <i class="ph ph-shield-check" aria-hidden="true"></i>
+                                <?= lang('Roles &amp; Rights', 'Rollen &amp; Rechte') ?>
+                            </a>
+                            <a href="<?= ROOTPATH ?>/admin/fields" class="with-icon <?= $pageactive('admin/fields') ?>">
+                                <i class="ph ph-textbox" aria-hidden="true"></i>
+                                <?= lang('Custom fields') ?>
+                            </a>
+                            <a href="<?= ROOTPATH ?>/admin/categories" class="with-icon <?= $pageactive('admin/categories') ?>">
+                                <i class="ph ph-bookmarks" aria-hidden="true"></i>
+                                <?= lang('Activities', 'Aktivitäten') ?>
+                            </a>
+                            <a href="<?= ROOTPATH ?>/admin/features" class="with-icon <?= $pageactive('admin/features') ?>">
+                                <i class="ph ph-wrench" aria-hidden="true"></i>
+                                <?= lang('Features', 'Funktionen') ?>
+                            </a>
+                        <?php } ?>
+
+
+                        <?php if ($Settings->hasPermission('report.templates')) { ?>
+                            <a href="<?= ROOTPATH ?>/admin/reports" class="with-icon <?= $pageactive('admin/reports') ?>">
+                                <i class="ph ph-clipboard-text"></i>
+                                <?= lang('Report templates', 'Berichte-Vorlagen') ?>
+                            </a>
+                        <?php } ?>
                     </nav>
                 <?php } ?>
 
