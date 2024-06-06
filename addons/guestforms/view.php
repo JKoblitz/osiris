@@ -298,6 +298,11 @@ require_once BASEPATH . "/vendor/autoload.php";
     </div>
 
 
+    <?php if ($Settings->hasPermission('guests.see.documents') || $Settings->hasPermission('guests.edit.documents')) { ?>
+
+
+        
+    <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
 
     <div class="modal" id="connect-user" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -327,7 +332,7 @@ require_once BASEPATH . "/vendor/autoload.php";
             </div>
         </div>
     </div>
-
+<?php } ?>
 
     <div class="col-md-6">
 
@@ -360,7 +365,11 @@ require_once BASEPATH . "/vendor/autoload.php";
                         </div>
                     </div>
                 <?php } ?>
+
+                
+    <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
                 <a class="btn primary" href="#connect-user">Nutzer verknüpfen</a>
+                <?php } ?>
             </div>
         </div>
 
@@ -368,7 +377,8 @@ require_once BASEPATH . "/vendor/autoload.php";
         <?php
         $files = $form['files'] ?? array();
         ?>
-
+        
+    <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
         <!-- modal to upload documents -->
         <div class="modal" id="upload-document" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -404,6 +414,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                 </div>
             </div>
         </div>
+        <?php } ?>
 
 
         <div class="box">
@@ -439,12 +450,16 @@ require_once BASEPATH . "/vendor/autoload.php";
                     <?php endif; ?>
                 </table>
 
+                
+    <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
                 <a class="btn primary" href="#upload-document">Dokument hochladen</a>
+                <?php } ?>
             </div>
         </div>
 
 
 
+        <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
         <!-- modal for chip registration -->
         <div class="modal" id="chip-registration" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -463,31 +478,43 @@ require_once BASEPATH . "/vendor/autoload.php";
                             <label class="element-author" for="chip">
                                 <?= lang('Chip number', 'Chipnummer') ?>
                             </label>
-                            <input type="text" class="form-control" id="chip" name="values[chip][number]" autocomplete="off" value="<?= $chip['number'] ?? '' ?>">
+                            <input type="text" class="form-control" id="chip" name="values[chip][number]" autocomplete="off" value="<?= $chip['number'] ?? '' ?>" required>
                         </div>
                         <div class="form-group">
                             <label class="element-author" for="registered">
                                 <?= lang('Registered at', 'Registriert am') ?>
                             </label>
-                            <input type="date" class="form-control" id="registered" name="values[chip][date]" autocomplete="off" value="<?= $chip['date'] ?? date('Y-m-d') ?>">
+                            <input type="date" class="form-control" id="registered" name="values[chip][start]" autocomplete="off" value="<?= $chip['start'] ?? date('Y-m-d') ?>" required>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label class="element-author" for="registered">
+                                <?= lang('Returned at', 'Zurückgegeben am') ?>
+                            </label>
+                            <input type="date" class="form-control" id="registered" name="values[chip][end]" autocomplete="off" value="<?= $chip['end'] ?? '' ?>">
                         </div>
                         <button type="submit" class="btn primary"><?= lang('Register', 'Registrieren') ?></button>
                     </form>
                 </div>
             </div>
         </div>
+
+        <?php } ?>
         <div class="box">
             <div class="content">
                 <h4 class="title mb-0">
                     Zugangschip
                 </h4>
-                <?php if (isset($form['chip']) && !empty($form['chip'])) { ?>
+                <?php if (isset($chip) && !empty($chip)) { ?>
                     <ul class="list">
                         <li>
-                            <b>Chipnummer:</b> <?= $form['chip']['number'] ?>
+                            <b>Chipnummer:</b> <?= $chip['number'] ?>
                         </li>
                         <li>
-                            <b>Registriert am:</b> <?= format_date($form['chip']['date']) ?>
+                            <b>Registriert am:</b> <?= format_date($chip['start']) ?>
+                        </li>
+                        <li>
+                            <b>Zurückgegeben am:</b> <?= !empty($chip['end'])? format_date($chip['end'] ) : '-' ?>
                         </li>
                     </ul>
                 <?php } else { ?>
@@ -501,8 +528,12 @@ require_once BASEPATH . "/vendor/autoload.php";
             </div>
         </div>
     </div>
+    
+    <?php } ?>
 
 </div>
+
+
 
 <?php if (isset($_GET['verbose'])) {
     dump($form, true);

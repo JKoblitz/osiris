@@ -134,9 +134,6 @@
     <div class="form-group">
         <label for="title"><?= lang('Title', 'Titel') ?></label>
         <input type="text" class="form-control" name="title" value="<?= $report['title'] ?? '' ?>" required>
-        <small class="form-text">
-            <?= lang('Must be unique.', 'Muss einzigartig sein, wird sonst überschrieben.') ?>
-        </small>
     </div>
     <div class="form-group">
         <label for="description"><?= lang('Description', 'Beschreibung') ?></label>
