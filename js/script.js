@@ -64,7 +64,7 @@ function initQuill(element) {
 
 function readHash() {
     var hash = window.location.hash.substr(1);
-    console.log(hash);
+    // console.log(hash);
     if (hash === undefined || hash == "") return {}
     return hash.split('&').reduce(function (res, item) {
         var parts = item.split('=');
@@ -202,19 +202,19 @@ $('#edit-form').on('submit', function (event) {
         values[name] = el.val()
     })
     values['comment'] = $('#editor-comment').val()
-    console.log(values);
+    // console.log(values);
     $.ajax({
         type: "POST",
         data: values,
         dataType: "html",
         url: ROOTPATH + "/update",
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             toastSuccess(data)
             location.reload()
         },
         error: function (response) {
-            console.log(response.responseText)
+            // console.log(response.responseText)
             toastError(response.responseText)
         }
     })
@@ -317,7 +317,7 @@ function checkDuplicateID(id, type = 'doi') {
         dataType: "html",
         url: ROOTPATH + "/check-duplicate-id",
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             if (data == 'true') {
                 // toastError(
                 //     lang(
@@ -337,14 +337,14 @@ function checkDuplicateID(id, type = 'doi') {
             // toastSuccess(data)
         },
         error: function (response) {
-            console.log(response.responseText)
+            // console.log(response.responseText)
             toastError(response.responseText)
         }
     })
 }
 
 function getJournal(name) {
-    console.log(name);
+    // console.log(name);
     const SUGGEST = $('#journal-suggest')
     SUGGEST.empty()
     var url = ROOTPATH + '/api/journal'
@@ -377,7 +377,7 @@ function getJournal(name) {
                 window.location.replace('#journal-select')
             } else {
                 journals.forEach((j) => {
-                    console.log(j);
+                    // console.log(j);
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
@@ -413,7 +413,7 @@ function getJournal(name) {
             // window.location.replace('#journal-select')
 
 
-            console.log(journals);
+            // console.log(journals);
         },
         error: function (response) {
             toastError(response.responseText)
@@ -424,7 +424,7 @@ function getJournal(name) {
 
 function selectJournal(j, n = false) {
 
-    console.log(j);
+    // console.log(j);
     var field = $('#selected-journal')
     if (n) {
         $.ajax({
@@ -436,7 +436,7 @@ function selectJournal(j, n = false) {
             url: ROOTPATH + '/crud/journal/create',
             success: function (response) {
                 // $('.loader').removeClass('show')
-                console.log(response);
+                // console.log(response);
                 if (response.msg) {
                     toastWarning(response.msg)
                     selectJournal(response, false)
@@ -495,7 +495,7 @@ function getJournalAlex(name) {
         dataType: "json",
         url: url,
         success: function (result) {
-            console.log(result);
+            // console.log(result);
             var journals = [];
 
             if (result.results !== undefined) {
@@ -547,7 +547,7 @@ function getJournalAlex(name) {
                 SUGGEST.append('<tr><td>' + lang('Journal not found in OpenAlex. Maybe you want to add a magazine article?', 'Journal nicht in OpenAlex gefunden. Wolltest du vielleicht einen Magazin-Artikel hinzufügen?') + '</tr></td>')
             }
 
-            console.log(journals);
+            // console.log(journals);
         },
         error: function (response) {
             toastError(response.responseText)
@@ -595,13 +595,13 @@ function getJournalNLM(name) {
                 dataType: "json",
                 url: url,
                 success: function (result) {
-                    console.log(result);
+                    // console.log(result);
                     var journals = [];
 
                     for (const id in result.result) {
                         if (id == 'uids') continue;
                         const j = result.result[id];
-                        console.log(j);
+                        // console.log(j);
                         var issn = [];
                         j.issnlist.forEach(item => {
                             issn.push(item.issn)
@@ -638,7 +638,7 @@ function getJournalNLM(name) {
                         SUGGEST.append('<tr><td>' + lang('Journal not found in NLM. Maybe you want to add a magazine article?', 'Journal nicht in NLM gefunden. Wolltest du vielleicht einen Magazin-Artikel hinzufügen?') + '</tr></td>')
                     }
 
-                    console.log(journals);
+                    // console.log(journals);
                 },
                 error: function (response) {
                     toastError(response.responseText)
@@ -669,7 +669,7 @@ function getPubmed(id) {
 
         url: url,
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             var pmid = data.result.uids[0]
             var pub = data.result[pmid]
 
@@ -754,8 +754,13 @@ function getDOI(doi) {
 
 
             var date = getPublishingDate(pub)
-            if (pub['journal-issue'] !== undefined && pub['journal-issue'].length !== 0) {
-                var date2 = getPublishingDate(pub['journal-issue'])
+            if (pub['journal-issue'] !== undefined && 
+                (pub['journal-issue']['published-online'] !== undefined && pub['journal-issue']['published-online']['date-parts'] !== undefined)
+               ||
+                (pub['journal-issue']['published-print'] !== undefined && pub['journal-issue']['published-print']['date-parts'] !== undefined)
+            ) {
+                var date = getPublishingDate(pub['journal-issue'])
+                // console.log(date);
             }
 
             var authors = [];
@@ -798,7 +803,12 @@ function getDOI(doi) {
                     }
                 });
             }
-            console.log(funder);
+            // console.log(funder);
+
+            var pages = pub.page
+            if (pub.page === undefined || pub.page !== null) {
+                pages = pub['article-number'] ?? null;
+            }
 
             var pubdata = {
                 title: pub.title[0],
@@ -812,7 +822,7 @@ function getDOI(doi) {
                 issn: (pub.ISSN ?? []).join(' '),
                 issue: issue,
                 volume: pub.volume,
-                pages: pub.page,
+                pages: pages,
                 doi: pub.DOI,
                 // pubmed: null,
                 abstract: (pub.abstract ?? '').replace(/<[^>]*>?/gm, ''),
@@ -866,7 +876,7 @@ function getOpenAlexDOI(doi) {
         url: url,
         success: function (pub) {
             // var pub = data
-            console.log(pub);
+            // console.log(pub);
 
             var date = pub.publication_date.split('-')
 
@@ -986,7 +996,7 @@ function getDataciteDOI(doi) {
         url: url,
         success: function (data) {
             var pub = data.data.attributes
-            console.log(pub);
+            // console.log(pub);
 
             var date = pub.dates[0].date
             if (date !== undefined) {
@@ -996,7 +1006,7 @@ function getDataciteDOI(doi) {
                 dateSplit = [pub.publicationYear, 1, null]
                 date = pub.publicationYear + "-01-01"
             }
-            console.log(dateSplit, date);
+            // console.log(dateSplit, date);
 
             var authors = [];
             // var editors = [];
@@ -1014,7 +1024,7 @@ function getDataciteDOI(doi) {
                 var pos = a.sequence ?? 'middle'
                 if (i === 0) pos = 'first'
                 else if (pub.creator && pub.creator.length && i == pub.creator.length - 1) pos = 'last'
-                console.log(pos);
+                // console.log(pos);
                 var name = {
                     family: a.familyName,
                     given: a.givenName,
@@ -1119,7 +1129,7 @@ function toggleForm(pub) {
 }
 
 function fillForm(pub) {
-    console.log(pub);
+    // console.log(pub);
 
     if (pub.title !== undefined) {
         var title = pub.title.replace(/\s+/g, ' ')
@@ -1159,8 +1169,8 @@ function fillForm(pub) {
     elements.forEach(element => {
         if (pub[element] !== undefined && !UPDATE || !isEmpty(pub[element]))
             $('#' + element).val(pub[element]).addClass('is-valid')
-        console.log(element);
-        console.log(pub[element]);
+        // console.log(element);
+        // console.log(pub[element]);
         // console.log($('#' + element));
     });
 
@@ -1178,7 +1188,7 @@ function fillForm(pub) {
             j_val = pub.issn.split(' ')
             j_val = j_val[0]
         }
-        console.log(j_val);
+        // console.log(j_val);
         $('#journal-search').val(j_val)
         getJournal(j_val)
 
@@ -1231,7 +1241,7 @@ function fillOpenAccess(oa) {
         $('#oa_status option[value=closed]').attr('selected', true)
     } else {
         if (oa === true) oa = 'open'
-        console.log(oa);
+        // console.log(oa);
         $('#open_access').attr('checked', true)
         $('#oa_status option[value=' + oa + ']').attr('selected', true)
     }
@@ -1341,7 +1351,7 @@ function toggleAffiliation(item) {
     } else {
         old[2] = 1
     }
-    console.log(old);
+    // console.log(old);
     $(item).find('input').val(old.join(';'))
     $(item).toggleClass('author-aoi')
     affiliationCheck();
@@ -1354,12 +1364,12 @@ function addAuthor(event, editor = false) {
         var el = $('#add-author')
     }
     var data = el.val()
-    console.log(data);
+    // console.log(data);
     if ((event.type == 'keypress' && event.keyCode == '13') || event.type == 'click') {
         event.preventDefault();
         const match = (SCIENTISTS.indexOf(data) != -1)
         var value = data.split(',')
-        console.log(data);
+        // console.log(data);
         if (value.length !== 2) {
             toastError('Author name must be formatted like this: Lastname, Firstname')
             return;
@@ -1398,7 +1408,7 @@ function removeAuthor(event, el) {
 //     }
 //     // if (type == "others") return;
 //     type = types[type] ?? type;
-//     console.log(type);
+    // console.log(type);
 
 //     activeButtons(type)
 //     $('#type').val(type)
@@ -1434,7 +1444,7 @@ function removeAuthor(event, el) {
 //         var el = $(this)
 //         var vis = el.closest('[data-visible]').attr('data-visible')
 //         if (vis.includes(type)) {
-//             // console.log(el.attr('name'), vis, el);
+            // console.log(el.attr('name'), vis, el);
 //             el.attr('disabled', false)
 //         }
 //     })
@@ -1482,7 +1492,7 @@ function loadModal(path, data = {}) {
                 });
                 quill.on('text-change', function (delta, oldDelta, source) {
                     var delta = quill.getContents()
-                    console.log(delta);
+                    // console.log(delta);
                     var str = ""
                     delta.ops.forEach(el => {
                         if (el.attributes !== undefined) {
@@ -1502,7 +1512,7 @@ function loadModal(path, data = {}) {
             }
         },
         error: function (response) {
-            console.log(response);
+            // console.log(response);
             toastError(response.responseText)
             $('.loader').removeClass('show')
         }
@@ -1546,7 +1556,7 @@ function verifyForm(event, form) {
         }
         if ((input.prop('required') && !input.prop('disabled'))) {
 
-            console.log(input);
+            // console.log(input);
             if (!$(this).val()) {
                 selector.removeClass('is-valid').addClass('is-invalid')
                 // .on('input', function(){
@@ -1607,7 +1617,7 @@ function addToCart(el, id) {//.addClass('animate__flip')
     var fav = osirisJS.readCookie('osiris-cart')
     if (fav) {
         var favlist = fav.split(',')
-        console.log(favlist);
+        // console.log(favlist);
         const index = favlist.indexOf(id);
         if (index > -1) {
             favlist.splice(index, 1);
@@ -1642,7 +1652,7 @@ function addToCart(el, id) {//.addClass('animate__flip')
 
 
 function getTeaching(name) {
-    console.log(name);
+    // console.log(name);
     const SUGGEST = $('#teaching-suggest')
     SUGGEST.empty()
     var url = ROOTPATH + '/api/teaching'
@@ -1674,7 +1684,7 @@ function getTeaching(name) {
                 window.location.replace('#teaching-select')
             } else {
                 teaching.forEach((j) => {
-                    console.log(j);
+                    // console.log(j);
                     var row = $('<tr>')
 
                     var button = $('<button class="btn" title="select">')
@@ -1701,7 +1711,7 @@ function getTeaching(name) {
             }
 
 
-            console.log(teaching);
+            // console.log(teaching);
         },
         error: function (response) {
             toastError(response.responseText)
@@ -1713,7 +1723,7 @@ function getTeaching(name) {
 
 function selectTeaching(j) {
 
-    console.log(j);
+    // console.log(j);
     var field = $('#selected-teaching')
     field.empty()
     field.append(`<h5 class="m-0"><span class="highlight-text" >${j.module}</span> ${j.title}</h5>`)
@@ -1742,7 +1752,7 @@ var doubletFound = false;
 function doubletCheck() {
 
     var form = objectifyForm($('#activity-form'))
-    console.log(form);
+    // console.log(form);
     if (form['values[start]']) {
         var start = form['values[start]'].split('-')
         form['values[year]'] = start[0]
@@ -1756,7 +1766,7 @@ function doubletCheck() {
         dataType: "html",
         url: ROOTPATH + "/check-duplicate",
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             if (data != 'false') {
                 var doublet = $('#doublet-found')
                 doublet.show()
@@ -1775,7 +1785,7 @@ function doubletCheck() {
             // toastSuccess(data)
         },
         error: function (response) {
-            console.log(response.responseText)
+            // console.log(response.responseText)
             toastError(response.responseText)
         }
     })
