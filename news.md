@@ -1,6 +1,20 @@
 # Neuigkeiten
 
 
+<span class="badge float-right">XXX</span>
+<a class="anchor" href="#version-1.3.5" id="version-1.3.5"></a>
+
+## Version 1.3.5
+
+
+#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
+
+- Bessere Erkennung von Artikeln, die mittels DOI hinzugefügt werden
+  - Bessere Erkennung vom Veröffentlichungsdatum
+  - Wenn die Seitenzahl nicht angegeben ist, wird alternativ die Artikelnummer verwendet (falls vorhanden)
+- Die Filter in "Alle Aktivitäten" lassen sich nun wegklappen und sind auch auf mobilen Endgeräten besser verfügbar
+
+
 <span class="badge float-right">23.05.2024</span>
 <a class="anchor" href="#version-1.3.4" id="version-1.3.4"></a>
 
