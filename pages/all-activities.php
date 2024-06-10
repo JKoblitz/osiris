@@ -56,8 +56,19 @@ $user = $user ?? $_SESSION['username'];
     </a>
 <?php } ?>
 
+<style>
+    /* under md */
+    @media (max-width: 768px) {
+        .filter-wrapper {
+            display: none;
+        }
+    }
+</style>
+
+<button class="btn secondary float-right" onclick="$('.filter-wrapper').slideToggle()">Filter <i class="ph ph-caret-down"></i></button>
+
 <div class="row row-eq-spacing">
-    <div class="col-lg-9">
+    <div class="col order-last order-sm-first">
 
         <table class="table dataTable" id="result-table" style="width:100%">
             <thead>
@@ -83,9 +94,9 @@ $user = $user ?? $_SESSION['username'];
         </table>
     </div>
 
-    <div class="col-lg-3 d-none d-lg-block">
+    <div class="col-md-3 filter-wrapper">
 
-        <div class="on-this-page-filter filters content" id="filters">
+        <div class="filters content" id="filters">
             <!-- <div class="content" > -->
             <div class="title">Filter</div>
 
@@ -100,10 +111,10 @@ $user = $user ?? $_SESSION['username'];
             </h6>
             <div class="filter">
                 <table id="filter-type" class="table small simple">
-                    <?php foreach ($Settings->getActivities() as $a) { 
+                    <?php foreach ($Settings->getActivities() as $a) {
                         $id = $a['id'];
-                        ?>
-                        <tr style="--highlight-color:  <?=$a['color']?>;">
+                    ?>
+                        <tr style="--highlight-color:  <?= $a['color'] ?>;">
                             <td>
                                 <a data-type="<?= $id ?>" onclick="filterActivities(this, '<?= $id ?>', 1)" class="item" id="<?= $id ?>-btn">
                                     <span class="text-<?= $id ?>">
@@ -125,7 +136,7 @@ $user = $user ?? $_SESSION['username'];
             <div class="filter">
                 <table id="filter-unit" class="table small simple">
                     <?php foreach ($Departments as $id => $dept) { ?>
-                        <tr  <?=$Groups->cssVar($id)?>>
+                        <tr <?= $Groups->cssVar($id) ?>>
                             <td>
                                 <a data-type="<?= $id ?>" onclick="filterActivities(this, '<?= $id ?>', 7)" class="item d-block colorless" id="<?= $id ?>-btn">
                                     <span><?= $dept ?></span>
@@ -172,7 +183,7 @@ $user = $user ?? $_SESSION['username'];
 
 <script>
     const CARET_DOWN = ' <i class="ph ph-caret-down"></i>';
-   
+
     // $.fn.DataTable.moment( 'HH:mm MMM D, YY' );
     var dataTable;
 
@@ -428,7 +439,7 @@ $user = $user ?? $_SESSION['username'];
             "order": [
                 [5, 'desc'],
                 [1, 'asc']
-            ],  
+            ],
             <?php if (isset($_GET['q'])) { ?> "oSearch": {
                     "sSearch": "<?= $_GET['q'] ?>"
                 }
