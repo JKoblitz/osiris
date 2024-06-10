@@ -33,7 +33,7 @@ Route::get('/projects/new', function () {
         ['name' => lang("New", "Neu")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/add-project.php";
+    include BASEPATH . "/pages/projects/edit.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -64,7 +64,7 @@ Route::get('/projects/view/(.*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/projects/edit/([a-zA-Z0-9]*)', function ($id) {
+Route::get('/projects/(edit|collaborators|finance)/([a-zA-Z0-9]*)', function ($page, $id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
@@ -74,49 +74,46 @@ Route::get('/projects/edit/([a-zA-Z0-9]*)', function ($id) {
         header("Location: " . ROOTPATH . "/projects?msg=not-found");
         die;
     }
-    $breadcrumb = [
-        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
-        ['name' =>  $project['name'], 'path' => "/projects/view/$id"],
-        ['name' => lang("Edit", "Bearbeiten")]
-    ];
-
-    global $form;
-    $form = DB::doc2Arr($project);
-
-    include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/add-project.php";
-    include BASEPATH . "/footer.php";
-}, 'login');
-
-Route::get('/projects/collaborators/([a-zA-Z0-9]*)', function ($id) {
-    include_once BASEPATH . "/php/init.php";
-    $user = $_SESSION['username'];
-
-    $mongo_id = $DB->to_ObjectID($id);
-    $project = $osiris->projects->findOne(['_id' => $mongo_id]);
-    if (empty($project)) {
-        header("Location: " . ROOTPATH . "/projects?msg=not-found");
-        die;
+    
+    switch ($page){
+        case 'collaborators':
+            $name = lang("Collaborators", "Kooperationspartner");
+            break;
+        case 'finance':
+            $name = lang("Finance", "Finanzen");
+            break;
+        default:
+            $name = lang("Edit", "Bearbeiten");
     }
+
     $breadcrumb = [
         ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
         ['name' =>  $project['name'], 'path' => "/projects/view/$id"],
-        ['name' => lang("Collaborators", "Kooperationspartner")]
+        ['name' => $name]
     ];
+
     global $form;
     $form = DB::doc2Arr($project);
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/projects/project-collaborators.php";
+    switch ($page){
+        case 'collaborators':
+            include BASEPATH . "/pages/projects/collaborators.php";
+            break;
+        case 'finance':
+            include BASEPATH . "/pages/projects/finance.php";
+            break;
+        default:
+            include BASEPATH . "/pages/projects/edit.php";
+    }
     include BASEPATH . "/footer.php";
 }, 'login');
-
 
 /**
  * CRUD routes
  */
 
- Route::post('/crud/projects/create', function () {
+Route::post('/crud/projects/create', function () {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->projects;
@@ -180,6 +177,15 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->projects;
+
+    
+    // $user_project = in_array($user, array_column(DB::doc2Arr($project['persons']), 'user'));
+    // $edit_perm = ($Settings->hasPermission('projects.edit') || ($Settings->hasPermission('projects.edit-own') && $user_project));
+
+    // if (!$edit_perm) {
+    //     header("Location: " . ROOTPATH . "/projects/view/$id?msg=no-permission");
+    //     die;
+    // }
 
     $values = validateValues($_POST['values'], $DB);
     // add information on creating process
@@ -265,7 +271,7 @@ Route::post('/crud/projects/connect-activities', function () {
     $project = $_POST['project'];
     $activity = $_POST['activity'];
 
-    if (isset($_POST['delete'])){
+    if (isset($_POST['delete'])) {
         $osiris->activities->updateOne(
             ['_id' => $DB::to_ObjectID($activity)],
             ['$pull' => ["projects" => $project]]
@@ -278,9 +284,9 @@ Route::post('/crud/projects/connect-activities', function () {
         ['_id' => $DB::to_ObjectID($activity)],
         ['$push' => ["projects" => $project]]
     );
-    
+
     header("Location: " . $_POST['redirect'] . "?msg=connected-activity-to-project#add-activity");
     die;
-    
+
     header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
 });
