@@ -4,14 +4,14 @@
  * Page to see and edit custom fields
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /admin/fields
  *
  * @package     OSIRIS
  * @since       1.3.1
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */

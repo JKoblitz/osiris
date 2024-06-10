@@ -4,7 +4,7 @@
  * Page to see all activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /activities
  * @link /my-activities
@@ -12,7 +12,7 @@
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */

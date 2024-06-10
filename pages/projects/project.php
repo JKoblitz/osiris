@@ -4,14 +4,14 @@
  * Page to see details on a single project
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /project/<id>
  *
  * @package     OSIRIS
  * @since       1.2.2
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */

@@ -5,7 +5,7 @@
  *
  * This file is part of the OSIRIS package 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * @link		https://github.com/JKoblitz/osiris
  * @version		1.2
  * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
