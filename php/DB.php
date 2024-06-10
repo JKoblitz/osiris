@@ -8,7 +8,7 @@
  * @copyright	Copyright (c) 2024, Julia Koblitz
  * @link		https://github.com/JKoblitz/osiris
  * @version		1.2
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
