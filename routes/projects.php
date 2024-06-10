@@ -21,7 +21,7 @@ Route::get('/projects', function () {
         ['name' => lang("Projects", "Projekte")]
     ];
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/projects.php";
+    include BASEPATH . "/pages/projects/projects.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -60,7 +60,7 @@ Route::get('/projects/view/(.*)', function ($id) {
     ];
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/project.php";
+    include BASEPATH . "/pages/projects/project.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -107,7 +107,7 @@ Route::get('/projects/collaborators/([a-zA-Z0-9]*)', function ($id) {
     $form = DB::doc2Arr($project);
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/project-collaborators.php";
+    include BASEPATH . "/pages/projects/project-collaborators.php";
     include BASEPATH . "/footer.php";
 }, 'login');
 
