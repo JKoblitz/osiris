@@ -436,27 +436,6 @@ function val($index, $default = '')
             <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
             <input type="hidden" class="form-control disabled" name="values[subtype]" id="subtype" readonly>
 
-            <style>
-                #data-modules {
-                    padding: 0;
-                    margin: 0 -1rem;
-                }
-
-                #data-modules .data-module {
-                    padding: 1rem;
-                    align-self: baseline;
-                }
-
-                #data-modules .row {
-                    padding: 0;
-                }
-
-                #data-modules .row [class^="col"] {
-                    padding: 1rem;
-                    align-self: baseline;
-                }
-            </style>
-
             <p id="type-description" class="description">
                 <!-- filled by togglePubType() in add-activity.js -->
             </p>

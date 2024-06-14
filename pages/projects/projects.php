@@ -16,6 +16,8 @@
  * @license     MIT
  */
 
+//  TODO: rowGroup nach Mittelgeber bzw. status
+
 require_once BASEPATH . "/php/Project.php";
 $Project = new Project();
 
@@ -42,6 +44,7 @@ if (!$Settings->hasPermission('projects.view')) {
 
 ?>
 
+
 <style>
     .index {
         /* color: transparent; */
@@ -57,6 +60,15 @@ if (!$Settings->hasPermission('projects.view')) {
         background-color: var(--primary-color);
         box-shadow: 0 0 3px 0.2rem rgba(238, 114, 3, 0.6);
     }
+    table.dataTable td.dt-control:before {
+    display: inline-block;
+    box-sizing: border-box;
+    content: "";
+    border-top: 5px solid transparent;
+    border-left: 10px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 5px solid transparent;
+    border-right: 0px solid transparent;
+}
 </style>
 
 <div class="btn-toolbar float-right">
@@ -120,50 +132,22 @@ if (!$Settings->hasPermission('projects.view')) {
 
 <table class="table" id="project-table">
     <thead>
+        <th></th>
         <th><?= lang('ID', 'ID') ?></th>
-        <!-- <th><?= lang('Title', 'Title') ?></th> -->
+        <th><?= lang('Type', 'Art') ?></th>
         <th><?= lang('Funder', 'Mittelgeber') ?></th>
         <th><?= lang('Project time', 'Projektlaufzeit') ?></th>
         <th><?= lang('Role', 'Rolle') ?></th>
-        <th><?= lang('Contact person', 'Kontaktperson') ?></th>
-        <th><?= lang('# activities', '# Aktivitäten') ?></th>
+        <th><?= lang('Applicant', 'Antragsteller:in') ?></th>
         <th><?= lang('Status') ?></th>
     </thead>
     <tbody>
-        <?php
-        $projects = $osiris->projects->find($filter);
-        foreach ($projects as $project) {
-            $Project->setProject($project);
-        ?>
-            <tr id="<?= $project['_id'] ?>">
-                <td>
-                    <a href="<?= ROOTPATH ?>/projects/view/<?= $project['_id'] ?>">
-                        <?= $project['name'] ?>
-                    </a>
-                </td>
-                <td>
-                    <?= $project['funder'] ?? '-' ?>
-                    (<?= $Project->getFundingNumbers('<br>') ?>)
-                </td>
-                <td>
-                    <?= $Project->getDateRange() ?>
-                </td>
-                <td>
-                    <?= $Project->getRole() ?>
-                </td>
-                <td>
-                    <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
-                </td>
-                <td>
-                    <?php
-                    echo $osiris->activities->count(['projects' => strval($project['name'])]);
-                    ?>
-                </td>
-                <td>
-                    <?= $Project->getStatus() ?>
-                </td>
-            </tr>
-        <?php } ?>
+        <tr>
+            <td colspan="8" class="text-center">
+                <i class="ph ph-spinner-third text-muted"></i>
+                <?= lang('Loading projects', 'Lade Projekte') ?>
+            </td>
+        </tr>
     </tbody>
 </table>
 
@@ -171,13 +155,132 @@ if (!$Settings->hasPermission('projects.view')) {
 
 <script>
     var dataTable;
+
+    // Formatting function for row details - modify as you need
+    function format(d) {
+        // `d` is the original data object for the row
+        return (
+            `
+            <dl>
+            <dt>Full name:</dt>
+            <dd>${d.title}</dd>
+            <dt>Funding numbers:</dt>
+            <dd>${d.funding_numbers}</dd>
+            </dl>
+            `
+        );
+    }
+
+
+
     $(document).ready(function() {
-        dataTable = $('#project-table').DataTable({
+        dataTable = new DataTable('#project-table', {
+            ajax: {
+                url: '<?= ROOTPATH ?>/api/projects',
+                // add data to the request
+                data: {
+                    json: '<?= json_encode($filter) ?>',
+                    formatted: true
+                },
+            },
+            type: 'GET',
             dom: 'frtipP',
-            "order": [
-                [2, 'desc'],
+            columns: [{
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                },
+                {
+                    data: 'name',
+                    render: function(data, type, row) {
+                        return `<a href="<?= ROOTPATH ?>/projects/view/${row.id}">${data}</a>`
+                    }
+                },
+                {
+                    data: 'type',
+                    render: function(data) {
+                        if (data == 'Eigenfinanziert') {
+                            return `<span class="badge text-signal">
+                        <i class="ph ph-piggy-bank"></i>
+                        ${lang('Self-funded', 'Eigenfinanziert')}
+                        </span>`
+                        }
+                        return `<span class="badge text-danger">
+                        <i class="ph ph-hand-coins"></i>
+                        ${lang('Third-party funded', 'Drittmittel')}
+                        </span>`
+                    }
+                },
+                {
+                    data: 'funder'
+                },
+                {
+                    data: 'date_range'
+                },
+                {
+                    data: 'role', render: function(data) {
+                        if (data == 'coordinator') {
+                            return `<span class="badge text-signal">
+                        <i class="ph ph-crown"></i>
+                        ${lang('Coordinator', 'Koordinator')}
+                        </span>`
+                        }
+                        return `<span class="badge text-muted">
+                        <i class="ph ph-handshake"></i>
+                        ${lang('Partner')}
+                        </span>`
+                    }
+                },
+                {
+                    data: 'applicant',
+                    render: function(data, type, row) {
+                        if (!row.contact) return data;
+                        return `<a href="<?= ROOTPATH ?>/profile/${row.contact}">${data}</a>`
+                    }
+                },
+                {
+                    data: 'status',
+                    render: function(data) {
+                        switch (data) {
+                            case 'approved':
+                                return `<span class='badge success'><?= lang('approved', 'bewilligt') ?></span>`;
+                            case 'finished':
+                                return `<span class='badge success'><?= lang('finished', 'abgeschlossen') ?></span>`;
+                            case 'applied':
+                                return `<span class='badge signal'><?= lang('applied', 'beantragt') ?></span>`;
+                            case 'rejected':
+                                return `<span class='badge danger'><?= lang('rejected', 'abgelehnt') ?></span>`;
+                            case 'expired':
+                                return `<span class='badge dark'><?= lang('expired', 'abgelaufen') ?></span>`;
+                        }
+                    }
+                }
+            ],
+            order: [
+                [4, 'desc']
             ]
         });
+
+        // Add event listener for opening and closing details
+        dataTable.on('click', 'td.dt-control', function(e) {
+            let tr = e.target.closest('tr');
+            let row = dataTable.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+            } else {
+                // Open this row
+                row.child(format(row.data())).show();
+            }
+        });
+        // dataTable = $('#project-table').DataTable({
+        //     dom: 'frtipP',
+        //     "order": [
+        //         [2, 'desc'],
+        //     ]
+        // });
 
         $('#project-table_wrapper').prepend($('.filters'))
     });
@@ -186,21 +289,21 @@ if (!$Settings->hasPermission('projects.view')) {
         let active = $(btn).hasClass('active')
         $('#filter-status').find('.active').removeClass('active')
         if (!active) {
-            dataTable.columns(6).search(status, true, false, true).draw();
+            dataTable.columns(7).search(status, true, false, true).draw();
             $('#filter-status').find('.index').addClass('active')
             $(btn).addClass('active')
         } else
-            dataTable.columns(6).search("", true, false, true).draw();
+            dataTable.columns(7).search("", true, false, true).draw();
     }
 
     function filterRole(btn, role) {
         let active = $(btn).hasClass('active')
         $('#filter-role').find('.active').removeClass('active')
         if (!active) {
-            dataTable.columns(3).search(role, true, false, true).draw();
+            dataTable.columns(5).search(role, true, false, true).draw();
             $('#filter-role').find('.index').addClass('active')
             $(btn).addClass('active')
         } else
-            dataTable.columns(3).search("", true, false, true).draw();
+            dataTable.columns(5).search("", true, false, true).draw();
     }
 </script>

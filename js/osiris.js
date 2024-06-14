@@ -1182,6 +1182,7 @@ function projectTimeline(selector, data = {}) {
 
             const typeInfo = {
                 'PI': { color: '#f78104', label: lang('Pi', 'PI') },
+                'applicant': { color: '#B61F29', label: lang('Applicant', 'Antragsteller:in') },
                 'worker': { color: '#008083', label: lang('Worker', 'Projektmitarbeiter:in') },
                 'associate': { color: '#AAAAAA', label: lang('Associate', 'Beteiligte Person') },
             }
@@ -1266,10 +1267,10 @@ function projectTimeline(selector, data = {}) {
                     content: function () {
                         var role = '';
                         console.log(d.role);
-                        if (typeInfo[d.role]) {
+                        if (typeInfo[d.role] !== undefined) {
                             role = `<span style="color:${typeInfo[d.role].color}">${typeInfo[d.role].label}</span>`
                         }
-                        return `<b>${d.title ?? 'No title available'}</b><br>${d.funder}<br>${role}`
+                        return `<b>${d.title ?? 'No title available'}</b><br>${d.funder ?? 'Eigenmittel'}<br>${role}`
                     }
                 });
                 $(this).popover('show');
@@ -1304,6 +1305,9 @@ function projectTimeline(selector, data = {}) {
 
             var lines = eventGroup.append('rect')
                 .style("fill", function (d, i) {
+                    if (typeInfo[d.role] === undefined) {
+                        return '#cccccc'
+                    }
                     return typeInfo[d.role].color
                 })
                 .attr('height', radius * 2)

@@ -19,11 +19,15 @@
 require_once BASEPATH . "/php/Project.php";
 $Project = new Project($project);
 
+$type = $project['type'] ?? 'Drittmittel';
+
 $user_project = false;
+$user_role = null;
 $persons = $project['persons'] ?? array();
 foreach ($persons as $p) {
     if (strval($p['user']) == $_SESSION['username']) {
         $user_project = True;
+        $user_role = $p['role'];
         break;
     }
 }
@@ -31,9 +35,19 @@ $edit_perm = ($Settings->hasPermission('projects.edit') || ($Settings->hasPermis
 
 $N = $osiris->activities->count(['projects' => $project['name']]);
 
-
 $institute = $Settings->get('affiliation_details');
+
 ?>
+<?php if (isset($_GET['msg']) && $_GET['msg'] === 'success') { ?>
+
+    <!-- add another one -->
+    <div class="alert success">
+        <?= lang('The project has been updated successfully.', 'Das Projekt wurde erfolgreich aktualisiert.') ?>
+        <a href="<?= ROOTPATH ?>/projects/new">+ <?= lang('Add another one', 'Füge noch eines hinzu') ?></a>
+    </div>
+
+<?php } ?>
+
 
 <script>
     const PROJECT = '<?= $project['name'] ?>';
@@ -79,671 +93,880 @@ $institute = $Settings->get('affiliation_details');
     </a>
 <?php } ?>
 
-<h1>
-    <?= $project['name'] ?>
-</h1>
+<div class="title mb-20">
+    <h1>
 
-<h2 class="subtitle">
-    <?= $project['title'] ?>
-</h2>
+        <?= $project['name'] ?>
+    </h1>
 
-<?= $Project->getStatus() ?>
-<br>
+    <h2 class="subtitle">
+        <?= $project['title'] ?>
+    </h2>
 
 
-<!-- TAB AREA -->
 
-<nav class="pills mt-20 mb-0">
-    <a onclick="navigate('general')" id="btn-general" class="btn active">
-        <i class="ph ph-info" aria-hidden="true"></i>
-        <?= lang('General', 'Allgemein') ?>
-    </a>
+    <div class="d-flex">
 
-    <!-- <a onclick="navigate('persons')" id="btn-persons" class="btn">
+        <div class="mr-10 badge bg-white">
+            <small><?= lang('Type of Projects', 'Art des Projekts') ?>: </small>
+            <br />
+            <?= $Project->getType() ?>
+        </div>
+        <div class="mr-10 badge bg-white">
+            <small><?= lang('Current Status', 'Aktueller Status') ?>: </small>
+            <br />
+            <?= $Project->getStatus() ?>
+        </div>
+
+        <div class="mr-10 badge bg-white">
+            <small><?= lang('Time frame', 'Zeitraum') ?>: </small>
+            <br />
+            <b><?= $Project->getDateRange() ?></b>
+        </div>
+    </div>
+
+
+    <!-- TAB AREA -->
+
+    <nav class="pills mt-20 mb-0">
+        <a onclick="navigate('general')" id="btn-general" class="btn active">
+            <i class="ph ph-info" aria-hidden="true"></i>
+            <?= lang('General', 'Allgemein') ?>
+        </a>
+
+        <!-- <a onclick="navigate('persons')" id="btn-persons" class="btn">
         <i class="ph ph-users" aria-hidden="true"></i>
         <?= lang('Project members', 'Projektmitarbeiter') ?>
         <span class="index"><?= count($project['persons'] ?? array()) ?></span> -->
-    </a>
-    <?php if (count($project['collaborators'] ?? []) > 0) { ?>
-
-        <a onclick="navigate('collabs')" id="btn-collabs" class="btn">
-            <i class="ph ph-handshake" aria-hidden="true"></i>
-            <?= lang('Collaborators', 'Kooperationspartner') ?>
-            <span class="index"><?= count($project['collaborators'] ?? array()) ?></span>
         </a>
-    <?php } else { ?>
-        <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" id="btn-collabs" class="btn">
-            <i class="ph ph-plus-circle" aria-hidden="true"></i>
-            <?= lang('Collaborators', 'Kooperationspartner') ?>
-        </a>
-    <?php } ?>
-    <?php if ($N > 0) { ?>
-        <a onclick="navigate('activities')" id="btn-activities" class="btn">
-            <i class="ph ph-suitcase" aria-hidden="true"></i>
-            <?= lang('Activities', 'Aktivitäten') ?>
-            <span class="index"><?= $N ?></span>
-        </a>
-    <?php } elseif ($edit_perm) { ?>
-        <a id="btn-activities" class="btn" href="#add-activity">
-            <i class="ph ph-plus-circle" aria-hidden="true"></i>
-            <?= lang('Connect Activities', 'Aktivitäten verknüpfen') ?>
-        </a>
-    <?php } else { ?>
-        <a id="btn-activities" class="btn disabled">
-            <i class="ph ph-suitcase" aria-hidden="true"></i>
-            <?= lang('Activities', 'Aktivitäten') ?>
-            <span class="index">0</span>
-        </a>
-    <?php } ?>
-
-
-    <?php if ($Settings->hasPermission('raw-data') || isset($_GET['verbose'])) { ?>
-        <a onclick="navigate('raw')" id="btn-raw" class="btn">
-            <i class="ph ph-code" aria-hidden="true"></i>
-            <?= lang('Raw data', 'Rohdaten')  ?>
-        </a>
-    <?php } ?>
-
-</nav>
-
-
-<section id="general">
-    <div class="row row-eq-spacing mt-0">
-
-        <div class="col-md-6">
-            <h2>
-                <?= lang('Project details', 'Projektdetails') ?>
-            </h2>
-
-            <div class="btn-toolbar mb-10">
-
-                <?php if ($edit_perm) { ?>
-                    <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn primary">
-                        <i class="ph ph-edit"></i>
-                        <?= lang('Edit', 'Bearbeiten') ?>
-                    </a>
-                <?php } ?>
-
-            </div>
-
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Short title', 'Kurztitel') ?></span>
-                            <?= $project['name'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
-                            <?= $project['title'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
-                            <?= $project['type'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Contact person', 'Ansprechpartner:in') ?></span>
-                            <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Status', 'Status') ?></span>
-                            <?= $Project->getStatus() ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Third-party funder', 'Drittmittelgeber') ?></span>
-                            <?= $project['funder'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Funding organization', 'Förderorganisation') ?></span>
-                            <?= $project['funding_organization'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
-                            <?= $Project->getFundingNumbers('<br>') ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
-                            <?= $Project->getPurpose() ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?></span>
-                            <?= $Project->getRole() ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?></span>
-                            <?= $project['coordinator'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key">Projektbeginn</span>
-                            <?= Document::format_date($project['start'] ?? null) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key">Projektende</span>
-                            <?= Document::format_date($project['end'] ?? null) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?></span>
-                            <?= $project['personal'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Project website', 'Webseite des Projekts') ?></span>
-                            <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Abstract', 'Kurzbeschreibung') ?></span>
-                            <?= $project['abstract'] ?? '-' ?>
-                        </td>
-                    </tr>
-                    <tr>
-
-                        <td>
-                            <span class="key">Zustimmung zur Internetpräsentation des bewilligten Vorhaben</span>
-                            <?= bool_icon($project['public'] ?? false) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Created by', 'Erstellt von') ?></span>
-                            <?= $DB->getNameFromId($project['created_by']) ?? '-' ?> (<?= $project['created'] ?>)
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-        <div class="col-md-6">
-
-            <h2>
-                <?= lang('Project members', 'Projektmitarbeiter') ?> @
-                <?= $Settings->get('affiliation') ?>
-            </h2>
-
-            <?php if ($edit_perm) { ?>
-                <div class="modal" id="persons" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
-                                <span aria-hidden="true">&times;</span>
-                            </a>
-                            <h5 class="modal-title">
-                                <?= lang('Connect persons', 'Personen verknüpfen') ?>
-                            </h5>
-                            <div>
-
-                                <form action="<?= ROOTPATH ?>/crud/projects/update-persons/<?= $id ?>" method="post">
-
-                                    <table class="table simple">
-                                        <thead>
-                                            <tr>
-                                                <th><?= lang('Project-ID', 'Projekt-ID') ?></th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="project-list">
-                                            <?php
-                                            $persons = $project['persons'] ?? array();
-                                            if (empty($persons)) {
-                                                $persons = [
-                                                    ['user' => '', 'role' => '']
-                                                ];
-                                            }
-                                            foreach ($persons as $i => $con) { ?>
-                                                <tr>
-                                                    <td class="">
-                                                        <select name="persons[<?= $i ?>][user]" id="persons-<?= $i ?>" class="form-control">
-                                                            <?php
-                                                            $all_users = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ['last' => 1]]);
-                                                            foreach ($all_users as $s) { ?>
-                                                                <option value="<?= $s['username'] ?>" <?= ($con['user'] == $s['username'] ? 'selected' : '') ?>>
-                                                                    <?= "$s[last], $s[first] ($s[username])" ?>
-                                                                </option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </td>
-
-                                                    <td>
-                                                        <select name="persons[<?= $i ?>][role]" id="persons-<?= $i ?>" class="form-control">
-                                                            <option value="associate" <?= $con['role'] == 'associate' ? 'selected' : '' ?>><?= Project::personRole('associate') ?></option>
-                                                            <option value="worker" <?= $con['role'] == 'worker' ? 'selected' : '' ?>><?= Project::personRole('worker') ?></option>
-                                                            <option value="PI" <?= $con['role'] == 'PI' ? 'selected' : '' ?>><?= Project::personRole('PI') ?></option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn danger" type="button" onclick="$(this).closest('tr').remove()"><i class="ph ph-trash"></i></button>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr id="last-row">
-                                                <td colspan="2">
-                                                    <button class="btn" type="button" onclick="addProjectRow()"><i class="ph ph-plus"></i> <?= lang('Add row', 'Zeile hinzufügen') ?></button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-
-                                    </table>
-
-                                    <button class="btn primary mt-20">
-                                        <i class="ph ph-check"></i>
-                                        <?= lang('Submit', 'Bestätigen') ?>
-                                    </button>
-                                </form>
-
-
-                                <script>
-                                    var counter = <?= $i ?? 0 ?>;
-                                    const tr = $('#project-list tr').first()
-
-                                    function addProjectRow() {
-                                        counter++;
-                                        const row = tr.clone()
-                                        row.find('select').first().attr('name', 'persons[' + counter + '][user]');
-                                        row.find('select').last().attr('name', 'persons[' + counter + '][role]');
-                                        $('#project-list').append(row)
-                                    }
-                                </script>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
-
-            <div class="btn-toolbar mb-10">
-                <?php if ($edit_perm) { ?>
-                    <a href="#persons" class="btn primary">
-                        <i class="ph ph-edit"></i>
-                        <?= lang('Edit', 'Bearbeiten') ?>
-                    </a>
-                <?php } ?>
-            </div>
-
-            <table class="table">
-                <tbody>
-                    <?php
-                    if (empty($project['persons'] ?? array())) {
-                    ?>
-                        <tr>
-                            <td>
-                                <?= lang('No persons connected.', 'Keine Personen verknüpft.') ?>
-                            </td>
-                        </tr>
-                    <?php
-                    } else foreach ($project['persons'] as $person) {
-                        $username = strval($person['user']);
-
-                    ?>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-
-                                    <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
-                                    <div class="">
-                                        <h5 class="my-0">
-                                            <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="colorless">
-                                                <?= $person['name'] ?>
-                                            </a>
-                                        </h5>
-                                        <?= Project::personRole($person['role']) ?>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php
-                    } ?>
-
-                </tbody>
-            </table>
-
-        </div>
-    </div>
-
-</section>
-
-<section id="collabs" style="display:none">
-
-    <h2>
-        <?= lang('Collaborators', 'Kooperationspartner') ?>
-    </h2>
-
-    <?php if ($edit_perm) { ?>
-        <div class="btn-toolbar mb-10">
-            <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn primary">
-                <i class="ph ph-edit"></i>
-                <?= lang('Edit', 'Bearbeiten') ?>
+        <?php if (count($project['collaborators'] ?? []) > 0) { ?>
+            <a onclick="navigate('collabs')" id="btn-collabs" class="btn">
+                <i class="ph ph-handshake" aria-hidden="true"></i>
+                <?= lang('Collaborators', 'Kooperationspartner') ?>
+                <span class="index"><?= count($project['collaborators'] ?? array()) ?></span>
             </a>
-            <?php if (empty($project['collaborators'] ?? array())) { ?>
-                <script>
-                    collabChart = true;
-                </script>
-            <?php } ?>
-
-        </div>
-    <?php } ?>
-
-    <div class="row row-eq-spacing">
-        <div class="col-lg-4">
-
-            <table class="table">
-                <tbody>
-                    <?php
-                    if (empty($project['collaborators'] ?? array())) {
-                    ?>
-                        <tr>
-                            <td>
-                                <?= lang('No collaborators connected.', 'Keine Partner verknüpft.') ?>
-                            </td>
-                        </tr>
-                    <?php
-                    } else foreach ($project['collaborators'] as $collab) {
-                    ?>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-
-                                    <span data-toggle="tooltip" data-title="<?= $collab['type'] ?>" class="badge mr-10">
-                                        <?= Project::getCollaboratorIcon($collab['type'], 'ph-fw ph-2x m-0') ?>
-                                    </span>
-                                    <div class="">
-                                        <h5 class="my-0">
-                                            <?= $collab['name'] ?>
-                                        </h5>
-                                        <?= $collab['location'] ?>
-                                        <a href="<?= $collab['ror'] ?>" class="ml-10" target="_blank" rel="noopener noreferrer">ROR <i class="ph ph-arrow-square-out"></i></a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php
-                    } ?>
-
-                </tbody>
-            </table>
-
-            <div class="alert secondary my-20">
-
-                <small class="text-muted float-right">
-                    <?= lang('Based on partners', 'Basierend auf Partnern') ?>
-                </small>
-
-                <h5 class="title mb-0">
-                    Scope
-                </h5>
-                <?php
-                $scope = $Project->getScope();
-
-                echo  $scope['scope'] . ' (' . $scope['region'] . ')';
-                ?>
-            </div>
-        </div>
-        <div class="col-lg-8">
-            <div class="box my-0">
-                <div id="map" class=""></div>
-            </div>
-            <p>
-                <i class="ph ph-fill ph-circle" style="color:#f78104"></i>
-                <?= lang('Coordinator', 'Koordinator') ?>
-                <br>
-                <i class="ph ph-fill ph-circle" style="color:#008083"></i>
-                Partner
-            </p>
-        </div>
-    </div>
-
-    <script>
-        const id = '<?= $_GET['project'] ?? null ?>';
-        console.log(id);
-    </script>
-
-
-</section>
-
-<section id="activities" style="display:none">
-
-    <h2>
-        <?= lang('Connected activities', 'Verknüpfte Aktivitäten') ?>
-        (<?= $N ?>)
-    </h2>
-
-
-    <div class="btn-toolbar mb-10">
-        <?php if ($edit_perm) { ?>
-            <a href="#add-activity" class="btn primary">
-                <i class="ph ph-plus"></i>
-                <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
+        <?php } else { ?>
+            <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" id="btn-collabs" class="btn">
+                <i class="ph ph-plus-circle" aria-hidden="true"></i>
+                <?= lang('Collaborators', 'Kooperationspartner') ?>
+            </a>
+        <?php } ?>
+        <?php if ($N > 0) { ?>
+            <a onclick="navigate('activities')" id="btn-activities" class="btn">
+                <i class="ph ph-suitcase" aria-hidden="true"></i>
+                <?= lang('Activities', 'Aktivitäten') ?>
+                <span class="index"><?= $N ?></span>
+            </a>
+        <?php } elseif ($edit_perm) { ?>
+            <a id="btn-activities" class="btn" href="#add-activity">
+                <i class="ph ph-plus-circle" aria-hidden="true"></i>
+                <?= lang('Connect Activities', 'Aktivitäten verknüpfen') ?>
+            </a>
+        <?php } else { ?>
+            <a id="btn-activities" class="btn disabled">
+                <i class="ph ph-suitcase" aria-hidden="true"></i>
+                <?= lang('Activities', 'Aktivitäten') ?>
+                <span class="index">0</span>
             </a>
         <?php } ?>
 
+        <!-- Public representation -->
+        <a onclick="navigate('public')" id="btn-public" class="btn">
+            <i class="ph ph-globe" aria-hidden="true"></i>
+            <?= lang('Public representation', 'Öffentliche Darstellung') ?>
+        </a>
 
-        <div class="dropdown with-arrow btn-group ">
-            <button class="btn primary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
-                <i class="ph ph-download"></i> Download
-                <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="download-btn">
-                <div class="content">
-                    <form action="<?= ROOTPATH ?>/download" method="post">
 
-                        <input type="hidden" name="filter[project]" value="<?= $project['name'] ?>">
+        <?php if ($Settings->hasPermission('project.finance.see') || in_array($user_role, ['PI', 'applicant'])) { ?>
+            <!-- PI and applicant can see -->
+            <a onclick="navigate('finance')" id="btn-finance" class="btn">
+                <i class="ph ph-money" aria-hidden="true"></i>
+                <?= lang('Ressources', 'Ressourcen')  ?>
+            </a>
+        <?php } ?>
 
-                        <div class="form-group">
+        <?php if ($Settings->hasPermission('raw-data') || isset($_GET['verbose'])) { ?>
+            <a onclick="navigate('raw')" id="btn-raw" class="btn">
+                <i class="ph ph-code" aria-hidden="true"></i>
+                <?= lang('Raw data', 'Rohdaten')  ?>
+            </a>
+        <?php } ?>
 
-                            <?= lang('Highlight:', 'Hervorheben:') ?>
+    </nav>
 
-                            <div class="custom-radio ml-10">
-                                <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
-                                <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+
+    <section id="general">
+        <div class="row row-eq-spacing mt-0">
+
+            <div class="col-md-6">
+                <h2>
+                    <?= lang('Project details', 'Projektdetails') ?>
+                </h2>
+
+                <div class="btn-toolbar mb-10">
+
+                    <?php if ($edit_perm) { ?>
+                        <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn primary">
+                            <i class="ph ph-edit"></i>
+                            <?= lang('Edit', 'Bearbeiten') ?>
+                        </a>
+                    <?php } ?>
+
+                </div>
+
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Short title', 'Kurztitel') ?></span>
+                                <?= $project['name'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
+                                <?= $project['title'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
+                                <?= $project['type'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Applicant', 'Antragsteller:in') ?></span>
+                                <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Status', 'Status') ?></span>
+                                <?= $Project->getStatus() ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Third-party funder', 'Drittmittelgeber') ?></span>
+                                <?= $project['funder'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Funding organization', 'Förderorganisation') ?></span>
+                                <?= $project['funding_organization'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
+                                <?= $Project->getFundingNumbers('<br>') ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
+                                <?= $Project->getPurpose() ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?></span>
+                                <?= $Project->getRole() ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?></span>
+                                <?= $project['coordinator'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key">Projektbeginn</span>
+                                <?= Document::format_date($project['start'] ?? null) ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key">Projektende</span>
+                                <?= Document::format_date($project['end'] ?? null) ?>
+                            </td>
+                        </tr>
+                        <!-- <tr>
+                        <td>
+                            <span class="key"><?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?></span>
+                            <?= $project['personnel'] ?? '-' ?>
+                        </td>
+                    </tr> -->
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Project website', 'Webseite des Projekts') ?></span>
+                                <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Abstract', 'Kurzbeschreibung') ?></span>
+                                <?= $project['abstract'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+
+                            <td>
+                                <span class="key">Zustimmung zur Internetpräsentation des bewilligten Vorhaben</span>
+                                <?= bool_icon($project['public'] ?? false) ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Created by', 'Erstellt von') ?></span>
+                                <?= $DB->getNameFromId($project['created_by']) ?? '-' ?> (<?= $project['created'] ?>)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-md-6">
+
+                <h2>
+                    <?= lang('Project members', 'Projektmitarbeiter') ?> @
+                    <?= $Settings->get('affiliation') ?>
+                </h2>
+
+                <?php if ($edit_perm) { ?>
+                    <div class="modal" id="persons" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                                <h5 class="modal-title">
+                                    <?= lang('Connect persons', 'Personen verknüpfen') ?>
+                                </h5>
+                                <div>
+
+                                    <form action="<?= ROOTPATH ?>/crud/projects/update-persons/<?= $id ?>" method="post">
+
+                                        <table class="table simple">
+                                            <thead>
+                                                <tr>
+                                                    <th><?= lang('Project-ID', 'Projekt-ID') ?></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="project-list">
+                                                <?php
+                                                $persons = $project['persons'] ?? array();
+                                                if (empty($persons)) {
+                                                    $persons = [
+                                                        ['user' => '', 'role' => '']
+                                                    ];
+                                                }
+                                                foreach ($persons as $i => $con) { ?>
+                                                    <tr>
+                                                        <td class="">
+                                                            <select name="persons[<?= $i ?>][user]" id="persons-<?= $i ?>" class="form-control">
+                                                                <?php
+                                                                $all_users = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ['last' => 1]]);
+                                                                foreach ($all_users as $s) { ?>
+                                                                    <option value="<?= $s['username'] ?>" <?= ($con['user'] == $s['username'] ? 'selected' : '') ?>>
+                                                                        <?= "$s[last], $s[first] ($s[username])" ?>
+                                                                    </option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </td>
+
+                                                        <td>
+                                                            <select name="persons[<?= $i ?>][role]" id="persons-<?= $i ?>" class="form-control">
+                                                                <option value="associate" <?= $con['role'] == 'associate' ? 'selected' : '' ?>><?= Project::personRole('associate') ?></option>
+                                                                <option value="worker" <?= $con['role'] == 'worker' ? 'selected' : '' ?>><?= Project::personRole('worker') ?></option>
+                                                                <option value="PI" <?= $con['role'] == 'PI' ? 'selected' : '' ?>><?= Project::personRole('PI') ?></option>
+                                                                <option value="applicant" <?= $con['role'] == 'applicant' ? 'selected' : '' ?>><?= Project::personRole('applicant') ?></option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn danger" type="button" onclick="$(this).closest('tr').remove()"><i class="ph ph-trash"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr id="last-row">
+                                                    <td colspan="2">
+                                                        <button class="btn" type="button" onclick="addProjectRow()"><i class="ph ph-plus"></i> <?= lang('Add row', 'Zeile hinzufügen') ?></button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+
+                                        </table>
+
+                                        <button class="btn primary mt-20">
+                                            <i class="ph ph-check"></i>
+                                            <?= lang('Submit', 'Bestätigen') ?>
+                                        </button>
+                                    </form>
+
+
+                                    <script>
+                                        var counter = <?= $i ?? 0 ?>;
+                                        const tr = $('#project-list tr').first()
+
+                                        function addProjectRow() {
+                                            counter++;
+                                            const row = tr.clone()
+                                            row.find('select').first().attr('name', 'persons[' + counter + '][user]');
+                                            row.find('select').last().attr('name', 'persons[' + counter + '][role]');
+                                            $('#project-list').append(row)
+                                        }
+                                    </script>
+
+                                </div>
                             </div>
-
-                            <div class="custom-radio ml-10">
-                                <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
-                                <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
-                            </div>
-
-                            <div class="custom-radio ml-10">
-                                <input type="radio" name="highlight" id="highlight-none" value="">
-                                <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
-                            </div>
-
                         </div>
+                    </div>
+                <?php } ?>
+
+                <div class="btn-toolbar mb-10">
+                    <?php if ($edit_perm) { ?>
+                        <a href="#persons" class="btn primary">
+                            <i class="ph ph-edit"></i>
+                            <?= lang('Edit', 'Bearbeiten') ?>
+                        </a>
+                    <?php } ?>
+                </div>
+
+                <table class="table">
+                    <tbody>
+                        <?php
+                        if (empty($project['persons'] ?? array())) {
+                        ?>
+                            <tr>
+                                <td>
+                                    <?= lang('No persons connected.', 'Keine Personen verknüpft.') ?>
+                                </td>
+                            </tr>
+                        <?php
+                        } else foreach ($project['persons'] as $person) {
+                            $username = strval($person['user']);
+
+                        ?>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+
+                                        <?= $Settings->printProfilePicture($username, 'profile-img small mr-20') ?>
+                                        <div class="">
+                                            <h5 class="my-0">
+                                                <a href="<?= ROOTPATH ?>/profile/<?= $username ?>" class="colorless">
+                                                    <?= $person['name'] ?>
+                                                </a>
+                                            </h5>
+                                            <?= Project::personRole($person['role']) ?>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php
+                        } ?>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </section>
+
+    <section id="collabs" style="display:none">
+
+        <h2>
+            <?= lang('Collaborators', 'Kooperationspartner') ?>
+        </h2>
+
+        <?php if ($edit_perm) { ?>
+            <div class="btn-toolbar mb-10">
+                <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn primary">
+                    <i class="ph ph-edit"></i>
+                    <?= lang('Edit', 'Bearbeiten') ?>
+                </a>
+                <?php if (empty($project['collaborators'] ?? array())) { ?>
+                    <script>
+                        collabChart = true;
+                    </script>
+                <?php } ?>
+
+            </div>
+        <?php } ?>
+
+        <div class="row row-eq-spacing">
+            <div class="col-lg-4">
+
+                <table class="table">
+                    <tbody>
+                        <?php
+                        if (empty($project['collaborators'] ?? array())) {
+                        ?>
+                            <tr>
+                                <td>
+                                    <?= lang('No collaborators connected.', 'Keine Partner verknüpft.') ?>
+                                </td>
+                            </tr>
+                        <?php
+                        } else foreach ($project['collaborators'] as $collab) {
+                        ?>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+
+                                        <span data-toggle="tooltip" data-title="<?= $collab['type'] ?>" class="badge mr-10">
+                                            <?= Project::getCollaboratorIcon($collab['type'], 'ph-fw ph-2x m-0') ?>
+                                        </span>
+                                        <div class="">
+                                            <h5 class="my-0">
+                                                <?= $collab['name'] ?>
+                                            </h5>
+                                            <?= $collab['location'] ?>
+                                            <a href="<?= $collab['ror'] ?>" class="ml-10" target="_blank" rel="noopener noreferrer">ROR <i class="ph ph-arrow-square-out"></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php
+                        } ?>
+
+                    </tbody>
+                </table>
+
+                <div class="alert secondary my-20">
+
+                    <small class="text-muted float-right">
+                        <?= lang('Based on partners', 'Basierend auf Partnern') ?>
+                    </small>
+
+                    <h5 class="title mb-0">
+                        Scope
+                    </h5>
+                    <?php
+                    $scope = $Project->getScope();
+
+                    echo  $scope['scope'] . ' (' . $scope['region'] . ')';
+                    ?>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="box my-0">
+                    <div id="map" class=""></div>
+                </div>
+                <p>
+                    <i class="ph ph-fill ph-circle" style="color:#f78104"></i>
+                    <?= lang('Coordinator', 'Koordinator') ?>
+                    <br>
+                    <i class="ph ph-fill ph-circle" style="color:#008083"></i>
+                    Partner
+                </p>
+            </div>
+        </div>
+
+        <script>
+            const id = '<?= $_GET['project'] ?? null ?>';
+            console.log(id);
+        </script>
 
 
-                        <div class="form-group">
+    </section>
 
-                            <?= lang('File format:', 'Dateiformat:') ?>
+    <section id="activities" style="display:none">
 
-                            <div class="custom-radio ml-10">
-                                <input type="radio" name="format" id="format-word" value="word" checked="checked">
-                                <label for="format-word">Word</label>
+        <h2>
+            <?= lang('Connected activities', 'Verknüpfte Aktivitäten') ?>
+            (<?= $N ?>)
+        </h2>
+
+
+        <div class="btn-toolbar mb-10">
+            <?php if ($edit_perm) { ?>
+                <a href="#add-activity" class="btn primary">
+                    <i class="ph ph-plus"></i>
+                    <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
+                </a>
+            <?php } ?>
+
+
+            <div class="dropdown with-arrow btn-group ">
+                <button class="btn primary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                    <i class="ph ph-download"></i> Download
+                    <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="download-btn">
+                    <div class="content">
+                        <form action="<?= ROOTPATH ?>/download" method="post">
+
+                            <input type="hidden" name="filter[project]" value="<?= $project['name'] ?>">
+
+                            <div class="form-group">
+
+                                <?= lang('Highlight:', 'Hervorheben:') ?>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="highlight" id="highlight-user" value="user" checked="checked">
+                                    <label for="highlight-user"><?= lang('Me', 'Mich') ?></label>
+                                </div>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="highlight" id="highlight-aoi" value="aoi">
+                                    <label for="highlight-aoi"><?= $Settings->get('affiliation') ?><?= lang(' Authors', '-Autoren') ?></label>
+                                </div>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="highlight" id="highlight-none" value="">
+                                    <label for="highlight-none"><?= lang('None', 'Nichts') ?></label>
+                                </div>
+
                             </div>
 
-                            <div class="custom-radio ml-10">
-                                <input type="radio" name="format" id="format-bibtex" value="bibtex">
-                                <label for="format-bibtex">BibTex</label>
-                            </div>
 
-                        </div>
-                        <button class="btn primary">Download</button>
-                    </form>
+                            <div class="form-group">
+
+                                <?= lang('File format:', 'Dateiformat:') ?>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="format" id="format-word" value="word" checked="checked">
+                                    <label for="format-word">Word</label>
+                                </div>
+
+                                <div class="custom-radio ml-10">
+                                    <input type="radio" name="format" id="format-bibtex" value="bibtex">
+                                    <label for="format-bibtex">BibTex</label>
+                                </div>
+
+                            </div>
+                            <button class="btn primary">Download</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
+        <div class="mt-20 w-full">
+            <table class="table dataTable responsive" id="activities-table">
+                <thead>
+                    <tr>
+                        <th><?= lang('Type', 'Typ') ?></th>
+                        <th><?= lang('Activity', 'Aktivität') ?></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
 
-    <h2><?= lang('Other activities', 'Andere Aktivitäten') ?></h2>
+            </table>
+        </div>
 
-    <div class="mt-20 w-full">
-        <table class="table dataTable responsive" id="activities-table">
-            <thead>
-                <tr>
-                    <th><?= lang('Type', 'Typ') ?></th>
-                    <th><?= lang('Activity', 'Aktivität') ?></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
+    </section>
 
-        </table>
-    </div>
+    <!-- Public representation -->
+    <section id="public" style="display:none">
 
-</section>
+        <h2>
+            <?= lang('Public representation', 'Öffentliche Darstellung') ?>
+        </h2>
 
-
-<section id="raw" style="display:none">
-
-    <h2 class="title">
-        <?= lang('Raw data', 'Rohdaten') ?>
-    </h2>
-
-    <?= lang('Raw data as they are stored in the database.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden.') ?>
-
-    <div class="box overflow-x-scroll">
-        <?php
-        dump($project, true);
-        ?>
-    </div>
-
-</section>
-
-
-
-<!-- Modal for cennecting activities -->
-
-
-<?php if ($edit_perm) { ?>
-    <div class="modal" id="add-activity" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
-                    <span aria-hidden="true">&times;</span>
+        <div class="btn-toolbar mb-10">
+            <?php if ($edit_perm) { ?>
+                <a href="<?= ROOTPATH ?>/projects/public/<?= $id ?>" class="btn primary">
+                    <i class="ph ph-edit"></i>
+                    <?= lang('Edit', 'Bearbeiten') ?>
                 </a>
-                <h5 class="modal-title">
-                    <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
-                </h5>
+            <?php } ?>
+        </div>
 
-                <form action="<?= ROOTPATH ?>/crud/projects/connect-activities" method="post" class="">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="key"><?= lang('Public title', 'Öffentlicher Titel') ?></span>
+                        <?= $project['public_title'] ?? $project['title'] ?? '-' ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="key"><?= lang('Public abstract', 'Öffentliche Kurzbeschreibung') ?></span>
+                        <!-- markdown -->
+                        <?php
+                        // markdown support
+                        require_once BASEPATH . '/php/MyParsedown.php';
+                        $Parsedown = new Parsedown();
+                        echo $Parsedown->text($project['public_abstract'] ?? $project['abstract'] ?? '-');
+                        ?>
 
-                    <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
-                    <input type="hidden" name="project" value="<?= $project['name'] ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="key"><?= lang('Public website', 'Öffentliche Webseite') ?></span>
+                        <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="key"><?= lang('Public image', 'Öffentliches Bild') ?></span>
+                       
+                        
+                        <?php if (!empty($project['public_image']) ?? '') { ?>
+                            <img src="<?= ROOTPATH.'/uploads/'. $project['public_image'] ?>" alt="<?= $project['public_title'] ?>" class="img-fluid">
+                            <?php } else { ?>
+                            -
+                        <?php } ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-                    <!-- input field with suggesting activities -->
-                    <div class="form-group" id="activity-suggest">
-                        <!-- <label for="activity-suggested"><?= lang('Activity', 'Aktivität') ?></label> -->
-                        <input type="text" name="activity-suggested" id="activity-suggested" class="form-control" required placeholder="...">
-                        <div class="suggestions on-focus">
-                            <div class="content"><?= lang('Start typing to search for activities', 'Beginne zu tippen, um Aktivitäten zu suchen') ?></div>
+    </section>
+
+
+
+    <?php if ($Settings->hasPermission('project.finance.see') || in_array($user_role, ['PI', 'applicant'])) { ?>
+        <section id="finance" style="display: none;">
+
+            <h2 class="title">
+                <?= lang('Finance data', 'Finanzen') ?>
+            </h2>
+
+            <div class="btn-toolbar mb-10">
+                <?php if ($Settings->hasPermission('project.finance.edit')) { ?>
+                    <a href="<?= ROOTPATH ?>/projects/finance/<?= $id ?>" class="btn primary">
+                        <i class="ph ph-edit"></i>
+                        <?= lang('Edit', 'Bearbeiten') ?>
+                    </a>
+                <?php } ?>
+            </div>
+
+            <table class="table">
+                <!-- "grant_sum_proposed": 1000000, -->
+                <tr>
+                    <td>
+                        <span class="key">grant_sum_proposed</span>
+                        <?= $project['grant_sum_proposed'] ?? '-' ?>
+                    </td>
+                </tr>
+
+
+                <!-- "grant_income_proposed": 360000, -->
+                <tr>
+                    <td>
+                        <span class="key">grant_income_proposed</span>
+                        <?= $project['grant_income_proposed'] ?? '-' ?>
+                    </td>
+                </tr>
+
+                <!-- "grant_sum": 1000000, -->
+                <tr>
+                    <td>
+                        <span class="key">grant_sum</span>
+                        <?= $project['grant_sum'] ?? '-' ?>
+                    </td>
+                </tr>
+
+                <!-- "grant_income": 360000, -->
+                <tr>
+                    <td>
+                        <span class="key">grant_income</span>
+                        <?= $project['grant_income'] ?? '-' ?>
+                    </td>
+                </tr>
+
+            </table>
+
+            <!-- "ressources" -->
+            <h3 class="title">
+                <?= lang('Ressources', 'Ressourcen') ?>
+            </h3>
+            <table class="table">
+                <tbody>
+                    <?php
+                    $res = $project['ressources'];
+                    foreach ([
+                        'material' => lang('Material', 'Material'),
+                        'personnel' => lang('Personnel', 'Personal'),
+                        'room' => lang('Room', 'Raum'),
+                        'other' => lang('Other', 'Sonstiges')
+                    ] as $r => $h) { ?>
+                        <tr>
+                            <td>
+                                <span class="key"><?= $h ?></span>
+                                <?php if (($res[$r] ?? 'no') == 'yes') { ?>
+                                    <span class="badge success">
+                                        <?= lang('Yes', 'Ja') ?>
+                                    </span>
+                                    <br>
+                                    <?= $res[$r . '_details'] ?>
+                                <?php } else { ?>
+                                    <span class="badge danger"><?= lang('No', 'Nein') ?></span>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                </tbody>
+            </table>
+
+
+            <!-- applied personnel and in-kind -->
+            <h3 class="title">
+                <?= lang('Applied personnel and in-kind', 'Angewandtes Personal und Sachmittel') ?>
+            </h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="key">
+                                <?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?>
+                            </span>
+                            <?= $project['personnel'] ?? '-' ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="key">
+                                <?= lang('In-kind personnel', 'Umfang des geplanten eigenen Personaleinsatzes') ?>
+                            </span>
+                            <?= $project['in-kind'] ?? '-' ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </section>
+    <?php } ?>
+
+
+
+    <section id="raw" style="display:none">
+
+        <h2 class="title">
+            <?= lang('Raw data', 'Rohdaten') ?>
+        </h2>
+
+        <?= lang('Raw data as they are stored in the database.', 'Die Rohdaten, wie sie in der Datenbank gespeichert werden.') ?>
+
+        <div class="box overflow-x-scroll">
+            <?php
+            dump($project, true);
+            ?>
+        </div>
+
+    </section>
+
+
+
+    <!-- Modal for cennecting activities -->
+
+
+    <?php if ($edit_perm) { ?>
+        <div class="modal" id="add-activity" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h5 class="modal-title">
+                        <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
+                    </h5>
+
+                    <form action="<?= ROOTPATH ?>/crud/projects/connect-activities" method="post" class="">
+
+                        <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                        <input type="hidden" name="project" value="<?= $project['name'] ?>">
+
+                        <!-- input field with suggesting activities -->
+                        <div class="form-group" id="activity-suggest">
+                            <!-- <label for="activity-suggested"><?= lang('Activity', 'Aktivität') ?></label> -->
+                            <input type="text" name="activity-suggested" id="activity-suggested" class="form-control" required placeholder="...">
+                            <div class="suggestions on-focus">
+                                <div class="content"><?= lang('Start typing to search for activities', 'Beginne zu tippen, um Aktivitäten zu suchen') ?></div>
+                            </div>
                         </div>
-                    </div>
-                    <input type="hidden" name="activity" id="activity-selected" required value="">
+                        <input type="hidden" name="activity" id="activity-selected" required value="">
 
-                    <button class="btn primary">
-                        <i class="ph ph-check"></i>
-                        <?= lang('Submit', 'Bestätigen') ?>
-                    </button>
-                </form>
+                        <button class="btn primary">
+                            <i class="ph ph-check"></i>
+                            <?= lang('Submit', 'Bestätigen') ?>
+                        </button>
+                    </form>
 
-                <style>
-                    .suggestions {
-                        color: #464646;
-                        /* position: absolute; */
-                        margin: 10px auto;
-                        top: 100%;
-                        left: 0;
-                        height: 19.2rem;
-                        overflow: auto;
-                        bottom: -3px;
-                        width: 100%;
-                        box-sizing: border-box;
-                        min-width: 12rem;
-                        background-color: white;
-                        border: var(--border-width) solid #afafaf;
-                        /* visibility: hidden; */
-                        /* opacity: 0; */
-                        z-index: 100;
-                        -webkit-transition: opacity 0.4s linear;
-                        transition: opacity 0.4s linear;
-                    }
+                    <style>
+                        .suggestions {
+                            color: #464646;
+                            /* position: absolute; */
+                            margin: 10px auto;
+                            top: 100%;
+                            left: 0;
+                            height: 19.2rem;
+                            overflow: auto;
+                            bottom: -3px;
+                            width: 100%;
+                            box-sizing: border-box;
+                            min-width: 12rem;
+                            background-color: white;
+                            border: var(--border-width) solid #afafaf;
+                            /* visibility: hidden; */
+                            /* opacity: 0; */
+                            z-index: 100;
+                            -webkit-transition: opacity 0.4s linear;
+                            transition: opacity 0.4s linear;
+                        }
 
-                    .suggestions a {
-                        display: block;
-                        padding: 0.5rem;
-                        border-bottom: var(--border-width) solid #afafaf;
-                        color: #464646;
-                        text-decoration: none;
-                        width: 100%;
-                    }
+                        .suggestions a {
+                            display: block;
+                            padding: 0.5rem;
+                            border-bottom: var(--border-width) solid #afafaf;
+                            color: #464646;
+                            text-decoration: none;
+                            width: 100%;
+                        }
 
-                    .suggestions a:hover {
-                        background-color: #f0f0f0;
-                    }
-                </style>
+                        .suggestions a:hover {
+                            background-color: #f0f0f0;
+                        }
+                    </style>
 
-                <!-- script to handle auto suggest by ajax -->
-                <script>
-                    $('#activity-suggested').on('input', function() {
-                        // prevent enter from submitting form
-                        $(this).closest('form').on('keypress', function(event) {
-                            if (event.keyCode == 13) {
-                                event.preventDefault();
-                            }
-                        })
-                        const val = $(this).val();
-                        if (val.length < 3) return;
-                        $.get('<?= ROOTPATH ?>/api/activities-suggest/' + val + '?exclude-project=' + PROJECT, function(data) {
-                            $('#activity-suggest .suggestions').empty();
-                            console.log(data);
-                            data.data.forEach(function(d) {
-                                $('#activity-suggest .suggestions').append(
-                                    `<a onclick="selectActivity(this)" data-id="${d.id.toString()}">${d.details.icon} ${d.details.plain}</a>`
-                                )
-                            })
-                            $('#activity-suggest .suggestions a')
-                                .on('click', function(event) {
+                    <!-- script to handle auto suggest by ajax -->
+                    <script>
+                        $('#activity-suggested').on('input', function() {
+                            // prevent enter from submitting form
+                            $(this).closest('form').on('keypress', function(event) {
+                                if (event.keyCode == 13) {
                                     event.preventDefault();
-                                    console.log(this);
-                                    $('#activity-suggested').val($(this).text());
-                                    $('#activity-selected').val($(this).data('id'));
-                                    $('#activity-suggest .suggestions').empty();
+                                }
+                            })
+                            const val = $(this).val();
+                            if (val.length < 3) return;
+                            $.get('<?= ROOTPATH ?>/api/activities-suggest/' + val + '?exclude-project=' + PROJECT, function(data) {
+                                $('#activity-suggest .suggestions').empty();
+                                console.log(data);
+                                data.data.forEach(function(d) {
+                                    $('#activity-suggest .suggestions').append(
+                                        `<a onclick="selectActivity(this)" data-id="${d.id.toString()}">${d.details.icon} ${d.details.plain}</a>`
+                                    )
                                 })
-                            // $('#activity-suggest .suggest').html(data);
+                                $('#activity-suggest .suggestions a')
+                                    .on('click', function(event) {
+                                        event.preventDefault();
+                                        console.log(this);
+                                        $('#activity-suggested').val($(this).text());
+                                        $('#activity-selected').val($(this).data('id'));
+                                        $('#activity-suggest .suggestions').empty();
+                                    })
+                                // $('#activity-suggest .suggest').html(data);
+                            })
                         })
-                    })
-                </script>
+                    </script>
+                </div>
             </div>
         </div>
-    </div>
-<?php } ?>
+    <?php } ?>

@@ -1005,24 +1005,21 @@ class Document extends Settings
     public function formatPortal()
     {
         $this->full = true;
-        $line = "";
+        $this->subtitle = "";
         $template = $this->subtypeArr['template']['title'] ?? '{title}';
-        $title = $this->template($template);
+        $this->title = $this->template($template);
 
-        $id = strval($this->doc['_id']);
-        // $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$id'>$title</a>";
-        $line = "<h2 class='title'>$title</h2>";
 
         $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
-        $line .= "<p class='text-muted'>";
-        $line .= $this->template($template);
-        // $line .= $this->get_field('file-icons');
+        $this->subtitle .= "<p class='text-muted'>";
+        $this->subtitle .= $this->template($template);
+        // $this->subtitle .= $this->get_field('file-icons');
         if (!empty($this->appendix)) {
-            $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
+            $this->subtitle .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
         }
-        $line .= "</p>";
+        $this->subtitle .= "</p>";
 
-        return $line;
+        return "<h2 class='title'>$this->title</h2>$this->subtitle";
     }
 
     private function template($template)

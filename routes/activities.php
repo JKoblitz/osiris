@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Routing file for activities
  * 
@@ -13,7 +14,7 @@
  * @license     MIT
  */
 
- 
+
 Route::get('/(activities|my-activities)', function ($page) {
     include_once BASEPATH . "/php/init.php";
 
@@ -735,4 +736,21 @@ Route::post('/crud/activities/fav', function () {
         );
         echo '{"fav": true}';
     }
+}, 'login');
+
+Route::post('/crud/activities/hide', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['activity'])) die('Error: no activity given');
+    $id = $_POST['activity'];
+
+    // toggle hide
+    $activity = $osiris->activities->findOne(['_id' => $DB->to_ObjectID($id)]);
+    if (empty($activity)) die('Error: No Activity found');
+
+    $hidden = $activity['hide'] ?? false;
+
+    $osiris->activities->updateOne(
+        ['_id' => $activity['_id']],
+        ['$set' => ["hide" => !$hidden]]
+    );
 }, 'login');

@@ -191,8 +191,8 @@ function valiDate($date)
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
     if ($msg === null && isset($_SESSION['msg'])) {
-        $msg = $_SESSION['message'];
-        unset($_SESSION["message"]);
+        $msg = $_SESSION['msg'];
+        unset($_SESSION["msg"]);
     }
     if ($msg === null && isset($_GET['error'])) {
         $msg = $_GET['error'];

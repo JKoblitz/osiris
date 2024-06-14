@@ -64,7 +64,7 @@ Route::get('/projects/view/(.*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/projects/(edit|collaborators|finance)/([a-zA-Z0-9]*)', function ($page, $id) {
+Route::get('/projects/(edit|collaborators|finance|public)/([a-zA-Z0-9]*)', function ($page, $id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
@@ -74,13 +74,16 @@ Route::get('/projects/(edit|collaborators|finance)/([a-zA-Z0-9]*)', function ($p
         header("Location: " . ROOTPATH . "/projects?msg=not-found");
         die;
     }
-    
-    switch ($page){
+
+    switch ($page) {
         case 'collaborators':
             $name = lang("Collaborators", "Kooperationspartner");
             break;
         case 'finance':
             $name = lang("Finance", "Finanzen");
+            break;
+        case 'public':
+            $name = lang("Public representation", "Öffentliche Darstellung");
             break;
         default:
             $name = lang("Edit", "Bearbeiten");
@@ -96,12 +99,15 @@ Route::get('/projects/(edit|collaborators|finance)/([a-zA-Z0-9]*)', function ($p
     $form = DB::doc2Arr($project);
 
     include BASEPATH . "/header.php";
-    switch ($page){
+    switch ($page) {
         case 'collaborators':
             include BASEPATH . "/pages/projects/collaborators.php";
             break;
         case 'finance':
             include BASEPATH . "/pages/projects/finance.php";
+            break;
+        case 'public':
+            include BASEPATH . "/pages/projects/public.php";
             break;
         default:
             include BASEPATH . "/pages/projects/edit.php";
@@ -140,7 +146,7 @@ Route::post('/crud/projects/create', function () {
         $values['persons'] = [
             [
                 'user' => $values['contact'],
-                'role' => 'PI',
+                'role' => 'applicant',
                 'name' => $DB->getNameFromId($values['contact'])
             ]
         ];
@@ -178,7 +184,7 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->projects;
 
-    
+
     // $user_project = in_array($user, array_column(DB::doc2Arr($project['persons']), 'user'));
     // $edit_perm = ($Settings->hasPermission('projects.edit') || ($Settings->hasPermission('projects.edit-own') && $user_project));
 
@@ -253,6 +259,79 @@ Route::post('/crud/projects/update-collaborators/([A-Za-z0-9]*)', function ($id)
 
     header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
 });
+
+
+Route::post('/crud/projects/update-public/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $values = $_POST['values'];
+
+    $values['public'] = boolval($values['public'] ?? false);
+
+    $target_dir = BASEPATH . "/uploads/";
+    if (!is_writable($target_dir)) {
+        die("Upload directory $target_dir is unwritable. Please contact admin.");
+    }
+    $target_dir .= "projects/";
+    if (isset($_FILES["file"]) && $_FILES["file"]["size"] > 0) {
+
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777);
+        }
+        // random filename
+        $filename = $id . "." . pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+        // $filetype = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $filesize = $_FILES["file"]["size"];
+        $values['public_image'] = "projects/" . $filename;
+
+        if ($_FILES['file']['error'] != UPLOAD_ERR_OK) {
+            $errorMsg = match ($_FILES['file']['error']) {
+                1 => lang('The uploaded file exceeds the upload_max_filesize directive in php.ini', 'Die hochgeladene Datei überschreitet die Richtlinie upload_max_filesize in php.ini'),
+                2 => lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."),
+                3 => lang('The uploaded file was only partially uploaded.', 'Die hochgeladene Datei wurde nur teilweise hochgeladen.'),
+                4 => lang('No file was uploaded.', 'Es wurde keine Datei hochgeladen.'),
+                6 => lang('Missing a temporary folder.', 'Der temporäre Ordner fehlt.'),
+                7 => lang('Failed to write file to disk.', 'Datei konnte nicht auf die Festplatte geschrieben werden.'),
+                8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
+                default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
+            };
+            printMsg($errorMsg, "error");
+        } else if ($filesize > 16000000) {
+            printMsg(lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."), "error");
+        } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+            printMsg(lang("The file $filename has been uploaded.", "Die Datei <q>$filename</q> wurde hochgeladen."), "success");
+        } else {
+            $_SESSION['msg'] = lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload.");
+        }
+    } else if (isset($_POST['delete'])) {
+        $filename = $_POST['delete'];
+        if (file_exists($target_dir . $filename)) {
+            // Use unlink() function to delete a file
+            if (!unlink($target_dir . $filename)) {
+                $_SESSION['msg'] = lang("$filename cannot be deleted due to an error.", "$filename kann nicht gelöscht werden, da ein Fehler aufgetreten ist.");
+            } else {
+                $_SESSION['msg'] = lang("$filename has been deleted.", "$filename wurde gelöscht.");
+            }
+        }
+
+        $osiris->projects->updateOne(
+            ['_id' => $DB::to_ObjectID($id)],
+            ['$set' => ["public_image" => null]]
+        );
+        // printMsg("File has been deleted from the database.", "success");
+
+        header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
+        die();
+    }
+
+    $osiris->projects->updateOne(
+        ['_id' => $DB::to_ObjectID($id)],
+        ['$set' => $values]
+    );
+
+    header("Location: " . ROOTPATH . "/projects/view/$id?msg=update-success");
+    die;
+});
+
 
 
 

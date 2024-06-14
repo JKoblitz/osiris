@@ -393,6 +393,10 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         }
     }
 
+    foreach (["public_image", "public_email", "public_phone"] as $key) {
+        $person[$key] = boolval($values[$key] ?? false);
+    }
+
 
     if (isset($values['cv'])) {
         $cv = $values['cv'];

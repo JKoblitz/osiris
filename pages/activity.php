@@ -32,22 +32,22 @@ foreach ($M as $m) {
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
-<?php if ($Settings->featureEnabled('projects') && !empty($doc['projects'] ?? [])) { ?>
+    <?php if ($Settings->featureEnabled('projects') && !empty($doc['projects'] ?? [])) { ?>
         <div class="alert success mb-20">
-        <h3 class="title">
-            <?= lang('Projects connected', 'Projekte verknüpft') ?>
-        </h3>
-        <?= lang(
-            'This activity was automatically connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
-            'Diese Aktivität wurde automatisch anhand von Fördernummern mit Projekten verknüpft. Du kannst weitere Projekte hinzufügen oder die bestehenden entfernen.'
-        ) ?>
-        <br>
-        <a href="#projects" class="btn success">
-            <i class="ph ph-tree-structure"></i>
-            <?= lang('Projects', 'Projekte') ?>
-        </a>
-    </div>
-<?php } ?>
+            <h3 class="title">
+                <?= lang('Projects connected', 'Projekte verknüpft') ?>
+            </h3>
+            <?= lang(
+                'This activity was automatically connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
+                'Diese Aktivität wurde automatisch anhand von Fördernummern mit Projekten verknüpft. Du kannst weitere Projekte hinzufügen oder die bestehenden entfernen.'
+            ) ?>
+            <br>
+            <a href="#projects" class="btn success">
+                <i class="ph ph-tree-structure"></i>
+                <?= lang('Projects', 'Projekte') ?>
+            </a>
+        </div>
+    <?php } ?>
     <div class="alert signal mb-20">
         <h3 class="title">
             <?= lang('For the good practice: ', 'Für die gute Praxis:') ?>
@@ -65,7 +65,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </a>
     </div>
 
-    
+
 <?php } ?>
 
 <style>
@@ -155,42 +155,6 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </a>
     </div>
 
-    <?php if ($user_activity) {
-        $highlights = DB::doc2Arr($USER['highlighted'] ?? []);
-        $highlighted = in_array($id, $highlights);
-    ?>
-        <button class="btn <?= ($highlighted ? 'signal' : '') ?>" onclick="fav()" id="highlighted">
-            <i class="ph ph-star <?= ($highlighted ? 'ph-fill' : '') ?>"></i>
-            <!-- <?= lang('Highlighted', 'Hervorgehoben') ?> -->
-        </button>
-        <script>
-            function fav() {
-                $.ajax({
-                    type: "POST",
-                    url: ROOTPATH + "/crud/activities/fav",
-                    data: {
-                        activity: ACTIVITY_ID
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        console.log(response);
-                        var btn = $('#highlighted')
-                        if (response.fav) {
-                            btn.addClass('signal')
-                            btn.find('i').addClass('ph-fill')
-                        } else {
-                            btn.removeClass('signal')
-                            btn.find('i').removeClass('ph-fill')
-
-                        }
-                    },
-                    error: function(response) {
-                        console.log(response);
-                    }
-                });
-            }
-        </script>
-    <?php } ?>
 
     <div class="btn-group">
         <button class="btn text-secondary border-secondary" onclick="addToCart(this, '<?= $id ?>')">
@@ -276,6 +240,78 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 </div>
 
+
+<?php if ($Settings->featureEnabled('portal') && ($user_activity || $Settings->hasPermission('activities.edit'))) {
+    $highlights = DB::doc2Arr($USER['highlighted'] ?? []);
+    $highlighted = in_array($id, $highlights);
+
+?>
+
+    <div class="box">
+        <div class="p-10">
+            <!-- <b><?= lang('This is your activity.', 'Dies ist deine Aktivität.') ?></b> -->
+            <div class="mt-10 d-flex">
+                <!-- switch -->
+                <?php if ($user_activity) { ?>
+                    <div class="custom-switch ml-10">
+                        <input type="checkbox" id="highlight" <?= ($highlighted) ? 'checked' : '' ?> name="values[highlight]" onchange="fav()">
+                        <label for="highlight">
+                            <?= lang('Highlight on your profile', 'Auf deinem Profil hervorheben') ?>
+                        </label>
+                    </div>
+                <?php } ?>
+
+                <!-- hide in all activities on portal -->
+                <!-- checkbox to hide -->
+                <div class="custom-switch ml-10">
+                    <input type="checkbox" id="hide" <?= ($doc['hide'] ?? false) ? 'checked' : '' ?> name="values[hide]" onchange="hide()">
+                    <label for="hide">
+                        <?= lang('Hide in portfolio', 'Im Portfolio verstecken') ?>
+                    </label>
+                </div>
+            </div>
+            <script>
+                function fav() {
+                    $.ajax({
+                        type: "POST",
+                        url: ROOTPATH + "/crud/activities/fav",
+                        data: {
+                            activity: ACTIVITY_ID
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastSuccess(lang('Highlight status changed', 'Hervorhebungsstatus geändert'))
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
+
+
+                function hide() {
+                    $.ajax({
+                        type: "POST",
+                        url: ROOTPATH + "/crud/activities/hide",
+                        data: {
+                            activity: ACTIVITY_ID
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastSuccess(lang('Highlight status changed', 'Hervorhebungsstatus geändert'))
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
+            </script>
+
+
+
+        </div>
+    </div>
+<?php } ?>
 
 
 <!-- TAB AREA -->

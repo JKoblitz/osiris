@@ -25,7 +25,7 @@ if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
         <?= lang('
         A new OSIRIS-Version has been found. Please click <a href="' . ROOTPATH . '/migrate">here</a> to migrate', '
         Eine neue OSIRIS-Version wurde gefunden. Bitte klicke <a href="' . ROOTPATH . '/migrate">hier</a>, um zu migrieren.') ?>
-        <small>Installed: <?=OSIRIS_DB_VERSION?></small>
+        <small>Installed: <?= OSIRIS_DB_VERSION ?></small>
     </div>
 <?php } ?>
 
@@ -597,7 +597,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
 
     <?php if ($Settings->featureEnabled('wordcloud')) { ?>
         <?php
-        $count_wordcloud = $osiris->activities->count(['title'=> ['$exists'=> true], 'authors.user'=>$user, 'type'=>'publication']);
+        $count_wordcloud = $osiris->activities->count(['title' => ['$exists' => true], 'authors.user' => $user, 'type' => 'publication']);
         if ($count_wordcloud > 0) { ?>
             <a onclick="navigate('wordcloud')" id="btn-wordcloud" class="btn">
                 <i class="ph ph-cloud" aria-hidden="true"></i>
@@ -1203,62 +1203,51 @@ if ($currentuser) { ?>
                 <div id="project-timeline"></div>
             </div>
         </div>
-        <div class="row row-eq-spacing my-0">
-            <?php
-            if ($count_projects > 0) {
-                $projects = $osiris->projects->find($project_filter, ['sort' => ["start" => -1, "end" => -1]]);
+        <?php
+        if ($count_projects > 0) {
+            $projects = $osiris->projects->find($project_filter, ['sort' => ["start" => -1, "end" => -1]]);
 
-                $ongoing = [];
-                $past = [];
+            $ongoing = [];
+            $past = [];
 
-                require_once BASEPATH . "/php/Project.php";
-                $Project = new Project();
-                foreach ($projects as $project) {
-                    $Project->setProject($project);
-                    if ($Project->inPast()) {
-                        $past[] = $Project->widgetLarge($user);
-                    } else {
-                        $ongoing[] = $Project->widgetLarge($user);
-                    }
+            require_once BASEPATH . "/php/Project.php";
+            $Project = new Project();
+            foreach ($projects as $project) {
+                $Project->setProject($project);
+                if ($Project->inPast()) {
+                    $past[] = $Project->widgetLarge($user);
+                } else {
+                    $ongoing[] = $Project->widgetLarge($user);
                 }
-                $i = 0;
-                $breakpoint = ceil($count_projects / 2);
-            ?>
-                <div class="col-md-6">
-                    <?php if (!empty($ongoing)) { ?>
+            }
+            $i = 0;
+        ?>
+            <?php if (!empty($ongoing)) { ?>
+                <h2><?= lang('Ongoing projects', 'Laufende Projekte') ?></h2>
 
-                        <h2><?= lang('Ongoing projects', 'Laufende Projekte') ?></h2>
-                        <?php foreach ($ongoing as $html) { ?>
+                <div class="row row-eq-spacing my-0">
+                    <?php foreach ($ongoing as $html) { ?>
+                        <div class="col-md-6">
                             <?= $html ?>
-                        <?php
-                            $i++;
-                            if ($i == $breakpoint) {
-                                echo "</div><div class='col-md-6'>";
-                            }
-                        } ?>
-
-                    <?php } ?>
-
-
-                    <?php if (!empty($past)) { ?>
-                        <h3><?= lang('Past projects', 'Vergangene Projekte') ?></h3>
-
-                        <?php foreach ($past as $html) { ?>
-                            <?= $html ?>
-                        <?php
-                            $i++;
-                            if ($i == $breakpoint) {
-                                echo "</div><div class'col-md-6'>";
-                            }
-                        } ?>
-
+                        </div>
                     <?php } ?>
                 </div>
-
-
-
             <?php } ?>
-        </div>
+
+            <?php if (!empty($past)) { ?>
+                <h2><?= lang('Past projects', 'Vergangene Projekte') ?></h2>
+
+                <div class="row row-eq-spacing my-0">
+                    <?php foreach ($past as $html) { ?>
+                        <div class="col-md-6">
+                            <?= $html ?>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
+
+        <?php } ?>
 
     </section>
 <?php } ?>
@@ -1312,13 +1301,13 @@ if ($currentuser) { ?>
 
 
 <?php if ($Settings->featureEnabled('wordcloud')) { ?>
-    <section id="wordcloud" style="display:none" >
-            <h3 class=""><?= lang('Word cloud') ?></h3>
+    <section id="wordcloud" style="display:none">
+        <h3 class=""><?= lang('Word cloud') ?></h3>
 
-            <p class="text-muted">
-                <?= lang('Based on the title and abstract (if available) of publications in OSIRIS.', 'Basierend auf dem Titel und Abstract (falls verfügbar) von Publikationen in OSIRIS.') ?>
-            </p>
-            <div id="wordcloud-chart" style="max-width: 80rem";></div>
+        <p class="text-muted">
+            <?= lang('Based on the title and abstract (if available) of publications in OSIRIS.', 'Basierend auf dem Titel und Abstract (falls verfügbar) von Publikationen in OSIRIS.') ?>
+        </p>
+        <div id="wordcloud-chart" style="max-width: 80rem" ;></div>
     </section>
 <?php } ?>
 

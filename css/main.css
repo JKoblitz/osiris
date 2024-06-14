@@ -559,8 +559,9 @@ h6 {
 
 .subtitle {
   margin-top: -1rem;
-  color: var(--muted-color);
+  color: var(--secondary-color);
   font-size: 1.8rem;
+  font-weight: 300;
 }
 
 b {
@@ -12096,6 +12097,25 @@ img.profile-img.small {
   flex-grow: 1;
 }
 
+#data-modules {
+  padding: 0;
+  margin: 0 -1rem;
+}
+
+#data-modules .data-module {
+  padding: 1rem;
+  align-self: baseline;
+}
+
+#data-modules .row {
+  padding: 0;
+}
+
+#data-modules .row [class^=col] {
+  padding: 1rem;
+  align-self: baseline;
+}
+
 .file-link {
   color: var(--osiris-color);
 }
@@ -12120,13 +12140,7 @@ img.profile-img.small {
   color: inherit;
   cursor: pointer;
 }
-
-a.concept:hover {
-  background-color: rgba(0, 110, 183, 0.3);
-  color: inherit;
-}
-
-[role=progressbar] {
+.concept [role=progressbar] {
   --percentage: var(--value);
   --secondary: rgba(255, 255, 255, 0.6);
   --size: 1.6rem;
@@ -12140,8 +12154,7 @@ a.concept:hover {
   place-items: center;
   margin-right: 0.5rem;
 }
-
-[role=progressbar]::before {
+.concept [role=progressbar]::before {
   content: "";
   position: absolute;
   top: 0;
@@ -12153,6 +12166,11 @@ a.concept:hover {
   mask-mode: alpha;
   -webkit-mask: radial-gradient(rgba(0, 0, 0, 0) 35%, #000 0);
   -webkit-mask-mode: alpha;
+}
+
+a.concept:hover {
+  background-color: rgba(0, 110, 183, 0.3);
+  color: inherit;
 }
 
 .filter tr:hover {
@@ -12215,6 +12233,10 @@ a.concept:hover {
 
 .show-examples #type-examples {
   display: block;
+}
+
+.no-wrap {
+  white-space: nowrap;
 }
 
 /*!

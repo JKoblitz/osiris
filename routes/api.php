@@ -155,7 +155,7 @@ Route::get('/api/activities', function () {
         $filter = $_GET['filter'];
     }
     if (isset($_GET['json'])) {
-        $filter = json_decode($_GET['json']);
+        $filter = json_decode($_GET['json'], true);
     }
 
     if (isset($_GET['aggregate'])) {
@@ -167,7 +167,7 @@ Route::get('/api/activities', function () {
         if (strpos($group, 'authors') !== false) {
             $aggregate[] = ['$unwind' => '$authors'];
         }
-        $aggregate[] = 
+        $aggregate[] =
             ['$group' => ['_id' => '$' . $group, 'count' => ['$sum' => 1]]];
 
         $aggregate[] = ['$sort' => ['count' => -1]];
@@ -176,7 +176,7 @@ Route::get('/api/activities', function () {
         $aggregate[] = ['$sort' => ['count' => -1]];
         $aggregate[] = ['$project' => ['_id' => 0, 'activity' => 1, 'count' => 1]];
         // $aggregate = array_merge($filter);
-        
+
 
         $result = $osiris->activities->aggregate(
             $aggregate
@@ -292,7 +292,13 @@ Route::get('/api/all-activities', function () {
     // $Format = new Document($highlight);
 
     $filter = [];
-    if (isset($_GET['filter'])) $filter = $_GET['filter'];
+    if (isset($_GET['filter'])) {
+        $filter = $_GET['filter'];
+    }
+    if (isset($_GET['json'])) {
+        $filter = json_decode($_GET['json'], true);
+    }
+    
     $result = [];
     if ($page == "my-activities") {
         // only own work
@@ -468,7 +474,7 @@ Route::get('/api/users', function () {
         }
     }
     if (isset($_GET['json'])) {
-        $filter = json_decode($_GET['json']);
+        $filter = json_decode($_GET['json'], true);
     }
     $result = $osiris->persons->find($filter)->toArray();
 
@@ -485,7 +491,7 @@ Route::get('/api/users', function () {
                 </a>';
             }
             $username = "";
-            if (!isset($_GET['hide_usernames']) ) {
+            if (!isset($_GET['hide_usernames'])) {
                 $username = $user['username'];
             }
             $table[] = [
@@ -682,7 +688,7 @@ Route::get('/api/projects', function () {
         $filter = $_GET['filter'];
     }
     if (isset($_GET['json'])) {
-        $filter = json_decode($_GET['json']);
+        $filter = json_decode($_GET['json'], true);
     }
     if (isset($filter['public'])) $filter['public'] = boolval($filter['public']);
 
@@ -694,6 +700,23 @@ Route::get('/api/projects', function () {
         ]];
     }
     $result = $osiris->projects->find($filter)->toArray();
+
+    if (isset($_GET['formatted'])) {
+        $data = [];
+        include_once BASEPATH . "/php/Project.php";
+        $Project = new Project();
+        foreach ($result as $project) {
+            $Project->setProject($project);
+            $project['id'] = strval($project['_id']);
+            $project['date_range'] = $Project->getDateRange();
+            $project['funder'] = $project['funder'] ?? '';
+            $project['funding_numbers'] = $Project->getFundingNumbers('<br />');
+            $project['applicant'] = $DB->getNameFromId($project['contact'] ?? '');
+            $project['activities'] = $osiris->activities->count(['projects' => strval($project['name'])]);
+            $data[] = $project;
+        }
+        $result = $data;
+    }
     echo return_rest($result, count($result));
 });
 
@@ -1913,7 +1936,7 @@ Route::get('/api/activities-suggest/(.*)', function ($term) {
     //     die;
     // }
 
-    $filter = [ '$text'=> [ '$search'=> $term ]];
+    $filter = ['$text' => ['$search' => $term]];
 
     // exclude project id
     if (isset($_GET['exclude-project'])) {
@@ -1926,8 +1949,8 @@ Route::get('/api/activities-suggest/(.*)', function ($term) {
     $result = $osiris->activities->find(
         $filter,
         [
-            'projection'=>['score' => ['$meta' => 'textScore'], 'details'=> '$rendered', 'id'=> ['$toString'=>'$_id']],
-            'sort' => ['score' => ['$meta' => 'textScore']], 
+            'projection' => ['score' => ['$meta' => 'textScore'], 'details' => '$rendered', 'id' => ['$toString' => '$_id']],
+            'sort' => ['score' => ['$meta' => 'textScore']],
             'limit' => 10
         ]
     )->toArray();
