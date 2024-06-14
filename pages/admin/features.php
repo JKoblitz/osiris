@@ -152,7 +152,7 @@
                 </td>
             </tr>
 
-<?php if (strtoupper(USER_MANAGEMENT) == 'AUTH') { ?>
+<?php if (strtoupper(USER_MANAGEMENT) !== 'AUTH') { ?>
     <tr>
                 <td class="pl-20">
                     <?= lang('LDAP user synchronization', 'LDAP-Nutzersynchronisierung') ?>
@@ -369,6 +369,7 @@
 </form>
 
 
-<?php if (strtoupper(USER_MANAGEMENT) == 'AUTH') { ?>
+<?php if (strtoupper(USER_MANAGEMENT) !== 'AUTH') { ?>
+    <br>
     <a href="<?=ROOTPATH?>/synchronize-users" class="btn">Synchronize LDAP Users</a>
 <?php } ?>
