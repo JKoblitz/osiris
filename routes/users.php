@@ -148,11 +148,11 @@ Route::get('/profile/?(.*)', function ($user) {
     include_once BASEPATH . "/php/init.php";
 
     if (empty($user)) $user = $_SESSION['username'];
-    if (!empty($user) && DB::to_ObjectID($user)){
+    if (!empty($user) && DB::to_ObjectID($user)) {
         $mongo_id = DB::to_ObjectID($user);
         $scientist = $osiris->persons->findOne(['_id' => $mongo_id]);
         $user = $scientist['username'];
-    }  else {
+    } else {
         $scientist = $DB->getPerson($user);
     }
     include_once BASEPATH . "/php/Document.php";
@@ -284,85 +284,221 @@ Route::get('/synchronize-users', function () {
 
     $blacklist = [];
     $bl = $Settings->get('ldap-sync-blacklist');
-    if (!empty($bl)){
+    if (!empty($bl)) {
         $bl = explode(',', $bl);
         $blacklist = array_filter(array_map('trim', $bl));
-        echo "<p> There are ".count($blacklist). " usernames on your blacklist.</p>";
+        echo "<p> There are " . count($blacklist) . " usernames on your blacklist.</p>";
     } else {
         echo "<p>Your blacklist is empty, all users are synchronized.</p>";
     }
     $whitelist = [];
     $bl = $Settings->get('ldap-sync-whitelist');
-    if (!empty($bl)){
+    if (!empty($bl)) {
         $bl = explode(',', $bl);
         $whitelist = array_filter(array_map('trim', $bl));
-        echo "<p> There are ".count($whitelist). " usernames on your whitelist.</p>";
+        echo "<p> There are " . count($whitelist) . " usernames on your whitelist.</p>";
     } else {
         echo "<p>Your whitelist is empty, ignored users are not synchronized.</p>";
     }
 
     $users = getUsers();
     // dump($users);
+
+    $actions = [
+        'blacklisted' => [],
+        'inactivate' => [],
+        'add' => [],
+        'unchanged' => []
+    ];
     foreach ($users as $username => $active) {
-        // check if username is on the blacklist
-        if (in_array($username, $blacklist)) continue;
+        $exists = false;
+        $dbactive = false;
 
         // first: check if user is in database
         $USER = $DB->getPerson($username);
-        // if user does not exists
-        if (empty($USER)) {
-            // if inactive: do nothing
-            if (!$active) continue;
+        if (!empty($USER)) {
+            if ($USER['is_active']) 
+                $dbactive = 'active';
+            $exists = true;
+            $name = $USER['displayname'];
+        } else {
+            $USER = newUser($username);
+            $name = $USER['displayname'] ?? $username;
+        }
 
-            // else: add new user
+        // check if username is on the blacklist
+        if (in_array($username, $blacklist)) {
+            $actions['blacklisted'][$username] = $name;
+        } else if (!$active && $exists && $dbactive) {
+            $actions['inactivate'][$username] = $name;
+        } else if (!$exists) {
+            $actions['add'][$username] = $name;
+        } else {
+            $actions['unchanged'][$username] = $name;
+        }
+    }
+?>
+
+    <form action="<?= ROOTPATH ?>/synchronize-users" method="post">
+
+        <?php
+
+        // inactivated users
+        if (!empty($actions['inactivate'])) {
+            // interface to inactivate users
+        ?>
+            <h2><?= lang('Inactivated users', 'Inaktivierte Nutzer') ?></h2>
+            <!-- checkboxes -->
+            <?php
+            $inactivate = $actions['inactivate'];
+            asort($inactivate);
+            foreach ($inactivate as $u => $n) { ?>
+                <div class="">
+                    <input type="checkbox" name="inactivate[]" id="inactivate-<?= $u ?>" value="<?= $u ?>" checked>
+                    <label for="inactivate-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
+                </div>
+            <?php } ?>
+        <?php
+        }
+
+        // new users 
+        if (!empty($actions['add'])) {
+            // interface to add users
+        ?>
+            <h2><?= lang('New users', 'Neue Nutzer:innen') ?></h2>
+            <!-- checkboxes -->
+            <?php
+            $add = $actions['add'];
+            asort($add);
+            foreach ($add as $u => $n) { ?>
+                <div>
+                    <!-- radio check for add, blacklist and ignore -->
+                    <input type="checkbox" name="add[]" id="add-<?= $u ?>" value="<?= $u ?>" checked>
+                    <label for="add-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
+                    <!-- add option for blacklist -->
+                    <input type="checkbox" name="blacklist[]" id="blacklist-<?= $u ?>" value="<?= $u ?>" onclick="$('#add-<?= $u ?>').attr('checked', !$('#add-<?= $u ?>').attr('checked'))">
+                    <label for="blacklist-<?= $u ?>"><?= lang('Blacklist', 'Blacklist') ?></label>
+                </div>
+            <?php } ?>
+        <?php
+        }
+
+
+        // unchanged users (as collapsed list)
+        if (!empty($actions['unchanged'])) {
+        ?>
+            <details class="collapse-panel">
+                <summary class="collapse-header">
+                    <?= lang('Unchanged users', 'Unveränderte Nutzer') ?>
+                </summary>
+                <div class="collapse-content">
+                    <ul>
+                        <?php foreach ($actions['unchanged'] as $username => $name) {
+                            echo "<li>$name ($username)</li>";
+                        } ?>
+                    </ul>
+                </div>
+            </details>
+        <?php
+        }
+
+        // blacklisted users
+        if (!empty($actions['blacklisted'])) {
+        ?>
+            <details class="collapse-panel">
+                <summary class="collapse-header">
+                    <?= lang('Blacklisted users', 'Nutzer auf der Blacklist') ?>
+                </summary>
+                <div class="collapse-content">
+                    <ul>
+                        <?php foreach ($actions['blacklisted'] as $username => $name) {
+                            echo "<li>$name ($username)</li>";
+                        } ?>
+                    </ul>
+                </div>
+            </details>
+        <?php } ?>
+
+        <button type="submit" class="btn btn-primary"><?= lang('Synchronize', 'Synchronisieren') ?></button>
+    </form>
+<?php
+
+
+
+
+    include BASEPATH . "/footer.php";
+});
+
+Route::post('/synchronize-users', function () {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/_login.php";
+    include BASEPATH . "/header.php";
+
+    if (isset($_POST['inactivate'])) {
+        $keep = [
+            '_id',
+            'displayname',
+            'formalname',
+            'first_abbr',
+            'updated', 'updated_by',
+            "academic_title",
+            "first",
+            "last",
+            "name",
+            "dept",
+            "username"
+        ];
+        foreach ($_POST['inactivate'] as $username) {
+            $data = $DB->getPerson($username);
+            $name = $data['displayname'] ?? $username;
+            $arr = [];
+            foreach ($data as $key => $value) {
+                if (in_array($key, $keep)) continue;
+                $arr[$key] = null;
+            }
+            $arr['is_active'] = false;
+            $osiris->persons->updateOne(
+                ['username' => $username],
+                ['$set' => $arr]
+            );
+            if (file_exists(BASEPATH . "/img/users/$username.jpg")) {
+                unlink(BASEPATH . "/img/users/$username.jpg");
+            }
+            echo "<p><i class='ph ph-user-minus text-danger'></i> $name ($username) inactivated and personal data deleted.</p>";
+        }
+    }
+    if (isset($_POST['add'])) {
+        foreach ($_POST['add'] as $username) {
+            // check if user exists
+            $USER = $DB->getPerson($username);
+            if (!empty($USER)) {
+                echo "<p><i class='ph ph-warning text-warning'></i> $username already exists.</p>";
+                continue;
+            }
             $new_user = newUser($username);
-
             if (empty($new_user)) {
-                // this should never happen
                 echo "<p><i class='ph ph-warning text-danger'></i> $username did not exist.</p>";
                 continue;
             }
-
-            if (empty($new_user['first']) || empty($new_user['last'])) {
-                if (in_array($username, $whitelist)){
-                    echo "<p><i class='ph ph-user-plus text-success'></i> New user created: $new_user[displayname] ($new_user[username]) (username was on the whitelist).</p>";
-                } else {
-                    echo "<p><i class='ph ph-warning text-signal'></i> $username had no first or last name and is probably a test account. Add to whitelist to sync nonetheless.</p>";
-                    continue;
-                }
-            } else {
-                echo "<p><i class='ph ph-user-plus text-success'></i> New user created: $new_user[displayname] ($new_user[username])</p>";
-            }
-                        
             $osiris->persons->insertOne($new_user);
-        } else {
-            // user is no longer active
-            if (!$active && $USER['is_active']) {
-                echo ('<p><i class="ph ph-user-minus text-danger"></i> ' . $USER['displayname'] . ' (' . $username . ') is no longer active.</p>');
-                $osiris->persons->updateOne(
-                    ['username' => $username],
-                    ['$set' => ['is_active' => false]]
-                );
-            }
-
-            // if (empty($USER['dept'])){
-            //     $new_user = newUser($username);
-            //     if ($new_user['person']['dept']){
-            //         $osiris->persons->updateOne(
-            //             ['username' => $username],
-            //             ['$set' => ['dept' => $new_user['person']['dept']]]
-            //         );
-            //     }                
-            // }
-            // else if ($active && !$USER['is_active']) {
-            //     echo ('<p>' . $username . ' is active again.</p>');
-            //     $osiris->persons->updateOne(
-            //         ['username' => $username],
-            //         ['$set' => ['is_active' => true]]
-            //     );
-            // }
+            echo "<p><i class='ph ph-user-plus text-success'></i> New user created: $new_user[displayname] ($new_user[username])</p>";
         }
     }
+    if (isset($_POST['blacklist'])) {
+        $bl = $Settings->get('ldap-sync-blacklist');
+        if (!empty($bl)) {
+            $bl = explode(',', $bl);
+            $blacklist = array_filter(array_map('trim', $bl));
+        } else {
+            $blacklist = [];
+        }
+        foreach ($_POST['blacklist'] as $username) {
+            $blacklist[] = $username;
+        }
+        $Settings->set('ldap-sync-blacklist', implode(',', $blacklist));
+        echo "<p>Blacklist updated.</p>";
+    }
+
     echo "User synchronization successful";
     include BASEPATH . "/footer.php";
 });
@@ -481,7 +617,7 @@ Route::post('/crud/users/delete/(.*)', function ($user) {
     if (file_exists(BASEPATH . "/img/users/$user.jpg")) {
         unlink(BASEPATH . "/img/users/$user.jpg");
     }
-    
+
     header("Location: " . ROOTPATH . "/profile/" . $user . "?msg=user-inactivated");
     die();
 });
