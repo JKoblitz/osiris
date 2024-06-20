@@ -208,21 +208,43 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     <div class="col ml-20">
         <h1 class="m-0"><?= $name ?></h1>
 
-        <?php
-        if (!empty($scientist['depts'])) foreach ($scientist['depts'] as $i => $d) {
+        <style>
+            .dept-list {
+                list-style: none;
+                padding: 0;
+                margin: .5rem 0;
+            }
+            .dept-list li {
+                margin: 0;
+            }
+        </style>
+     <ul class="dept-list">
+     <?php
+        $depts = DB::doc2Arr($scientist['depts'] ?? []);
+        if (in_array(null, $depts)){
+            // filter and change in database
+            $depts = array_filter($depts);
+            $osiris->scientists->updateOne(
+                ['username' => $user],
+                ['$set' => ['depts' => $depts]]
+            );
+        }
+
+        if (!empty($scientist['depts'])) foreach ($depts as $i => $d) {
             $dept = $Groups->getGroup($d);
-            if ($i > 0) echo ', ';
         ?>
-            <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
+           <li>
+           <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
                 <?php if (in_array($user, $dept['head'] ?? [])) { ?>
                     <i class="ph ph-crown"></i>
                 <?php } ?>
                 <?= $dept['name'] ?>
                 (<?= $dept['unit'] ?>)
             </a>
+           </li>
         <?php } ?>
 
-        <br>
+     </ul>
 
         <?php if (!($scientist['is_active'] ?? true)) { ?>
             <span class="text-danger badge">

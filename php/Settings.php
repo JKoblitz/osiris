@@ -68,6 +68,14 @@ class Settings
                 break;
         }
     }
+    function set($key, $value)
+    {
+        $this->osiris->adminGeneral->updateOne(
+            ['key' => $key],
+            ['$set' => ['value' => $value]],
+            ['upsert' => true]
+        );
+    }
 
     function printLogo($class = "")
     {

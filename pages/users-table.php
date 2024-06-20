@@ -17,11 +17,15 @@
  */
 ?>
 
-<link rel="stylesheet" href="<?=ROOTPATH?>/css/usertable.css">
+<link rel="stylesheet" href="<?= ROOTPATH ?>/css/usertable.css">
 
 <?php if ($Settings->featureEnabled('portal')) { ?>
     <a href="<?= ROOTPATH ?>/preview/persons" class="btn float-right"><i class="ph ph-eye"></i> <?= lang('Preview', 'Vorschau') ?></a>
 <?php } ?>
+<?php if ($Settings->hasPermission('user.synchronize') && strtoupper(USER_MANAGEMENT) === 'LDAP') { ?>
+    <a href="<?= ROOTPATH ?>/synchronize-users" class="btn float-right"><i class="ph ph-sync"></i> <?= lang('Synchronize users', 'Nutzende synchronisieren') ?></a>
+<?php } ?>
+
 <h1>
     <i class="ph ph-student"></i>
     <?= lang('Users', 'Personen') ?>
@@ -79,7 +83,7 @@
         </div>
     </div>
 </div>
- 
+
 
 <script>
     var dataTable;

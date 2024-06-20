@@ -105,6 +105,11 @@
                 "id": "user.inactive",
                 "de": "Nutzer als inaktiv markieren",
                 "en": "Set users to inactive"
+            },
+            {
+                "id": "user.synchronize",
+                "de": "Nutzer synchronisieren",
+                "en": "Synchronize users"
             }
         ]
     },
