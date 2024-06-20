@@ -302,12 +302,17 @@ Route::get('/synchronize-users', function () {
     }
 
     $users = getUsers();
-    // dump($users);
+
+    $removed = $osiris->persons->find(
+        ['username' => ['$nin' => array_keys($users)], 'is_active'=>['$in'=>[1,true, '1']]], 
+        ['projection' => ['username' => 1, 'is_active' => 1, 'displayname' => 1]]);
+    $removed = array_column(iterator_to_array($removed), 'displayname', 'username' );
 
     $actions = [
         'blacklisted' => [],
         'inactivate' => [],
         'add' => [],
+        'delete'=> $removed ?? [],
         'unchanged' => []
     ];
     foreach ($users as $username => $active) {
@@ -335,7 +340,7 @@ Route::get('/synchronize-users', function () {
             $actions['add'][$username] = $name;
         } else {
             $actions['unchanged'][$username] = $name;
-        }
+        } 
     }
 ?>
 
@@ -353,6 +358,23 @@ Route::get('/synchronize-users', function () {
             $inactivate = $actions['inactivate'];
             asort($inactivate);
             foreach ($inactivate as $u => $n) { ?>
+                <div class="">
+                    <input type="checkbox" name="inactivate[]" id="inactivate-<?= $u ?>" value="<?= $u ?>" checked>
+                    <label for="inactivate-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
+                </div>
+            <?php } ?>
+        <?php
+        }
+
+        // deleted
+        if (!empty($actions['delete'])) {
+            // interface to delete users
+        ?>
+            <h2><?= lang('Deleted users', 'Gelöschte Nutzer') ?></h2>
+            <?php
+            $delete = $actions['delete'];
+            asort($delete);
+            foreach ($delete as $u => $n) { ?>
                 <div class="">
                     <input type="checkbox" name="inactivate[]" id="inactivate-<?= $u ?>" value="<?= $u ?>" checked>
                     <label for="inactivate-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
