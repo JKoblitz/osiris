@@ -751,6 +751,12 @@ if ($currentuser) { ?>
                     <tbody>
                         <tr>
                             <td>
+                                <span class="key"><?= lang('Username', 'Benutzername') ?></span>
+                                <?= $user ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <span class="key"><?= lang('Last name', 'Nachname') ?></span>
                                 <?= $scientist['last'] ?? '' ?>
                             </td>
