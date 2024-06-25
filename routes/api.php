@@ -516,7 +516,8 @@ Route::get('/api/users', function () {
                 'email' => $user['email'],
                 'academic_title' => $user['academic_title'],
                 'dept' => $Groups->personDept($user['depts'], 1)['id'],
-                'active' => ($user['is_active'] ?? true) ? 'yes' : 'no'
+                'active' => ($user['is_active'] ?? true) ? 'yes' : 'no',
+                'public_image'=> $user['public_image'] ?? true
             ];
         }
         $result = $table;

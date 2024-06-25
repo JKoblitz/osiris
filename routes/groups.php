@@ -66,7 +66,7 @@ Route::get('/groups/view/(.*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
-Route::get('/groups/edit/(.*)', function ($id) {
+Route::get('/groups/(edit|public)/(.*)', function ($page, $id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
@@ -79,14 +79,22 @@ Route::get('/groups/edit/(.*)', function ($id) {
     $breadcrumb = [
         ['name' => lang("Groups", "Gruppen"), 'path' => "/groups"],
         ['name' =>  $group['id'], 'path' => "/groups/view/$id"],
-        ['name' => lang("Edit", "Bearbeiten")]
     ];
+    if ($page == 'edit') {
+        $breadcrumb[] = ['name' => lang("Edit", "Bearbeiten")];
+    } else {
+        $breadcrumb[] = ['name' => lang("Public", "Öffentlich")];
+    }
 
     global $form;
     $form = DB::doc2Arr($group);
 
     include BASEPATH . "/header.php";
-    include BASEPATH . "/pages/groups-add.php";
+    if ($page == 'edit') {
+        include BASEPATH . "/pages/groups-add.php";
+    } else {
+        include BASEPATH . "/pages/group-public.php";
+    }
     include BASEPATH . "/footer.php";
 }, 'login');
 
@@ -155,17 +163,25 @@ Route::post('/crud/groups/update/([A-Za-z0-9]*)', function ($id) {
     $values['updated'] = date('Y-m-d');
     $values['updated_by'] = $_SESSION['username'];
 
+    if (isset($values['hide'])) {
+        $values['hide'] = true;
+    } else {
+        $values['hide'] = false;
+    }
+
     $id = $DB->to_ObjectID($id);
 
     // check if ID has changes
-    $group = $osiris->groups->findOne(['_id' => $id]);
-    if ($group['id'] != $values['id']) {
-        // change IDs of Members
-        $osiris->persons->updateMany(
-            ['depts' => $group['id']],
-            ['$set' => ['depts.$[elem]' => $values['id']]],
-            ['arrayFilters' => [['elem' => ['$eq' => $group['id']]]], 'multi' => true]
-        );
+    if (isset($values['id'])) {
+        $group = $osiris->groups->findOne(['_id' => $id]);
+        if ($group['id'] != $values['id']) {
+            // change IDs of Members
+            $osiris->persons->updateMany(
+                ['depts' => $group['id']],
+                ['$set' => ['depts.$[elem]' => $values['id']]],
+                ['arrayFilters' => [['elem' => ['$eq' => $group['id']]]], 'multi' => true]
+            );
+        }
     }
 
     if (!empty($values['parent'])) {
@@ -186,6 +202,8 @@ Route::post('/crud/groups/update/([A-Za-z0-9]*)', function ($id) {
             }
         }
     }
+    // dump($values, true);
+    // die;
 
     $updateResult = $collection->updateOne(
         ['_id' => $id],
@@ -241,7 +259,7 @@ Route::post('/crud/groups/addperson/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     // select the right collection
 
-
+    $id = urldecode($id);
     // add id to person dept
     // $person = $osiris->persons->findOne(['username' => $_POST['username']]);
     $updateResult = $osiris->persons->updateOne(
@@ -250,6 +268,5 @@ Route::post('/crud/groups/addperson/(.*)', function ($id) {
     );
 
     // addUserActivity('delete');
-    header("Location: " . ROOTPATH . "/groups/view/$id?msg=added-person#add-person-modal" );
+    header("Location: " . ROOTPATH . "/groups/view/$id?msg=added-person#add-person-modal");
 });
-

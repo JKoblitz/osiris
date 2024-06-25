@@ -156,6 +156,16 @@
 
         </div>
 
+
+        <div class="form-group">
+        <label for="position">
+                <?= lang('Current Position', 'Aktuelle Position') ?>
+            </label>
+
+            <div class="form-group">
+                <input type="text" name="values[position]" id="position" class="form-control" value="<?= $data['position'] ?? '' ?>">
+            </div>
+        </div>
     </fieldset>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>

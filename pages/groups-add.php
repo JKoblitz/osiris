@@ -16,7 +16,7 @@
  * @license     MIT
  */
 
-if (!$Settings->hasPermission('guests.add') && (!isset($form['head']) || $form['head'] !== $_SESSION['username'])) {
+if (!$Settings->hasPermission('units.add') && (!isset($form['head']) || $form['head'] !== $_SESSION['username'])) {
     echo "You have no right to be here.";
     die;
 }
@@ -202,62 +202,6 @@ function sel($index, $value)
                 </script>
             </div>
         </div>
-    </fieldset>
-
-
-    <fieldset>
-        <legend id="research">
-            <?= lang('Research interest', 'Forschungsinteressen') ?>
-        </legend>
-        <div id="research-list">
-            <?php
-            if (isset($form['research']) && !empty($form['research'])) {
-
-                foreach ($form['research'] as $i => $con) { ?>
-
-                    <div class="alert mb-10">
-
-                        <div class="form-group my-10">
-                            <input name="values[research][<?= $i ?>][title]" type="text" class="form-control" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
-                        </div>
-                        <div class="form-group mb-0">
-                            <textarea name="values[research][<?= $i ?>][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required><?= htmlspecialchars($con['info'] ?? '') ?></textarea>
-                        </div>
-
-                        <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
-                    </div>
-            <?php }
-            } ?>
-
-        </div>
-        <button class="btn" type="button" onclick="addResearchrow(event, '#research-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
-
-
-        <script>
-            var i = <?= $i ?? 0 ?>
-
-            var CURRENTYEAR = <?= CURRENTYEAR ?>;
-
-            function addResearchrow(evt, parent) {
-                i++;
-                var el = `
-            <div class="alert mb-10">
-                    
-                    <div class="form-group mb-10">
-                        <input name="values[research][${i}][title]" type="text" class="form-control" placeholder="title *" required>
-                    </div>
-
-                    <div class="form-group mb-0">
-                        <textarea name="values[research][${i}][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required></textarea>
-                       </div>
-
-                    <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
-                </div>
-                `;
-                $(parent).append(el);
-            }
-        </script>
-
     </fieldset>
 
 

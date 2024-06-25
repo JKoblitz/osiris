@@ -19,7 +19,8 @@ class Parsedown
 
     const version = '1.7.3';
 
-    # ~
+    // Matches Markdown image definition
+    private $MarkdownImageRegex = "~^!\[.*?\]\(.*?\)$~";
 
     function text($text)
     {
@@ -131,6 +132,7 @@ class Parsedown
         '`' => array('FencedCode'),
         '|' => array('Table'),
         '~' => array('FencedCode'),
+        '!' => array('Figure'),
     );
 
     # ~
@@ -1263,6 +1265,44 @@ class Parsedown
         }
     }
 
+
+    protected function blockFigure($Line) {
+        // If line does not match image def, don't handle it
+        if (1 !== preg_match($this->MarkdownImageRegex, $Line['text'])) {
+            return;
+        }
+            
+        $InlineImage = $this->inlineImage($Line);
+        if (!isset($InlineImage)) {
+            return;
+        }
+
+        $FigureBlock = array(
+            'element' => array(
+                'name' => 'figure',
+                'handler' => 'elements',
+                'text' => array(
+                    $InlineImage['element']
+                )
+            ),
+        );
+
+        // Add figcaption if title set
+        if (!empty($InlineImage['element']['attributes']['title'])) {
+
+            $InlineFigcaption = array(
+                'element' => array(
+                    'name' => 'figcaption',
+                    'text' => $InlineImage['element']['attributes']['title']
+                ),
+            );
+
+            $FigureBlock['element']['text'][] = $InlineFigcaption['element'];
+        }
+
+        return $FigureBlock;
+    }
+
     protected function inlineImage($Excerpt)
     {
         if ( ! isset($Excerpt['text'][1]) or $Excerpt['text'][1] !== '[')
@@ -1279,12 +1319,17 @@ class Parsedown
             return;
         }
 
+        $src = $Link['element']['attributes']['href'];
+        if (substr( $src, 0, 4 ) !== "http"){
+            $src = ROOTPATH . '/'. $src;
+        }
+
         $Inline = array(
             'extent' => $Link['extent'] + 1,
             'element' => array(
                 'name' => 'img',
                 'attributes' => array(
-                    'src' => ROOTPATH . '/'.$Link['element']['attributes']['href'],
+                    'src' => $src,
                     'alt' => $Link['element']['text'],
                     'class' => 'img-fluid d-block',
                     'id' => 'fig-'. ++$this->figCount

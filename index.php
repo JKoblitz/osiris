@@ -116,6 +116,14 @@ include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/rest.php";
 // include_once BASEPATH . "/routes/CRUD.php";
 
+Route::get('/test-user/(.*)', function ($username) {
+    include_once BASEPATH . "/php/_login.php";
+    include_once BASEPATH . "/php/init.php";
+    $user = getUser($username);
+    dump($user);
+    
+});
+
 // if (IDA_INTEGRATION) {
     include_once BASEPATH . "/addons/ida/index.php";
 // }

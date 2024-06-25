@@ -206,7 +206,10 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         </div>
     </div>
     <div class="col ml-20">
-        <h1 class="m-0"><?= $name ?></h1>
+        <h1 class="mt-0"><?= $name ?></h1>
+        <h5 class="subtitle">
+            <?= $scientist['position'] ?? '' ?>
+        </h5>
 
         <style>
             .dept-list {
@@ -214,56 +217,46 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                 padding: 0;
                 margin: .5rem 0;
             }
+
             .dept-list li {
                 margin: 0;
             }
         </style>
-     <ul class="dept-list">
-     <?php
-        $depts = DB::doc2Arr($scientist['depts'] ?? []);
-        if (in_array(null, $depts)){
-            // filter and change in database
-            $depts = array_filter($depts);
-            $osiris->scientists->updateOne(
-                ['username' => $user],
-                ['$set' => ['depts' => $depts]]
-            );
-        }
+        <ul class="dept-list">
+            <?php
+            $depts = DB::doc2Arr($scientist['depts'] ?? []);
+            if (in_array(null, $depts)) {
+                // filter and change in database
+                $depts = array_filter($depts);
+                $osiris->scientists->updateOne(
+                    ['username' => $user],
+                    ['$set' => ['depts' => $depts]]
+                );
+            }
 
-        if (!empty($scientist['depts'])) foreach ($depts as $i => $d) {
-            $dept = $Groups->getGroup($d);
-        ?>
-           <li>
-           <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
-                <?php if (in_array($user, $dept['head'] ?? [])) { ?>
-                    <i class="ph ph-crown"></i>
-                <?php } ?>
-                <?= $dept['name'] ?>
-                (<?= $dept['unit'] ?>)
-            </a>
-           </li>
-        <?php } ?>
+            if (!empty($scientist['depts'])) foreach ($depts as $i => $d) {
+                $dept = $Groups->getGroup($d);
+            ?>
+                <li>
+                    <a href="<?= ROOTPATH ?>/groups/view/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
+                        <?php if (in_array($user, $dept['head'] ?? [])) { ?>
+                            <i class="ph ph-crown"></i>
+                        <?php } ?>
+                        <?= $dept['name'] ?>
+                        (<?= $dept['unit'] ?>)
+                    </a>
+                </li>
+            <?php } ?>
 
-     </ul>
+        </ul>
 
         <?php if (!($scientist['is_active'] ?? true)) { ?>
             <span class="text-danger badge">
                 <?= lang('Former Employee', 'Ehemalige Beschäftigte') ?>
             </span>
-        <?php } else { ?>
-            <?php foreach ($scientist['roles'] as $role) { ?>
-                <span class="badge">
-                    <?= strtoupper($role) ?>
-                </span>
-            <?php } ?>
-            <!-- <span class="badge">Last login: <?= $scientist['lastlogin'] ?></span> -->
-            <?php if ($currentuser && !empty($scientist['maintenance'] ?? null)) { ?>
-                <span class="badge">
-                    <?= lang('Maintainer: ' . $DB->getNameFromId($scientist['maintenance'])) ?>
-                </span>
-            <?php } ?>
         <?php } ?>
 
+        <!-- <span class="badge">Last login: <?= $scientist['lastlogin'] ?></span> -->
         <?php
         // show current guest state
         if ($Settings->featureEnabled('guests')) {
@@ -291,18 +284,24 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
 
     </div>
 
-    <?php
-    if ($show_achievements) {
-    ?>
-        <div class="achievements text-right" style="max-width: 35rem;">
+    <div class="achievements text-right" style="max-width: 35rem;">
+        <?php
+        if ($show_achievements) {
+        ?>
             <h5 class="m-0"><?= lang('Achievements', 'Errungenschaften') ?>:</h5>
 
             <?php
             $Achievement->widget();
             ?>
-        </div>
-    <?php
-    } ?>
+        <?php
+        } ?>
+
+        <?php foreach ($scientist['roles'] as $role) { ?>
+            <span class="badge">
+                <?= strtoupper($role) ?>
+            </span>
+        <?php } ?>
+    </div>
 </div>
 
 
@@ -616,6 +615,31 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <?php } ?>
     <?php } ?>
 
+    
+    <!-- Teaching activities -->
+    <?php
+    $teaching = $osiris->activities->aggregate([
+        ['$match' => ['authors.user' => $user, 'type' => 'teaching', 'module_id' => ['$ne' => null]]],
+        [
+            '$group' => [
+                '_id' => '$module_id',
+                'count' => ['$sum' => 1],
+                'doc' => ['$push' => '$$ROOT']
+            ]
+        ],
+        ['$sort' => ['count' => -1]]
+    ])->toArray();
+    $count_teaching = count($teaching);
+
+    if ($count_teaching > 0) { ?>
+        <a onclick="navigate('teaching')" id="btn-teaching" class="btn">
+            <i class="ph ph-graduation-cap" aria-hidden="true"></i>
+            <?= lang('Teaching', 'Lehre')  ?>
+            <span class="index"><?= $count_teaching ?></span>
+        </a>
+    <?php } ?>
+
+
 
     <?php if ($Settings->featureEnabled('wordcloud')) { ?>
         <?php
@@ -854,7 +878,7 @@ if ($currentuser) { ?>
 
         <div class="col-md-6 col-lg-8">
             <div class="box h-full">
-                <div class="content">
+                <!-- <div class="content">
 
 
                     <h4 class="title">
@@ -872,12 +896,12 @@ if ($currentuser) { ?>
                     <?php } ?>
 
                 </div>
-                <hr>
+                <hr> -->
                 <div class="content">
 
                     <h4 class="title">
                         <?= lang('Research interest', 'Forschungsinteressen') ?>
-                        <?php if ($currentuser) { ?>
+                        <?php if ($currentuser || $Settings->hasPermission('user.edit')) { ?>
                             <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>#research">
                                 <i class="ph ph-note-pencil ph-lg"></i>
                             </a>
@@ -899,7 +923,7 @@ if ($currentuser) { ?>
 
                     <h4 class="title">
                         <?= lang('Curriculum Vitae') ?>
-                        <?php if ($currentuser) { ?>
+                        <?php if ($currentuser || $Settings->hasPermission('user.edit')) { ?>
                             <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>#cv">
                                 <i class="ph ph-note-pencil ph-lg"></i>
                             </a>
@@ -1301,6 +1325,59 @@ if ($currentuser) { ?>
     </div>
 
 </section>
+
+<?php if ($count_teaching > 0) { ?>
+    <section id="teaching" style="display: none;">
+
+        <h2><?= lang('Teaching activities', 'Lehrtätigkeiten') ?></h2>
+
+        <div class="row row-eq-spacing">
+            <?php foreach ($teaching as $t) {
+                $module = $osiris->teaching->findOne(['_id' => DB::to_ObjectID($t['_id'])]);
+            ?>
+                <div class="col-md-6">
+                    <div class="box mb-0" id="<?= $t['_id'] ?>">
+                        <div class="content">
+                            <h5 class="mt-0">
+                                <span class="highlight-text"><?= $module['module'] ?></span>
+                                <?= $module['title'] ?>
+                            </h5>
+
+                            <em><?= $module['affiliation'] ?></em>
+                        </div>
+
+                        <hr>
+                        <div class="content">
+                            <?php
+                            $activities = $t['doc'] ?? [];
+                            if (count($activities) != 0) {
+                            ?>
+                                <table class="w-full">
+                                    <?php foreach ($activities as $n => $doc) :
+                                        if (!isset($doc['rendered'])) renderActivities(['_id' => $doc['_id']]);
+                                    ?>
+                                        <tr>
+                                            <td class="pb-5">
+                                                <?= $doc['rendered']['icon'] ?>
+                                                <?= $doc['rendered']['web'] ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </table>
+
+
+                            <?php } else { ?>
+
+                                <?= lang('No activities connected.', 'Keine Aktivitäten verknüpft.') ?>
+
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
+    </section>
+<?php } ?>
 
 
 <?php if ($Settings->featureEnabled('concepts')) { ?>

@@ -527,13 +527,15 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         foreach (explode(" ", $values['first']) as $name) {
             $person['first_abbr'] .= " " . $name[0] . ".";
         }
+
+        // only update public visibility if complete form (user edit) is submitted
+        // name is indicating that
+        foreach (["public_image", "public_email", "public_phone"] as $key) {
+            $person[$key] = boolval($values[$key] ?? false);
+        }
     }
 
-    foreach (["public_image", "public_email", "public_phone"] as $key) {
-        $person[$key] = boolval($values[$key] ?? false);
-    }
-
-
+    
     if (isset($values['cv'])) {
         $cv = $values['cv'];
         foreach ($values['cv'] as $key => $entry) {

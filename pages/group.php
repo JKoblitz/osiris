@@ -84,6 +84,13 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
     h1 {
         color: var(--highlight-color);
     }
+    
+blockquote {
+  font-style: italic;
+  border-left: 5px solid var(--primary-color);
+  padding-left: 1rem;
+  margin: 1rem 0;
+}
 </style>
 
 <!-- modal to add person -->
@@ -109,27 +116,32 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
 </div>
 
 <div <?= $Groups->cssVar($id) ?> class="">
-    <div class="btn-group float-right">
+<div class="btn-toolbar">
 
-        <?php if ($Settings->hasPermission('units.add') || (isset($form['head']) && $form['head'] == $_SESSION['username'])) { ?>
-            <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
-                <i class="ph ph-note-pencil ph-fw"></i>
-                <?= lang('Edit', 'Bearbeiten') ?>
-            </a>
-            <a class="btn" href="#add-person-modal">
-                <i class="ph ph-user-plus ph-fw"></i>
-                <?= lang('Add person', 'Person hinzufügen') ?>
-            </a>
-        <?php } ?>
+<?php if ($Settings->hasPermission('units.add') || (isset($form['head']) && $form['head'] == $_SESSION['username'])) { ?>
+    <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
+        <i class="ph ph-note-pencil ph-fw"></i>
+        <?= lang('Edit', 'Bearbeiten') ?>
+    </a>
+    <a class="btn" href="<?= ROOTPATH ?>/groups/public/<?= $id ?>">
+        <i class="ph ph-note-pencil ph-fw"></i>
+        <?= lang('Public', 'Öffentliche Darstellung') ?>
+    </a>
+    <a class="btn" href="#add-person-modal">
+        <i class="ph ph-user-plus ph-fw"></i>
+        <?= lang('Add person', 'Person hinzufügen') ?>
+    </a>
+<?php } ?>
 
 
-        <?php if ($Settings->featureEnabled('portal')) { ?>
-            <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
-                <i class="ph ph-eye ph-fw"></i>
-                <?= lang('Preview', 'Vorschau') ?>
-            </a>
-        <?php } ?>
-    </div>
+<?php if ($Settings->featureEnabled('portal')) { ?>
+    <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
+        <i class="ph ph-eye ph-fw"></i>
+        <?= lang('Preview', 'Vorschau') ?>
+    </a>
+<?php } ?>
+</div>
+    
     <h1>
         <?= lang($group['name'] ?? '-', $group['name_de'] ?? null) ?>
 
