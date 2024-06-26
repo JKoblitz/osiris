@@ -171,7 +171,7 @@
     <?php if ($Settings->featureEnabled('portal')) { ?>
         
     <fieldset>
-        <legend>Public visibility</legend>
+        <legend><?=lang('Public visibility', 'Öffentliche Darstellung')?> (Portfolio)</legend>
         <!-- <div class="custom-checkbox">
             <input type="checkbox" id="public" value="1" name="values[public]" <?= $data['public'] ? 'checked' : '' ?>>
             <label for="public"><?= lang('Publicly visible', 'Öffentlich sichtbar') ?></label>

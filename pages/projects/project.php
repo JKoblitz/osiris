@@ -688,6 +688,20 @@ $institute = $Settings->get('affiliation_details');
             <tbody>
                 <tr>
                     <td>
+                        <?php if ($project['public']) { ?>
+                            <a class="badge success" href="<?=PORTALPATH?>/project/<?=$project['_id']?>">
+                                <?= lang('Publicly shown', 'Öffentlich gezeigt') ?>
+                            </a>
+                        <?php } else { ?>
+                            <span class="badge danger">
+                                <?= lang('Not publicly shown', 'Nicht öffentlich gezeigt') ?>
+                            </span>
+                        <?php } ?>
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <span class="key"><?= lang('Public title', 'Öffentlicher Titel') ?></span>
                         <?= $project['public_title'] ?? $project['title'] ?? '-' ?>
                     </td>

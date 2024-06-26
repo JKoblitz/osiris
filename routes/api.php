@@ -298,7 +298,7 @@ Route::get('/api/all-activities', function () {
     if (isset($_GET['json'])) {
         $filter = json_decode($_GET['json'], true);
     }
-    
+
     $result = [];
     if ($page == "my-activities") {
         // only own work
@@ -517,7 +517,7 @@ Route::get('/api/users', function () {
                 'academic_title' => $user['academic_title'],
                 'dept' => $Groups->personDept($user['depts'], 1)['id'],
                 'active' => ($user['is_active'] ?? true) ? 'yes' : 'no',
-                'public_image'=> $user['public_image'] ?? true
+                'public_image' => $user['public_image'] ?? true
             ];
         }
         $result = $table;
@@ -1048,7 +1048,12 @@ Route::get('/api/dashboard/collaborators', function () {
                     'color' => []
                 ]
             ];
-            foreach ($project['collaborators'] as $c) {
+            // order by role
+            $collabs = DB::doc2Arr($project['collaborators']);
+            usort($collabs, function ($a, $b) {
+                return $b['role'] <=> $a['role'];
+            });
+            foreach ($collabs as $c) {
                 // if (empty($c['lng']))
                 $data['lon'][] = $c['lng'];
                 $data['lat'][] = $c['lat'];
@@ -1070,8 +1075,23 @@ Route::get('/api/dashboard/collaborators', function () {
             $result['collaborators'] = $data;
         }
     } else {
+        $filter = ['collaborators' => ['$exists' => 1]];
+        if (isset($_GET['dept'])) {
+            // only for portal
+            $dept = $_GET['dept'];
+
+            $child_ids = $Groups->getChildren($dept);
+            $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+            $users = array_column($persons, 'username');
+            $filter = [
+                'persons.user' => ['$in' => $users],
+                "public" => true,
+                "status" => ['$ne' => "rejected"],
+                'collaborators' => ['$exists' => 1]
+            ];
+        }
         $result = $osiris->projects->aggregate([
-            ['$match' => ['collaborators' => ['$exists' => 1]]],
+            ['$match' => $filter],
             ['$project' => ['collaborators' => 1]],
             ['$unwind' => '$collaborators'],
             [

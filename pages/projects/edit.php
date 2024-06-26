@@ -70,7 +70,8 @@ $all_fields = [
     'website',
     'abstract',
     'public',
-    'ressources'
+    'ressources',
+    'internal_number'
 ];
 
 $fields = [
@@ -82,7 +83,8 @@ $fields = [
     'coordinator',
     'time',
     'abstract',
-    'public'
+    'public',
+    'internal_number'
 ];
 
 if (empty($form)) {
@@ -144,10 +146,10 @@ if (empty($form)) {
             <i class="ph ph-hand-coins"></i>
             <?= lang('Third-party funded', 'Drittmittelprojekt') ?>
         </a>
-        <a href="<?= ROOTPATH ?>/projects/new?type=Eigenfinanziert" class="btn select text-signal <?= $type == 'Eigenfinanziert' ? 'active' : '' ?>">
+        <!-- <a href="<?= ROOTPATH ?>/projects/new?type=Eigenfinanziert" class="btn select text-signal <?= $type == 'Eigenfinanziert' ? 'active' : '' ?>">
             <i class="ph ph-piggy-bank"></i>
             <?= lang('Self-funded', 'Eigenfinanziert') ?>
-        </a>
+        </a> -->
     </div>
     <small class="text-muted">
         <i class="ph ph-warning"></i>
@@ -342,9 +344,17 @@ if (empty($form)) {
                 }
             </script>
 
+            <?php if (in_array('internal_number', $fields)) { ?>
+                <div class="data-module col-sm-4">
+                    <label for="internal_number">
+                        <?= lang('Kostenträger') ?>
+                    </label>
+                    <input type="number" class="form-control" name="values[internal_number]" id="internal_number" value="<?= val('internal_number') ?>">
+                </div>
+            <?php } ?>
 
             <?php if (in_array('grant_sum', $fields)) { ?>
-                <div class="data-module col-sm-6">
+                <div class="data-module col-sm-4">
                     <label for="grant_sum">
                         <?= lang('Grant amount', 'Bewilligungssumme') ?> [Euro]
                     </label>
@@ -352,7 +362,7 @@ if (empty($form)) {
                 </div>
             <?php } ?>
             <?php if (in_array('grant_income', $fields)) { ?>
-                <div class="data-module col-sm-6">
+                <div class="data-module col-sm-4">
                     <label for="grant_income">
                         <?= lang('Funding income', 'Drittmitteleinnahmen') ?> [Euro]
                     </label>
