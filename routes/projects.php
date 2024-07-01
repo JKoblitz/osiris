@@ -200,6 +200,10 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
 
     $values['public'] = boolval($values['public'] ?? false);
 
+    if (isset($values['persons']) && !empty($values['persons'])) {
+        $values['persons'] = array_values($values['persons']);
+    }
+
     // check if module already exists:
     // $project_exist = $collection->findOne(['name' => $values['name']]);
 
@@ -232,6 +236,8 @@ Route::post('/crud/projects/update-persons/([A-Za-z0-9]*)', function ($id) {
     foreach ($values as $i => $p) {
         $values[$i]['name'] =  $DB->getNameFromId($p['user']);
     }
+    // avoid object transformation
+    $values = array_values($values);
 
     $osiris->projects->updateOne(
         ['_id' => $DB::to_ObjectID($id)],

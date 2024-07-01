@@ -13,11 +13,11 @@ $(document).ready(function () {
     // })
 
     // scroll to active sidebar menu if available
-    if ($('.sidebar-menu a.active').length !== 0){
-    $('.sidebar').animate({
-        scrollTop: $(".sidebar-menu a.active").offset().top -200
-    }, 100);
-}
+    if ($('.sidebar-menu a.active').length !== 0) {
+        $('.sidebar').animate({
+            scrollTop: $(".sidebar-menu a.active").offset().top - 200
+        }, 100);
+    }
 })
 
 function initQuill(element) {
@@ -754,15 +754,16 @@ function getDOI(doi) {
 
 
             var date = getPublishingDate(pub)
-            if (pub['journal-issue'] !== undefined && 
-                (pub['journal-issue']['published-online'] !== undefined && pub['journal-issue']['published-online']['date-parts'] !== undefined)
-               ||
-                (pub['journal-issue']['published-print'] !== undefined && pub['journal-issue']['published-print']['date-parts'] !== undefined)
-            ) {
-                var date = getPublishingDate(pub['journal-issue'])
-                // console.log(date);
+            if (pub['journal-issue'] !== undefined) {
+                if (
+                    (pub['journal-issue']['published-online'] !== undefined && pub['journal-issue']['published-online']['date-parts'] !== undefined)
+                    ||
+                    (pub['journal-issue']['published-print'] !== undefined && pub['journal-issue']['published-print']['date-parts'] !== undefined)
+                ) {
+                    var date = getPublishingDate(pub['journal-issue'])
+                    // console.log(date);
+                }
             }
-
             var authors = [];
             // var editors = [];
             var first = 1
@@ -1408,7 +1409,7 @@ function removeAuthor(event, el) {
 //     }
 //     // if (type == "others") return;
 //     type = types[type] ?? type;
-    // console.log(type);
+// console.log(type);
 
 //     activeButtons(type)
 //     $('#type').val(type)
@@ -1444,7 +1445,7 @@ function removeAuthor(event, el) {
 //         var el = $(this)
 //         var vis = el.closest('[data-visible]').attr('data-visible')
 //         if (vis.includes(type)) {
-            // console.log(el.attr('name'), vis, el);
+// console.log(el.attr('name'), vis, el);
 //             el.attr('disabled', false)
 //         }
 //     })
