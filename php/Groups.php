@@ -23,6 +23,32 @@ class Groups
     public $groups = array();
     public $tree = array();
     private $osiris;
+    private $UNITS = [
+        'institute' => [
+            'name' => 'Institute',
+            'name_de' => 'Institut',
+            'head'=> 'Directorate',
+            'head_de'=> 'Direktorat',
+        ],
+        'department' => [
+            'name' => 'Department',
+            'name_de' => 'Abteilung',
+            'head'=> 'Head of Department',
+            'head_de'=> 'Abteilungsleitung',
+        ],
+        'group' => [
+            'name' => 'Group',
+            'name_de' => 'Gruppe',
+            'head'=> 'Head of Group',
+            'head_de'=> 'Arbeitsgruppenleitung',
+        ],
+        'unit' => [
+            'name' => 'Unit',
+            'name_de' => 'Einheit',
+            'head'=> 'Head of Unit',
+            'head_de'=> 'Leitung der Organisationseinheit',
+        ]
+    ];
 
     function __construct()
     {
@@ -83,6 +109,22 @@ class Groups
     public function getName($id)
     {
         return $this->getGroup($id)['name'];
+    }
+
+    public function getUnit($unit = null, $key = null){
+        $unit = strtolower($unit);
+        if (isset($this->UNITS[$unit])) {
+            $info = $this->UNITS[$unit];
+        } else {
+            $info = $this->UNITS['unit'];
+        }
+        if ($key === null) return $info;
+
+        if ($key == 'name')
+            return lang($info['name'], $info['name_de']);
+        if ($key == 'head')
+            return lang($info['head'], $info['head_de']);
+        return $info[$key] ?? '';
     }
 
     public function cssVar($id)

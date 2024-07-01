@@ -209,9 +209,9 @@ class Project
         return $widget;
     }
 
-    public function widgetPortal()
+    public function widgetPortal($cls = "module")
     {
-        $widget = '<a class="module" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
+        $widget = '<a class="'.$cls.'" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<p class="d-block text-muted">' . $this->project['title'] . '</p>';
         if (isset($this->project['funder']))

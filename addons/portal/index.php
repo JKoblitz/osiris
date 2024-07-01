@@ -6,7 +6,10 @@
  */
 
 
-Route::get('/preview/(activity|person|project|group)/(.*)', function ($type, $id) {
+Route::get('/preview/(activity|person|profile|project|group)/(.*)', function ($type, $id) {
+    if ($type == 'profile') {
+        $type = 'person';
+    }
     // display correct breadcrumb
     switch ($type) {
         case 'activity':
@@ -26,7 +29,7 @@ Route::get('/preview/(activity|person|project|group)/(.*)', function ($type, $id
         case 'project':
             $breadcrumb = [
                 ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
-                ['name' => 'Person', 'path' => "/projects/view/$id"],
+                ['name' => $id, 'path' => "/projects/view/$id"],
             ];
             break;
 
@@ -155,7 +158,7 @@ Route::get('/portal/project/(.*)', function ($id) {
 Route::get('/portal/activities', function () {
     include BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/Modules.php";
-    
+
     // $data = $osiris->activities->find(['type'=>['$in'=>$types]]);
     // $data = DB::doc2Arr($data);
     include BASEPATH . "/addons/portal/activities.php";
@@ -168,14 +171,14 @@ Route::get('/portal/groups', function () {
 
 Route::get('/portal/persons', function () {
     include BASEPATH . "/php/init.php";
-    $data = $osiris->persons->find(['username' => ['$ne' => null], 'is_active'=> true]);
+    $data = $osiris->persons->find(['username' => ['$ne' => null], 'is_active' => true]);
     $data = DB::doc2Arr($data);
     include BASEPATH . "/addons/portal/persons.php";
 });
 
 Route::get('/portal/projects', function () {
     include BASEPATH . "/php/init.php";
-    $data = $osiris->projects->find(['status'=>'approved', 'public'=> true]);
+    $data = $osiris->projects->find(['status' => 'approved', 'public' => true]);
     $data = DB::doc2Arr($data);
     include BASEPATH . "/addons/portal/projects.php";
 });

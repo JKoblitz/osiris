@@ -483,7 +483,11 @@ Route::get('/api/users', function () {
         foreach ($result as $user) {
             $subtitle = "";
             if (isset($_GET['subtitle'])) {
-                $subtitle = $user[$_GET['subtitle']] ?? '';
+                if ($_GET['subtitle'] == 'position') {
+                    $subtitle = lang($user['position'] ?? '', $user['position_de'] ?? null);
+                } else {
+                    $subtitle = $user[$_GET['subtitle']] ?? '';
+                }
             } else foreach (($user['depts'] ?? []) as $i => $d) {
                 $dept = implode('/', $Groups->getParents($d));
                 $subtitle .= '<a href="' . $path . '/groups/view/' . $d . '">

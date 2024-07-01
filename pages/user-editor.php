@@ -158,55 +158,62 @@
 
 
         <div class="form-group">
-        <label for="position">
-                <?= lang('Current Position', 'Aktuelle Position') ?>
+            <label for="position">
+                <b><?= lang('Current Position', 'Aktuelle Position') ?></b>
             </label>
 
-            <div class="form-group">
-                <input type="text" name="values[position]" id="position" class="form-control" value="<?= $data['position'] ?? '' ?>">
+            <div class="row row-eq-spacing my-0">
+                <div class="col-md-6">
+                    <label for="position_de" class="d-flex">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></label>
+                    <input name="values[position_de]" id="position_de" type="text" class="form-control" value="<?= htmlspecialchars($data['position_de'] ?? '') ?>">
+                </div>
+                <div class="col-md-6">
+                    <label for="position" class="d-flex">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></label>
+                    <input name="values[position]" id="position" type="text" class="form-control" value="<?= htmlspecialchars($data['position'] ?? '') ?>">
+                </div>
             </div>
         </div>
     </fieldset>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>
-        
-    <fieldset>
-        <legend><?=lang('Public visibility', 'Öffentliche Darstellung')?> (Portfolio)</legend>
-        <!-- <div class="custom-checkbox">
+
+        <fieldset>
+            <legend><?= lang('Public visibility', 'Öffentliche Darstellung') ?> (Portfolio)</legend>
+            <!-- <div class="custom-checkbox">
             <input type="checkbox" id="public" value="1" name="values[public]" <?= $data['public'] ? 'checked' : '' ?>>
             <label for="public"><?= lang('Publicly visible', 'Öffentlich sichtbar') ?></label>
         </div> -->
 
-        <!-- show profile picture -->
-        <div class="custom-checkbox mb-20">
-            <input type="checkbox" id="public_image" value="1" name="values[public_image]" <?= ($data['public_image'] ?? true) ? 'checked' : '' ?>>
-            <label for="public_image"><?= lang('Show profile picture', 'Zeige Profilbild') ?></label>
-        </div>        
+            <!-- show profile picture -->
+            <div class="custom-checkbox mb-20">
+                <input type="checkbox" id="public_image" value="1" name="values[public_image]" <?= ($data['public_image'] ?? true) ? 'checked' : '' ?>>
+                <label for="public_image"><?= lang('Show profile picture', 'Zeige Profilbild') ?></label>
+            </div>
 
-        <div class="custom-checkbox mb-20">
-            <input type="checkbox" id="public_email" value="1" name="values[public_email]" <?= ($data['public_email'] ?? true) ? 'checked' : '' ?>>
-            <label for="public_email"><?= lang('Show email address', 'Zeige E-Mail-Adresse') ?></label>
-        </div>
+            <div class="custom-checkbox mb-20">
+                <input type="checkbox" id="public_email" value="1" name="values[public_email]" <?= ($data['public_email'] ?? true) ? 'checked' : '' ?>>
+                <label for="public_email"><?= lang('Show email address', 'Zeige E-Mail-Adresse') ?></label>
+            </div>
 
-        <div class="custom-checkbox mb-20">
-            <input type="checkbox" id="public_phone" value="1" name="values[public_phone]" <?= ($data['public_phone'] ?? false) ? 'checked' : '' ?>>
-            <label for="public_phone"><?= lang('Show telephone number', 'Zeige Telefonnummer') ?></label>
-        </div>
+            <div class="custom-checkbox mb-20">
+                <input type="checkbox" id="public_phone" value="1" name="values[public_phone]" <?= ($data['public_phone'] ?? false) ? 'checked' : '' ?>>
+                <label for="public_phone"><?= lang('Show telephone number', 'Zeige Telefonnummer') ?></label>
+            </div>
 
-        <!-- alternative mail -->
-        <div class="form-group">
-            <label for="mail_alternative"><?=lang('Alternative Mail', 'Alternative Mail-Adresse')?></label>
-            <input type="text" name="values[mail_alternative]" id="mail_alternative" class="form-control" value="<?= $data['mail_alternative'] ?? '' ?>">
-        </div>
-        <!-- comment for mail -->
-        <div class="form-group">
-            <label for="mail_alternative_comment"><?=lang('Explanation for alternative mail', 'Erklärung für die alternative Mail')?></label>
-            <input type="text" name="values[mail_alternative_comment]" id="mail_alternative_comment" class="form-control" value="<?= $data['mail_alternative_comment'] ?? '' ?>">
-        </div>
+            <!-- alternative mail -->
+            <div class="form-group">
+                <label for="mail_alternative"><?= lang('Alternative Mail', 'Alternative Mail-Adresse') ?></label>
+                <input type="text" name="values[mail_alternative]" id="mail_alternative" class="form-control" value="<?= $data['mail_alternative'] ?? '' ?>">
+            </div>
+            <!-- comment for mail -->
+            <div class="form-group">
+                <label for="mail_alternative_comment"><?= lang('Explanation for alternative mail', 'Erklärung für die alternative Mail') ?></label>
+                <input type="text" name="values[mail_alternative_comment]" id="mail_alternative_comment" class="form-control" value="<?= $data['mail_alternative_comment'] ?? '' ?>">
+            </div>
 
-    </fieldset>
+        </fieldset>
     <?php } ?>
-    
+
 
     <fieldset>
         <legend><?= lang('Contact', 'Kontakt') ?></legend>

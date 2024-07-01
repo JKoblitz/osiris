@@ -12239,6 +12239,14 @@ a.concept:hover {
   white-space: nowrap;
 }
 
+.flag {
+  max-height: 1.6rem;
+  border-radius: 0.5rem;
+  display: inline;
+  margin-left: 1rem;
+  align-self: center;
+}
+
 /*!
  * Quill Editor v1.3.6
  * https://quilljs.com/

@@ -236,6 +236,12 @@ $institute = $Settings->get('affiliation_details');
                         </tr>
                         <tr>
                             <td>
+                                <span class="key"><?= lang('Kostenträger') ?></span>
+                                <?= $project['internal_number'] ?? '-' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <span class="key"><?= lang('Applicant', 'Antragsteller:in') ?></span>
                                 <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
                             </td>
@@ -689,7 +695,7 @@ $institute = $Settings->get('affiliation_details');
                 <tr>
                     <td>
                         <?php if ($project['public']) { ?>
-                            <a class="badge success" href="<?=PORTALPATH?>/project/<?=$project['_id']?>">
+                            <a class="badge success" href="<?= PORTALPATH ?>/project/<?= $project['_id'] ?>">
                                 <?= lang('Publicly shown', 'Öffentlich gezeigt') ?>
                             </a>
                         <?php } else { ?>
@@ -697,7 +703,7 @@ $institute = $Settings->get('affiliation_details');
                                 <?= lang('Not publicly shown', 'Nicht öffentlich gezeigt') ?>
                             </span>
                         <?php } ?>
-                        
+
                     </td>
                 </tr>
                 <tr>
@@ -728,11 +734,11 @@ $institute = $Settings->get('affiliation_details');
                 <tr>
                     <td>
                         <span class="key"><?= lang('Public image', 'Öffentliches Bild') ?></span>
-                       
-                        
+
+
                         <?php if (!empty($project['public_image']) ?? '') { ?>
-                            <img src="<?= ROOTPATH.'/uploads/'. $project['public_image'] ?>" alt="<?= $project['public_title'] ?>" class="img-fluid">
-                            <?php } else { ?>
+                            <img src="<?= ROOTPATH . '/uploads/' . $project['public_image'] ?>" alt="<?= $project['public_title'] ?>" class="img-fluid">
+                        <?php } else { ?>
                             -
                         <?php } ?>
                     </td>
@@ -764,11 +770,16 @@ $institute = $Settings->get('affiliation_details');
                 <!-- "grant_sum_proposed": 1000000, -->
                 <tr>
                     <td>
+                        <span class="key"><?= lang('Kostenträger') ?></span>
+                        <?= $project['internal_number'] ?? '-' ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <span class="key">grant_sum_proposed</span>
                         <?= $project['grant_sum_proposed'] ?? '-' ?>
                     </td>
                 </tr>
-
 
                 <!-- "grant_income_proposed": 360000, -->
                 <tr>

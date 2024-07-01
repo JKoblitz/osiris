@@ -138,7 +138,6 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
         }
         renderActivities(['_id' =>  $activity['_id']]);
         $user_activity = $DB->isUserActivity($doc, $user);
-        if (($doc['created_by'] ?? '') !== $user) $user_activity = true;
 
         $Format = new Document;
         $Format->setDocument($doc);

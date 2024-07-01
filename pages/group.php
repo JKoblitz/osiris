@@ -34,7 +34,6 @@ if (isset($group['head'])) {
     if (is_string($head)) $head = [$head];
     else $head = DB::doc2Arr($head);
 
-
     usort($persons, function ($a, $b) use ($head) {
         return in_array($a['username'], $head)  ? -1 : 1;
     });
@@ -84,13 +83,13 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
     h1 {
         color: var(--highlight-color);
     }
-    
-blockquote {
-  font-style: italic;
-  border-left: 5px solid var(--primary-color);
-  padding-left: 1rem;
-  margin: 1rem 0;
-}
+
+    blockquote {
+        font-style: italic;
+        border-left: 5px solid var(--primary-color);
+        padding-left: 1rem;
+        margin: 1rem 0;
+    }
 </style>
 
 <!-- modal to add person -->
@@ -116,38 +115,45 @@ blockquote {
 </div>
 
 <div <?= $Groups->cssVar($id) ?> class="">
-<div class="btn-toolbar">
+    <div class="btn-toolbar">
 
-<?php if ($Settings->hasPermission('units.add') || (isset($form['head']) && $form['head'] == $_SESSION['username'])) { ?>
-    <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
-        <i class="ph ph-note-pencil ph-fw"></i>
-        <?= lang('Edit', 'Bearbeiten') ?>
-    </a>
-    <a class="btn" href="<?= ROOTPATH ?>/groups/public/<?= $id ?>">
-        <i class="ph ph-note-pencil ph-fw"></i>
-        <?= lang('Public', 'Öffentliche Darstellung') ?>
-    </a>
-    <a class="btn" href="#add-person-modal">
-        <i class="ph ph-user-plus ph-fw"></i>
-        <?= lang('Add person', 'Person hinzufügen') ?>
-    </a>
-<?php } ?>
+        <?php if ($Settings->hasPermission('units.add') || in_array($_SESSION['username'], $head)) { ?>
+            <div class="btn-group">
+                <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
+                    <i class="ph ph-note-pencil ph-fw"></i>
+                    <?= lang('Edit', 'Bearbeiten') ?>
+                </a>
+                <a class="btn" href="#add-person-modal">
+                    <i class="ph ph-user-plus ph-fw"></i>
+                    <?= lang('Add person', 'Person hinzufügen') ?>
+                </a>
+            </div>
+        <?php } ?>
 
 
-<?php if ($Settings->featureEnabled('portal')) { ?>
-    <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
-        <i class="ph ph-eye ph-fw"></i>
-        <?= lang('Preview', 'Vorschau') ?>
-    </a>
-<?php } ?>
-</div>
-    
+        <?php if ($Settings->featureEnabled('portal')) { ?>
+            <div class="btn-group">
+
+                <?php if ($Settings->hasPermission('units.add') || in_array($_SESSION['username'], $head)) { ?>
+                    <a class="btn" href="<?= ROOTPATH ?>/groups/public/<?= $id ?>">
+                        <i class="ph ph-note-pencil ph-fw"></i>
+                        <?= lang('Public', 'Öffentliche Darstellung') ?>
+                    </a>
+                <?php } ?>
+                <a class="btn" href="<?= ROOTPATH ?>/preview/group/<?= $id ?>">
+                    <i class="ph ph-eye ph-fw"></i>
+                    <?= lang('Preview', 'Vorschau') ?>
+                </a>
+            </div>
+        <?php } ?>
+    </div>
+
     <h1>
         <?= lang($group['name'] ?? '-', $group['name_de'] ?? null) ?>
 
     </h1>
     <h3 class="subtitle">
-        <?= $group['unit'] ?>
+        <?= $Groups->getUnit($group['unit'] ?? null, 'name') ?>
     </h3>
 
 
@@ -265,7 +271,9 @@ blockquote {
                 <?php } ?>
 
                 <?php if (!empty($head)) { ?>
-                    <h3><?= lang('Head', 'Leitung') ?></h3>
+                    <h3>
+                        <?= $Groups->getUnit($group['unit'] ?? null, 'head') ?>
+                    </h3>
                     <div class="list">
                         <?php foreach ($head as $h) { ?>
                             <a href="<?= ROOTPATH ?>/profile/<?= $h ?>" class="colorless d-inline-flex align-items-center border bg-white p-10 rounded">
@@ -273,10 +281,10 @@ blockquote {
                                 <?= $Settings->printProfilePicture($h, 'profile-img small mr-20') ?>
                                 <div class="">
                                     <h5 class="my-0">
-                                            <?= $DB->getNameFromId($h) ?>
+                                        <?= $DB->getNameFromId($h) ?>
                                     </h5>
                                 </div>
-                        </a>
+                            </a>
                         <?php } ?>
                     </div>
                 <?php } ?>

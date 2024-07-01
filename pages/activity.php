@@ -252,6 +252,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             <!-- <b><?= lang('This is your activity.', 'Dies ist deine Aktivität.') ?></b> -->
             <div class="mt-10 d-flex">
                 <!-- switch -->
+                 
                 <?php if ($user_activity) { ?>
                     <div class="custom-switch ml-10">
                         <input type="checkbox" id="highlight" <?= ($highlighted) ? 'checked' : '' ?> name="values[highlight]" onchange="fav()">

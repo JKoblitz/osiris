@@ -208,7 +208,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     <div class="col ml-20">
         <h1 class="mt-0"><?= $name ?></h1>
         <h5 class="subtitle">
-            <?= $scientist['position'] ?? '' ?>
+            <?= lang($scientist['position'] ?? '', $scientist['position_de']??null) ?>
         </h5>
 
         <style>
@@ -878,25 +878,6 @@ if ($currentuser) { ?>
 
         <div class="col-md-6 col-lg-8">
             <div class="box h-full">
-                <!-- <div class="content">
-
-
-                    <h4 class="title">
-                        <?= lang('Position', 'Position') ?>
-                        <?php if ($currentuser) { ?>
-                            <a class="font-size-14 ml-10" href="<?= ROOTPATH ?>/user/edit-bio/<?= $user ?>#position">
-                                <i class="ph ph-note-pencil ph-lg"></i>
-                            </a>
-                        <?php } ?>
-                    </h4>
-                    <?php if (isset($scientist['position']) && !empty($scientist['position'])) { ?>
-                        <p><?= $scientist['position'] ?></p>
-                    <?php } else { ?>
-                        <p><?= lang('No position given.', 'Keine Position angegeben.') ?></p>
-                    <?php } ?>
-
-                </div>
-                <hr> -->
                 <div class="content">
 
                     <h4 class="title">

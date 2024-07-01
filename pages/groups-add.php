@@ -16,7 +16,12 @@
  * @license     MIT
  */
 
-if (!$Settings->hasPermission('units.add') && (!isset($form['head']) || $form['head'] !== $_SESSION['username'])) {
+ $heads = $form['head'] ?? [];
+ if (is_string($heads)) $heads = [$heads];
+ else $heads = DB::doc2Arr($heads);
+
+
+if (!$Settings->hasPermission('units.add') && !in_array($_SESSION['username'], $heads)) {
     echo "You have no right to be here.";
     die;
 }
@@ -148,15 +153,11 @@ function sel($index, $value)
         </legend>
         <div class="form-group">
             <label for="head">
-                <?= lang('Lead', 'Leitung') ?>
+                <?= lang('Head(s)', 'Leitende Person(en)') ?>
             </label>
             <div class="author-widget">
                 <div class="author-list p-10">
                     <?php
-                    $heads = $form['head'] ?? [];
-                    if (is_string($heads)) $heads = [$heads];
-                    else $heads = DB::doc2Arr($heads);
-
                     foreach ($heads as $h) {
                         $person = $osiris->persons->findOne(['username' => $h]);
                         if (empty($person)) continue;
