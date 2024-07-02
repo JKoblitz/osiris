@@ -37,7 +37,11 @@ $pagetitle = lang('Projects', 'Projekte');
 $filter = [];
 if (!$Settings->hasPermission('projects.view')) {
     $filter = [
-        'persons.user' => $_SESSION['username']
+        '$or' => [
+            ['persons.user' => $_SESSION['username']],
+            ['created_by' => $_SESSION['username']],
+            ['contact' => $_SESSION['username']]
+        ]
     ];
     $pagetitle = lang('My projects', 'Meine Projekte');
 }

@@ -435,7 +435,7 @@ if (empty($form)) {
                     <div class="custom-checkbox">
                         <input type="checkbox" id="public-check" <?= val('public', false) ? 'checked' : '' ?> name="values[public]">
                         <label for="public-check">
-                            Zustimmung zur Internetpräsentation des bewilligten Vorhaben
+                            Zustimmung zur Internetpräsentation des bewilligten Vorhabens
                         </label>
                     </div>
                 </div>
