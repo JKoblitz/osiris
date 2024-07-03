@@ -643,11 +643,11 @@ i.ph {
 }
 
 .ph.ph-edit:before {
-  content: "\ec15";
+  content: "\ebc6";
 }
 
 .ph.ph-search:before {
-  content: "\ebdd";
+  content: "\e30c";
 }
 
 .fa, .fas, .fa-solid, .far, .fa-regular, .fal, .fa-light, .fat, .fa-thin, .fad, .fa-duotone, .fab, .fa-brands, .ph, .ph-fill {
@@ -2486,14 +2486,14 @@ a.link:not(.btn):hover {
 a.link:not(.btn)::after {
   font-family: "Phosphor";
   color: var(--link-color);
-  content: "\e95c";
+  content: "\e06c";
   margin-left: 0.5rem;
   line-height: inherit;
   font-size: 1.3em;
   vertical-align: -0.2em;
 }
 a.link:not(.btn)[target=_blank]::after {
-  content: "\e97f";
+  content: "\e5de";
 }
 a.colorless {
   color: inherit;
@@ -2521,7 +2521,7 @@ a.colorless {
   position: absolute;
   top: 0;
   right: 0;
-  content: "\e95c";
+  content: "\e06c";
   font-family: "Phosphor";
   margin: 0 0 0 1rem;
   padding: 1.5rem 2rem;
@@ -5834,7 +5834,7 @@ Navbar content
 }
 .navbar .btn-action::after {
   font-family: "Phosphor";
-  content: "\ebca";
+  content: "\e2f0";
   width: 100%;
   font-size: 1.25em;
   line-height: 1em;
@@ -6212,7 +6212,7 @@ Sidebar content
 }
 .sidebar-menu .title.collapse::before {
   font-family: "Phosphor";
-  content: "\ea00";
+  content: "\e136";
   font-size: 1.25em;
   line-height: 1em;
   vertical-align: -0.15em;
@@ -6590,7 +6590,7 @@ Boxes, tiles, and title bar
 .tile.tile-link .link::after {
   font-family: "Phosphor";
   color: var(--primary-color);
-  content: "\e95c";
+  content: "\e06c";
   margin-left: 0.5rem;
 }
 .tile.tile-link:hover {
@@ -6907,7 +6907,7 @@ Boxes, tiles, and title bar
 .breadcrumb li:before, .breadcrumb button:before {
   font-family: "Phosphor";
   color: var(--border-color);
-  content: "\ea00";
+  content: "\e13a";
   font-size: 1.25em;
   line-height: 1em;
   vertical-align: -0.15em;
@@ -12010,7 +12010,8 @@ img.profile-img.small {
 
 .btn.select i {
   font-size: 2.5rem;
-  /* display: block;
+  display: block;
+  /* 
 
     margin-top: .5rem; */
 }

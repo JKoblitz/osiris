@@ -76,8 +76,8 @@ $pageactive = function ($p) use ($page) {
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
     <!-- Icon font -->
-    <link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css" rel="stylesheet" />
-    <link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css?v=2" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css?v=2" rel="stylesheet" />
     <!-- for open access icons -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
 
@@ -197,7 +197,7 @@ $pageactive = function ($p) use ($page) {
 
             <div class="dropdown d-none d-md-block">
                 <button class="btn text-secondary border-secondary square mr-5" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
-                    <i class="ph ph- ph-person-arms-spread"></i>
+                    <i class="ph ph-person-arms-spread ph-person-simple-circle"></i>
                     <span class="sr-only"><?= lang('Accessibility Options', 'Accessibility-Optionen') ?></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-center w-300" aria-labelledby="accessibility-menu">
