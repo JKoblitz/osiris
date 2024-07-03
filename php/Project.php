@@ -192,6 +192,10 @@ class Project
                 return lang('Applicant', 'Antragsteller:in');
             case 'worker':
                 return lang('Project member', 'Projektmitarbeiter:in');
+            case 'scholar':
+                return lang('Scholar', 'Stipediat:in');
+            case 'supervisor':
+                return lang('Supervisor', 'Betreuer:in');
             default:
                 return lang('Associate', 'Beteiligte Person');
         }

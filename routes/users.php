@@ -145,8 +145,7 @@ Route::get('/user/delete/(.*)', function ($user) {
 // Profile
 
 Route::get('/profile/?(.*)', function ($user) {
-    include_once BASEPATH . "/php/init.php";
-
+    include_once BASEPATH . "/php/init.php";    
     if (empty($user)) $user = $_SESSION['username'];
     if (!empty($user) && DB::to_ObjectID($user)) {
         $mongo_id = DB::to_ObjectID($user);

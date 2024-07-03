@@ -31,7 +31,7 @@ foreach ($persons as $p) {
         break;
     }
 }
-$edit_perm = ($Settings->hasPermission('projects.edit') || ($Settings->hasPermission('projects.edit-own') && $user_project));
+$edit_perm = ($project['created_by'] == $_SESSION['username'] || $Settings->hasPermission('projects.edit') || ($Settings->hasPermission('projects.edit-own') && $user_project));
 
 $N = $osiris->activities->count(['projects' => $project['name']]);
 
@@ -384,13 +384,17 @@ $institute = $Settings->get('affiliation_details');
                                                                 <?php } ?>
                                                             </select>
                                                         </td>
-
                                                         <td>
                                                             <select name="persons[<?= $i ?>][role]" id="persons-<?= $i ?>" class="form-control">
+                                                                <?php if ($project['type'] == 'Stipendium') { ?>
+                                                                    <option value="scholar" <?= $con['role'] == 'scholar' ? 'selected' : '' ?>><?= Project::personRole('scholar') ?></option>
+                                                                    <option value="supervisor" <?= $con['role'] == 'supervisor' ? 'selected' : '' ?>><?= Project::personRole('supervisor') ?></option>
+                                                                <?php } else { ?>
+                                                                    <option value="applicant" <?= $con['role'] == 'applicant' ? 'selected' : '' ?>><?= Project::personRole('applicant') ?></option>
+                                                                    <option value="PI" <?= $con['role'] == 'PI' ? 'selected' : '' ?>><?= Project::personRole('PI') ?></option>
+                                                                    <option value="worker" <?= $con['role'] == 'worker' ? 'selected' : '' ?>><?= Project::personRole('worker') ?></option>
+                                                                <?php } ?>
                                                                 <option value="associate" <?= $con['role'] == 'associate' ? 'selected' : '' ?>><?= Project::personRole('associate') ?></option>
-                                                                <option value="worker" <?= $con['role'] == 'worker' ? 'selected' : '' ?>><?= Project::personRole('worker') ?></option>
-                                                                <option value="PI" <?= $con['role'] == 'PI' ? 'selected' : '' ?>><?= Project::personRole('PI') ?></option>
-                                                                <option value="applicant" <?= $con['role'] == 'applicant' ? 'selected' : '' ?>><?= Project::personRole('applicant') ?></option>
                                                             </select>
                                                         </td>
                                                         <td>

@@ -142,25 +142,28 @@ Route::post('/crud/projects/create', function () {
     $values['public'] = boolval($values['public'] ?? false);
 
     // add persons
-    if (!empty($values['contact'])) {
-        $values['persons'] = [
-            [
-                'user' => $values['contact'],
-                'role' => 'applicant',
-                'name' => $DB->getNameFromId($values['contact'])
-            ]
+    $persons = [];
+    foreach (['contact', 'scholar', 'supervisor'] as $key) {
+        if (!isset($values[$key]) || empty($values[$key])) continue;
+        $persons[] = [
+            'user' => $values[$key],
+            'role' => ($key == 'contact' ? 'applicant' : $key),
+            'name' => $DB->getNameFromId($values[$key])
         ];
     }
+    if (!empty($persons)) {
+        $values['persons'] = $persons;
+    }
+
     if (isset($values['funding_number'])) {
         $values['funding_number'] = explode(',', $values['funding_number']);
         $values['funding_number'] = array_map('trim', $values['funding_number']);
 
         // check if there are already activities with this funding number
-        $test = $osiris->activities->updateMany(
+        $osiris->activities->updateMany(
             ['funding' => ['$in' => $values['funding_number']]],
             ['$push' => ['projects' => $values['name']]]
         );
-        // dump($test->getModifiedCount());
     }
 
     $insertOneResult  = $collection->insertOne($values);

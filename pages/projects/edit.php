@@ -78,46 +78,44 @@ $fields = [
     'name',
     'title',
     'status',
-    'purpose',
-    'role',
-    'coordinator',
     'time',
     'abstract',
     'public',
-    'internal_number'
+    'internal_number',
+    'website'
 ];
 
-if (empty($form)) {
-    // fields for new projects
-    $fields[] = 'contact';
+if ($type == 'Drittmittel') {
+    // fields for third-party funded projects
+    $fields[] = 'funder';
+    $fields[] = 'funding_organization';
+    $fields[] = 'funding_number';
+
+    $fields[] = 'grant_sum_proposed';
+    $fields[] = 'grant_income_proposed';
+
+    $fields[] = 'grant_sum';
+    $fields[] = 'grant_income';
+
     $fields[] = 'personnel';
-
     $fields[] = 'ressources';
+    $fields[] = 'contact';
 
-    if ($type == 'Drittmittel') {
-        // fields for third-party funded projects
-        $fields[] = 'funder';
-        $fields[] = 'funding_organization';
+    $fields[] = 'purpose';
+    $fields[] = 'role';
+    $fields[] = 'coordinator';
+} elseif ($type == 'Stipendium') {
+    // fields for scholarships
+    $fields[] = 'supervisor';
+    $fields[] = 'scholar';
 
-        $fields[] = 'grant_sum_proposed';
-        $fields[] = 'grant_income_proposed';
-    } else {
-        // fields for self-funded projects
-    }
+    $fields[] = 'scholarship';
+    $fields[] = 'university';
 } else {
-    // fields for existing projects
-    $fields[] = 'website';
-    if ($type == 'Drittmittel') {
-        // fields for third-party funded projects
-        $fields[] = 'funder';
-        $fields[] = 'funding_organization';
-        $fields[] = 'funding_number';
-
-        $fields[] = 'grant_sum';
-        $fields[] = 'grant_income';
-    } else {
-        // fields for self-funded projects
-    }
+    // fields for self-funded projects
+    $fields[] = 'personnel';
+    $fields[] = 'ressources';
+    $fields[] = 'contact';
 }
 
 
@@ -139,23 +137,27 @@ if (empty($form)) {
 
 
 <!-- only new projects can be changed -->
-<?php if (empty($form)) { ?>
+<?php if (empty($form)) { ?><?php } ?>
 
-    <div class="select-btns">
-        <a href="<?= ROOTPATH ?>/projects/new?type=Drittmittel" class="btn select text-danger <?= $type == 'Drittmittel' ? 'active' : '' ?>">
-            <i class="ph ph-hand-coins"></i>
-            <?= lang('Third-party funded', 'Drittmittelprojekt') ?>
-        </a>
-        <!-- <a href="<?= ROOTPATH ?>/projects/new?type=Eigenfinanziert" class="btn select text-signal <?= $type == 'Eigenfinanziert' ? 'active' : '' ?>">
+<div class="select-btns">
+    <a href="<?= ROOTPATH ?>/projects/new?type=Drittmittel" class="btn select text-danger <?= $type == 'Drittmittel' ? 'active' : '' ?>">
+        <i class="ph ph-hand-coins"></i>
+        <?= lang('Third-party funded', 'Drittmittelprojekt') ?>
+    </a>
+    <!-- <a href="<?= ROOTPATH ?>/projects/new?type=Eigenfinanziert" class="btn select text-signal <?= $type == 'Eigenfinanziert' ? 'active' : '' ?>">
             <i class="ph ph-piggy-bank"></i>
             <?= lang('Self-funded', 'Eigenfinanziert') ?>
         </a> -->
-    </div>
-    <small class="text-muted">
+    <a href="<?= ROOTPATH ?>/projects/new?type=Stipendium" class="btn select text-success <?= $type == 'Stipendium' ? 'active' : '' ?>">
+        <i class="ph ph-tip-jar"></i>
+        <?= lang('Scholarship', 'Stipendium') ?>
+    </a>
+</div>
+<!-- <small class="text-muted">
         <i class="ph ph-warning"></i>
         <?= lang('Please note that the type of funding cannot be changed after the project has been created.', 'Bitte beachten Sie, dass der Förderungstyp nach Erstellung des Projekts nicht mehr geändert werden kann.') ?>
-    </small>
-<?php } ?>
+    </small> -->
+
 
 
 <form action="<?= $formaction ?>" method="post" id="project-form">
@@ -217,6 +219,55 @@ if (empty($form)) {
                     </select>
                 </div>
             <?php } ?>
+
+
+            <?php if (in_array('scholar', $fields)) { ?>
+                <div class="data-module col-sm-6">
+                    <label class="required element-author" for="username">
+                        <?= lang('Scholar', 'Stipendiat:in') ?>
+                    </label>
+                    <select class="form-control" id="username" name="values[scholar]" required autocomplete="off">
+                        <?php
+                        $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+                        foreach ($userlist as $j) { ?>
+                            <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['scholar'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+
+
+            <?php if (in_array('supervisor', $fields)) {
+
+                $selected = '';
+                if (empty($form)) {
+                    include_once BASEPATH . "/php/Groups.php";
+                    // default: head of group
+                    $dept = $USER['depts'] ?? [];
+                    if (!empty($dept)) {
+                        $Groups = new Groups();
+                        $heads = $Groups->getGroup($dept[0])['head'] ?? array();
+                        $selected = $heads[0] ?? '';
+                    }
+                } else {
+                    $selected = $form['supervisor'] ?? '';
+                }
+
+            ?>
+                <div class="data-module col-sm-6">
+                    <label class="required element-author" for="username">
+                        <?= lang('Supervisor', 'Betreuende Person') ?>
+                    </label>
+                    <select class="form-control" id="username" name="values[supervisor]" required autocomplete="off">
+                        <?php
+                        $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+                        foreach ($userlist as $j) { ?>
+                            <option value="<?= $j['username'] ?>" <?= $j['username'] == $selected ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            <?php } ?>
+
 
             <?php if (in_array('funder', $fields)) { ?>
                 <div class="data-module col-sm-4">
@@ -344,14 +395,26 @@ if (empty($form)) {
                 }
             </script>
 
-            <?php if (in_array('internal_number', $fields)) { ?>
-                <div class="data-module col-sm-4">
-                    <label for="internal_number">
-                        <?= lang('Kostenträger') ?>
+
+
+            <?php if (in_array('scholarship', $fields)) { ?>
+                <div class="data-module col-sm-6">
+                    <label for="scholarship">
+                        <?= lang('Scholarship institution', 'Stipendiengeber') ?>
                     </label>
-                    <input type="number" class="form-control" name="values[internal_number]" id="internal_number" value="<?= val('internal_number') ?>">
+                    <input type="number" class="form-control" name="values[scholarship]" id="scholarship" value="<?= val('scholarship') ?>">
                 </div>
             <?php } ?>
+
+            <?php if (in_array('university', $fields)) { ?>
+                <div class="data-module col-sm-6">
+                    <label for="university">
+                        <?= lang('Partner University', 'Partner-Universität') ?>
+                    </label>
+                    <input type="number" class="form-control" name="values[university]" id="university" value="<?= val('university') ?>">
+                </div>
+            <?php } ?>
+
 
             <?php if (in_array('grant_sum', $fields)) { ?>
                 <div class="data-module col-sm-4">
@@ -369,6 +432,16 @@ if (empty($form)) {
                     <input type="number" step="1" class="form-control" name="values[grant_income]" id="grant_income" value="<?= val('grant_income') ?>">
                 </div>
             <?php } ?>
+
+            <?php if (in_array('internal_number', $fields)) { ?>
+                <div class="data-module col-sm-4">
+                    <label for="internal_number">
+                        <?= lang('Kostenträger') ?>
+                    </label>
+                    <input type="number" class="form-control" name="values[internal_number]" id="internal_number" value="<?= val('internal_number') ?>">
+                </div>
+            <?php } ?>
+
 
             <?php if (in_array('grant_sum_proposed', $fields)) { ?>
                 <div class="data-module col-sm-6">
@@ -410,7 +483,7 @@ if (empty($form)) {
             <?php } ?>
 
             <?php if (in_array('website', $fields)) { ?>
-                <div class="data-module col-12">
+                <div class="data-module col-6">
                     <label for="website">
                         <?= lang('Project website', 'Webseite des Projekts') ?>
                     </label>
