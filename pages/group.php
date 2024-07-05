@@ -34,9 +34,9 @@ if (isset($group['head'])) {
     if (is_string($head)) $head = [$head];
     else $head = DB::doc2Arr($head);
 
-    usort($persons, function ($a, $b) use ($head) {
-        return in_array($a['username'], $head)  ? -1 : 1;
-    });
+    // usort($persons, function ($a, $b) use ($head) {
+    //     return in_array($a['username'], $head)  ? -1 : 1;
+    // });
 } else {
     $head = [];
 }
@@ -44,6 +44,9 @@ if (isset($group['head'])) {
 $users = array_column($persons, 'username');
 
 $show_general = (isset($group['description']) || isset($group['description_de']) || (isset($group['research']) && !empty($group['research'])));
+
+
+$edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission($id));
 ?>
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/usertable.css">
@@ -90,6 +93,27 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
         padding-left: 1rem;
         margin: 1rem 0;
     }
+
+    #research p,
+    #general p {
+        text-align: justify;
+    }
+
+    @media (min-width: 768px) {
+
+        #research figure,
+        #general .head {
+            max-width: 100%;
+            float: right;
+            margin: 0 0 1rem 2rem;
+        }
+    }
+
+    #research figure figcaption {
+        font-size: 1.2rem;
+        color: var(--muted-color);
+        font-style: italic;
+    }
 </style>
 
 <!-- modal to add person -->
@@ -117,7 +141,7 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
 <div <?= $Groups->cssVar($id) ?> class="">
     <div class="btn-toolbar">
 
-        <?php if ($Settings->hasPermission('units.add') || in_array($_SESSION['username'], $head)) { ?>
+        <?php if ($edit_perm) { ?>
             <div class="btn-group">
                 <a class="btn" href="<?= ROOTPATH ?>/groups/edit/<?= $id ?>">
                     <i class="ph ph-note-pencil ph-fw"></i>
@@ -134,7 +158,7 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
         <?php if ($Settings->featureEnabled('portal')) { ?>
             <div class="btn-group">
 
-                <?php if ($Settings->hasPermission('units.add') || in_array($_SESSION['username'], $head)) { ?>
+                <?php if ($edit_perm) { ?>
                     <a class="btn" href="<?= ROOTPATH ?>/groups/public/<?= $id ?>">
                         <i class="ph ph-note-pencil ph-fw"></i>
                         <?= lang('Public', 'Öffentliche Darstellung') ?>
@@ -167,6 +191,14 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
                 <?= lang('General', 'Allgemein') ?>
             </a>
         <?php } ?>
+        <?php if (!empty($group['research'] ?? null)) { ?>
+
+            <a onclick="navigate('research')" id="btn-research" class="btn <?= !$show_general ? 'active' : '' ?>">
+                <i class="ph ph-lightbulb" aria-hidden="true"></i>
+                <?= lang('Research', 'Forschung') ?>
+            </a>
+        <?php } ?>
+
 
         <a onclick="navigate('persons')" id="btn-persons" class="btn <?= !$show_general ? 'active' : '' ?>">
             <i class="ph ph-users" aria-hidden="true"></i>
@@ -257,82 +289,94 @@ $show_general = (isset($group['description']) || isset($group['description_de'])
     </nav>
 
     <section id="general">
-        <div class="row row-eq-spacing">
-            <div class="col-md">
-                <?php if (isset($group['description']) || isset($group['description_de'])) { ?>
+        <!-- head -->
+        <?php
+        $head = $group['head'] ?? [];
+        if (is_string($head)) $head = [$head];
+        else $head = DB::doc2Arr($head);
 
-
-                    <h3><?= lang('Information', 'Informationen') ?></h3>
-
-                    <p>
-                        <?= $parsedown->text(lang($group['description'] ?? '-', $group['description_de'] ?? null)) ?>
-                    </p>
-
-                <?php } ?>
-
-                <?php if (!empty($head)) { ?>
-                    <h3>
-                        <?= $Groups->getUnit($group['unit'] ?? null, 'head') ?>
-                    </h3>
-                    <div class="list">
-                        <?php foreach ($head as $h) { ?>
-                            <a href="<?= ROOTPATH ?>/profile/<?= $h ?>" class="colorless d-inline-flex align-items-center border bg-white p-10 rounded">
-
-                                <?= $Settings->printProfilePicture($h, 'profile-img small mr-20') ?>
-                                <div class="">
-                                    <h5 class="my-0">
-                                        <?= $DB->getNameFromId($h) ?>
-                                    </h5>
-                                </div>
-                            </a>
-                        <?php } ?>
-                    </div>
-                <?php } ?>
+        usort($persons, function ($a, $b) use ($head) {
+            return in_array($a['username'], $head)  ? -1 : 1;
+        });
+        if (!empty($head)) { ?>
+            <div class="head">
+                <h5 class="mt-0"><?= $Groups->getUnit($group['unit'] ?? null, 'head') ?></h5>
+                <div>
+                    <?php foreach ($head as $h) { ?>
+                        <a href="<?= ROOTPATH ?>/profile/<?= $h ?>" class="colorless d-flex align-items-center border bg-white p-10 rounded mt-10">
+                            <?= $Settings->printProfilePicture($h, 'profile-img small mr-20') ?>
+                            <div class="">
+                                <h5 class="my-0">
+                                    <?= $DB->getNameFromId($h) ?>
+                                </h5>
+                            </div>
+                        </a>
+                    <?php } ?>
+                </div>
 
             </div>
+        <?php } ?>
 
-            <?php if (isset($group['research']) && !empty($group['research'])) {
-            ?>
-                <style>
-                    details {
-                        background-color: white;
-                    }
 
-                    .collapse-header,
-                    .collapse-header:focus {
-                        background-color: white;
-                        font-weight: bold;
-                        font-size: 1.6rem;
-                    }
 
-                    .collapse-header:focus::after {
-                        box-shadow: none;
-                    }
-                </style>
-                <div class="col-md">
+        <?php if (isset($group['description']) || isset($group['description_de'])) { ?>
 
-                    <h3><?= lang('Research interests', 'Forschungsinteressen') ?></h3>
+            <h5>
+                <?= lang('About', 'Information') ?>
+            </h5>
+            <?= $parsedown->text(lang($group['description'] ?? '-', $group['description_de'] ?? null)) ?>
 
-                    <!-- Level <?= $level ?? '?' ?> -->
-                    <div class="collapse-group">
-                        <?php foreach ($group['research'] as $r) { ?>
-                            <details class="collapse-panel">
-                                <summary class="collapse-header">
-                                    <?= $r['title'] ?>
-                                </summary>
-                                <div class="collapse-content">
-                                    <?= $parsedown->text($r['info']) ?>
-                                </div>
-                            </details>
+        <?php } ?>
 
-                        <?php } ?>
+
+    </section>
+
+
+    <section id="research" style="display:none;">
+
+        <h3><?= lang('Research interests', 'Forschungsinteressen') ?></h3>
+
+        <?php if ($edit_perm) { ?>
+            <a class="btn" href="<?= ROOTPATH ?>/groups/public/<?= $id ?>">
+                <i class="ph ph-note-pencil ph-fw"></i>
+                <?= lang('Edit', 'Bearbeiten') ?>
+            </a>
+        <?php } ?>
+
+        <?php if (isset($group['research']) && !empty($group['research'])) { ?>
+            <?php foreach ($group['research'] as $r) { ?>
+                <div class="box">
+                    <h5 class="header">
+                        <?= lang($r['title'], $r['title_de'] ?? null) ?>
+                    </h5>
+                    <div class="content">
+                        <?= $parsedown->text(lang($r['info'], $r['info_de'] ?? null)) ?>
                     </div>
+                    <?php if (!empty($r['projects'] ?? null)) {
+                        echo '<hr>';
+                        echo '<div class="content">';
+                        echo '<h2>' . lang('Selected Projects', 'Ausgewählte Projekte') . '</h2>';
+                        foreach ($r['projects'] as $a) {
+                            echo $a;
+                        }
+                        echo '</div>';
+                    } ?>
 
+                    <?php if (!empty($r['activities'] ?? null)) {
+                        echo '<hr>';
+                        echo '<div class="content">';
+                        echo '<h2>' . lang('Selected Research Activities', 'Ausgewählte Forschungsaktivitäten') . '</h2>';
+                        foreach ($r['activities'] as $a) {
+                            $doc = $DB->getActivity($a);
+                            echo $doc['rendered']['web'];
+                        }
+                        echo '</div>';
+                    } ?>
 
                 </div>
-            <?php } ?>
 
-        </div>
+            <?php } ?>
+        <?php } ?>
 
     </section>
 

@@ -643,7 +643,7 @@ i.ph {
 }
 
 .ph.ph-edit:before {
-  content: "\ebc6";
+  content: "\e34c";
 }
 
 .ph.ph-search:before {
@@ -6444,6 +6444,9 @@ Boxes, tiles, and title bar
   background-color: white;
   padding: 0;
   border-radius: var(--border-radius);
+}
+.box.padded {
+  padding: 1rem 2rem;
 }
 .box > .title, .box.content > .title {
   font-size: 2rem;

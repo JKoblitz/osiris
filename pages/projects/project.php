@@ -595,7 +595,6 @@ $institute = $Settings->get('affiliation_details');
             (<?= $N ?>)
         </h2>
 
-
         <div class="btn-toolbar mb-10">
             <?php if ($edit_perm) { ?>
                 <a href="#add-activity" class="btn primary">

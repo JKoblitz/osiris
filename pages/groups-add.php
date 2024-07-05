@@ -21,7 +21,9 @@
  else $heads = DB::doc2Arr($heads);
 
 
-if (!$Settings->hasPermission('units.add') && !in_array($_SESSION['username'], $heads)) {
+$edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission($id));
+
+if (!$edit_perm) {
     echo "You have no right to be here.";
     die;
 }

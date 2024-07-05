@@ -27,26 +27,26 @@ class Groups
         'institute' => [
             'name' => 'Institute',
             'name_de' => 'Institut',
-            'head'=> 'Directorate',
-            'head_de'=> 'Direktorat',
+            'head' => 'Directorate',
+            'head_de' => 'Direktorat',
         ],
         'department' => [
             'name' => 'Department',
             'name_de' => 'Abteilung',
-            'head'=> 'Head of Department',
-            'head_de'=> 'Abteilungsleitung',
+            'head' => 'Head of Department',
+            'head_de' => 'Abteilungsleitung',
         ],
         'group' => [
             'name' => 'Group',
             'name_de' => 'Gruppe',
-            'head'=> 'Head of Group',
-            'head_de'=> 'Arbeitsgruppenleitung',
+            'head' => 'Head of Group',
+            'head_de' => 'Arbeitsgruppenleitung',
         ],
         'unit' => [
             'name' => 'Unit',
             'name_de' => 'Einheit',
-            'head'=> 'Head of Unit',
-            'head_de'=> 'Leitung der Organisationseinheit',
+            'head' => 'Head of Unit',
+            'head_de' => 'Leitung der Organisationseinheit',
         ]
     ];
 
@@ -111,7 +111,8 @@ class Groups
         return $this->getGroup($id)['name'];
     }
 
-    public function getUnit($unit = null, $key = null){
+    public function getUnit($unit = null, $key = null)
+    {
         $unit = strtolower($unit);
         if (isset($this->UNITS[$unit])) {
             $info = $this->UNITS[$unit];
@@ -149,6 +150,27 @@ class Groups
         return $result;
     }
 
+    public function editPermission($id, $user = null)
+    {
+        if ($user === null) $user = $_SESSION['username'];
+        $edit_perm = false;
+        // get all parent units
+        $parents = $this->getParents($id);
+        foreach ($parents as $p) {
+            if ($p == $id) continue;
+            $g = $this->getGroup($p);
+            if (isset($g) && isset($g['head'])) {
+                $head = $g['head'];
+                if (is_string($head)) $head = [$head];
+                else $head = DB::doc2Arr($head);
+                if (in_array($_SESSION['username'], $head)) {
+                    $edit_perm = true;
+                    break;
+                }
+            }
+        }
+        return $edit_perm;
+    }
 
     public function getDeptFromAuthors($authors)
     {
@@ -238,6 +260,7 @@ class Groups
             return $el;
 
         $ids = [];
+        if ($el == null) return [];
         array_walk_recursive($el, function ($v, $k) use (&$ids) {
             if ($k == 'id') $ids[] = $v;
         });
