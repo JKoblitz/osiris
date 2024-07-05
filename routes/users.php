@@ -444,7 +444,7 @@ Route::post('/synchronize-users', function () {
             "first",
             "last",
             "name",
-            "dept",
+            "depts",
             "username"
         ];
         foreach ($_POST['inactivate'] as $username) {
@@ -603,7 +603,7 @@ Route::post('/crud/users/delete/(.*)', function ($user) {
         "first",
         "last",
         "name",
-        "dept",
+        "depts",
         "username"
     ];
     $arr = [];

@@ -45,7 +45,7 @@ use function PHPSTORM_META\type;
                     "first",
                     "last",
                     "name",
-                    "dept",
+                    "depts",
                     "username"
                 ])) {
                     $delete = false;

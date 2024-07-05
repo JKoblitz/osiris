@@ -89,7 +89,9 @@
     var dataTable;
     const activeFilters = $('#active-filters')
     $(document).ready(function() {
-        dataTable = userTable('#user-table')
+        dataTable = userTable('#user-table', {
+            subtitle: 'position',
+        })
         filterActive();
 
         var hash = readHash();

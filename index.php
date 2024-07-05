@@ -83,7 +83,7 @@ Route::get('/', function () {
 
 
 if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
-    require_once BASEPATH.'/addons/auth/index.php';
+    require_once BASEPATH . '/addons/auth/index.php';
 }
 
 
@@ -111,27 +111,35 @@ include_once BASEPATH . "/routes/admin.php";
 // include_once BASEPATH . "/routes/adminGeneral.php";
 // include_once BASEPATH . "/routes/adminRoles.php";
 
-
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/rest.php";
 // include_once BASEPATH . "/routes/CRUD.php";
+
+include_once BASEPATH . "/addons/ida/index.php";
+require_once BASEPATH . '/addons/guestforms/index.php';
+
+
 
 Route::get('/test-user/(.*)', function ($username) {
     include_once BASEPATH . "/php/_login.php";
     include_once BASEPATH . "/php/init.php";
     $user = getUser($username);
     dump($user);
-    
+    $_SESSION['username'] = $username;
+    // $osiris->persons->deleteOne(
+    //     ['username' => 'sna']
+    // );
+    // $osiris->persons->updateOne(
+    //     ['username' => 'sna'],
+    //     ['$set' => ['username' => 'SNA']]
+    // );
+
+    // $osiris->activities->updateMany(
+    //     ['authors.last' => 'Nagel'],
+    //     ['$set' => ['authors.$[elem].user' => 'SNA']],
+    //     ['arrayFilters' => [['elem.last' => 'Nagel', 'elem.first'=>'Stefan']]]
+    // );
 });
-
-// if (IDA_INTEGRATION) {
-    include_once BASEPATH . "/addons/ida/index.php";
-// }
-
-
-// if ($Settings->featureEnabled('guests')) {
-    require_once BASEPATH.'/addons/guestforms/index.php';
-// }
 
 /**
  * Routes for OSIRIS Portal
