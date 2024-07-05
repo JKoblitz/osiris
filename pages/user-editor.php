@@ -186,7 +186,7 @@
 
             <!-- show profile picture -->
             <div class="custom-checkbox mb-20">
-                <input type="checkbox" id="public_image" value="1" name="values[public_image]" <?= ($data['public_image'] ?? true) ? 'checked' : '' ?>>
+                <input type="checkbox" id="public_image" value="1" name="values[public_image]" <?= ($data['public_image'] ?? false) ? 'checked' : '' ?>>
                 <label for="public_image"><?= lang('Show profile picture', 'Zeige Profilbild') ?></label>
             </div>
 

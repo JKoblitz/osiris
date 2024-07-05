@@ -24,7 +24,12 @@ $Format = new Document(false, 'portal');
 
     <div class="profile-header" style="display: flex; align-items: center;">
         <div class="col mr-20" style="flex-grow: 0;">
+           <?php if (isset($scientist['public_image']) && $scientist['public_image'] === true) { ?>
             <?= $Settings->printProfilePicture($user, 'profile-img rounded') ?>
+           <?php } else { ?>
+            <img src="<?= ROOTPATH ?>/img/no-photo.png" alt="Profilbild" class="profile-img rounded">
+           <?php } ?>
+            
         </div>
 
         <div class="col">
