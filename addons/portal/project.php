@@ -47,7 +47,7 @@ $Project = new Project($project);
     }
 </style>
 
-<div class="container mt-20">
+<div class="container-lg mt-20">
     <h1>
         <?= $project['name'] ?>
     </h1>

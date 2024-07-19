@@ -94,12 +94,10 @@ class Settings
 
     function printProfilePicture($user, $class = "")
     {
-        $default = '<img src="' . ROOTPATH . '/img/no-photo.png" alt="Profilbild" class="' . $class . '">';
-        // check if user image is disabled
-        // $userinfo = $this->osiris->persons->findOne(['username' => $user], ['projection' => ['_id' => 1, 'public_image'=> 1]]);
-        // if (empty($userinfo) || (isset($userinfo['public_image']) && $userinfo['public_image'] === false)) {
-        //     return $default;
-        // }
+        $root = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . ROOTPATH;
+        $default = '<img src="' . $root . '/img/no-photo.png" alt="Profilbild" class="' . $class . '">';
+
+        if (empty($user)) return $default;
         if ($this->featureEnabled('db_pictures')) {
             $img = $this->osiris->userImages->findOne(['user' => $user]);
             
@@ -115,7 +113,7 @@ class Settings
             if (!$img_exist) {
                 return $default;
             }
-            $img = ROOTPATH . "/img/users/$user.jpg";
+            $img = "$root/img/users/$user.jpg";
             return ' <img src="' . $img . '" alt="Profilbild" class="' . $class . '">';
         }
     }

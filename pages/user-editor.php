@@ -185,6 +185,12 @@
         </div> -->
 
             <!-- show profile picture -->
+            <p class="text-danger">
+                <?= lang(
+                    'By setting the image, mail or phone number to publicly visible, you allow OSIRIS Portfolio to display this personal data of yours to the open public. You can retract this at any time by unticking the check boxes again.',
+                    'Indem du das Bild, die Mail oder die Telefonnummer auf öffentlich sichtbar setzt, erlaubst du OSIRIS Portfolio, diese persönlichen Daten öffentlich zu zeigen. Du kannst dies jederzeit wieder rückgängig machen, indem du die Häkchen wieder entfernst.'
+                ) ?>
+            </p>
             <div class="custom-checkbox mb-20">
                 <input type="checkbox" id="public_image" value="1" name="values[public_image]" <?= ($data['public_image'] ?? false) ? 'checked' : '' ?>>
                 <label for="public_image"><?= lang('Show profile picture', 'Zeige Profilbild') ?></label>
@@ -219,34 +225,51 @@
         <legend><?= lang('Contact', 'Kontakt') ?></legend>
         <div class="form-row row-eq-spacing">
 
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <label for="telephone"><?= lang('Telephone', 'Telefon') ?></label>
                 <input type="text" name="values[telephone]" id="telephone" class="form-control" value="<?= $data['telephone'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <label for="mail">Mail</label>
                 <input type="text" name="values[mail]" id="mail" class="form-control" value="<?= $data['mail'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+        </div>
+
+
+        <?php if ($Settings->featureEnabled('portal')) { ?>
+            <p class="text-danger">
+            <?=lang('
+            Please note that the following information is optional. If you do not wish to make your contact information publicly visible, you can leave the corresponding fields blank. If you fill them in, you authorise OSIRIS Portfolio to show this data publicly. You can revoke this at any time by leaving the fields blank.
+            ', '
+            Bitte beachte, dass die folgenden Informationen freiwillige Angaben sind. Wenn du deine Kontaktinformationen nicht öffentlich sichtbar machen möchtest, kannst du die entsprechenden Felder leer lassen. Solltest du sie ausfüllen, erlaubst du OSIRIS Portfolio, diese Daten öffentlich zu zeigen. Du kannst dies jederzeit wieder rückgängig machen, indem du die Felder leer lässt.
+            ')?>
+            </p>
+        <?php } ?>
+        
+        <div class="row row-eq-spacing mb-10 mt-0">
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="orcid">ORCID</label>
                 <input type="text" name="values[orcid]" id="orcid" class="form-control" value="<?= $data['orcid'] ?? '' ?>">
             </div>
-        </div>
 
-        <div class="form-row row-eq-spacing mb-10">
-            <div class="col-sm-4">
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="twitter">Twitter</label>
                 <input type="text" name="values[twitter]" id="twitter" class="form-control" value="<?= $data['twitter'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-md-6 col-sm-4 mb-20">
+                <label for="linkedin">LinkedIn</label>
+                <input type="text" name="values[linkedin]" id="linkedin" class="form-control" value="<?= $data['linkedin'] ?? '' ?>">
+            </div>
+
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="researchgate">ResearchGate Handle</label>
                 <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="google_scholar">Google Scholar ID</label>
                 <input type="text" name="values[google_scholar]" id="google_scholar" class="form-control" value="<?= $data['google_scholar'] ?? '' ?>">
                 <small class="text-muted">

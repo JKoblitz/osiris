@@ -164,6 +164,9 @@ function sel($index, $value)
                             <div class="form-group my-10">
                                 <input name="values[research][<?= $i ?>][title_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title_de'] ?? '') ?>" placeholder="Title">
                             </div>
+                             <div class="form-group my-10">
+                                <input name="values[research][<?= $i ?>][subtitle_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['subtitle_de'] ?? '') ?>" placeholder="Subtitle">
+                            </div>
                             <div class="form-group mb-0">
                                 <textarea name="values[research][<?= $i ?>][info_de]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)"><?= htmlspecialchars($con['info_de'] ?? '') ?></textarea>
                                 <small class="text-muted">
@@ -178,6 +181,9 @@ function sel($index, $value)
                             <h5 class="mt-0 ">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></h5>
                             <div class="form-group my-10">
                                 <input name="values[research][<?= $i ?>][title]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
+                            </div>
+                             <div class="form-group my-10">
+                                <input name="values[research][<?= $i ?>][subtitle]" type="text" class="form-control large" value="<?= htmlspecialchars($con['subtitle'] ?? '') ?>" placeholder="Subtitle">
                             </div>
                             <div class="form-group mb-0">
                                 <textarea name="values[research][<?= $i ?>][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required><?= htmlspecialchars($con['info'] ?? '') ?></textarea>
@@ -218,7 +224,7 @@ function sel($index, $value)
 
                     </div>
 
-                    <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
+                    <button class="btn danger small my-10" type="button" onclick="$(this).closest('.box').remove()"><i class="ph ph-trash"></i> <?= lang('Delete', 'Löschen') ?></button>
                 </div>
         <?php }
         } ?>

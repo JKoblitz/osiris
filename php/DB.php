@@ -215,6 +215,21 @@ class DB
     }
 
     /**
+     * Get project
+     *
+     * @param string $project Project name or ID.
+     * @return array Project array.
+     */
+    public function getProject($project){
+        if ($this->is_ObjectID($project)) {
+            $project = $this->db->projects->findOne(['$or' => [['name' => $project], ['_id' => $this->to_ObjectID($project)] ]]);
+        } else {
+            $project = $this->db->projects->findOne(['name' => $project]);
+        }
+        return $this->doc2Arr($project);
+    }
+
+    /**
      * Abbreviate all first names including hyphens.
      *
      * @param string $first Full first name.

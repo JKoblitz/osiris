@@ -113,7 +113,8 @@ class Groups
 
     public function getUnit($unit = null, $key = null)
     {
-        $unit = strtolower($unit);
+        if ($unit !== null) 
+            $unit = strtolower($unit);
         if (isset($this->UNITS[$unit])) {
             $info = $this->UNITS[$unit];
         } else {
@@ -296,5 +297,116 @@ class Groups
         }
 
         return null;
+    }
+
+
+
+
+     /**
+     * Get the hierarchy tree for a given list of person units
+     *
+     * @param array $personUnits Liste der Einheiten, denen eine Person angehört
+     * @return array Hierarchiebaum der Einheiten
+     */
+    public function getPersonHierarchyTree($personUnits) {
+        $result = [];
+
+        foreach ($personUnits as $unit) {
+            $path = $this->findUnitPath($unit, $this->tree);
+            if ($path) {
+                $this->mergePaths($result, $path);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Find the path to a specific unit within the hierarchy
+     *
+     * @param string $unit Die zu findende Einheit
+     * @param array $hierarchy Der aktuelle Hierarchieknoten
+     * @param array $currentPath Der bisherige Pfad
+     * @return array|null Pfad zur Einheit oder null, wenn nicht gefunden
+     */
+    private function findUnitPath($unit, $hierarchy, $currentPath = []) {
+        $newPath = array_merge($currentPath, [$hierarchy['id']]);
+
+        if ($hierarchy['id'] === $unit) {
+            return $newPath;
+        }
+
+        if (!empty($hierarchy['children'])) {
+            foreach ($hierarchy['children'] as $child) {
+                $path = $this->findUnitPath($unit, $child, $newPath);
+                if ($path) {
+                    return $path;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Merge a path into the result tree
+     *
+     * @param array $result Referenz auf den Ergebnisbaum
+     * @param array $path Der zu mergende Pfad
+     */
+    private function mergePaths(&$result, $path) {
+        $current = &$result;
+        foreach ($path as $node) {
+            if (!isset($current[$node])) {
+                $current[$node] = [];
+            }
+            $current = &$current[$node];
+        }
+    }
+
+    /**
+     * Print the hierarchy tree
+     *
+     * @param array $tree Der Hierarchiebaum
+     * @param int $indent Die aktuelle Einrückungsebene
+     */
+    public function printPersonHierarchyTree($tree, $indent = 0) {
+        foreach ($tree as $key => $subTree) {
+            echo str_repeat("  ", $indent) . ($indent > 0 ? str_repeat(">", $indent) . " " : "") . "$key\n";
+            if (!empty($subTree)) {
+                $this->printPersonHierarchyTree($subTree, $indent + 1);
+            }
+        }
+    }
+     public function readableHierarchy($tree, $indent = 0) {
+        $result = [];
+        foreach ($tree as $key => $subTree) {
+            $group = $this->getGroup($key);
+            $unit = $this->getUnit($group['unit'] ?? null);
+            $result[] = [
+                'id' => $key, 
+                'name_en' => $group['name'], 
+                'name_de'=>($group['name_de']??null), 
+                'unit_en' => $unit['name'],
+                'unit_de' => $unit['name_de'],
+                'indent' => $indent,
+                'hasChildren' => !empty($subTree) ? true : false
+            ];
+            // $result[] = str_repeat("  ", $indent) . "$key <br>";
+            if (!empty($subTree)) {
+                $result = array_merge($result, $this->readableHierarchy($subTree, $indent + 1));
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Display the hierarchy tree for a person
+     *
+     * @param array $personUnits Liste der Einheiten, denen eine Person angehört
+     */
+    public function displayPersonHierarchy($personUnits) {
+        $tree = $this->getPersonHierarchyTree($personUnits);
+        $this->printPersonHierarchyTree($tree);
     }
 }

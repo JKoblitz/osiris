@@ -537,7 +537,7 @@ $Format = new Document(true);
                 $f = [
                     'id' => $field['id'],
                     'label' => lang($field['name'], $field['name_de'] ?? null),
-                    'type' => $field['format']
+                    'type' => $field['format'] == 'int' ? 'integer' : $field['format']
                 ];
 
                 if ($field['format'] == 'boolean') {
