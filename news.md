@@ -1,7 +1,7 @@
 # Neuigkeiten
 
 
-<span class="badge float-right">XXX</span>
+<span class="badge float-right">21.06.2024</span>
 <a class="anchor" href="#version-1.3.5" id="version-1.3.5"></a>
 
 ## Version 1.3.5
