@@ -18,7 +18,7 @@ In deinem persönlichen Profil gibt es eine Infobox, die neben nützlichen Links
             <i class="ph ph-calendar text-success ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Meine Aktivitäten ">
-            <i class="icon-activity-user text-primary ph-fw"></i>
+            <i class="icon-activity-user text-secondary ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Bearbeite Profil">
             <i class="ph ph-user-list text-muted ph-fw"></i>
@@ -104,13 +104,13 @@ Die Warnmeldung sieht folgendermaßen aus:
                     </button>
                 </div>
                 <a target="_blank" href="/osiris/activities/view/650449e74430390609471786"
-                    class="btn small text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
+                    class="btn small text-secondary" data-toggle="tooltip" data-title="Aktivität ansehen">
                     <i class="ph ph-arrow-fat-line-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-md-6">
-            <span class="badge secondary float-md-right">27.05.2024</span>
+            <span class="badge primary float-md-right">27.05.2024</span>
             <h5 class="m-0">
                 Bearbeitet von Dominic Koblitz </h5>
             <blockquote class="signal">
@@ -143,9 +143,9 @@ Wie man sehen kann, befinden sich unter der Aktivität fünf Knöpfe: die ersten
 
 <i class="ph ph-x ph-fw text-danger mr-10"></i> Das bist du nicht. Hiermit entfernst du die Aktivität aus deinem Profil. 
 
-<i class="ph-fw ph ph-regular ph-pencil-simple-line text-primary mr-10"></i> Hier kannst du die Aktivität direkt bearbeiten, falls dir Unstimmigkeiten auffallen. Du musst sie nicht zusätzlich bestätigen, wenn du sie bearbeitest, wirst du selbst direkt abgehakt.
+<i class="ph-fw ph ph-regular ph-pencil-simple-line text-secondary mr-10"></i> Hier kannst du die Aktivität direkt bearbeiten, falls dir Unstimmigkeiten auffallen. Du musst sie nicht zusätzlich bestätigen, wenn du sie bearbeitest, wirst du selbst direkt abgehakt.
 
-<i class="ph-fw ph ph-regular ph-arrow-fat-line-right text-primary mr-10"></i> Zu guter Letzt kannst du dir hier die Aktivität ansehen. Dort findest du auch jede Menge weitere Informationen, sowie hilfreiche Links.
+<i class="ph-fw ph ph-regular ph-arrow-fat-line-right text-secondary mr-10"></i> Zu guter Letzt kannst du dir hier die Aktivität ansehen. Dort findest du auch jede Menge weitere Informationen, sowie hilfreiche Links.
 
 
 Solltest du sehr viele Überprüfungen haben, kannst du auch alle auf einmal bestätigen. Dafür gibt es am Anfang der Liste dem Knopf <button class="btn btn-sm text-success"><i class="ph ph-check"></i>Alle bestätigen</button>. Tu dies aber bitte nur, wenn du sicher bist, dass sie korrekt hinzugefügt wurden und alle auch wirklich **deine Aktivitäten** sind. Du solltest wenigstens einmal über die Liste scrollen und schauen, ob sie dir bekannt vorkommen.

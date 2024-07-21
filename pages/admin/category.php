@@ -76,7 +76,7 @@ function sel($index, $value)
                 <li>new</li>
             </ul>
             <div class="text-right mt-20">
-                <a href="#/" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#/" class="btn secondary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>

@@ -40,7 +40,7 @@ if (!isset($project['collaborators']) || empty($project['collaborators'])){
 
 
 <div class="btn-toolbar mb-10">
-    <a href="#collaborators-select" class="btn primary">
+    <a href="#collaborators-select" class="btn secondary">
         <i class="ph ph-edit"></i>
         <?= lang('Add new partner', 'Neuen Partner hinzufügen') ?>
     </a>
@@ -149,7 +149,7 @@ if (!isset($project['collaborators']) || empty($project['collaborators'])){
         </tbody>
     </table>
 
-    <button type="submit" class="btn primary mt-10">
+    <button type="submit" class="btn secondary mt-10">
         Save
     </button>
 </form>

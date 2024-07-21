@@ -30,7 +30,7 @@
     }
 
     .description {
-        color: var(--primary-color);
+        color: var(--secondary-color);
         font-style: italic;
     }
 </style>
@@ -280,7 +280,7 @@ function val($index, $default = '')
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                 <div class="input-group-append">
-                    <button class="btn primary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
+                    <button class="btn secondary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
         </div>
@@ -371,7 +371,7 @@ function val($index, $default = '')
 
 
 
-<div class="box primary add-form" style="display:none" id="publication-form">
+<div class="box secondary add-form" style="display:none" id="publication-form">
     <div class="content">
         <button class="btn osiris small float-right" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
 
@@ -507,7 +507,7 @@ function val($index, $default = '')
                 </p>
             </div>
 
-            <button class="btn primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
+            <button class="btn secondary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 
         </form>
     </div>

@@ -206,7 +206,7 @@ $institute = $Settings->get('affiliation_details');
                 <div class="btn-toolbar mb-10">
 
                     <?php if ($edit_perm) { ?>
-                        <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn primary">
+                        <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn secondary">
                             <i class="ph ph-edit"></i>
                             <?= lang('Edit', 'Bearbeiten') ?>
                         </a>
@@ -413,7 +413,7 @@ $institute = $Settings->get('affiliation_details');
 
                                         </table>
 
-                                        <button class="btn primary mt-20">
+                                        <button class="btn secondary mt-20">
                                             <i class="ph ph-check"></i>
                                             <?= lang('Submit', 'Bestätigen') ?>
                                         </button>
@@ -441,7 +441,7 @@ $institute = $Settings->get('affiliation_details');
 
                 <div class="btn-toolbar mb-10">
                     <?php if ($edit_perm) { ?>
-                        <a href="#persons" class="btn primary">
+                        <a href="#persons" class="btn secondary">
                             <i class="ph ph-edit"></i>
                             <?= lang('Edit', 'Bearbeiten') ?>
                         </a>
@@ -498,7 +498,7 @@ $institute = $Settings->get('affiliation_details');
 
         <?php if ($edit_perm) { ?>
             <div class="btn-toolbar mb-10">
-                <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn primary">
+                <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn secondary">
                     <i class="ph ph-edit"></i>
                     <?= lang('Edit', 'Bearbeiten') ?>
                 </a>
@@ -550,7 +550,7 @@ $institute = $Settings->get('affiliation_details');
                     </tbody>
                 </table>
 
-                <div class="alert secondary my-20">
+                <div class="alert primary my-20">
 
                     <small class="text-muted float-right">
                         <?= lang('Based on partners', 'Basierend auf Partnern') ?>
@@ -597,7 +597,7 @@ $institute = $Settings->get('affiliation_details');
 
         <div class="btn-toolbar mb-10">
             <?php if ($edit_perm) { ?>
-                <a href="#add-activity" class="btn primary">
+                <a href="#add-activity" class="btn secondary">
                     <i class="ph ph-plus"></i>
                     <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
                 </a>
@@ -605,7 +605,7 @@ $institute = $Settings->get('affiliation_details');
 
 
             <div class="dropdown with-arrow btn-group ">
-                <button class="btn primary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                <button class="btn secondary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
                     <i class="ph ph-download"></i> Download
                     <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
                 </button>
@@ -652,7 +652,7 @@ $institute = $Settings->get('affiliation_details');
                                 </div>
 
                             </div>
-                            <button class="btn primary">Download</button>
+                            <button class="btn secondary">Download</button>
                         </form>
                     </div>
                 </div>
@@ -686,7 +686,7 @@ $institute = $Settings->get('affiliation_details');
 
         <div class="btn-toolbar mb-10">
             <?php if ($edit_perm) { ?>
-                <a href="<?= ROOTPATH ?>/projects/public/<?= $id ?>" class="btn primary">
+                <a href="<?= ROOTPATH ?>/projects/public/<?= $id ?>" class="btn secondary">
                     <i class="ph ph-edit"></i>
                     <?= lang('Edit', 'Bearbeiten') ?>
                 </a>
@@ -762,7 +762,7 @@ $institute = $Settings->get('affiliation_details');
 
             <div class="btn-toolbar mb-10">
                 <?php if ($Settings->hasPermission('project.finance.edit')) { ?>
-                    <a href="<?= ROOTPATH ?>/projects/finance/<?= $id ?>" class="btn primary">
+                    <a href="<?= ROOTPATH ?>/projects/finance/<?= $id ?>" class="btn secondary">
                         <i class="ph ph-edit"></i>
                         <?= lang('Edit', 'Bearbeiten') ?>
                     </a>
@@ -921,7 +921,7 @@ $institute = $Settings->get('affiliation_details');
                         </div>
                         <input type="hidden" name="activity" id="activity-selected" required value="">
 
-                        <button class="btn primary">
+                        <button class="btn secondary">
                             <i class="ph ph-check"></i>
                             <?= lang('Submit', 'Bestätigen') ?>
                         </button>

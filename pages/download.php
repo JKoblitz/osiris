@@ -140,7 +140,7 @@
        
 
 
-        <button class="btn primary">Download</button>
+        <button class="btn secondary">Download</button>
 
     </form>
 </div>

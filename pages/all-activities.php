@@ -65,7 +65,7 @@ $user = $user ?? $_SESSION['username'];
     }
 </style>
 
-<button class="btn secondary float-right" onclick="$('.filter-wrapper').slideToggle()">Filter <i class="ph ph-caret-down"></i></button>
+<button class="btn primary float-right" onclick="$('.filter-wrapper').slideToggle()">Filter <i class="ph ph-caret-down"></i></button>
 
 <div class="row row-eq-spacing">
     <div class="col order-last order-sm-first">

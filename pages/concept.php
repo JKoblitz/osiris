@@ -21,7 +21,7 @@
 <h1 class="mt-0">
     <i class="ph ph-lightbulb text-osiris" aria-hidden="true"></i>
     <?= lang('Concept', 'Konzept') ?>
-    <span class="text-primary">
+    <span class="text-secondary">
         <?= $name ?>
     </span>
 </h1>

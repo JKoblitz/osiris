@@ -216,7 +216,7 @@ function sel($index, $value)
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for Activity">
                             <div class="input-group-append">
-                                <button class="btn primary" type="button" onclick="searchActivities('<?= $i ?>')"><?= lang('Search', 'Suchen') ?></button>
+                                <button class="btn secondary" type="button" onclick="searchActivities('<?= $i ?>')"><?= lang('Search', 'Suchen') ?></button>
                             </div>
                         </div>
 
@@ -320,7 +320,7 @@ function sel($index, $value)
 
 
 
-    <button class="btn primary" type="submit" id="submit-btn">
+    <button class="btn secondary" type="submit" id="submit-btn">
         <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
     </button>
 

@@ -104,7 +104,7 @@
 
 
 
-            <button class="btn primary">Download</button>
+            <button class="btn secondary">Download</button>
         <?php } else { ?>
             <p class="text-danger">
                 <?= lang('Cart is empty.', 'Der Einkaufswagen ist leer.') ?>

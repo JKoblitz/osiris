@@ -118,7 +118,7 @@ updateRecursive($flare, $activities);
 </h1>
 
 <div class="dropdown">
-    <button class="btn primary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+    <button class="btn secondary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
         <i class="ph ph-funnel"></i>
         Filter
         <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
@@ -165,7 +165,7 @@ updateRecursive($flare, $activities);
                 </div>
             </div>
 
-            <button class="btn primary " type="submit">Select</button>
+            <button class="btn secondary " type="submit">Select</button>
         </form>
     </div>
 </div>

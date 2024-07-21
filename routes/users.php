@@ -418,7 +418,7 @@ Route::get('/synchronize-users', function () {
             </details>
         <?php } ?>
 
-        <button type="submit" class="btn btn-primary"><?= lang('Synchronize', 'Synchronisieren') ?></button>
+        <button type="submit" class="btn secondary"><?= lang('Synchronize', 'Synchronisieren') ?></button>
     </form>
 <?php
 

@@ -89,7 +89,7 @@ $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission(
 
     blockquote {
         font-style: italic;
-        border-left: 5px solid var(--primary-color);
+        border-left: 5px solid var(--secondary-color);
         padding-left: 1rem;
         margin: 1rem 0;
     }

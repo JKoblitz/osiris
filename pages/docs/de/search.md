@@ -1,5 +1,5 @@
 
-# <i class="ph ph-magnifying-glass-plus text-primary"></i> Die erweiterte Aktivitäten-Suche
+# <i class="ph ph-magnifying-glass-plus text-secondary"></i> Die erweiterte Aktivitäten-Suche
 
 Die Seite **Erweiterte Suche** ermöglicht es dir, Aktivitäten mithilfe erweiterter Filter zu suchen, Daten nach bestimmten Feldern zu aggregieren, deine Abfragen zu speichern und die Ergebnisse in einer detaillierten Tabelle anzusehen.
 

@@ -41,7 +41,7 @@ Personen können jetzt (mit entsprechenden Rechten) direkt über die Seite der O
 
 Um eine Aktivität mit einem Projekt zu verknüpfen, musste man bislang immer jede Aktivität einzeln auswählen und dann das Projekt. Weil das für später hinzugefügte Projekte sehr umständlich war, wurde ein Mechanismus hinzugefügt, um Aktivitäten schnell zu Projekten hinzuzufügen. 
 
-Dazu wählt ihr ein Projekt aus, klickt auf Aktivitäten und dann auf <span class="btn primary small"><i class="ph ph-plus"></i> Aktivitäten verknüpfen</span>. Es öffnet sich ein Fenster, indem ihr Aktivitäten einfach durchsuchen könnt. Klickt die gewünschte Aktivität an und klickt dann auf Bestätigen.
+Dazu wählt ihr ein Projekt aus, klickt auf Aktivitäten und dann auf <span class="btn secondary small"><i class="ph ph-plus"></i> Aktivitäten verknüpfen</span>. Es öffnet sich ein Fenster, indem ihr Aktivitäten einfach durchsuchen könnt. Klickt die gewünschte Aktivität an und klickt dann auf Bestätigen.
 
 #### <i class="ph ph-magnifying-glass-plus text-osiris"></i> Überarbeitung der Erweiterten Suche
 Die Erweiterte Suche wurde überarbeitet und bietet jetzt mehr Filtermöglichkeiten und eine verbesserte Benutzeroberfläche.

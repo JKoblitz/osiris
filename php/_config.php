@@ -215,7 +215,7 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $header = lang("Error", "Fehler");
         }
     } elseif ($type == 'info') {
-        $class = "primary";
+        $class = "secondary";
         if ($header == "default") {
             $header = "";
         }

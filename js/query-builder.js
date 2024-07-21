@@ -2699,7 +2699,7 @@ QueryBuilder.templates.group = '\
     </div> \
     <div class="temp-group group-conditions"> \
       {{~ it.conditions: condition }} \
-        <label class="btn btn-xs btn-primary"> \
+        <label class="btn btn-xs primary"> \
           <input type="radio" name="{{= it.group_id }}_cond" value="{{= condition }}"> {{= it.translate("conditions", condition) }} \
         </label> \
       {{~}} \

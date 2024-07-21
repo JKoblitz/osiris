@@ -158,7 +158,7 @@ $institute = $Settings->get('affiliation_details');
 
 
     <div class="btn-toolbar float-right">
-        <a href="<?= ROOTPATH ?>/projects" class="btn primary">
+        <a href="<?= ROOTPATH ?>/projects" class="btn secondary">
             <i class="ph ph-tree-structure"></i>
             <?= lang('Go to all projects', 'Gehe zu allen Projekten') ?>
         </a>

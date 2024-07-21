@@ -38,7 +38,7 @@ $selectedUser = $osiris->persons->findone(['username' => $scientist]);
             <?php } ?>
         </select>
         <div class="input-group-append">
-            <button class="btn primary" type="submit">Select</button>
+            <button class="btn secondary" type="submit">Select</button>
         </div>
     </div>
 </form>

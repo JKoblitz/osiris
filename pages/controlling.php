@@ -30,7 +30,7 @@
 </style>
 
 
-<div class="box primary">
+<div class="box secondary">
     <div class="content">
 
         <h2 class="title">
@@ -61,7 +61,7 @@
                 </select>
             </div>
 
-            <button class="btn primary" type="submit"><?= lang('Generate report', 'Report erstellen') ?></button>
+            <button class="btn secondary" type="submit"><?= lang('Generate report', 'Report erstellen') ?></button>
         </form>
 
     </div>

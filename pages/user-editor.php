@@ -83,7 +83,7 @@
                     </div>
                 <?php } ?>
 
-                <button class="btn primary small ml-10" type="button" onclick="addName(event, this);">
+                <button class="btn secondary small ml-10" type="button" onclick="addName(event, this);">
                     <i class="ph ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
                 </button>
             </div>
@@ -425,7 +425,7 @@
 
 
 
-    <button type="submit" class="btn primary">
+    <button type="submit" class="btn secondary">
         Update
     </button>
 </form>

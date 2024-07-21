@@ -95,7 +95,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <button class="btn primary" type="submit" id="submit-btn"><i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?></button>
+                <button class="btn secondary" type="submit" id="submit-btn"><i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?></button>
 
             </form>
         </div>

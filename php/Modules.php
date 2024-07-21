@@ -682,7 +682,7 @@ class Modules
                         <?= lang('Course for the following module', 'Veranstaltung zu folgendem Modul') ?>
                     </label>
                     <a href="#teaching-select" id="teaching-field" class="module">
-                        <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+                        <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
 
                         <div id="selected-teaching">
                             <?php if (!empty($this->form) && isset($this->form['module_id'])) :
@@ -756,7 +756,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i></button>
+                                        <button class="btn text-secondary" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -888,7 +888,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addSupervisorRow()"><i class="ph ph-plus"></i></button>
+                                        <button class="btn text-secondary" type="button" onclick="addSupervisorRow()"><i class="ph ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -997,7 +997,7 @@ class Modules
                             <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                                 <div class="input-group-append">
-                                    <button class="btn primary h-full" type="button" onclick="addAuthor(event);">
+                                    <button class="btn secondary h-full" type="button" onclick="addAuthor(event);">
                                         <i class="ph ph-plus"></i>
                                     </button>
                                 </div>
@@ -1308,7 +1308,7 @@ class Modules
                     <label for="journal" class="element-cat <?= $required ?>">Journal</label>
                     <a href="#journal-select" id="journal-field" class="module">
                         <!-- <a class="btn link" ><i class="ph ph-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
-                        <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+                        <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
 
                         <div id="selected-journal">
                             <?php if (!empty($this->form) && isset($this->form['journal_id'])) :
@@ -1461,7 +1461,7 @@ class Modules
                             <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add editor ...', 'Füge Editor hinzu ...') ?>" onkeypress="addAuthor(event, true);" id="add-editor" list="scientist-list">
                                 <div class="input-group-append">
-                                    <button class="btn primary h-full" type="button" onclick="addAuthor(event, true);">
+                                    <button class="btn secondary h-full" type="button" onclick="addAuthor(event, true);">
                                         <i class="ph ph-plus"></i>
                                     </button>
                                 </div>

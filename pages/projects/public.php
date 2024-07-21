@@ -74,7 +74,7 @@
                         <label for="public_image"><?= lang('Upload image', 'Bild hochladen') ?></label>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary"><?= lang('Save', 'Speichern') ?></button>
+                <button type="submit" class="btn secondary"><?= lang('Save', 'Speichern') ?></button>
             </form>
         </div>
     </div>

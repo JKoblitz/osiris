@@ -1740,7 +1740,7 @@ class simple_html_dom
 			if (function_exists('mb_detect_encoding')) {
 				/**
 				 * mb_detect_encoding() is not intended to distinguish between
-				 * charsets, especially single-byte charsets. Its primary
+				 * charsets, especially single-byte charsets. Its secondary
 				 * purpose is to detect which multibyte encoding is in use,
 				 * i.e. UTF-8, UTF-16, shift-JIS, etc.
 				 *

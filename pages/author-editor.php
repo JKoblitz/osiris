@@ -98,7 +98,7 @@
             </tfoot>
 
         </table>
-        <button class="btn primary mt-20">
+        <button class="btn secondary mt-20">
             <i class="ph ph-check"></i>
             <?= lang('Submit', 'Bestätigen') ?>
         </button>

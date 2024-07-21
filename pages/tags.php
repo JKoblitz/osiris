@@ -64,7 +64,7 @@ function val($index, $default = '')
                 <div class="content">
                     <h5 class="mt-0">
                         <a href="<?=ROOTPATH?>/tags/<?= $con['_id'] ?>" class="link"><?= $con['_id'] ?></a>
-                        <span class="badge primary float-right"><?= $con['count'] ?></span>
+                        <span class="badge secondary float-right"><?= $con['count'] ?></span>
                     </h5>
                 </div>
                 <hr class="mb-10">
@@ -78,7 +78,7 @@ function val($index, $default = '')
                                 <td>
                                     <?php if (!empty($doc['connections']['link'])) { ?>
                                         <a href="<?= $doc['connections']['link'] ?>" class="badge " target="_blank">
-                                            <i class="ph ph-link text-secondary" style="line-height: 0;"></i>
+                                            <i class="ph ph-link text-primary" style="line-height: 0;"></i>
                                             <?= $doc['connections']['name'] ? $doc['connections']['name'] : $doc['connections']['link'] ?>
                                         </a>
                                     <?php } else { ?>

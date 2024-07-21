@@ -53,7 +53,7 @@ Um nun das korrekte Quartal zu sehen, musst du es in folgendem Formular auswähl
                 <option value="4">Q4</option>
             </select>
             <div class="input-group-append">
-                <button class="btn btn-primary"><i class="ph ph-check"></i></button>
+                <button class="btn secondary"><i class="ph ph-check"></i></button>
             </div>
         </div>
     </div>
@@ -71,11 +71,11 @@ Jede Aktivität ist gleich dargestellt. Das führt zu einer verbesserten Übersi
 Aktivitäten, die nicht im ausgewählten Quartal gestartet sind, sind leicht ausgegraut. 
 Es folgt die standardmäßige Darstellung der Aktivitäten, die Personen im Profil einstellen können. Dann folgen die im Folgenden beschriebenen drei Schaltflächen und die Anzahl an Coins, dir man für die Aktivität erhalten hat. Beim Hovern über die Coins gibt ein Tooltip weitere Informationen.
 
-<i class="ph ph-regular ph-arrow-fat-line-right mr-10 ph-fw ph-lg text-primary"></i> Hier gelangt man zur Übersichtsseite der Aktivität, auf der alle Details dargestellt werden. Außerdem gibt es dort weitere Links zum Bearbeiten und Kopieren einer Aktivität, sowie zum Autoreneditor.
+<i class="ph ph-regular ph-arrow-fat-line-right mr-10 ph-fw ph-lg text-secondary"></i> Hier gelangt man zur Übersichtsseite der Aktivität, auf der alle Details dargestellt werden. Außerdem gibt es dort weitere Links zum Bearbeiten und Kopieren einer Aktivität, sowie zum Autoreneditor.
 
-<i class="ph ph-regular ph-pencil-simple-line mr-10 ph-fw ph-lg text-primary"></i> Hier gelangt man direkt zur Bearbeitung einer Aktivität.
+<i class="ph ph-regular ph-pencil-simple-line mr-10 ph-fw ph-lg text-secondary"></i> Hier gelangt man direkt zur Bearbeitung einer Aktivität.
 
-<i class="ph ph-cart-plus mr-10 ph-fw ph-lg text-primary"></i> Mit diesem Knopf lässt sich die Aktivität zum Download-Korb hinzufügen, um sie mit anderen gesammelt herunterzuladen.
+<i class="ph ph-cart-plus mr-10 ph-fw ph-lg text-secondary"></i> Mit diesem Knopf lässt sich die Aktivität zum Download-Korb hinzufügen, um sie mit anderen gesammelt herunterzuladen.
 
 Am Ende einer jeden Kategorie gibt es zwei weitere Knöpfe: Mit Klick auf den ersten kann man sich alle eigenen Aktivitäten der gewählten Kategorie anzeigen lassen. Mit Klick auf das Plus kann man direkt eine Aktivität der gewählten Kategorie hinzufügen. 
 

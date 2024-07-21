@@ -70,7 +70,7 @@
             <td>Web of Science Links</td>
             <td>
                 <?php foreach ($data['wos']['links'] as $link) { ?>
-                    <a href="<?= $link['url'] ?>" target="_blank" rel="noopener noreferrer" class="badge primary"><?= $link['type'] ?></a>
+                    <a href="<?= $link['url'] ?>" target="_blank" rel="noopener noreferrer" class="badge secondary"><?= $link['type'] ?></a>
                 <?php } ?>
             </td>
         </tr>

@@ -79,7 +79,7 @@ require_once BASEPATH . "/vendor/autoload.php";
         <br />
         <!--  dropdown -->
         <div class="dropdown">
-            <button class="btn primary small dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn secondary small dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="ph ph-calendar-plus"></i> <?= lang('Prolong', 'Verlängern') ?>
             </button>
             <div class="dropdown-menu p-10" aria-labelledby="dropdownMenuButton">
@@ -88,7 +88,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                 <label for="end"><?=lang('End date', 'Neues End-Datum')?></label>
                     <input type="date" class="form-control" name="values[end]" id="date_end" value="<?= valueFromDateArray($form['end'] ?? null) ?>" required>
                 </div>
-                    <button class="btn primary small" type="submit">
+                    <button class="btn secondary small" type="submit">
                         <i class="ph ph-calendar-plus"></i> <?= lang('Prolong', 'Verlängern') ?>
                     </button>
                 </form>
@@ -327,7 +327,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                             <?php } ?>
                         </select>
                     </div>
-                    <button type="submit" class="btn primary"><?= lang('Connect', 'Verknüpfen') ?></button>
+                    <button type="submit" class="btn secondary"><?= lang('Connect', 'Verknüpfen') ?></button>
                 </form>
             </div>
         </div>
@@ -368,7 +368,7 @@ require_once BASEPATH . "/vendor/autoload.php";
 
                 
     <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
-                <a class="btn primary" href="#connect-user">Nutzer verknüpfen</a>
+                <a class="btn secondary" href="#connect-user">Nutzer verknüpfen</a>
                 <?php } ?>
             </div>
         </div>
@@ -395,7 +395,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                             <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
                             <br><small class="text-danger">Max. 16 MB.</small>
                         </div>
-                        <button class="btn primary">
+                        <button class="btn secondary">
                             <i class="ph ph-upload"></i>
                             Upload
                         </button>
@@ -452,7 +452,7 @@ require_once BASEPATH . "/vendor/autoload.php";
 
                 
     <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>
-                <a class="btn primary" href="#upload-document">Dokument hochladen</a>
+                <a class="btn secondary" href="#upload-document">Dokument hochladen</a>
                 <?php } ?>
             </div>
         </div>
@@ -493,7 +493,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                             </label>
                             <input type="date" class="form-control" id="registered" name="values[chip][end]" autocomplete="off" value="<?= $chip['end'] ?? '' ?>">
                         </div>
-                        <button type="submit" class="btn primary"><?= lang('Register', 'Registrieren') ?></button>
+                        <button type="submit" class="btn secondary"><?= lang('Register', 'Registrieren') ?></button>
                     </form>
                 </div>
             </div>
@@ -523,7 +523,7 @@ require_once BASEPATH . "/vendor/autoload.php";
                     </p>
                 <?php } ?>
 
-                <a class="btn primary" href="#chip-registration">Chip hinterlegen</a>
+                <a class="btn secondary" href="#chip-registration">Chip hinterlegen</a>
 
             </div>
         </div>

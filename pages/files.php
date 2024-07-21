@@ -152,7 +152,7 @@ $Format->setDocument($doc);
                 <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>
-            <button class="btn primary">
+            <button class="btn secondary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

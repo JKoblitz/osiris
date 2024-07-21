@@ -45,7 +45,7 @@ if ($N > 0) {
 <form action="<?= ROOTPATH ?>/crud/admin/general" method="post" id="modules-form">
 
 
-    <div class="box secondary">
+    <div class="box primary">
         <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
 
         <div class="content">
@@ -90,7 +90,7 @@ if ($N > 0) {
                     $('#apikey').val(result)
                 }
             </script>
-            <button class="btn secondary">
+            <button class="btn primary">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>

@@ -89,8 +89,8 @@ if (isset($_GET['type']) && isset($_GET['type']['id'])) {
         <div class="box type" id="type-<?= $t ?>" style="border-color:<?= $color ?>; <?=isset($dept['new']) ?'opacity:.8;font-style:italic;':''?>">
             <h2 class="header" style="background-color:<?= $color ?>20">
                 <?= $dept['id'] ?>: <?= $dept['name'] ?>
-                <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
-                <a class="btn link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
+                <a class="btn link px-5 text-secondary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
+                <a class="btn link px-5 text-secondary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
                 <?php if ($member == 0) { ?>
                     <a class="btn link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                 <?php } else { ?>

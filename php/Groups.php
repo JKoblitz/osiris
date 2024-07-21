@@ -140,12 +140,22 @@ class Groups
         $result = ['level' => 0, 'name' => '', 'id' => ''];
         foreach ($depts as $d) {
             foreach ($this->getParents($d) as $id) {
-                # code...
                 $dept = $this->getGroup($id);
                 if (!isset($dept['level'])) $dept['level'] = $this->getLevel($id);
                 if ($dept['level'] === $level) return $dept;
                 if ($dept['level'] > $result['level'])
                     $result = $dept;
+            }
+        }
+        return $result;
+    }
+    public function personDepts($depts)
+    {
+        $result = [];
+        foreach ($depts as $d) {
+            $p = $this->getParents($d);
+            if ($p && $p[0] && !in_array($p[0], $result)) {
+                $result[] = $p[0];
             }
         }
         return $result;

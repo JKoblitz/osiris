@@ -85,13 +85,13 @@ $_SESSION['last_group'] = $id;
         }
 
         .filter tr td:hover {
-            border-left-color: var(--secondary-color);
+            border-left-color: var(--primary-color);
         }
 
         .filter tr td.active {
-            background: var(--secondary-color-20);
-            color: var(--secondary-color);
-            border-left-color: var(--secondary-color);
+            background: var(--primary-color-20);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
         }
 
 
@@ -150,7 +150,7 @@ $_SESSION['last_group'] = $id;
         .unit-type {
             margin: 0 0 1rem 0;
             font-size: 1.4rem;
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
     </style>
 

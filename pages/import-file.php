@@ -66,7 +66,7 @@ use \LibRIS\RISReader;
                 </div>
             </div>
 
-            <button class="btn primary">
+            <button class="btn secondary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

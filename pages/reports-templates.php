@@ -20,12 +20,12 @@ foreach ($reports as $report) { ?>
     <div class="box">
         <div class="content">
             <h3><?= $report['title'] ?></h3>
-            <p class="text-secondary"><?= $report['description'] ?? '' ?></p>
+            <p class="text-primary"><?= $report['description'] ?? '' ?></p>
 
-            <span class="badge secondary">
+            <span class="badge primary">
                 <b><?= lang('Start month', 'Startmonat') ?></b>: <?= Document::format_month($report['start'] ?? null) ?>
             </span>
-            <span class="badge secondary">
+            <span class="badge primary">
                 <b><?= lang('Duration', 'Dauer') ?></b>: <?= $report['duration'] ?? '-' ?> <?= lang('months', 'Monate') ?>
             </span>
         </div>

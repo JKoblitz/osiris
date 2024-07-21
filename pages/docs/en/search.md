@@ -1,5 +1,5 @@
 
-# <i class="ph ph-magnifying-glass-plus text-primary"></i> The advanced activity search
+# <i class="ph ph-magnifying-glass-plus text-secondary"></i> The advanced activity search
 
 The **Advanced Search** page allows you to search activities using advanced filters, aggregate data by specific fields, save your queries and view the results in a detailed table.
 

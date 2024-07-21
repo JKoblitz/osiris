@@ -63,7 +63,7 @@
         <?= lang('Note: only approved projects are shown here.', 'Bemerkung: nur bewilligte Projekte werden hier gezeigt.') ?>
         <a href="<?= ROOTPATH ?>/projects" class="link"><?= lang('See all', 'Zeige alle') ?></a>
     </p>
-    <button class="btn primary">
+    <button class="btn secondary">
         <i class="ph ph-check"></i>
         <?= lang('Submit', 'Bestätigen') ?>
     </button>

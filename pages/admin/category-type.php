@@ -70,7 +70,7 @@ if (!empty($form) && isset($form['_id'])) {
                 <li>new</li>
             </ul>
             <div class="text-right mt-20">
-                <a href="#/" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#/" class="btn secondary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -207,7 +207,7 @@ if (!empty($form) && isset($form['_id'])) {
                             <?php } ?>
                         </select>
                         <div class="input-group-append">
-                            <button class="btn primary h-full" type="button" onclick="addModule('<?= $t ?>', '<?= $st ?>');">
+                            <button class="btn secondary h-full" type="button" onclick="addModule('<?= $t ?>', '<?= $st ?>');">
                                 <i class="ph ph-plus"></i>
                             </button>
                         </div>
@@ -243,8 +243,8 @@ if (!empty($form) && isset($form['_id'])) {
             </div>
 
 
-            <div class="alert secondary ">
-                <h3 class="title text-secondary">
+            <div class="alert primary ">
+                <h3 class="title text-primary">
                     <?= lang('Example', 'Beispiel') ?>
                     <span data-toggle="tooltip" data-title="<?= lang('Will be updated as soon as you save the type.', 'Wird aktualisiert, sobald der Typ gespeichert wird.') ?>">
                         <i class="ph ph-question"></i>

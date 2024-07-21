@@ -69,7 +69,7 @@ $issues = $DB->getUserIssues($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#close-modal" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn secondary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -119,7 +119,7 @@ $issues = $DB->getUserIssues($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#close-modal" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn secondary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -150,7 +150,7 @@ $issues = $DB->getUserIssues($user);
                 ') ?>
             </p>
             <div class="text-right mt-20">
-                <a href="#close-modal" class="btn primary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
+                <a href="#close-modal" class="btn secondary" role="button"><?= lang('I understand', 'Ich verstehe') ?></a>
             </div>
         </div>
     </div>
@@ -254,11 +254,11 @@ if (array_sum($a) === 0) {
                             </div>
 
                             <?php if (!($doc['locked'] ?? false)) { ?>
-                                <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn small text-primary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
+                                <a target="_self" href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn small text-secondary" data-toggle="tooltip" data-title="<?= lang('Edit activity', 'Aktivität bearbeiten') ?>">
                                     <i class="ph ph-pencil-simple-line"></i>
                                 </a>
                             <?php } ?>
-                            <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn small text-primary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
+                            <a target="_blank" href="<?= ROOTPATH ?>/activities/view/<?= $id ?>" class="btn small text-secondary" data-toggle="tooltip" data-title="<?= lang('View activity', 'Aktivität ansehen') ?>">
                                 <i class="ph ph-arrow-fat-line-right"></i>
                             </a>
                         </div>
@@ -271,7 +271,7 @@ if (array_sum($a) === 0) {
                             // get last element of history
                             $h = $hist[count($hist) - 1];
                         ?>
-                            <span class="badge secondary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
+                            <span class="badge primary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
                             <b class="d-block">
                                 <?php if ($h['type'] == 'created') {
                                     echo lang('Created by ', 'Erstellt von ');

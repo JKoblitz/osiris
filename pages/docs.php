@@ -31,38 +31,43 @@ Um die Lesbarkeit zu erhöhen, wird in der Dokumentation das generische Maskulin
 <div class="link-list" style="max-width:50rem">
 
     <a href="<?= ROOTPATH ?>/docs/add-activities">
-    <i class="ph mr-10 text-primary ph-book-open"></i>
+    <i class="ph mr-10 text-secondary ph-book-open"></i>
         <?= lang('Add activities', 'Aktivitäten hinzufügen') ?>
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/my-year">
-    <i class="ph mr-10 text-primary ph-calendar"></i>
+    <i class="ph mr-10 text-secondary ph-calendar"></i>
         <?= lang('My year', 'Mein Jahr') ?>
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/search">
-    <i class="ph mr-10 text-primary ph-magnifying-glass-plus"></i>
+    <i class="ph mr-10 text-secondary ph-magnifying-glass-plus"></i>
         <?= lang('Advanced search', 'Erweiterte Suche') ?>
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/warnings">
-    <i class="ph mr-10 text-primary ph-warning"></i>
+    <i class="ph mr-10 text-secondary ph-warning"></i>
         <?= lang('Warnings', 'Warnungen') ?>
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/profile">
-    <i class="ph mr-10 text-primary ph-user-list"></i>
+    <i class="ph mr-10 text-secondary ph-user-list"></i>
         <?= lang('Profile editing', 'Profilbearbeitung') ?>
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/faq">
-    <i class="ph mr-10 text-primary ph-chat-dots"></i>
+    <i class="ph mr-10 text-secondary ph-chat-dots"></i>
         FAQ
     </a>
 
     <a href="<?= ROOTPATH ?>/docs/api">
-    <i class="ph mr-10 text-primary ph-code"></i>
+    <i class="ph mr-10 text-secondary ph-code"></i>
         <?= lang('API Docs') ?>
+    </a>
+    
+    <a href="<?= ROOTPATH ?>/docs/portfolio-api">
+    <i class="ph mr-10 text-secondary ph-globe"></i>
+        <?= lang('Portfolio API Docs') ?>
     </a>
 </div>
 

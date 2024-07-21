@@ -77,7 +77,7 @@ $Project = new Project($project);
                 ?>
             </div>
             <?php if (!empty($project['website'] ?? null)) { ?>
-                <a href="<?= $project['website'] ?>" target="_blank" class="btn primary">
+                <a href="<?= $project['website'] ?>" target="_blank" class="btn secondary">
                     <i class="ph ph-arrow-square-out"></i>
                     <?= lang('Visit Website', 'Webseite besuchen') ?>
                 </a>
@@ -113,7 +113,7 @@ $Project = new Project($project);
 
 
                             </div> <?php if ($progress == 100) { ?>
-                                <small class="text-primary">
+                                <small class="text-secondary">
                                     <?= lang('Completed', 'Abgeschlossen') ?>
                                 </small>
                             <?php } ?>

@@ -227,7 +227,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
     <?php } else { ?>
 
 
-        <div class="box primary">
+        <div class="box secondary">
             <div class="content">
                 <h2 class="title">Google Scholar Import</h2>
                 <p>
@@ -252,7 +252,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
     <?php } ?>
 
 <?php } else { ?><!-- if empty(USER[googlescholar]) -->
-    <div class="box primary">
+    <div class="box secondary">
         <div class="content">
             <h2 class="title">Google Scholar Import</h2>
             <p>
@@ -306,7 +306,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                 </div>
             </div>
 
-            <button class="btn primary">
+            <button class="btn secondary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

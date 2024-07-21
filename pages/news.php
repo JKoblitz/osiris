@@ -23,7 +23,7 @@
     }
     h2 {
         /* font-family: 'Menlo', 'Courier New', Courier, monospace; */
-        color: var(--secondary-color);
+        color: var(--primary-color);
     }
 
 </style>

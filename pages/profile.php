@@ -173,7 +173,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                             };
                         };
                     </script>
-                    <button class="btn primary">
+                    <button class="btn secondary">
                         <i class="ph ph-upload"></i>
                         Upload
                     </button>
@@ -315,21 +315,21 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <div class="btn-toolbar">
 
             <div class="btn-group btn-group-lg">
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/add-activity" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/add-activity" data-toggle="tooltip" data-title="<?= lang('Add activity', 'Aktivität hinzufügen') ?>">
                     <i class="ph ph-plus-circle ph-fw"></i>
                     <!-- <?= lang('Add activity', 'Aktivität hinzufügen') ?> -->
                 </a>
-                <a href="<?= ROOTPATH ?>/my-activities" class="btn text-secondary border-secondary" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
+                <a href="<?= ROOTPATH ?>/my-activities" class="btn text-primary border-primary" data-toggle="tooltip" data-title="<?= lang('My activities', 'Meine Aktivitäten ') ?>">
                     <i class="ph ph-folder-user ph-fw"></i>
                     <!-- <?= lang('My activities', 'Meine Aktivitäten ') ?> -->
                 </a>
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('My Year', 'Mein Jahr') ?>">
                     <i class="ph ph-calendar ph-fw"></i>
                     <!-- <?= lang('My Year', 'Mein Jahr') ?> -->
                 </a>
 
                 <?php if ($Settings->featureEnabled('portal')) { ?>
-                    <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                    <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
                         <i class="ph ph-eye ph-fw"></i>
                     </a>
                 <?php } ?>
@@ -337,7 +337,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
             </div>
             <div class="btn-group btn-group-lg">
                 <?php if ($show_achievements) { ?>
-                    <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
+                    <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/achievements" data-toggle="tooltip" data-title="<?= lang('My Achievements', 'Meine Errungenschaften') ?>">
                         <i class="ph ph-trophy ph-fw"></i>
                     </a>
                 <?php } ?>
@@ -345,11 +345,11 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
             </div>
 
             <div class="btn-group btn-group-lg">
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="ph ph-edit ph-fw"></i>
                     <!-- <?= lang('Edit user profile', 'Bearbeite Profil') ?> -->
                 </a>
-                <!-- <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
+                <!-- <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/user/visibility/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Configure web profile', 'Webprofil bearbeiten') ?>">
                     <i class="ph ph-eye ph-fw"></i>
                 </a> -->
 
@@ -361,8 +361,8 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                 <input type="hidden" name="format" value="word">
                 <input type="hidden" name="type" value="cv">
 
-                <button class="btn text-secondary border-secondary large" data-toggle="tooltip" data-title="<?= lang('Export CV', 'CV exportieren') ?>">
-                    <i class="ph ph-identification-card text-secondary ph-fw"></i>
+                <button class="btn text-primary border-primary large" data-toggle="tooltip" data-title="<?= lang('Export CV', 'CV exportieren') ?>">
+                    <i class="ph ph-identification-card text-primary ph-fw"></i>
                 </button>
             </form>
         </div>
@@ -401,7 +401,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         if (lang('en', 'de') == 'de') {
             // no news in english
             if (empty($scientist['lastversion'] ?? '') || $scientist['lastversion'] !== OSIRIS_VERSION) { ?>
-                <div class="alert primary mt-10">
+                <div class="alert secondary mt-10">
                     <a class="link text-decoration-none" href='<?= ROOTPATH ?>/new-stuff#version-<?= OSIRIS_VERSION ?>'>
                         <?= lang(
                             "There has been an OSIRIS-Update since your last login. Have a look at the news.",
@@ -464,17 +464,17 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
 <?php } else { ?>
     <div class="btn-toolbar">
         <div class="btn-group btn-group-lg">
-            <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of ', 'Das Jahr von ') . $scientist['first'] ?> ">
+            <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/my-year/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('The year of ', 'Das Jahr von ') . $scientist['first'] ?> ">
                 <i class="ph ph-calendar ph-fw"></i>
             </a>
-            <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn text-secondary border-secondary" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
+            <a href="<?= ROOTPATH ?>/my-activities?user=<?= $user ?>" class="btn text-primary border-primary" data-toggle="tooltip" data-title="<?= lang('All activities of ', 'Alle Aktivitäten von ') . $scientist['first'] ?>">
                 <i class="ph ph-folder-user ph-fw"></i>
             </a>
-            <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn text-secondary border-secondary" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
+            <a href="<?= ROOTPATH ?>/visualize/coauthors?scientist=<?= $user ?>" class="btn text-primary border-primary" data-toggle="tooltip" data-title="<?= lang('Coauthor Network of ', 'Koautoren-Netzwerk von ') . $scientist['first'] ?>">
                 <i class="ph ph-graph ph-fw"></i>
             </a>
             <?php if ($show_achievements) { ?>
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/achievements/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Achievements of ', 'Errungenschaften von ') . $scientist['first'] ?>">
                     <i class="ph ph-trophy ph-fw"></i>
                 </a>
             <?php } ?>
@@ -482,19 +482,19 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         </div>
         <?php if ($Settings->featureEnabled('portal')) { ?>
             <div class="btn-group btn-group-lg">
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/preview/person/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Preview', 'Vorschau') ?>">
                     <i class="ph ph-eye ph-fw"></i>
                 </a>
             </div>
         <?php } ?>
         <div class="btn-group btn-group-lg">
             <?php if ($Settings->hasPermission('user.edit')) { ?>
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/user/edit/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Edit user profile', 'Bearbeite Profil') ?>">
                     <i class="ph ph-edit ph-fw"></i>
                 </a>
             <?php } ?>
             <?php if (($scientist['is_active'] ?? true) && $Settings->hasPermission('user.inactive')) { ?>
-                <a class="btn text-secondary border-secondary" href="<?= ROOTPATH ?>/user/delete/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Inactivate user', 'Nutzer:in inaktivieren') ?>">
+                <a class="btn text-primary border-primary" href="<?= ROOTPATH ?>/user/delete/<?= $user ?>" data-toggle="tooltip" data-title="<?= lang('Inactivate user', 'Nutzer:in inaktivieren') ?>">
                     <i class="ph ph-trash ph-fw"></i>
                 </a>
             <?php } ?>
@@ -724,7 +724,7 @@ if ($currentuser) { ?>
                         <i class="ph ph-plus"></i>
                     </button>
                     <br>
-                    <button class="btn primary small" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
+                    <button class="btn secondary small" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
                 </form>
             </div>
         </div>
@@ -864,7 +864,7 @@ if ($currentuser) { ?>
                             <tr>
                                 <td>
                                     <span class="key"><?= lang('Expertise') ?></span>
-                                    <?php foreach ($scientist['expertise'] ?? array() as $key) { ?><a href="<?= ROOTPATH ?>/expertise?search=<?= $key ?>" class="badge secondary mr-5 mb-5"><?= $key ?></a><?php } ?>
+                                    <?php foreach ($scientist['expertise'] ?? array() as $key) { ?><a href="<?= ROOTPATH ?>/expertise?search=<?= $key ?>" class="badge primary mr-5 mb-5"><?= $key ?></a><?php } ?>
                                     <?php if ($currentuser) { ?> <a href="#expertise" class=""><i class="ph ph-edit"></i></a> <?php } ?>
                                 </td>
                             </tr>

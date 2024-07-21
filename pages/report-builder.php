@@ -43,7 +43,7 @@
 
 <?php if (!empty($report) && isset($report['_id'])) { ?>
     <div class="btn-toolbox  float-right">
-        <a href="<?= ROOTPATH ?>/admin/reports/preview/<?= $report['_id'] ?>" class="btn secondary">
+        <a href="<?= ROOTPATH ?>/admin/reports/preview/<?= $report['_id'] ?>" class="btn primary">
             <i class="ph ph-eye"></i>
             <?= lang('Preview', 'Vorschau') ?>
         </a>
@@ -162,7 +162,7 @@
 
     <!-- dropdown to add stuff -->
     <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="addNewRowButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn secondary dropdown-toggle" type="button" id="addNewRowButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <?= lang('Add', 'Hinzufügen') ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="addNewRowButton">

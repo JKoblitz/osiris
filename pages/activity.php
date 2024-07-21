@@ -125,31 +125,31 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
     <div class="btn-group">
         <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
-            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-secondary border-secondary">
+            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-primary border-primary">
                 <i class="ph ph-pencil-simple-line"></i>
                 <?= lang('Edit', 'Bearbeiten') ?>
             </a>
         <?php } ?>
         <?php if (!in_array($doc['type'], ['publication'])) { ?>
-            <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn text-secondary border-secondary">
+            <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn text-primary border-primary">
                 <i class="ph ph-copy"></i>
                 <?= lang("Copy", "Kopie") ?>
             </a>
         <?php } ?>
     </div>
 
-    <a href="#upload-files" class="btn text-secondary border-secondary">
+    <a href="#upload-files" class="btn text-primary border-primary">
         <i class="ph ph-upload"></i>
         <?= lang('Upload file', 'Datei hochladen') ?>
     </a>
     <div class="btn-group">
         <?php if ($Settings->featureEnabled('projects')) { ?>
-            <a href="#projects" class="btn text-secondary border-secondary">
+            <a href="#projects" class="btn text-primary border-primary">
                 <i class="ph ph-plus-circle"></i>
                 <?= lang("Project", "Projekt") ?>
             </a>
         <?php } ?>
-        <a href="#connect" class="btn text-secondary border-secondary">
+        <a href="#connect" class="btn text-primary border-primary">
             <i class="ph ph-plus-circle"></i>
             <?= lang("Tags", "Schlagwörter") ?>
         </a>
@@ -157,12 +157,12 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
     <div class="btn-group">
-        <button class="btn text-secondary border-secondary" onclick="addToCart(this, '<?= $id ?>')">
+        <button class="btn text-primary border-primary" onclick="addToCart(this, '<?= $id ?>')">
             <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
             <?= lang('Collect', 'Sammeln') ?>
         </button>
         <div class=" dropdown with-arrow btn-group ">
-            <button class="btn text-secondary border-secondary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+            <button class="btn text-primary border-primary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
                 <i class="ph ph-download"></i> Download
                 <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
             </button>
@@ -209,7 +209,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             </div>
 
                         </div>
-                        <button class="btn text-secondary border-secondary">Download</button>
+                        <button class="btn text-primary border-primary">Download</button>
                     </form>
                 </div>
             </div>
@@ -217,7 +217,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </div>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>
-        <a class="btn text-secondary border-secondary ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
+        <a class="btn text-primary border-primary ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
             <i class="ph ph-eye ph-fw"></i>
             <?= lang('Preview', 'Vorschau') ?>
         </a>
@@ -425,7 +425,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
             <div class="btn-toolbar float-sm-right">
                 <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
-                    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn primary">
+                    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn secondary">
                         <i class="ph ph-pencil-simple-line"></i>
                         <?= lang('Edit', 'Bearbeiten') ?>
                     </a>
@@ -433,7 +433,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
                 <?php if (!in_array($doc['type'], ['publication'])) { ?>
-                    <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn primary">
+                    <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn secondary">
                         <i class="ph ph-copy"></i>
                         <?= lang("Add a copy", "Kopie anlegen") ?>
                     </a>
@@ -443,7 +443,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php if ($user_activity && $locked && empty($doc['end'] ?? null) && $ongoing) { ?>
                     <!-- End user activity even if activity is locked -->
                     <div class="dropdown">
-                        <button class="btn primary" data-toggle="dropdown" type="button" id="update-end-date" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn secondary" data-toggle="dropdown" type="button" id="update-end-date" aria-haspopup="true" aria-expanded="false">
                             <i class="ph ph-calendar-check"></i>
                             <?= lang('End activity', 'Beenden') ?> <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
                         </button>
@@ -620,7 +620,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
                 <div class="btn-toolbar mb-10 float-sm-right">
                     <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>/<?= $role ?>" class="btn primary">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>/<?= $role ?>" class="btn secondary">
                             <i class="ph ph-pencil-simple-line"></i>
                             <?= lang("Edit", "Bearbeiten") ?>
                         </a>
@@ -754,7 +754,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 <?php if ($Settings->featureEnabled('projects')) { ?>
     <section id="projects" style="display: none;">
         <div class="btn-toolbar float-sm-right">
-            <a href="#projects" class="btn primary mr-5">
+            <a href="#projects" class="btn secondary mr-5">
                 <i class="ph ph-tree-structure"></i>
                 <?= lang("Connect", "Verknüpfen") ?>
             </a>
@@ -811,7 +811,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
     <div class="btn-toolbar float-sm-right">
-        <a href="#upload-files" class="btn primary">
+        <a href="#upload-files" class="btn secondary">
             <i class="ph ph-upload"></i>
             <?= lang('Upload', 'Hochladen') ?>
         </a>
@@ -858,7 +858,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
     <div class="btn-toolbar float-sm-right">
-        <a href="#connect" class="btn primary mr-5">
+        <a href="#connect" class="btn secondary mr-5">
             <i class="ph ph-circles-three-plus"></i>
             <?= lang("Connect", "Verknüpfen") ?>
         </a>
@@ -887,7 +887,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         <td>
                             <?php if (!empty($con['link'])) { ?>
                                 <a href="<?= $con['link'] ?>" class="badge " target="_blank">
-                                    <i class="ph ph-link text-secondary" style="line-height: 0;"></i>
+                                    <i class="ph ph-link text-primary" style="line-height: 0;"></i>
                                     <?= $con['link'] ?>
                                 </a>
                             <?php } ?>
@@ -1000,7 +1000,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 if (!is_array($h)) continue;
             ?>
                 <div class="box p-20">
-                    <span class="badge secondary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
+                    <span class="badge primary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
                     <h5 class="m-0">
                         <?php if ($h['type'] == 'created') {
                             echo lang('Created by ', 'Erstellt von ');

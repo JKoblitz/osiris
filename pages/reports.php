@@ -21,7 +21,7 @@
 ?>
 
 <?php if ($Settings->hasPermission('report.templates')) { ?>
-    <a href="<?= ROOTPATH ?>/admin/reports" class="btn secondary ">
+    <a href="<?= ROOTPATH ?>/admin/reports" class="btn primary ">
         <i class="ph ph-edit"></i>
         <?= lang('Edit templates', 'Vorlagen bearbeiten') ?>
     </a>
@@ -42,7 +42,7 @@ if (empty($reports)) {
     <div class="box">
         <div class="content">
             <h3><?= $report['title'] ?></h3>
-            <p class="text-secondary"><?= $report['description'] ?? '' ?></p>
+            <p class="text-primary"><?= $report['description'] ?? '' ?></p>
         </div>
         <hr>
         <div class="content">
@@ -81,7 +81,7 @@ if (empty($reports)) {
 
 <!-- 
     LEGACY CODE
-<div class="box primary">
+<div class="box secondary">
     <div class="content">
 
         <h5><?= lang('Export reports', 'Exportiere Berichte') ?></h5>

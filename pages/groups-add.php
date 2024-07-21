@@ -186,7 +186,7 @@ function sel($index, $value)
                             <?php } ?>
                         </select>
                         <div class="input-group-append">
-                            <button class="btn primary h-full" type="button" onclick="addHead();">
+                            <button class="btn secondary h-full" type="button" onclick="addHead();">
                                 <i class="ph ph-plus"></i>
                             </button>
                         </div>
@@ -208,7 +208,7 @@ function sel($index, $value)
     </fieldset>
 
 
-    <button class="btn primary" type="submit" id="submit-btn">
+    <button class="btn secondary" type="submit" id="submit-btn">
         <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
     </button>
 

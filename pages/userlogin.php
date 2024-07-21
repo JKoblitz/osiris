@@ -57,7 +57,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
     </div>
 
 
-    <input class="btn primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
+    <input class="btn secondary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
 
     <?php if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') { ?>
 

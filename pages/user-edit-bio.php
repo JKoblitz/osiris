@@ -216,7 +216,7 @@
 
 
 
-            <button type="submit" class="btn primary">
+            <button type="submit" class="btn secondary">
                 Update
             </button>
 

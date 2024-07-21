@@ -18,7 +18,7 @@ function rest($data, $count = 0, $status = 200)
 {
     $result = array();
     $limit = intval($_GET['limit'] ?? 0);
-    if ($count == 0) {
+    if ($count == 0 && is_countable($data)) {
         $count = count($data);
     }
 
@@ -98,19 +98,7 @@ function help_groupUsers($osiris, $id, $Groups)
 }
 
 
-Route::get('/data/users', function () {
-    error_reporting(E_ERROR | E_PARSE);
-    include(BASEPATH . '/php/init.php');
-    // if (!apikey_check($_GET['apikey'] ?? null)) {
-    //     echo return_permission_denied();
-    //     die;
-    // }
-    $result = [];
-    echo rest($result, count($result));
-});
-
-
-Route::get('/data/groups', function () {
+Route::get('/portfolio/units', function () {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -125,7 +113,7 @@ Route::get('/data/groups', function () {
 });
 
 
-Route::get('/data/group/([^/]*)', function ($id) {
+Route::get('/portfolio/unit/([^/]*)', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -174,7 +162,7 @@ Route::get('/data/group/([^/]*)', function ($id) {
 });
 
 
-Route::get('/data/group/([^/]*)/research', function ($id) {
+Route::get('/portfolio/unit/([^/]*)/research', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -215,13 +203,12 @@ Route::get('/data/group/([^/]*)/research', function ($id) {
         }
         $research[] = $res;
     }
-    $group['research'] = $research;
 
-    echo rest($group);
+    echo rest($research);
 });
 
 
-Route::get('/data/group/([^/]*)/numbers', function ($id) {
+Route::get('/portfolio/unit/([^/]*)/numbers', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -307,13 +294,13 @@ Route::get('/data/group/([^/]*)/numbers', function ($id) {
             ['$sort' => ['count' => -1]]
         ])->toArray();
 
-        $result['cooperation'] = count($coop)-1;
+        $result['cooperation'] = count($coop) - 1;
     }
 
     echo rest($result);
 });
 
-Route::get('/data/(group|person|project)/([^/]*)/(publications|activities|all-activities)', function ($context, $id, $type) {
+Route::get('/portfolio/(unit|person|project)/([^/]*)/(publications|activities|all-activities)', function ($context, $id, $type) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -322,7 +309,7 @@ Route::get('/data/(group|person|project)/([^/]*)/(publications|activities|all-ac
     // }
     $id = urldecode($id);
 
-    if ($context == 'group') {
+    if ($context == 'unit') {
         if ($id == 0) {
             $group = $osiris->groups->findOne(['level' => 0]);
             $id = $group['id'];
@@ -385,7 +372,7 @@ Route::get('/data/(group|person|project)/([^/]*)/(publications|activities|all-ac
     echo rest($result);
 });
 
-Route::get('/data/(group|person)/([^/]*)/teaching', function ($context, $id) {
+Route::get('/portfolio/(unit|person)/([^/]*)/teaching', function ($context, $id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -395,7 +382,7 @@ Route::get('/data/(group|person)/([^/]*)/teaching', function ($context, $id) {
     $id = urldecode($id);
 
     $filter = ['type' => 'teaching', 'module_id' => ['$ne' => null], 'hide' => ['$ne' => true]];
-    if ($context == 'group') {
+    if ($context == 'unit') {
         if ($id == 0) {
             $group = $osiris->groups->findOne(['level' => 0]);
             $id = $group['id'];
@@ -444,7 +431,7 @@ Route::get('/data/(group|person)/([^/]*)/teaching', function ($context, $id) {
 
 
 
-Route::get('/data/(group|person)/([^/]*)/projects', function ($context, $id) {
+Route::get('/portfolio/(unit|person)/([^/]*)/projects', function ($context, $id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -458,7 +445,7 @@ Route::get('/data/(group|person)/([^/]*)/projects', function ($context, $id) {
         "status" => ['$ne' => "rejected"]
     ];
 
-    if ($context == 'group') {
+    if ($context == 'unit') {
         if ($id == 0) {
             $group = $osiris->groups->findOne(['level' => 0]);
             $id = $group['id'];
@@ -496,7 +483,7 @@ Route::get('/data/(group|person)/([^/]*)/projects', function ($context, $id) {
     echo rest($result);
 });
 
-Route::get('/data/group/([^/]*)/staff', function ($id) {
+Route::get('/portfolio/unit/([^/]*)/staff', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -523,20 +510,26 @@ Route::get('/data/group/([^/]*)/staff', function ($id) {
     )->toArray();
     $result = [];
 
-    foreach ($persons as $row) {
-        if ($row['public_image'] ?? false) {
-            $row['img'] = $Settings->printProfilePicture($row['username'], 'profile-img');
+    foreach ($persons as $person) {
+        $row = [
+            'displayname' => $person['displayname'],
+            'academic_title' => $person['academic_title'],
+            'position' => $person['position'],
+            'depts' => $Groups->personDepts($person['depts'])
+        ];
+        if ($person['public_image'] ?? false) {
+            $row['img'] = $Settings->printProfilePicture($person['username'], 'profile-img');
         } else {
             $row['img'] = $Settings->printProfilePicture(null, 'profile-img');
         }
-        $row['id'] = strval($row['_id']);
+        $row['id'] = strval($person['_id']);
         $result[] = $row;
     }
     echo rest($result);
 });
 
 
-Route::get('/data/project/([^/]*)/staff', function ($id) {
+Route::get('/portfolio/project/([^/]*)/staff', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -573,8 +566,14 @@ Route::get('/data/project/([^/]*)/staff', function ($id) {
 
     $result = [];
 
-    foreach ($persons as $row) {
-        $person = $DB->getPerson($row['user']);
+    foreach ($persons as $p) {
+        $person = $DB->getPerson($p['user']);
+        $row = [
+            'displayname' => $person['displayname'],
+            'academic_title' => $person['academic_title'],
+            'position' => $person['position'],
+            'depts' => []
+        ];
         if ($person['public_image'] ?? false) {
             $row['img'] = $Settings->printProfilePicture($person['username'], 'profile-img small mr-20');
         } else {
@@ -582,24 +581,23 @@ Route::get('/data/project/([^/]*)/staff', function ($id) {
         }
         $row['id'] = strval($person['_id']);
         $row['role'] = Project::personRole($row['role']);
-        $depts = [];
+
         if (!empty($person['depts'])) {
             foreach ($person['depts'] as $d) {
                 $dept = $Groups->getGroup($d);
                 if ($dept['level'] !== 1) continue;
-                $depts[$d] = [
+                $row['depts'][$d] = [
                     'en' => $dept['name'],
                     'de' => $dept['name_de']
                 ];
             }
         }
-        $row['depts'] = $depts;
         $result[] = $row;
     }
     echo rest($result);
 });
 
-Route::get('/data/activity/([^/]*)', function ($id) {
+Route::get('/portfolio/activity/([^/]*)', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -712,9 +710,10 @@ Route::get('/data/activity/([^/]*)', function ($id) {
 });
 
 
-Route::get('/data/project/([^/]*)', function ($id) {
+Route::get('/portfolio/project/([^/]*)', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
+    include(BASEPATH . '/php/Project.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
     //     echo return_permission_denied();
     //     die;
@@ -742,10 +741,47 @@ Route::get('/data/project/([^/]*)', function ($id) {
 
     $result['activities'] = $osiris->activities->count(['projects' => $id, 'hide' => ['$ne' => true]]);
 
+    if (!empty($result['persons'])) {
+
+        $persons = DB::doc2Arr($result['persons']);
+        // sort project team by role (custom order)
+        $roles = ['applicant', 'PI', 'Co-PI', 'worker', 'associate', 'student'];
+        usort($persons, function ($a, $b) use ($roles) {
+            return array_search($a['role'], $roles) - array_search($b['role'], $roles);
+        });
+
+        $result['persons'] = [];
+
+        foreach ($persons as $row) {
+            $person = $DB->getPerson($row['user']);
+            if ($person['public_image'] ?? false) {
+                $row['img'] = $Settings->printProfilePicture($person['username'], 'profile-img small mr-20');
+            } else {
+                $row['img'] = $Settings->printProfilePicture(null, 'profile-img small mr-20');
+            }
+            unset($row['user']);
+            $row['id'] = strval($person['_id']);
+            $row['role'] = Project::personRole($row['role']);
+            $depts = [];
+            if (!empty($person['depts'])) {
+                foreach ($Groups->personDepts($person['depts']) as $d) {
+                    $dept = $Groups->getGroup($d);
+                    if ($dept['level'] !== 1) continue;
+                    $depts[$d] = [
+                        'en' => $dept['name'],
+                        'de' => $dept['name_de']
+                    ];
+                }
+            }
+            $row['depts'] = $depts;
+
+            $result['persons'][] = $row;
+        }
+    }
     echo rest($result);
 });
 
-Route::get('/data/person/([^/]*)', function ($id) {
+Route::get('/portfolio/person/([^/]*)', function ($id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -758,29 +794,62 @@ Route::get('/data/person/([^/]*)', function ($id) {
     header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
     header('Content-Type: application/json');
     include(BASEPATH . '/php/Project.php');
+    $Project = new Project;
+
     $id = DB::to_ObjectID($id);
-    $result = $osiris->persons->findOne(
+    $person = $osiris->persons->findOne(
         ['_id' => $id],
         // ['projection' => ['_id' => 0, 'html' => '$rendered.portfolio', 'doc'=> '$$ROOT']]
     );
-    if (empty($result)) {
+    if (empty($person)) {
         echo rest('Person not found', 0, 404);
         die;
     }
-    $Project = new Project;
-    if ($result['public_image'] ?? false) {
-        $result['img'] = $Settings->printProfilePicture($result['username'], 'profile-img');
+    $result = [
+        'displayname' => $person['displayname'],
+        'last' => $person['last'],
+        'first' => $person['first'],
+        'academic_title' => $person['academic_title'],
+        'position' => $person['position'],
+        'depts' => [],
+        'cv' => $person['cv'] ?? [],
+        'contact' => []
+    ];
+
+    if ($person['public_email'] ?? true) {
+        $result['contact']['mail'] = $person['mail'];
+    }
+    if ($person['public_phone'] ?? true) {
+        $result['contact']['phone'] = $person['telephone'];
+    }
+    foreach ([
+        'mail_alternative',
+        'mail_alternative_comment',
+        'twitter',
+        'linkedin',
+        'orcid',
+        'researchgate',
+        'google_scholar',
+        'webpage'
+    ] as $key) {
+        if (isset($person[$key]) && !empty($person[$key])) {
+            $result['contact'][$key] = $person[$key];
+        }
+    }
+
+    if ($person['public_image'] ?? false) {
+        $result['img'] = $Settings->printProfilePicture($person['username'], 'profile-img');
     } else {
         $result['img'] = $Settings->printProfilePicture(null, 'profile-img');
     }
-    $result['id'] = strval($result['_id']);
-    if (!empty($result['depts'])) {
-        $hierarchy = $Groups->getPersonHierarchyTree($result['depts']);
+    $result['id'] = strval($person['_id']);
+    if (!empty($person['depts'])) {
+        $hierarchy = $Groups->getPersonHierarchyTree($person['depts']);
         $result['depts'] = $Groups->readableHierarchy($hierarchy);
     }
-    if (isset($result['highlighted']) && !empty($result['highlighted'])) {
+    if (isset($person['highlighted']) && !empty($person['highlighted'])) {
         $docs = [];
-        foreach ($result['highlighted'] as $id) {
+        foreach ($person['highlighted'] as $id) {
             $doc = $DB->getActivity($id);
             if (!empty($doc)) {
                 $docs[] = [
@@ -794,14 +863,14 @@ Route::get('/data/person/([^/]*)', function ($id) {
     }
 
     $result['numbers'] = [
-        'publications' => $osiris->activities->count(['authors.user' => $result['username'], 'type' => 'publication', 'hide' => ['$ne' => true]]),
-        'activities' => $osiris->activities->count(['authors.user' => $result['username'], 'type' => ['$in' => ['poster', 'lecture', 'award', 'software']], 'hide' => ['$ne' => true]]),
-        'teaching' => $osiris->activities->count(['authors.user' => $result['username'], 'type' => 'teaching', 'module_id' => ['$ne' => null], 'hide' => ['$ne' => true]]),
-        'projects' => $osiris->projects->count(['persons.user' => $result['username'], "public" => true, "status" => ['$ne' => "rejected"]]),
+        'publications' => $osiris->activities->count(['authors.user' => $person['username'], 'type' => 'publication', 'hide' => ['$ne' => true]]),
+        'activities' => $osiris->activities->count(['authors.user' => $person['username'], 'type' => ['$in' => ['poster', 'lecture', 'award', 'software']], 'hide' => ['$ne' => true]]),
+        'teaching' => $osiris->activities->count(['authors.user' => $person['username'], 'type' => 'teaching', 'module_id' => ['$ne' => null], 'hide' => ['$ne' => true]]),
+        'projects' => $osiris->projects->count(['persons.user' => $person['username'], "public" => true, "status" => ['$ne' => "rejected"]]),
     ];
 
     if ($result['numbers']['projects'] > 0) {
-        $raw = $osiris->projects->find(['persons.user' => $result['username'], "public" => true, "status" => ['$ne' => "rejected"]])->toArray();
+        $raw = $osiris->projects->find(['persons.user' => $person['username'], "public" => true, "status" => ['$ne' => "rejected"]])->toArray();
         $projects = ['current' => [], 'past' => []];
         foreach ($raw as $project) {
 
@@ -828,7 +897,7 @@ Route::get('/data/person/([^/]*)', function ($id) {
 });
 
 
-Route::get('/data/test', function () {
+Route::get('/portfolio/test', function () {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -912,7 +981,7 @@ Route::get('/data/test', function () {
 });
 
 
-Route::get('/data/(group|project)/([^/]*)/collaborators-map', function ($context, $id) {
+Route::get('/portfolio/(unit|project)/([^/]*)/collaborators-map', function ($context, $id) {
     error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
     // if (!apikey_check($_GET['apikey'] ?? null)) {
@@ -958,7 +1027,7 @@ Route::get('/data/(group|project)/([^/]*)/collaborators-map', function ($context
                 $data['lon'][] = $c['lng'];
                 $data['lat'][] = $c['lat'];
                 $data['text'][] = "<b>$c[name]</b><br>$c[location]";
-                $color = ($c['role'] == 'partner' ? 'secondary' : 'primary');
+                $color = ($c['role'] == 'partner' ? 'primary' : 'secondary');
                 $data['marker']['color'][] = $color;
             }
             $institute = $Settings->get('affiliation_details');
@@ -968,7 +1037,7 @@ Route::get('/data/(group|project)/([^/]*)/collaborators-map', function ($context
                 $data['lon'][] = $institute['lng'];
                 $data['lat'][] = $institute['lat'];
                 $data['text'][] = "<b>$institute[name]</b><br>$institute[location]";
-                $color = ($institute['role'] == 'partner' ? 'secondary' : 'primary');
+                $color = ($institute['role'] == 'partner' ? 'primary' : 'secondary');
                 $data['marker']['color'][] = $color;
             }
 
@@ -1011,7 +1080,7 @@ Route::get('/data/(group|project)/([^/]*)/collaborators-map', function ($context
                 '_id' => $institute['ror'] ?? '',
                 'count' => 3,
                 'data' => $institute,
-                'color' => 'primary'
+                'color' => 'secondary'
             ];
         }
     }
@@ -1021,7 +1090,7 @@ Route::get('/data/(group|project)/([^/]*)/collaborators-map', function ($context
 
 
 
-Route::get('/data/group/([^/]*)/cooperation', function ($id) {
+Route::get('/portfolio/unit/([^/]*)/cooperation', function ($id) {
     // error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 

@@ -201,11 +201,11 @@ body.shepherd-target.shepherd-enabled .shepherd-modal-overlay-container {
 }
 
 .shepherd-arrow::before {
-    background-color: var(--lm-alert-primary-bg-color);
+    background-color: var(--lm-alert-secondary-bg-color);
 }
 
 .dark-mode .shepherd-arrow::before {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
 }
 
 .shepherd-progress-bar {
@@ -227,7 +227,7 @@ body.shepherd-target.shepherd-enabled .shepherd-modal-overlay-container {
 
 .shepherd-progress-bar span {
     display: block;
-    background: var(--primary-color);
+    background: var(--secondary-color);
     width: 50%;
     height: 100%;
     border-radius: 9px;
@@ -237,13 +237,13 @@ body.shepherd-target.shepherd-enabled .shepherd-modal-overlay-container {
     background: white;
 }
 
-.dark-mode .shepherd-element .btn.btn-primary {
+.dark-mode .shepherd-element .btn.secondary {
     background-color: white;
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
-.dark-mode .shepherd-element .btn.btn-primary:hover {
-    background-color: var(--primary-color-very-light);
+.dark-mode .shepherd-element .btn.secondary:hover {
+    background-color: var(--secondary-color-very-light);
 }
 
 col.shepherd-target.shepherd-enabled {

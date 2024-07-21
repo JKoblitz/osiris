@@ -75,7 +75,7 @@ $Format = new Document(true);
                     <div class="btn-toolbar">
 
                         <?php if (isset($_GET['expert'])) { ?>
-                            <button class="btn primary" onclick="run()"><i class="ph ph-magnifying-glass"></i> <?= lang('Apply', 'Anwenden') ?></button>
+                            <button class="btn secondary" onclick="run()"><i class="ph ph-magnifying-glass"></i> <?= lang('Apply', 'Anwenden') ?></button>
 
                             <script>
                                 function run() {
@@ -87,7 +87,7 @@ $Format = new Document(true);
                             <a class="btn osiris" href="?"><i class="ph ph-search-plus"></i> <?= lang('Sandbox mode', 'Baukasten-Modus') ?></a>
 
                         <?php } else { ?>
-                            <button class="btn primary" onclick="getResult()"><i class="ph ph-magnifying-glass"></i> <?= lang('Apply', 'Anwenden') ?></button>
+                            <button class="btn secondary" onclick="getResult()"><i class="ph ph-magnifying-glass"></i> <?= lang('Apply', 'Anwenden') ?></button>
                             <a class="btn osiris" href="?expert"><i class="ph ph-search-plus"></i> <?= lang('Expert mode', 'Experten-Modus') ?></a>
                         <?php } ?>
 
@@ -130,7 +130,7 @@ $Format = new Document(true);
                     <div class="form-group" id="save-query">
                         <label for="query-name"><?= lang('Save query', 'Abfrage speichern') ?></label>
                         <input type="text" class="form-control" id="query-name" placeholder="<?= lang('Name of query', 'Name der Abfrage') ?>">
-                        <button class="btn primary mt-10" onclick="saveQuery()"><?= lang('Save query', 'Abfrage speichern') ?></button>
+                        <button class="btn secondary mt-10" onclick="saveQuery()"><?= lang('Save query', 'Abfrage speichern') ?></button>
                     </div>
                 </div>
             </div>
@@ -148,7 +148,7 @@ $Format = new Document(true);
     </script>
 
     <div class="position-relative">
-        <button class="btn primary small position-absolute top-0 right-0 m-10" onclick="copyToClipboard()"><i class="ph ph-clipboard" aria-label="Copy to clipboard"></i></button>
+        <button class="btn secondary small position-absolute top-0 right-0 m-10" onclick="copyToClipboard()"><i class="ph ph-clipboard" aria-label="Copy to clipboard"></i></button>
 
         <pre id="result" class="code p-20"></pre>
     </div>
