@@ -118,9 +118,6 @@ if ($type == 'Drittmittel') {
     $fields[] = 'contact';
 }
 
-
-
-
 ?>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
@@ -402,7 +399,7 @@ if ($type == 'Drittmittel') {
                     <label for="scholarship">
                         <?= lang('Scholarship institution', 'Stipendiengeber') ?>
                     </label>
-                    <input type="number" class="form-control" name="values[scholarship]" id="scholarship" value="<?= val('scholarship') ?>">
+                    <input type="text" class="form-control" name="values[scholarship]" id="scholarship" value="<?= val('scholarship') ?>">
                 </div>
             <?php } ?>
 
@@ -411,7 +408,7 @@ if ($type == 'Drittmittel') {
                     <label for="university">
                         <?= lang('Partner University', 'Partner-Universität') ?>
                     </label>
-                    <input type="number" class="form-control" name="values[university]" id="university" value="<?= val('university') ?>">
+                    <input type="text" class="form-control" name="values[university]" id="university" value="<?= val('university') ?>">
                 </div>
             <?php } ?>
 

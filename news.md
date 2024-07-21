@@ -6,6 +6,13 @@
 
 ## Version 1.3.5
 
+#### <i class="ph ph-code text-osiris"></i> Anpassungen für OSIRIS Portfolio
+
+- Eine neue API-Schnittstelle, die speziell auf Portfolio zugeschnitten ist
+- Eine neue API-Dokumentation
+- Profilbild ist jetzt per Default nicht mehr angezeigt
+- Portfolio-Preview wurde verbessert
+
 
 #### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
 
@@ -13,6 +20,11 @@
   - Bessere Erkennung vom Veröffentlichungsdatum
   - Wenn die Seitenzahl nicht angegeben ist, wird alternativ die Artikelnummer verwendet (falls vorhanden)
 - Die Filter in "Alle Aktivitäten" lassen sich nun wegklappen und sind auch auf mobilen Endgeräten besser verfügbar
+- Style-Fixes und Verbesserungen
+- Berechtigungen zur Bearbeitung von Gruppen wurden gefixt
+- Neue Version von Phosphoricons <i class="ph ph-heart" title="Danke an die Autoren dieser fantastischen Bibliothek"></i>
+- Die Ersteller von Projekten können sie jetzt auch bearbeiten
+- Bei Projekten wurden Stipendien hinzugefügt
 
 
 <span class="badge float-right">23.05.2024</span>
