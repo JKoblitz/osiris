@@ -179,10 +179,17 @@
 
         <fieldset>
             <legend><?= lang('Public visibility', 'Öffentliche Darstellung') ?> (Portfolio)</legend>
-            <!-- <div class="custom-checkbox">
-            <input type="checkbox" id="public" value="1" name="values[public]" <?= $data['public'] ? 'checked' : '' ?>>
-            <label for="public"><?= lang('Publicly visible', 'Öffentlich sichtbar') ?></label>
-        </div> -->
+
+            <div class="alert danger">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="hide" value="1" name="values[hide]" <?= ($data['hide'] ?? false) ? 'checked' : '' ?>>
+                    <label for="hide"><?= lang('Hide profile in Portfolio', 'Profil nicht im Portfolio zeigen') ?></label>
+                </div>
+                <small class="text-danger">
+                    <?= lang('By hiding your profile, you prevent OSIRIS Portfolio from displaying your profile to the public. You can revoke this at any time by unticking the checkbox again.', 
+                    'Indem du dein Profil versteckst, verhinderst du, dass OSIRIS Portfolio dein Profil öffentlich zeigt. Du kannst dies jederzeit wieder rückgängig machen, indem du das Häkchen wieder entfernst.') ?>
+                </small>
+            </div>
 
             <!-- show profile picture -->
             <p class="text-danger">
@@ -240,14 +247,14 @@
 
         <?php if ($Settings->featureEnabled('portal')) { ?>
             <p class="text-danger">
-            <?=lang('
+                <?= lang('
             Please note that the following information is optional. If you do not wish to make your contact information publicly visible, you can leave the corresponding fields blank. If you fill them in, you authorise OSIRIS Portfolio to show this data publicly. You can revoke this at any time by leaving the fields blank.
             ', '
             Bitte beachte, dass die folgenden Informationen freiwillige Angaben sind. Wenn du deine Kontaktinformationen nicht öffentlich sichtbar machen möchtest, kannst du die entsprechenden Felder leer lassen. Solltest du sie ausfüllen, erlaubst du OSIRIS Portfolio, diese Daten öffentlich zu zeigen. Du kannst dies jederzeit wieder rückgängig machen, indem du die Felder leer lässt.
-            ')?>
+            ') ?>
             </p>
         <?php } ?>
-        
+
         <div class="row row-eq-spacing mb-10 mt-0">
             <div class="col-md-6 col-sm-4 mb-20">
                 <label for="orcid">ORCID</label>

@@ -516,6 +516,8 @@ Route::post('/crud/users/update/(.*)', function ($user) {
     // separate personal and account information
     $person = $values;
     // $account = [];
+    // get old value for rendering
+    $old = $DB->getPerson($user);
 
     // update name information
     if (isset($values['last']) && isset($values['first'])) {
@@ -529,9 +531,10 @@ Route::post('/crud/users/update/(.*)', function ($user) {
 
         // only update public visibility if complete form (user edit) is submitted
         // name is indicating that
-        foreach (["public_image", "public_email", "public_phone"] as $key) {
+        foreach (["public_image", "public_email", "public_phone", "hide"] as $key) {
             $person[$key] = boolval($values[$key] ?? false);
         }
+
     }
 
     
@@ -560,22 +563,20 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         $person['cv'] = $cv;
     }
 
-    // dump($person, true);
-    // die;
-    // if (isset($person['dept'])) {
-    //     $person['depts'] = $Groups->getParents($person['dept']);
-    //     $person['depts'] = array_reverse($person['depts']);
-    // }
-
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
         ['$set' => $person]
     );
 
-    // if (!empty($account)) $updateResult = $osiris->account->updateOne(
-    //     ['username' => $user],
-    //     ['$set' => $account]
-    // );
+    if (isset($person['hide'])){
+        // check if hide value changed
+       
+        if ($old['hide'] != $person['hide']) {
+            // rerender all activities
+            include_once BASEPATH . "/php/Render.php";
+            renderActivities(['authors.user' => $user]);
+        }
+    }
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");

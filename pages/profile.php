@@ -209,6 +209,12 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <h1 class="mt-0"><?= $name ?></h1>
         <h5 class="subtitle">
             <?= lang($scientist['position'] ?? '', $scientist['position_de'] ?? null) ?>
+            <?php if ($scientist['hide'] ?? false) { ?>
+                <small class="badge danger" data-toggle="tooltip" data-title="<?=lang('This person does not wish to be found in Portfolio', 'Diese Person möchte nicht in OSIRIS Portfolio gefunden werden.')?>">
+                    <i class="ph ph-globe-x m-0"></i>
+                </small>
+            <?php } ?>
+            
         </h5>
 
         <style>

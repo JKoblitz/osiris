@@ -90,7 +90,7 @@ function help_groupUsers($osiris, $id, $Groups)
 {
     $child_ids = $Groups->getChildren($id);
     $users = $osiris->persons->find(
-        ['depts' => ['$in' => $child_ids], 'is_active' => true, 'hide' => ['$ne' => true]],
+        ['depts' => ['$in' => $child_ids], 'is_active' => true, 'hide' => ['$ne' => true], 'hide' => ['$ne' => true]],
         ['sort' => ['last' => 1]]
     )->toArray();
     $users = array_column($users, 'username');
@@ -137,6 +137,8 @@ Route::get('/portfolio/unit/([^/]*)', function ($id) {
         $group['heads'] = [];
         foreach ($head as $h) {
             $p = $DB->getPerson($h);
+            if (empty($p) || ($p['hide'] ?? false)) continue;
+
             if ($p['public_image'] ?? false) {
                 $img = $Settings->printProfilePicture($p['username'], 'profile-img small');
             } else {
@@ -238,7 +240,7 @@ Route::get('/portfolio/unit/([^/]*)/numbers', function ($id) {
 
     $filter = [
         'depts' => ['$in' => $child_ids],
-        'is_active' => true,
+        'is_active' => true, 'hide' => ['$ne' => true],
         'hide' => ['$ne' => true]
     ];
 
@@ -316,7 +318,7 @@ Route::get('/portfolio/(unit|person|project)/([^/]*)/(publications|activities|al
         }
 
         $child_ids = $Groups->getChildren($id);
-        $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+        $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids]], ['sort' => ['last' => 1]])->toArray();
         $users = array_column($persons, 'username');
         $filter = [
             'authors.user' => ['$in' => $users],
@@ -501,7 +503,7 @@ Route::get('/portfolio/unit/([^/]*)/staff', function ($id) {
     $id = urldecode($id);
     $filter = [
         'hide' => ['$ne' => true],
-        'is_active' => true
+        'is_active' => true, 'hide' => ['$ne' => true]
     ];
     if ($id == 0) {
         $group = $osiris->groups->findOne(['level' => 0]);
@@ -552,7 +554,7 @@ Route::get('/portfolio/project/([^/]*)/staff', function ($id) {
 
     // $filter = [
     //     'hide' => ['$ne' => true],
-    //     'is_active' => true
+    //     'is_active' => true, 'hide'=>['$ne'=>true]
     // ];
     $project = help_getProject($osiris, $id);
     if (empty($project)) {
@@ -574,6 +576,7 @@ Route::get('/portfolio/project/([^/]*)/staff', function ($id) {
 
     foreach ($persons as $p) {
         $person = $DB->getPerson($p['user']);
+        if (empty($person) || ($person['hide'] ?? false)) continue;
         $row = [
             'displayname' => $person['displayname'],
             'academic_title' => $person['academic_title'],
@@ -626,15 +629,41 @@ Route::get('/portfolio/activity/([^/]*)', function ($id) {
         die;
     }
 
-    $result = $doc['rendered'];
-    $result['id'] = strval($doc['_id']);
-    $result['type'] = $doc['type'];
-    $result['subtype'] = $doc['subtype'];
-    $result['year'] = $doc['year'] ?? null;
-    $result['month'] = $doc['month'] ?? null;
-    $result['abstract'] = $doc['abstract'] ?? null;
-    $result['doi'] = $doc['doi'] ?? null;
-    $result['pubmed'] = $doc['pubmed'] ?? null;
+    // $result = $doc['rendered'];
+    // $result['id'] = strval($doc['_id']);
+    // $result['type'] = $doc['type'];
+    // $result['subtype'] = $doc['subtype'];
+    // $result['year'] = $doc['year'] ?? null;
+    // $result['month'] = $doc['month'] ?? null;
+    // $result['abstract'] = $doc['abstract'] ?? null;
+    // $result['doi'] = $doc['doi'] ?? null;
+    // $result['pubmed'] = $doc['pubmed'] ?? null;
+    $result = [
+        'id' => strval($doc['_id']),
+        'type' => $doc['type'],
+        'subtype' => $doc['subtype'],
+        'year' => $doc['year'] ?? null,
+        'month' => $doc['month'] ?? null,
+        'abstract' => $doc['abstract'] ?? null,
+        'doi' => $doc['doi'] ?? null,
+        'pubmed' => $doc['pubmed'] ?? null,
+        'title' => $doc['rendered']['title'],
+        'authors' => [],
+        'depts' => [],
+        'projects' => []
+    ];
+
+    foreach ($doc['authors'] as $a) {
+        $i = null;
+        if (!empty($a['user'])) {
+            $person = $DB->getPerson($a['user']);
+            if (!empty($person) && !($person['hide'] ?? false)) $i = strval($person['_id']);
+        }
+        $result['authors'][] = [
+            'id' => $i,
+            'name' => ($a['first'] ?? '') . ' ' . ($a['last'] ?? ''),
+        ];
+    }
 
     $depts = [];
     if (!empty($doc['rendered']['depts'])) {
@@ -760,6 +789,7 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
 
         foreach ($persons as $row) {
             $person = $DB->getPerson($row['user']);
+            if (empty($person) || ($person['hide'] ?? false)) continue;
             if ($person['public_image'] ?? false) {
                 $row['img'] = $Settings->printProfilePicture($person['username'], 'profile-img small mr-20');
             } else {
@@ -811,6 +841,10 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
         echo rest('Person not found', 0, 404);
         die;
     }
+    if ($person['hide'] ?? false) {
+        echo rest('Person not found', 0, 404);
+        die;
+    }
     $result = [
         'displayname' => $person['displayname'],
         'last' => $person['last'],
@@ -821,6 +855,10 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
         'cv' => $person['cv'] ?? [],
         'contact' => []
     ];
+
+    if (!($person['is_active'] ?? true)) {
+        $result['inactive'] = true;
+    }
 
     if ($person['public_email'] ?? true) {
         $result['contact']['mail'] = $person['mail'];
@@ -1055,7 +1093,7 @@ Route::get('/portfolio/(unit|project)/([^/]*)/collaborators-map', function ($con
         $dept = $id;
 
         $child_ids = $Groups->getChildren($dept);
-        $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+        $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true, 'hide' => ['$ne' => true]], ['sort' => ['last' => 1]])->toArray();
         $users = array_column($persons, 'username');
         $filter = [
             'persons.user' => ['$in' => $users],

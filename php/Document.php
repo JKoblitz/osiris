@@ -437,7 +437,7 @@ class Document extends Settings
                 if (isset($a['user']) && !empty($a['user'])) {
                     if ($this->usecase == 'portal') {
                         $person = $this->db->getPerson($a['user']);
-                        if ($person)
+                        if ($person && ($person['hide'] ?? false) === false && ($person['is_active'] ?? true) !== false )
                             $author = "<a href='/person/" . strval($person['_id']) . "'>$author</a>";
                     } else if (!$this->full)
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
@@ -998,6 +998,7 @@ class Document extends Settings
     public function formatPortfolio()
     {
         $this->full = false;
+        $this->usecase = 'portal';
         $line = "";
         $title = $this->getTitle();
 
