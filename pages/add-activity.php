@@ -4,7 +4,7 @@
  * Page to add or edit one activity
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /add-activity
  * @link /activities/edit/<activity_id>
@@ -12,8 +12,8 @@
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -30,7 +30,7 @@
     }
 
     .description {
-        color: var(--primary-color);
+        color: var(--secondary-color);
         font-style: italic;
     }
 </style>
@@ -64,7 +64,7 @@ function val($index, $default = '')
 <script src="<?= ROOTPATH ?>/js/moment.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
-<script src="<?= ROOTPATH ?>/js/add-activity.js?v=2"></script>
+<script src="<?= ROOTPATH ?>/js/add-activity.js?v=3"></script>
 
 
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
@@ -280,7 +280,7 @@ function val($index, $default = '')
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="10.1093/nar/gkab961" name="doi" value="" id="search-doi" autofocus>
                 <div class="input-group-append">
-                    <button class="btn primary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
+                    <button class="btn secondary" type="submit"><i class="ph ph-magnifying-glass"></i></button>
                 </div>
             </div>
         </div>
@@ -371,7 +371,7 @@ function val($index, $default = '')
 
 
 
-<div class="box primary add-form" style="display:none" id="publication-form">
+<div class="box secondary add-form" style="display:none" id="publication-form">
     <div class="content">
         <button class="btn osiris small float-right" onclick="$('#publication-form').toggleClass('show-examples')"><?= lang('Examples', 'Beispiele') ?></button>
 
@@ -435,27 +435,6 @@ function val($index, $default = '')
             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
             <input type="hidden" class="form-control disabled" name="values[type]" id="type" readonly>
             <input type="hidden" class="form-control disabled" name="values[subtype]" id="subtype" readonly>
-
-            <style>
-                #data-modules {
-                    padding: 0;
-                    margin: 0 -1rem;
-                }
-
-                #data-modules .data-module {
-                    padding: 1rem;
-                    align-self: baseline;
-                }
-
-                #data-modules .row {
-                    padding: 0;
-                }
-
-                #data-modules .row [class^="col"] {
-                    padding: 1rem;
-                    align-self: baseline;
-                }
-            </style>
 
             <p id="type-description" class="description">
                 <!-- filled by togglePubType() in add-activity.js -->
@@ -528,7 +507,7 @@ function val($index, $default = '')
                 </p>
             </div>
 
-            <button class="btn primary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
+            <button class="btn secondary" type="submit" id="submit-btn" onclick="verifyForm(event, '#activity-form')"><?= $btntext ?></button>
 
         </form>
     </div>
@@ -555,6 +534,7 @@ function val($index, $default = '')
     let UPDATE = false;
     let ID = null;
     let COPY = false;
+    let CONFERENCE = '<?=$_GET['conference']??''?>';
 </script>
 
 <?php if (!empty($form)) {

@@ -120,7 +120,7 @@
                 pageLength: 18,
                 initComplete: function(settings, json) {
                     // $(".dt-buttons .btn-group").append(
-                    //     '<a id="cv" class="btn btn-primary" href="#">CARDs VIEW</a>'
+                    //     '<a id="cv" class="btn secondary" href="#">CARDs VIEW</a>'
                     // );
                     // var labels = [];
                     // $("#result-table thead th").each(function() {

@@ -4,15 +4,15 @@
  * Page to browse all user groups
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /groups
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -29,9 +29,9 @@ $style = $_GET['style'] ?? 'cards';
 
 <div class="d-flex align-items-center mb-10">
 
-<?php if ($Settings->hasPermission('guests.add')) { ?>
-    <a href="<?= ROOTPATH ?>/groups/new"><i class="ph ph-plus"></i> <?= lang('New unit', 'Neue Einheit') ?></a>
-<?php } ?>
+    <?php if ($Settings->hasPermission('guests.add')) { ?>
+        <a href="<?= ROOTPATH ?>/groups/new"><i class="ph ph-plus"></i> <?= lang('New unit', 'Neue Einheit') ?></a>
+    <?php } ?>
 
     <div class="pills small ml-auto">
         <span class="badge text-muted"><?= lang('Show as', 'Zeige als') ?></span>
@@ -87,6 +87,14 @@ $style = $_GET['style'] ?? 'cards';
             display: block;
         }
 
+        .table.cards tr td h5 {
+            margin: 0;
+        }
+        .table.cards a.title {
+            color: var(--highlight-color);
+            font-size: 1.6rem;
+        }
+
 
         @media (min-width: 768px) {
             .table.cards tbody tr {
@@ -113,36 +121,35 @@ $style = $_GET['style'] ?? 'cards';
                             <!-- hidden field for sorting based on level -->
                             <?= $Groups->getLevel($group['id']) ?>
                         </span>
-                        <a class="title link" href="<?= ROOTPATH ?>/groups/view/<?= $group['id'] ?>">
-                            <span class="badge dept-id"><?= $group['id'] ?></span>
-                            <?= $group['name'] ?>
-                        </a>
+                        <span class="badge dept-id float-md-right"><?= $group['id'] ?></span>
+                        <span class="text-muted"><?= $group['unit'] ?></span>
+                        <h5>
+                            <a href="<?= ROOTPATH ?>/groups/view/<?= $group['id'] ?>" class="title">
+                                <?= lang($group['name'], $group['name_de'] ?? null) ?>
+                            </a>
+                        </h5>
 
-                        <?php if (!empty($group['parent'])) { ?>
-                            <p class="font-size-12">
-                                <a href="#<?= $group['parent'] ?>"><?= $Groups->getName($group['parent']) ?></a>
-                            </p>
-                        <?php } ?>
+                        <div class="text-muted font-size-12">
+                            <?php
+                            $children = $Groups->getChildren($group['id']);
+                            ?>
+                            <?= $osiris->persons->count(['depts' => ['$in' => $children],  'is_active' => true]) ?> <?= lang('Coworkers', 'Mitarbeitende') ?>
 
-                        <p class="text-muted">
-                            <?= $group['unit'] ?>
-                        </p>
-
+                        </div>
                         <?php if (isset($group['head'])) {
-                            $heads = $group['head'];
-                            if (is_string($heads)) $heads = [$heads];
-                            $heads = array_map([$DB, 'getNameFromId'], $heads);
-                        ?>
-                            <span class="float-right">
+ ?>
+                        <hr>
+                        <div class="mb-0">
+                            <?php 
+                                $heads = $group['head'];
+                                if (is_string($heads)) $heads = [$heads];
+                                $heads = array_map([$DB, 'getNameFromId'], $heads);
+                            ?>
                                 <i class="ph ph-crown text-signal"></i>
                                 <?= implode(', ', $heads) ?>
-                            </span>
-                        <?php
-                        } ?>
-                        <?php
-                        $children = $Groups->getChildren($group['id']);
-                        ?>
-                        <?= $osiris->persons->count(['depts' => ['$in' => $children],  'is_active' => true]) ?> <?= lang('Members', 'Mitglieder') ?>
+                        </div>
+                    <?php } ?>
+
                     </td>
                 </tr>
             <?php } ?>
@@ -169,7 +176,7 @@ $style = $_GET['style'] ?? 'cards';
                 pageLength: 12,
                 initComplete: function(settings, json) {
                     // $(".dt-buttons .btn-group").append(
-                    //     '<a id="cv" class="btn btn-primary" href="#">CARDs VIEW</a>'
+                    //     '<a id="cv" class="btn secondary" href="#">CARDs VIEW</a>'
                     // );
                     // var labels = [];
                     // $("#result-table thead th").each(function() {

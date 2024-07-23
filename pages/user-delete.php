@@ -4,15 +4,15 @@
  * Page to inactive a user
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /user/delete/<username>
  *
  * @package     OSIRIS
  * @since       1.2.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -45,7 +45,7 @@ use function PHPSTORM_META\type;
                     "first",
                     "last",
                     "name",
-                    "dept",
+                    "depts",
                     "username"
                 ])) {
                     $delete = false;

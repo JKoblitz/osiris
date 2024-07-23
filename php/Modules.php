@@ -38,6 +38,7 @@ class Modules
     private $authorcount = 0;
     private $user = '';
     private $userlist = array();
+    private $conference = array();
 
     public $all_modules = array(
         "authors" => [
@@ -424,7 +425,7 @@ class Modules
         ],
     );
 
-    function __construct($form = array(), $copy = false)
+    function __construct($form = array(), $copy = false, $conference = false)
     {
         global $USER;
         global $osiris;
@@ -465,6 +466,20 @@ class Modules
         }
 
         $this->userlist = $osiris->persons->find([], ['sort' => ["last" => 1]])->toArray();
+
+        if (!empty($conference)) {
+            $conf = $osiris->conferences->findOne(['_id' => DB::to_ObjectID($conference)]);
+            if (!empty($conf) && empty($this->form)){
+                $this->form['conference'] = $conf['title'] ?? null;
+                // _id as string
+                $this->form['conference_id'] = strval($conf['_id']);
+                $this->form['location'] = $conf['location'] ?? null;
+                $this->form['link'] = $conf['url'] ?? null;
+                $this->form['start'] = $conf['start'] ?? null;
+                $this->form['end'] = $conf['end'] ?? null;
+            }
+
+        }
     }
 
     private function val($index, $default = '')
@@ -682,7 +697,7 @@ class Modules
                         <?= lang('Course for the following module', 'Veranstaltung zu folgendem Modul') ?>
                     </label>
                     <a href="#teaching-select" id="teaching-field" class="module">
-                        <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+                        <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
 
                         <div id="selected-teaching">
                             <?php if (!empty($this->form) && isset($this->form['module_id'])) :
@@ -756,7 +771,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i></button>
+                                        <button class="btn text-secondary" type="button" onclick="addAuthorRow()"><i class="ph ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -888,7 +903,7 @@ class Modules
                             <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <button class="btn text-primary" type="button" onclick="addSupervisorRow()"><i class="ph ph-plus"></i></button>
+                                        <button class="btn text-secondary" type="button" onclick="addSupervisorRow()"><i class="ph ph-plus"></i></button>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -997,7 +1012,7 @@ class Modules
                             <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add author ...', 'Füge Autor hinzu ...') ?>" onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                                 <div class="input-group-append">
-                                    <button class="btn primary h-full" type="button" onclick="addAuthor(event);">
+                                    <button class="btn secondary h-full" type="button" onclick="addAuthor(event);">
                                         <i class="ph ph-plus"></i>
                                     </button>
                                 </div>
@@ -1263,6 +1278,7 @@ class Modules
             case "conference":
             ?>
                 <div class="data-module col-sm-6" data-module="conference">
+                    <input type="text" class="hidden" name="values[conference_id]" value="<?=$this->val('conference_id', null)?>">
                     <label for="conference" class="element-other <?= $required ?>"><?= lang('Conference', 'Konferenz') ?></label>
                     <input type="text" class="form-control" <?= $required ?> name="values[conference]" id="conference" list="conference-list" placeholder="VAAM 2022" value="<?= $this->val('conference') ?>">
                     <p class="m-0 font-size-12 ">
@@ -1308,7 +1324,7 @@ class Modules
                     <label for="journal" class="element-cat <?= $required ?>">Journal</label>
                     <a href="#journal-select" id="journal-field" class="module">
                         <!-- <a class="btn link" ><i class="ph ph-edit"></i> <?= lang('Edit Journal', 'Journal bearbeiten') ?></a> -->
-                        <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+                        <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
 
                         <div id="selected-journal">
                             <?php if (!empty($this->form) && isset($this->form['journal_id'])) :
@@ -1461,7 +1477,7 @@ class Modules
                             <div class="input-group sm d-inline-flex w-auto">
                                 <input type="text" placeholder="<?= lang('Add editor ...', 'Füge Editor hinzu ...') ?>" onkeypress="addAuthor(event, true);" id="add-editor" list="scientist-list">
                                 <div class="input-group-append">
-                                    <button class="btn primary h-full" type="button" onclick="addAuthor(event, true);">
+                                    <button class="btn secondary h-full" type="button" onclick="addAuthor(event, true);">
                                         <i class="ph ph-plus"></i>
                                     </button>
                                 </div>

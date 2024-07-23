@@ -4,15 +4,15 @@
  * Page to browse all categories
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /admin/categories
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -56,7 +56,7 @@
                     </tbody>
 
                 </table>
-                <button class="btn primary mt-20">
+                <button class="btn secondary mt-20">
                     <i class="ph ph-check"></i>
                     <?= lang('Submit', 'Bestätigen') ?>
                 </button>

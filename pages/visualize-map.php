@@ -4,15 +4,15 @@
  * Page to visualize collaborators on a map
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /visualize/map
  *
  * @package OSIRIS
  * @since 1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -158,7 +158,7 @@ $institute = $Settings->get('affiliation_details');
 
 
     <div class="btn-toolbar float-right">
-        <a href="<?= ROOTPATH ?>/projects" class="btn primary">
+        <a href="<?= ROOTPATH ?>/projects" class="btn secondary">
             <i class="ph ph-tree-structure"></i>
             <?= lang('Go to all projects', 'Gehe zu allen Projekten') ?>
         </a>
@@ -194,7 +194,7 @@ $institute = $Settings->get('affiliation_details');
                     data.marker.color.push(item.color ?? 'rgba(0, 128, 131, 0.7)')
                     data.lon.push(item.data.lng)
                     data.lat.push(item.data.lat)
-                    data.text.push(`<b>${item.data.name}</b><br>${item.data.location}`)
+                    data.text.push(`<b>${item.data.name}</b><br>${item.data.location}<br>${item.count} <?= lang('Projects', 'Projekte') ?>`)
 
                 });
                 console.log(data);

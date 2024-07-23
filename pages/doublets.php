@@ -49,7 +49,7 @@
     </table>
 
     <p>
-        <button class="btn primary">
+        <button class="btn secondary">
             <i class="ph ph-arrows-merge"></i>
             <?= lang('Merge', 'Zusammenfügen') ?>
         </button>

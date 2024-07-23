@@ -14,7 +14,7 @@ The easiest way to add an activity is via a DOI or a Pubmed ID.
             <input type="text" class="form-control" value="10.1093/nar/gkab961" name="doi"
                 id="search-doi">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit"><i class="ph ph-search"></i></button>
+                <button class="btn secondary" type="submit"><i class="ph ph-search"></i></button>
             </div>
         </div>
     </div>
@@ -58,7 +58,7 @@ For some activities, there are subcategories that have an influence on the data 
 
 ### Use examples
 
-At the top of the form there is a small button that can be used to switch the <button class="btn primary btn-sm">examples</button>. When examples are activated, a formatted text appears above the form. This text depends on the selected activity category (and possibly subcategory). Here is an example of a journal article:
+At the top of the form there is a small button that can be used to switch the <button class="btn secondary btn-sm">examples</button>. When examples are activated, a formatted text appears above the form. This text depends on the selected activity category (and possibly subcategory). Here is an example of a journal article:
 
 <div class="demo">
     <span class="element-author" data-element="Author(s)">Spring, S., Rohde, M., Bunk, B., Spröer, C., Will, S. E. and Neumann-Schaal, M. </span>
@@ -104,7 +104,7 @@ A simple author editor is available to edit the author list. Here is a working e
             <div class="input-group small d-inline-flex w-auto">
                 <input type="text" placeholder="Add author ..." onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                 <div class="input-group-append">
-                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
+                    <button class="btn secondary h-full" type="button" onclick="addAuthor(event);">
                         <i class="ph ph-plus"></i>
                     </button>
                 </div>
@@ -410,7 +410,7 @@ For reasons of standardisation, a journal cannot be entered as a free text field
             <i class="ph ph-question"></i> Help </a>
         <label for="journal" class="element-cat required">Journal</label>
         <a href="#journal-select" id="journal-field" class="module">
-            <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+            <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
             <div id="selected-journal">
                 <span class="title">No journal selected</span>
                                         </div>
@@ -447,7 +447,7 @@ A journal can be selected by clicking on the <span class="btn btn-sm"><i class="
             <i class="ph ph-question"></i> Help </a>
         <label for="journal" class="element-cat required">Journal</label>
         <a href="#journal-select" id="journal-field" class="module">
-            <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+            <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
             <div id="selected-journal"><h5 class="m-0">Nucleic acids research</h5><span class="float-right">Oxford University Press</span><span class="text-muted">ISSN: 1362-4962, 0305-1048</span></div>
             <input type="hidden" class="form-control hidden" name="values[journal]" value="Nucleic acids research" id="journal" list="journal-list" required="" readonly="">
             <input type="hidden" class="form-control hidden" name="values[journal_id]" value="6364d154f7323cdc82531a01" id="journal_id" required="" readonly="">
@@ -462,7 +462,7 @@ If the journal you are looking for is not found in OSIRIS, you can start an adva
 ### Store documents
 Once an activity has been added, documents can be stored. Ideally, publications, posters and presentations are supplemented with a PDF attachment. To do this, click on the **Upload file** button on the details page of an activity (where you land after creating it).
 
-At the top of the following page you will find an overview of the activity you are currently working on. This is followed by a list of any existing files, which can also be downloaded (<i class="ph ph-download text-primary"></i>) or deleted (<i class="ph ph-trash text-danger"></i>) at this point. 
+At the top of the following page you will find an overview of the activity you are currently working on. This is followed by a list of any existing files, which can also be downloaded (<i class="ph ph-download text-secondary"></i>) or deleted (<i class="ph ph-trash text-danger"></i>) at this point. 
 
 Further down is a form that can be used to upload new documents. These may not exceed a maximum size of 16 MB and should be in a standard format if possible. Good examples are PDF (preferred), PPTX, XLSX, DOCX. 
 
@@ -550,13 +550,13 @@ This is how this information now looks on the review page of your co-authors:
                     </button>
                 </div>
                 <a target="_blank" href="/osiris/activities/view/650449e74430390609471786"
-                    class="btn small text-primary" data-toggle="tooltip" data-title="View activity">
+                    class="btn small text-secondary" data-toggle="tooltip" data-title="View activity">
                     <i class="ph ph-arrow-fat-line-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-md-6">
-            <span class="badge secondary float-md-right">27/05/2024</span>
+            <span class="badge primary float-md-right">27/05/2024</span>
             <h5 class="m-0">
                 Edited by Dominic Koblitz </h5>
             <blockquote class="signal">
@@ -596,11 +596,11 @@ I give a lecture at a conference. At a mini-symposium a few weeks later, I give 
 
 <div class="demo">
     <div class="btn-group">
-    <span class="btn secondary">
+    <span class="btn primary">
         <i class="ph ph-regular ph-pencil-simple-line"></i>
         Edit            
     </span>
-    <span class="btn secondary active">
+    <span class="btn primary active">
         <i class="ph ph-copy"></i>
         Copy            
     </span>

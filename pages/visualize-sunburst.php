@@ -4,15 +4,15 @@
  * Page to visualize activities of units and users in a sunburst
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /visualize/sunburst
  *
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -118,7 +118,7 @@ updateRecursive($flare, $activities);
 </h1>
 
 <div class="dropdown">
-    <button class="btn primary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+    <button class="btn secondary" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
         <i class="ph ph-funnel"></i>
         Filter
         <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
@@ -165,7 +165,7 @@ updateRecursive($flare, $activities);
                 </div>
             </div>
 
-            <button class="btn primary " type="submit">Select</button>
+            <button class="btn secondary " type="submit">Select</button>
         </form>
     </div>
 </div>

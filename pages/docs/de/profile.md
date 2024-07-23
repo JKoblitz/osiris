@@ -31,7 +31,7 @@ Um jemandem Zugriff zu gewähren, logge dich in OSIRIS ein und gehe auf Profil b
             <i class="ph ph-calendar text-success ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Meine Aktivitäten ">
-            <i class="icon-activity-user text-primary ph-fw"></i>
+            <i class="icon-activity-user text-secondary ph-fw"></i>
         </span>
         <span class="btn active" data-toggle="tooltip" data-title="Bearbeite Profil">
             <i class="ph ph-user-list text-muted ph-fw"></i>

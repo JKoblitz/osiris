@@ -29,18 +29,18 @@ function val($index, $default = '')
     }
 
     .index.active {
-        background-color: var(--primary-color);
+        background-color: var(--secondary-color);
         box-shadow: 0 0 3px 0.2rem rgba(238, 114, 3, 0.6);
     }
 </style>
 <div class="container">
 <!--     
 <div class="btn-toolbar float-right">
-    <a href="<?= ROOTPATH ?>/visualize/map" class="btn primary">
+    <a href="<?= ROOTPATH ?>/visualize/map" class="btn secondary">
         <i class="ph ph-map-trifold"></i>
         <?= lang('Show on map', 'Zeige auf Karte') ?>
     </a>
-    <a href="#<?= ROOTPATH ?>/visualize/projects" class="btn primary" onclick="todo()">
+    <a href="#<?= ROOTPATH ?>/visualize/projects" class="btn secondary" onclick="todo()">
         <i class="ph ph-chart-line-up"></i>
         <?= lang('Show metrics', 'Zeige Metriken') ?>
     </a>

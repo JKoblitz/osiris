@@ -4,15 +4,15 @@
  * Page to see all teaching modules
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /teaching
  *
  * @package     OSIRIS
  * @since       1.1.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 include_once BASEPATH . "/php/Render.php";
@@ -95,7 +95,7 @@ function val($index, $default = '')
                     </div>
                 </div>
 
-                <button class="btn primary" type="submit" id="submit-btn"><i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?></button>
+                <button class="btn secondary" type="submit" id="submit-btn"><i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?></button>
 
             </form>
         </div>

@@ -3,15 +3,15 @@
  * Page to import files
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /import
  *
  * @package     OSIRIS
  * @since       1.2.1
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -66,7 +66,7 @@ use \LibRIS\RISReader;
                 </div>
             </div>
 
-            <button class="btn primary">
+            <button class="btn secondary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

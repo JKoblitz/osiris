@@ -4,13 +4,13 @@
  * Routing for API
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -155,7 +155,7 @@ Route::get('/api/activities', function () {
         $filter = $_GET['filter'];
     }
     if (isset($_GET['json'])) {
-        $filter = json_decode($_GET['json']);
+        $filter = json_decode($_GET['json'], true);
     }
 
     if (isset($_GET['aggregate'])) {
@@ -167,7 +167,7 @@ Route::get('/api/activities', function () {
         if (strpos($group, 'authors') !== false) {
             $aggregate[] = ['$unwind' => '$authors'];
         }
-        $aggregate[] = 
+        $aggregate[] =
             ['$group' => ['_id' => '$' . $group, 'count' => ['$sum' => 1]]];
 
         $aggregate[] = ['$sort' => ['count' => -1]];
@@ -176,7 +176,7 @@ Route::get('/api/activities', function () {
         $aggregate[] = ['$sort' => ['count' => -1]];
         $aggregate[] = ['$project' => ['_id' => 0, 'activity' => 1, 'count' => 1]];
         // $aggregate = array_merge($filter);
-        
+
 
         $result = $osiris->activities->aggregate(
             $aggregate
@@ -292,7 +292,13 @@ Route::get('/api/all-activities', function () {
     // $Format = new Document($highlight);
 
     $filter = [];
-    if (isset($_GET['filter'])) $filter = $_GET['filter'];
+    if (isset($_GET['filter'])) {
+        $filter = $_GET['filter'];
+    }
+    if (isset($_GET['json'])) {
+        $filter = json_decode($_GET['json'], true);
+    }
+
     $result = [];
     if ($page == "my-activities") {
         // only own work
@@ -468,7 +474,7 @@ Route::get('/api/users', function () {
         }
     }
     if (isset($_GET['json'])) {
-        $filter = json_decode($_GET['json']);
+        $filter = json_decode($_GET['json'], true);
     }
     $result = $osiris->persons->find($filter)->toArray();
 
@@ -477,7 +483,11 @@ Route::get('/api/users', function () {
         foreach ($result as $user) {
             $subtitle = "";
             if (isset($_GET['subtitle'])) {
-                $subtitle = $user[$_GET['subtitle']] ?? '';
+                if ($_GET['subtitle'] == 'position') {
+                    $subtitle = lang($user['position'] ?? '', $user['position_de'] ?? null);
+                } else {
+                    $subtitle = $user[$_GET['subtitle']] ?? '';
+                }
             } else foreach (($user['depts'] ?? []) as $i => $d) {
                 $dept = implode('/', $Groups->getParents($d));
                 $subtitle .= '<a href="' . $path . '/groups/view/' . $d . '">
@@ -485,7 +495,7 @@ Route::get('/api/users', function () {
                 </a>';
             }
             $username = "";
-            if (!isset($_GET['hide_usernames']) ) {
+            if (!isset($_GET['hide_usernames'])) {
                 $username = $user['username'];
             }
             $table[] = [
@@ -510,7 +520,8 @@ Route::get('/api/users', function () {
                 'email' => $user['email'],
                 'academic_title' => $user['academic_title'],
                 'dept' => $Groups->personDept($user['depts'], 1)['id'],
-                'active' => ($user['is_active'] ?? true) ? 'yes' : 'no'
+                'active' => ($user['is_active'] ?? true) ? 'yes' : 'no',
+                'public_image' => $user['public_image'] ?? true
             ];
         }
         $result = $table;
@@ -682,7 +693,7 @@ Route::get('/api/projects', function () {
         $filter = $_GET['filter'];
     }
     if (isset($_GET['json'])) {
-        $filter = json_decode($_GET['json']);
+        $filter = json_decode($_GET['json'], true);
     }
     if (isset($filter['public'])) $filter['public'] = boolval($filter['public']);
 
@@ -694,6 +705,23 @@ Route::get('/api/projects', function () {
         ]];
     }
     $result = $osiris->projects->find($filter)->toArray();
+
+    if (isset($_GET['formatted'])) {
+        $data = [];
+        include_once BASEPATH . "/php/Project.php";
+        $Project = new Project();
+        foreach ($result as $project) {
+            $Project->setProject($project);
+            $project['id'] = strval($project['_id']);
+            $project['date_range'] = $Project->getDateRange();
+            $project['funder'] = $project['funder'] ?? '';
+            $project['funding_numbers'] = $Project->getFundingNumbers('<br />');
+            $project['applicant'] = $DB->getNameFromId($project['contact'] ?? '');
+            $project['activities'] = $osiris->activities->count(['projects' => strval($project['name'])]);
+            $data[] = $project;
+        }
+        $result = $data;
+    }
     echo return_rest($result, count($result));
 });
 
@@ -1024,7 +1052,12 @@ Route::get('/api/dashboard/collaborators', function () {
                     'color' => []
                 ]
             ];
-            foreach ($project['collaborators'] as $c) {
+            // order by role
+            $collabs = DB::doc2Arr($project['collaborators']);
+            usort($collabs, function ($a, $b) {
+                return $b['role'] <=> $a['role'];
+            });
+            foreach ($collabs as $c) {
                 // if (empty($c['lng']))
                 $data['lon'][] = $c['lng'];
                 $data['lat'][] = $c['lat'];
@@ -1046,13 +1079,28 @@ Route::get('/api/dashboard/collaborators', function () {
             $result['collaborators'] = $data;
         }
     } else {
+        $filter = ['collaborators' => ['$exists' => 1]];
+        if (isset($_GET['dept'])) {
+            // only for portal
+            $dept = $_GET['dept'];
+
+            $child_ids = $Groups->getChildren($dept);
+            $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+            $users = array_column($persons, 'username');
+            $filter = [
+                'persons.user' => ['$in' => $users],
+                "public" => true,
+                "status" => ['$ne' => "rejected"],
+                'collaborators' => ['$exists' => 1]
+            ];
+        }
         $result = $osiris->projects->aggregate([
-            ['$match' => ['collaborators' => ['$exists' => 1]]],
+            ['$match' => $filter],
             ['$project' => ['collaborators' => 1]],
             ['$unwind' => '$collaborators'],
             [
                 '$group' => [
-                    '_id' => '$collaborators.ror',
+                    '_id' => '$collaborators.name',
                     'count' => ['$sum' => 1],
                     'data' => [
                         '$first' => '$collaborators'
@@ -1065,7 +1113,7 @@ Route::get('/api/dashboard/collaborators', function () {
         if (isset($institute['lat']) && isset($institute['lng'])) {
             $result[] = [
                 '_id' => $institute['ror'] ?? '',
-                'count' => count($result) / 2,
+                'count' => 3,
                 'data' => $institute,
                 'color' => '#f78104'
             ];
@@ -1913,7 +1961,7 @@ Route::get('/api/activities-suggest/(.*)', function ($term) {
     //     die;
     // }
 
-    $filter = [ '$text'=> [ '$search'=> $term ]];
+    $filter = ['$text' => ['$search' => $term]];
 
     // exclude project id
     if (isset($_GET['exclude-project'])) {
@@ -1926,8 +1974,8 @@ Route::get('/api/activities-suggest/(.*)', function ($term) {
     $result = $osiris->activities->find(
         $filter,
         [
-            'projection'=>['score' => ['$meta' => 'textScore'], 'details'=> '$rendered', 'id'=> ['$toString'=>'$_id']],
-            'sort' => ['score' => ['$meta' => 'textScore']], 
+            'projection' => ['score' => ['$meta' => 'textScore'], 'details' => '$rendered', 'id' => ['$toString' => '$_id']],
+            'sort' => ['score' => ['$meta' => 'textScore']],
             'limit' => 10
         ]
     )->toArray();

@@ -4,7 +4,7 @@
  * Page to see all activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /activities
  * @link /my-activities
@@ -12,8 +12,8 @@
  * @package OSIRIS
  * @since 1.0 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -65,7 +65,7 @@ $user = $user ?? $_SESSION['username'];
     }
 </style>
 
-<button class="btn secondary float-right" onclick="$('.filter-wrapper').slideToggle()">Filter <i class="ph ph-caret-down"></i></button>
+<button class="btn primary float-right" onclick="$('.filter-wrapper').slideToggle()">Filter <i class="ph ph-caret-down"></i></button>
 
 <div class="row row-eq-spacing">
     <div class="col order-last order-sm-first">

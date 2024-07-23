@@ -4,15 +4,15 @@
  * Page for admin dashboard to define activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /admin/activities
  *
  * @package OSIRIS
  * @since 1.1.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  * 
  * @deprecated 1.3.0
@@ -202,8 +202,8 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                     <h2 class="header" style="background-color:<?= $color ?>20">
                         <i class="ph ph-<?= $type['icon'] ?? 'placeholder' ?> text-<?= $t ?> mr-10"></i>
                         <?= lang($type['name'], $type['name_de'] ?? $type['name']) ?>
-                        <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
-                        <a class="btn link px-5 text-primary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
+                        <a class="btn link px-5 text-secondary ml-auto" onclick="moveElementUp('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
+                        <a class="btn link px-5 text-secondary" onclick="moveElementDown('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
                         <?php if ($member == 0) { ?>
                             <a class="btn link px-5 ml-20 text-danger " onclick="deleteElement('type-<?= $t ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                         <?php } else { ?>
@@ -259,8 +259,8 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                             <span class="badge danger ml-20">DISABLED</span>
                                         <?php } ?>
 
-                                        <a class="btn link px-5 text-primary ml-auto" onclick="moveElementUp('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
-                                        <a class="btn link px-5 text-primary" onclick="moveElementDown('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
+                                        <a class="btn link px-5 text-secondary ml-auto" onclick="moveElementUp('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one up.', 'Bewege einen nach oben.') ?>"><i class="ph ph-arrow-line-up"></i></a>
+                                        <a class="btn link px-5 text-secondary" onclick="moveElementDown('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Move one down.', 'Bewege einen nach unten.') ?>"><i class="ph ph-arrow-line-down"></i></a>
                                         <?php if ($submember == 0) { ?>
                                             <a class="btn link px-5 ml-20 text-danger " onclick="deleteElement('subtype-<?= $st ?>')" data-toggle="tooltip" data-title="<?= lang('Delete element.', 'Lösche Element.') ?>"><i class="ph ph-trash"></i></a>
                                         <?php } else { ?>
@@ -342,7 +342,7 @@ if (isset($_GET['subtype']) && isset($_GET['subtype']['id'])) {
                                                         <?php } ?>
                                                     </select>
                                                     <div class="input-group-append">
-                                                        <button class="btn primary h-full" type="button" onclick="addModule('<?= $t ?>', '<?= $st ?>');">
+                                                        <button class="btn secondary h-full" type="button" onclick="addModule('<?= $t ?>', '<?= $st ?>');">
                                                             <i class="ph ph-plus"></i>
                                                         </button>
                                                     </div>

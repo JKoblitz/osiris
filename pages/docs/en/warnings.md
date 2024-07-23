@@ -18,7 +18,7 @@ There is an info box in your personal profile that can contain warnings as well 
             <i class="ph ph-calendar text-success ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="My activities">
-            <i class="icon-activity-user text-primary ph-fw"></i>
+            <i class="icon-activity-user text-secondary ph-fw"></i>
         </span>
         <span class="btn" data-toggle="tooltip" data-title="Edit profile">
             <i class="ph ph-user-list text-muted ph-fw"></i>
@@ -104,13 +104,13 @@ The warning message looks like this:
                     </button>
                 </div>
                 <a target="_blank" href="/osiris/activities/view/650449e74430390609471786"
-                    class="btn small text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
+                    class="btn small text-secondary" data-toggle="tooltip" data-title="Aktivität ansehen">
                     <i class="ph ph-arrow-fat-line-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-md-6">
-            <span class="badge secondary float-md-right">27.05.2024</span>
+            <span class="badge primary float-md-right">27.05.2024</span>
             <h5 class="m-0">
                 Edited by Dominic Koblitz </h5>
             <blockquote class="signal">
@@ -143,9 +143,9 @@ As you can see, there are five buttons under the activity: the first three perfo
 
 <i class="ph ph-x ph-fw text-danger mr-10"></i> This is not you. This removes the activity from your profile. 
 
-<i class="ph-fw ph ph-regular ph-pencil-simple-line text-primary mr-10"></i> Here you can edit the activity directly if you notice any discrepancies. You don't have to confirm it, if you edit it, you will be ticked off directly.
+<i class="ph-fw ph ph-regular ph-pencil-simple-line text-secondary mr-10"></i> Here you can edit the activity directly if you notice any discrepancies. You don't have to confirm it, if you edit it, you will be ticked off directly.
 
-<i class="ph-fw ph ph-regular ph-arrow-fat-line-right text-primary mr-10"></i> Last but not least, you can view the activity here. There you will also find lots more information and helpful links.
+<i class="ph-fw ph ph-regular ph-arrow-fat-line-right text-secondary mr-10"></i> Last but not least, you can view the activity here. There you will also find lots more information and helpful links.
 
 
 If you have a lot of checks, you can also confirm all of them at once. To do this, click on the <button class="btn btn-sm text-success"><i class="ph ph-check"></i>Confirm all</button> button at the top of the list. However, please only do this if you are sure that they have been added correctly and that they are really **your activities**. You should scroll through the list at least once to see if they look familiar.

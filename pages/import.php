@@ -5,15 +5,15 @@
  * e.g. from file or Google Scholar
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /expertise
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -227,7 +227,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
     <?php } else { ?>
 
 
-        <div class="box primary">
+        <div class="box secondary">
             <div class="content">
                 <h2 class="title">Google Scholar Import</h2>
                 <p>
@@ -252,7 +252,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
     <?php } ?>
 
 <?php } else { ?><!-- if empty(USER[googlescholar]) -->
-    <div class="box primary">
+    <div class="box secondary">
         <div class="content">
             <h2 class="title">Google Scholar Import</h2>
             <p>
@@ -306,7 +306,7 @@ if (!empty($USER['google_scholar'] ?? null)) { ?>
                 </div>
             </div>
 
-            <button class="btn primary">
+            <button class="btn secondary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

@@ -6,15 +6,15 @@
  * Page to upload files for an activity
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /activities/files/<activity_id>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 $files = $doc['files'] ?? array();
@@ -152,7 +152,7 @@ $Format->setDocument($doc);
                 <label for="file-input"><?= lang('Append a file', 'Hänge eine Datei an') ?></label>
                 <br><small class="text-danger">Max. 16 MB.</small>
             </div>
-            <button class="btn primary">
+            <button class="btn secondary">
                 <i class="ph ph-upload"></i>
                 Upload
             </button>

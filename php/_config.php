@@ -191,8 +191,8 @@ function valiDate($date)
 function printMsg($msg = null, $type = 'info', $header = "default")
 {
     if ($msg === null && isset($_SESSION['msg'])) {
-        $msg = $_SESSION['message'];
-        unset($_SESSION["message"]);
+        $msg = $_SESSION['msg'];
+        unset($_SESSION["msg"]);
     }
     if ($msg === null && isset($_GET['error'])) {
         $msg = $_GET['error'];
@@ -215,7 +215,7 @@ function printMsg($msg = null, $type = 'info', $header = "default")
             $header = lang("Error", "Fehler");
         }
     } elseif ($type == 'info') {
-        $class = "primary";
+        $class = "secondary";
         if ($header == "default") {
             $header = "";
         }
@@ -445,6 +445,7 @@ function getDateTime($date)
 function valueFromDateArray($date)
 {
     // this function is used to generate a input:date-like string from arrays
+    if (is_string($date)) return $date;
     if (empty($date) || !isset($date['year'])) return '';
     $d = new DateTime();
     $d->setDate(

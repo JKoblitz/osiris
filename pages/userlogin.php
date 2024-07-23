@@ -4,15 +4,15 @@
  * Page to log in
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -57,7 +57,7 @@ if ($version['value'] != OSIRIS_VERSION) { ?>
     </div>
 
 
-    <input class="btn primary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
+    <input class="btn secondary" type="submit" name="submit" value="<?= lang("Log-in", 'Einloggen') ?>" />
 
     <?php if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') { ?>
 

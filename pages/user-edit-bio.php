@@ -4,15 +4,15 @@
  * Page to edit user information
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /user/edit/<username>
  *
  * @package     OSIRIS
  * @since       1.2.3
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -36,8 +36,18 @@
                 <?= lang('Current Position', 'Aktuelle Position') ?>
             </h4>
 
+
             <div class="form-group">
-                <input type="text" name="values[position]" id="position" class="form-control" value="<?= $data['position'] ?? '' ?>">
+                <div class="row row-eq-spacing my-0">
+                    <div class="col-md-6">
+                        <label for="position_de" class="d-flex">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></label>
+                        <input name="values[position_de]" id="position_de" type="text" class="form-control" value="<?= htmlspecialchars($data['position_de'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="position" class="d-flex">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></label>
+                        <input name="values[position]" id="position" type="text" class="form-control" value="<?= htmlspecialchars($data['position'] ?? '') ?>">
+                    </div>
+                </div>
             </div>
         </div>
         <hr>
@@ -102,8 +112,8 @@
 
 
             <button class="btn" type="button" onclick="addCVrow(event, '#cv-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
-<br>
-            <small class="text-muted float-right"><?=lang('Sorting will be done automatically', 'Wir sortieren das automatisch für dich')?></small>
+            <br>
+            <small class="text-muted float-right"><?= lang('Sorting will be done automatically', 'Wir sortieren das automatisch für dich') ?></small>
             <br>
             <div id="cv-list">
                 <?php
@@ -132,7 +142,19 @@
                                 <input name="values[cv][<?= $i ?>][affiliation]" type="text" class="form-control" value="<?= $con['affiliation'] ?? '' ?>" placeholder="Affiliation *" list="affiliation-list" required>
                             </div>
 
-                            <small class="text-muted">* required</small><br>
+                            <small class="text-muted">* <?= lang('required', 'benötigt') ?></small><br>
+
+                            <!-- checkbox to hide from portfolio -->
+
+                            <?php if ($Settings->featureEnabled('portal')) { ?>
+                                <div class="custom-checkbox ml-10">
+                                    <input type="checkbox" id="hide-<?= $i ?>" <?= ($con['hide'] ?? false) ? 'checked' : '' ?> name="values[cv][<?= $i ?>][hide]">
+                                    <label for="hide-<?= $i ?>">
+                                        <?= lang('Hide in portfolio', 'Im Portfolio verstecken') ?>
+                                    </label>
+                                </div>
+                            <?php } ?>
+
 
                             <button class="btn danger my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
                         </div>
@@ -194,7 +216,7 @@
 
 
 
-            <button type="submit" class="btn primary">
+            <button type="submit" class="btn secondary">
                 Update
             </button>
 

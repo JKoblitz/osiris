@@ -18,12 +18,22 @@ function renderActivities($filter = [])
         foreach ($cursor as $doc) {
             $id = $doc['_id'];
             $Format->setDocument($doc);
+            $Format->usecase = 'web';
+            
+            $depts = $Groups->getDeptFromAuthors($doc['authors']);
+
             $f = $Format->format();
+            $web = $Format->formatShort();
+            
+            $Format->usecase = 'portal';
+            $portfolio = $Format->formatPortfolio();
+            
             $rendered = [
                 'print' => $f,
                 'plain' => strip_tags($f),
-                'web' => $Format->formatShort(),
-                'depts' => $Groups->getDeptFromAuthors($doc['authors']),
+                'portfolio' => $portfolio,
+                'web' => $web,
+                'depts' => $depts,
                 'icon' => trim($Format->activity_icon()),
                 'type' => $Format->activity_type(),
                 'subtype' => $Format->activity_subtype(),
@@ -33,6 +43,7 @@ function renderActivities($filter = [])
                 'authors'=> $Format->getAuthors('authors')
             ];
             $values = ['rendered' => $rendered];
+
 
             if ($doc['type'] == 'publication' && isset($doc['journal'])) {
                 // update impact if necessary

@@ -99,6 +99,7 @@ function togglePubType(type, callback = () => {}) {
           id: ID,
           modules: SELECTED_MODULES,
           copy: COPY ?? false,
+          conference: CONFERENCE ?? false,
         },
         dataType: "html",
         success: function (response) {

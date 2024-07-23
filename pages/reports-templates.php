@@ -4,13 +4,13 @@
  * Overview of all reports
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.3.5
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -20,12 +20,12 @@ foreach ($reports as $report) { ?>
     <div class="box">
         <div class="content">
             <h3><?= $report['title'] ?></h3>
-            <p class="text-secondary"><?= $report['description'] ?? '' ?></p>
+            <p class="text-primary"><?= $report['description'] ?? '' ?></p>
 
-            <span class="badge secondary">
+            <span class="badge primary">
                 <b><?= lang('Start month', 'Startmonat') ?></b>: <?= Document::format_month($report['start'] ?? null) ?>
             </span>
-            <span class="badge secondary">
+            <span class="badge primary">
                 <b><?= lang('Duration', 'Dauer') ?></b>: <?= $report['duration'] ?? '-' ?> <?= lang('months', 'Monate') ?>
             </span>
         </div>

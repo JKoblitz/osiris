@@ -5,10 +5,10 @@
  *
  * This file is part of the OSIRIS package 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * @link		https://github.com/JKoblitz/osiris
  * @version		1.2
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -212,6 +212,21 @@ class DB
         $person['name'] = $person['first'] . " " . $person['last'];
         $person['first_abbr'] = $this->abbreviateName($person['first']);
         return $this->doc2Arr($person);
+    }
+
+    /**
+     * Get project
+     *
+     * @param string $project Project name or ID.
+     * @return array Project array.
+     */
+    public function getProject($project){
+        if ($this->is_ObjectID($project)) {
+            $project = $this->db->projects->findOne(['$or' => [['name' => $project], ['_id' => $this->to_ObjectID($project)] ]]);
+        } else {
+            $project = $this->db->projects->findOne(['name' => $project]);
+        }
+        return $this->doc2Arr($project);
     }
 
     /**

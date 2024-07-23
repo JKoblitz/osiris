@@ -4,15 +4,15 @@
  * Component to connect projects to activities.
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /activity
  *
  * @package OSIRIS
  * @since 1.2.2
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -63,7 +63,7 @@
         <?= lang('Note: only approved projects are shown here.', 'Bemerkung: nur bewilligte Projekte werden hier gezeigt.') ?>
         <a href="<?= ROOTPATH ?>/projects" class="link"><?= lang('See all', 'Zeige alle') ?></a>
     </p>
-    <button class="btn primary">
+    <button class="btn secondary">
         <i class="ph ph-check"></i>
         <?= lang('Submit', 'Bestätigen') ?>
     </button>

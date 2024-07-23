@@ -4,15 +4,15 @@
  * Page to see and approve current quarter
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /my-year/<username>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -212,21 +212,21 @@ if (!$Settings->featureEnabled('coins')) {
 
 
                     <div class="btn-group">
-                        <a href="?year=<?= $YEAR - 1 ?>&quarter=<?= $QUARTER ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>">
+                        <a href="?year=<?= $YEAR - 1 ?>&quarter=<?= $QUARTER ?>" class="btn primary" data-toggle="tooltip" data-title="<?= lang('Previous year', 'Vorheriges Jahr') ?>">
                             <i class="ph ph-caret-double-left"></i>
                         </a>
-                        <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>">
+                        <a href="?year=<?= $lastY ?>&quarter=<?= $lastQ ?>" class="btn primary" data-toggle="tooltip" data-title="<?= lang('Previous quarter', 'Vorheriges Quartal') ?>">
                             <i class="ph ph-caret-left"></i>
                         </a>
-                        <a class="btn text-secondary border-secondary" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>">
+                        <a class="btn text-primary border-primary" onclick="$('#detailed').slideToggle()" data-toggle="tooltip" data-title="<?= lang('Select quarter in detail', 'Wähle ein Quartal aus') ?>">
                             <!-- <i class="ph ph-circle"></i> -->
                             <?= $YEAR ?>
                             Q<?= $QUARTER ?>
                         </a>
-                        <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>">
+                        <a href="?year=<?= $nextY ?>&quarter=<?= $nextQ ?>" class="btn primary" data-toggle="tooltip" data-title="<?= lang('Next quarter', 'Nächstes Quartal') ?>">
                             <i class="ph ph-caret-right"></i>
                         </a>
-                        <a href="?year=<?= $YEAR + 1 ?>&quarter=<?= $QUARTER ?>" class="btn secondary" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>">
+                        <a href="?year=<?= $YEAR + 1 ?>&quarter=<?= $QUARTER ?>" class="btn primary" data-toggle="tooltip" data-title="<?= lang('Next year', 'Nächstes Jahr') ?>">
                             <i class="ph ph-caret-double-right"></i>
                         </a>
                     </div>
@@ -251,7 +251,7 @@ if (!$Settings->featureEnabled('coins')) {
                                 <option value="4" <?= $QUARTER == '4' ? 'selected' : '' ?>>Q4</option>
                             </select>
                             <div class="input-group-append">
-                                <button class="btn primary"><i class="ph ph-check"></i></button>
+                                <button class="btn secondary"><i class="ph ph-check"></i></button>
                             </div>
                         </div>
                         <a href="?year=<?= CURRENTYEAR ?>&quarter=<?= CURRENTQUARTER ?>"><?= lang('Current quarter', 'Aktuelles Quartal') ?></a>

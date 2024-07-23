@@ -4,13 +4,13 @@
  * Core routing file
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -27,7 +27,7 @@ if (file_exists('CONFIG.php')) {
 session_start();
 
 define('BASEPATH', $_SERVER['DOCUMENT_ROOT'] . ROOTPATH);
-define('OSIRIS_VERSION', '1.3.4');
+define('OSIRIS_VERSION', '1.3.5');
 
 // set time constants
 $year = date("Y");
@@ -83,7 +83,7 @@ Route::get('/', function () {
 
 
 if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
-    require_once BASEPATH.'/addons/auth/index.php';
+    require_once BASEPATH . '/addons/auth/index.php';
 }
 
 
@@ -108,22 +108,39 @@ include_once BASEPATH . "/routes/export.php";
 include_once BASEPATH . "/routes/reports.php";
 include_once BASEPATH . "/routes/concepts.php";
 include_once BASEPATH . "/routes/admin.php";
+include_once BASEPATH . "/routes/conferences.php";
 // include_once BASEPATH . "/routes/adminGeneral.php";
 // include_once BASEPATH . "/routes/adminRoles.php";
-
 
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/rest.php";
 // include_once BASEPATH . "/routes/CRUD.php";
 
-// if (IDA_INTEGRATION) {
-    include_once BASEPATH . "/addons/ida/index.php";
-// }
+include_once BASEPATH . "/addons/ida/index.php";
+require_once BASEPATH . '/addons/guestforms/index.php';
 
 
-// if ($Settings->featureEnabled('guests')) {
-    require_once BASEPATH.'/addons/guestforms/index.php';
-// }
+
+Route::get('/test-user/(.*)', function ($username) {
+    include_once BASEPATH . "/php/_login.php";
+    include_once BASEPATH . "/php/init.php";
+    $user = getUser($username);
+    dump($user);
+    $_SESSION['username'] = $username;
+    // $osiris->persons->deleteOne(
+    //     ['username' => 'sna']
+    // );
+    // $osiris->persons->updateOne(
+    //     ['username' => 'sna'],
+    //     ['$set' => ['username' => 'SNA']]
+    // );
+
+    // $osiris->activities->updateMany(
+    //     ['authors.last' => 'Nagel'],
+    //     ['$set' => ['authors.$[elem].user' => 'SNA']],
+    //     ['arrayFilters' => [['elem.last' => 'Nagel', 'elem.first'=>'Stefan']]]
+    // );
+});
 
 /**
  * Routes for OSIRIS Portal

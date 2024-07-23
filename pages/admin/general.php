@@ -4,15 +4,15 @@
  * Page for admin dashboard for general settings
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link /admin/general
  *
  * @package OSIRIS
  * @since 1.1.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -45,7 +45,7 @@ if ($N > 0) {
 <form action="<?= ROOTPATH ?>/crud/admin/general" method="post" id="modules-form">
 
 
-    <div class="box secondary">
+    <div class="box primary">
         <h2 class="header"><?= lang('General Settings', 'Allgemeine Einstellungen') ?></h2>
 
         <div class="content">
@@ -90,7 +90,7 @@ if ($N > 0) {
                     $('#apikey').val(result)
                 }
             </script>
-            <button class="btn secondary">
+            <button class="btn primary">
                 <i class="ph ph-floppy-disk"></i>
                 Save
             </button>

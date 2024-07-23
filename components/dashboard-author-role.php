@@ -7,10 +7,10 @@
 
             <?php
                 $data = $osiris->activities->aggregate([
-                    ['$match' => ['authors.user' => 'juk20']],
+                    ['$match' => ['authors.user' => $user]],
                     ['$project' => ['authors' => 1]],
                     ['$unwind' => '$authors'],
-                    ['$match' => ['authors.user' => 'juk20']],
+                    ['$match' => ['authors.user' => $user]],
                     ['$match' => ['authors.aoi' => true]],
                     [
                         '$group' => [

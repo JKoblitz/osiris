@@ -4,19 +4,26 @@
  * Page to add new groups
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /groups/new
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
-if (!$Settings->hasPermission('guests.add') && (!isset($form['head']) || $form['head'] !== $_SESSION['username'])) {
+ $heads = $form['head'] ?? [];
+ if (is_string($heads)) $heads = [$heads];
+ else $heads = DB::doc2Arr($heads);
+
+
+$edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission($id));
+
+if (!$edit_perm) {
     echo "You have no right to be here.";
     die;
 }
@@ -148,15 +155,11 @@ function sel($index, $value)
         </legend>
         <div class="form-group">
             <label for="head">
-                <?= lang('Lead', 'Leitung') ?>
+                <?= lang('Head(s)', 'Leitende Person(en)') ?>
             </label>
             <div class="author-widget">
                 <div class="author-list p-10">
                     <?php
-                    $heads = $form['head'] ?? [];
-                    if (is_string($heads)) $heads = [$heads];
-                    else $heads = DB::doc2Arr($heads);
-
                     foreach ($heads as $h) {
                         $person = $osiris->persons->findOne(['username' => $h]);
                         if (empty($person)) continue;
@@ -183,7 +186,7 @@ function sel($index, $value)
                             <?php } ?>
                         </select>
                         <div class="input-group-append">
-                            <button class="btn primary h-full" type="button" onclick="addHead();">
+                            <button class="btn secondary h-full" type="button" onclick="addHead();">
                                 <i class="ph ph-plus"></i>
                             </button>
                         </div>
@@ -205,63 +208,7 @@ function sel($index, $value)
     </fieldset>
 
 
-    <fieldset>
-        <legend id="research">
-            <?= lang('Research interest', 'Forschungsinteressen') ?>
-        </legend>
-        <div id="research-list">
-            <?php
-            if (isset($form['research']) && !empty($form['research'])) {
-
-                foreach ($form['research'] as $i => $con) { ?>
-
-                    <div class="alert mb-10">
-
-                        <div class="form-group my-10">
-                            <input name="values[research][<?= $i ?>][title]" type="text" class="form-control" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
-                        </div>
-                        <div class="form-group mb-0">
-                            <textarea name="values[research][<?= $i ?>][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required><?= htmlspecialchars($con['info'] ?? '') ?></textarea>
-                        </div>
-
-                        <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
-                    </div>
-            <?php }
-            } ?>
-
-        </div>
-        <button class="btn" type="button" onclick="addResearchrow(event, '#research-list')"><i class="ph ph-plus text-success"></i> <?= lang('Add entry', 'Eintrag hinzufügen') ?></button>
-
-
-        <script>
-            var i = <?= $i ?? 0 ?>
-
-            var CURRENTYEAR = <?= CURRENTYEAR ?>;
-
-            function addResearchrow(evt, parent) {
-                i++;
-                var el = `
-            <div class="alert mb-10">
-                    
-                    <div class="form-group mb-10">
-                        <input name="values[research][${i}][title]" type="text" class="form-control" placeholder="title *" required>
-                    </div>
-
-                    <div class="form-group mb-0">
-                        <textarea name="values[research][${i}][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required></textarea>
-                       </div>
-
-                    <button class="btn danger small my-10" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i></button>
-                </div>
-                `;
-                $(parent).append(el);
-            }
-        </script>
-
-    </fieldset>
-
-
-    <button class="btn primary" type="submit" id="submit-btn">
+    <button class="btn secondary" type="submit" id="submit-btn">
         <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
     </button>
 

@@ -3,7 +3,7 @@
  * Page to add or edit journal
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /journal/add
  * @link        /journal/edit/<journal_id>
@@ -11,8 +11,8 @@
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -98,7 +98,7 @@ dump($data, true);
     </div>
 
 
-    <button type="submit" class="btn primary">
+    <button type="submit" class="btn secondary">
         Update
     </button>
 </form>

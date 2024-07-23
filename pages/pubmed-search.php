@@ -4,15 +4,15 @@
  * Page to search for activities in PubMed
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /activities/pubmed-search
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -43,13 +43,13 @@
         <input type="text" class="form-control" placeholder="" id="year" value="<?= $_GET['year'] ?? CURRENTYEAR ?>">
     </div>
     <div class="form-group mb-0">
-        <input type="submit" class="btn primary ml-auto" value="Search">
+        <input type="submit" class="btn secondary ml-auto" value="Search">
     </div>
 </form>
 
 <hr>
 
-<p class="text-primary text-right" id="details"></p>
+<p class="text-secondary text-right" id="details"></p>
 
 <div id="results">
 
@@ -166,12 +166,12 @@
                     var content = $('<div class="content">')
 
                     content.append(`
-                    <a href="${ROOTPATH}/add-activity?${link}" target='_blank' class="btn primary float-right"><i class="ph ph-plus"></i></a>
+                    <a href="${ROOTPATH}/add-activity?${link}" target='_blank' class="btn secondary float-right"><i class="ph ph-plus"></i></a>
                     `)
                     content.append(
                         `
                         <a class='d-block colorless' target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/${item.uid}/">${item.title}</a>
-                        <small class='text-primary d-block'>${authors.join(', ')}</small>
+                        <small class='text-secondary d-block'>${authors.join(', ')}</small>
                         <small class='text-muted'>${item.fulljournalname} (${item.pubdate})</small>
                         `
                     )

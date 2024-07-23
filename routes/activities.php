@@ -1,19 +1,20 @@
 <?php
+
 /**
  * Routing file for activities
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
- 
+
 Route::get('/(activities|my-activities)', function ($page) {
     include_once BASEPATH . "/php/init.php";
 
@@ -137,7 +138,6 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
         }
         renderActivities(['_id' =>  $activity['_id']]);
         $user_activity = $DB->isUserActivity($doc, $user);
-        if (($doc['created_by'] ?? '') !== $user) $user_activity = true;
 
         $Format = new Document;
         $Format->setDocument($doc);
@@ -391,8 +391,17 @@ Route::post('/crud/activities/create', function () {
         }
     }
 
+    
+
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
+
+    if (isset($values['conference_id']) && !empty($values['conference_id'])) {
+        $osiris->conferences->updateOne(
+            ['_id' => $DB->to_ObjectID($values['conference_id'])],
+            ['$push' => ['activities' => $id]]
+        );
+    }
 
     renderActivities(['_id' => $id]);
 
@@ -694,6 +703,46 @@ Route::post('/crud/activities/approve/([A-Za-z0-9]*)', function ($id) {
 });
 
 
+Route::post('/crud/activities/claim/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    // get all necessary data
+    if (!isset($_POST['index']) || !is_numeric($_POST['index'])) {
+        echo "Error: No index given.";
+        die();
+    }
+    $index = intval($_POST['index']);
+    $role = $_POST['role'] ?? 'authors';
+
+    // prepare id
+    $id = $DB->to_ObjectID($id);
+    $filter = ['_id' => $id, "$role.user" => null];
+
+    // get name of author
+    $activity = $osiris->activities->findOne(['_id' => $id]);
+    $author = $activity[$role][$index] ?? null;
+    if (empty($author)) {
+        echo "Error: No author found.";
+        die();
+    }
+    // add author name to list of names of user
+    $osiris->persons->updateOne(
+        ['username' => $_SESSION['username']],
+        ['$addToSet' => ['names' => $author['last'] . ", " . $author['first']]
+    ]);
+
+    $updateResult = $osiris->activities->updateOne(
+        $filter,
+        ['$set' => ["$role.$index.user" => $_SESSION['username'], "$role.$index.approved" => true]
+    ]);
+
+
+    // $updateCount = $updateResult->getModifiedCount();
+
+    header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
+    die();
+});
+
+
 Route::post('/crud/activities/approve-all', function () {
     include_once BASEPATH . "/php/init.php";
     // prepare id
@@ -735,4 +784,21 @@ Route::post('/crud/activities/fav', function () {
         );
         echo '{"fav": true}';
     }
+}, 'login');
+
+Route::post('/crud/activities/hide', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!isset($_POST['activity'])) die('Error: no activity given');
+    $id = $_POST['activity'];
+
+    // toggle hide
+    $activity = $osiris->activities->findOne(['_id' => $DB->to_ObjectID($id)]);
+    if (empty($activity)) die('Error: No Activity found');
+
+    $hidden = $activity['hide'] ?? false;
+
+    $osiris->activities->updateOne(
+        ['_id' => $activity['_id']],
+        ['$set' => ["hide" => !$hidden]]
+    );
 }, 'login');

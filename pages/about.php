@@ -16,7 +16,7 @@
         <em>— Martin Leblanc</em>
     </blockquote>
 
-    <div class="alert primary">
+    <div class="alert secondary">
         <p>
             <?= lang('Read more on OSIRIS on the official webpage (only in German):', 'Lies mehr über OSIRIS auf der offiziellen Webseite:') ?>
             <a href="https://osiris-app.de/" target="_blank" rel="noopener noreferrer">osiris-app.de</a>.

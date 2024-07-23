@@ -4,15 +4,15 @@
  * Page to edit user information
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /user/edit/<username>
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -83,7 +83,7 @@
                     </div>
                 <?php } ?>
 
-                <button class="btn primary small ml-10" type="button" onclick="addName(event, this);">
+                <button class="btn secondary small ml-10" type="button" onclick="addName(event, this);">
                     <i class="ph ph-plus"></i> <?= lang('Add name', 'Füge Namen hinzu') ?>
                 </button>
             </div>
@@ -156,41 +156,127 @@
 
         </div>
 
+
+        <div class="form-group">
+            <label for="position">
+                <b><?= lang('Current Position', 'Aktuelle Position') ?></b>
+            </label>
+
+            <div class="row row-eq-spacing my-0">
+                <div class="col-md-6">
+                    <label for="position_de" class="d-flex">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></label>
+                    <input name="values[position_de]" id="position_de" type="text" class="form-control" value="<?= htmlspecialchars($data['position_de'] ?? '') ?>">
+                </div>
+                <div class="col-md-6">
+                    <label for="position" class="d-flex">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></label>
+                    <input name="values[position]" id="position" type="text" class="form-control" value="<?= htmlspecialchars($data['position'] ?? '') ?>">
+                </div>
+            </div>
+        </div>
     </fieldset>
+
+    <?php if ($Settings->featureEnabled('portal')) { ?>
+
+        <fieldset>
+            <legend><?= lang('Public visibility', 'Öffentliche Darstellung') ?> (Portfolio)</legend>
+
+            <div class="alert danger">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="hide" value="1" name="values[hide]" <?= ($data['hide'] ?? false) ? 'checked' : '' ?>>
+                    <label for="hide"><?= lang('Hide profile in Portfolio', 'Profil nicht im Portfolio zeigen') ?></label>
+                </div>
+                <small class="text-danger">
+                    <?= lang('By hiding your profile, you prevent OSIRIS Portfolio from displaying your profile to the public. You can revoke this at any time by unticking the checkbox again.', 
+                    'Indem du dein Profil versteckst, verhinderst du, dass OSIRIS Portfolio dein Profil öffentlich zeigt. Du kannst dies jederzeit wieder rückgängig machen, indem du das Häkchen wieder entfernst.') ?>
+                </small>
+            </div>
+
+            <!-- show profile picture -->
+            <p class="text-danger">
+                <?= lang(
+                    'By setting the image, mail or phone number to publicly visible, you allow OSIRIS Portfolio to display this personal data of yours to the open public. You can retract this at any time by unticking the check boxes again.',
+                    'Indem du das Bild, die Mail oder die Telefonnummer auf öffentlich sichtbar setzt, erlaubst du OSIRIS Portfolio, diese persönlichen Daten öffentlich zu zeigen. Du kannst dies jederzeit wieder rückgängig machen, indem du die Häkchen wieder entfernst.'
+                ) ?>
+            </p>
+            <div class="custom-checkbox mb-20">
+                <input type="checkbox" id="public_image" value="1" name="values[public_image]" <?= ($data['public_image'] ?? false) ? 'checked' : '' ?>>
+                <label for="public_image"><?= lang('Show profile picture', 'Zeige Profilbild') ?></label>
+            </div>
+
+            <div class="custom-checkbox mb-20">
+                <input type="checkbox" id="public_email" value="1" name="values[public_email]" <?= ($data['public_email'] ?? true) ? 'checked' : '' ?>>
+                <label for="public_email"><?= lang('Show email address', 'Zeige E-Mail-Adresse') ?></label>
+            </div>
+
+            <div class="custom-checkbox mb-20">
+                <input type="checkbox" id="public_phone" value="1" name="values[public_phone]" <?= ($data['public_phone'] ?? false) ? 'checked' : '' ?>>
+                <label for="public_phone"><?= lang('Show telephone number', 'Zeige Telefonnummer') ?></label>
+            </div>
+
+            <!-- alternative mail -->
+            <div class="form-group">
+                <label for="mail_alternative"><?= lang('Alternative Mail', 'Alternative Mail-Adresse') ?></label>
+                <input type="text" name="values[mail_alternative]" id="mail_alternative" class="form-control" value="<?= $data['mail_alternative'] ?? '' ?>">
+            </div>
+            <!-- comment for mail -->
+            <div class="form-group">
+                <label for="mail_alternative_comment"><?= lang('Explanation for alternative mail', 'Erklärung für die alternative Mail') ?></label>
+                <input type="text" name="values[mail_alternative_comment]" id="mail_alternative_comment" class="form-control" value="<?= $data['mail_alternative_comment'] ?? '' ?>">
+            </div>
+
+        </fieldset>
+    <?php } ?>
 
 
     <fieldset>
         <legend><?= lang('Contact', 'Kontakt') ?></legend>
         <div class="form-row row-eq-spacing">
 
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <label for="telephone"><?= lang('Telephone', 'Telefon') ?></label>
                 <input type="text" name="values[telephone]" id="telephone" class="form-control" value="<?= $data['telephone'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <label for="mail">Mail</label>
                 <input type="text" name="values[mail]" id="mail" class="form-control" value="<?= $data['mail'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+        </div>
+
+
+        <?php if ($Settings->featureEnabled('portal')) { ?>
+            <p class="text-danger">
+                <?= lang('
+            Please note that the following information is optional. If you do not wish to make your contact information publicly visible, you can leave the corresponding fields blank. If you fill them in, you authorise OSIRIS Portfolio to show this data publicly. You can revoke this at any time by leaving the fields blank.
+            ', '
+            Bitte beachte, dass die folgenden Informationen freiwillige Angaben sind. Wenn du deine Kontaktinformationen nicht öffentlich sichtbar machen möchtest, kannst du die entsprechenden Felder leer lassen. Solltest du sie ausfüllen, erlaubst du OSIRIS Portfolio, diese Daten öffentlich zu zeigen. Du kannst dies jederzeit wieder rückgängig machen, indem du die Felder leer lässt.
+            ') ?>
+            </p>
+        <?php } ?>
+
+        <div class="row row-eq-spacing mb-10 mt-0">
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="orcid">ORCID</label>
                 <input type="text" name="values[orcid]" id="orcid" class="form-control" value="<?= $data['orcid'] ?? '' ?>">
             </div>
-        </div>
 
-        <div class="form-row row-eq-spacing mb-10">
-            <div class="col-sm-4">
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="twitter">Twitter</label>
                 <input type="text" name="values[twitter]" id="twitter" class="form-control" value="<?= $data['twitter'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-md-6 col-sm-4 mb-20">
+                <label for="linkedin">LinkedIn</label>
+                <input type="text" name="values[linkedin]" id="linkedin" class="form-control" value="<?= $data['linkedin'] ?? '' ?>">
+            </div>
+
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="researchgate">ResearchGate Handle</label>
                 <input type="text" name="values[researchgate]" id="researchgate" class="form-control" value="<?= $data['researchgate'] ?? '' ?>">
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-md-6 col-sm-4 mb-20">
                 <label for="google_scholar">Google Scholar ID</label>
                 <input type="text" name="values[google_scholar]" id="google_scholar" class="form-control" value="<?= $data['google_scholar'] ?? '' ?>">
                 <small class="text-muted">
@@ -346,7 +432,7 @@
 
 
 
-    <button type="submit" class="btn primary">
+    <button type="submit" class="btn secondary">
         Update
     </button>
 </form>

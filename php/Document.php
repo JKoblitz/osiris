@@ -435,17 +435,22 @@ class Document extends Settings
                     $author = "<u>$author</u>";
                 }
                 if (isset($a['user']) && !empty($a['user'])) {
-                    if ($this->usecase == 'portal')
-                        $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
-                    else if (!$this->full)
+                    if ($this->usecase == 'portal') {
+                        $person = $this->db->getPerson($a['user']);
+                        if ($person && ($person['hide'] ?? false) === false && ($person['is_active'] ?? true) !== false )
+                            $author = "<a href='/person/" . strval($person['_id']) . "'>$author</a>";
+                    } else if (!$this->full)
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
                 }
                 $authors[] = $author;
             } else {
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
                 if ($this->usecase == 'portal') {
-                    if (isset($a['user']) && !empty($a['user']))
-                        $author = "<a href='" . PORTALPATH . "/person/" . $a['user'] . "'>$author</a>";
+                    if (isset($a['user']) && !empty($a['user'])) {
+                        $person = $this->db->getPerson($a['user']);
+                        if ($person)
+                            $author = "<a href='/person/" . strval($person['_id']) . "'>$author</a>";
+                    }
                 } else if (!$this->full) {
                     $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
                 } else if ($this->highlight === true) {
@@ -990,6 +995,159 @@ class Document extends Settings
         return $line;
     }
 
+    public function formatPortfolio()
+    {
+        $this->full = false;
+        $this->usecase = 'portal';
+        $line = "";
+        $title = $this->getTitle();
+
+        $id = $this->doc['_id'];
+        if (is_array($id)) {
+            $id = $id['$oid'];
+        } else {
+            $id = strval($id);
+        }
+
+        $line = "<a class='colorless' href='/activity/$id'>$title</a>";
+
+        $line .= "<br><small class='text-muted d-block'>";
+        $line .= $this->getSubtitle();
+        // $line .= $this->get_field('file-icons');
+        $line .= "</small>";
+
+        // if (!empty($this->appendix)) {
+        //     $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
+        // }
+        return $line;
+    }
+
+    public function bibtex()
+    {
+        $bibtex = '';
+        $bibentries = [
+            'journal-article' => "article",
+            'article' => "article",
+            'Journal Article' => "article",
+            'book' => "book",
+            'chapter' => "inbook",
+            "misc" => "misc"
+        ];
+        $ids = [];
+        $doc = $this->doc;
+        // generate a unique ID 
+        $id = $doc['authors'][0]['last'] . $doc['year'];
+        $oid = $id;
+        $i = 'a';
+        while (in_array($id, $ids)) {
+            // append letter if not unique
+            $id = $oid . $i++;
+        }
+        $ids[] = $id;
+
+        $bibtex .= '@' . ($bibentries[trim($doc['subtype'] ?? $doc['pubtype'] ?? 'misc')] ?? 'misc') . '{' . $id . ',' . PHP_EOL;
+
+
+        if (isset($doc['title']) and ($doc['title'] != '')) {
+            $bibtex .= '  Title = {' . strip_tags($doc['title']) . '},' . PHP_EOL;
+        }
+        if (isset($doc['authors']) and ($doc['authors'] != '')) {
+            $authors = [];
+            foreach ($doc['authors'] as $a) {
+                $author = $a['last'];
+                if (!empty($a['first'])) {
+                    $author .= ", " . $a['first'];
+                }
+                $authors[] = $author;
+            }
+            $bibtex .= '  Author = {' . implode(' and ', $authors) . '},' . PHP_EOL;
+        }
+        if (isset($doc['editors']) and ($doc['editors'] != '')) {
+            $editors = [];
+            foreach ($doc['editors'] as $a) {
+                $editors[] = Document::abbreviateAuthor($a['last'], $a['first']);
+            }
+            $bibtex .= '  Editor = {' . implode(' and ', $editors) . '},' . PHP_EOL;
+        }
+        if (isset($doc['journal']) and ($doc['journal'] != '')) $bibtex .= '  Journal = {' . $doc['journal'] . '},' . PHP_EOL;
+        if (isset($doc['year']) and ($doc['year'] != '')) $bibtex .= '  Year = {' . $doc['year'] . '},' . PHP_EOL;
+        if (isset($doc['number']) and ($doc['number'] != '')) $bibtex .= '  Number = {' . $doc['number'] . '},' . PHP_EOL;
+        if (isset($doc['pages']) and ($doc['pages'] != '')) $bibtex .= '  Pages = {' . $doc['pages'] . '},' . PHP_EOL;
+        if (isset($doc['volume']) and ($doc['volume'] != '')) $bibtex .= '  Volume = {' . $doc['volume'] . '},' . PHP_EOL;
+        if (isset($doc['doi']) and ($doc['doi'] != '')) $bibtex .= '  Doi = {' . $doc['doi'] . '},' . PHP_EOL;
+        if (isset($doc['isbn']) and ($doc['isbn'] != '')) $bibtex .= '  Isbn = {' . $doc['isbn'] . '},' . PHP_EOL;
+        if (isset($doc['publisher']) and ($doc['publisher'] != '')) $bibtex .= '  Publisher = {' . $doc['publisher'] . '},' . PHP_EOL;
+        if (isset($doc['book']) and ($doc['book'] != '')) $bibtex .= '  Booktitle = {' . $doc['book'] . '},' . PHP_EOL;
+        // if (isset($doc['chapter']) and ($doc['chapter'] != '')) $bibtex .= '  Chapter = {' . $doc['chapter'] . '},' . PHP_EOL;
+        if (isset($doc['abstract']) and ($doc['abstract'] != '')) $bibtex .= '  Abstract = {' . $doc['abstract'] . '},' . PHP_EOL;
+        if (isset($doc['keywords']) and ($doc['keywords'] != '')) {
+            $bibtex .= '  Keywords = {';
+            foreach ($doc['keywords'] as $keyword) $bibtex .= $keyword . PHP_EOL;
+            $bibtex .= '},' . PHP_EOL;
+        }
+
+        $bibtex .= '}' . PHP_EOL;
+        return $bibtex;
+    }
+
+    public function RIS()
+    {
+        $ris = '';
+        $doc = $this->doc;
+        $types = [
+            'article' => 'JOUR',
+            'book' => 'BOOK',
+            'chapter' => 'CHAP',
+            'data' => 'DATA',
+            'database' => 'DBASE',
+            'dissertation' => 'THES',
+            'lecture' => 'SLIDE',
+            'magazine' => 'MGZN',
+            'others' => 'RPRT',
+            'preprint' => 'INPR',
+            'software' => 'COMP',
+            'patent' => 'PAT',
+            'press' => 'PRESS'
+        ];
+        $ris .= "TY  - " . ($types[$doc['subtype']] ?? 'GEN') . PHP_EOL;
+        if (isset($doc['authors']) and ($doc['authors'] != '')) {
+            foreach ($doc['authors'] as $a) {
+                $author = $a['last'];
+                if (!empty($a['first'])) {
+                    $author .= ", " . $a['first'];
+                }
+                $ris .= "AU  - " . $author . PHP_EOL;
+            }
+        }
+        if (isset($doc['editors']) and ($doc['editors'] != '')) {
+            foreach ($doc['editors'] as $a) {
+                $author = $a['last'];
+                if (!empty($a['first'])) {
+                    $author .= ", " . $a['first'];
+                }
+                $ris .= "ED  - " . $author . PHP_EOL;
+            }
+        }
+        if (isset($doc['title']) and ($doc['title'] != '')) $ris .= "TI  - " . $doc['title'] . PHP_EOL;
+        if (isset($doc['journal']) and ($doc['journal'] != '')) $ris .= "T2  - " . $doc['journal'] . PHP_EOL;
+        if (isset($doc['year']) and ($doc['year'] != '')) $ris .= "PY  - " . $doc['year'] . PHP_EOL;
+        if (isset($doc['number']) and ($doc['number'] != '')) $ris .= "IS  - " . $doc['number'] . PHP_EOL;
+        if (isset($doc['pages']) and ($doc['pages'] != '')) $ris .= "SP  - " . $doc['pages'] . PHP_EOL;
+        if (isset($doc['volume']) and ($doc['volume'] != '')) $ris .= "VL  - " . $doc['volume'] . PHP_EOL;
+        if (isset($doc['doi']) and ($doc['doi'] != '')) $ris .= "DO  - " . $doc['doi'] . PHP_EOL;
+        if (isset($doc['isbn']) and ($doc['isbn'] != '')) $ris .= "SN  - " . $doc['isbn'] . PHP_EOL;
+        if (isset($doc['publisher']) and ($doc['publisher'] != '')) $ris .= "PB  - " . $doc['publisher'] . PHP_EOL;
+        if (isset($doc['book']) and ($doc['book'] != '')) $ris .= "BT  - " . $doc['book'] . PHP_EOL;
+        if (isset($doc['chapter']) and ($doc['chapter'] != '')) $ris .= "BT  - " . $doc['chapter'] . PHP_EOL;
+        if (isset($doc['abstract']) and ($doc['abstract'] != '')) $ris .= "AB  - " . $doc['abstract'] . PHP_EOL;
+        if (isset($doc['keywords']) and ($doc['keywords'] != '')) {
+            foreach ($doc['keywords'] as $keyword) $ris .= "KW  - " . $keyword . PHP_EOL;
+        }
+        if (isset($doc['location']) && !empty($doc['location'])) $ris .= "CY  - " . $doc['location'] . PHP_EOL;
+        $ris .= "ER  - " . PHP_EOL;
+        return $ris;
+    }
+
     public function getTitle()
     {
         $template = $this->subtypeArr['template']['title'] ?? '{title}';
@@ -1005,24 +1163,21 @@ class Document extends Settings
     public function formatPortal()
     {
         $this->full = true;
-        $line = "";
+        $this->subtitle = "";
         $template = $this->subtypeArr['template']['title'] ?? '{title}';
-        $title = $this->template($template);
+        $this->title = $this->template($template);
 
-        $id = strval($this->doc['_id']);
-        // $line = "<a class='colorless' href='" . PORTALPATH . "/activity/$id'>$title</a>";
-        $line = "<h2 class='title'>$title</h2>";
 
         $template = $this->subtypeArr['template']['subtitle'] ?? '{authors}';
-        $line .= "<p class='text-muted'>";
-        $line .= $this->template($template);
-        // $line .= $this->get_field('file-icons');
+        $this->subtitle .= "<p class='text-muted'>";
+        $this->subtitle .= $this->template($template);
+        // $this->subtitle .= $this->get_field('file-icons');
         if (!empty($this->appendix)) {
-            $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
+            $this->subtitle .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
         }
-        $line .= "</p>";
+        $this->subtitle .= "</p>";
 
-        return $line;
+        return "<h2 class='title'>$this->title</h2>$this->subtitle";
     }
 
     private function template($template)

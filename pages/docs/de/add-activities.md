@@ -15,7 +15,7 @@ Am einfachsten ist es, eine Aktivität über eine DOI oder einer Pubmed-ID hinzu
             <input type="text" class="form-control" value="10.1093/nar/gkab961" name="doi"
                 id="search-doi">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit"><i class="ph ph-search"></i></button>
+                <button class="btn secondary" type="submit"><i class="ph ph-search"></i></button>
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@ Bei einigen Aktivitäten gibt es Unterkategorien, die einen Einfluss auf die Dat
 
 ### Beispiele nutzen
 
-Ganz oben im Formular gibt es einen kleinen Knopf, mit dem die <button class="btn primary btn-sm">Beispiele</button> umgeschaltet werden können. Bei aktivierten Beispielen erscheint ein formatierter Text über dem Formular. Dieser Text ist abhängig, von der ausgewählten Aktivitätskategorie (und eventuell Unterkategorie). Hier als Beispiel ein Journalartikel:
+Ganz oben im Formular gibt es einen kleinen Knopf, mit dem die <button class="btn secondary btn-sm">Beispiele</button> umgeschaltet werden können. Bei aktivierten Beispielen erscheint ein formatierter Text über dem Formular. Dieser Text ist abhängig, von der ausgewählten Aktivitätskategorie (und eventuell Unterkategorie). Hier als Beispiel ein Journalartikel:
 
 <div class="demo">
     <span class="element-author" data-element="Autor(en)">Spring, S., Rohde, M., Bunk, B., Spröer, C., Will, S. E. and Neumann-Schaal, M. </span>
@@ -105,7 +105,7 @@ Um die Autorenliste zu bearbeiten, steht ein einfacher Autoreneditor zur Verfüg
             <div class="input-group small d-inline-flex w-auto">
                 <input type="text" placeholder="Füge Autor hinzu ..." onkeypress="addAuthor(event);" id="add-author" list="scientist-list">
                 <div class="input-group-append">
-                    <button class="btn btn-primary h-full" type="button" onclick="addAuthor(event);">
+                    <button class="btn secondary h-full" type="button" onclick="addAuthor(event);">
                         <i class="ph ph-plus"></i>
                     </button>
                 </div>
@@ -411,7 +411,7 @@ Aus Gründen der Standardisierung kann ein Journal nicht als Freitext-Feld einge
             <i class="ph ph-question"></i> Hilfe                    </a>
         <label for="journal" class="element-cat required">Journal</label>
         <a href="#journal-select" id="journal-field" class="module">
-            <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+            <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
             <div id="selected-journal">
                 <span class="title">Kein Journal ausgewählt</span>
                                         </div>
@@ -448,7 +448,7 @@ Ein Journal kann ausgewählt werden, indem man auf den Haken <span class="btn bt
             <i class="ph ph-question"></i> Hilfe                    </a>
         <label for="journal" class="element-cat required">Journal</label>
         <a href="#journal-select" id="journal-field" class="module">
-            <span class="float-right text-primary"><i class="ph ph-edit"></i></span>
+            <span class="float-right text-secondary"><i class="ph ph-edit"></i></span>
             <div id="selected-journal"><h5 class="m-0">Nucleic acids research</h5><span class="float-right">Oxford University Press</span><span class="text-muted">ISSN: 1362-4962, 0305-1048</span></div>
             <input type="hidden" class="form-control hidden" name="values[journal]" value="Nucleic acids research" id="journal" list="journal-list" required="" readonly="">
             <input type="hidden" class="form-control hidden" name="values[journal_id]" value="6364d154f7323cdc82531a01" id="journal_id" required="" readonly="">
@@ -463,7 +463,7 @@ Sollte das gesuchte Journal nicht in OSIRIS gefunden werden, kann man durch Klic
 ### Dokumente hinterlegen
 Nachdem eine Aktivität hinzugefügt wurde, können Dokumente hinterlegt werden. Idealerweise werden Publikationen, Poster und Vorträge mit einem PDF-Anhang supplementiert. Dafür geht man auf der Detailseite einer Aktivität (auf der man nach dem Erstellen landet), auf den Knopf **Datei hochladen**.
 
-Auf der folgenden Seite findet sich ganz oben eine Übersicht zu der Aktivität, die man gerade bearbeitet. Es folgt eine Liste mit eventuell bereits vorhandenen Dateien, die an dieser Stelle auch heruntergeladen (<i class="ph ph-download text-primary"></i>) bzw. gelöscht  (<i class="ph ph-trash text-danger"></i>) werden können. 
+Auf der folgenden Seite findet sich ganz oben eine Übersicht zu der Aktivität, die man gerade bearbeitet. Es folgt eine Liste mit eventuell bereits vorhandenen Dateien, die an dieser Stelle auch heruntergeladen (<i class="ph ph-download text-secondary"></i>) bzw. gelöscht  (<i class="ph ph-trash text-danger"></i>) werden können. 
 
 Weiter unten findet sich ein Formular, mit dem neue Dokumente hochgeladen werden können. Diese dürfen eine Maximalgröße von 16 MB nicht überschreiten und sollten sich nach Möglichkeit in einem Standardformat befinden. Gute Beispiele sind PDF (bevorzugt), PPTX, XLSX, DOCX. 
 
@@ -551,13 +551,13 @@ So sieht diese Information jetzt auf der Prüfseite deiner Koautoren aus:
                     </button>
                 </div>
                 <a target="_blank" href="/osiris/activities/view/650449e74430390609471786"
-                    class="btn small text-primary" data-toggle="tooltip" data-title="Aktivität ansehen">
+                    class="btn small text-secondary" data-toggle="tooltip" data-title="Aktivität ansehen">
                     <i class="ph ph-arrow-fat-line-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-md-6">
-            <span class="badge secondary float-md-right">27.05.2024</span>
+            <span class="badge primary float-md-right">27.05.2024</span>
             <h5 class="m-0">
                 Bearbeitet von Dominic Koblitz </h5>
             <blockquote class="signal">
@@ -597,11 +597,11 @@ Ich halte einen Vortrag auf einer Konferenz. Auf einem Minisymposium ein paar Wo
 
 <div class="demo">
     <div class="btn-group">
-    <span class="btn secondary">
+    <span class="btn primary">
         <i class="ph ph-regular ph-pencil-simple-line"></i>
         Bearbeiten            
     </span>
-    <span class="btn secondary active">
+    <span class="btn primary active">
         <i class="ph ph-copy"></i>
         Kopie            
     </span>

@@ -4,15 +4,15 @@
  * Page to see all connected research data
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /tags/<name>
  *
  * @package     OSIRIS
  * @since       1.2.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -21,7 +21,7 @@
 <h1 class="mt-0">
     <i class="ph ph-circles-three-plus text-osiris" aria-hidden="true"></i>
     <?= lang('Tags on', 'Schlagwörter zu') ?>
-    <span class="badge primary"><?= $name ?></span>
+    <span class="badge secondary"><?= $name ?></span>
 </h1>
 
 <table class="table dataTable" id="result-table" id="data-table">

@@ -4,13 +4,13 @@
  * Routing file for users (tables, profiles, searches) and related stuff
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -145,8 +145,7 @@ Route::get('/user/delete/(.*)', function ($user) {
 // Profile
 
 Route::get('/profile/?(.*)', function ($user) {
-    include_once BASEPATH . "/php/init.php";
-
+    include_once BASEPATH . "/php/init.php";    
     if (empty($user)) $user = $_SESSION['username'];
     if (!empty($user) && DB::to_ObjectID($user)) {
         $mongo_id = DB::to_ObjectID($user);
@@ -441,7 +440,7 @@ Route::get('/synchronize-users', function () {
             </details>
         <?php } ?>
 
-        <button type="submit" class="btn btn-primary"><?= lang('Synchronize', 'Synchronisieren') ?></button>
+        <button type="submit" class="btn secondary"><?= lang('Synchronize', 'Synchronisieren') ?></button>
     </form>
 <?php
 
@@ -467,7 +466,7 @@ Route::post('/synchronize-users', function () {
             "first",
             "last",
             "name",
-            "dept",
+            "depts",
             "username"
         ];
         foreach ($_POST['inactivate'] as $username) {
@@ -539,6 +538,8 @@ Route::post('/crud/users/update/(.*)', function ($user) {
     // separate personal and account information
     $person = $values;
     // $account = [];
+    // get old value for rendering
+    $old = $DB->getPerson($user);
 
     // update name information
     if (isset($values['last']) && isset($values['first'])) {
@@ -549,9 +550,16 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         foreach (explode(" ", $values['first']) as $name) {
             $person['first_abbr'] .= " " . $name[0] . ".";
         }
+
+        // only update public visibility if complete form (user edit) is submitted
+        // name is indicating that
+        foreach (["public_image", "public_email", "public_phone", "hide"] as $key) {
+            $person[$key] = boolval($values[$key] ?? false);
+        }
+
     }
 
-
+    
     if (isset($values['cv'])) {
         $cv = $values['cv'];
         foreach ($values['cv'] as $key => $entry) {
@@ -577,22 +585,20 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         $person['cv'] = $cv;
     }
 
-    // dump($person, true);
-    // die;
-    // if (isset($person['dept'])) {
-    //     $person['depts'] = $Groups->getParents($person['dept']);
-    //     $person['depts'] = array_reverse($person['depts']);
-    // }
-
     $updateResult = $osiris->persons->updateOne(
         ['username' => $user],
         ['$set' => $person]
     );
 
-    // if (!empty($account)) $updateResult = $osiris->account->updateOne(
-    //     ['username' => $user],
-    //     ['$set' => $account]
-    // );
+    if (isset($person['hide'])){
+        // check if hide value changed
+       
+        if ($old['hide'] != $person['hide']) {
+            // rerender all activities
+            include_once BASEPATH . "/php/Render.php";
+            renderActivities(['authors.user' => $user]);
+        }
+    }
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");
@@ -620,7 +626,7 @@ Route::post('/crud/users/delete/(.*)', function ($user) {
         "first",
         "last",
         "name",
-        "dept",
+        "depts",
         "username"
     ];
     $arr = [];

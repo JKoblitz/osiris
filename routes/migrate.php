@@ -4,59 +4,32 @@
  * Routing file for the database migration
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
-// TODO: Add the following routes to the routes/migrate.php file
 Route::get('/migrate/test', function () {
-    include_once BASEPATH . "/php/init.php";
-    $cursor = $osiris->activities->find(['history' => ['$exists' => false]]);
-
-    foreach ($cursor as $doc) {
-        if (isset($doc['history'])) continue;
-        $id = $doc['_id'];
-        echo "$id<br>";
-        $values = ['history' => []];
-        if (isset($doc['created_by'])) {
-            $values['history'][] = [
-                'date' => $doc['created'],
-                'user' => $doc['created_by'],
-                'type' => 'created',
-                'changes' => []
-            ];
-        }
-        if (isset($doc['edited_by'])) {
-            $values['history'][] = [
-                'date' => $doc['edited'],
-                'user' => $doc['edited_by'],
-                'type' => 'edited',
-                'changes' => []
-            ];
-        }
-
-        if (empty($values['history']) ) continue;
-        // $values['history'][count($values['history']) - 1]['current'] = $doc['rendered']['print'] ?? 'unknown';
-
-        $osiris->activities->updateOne(
-            ['_id' => $id],
-            ['$set' => $values]
-        );
-        // remove old fields
-        // $osiris->activities->updateOne(
-        //     ['_id' => $id],
-        //     ['$unset' => ['edited_by' => '', 'edited' => '']]
-        // );
-    }
+    include_once BASEPATH . "/php/mail.php";
+    // $filter = "$and":[{"authors.last":"Eberth"},{"authors.user":{"$ne":"seb14"}}];
+    // $filter = ['authors.last' => 'Eberth', 'authors.user' => ['$ne' => 'seb14']];
+    // $cursor = $osiris->activities->find($filter);
+    // foreach ($cursor as $doc) {
+    //     dump($doc, true);
+    //     $osiris->activities->updateOne(
+    //         ['_id' => $doc['_id']],
+    //         ['$set' => ['authors.$[elem].user' => 'seb14']],
+    //         ['arrayFilters' => [['elem.last' => 'Eberth']]]
+    //     );
+    // }
+    writeMail();
 
     echo "Done";
-
 });
 
 
@@ -337,7 +310,7 @@ Route::get('/migrate', function () {
     }
 
     // if ($V[1] < 2 || ($V[1] == 2 && $V[2] < 1)) {
-    if (version_compare($DBversion, '1.2.1', '<')){
+    if (version_compare($DBversion, '1.2.1', '<')) {
         echo "<p>Migrating persons into new version.</p>";
         $migrated = 0;
 
@@ -532,7 +505,19 @@ Route::get('/migrate', function () {
     if (version_compare($DBversion, '1.3.4', '<')) {
         $osiris->activities->createIndex(['rendered.plain' => 'text']);
     }
-    
+
+    if (version_compare($DBversion, '1.3.5', '<')) {
+        $cursor = $osiris->activities->find(['subtype' => ['$exists' => false]]);
+        foreach ($cursor as $doc) {
+            $osiris->activities->updateOne(
+                ['_id' => $doc['_id']],
+                ['$set' => ['subtype' => $doc['pubtype'], 'history' => [
+                    ['date' => date('Y-m-d'), 'type' => 'imported', 'user' => $_SESSION['username']]
+                ]]]
+            );
+        }
+    }
+
     echo "<p>Rerender activities</p>";
     include_once BASEPATH . "/php/Render.php";
     renderActivities();

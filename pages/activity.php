@@ -4,15 +4,15 @@
  * Page to see details on one activity
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /activities/view/<activity_id>
  *
  * @package     OSIRIS
  * @since       1.0 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -32,22 +32,22 @@ foreach ($M as $m) {
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
-<?php if ($Settings->featureEnabled('projects') && !empty($doc['projects'] ?? [])) { ?>
+    <?php if ($Settings->featureEnabled('projects') && !empty($doc['projects'] ?? [])) { ?>
         <div class="alert success mb-20">
-        <h3 class="title">
-            <?= lang('Projects connected', 'Projekte verknüpft') ?>
-        </h3>
-        <?= lang(
-            'This activity was automatically connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
-            'Diese Aktivität wurde automatisch anhand von Fördernummern mit Projekten verknüpft. Du kannst weitere Projekte hinzufügen oder die bestehenden entfernen.'
-        ) ?>
-        <br>
-        <a href="#projects" class="btn success">
-            <i class="ph ph-tree-structure"></i>
-            <?= lang('Projects', 'Projekte') ?>
-        </a>
-    </div>
-<?php } ?>
+            <h3 class="title">
+                <?= lang('Projects connected', 'Projekte verknüpft') ?>
+            </h3>
+            <?= lang(
+                'This activity was automatically connected to projects based on funding numbers. You can add more projects or remove the existing ones.',
+                'Diese Aktivität wurde automatisch anhand von Fördernummern mit Projekten verknüpft. Du kannst weitere Projekte hinzufügen oder die bestehenden entfernen.'
+            ) ?>
+            <br>
+            <a href="#projects" class="btn success">
+                <i class="ph ph-tree-structure"></i>
+                <?= lang('Projects', 'Projekte') ?>
+            </a>
+        </div>
+    <?php } ?>
     <div class="alert signal mb-20">
         <h3 class="title">
             <?= lang('For the good practice: ', 'Für die gute Praxis:') ?>
@@ -65,7 +65,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
         </a>
     </div>
 
-    
+
 <?php } ?>
 
 <style>
@@ -125,80 +125,44 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
     <div class="btn-group">
         <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
-            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-secondary border-secondary">
+            <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn text-primary border-primary">
                 <i class="ph ph-pencil-simple-line"></i>
                 <?= lang('Edit', 'Bearbeiten') ?>
             </a>
         <?php } ?>
         <?php if (!in_array($doc['type'], ['publication'])) { ?>
-            <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn text-secondary border-secondary">
+            <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn text-primary border-primary">
                 <i class="ph ph-copy"></i>
                 <?= lang("Copy", "Kopie") ?>
             </a>
         <?php } ?>
     </div>
 
-    <a href="#upload-files" class="btn text-secondary border-secondary">
+    <a href="#upload-files" class="btn text-primary border-primary">
         <i class="ph ph-upload"></i>
         <?= lang('Upload file', 'Datei hochladen') ?>
     </a>
     <div class="btn-group">
         <?php if ($Settings->featureEnabled('projects')) { ?>
-            <a href="#projects" class="btn text-secondary border-secondary">
+            <a href="#projects" class="btn text-primary border-primary">
                 <i class="ph ph-plus-circle"></i>
                 <?= lang("Project", "Projekt") ?>
             </a>
         <?php } ?>
-        <a href="#connect" class="btn text-secondary border-secondary">
+        <a href="#connect" class="btn text-primary border-primary">
             <i class="ph ph-plus-circle"></i>
             <?= lang("Tags", "Schlagwörter") ?>
         </a>
     </div>
 
-    <?php if ($user_activity) {
-        $highlights = DB::doc2Arr($USER['highlighted'] ?? []);
-        $highlighted = in_array($id, $highlights);
-    ?>
-        <button class="btn <?= ($highlighted ? 'signal' : '') ?>" onclick="fav()" id="highlighted">
-            <i class="ph ph-star <?= ($highlighted ? 'ph-fill' : '') ?>"></i>
-            <!-- <?= lang('Highlighted', 'Hervorgehoben') ?> -->
-        </button>
-        <script>
-            function fav() {
-                $.ajax({
-                    type: "POST",
-                    url: ROOTPATH + "/crud/activities/fav",
-                    data: {
-                        activity: ACTIVITY_ID
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        console.log(response);
-                        var btn = $('#highlighted')
-                        if (response.fav) {
-                            btn.addClass('signal')
-                            btn.find('i').addClass('ph-fill')
-                        } else {
-                            btn.removeClass('signal')
-                            btn.find('i').removeClass('ph-fill')
-
-                        }
-                    },
-                    error: function(response) {
-                        console.log(response);
-                    }
-                });
-            }
-        </script>
-    <?php } ?>
 
     <div class="btn-group">
-        <button class="btn text-secondary border-secondary" onclick="addToCart(this, '<?= $id ?>')">
+        <button class="btn text-primary border-primary" onclick="addToCart(this, '<?= $id ?>')">
             <i class="<?= (in_array($id, $cart)) ? 'ph ph-fill ph-shopping-cart ph-shopping-cart-plus text-success' : 'ph ph-shopping-cart ph-shopping-cart-plus' ?>"></i>
             <?= lang('Collect', 'Sammeln') ?>
         </button>
         <div class=" dropdown with-arrow btn-group ">
-            <button class="btn text-secondary border-secondary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+            <button class="btn text-primary border-primary" data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
                 <i class="ph ph-download"></i> Download
                 <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
             </button>
@@ -245,7 +209,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                             </div>
 
                         </div>
-                        <button class="btn text-secondary border-secondary">Download</button>
+                        <button class="btn text-primary border-primary">Download</button>
                     </form>
                 </div>
             </div>
@@ -253,7 +217,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
     </div>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>
-        <a class="btn text-secondary border-secondary ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
+        <a class="btn text-primary border-primary ml-auto" href="<?= ROOTPATH ?>/preview/activity/<?= $id ?>">
             <i class="ph ph-eye ph-fw"></i>
             <?= lang('Preview', 'Vorschau') ?>
         </a>
@@ -276,6 +240,79 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 </div>
 
+
+<?php if ($Settings->featureEnabled('portal') && ($user_activity || $Settings->hasPermission('activities.edit'))) {
+    $highlights = DB::doc2Arr($USER['highlighted'] ?? []);
+    $highlighted = in_array($id, $highlights);
+
+?>
+
+    <div class="box">
+        <div class="p-10">
+            <!-- <b><?= lang('This is your activity.', 'Dies ist deine Aktivität.') ?></b> -->
+            <div class="mt-10 d-flex">
+                <!-- switch -->
+
+                <?php if ($user_activity) { ?>
+                    <div class="custom-switch ml-10">
+                        <input type="checkbox" id="highlight" <?= ($highlighted) ? 'checked' : '' ?> name="values[highlight]" onchange="fav()">
+                        <label for="highlight">
+                            <?= lang('Highlight on your profile', 'Auf deinem Profil hervorheben') ?>
+                        </label>
+                    </div>
+                <?php } ?>
+
+                <!-- hide in all activities on portal -->
+                <!-- checkbox to hide -->
+                <div class="custom-switch ml-10">
+                    <input type="checkbox" id="hide" <?= ($doc['hide'] ?? false) ? 'checked' : '' ?> name="values[hide]" onchange="hide()">
+                    <label for="hide">
+                        <?= lang('Hide in portfolio', 'Im Portfolio verstecken') ?>
+                    </label>
+                </div>
+            </div>
+            <script>
+                function fav() {
+                    $.ajax({
+                        type: "POST",
+                        url: ROOTPATH + "/crud/activities/fav",
+                        data: {
+                            activity: ACTIVITY_ID
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastSuccess(lang('Highlight status changed', 'Hervorhebungsstatus geändert'))
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
+
+
+                function hide() {
+                    $.ajax({
+                        type: "POST",
+                        url: ROOTPATH + "/crud/activities/hide",
+                        data: {
+                            activity: ACTIVITY_ID
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            toastSuccess(lang('Highlight status changed', 'Hervorhebungsstatus geändert'))
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
+                }
+            </script>
+
+
+
+        </div>
+    </div>
+<?php } ?>
 
 
 <!-- TAB AREA -->
@@ -388,7 +425,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
             <div class="btn-toolbar float-sm-right">
                 <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
-                    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn primary">
+                    <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>" class="btn secondary">
                         <i class="ph ph-pencil-simple-line"></i>
                         <?= lang('Edit', 'Bearbeiten') ?>
                     </a>
@@ -396,7 +433,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
                 <?php if (!in_array($doc['type'], ['publication'])) { ?>
-                    <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn primary">
+                    <a href="<?= ROOTPATH ?>/activities/copy/<?= $id ?>" class="btn secondary">
                         <i class="ph ph-copy"></i>
                         <?= lang("Add a copy", "Kopie anlegen") ?>
                     </a>
@@ -406,7 +443,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <?php if ($user_activity && $locked && empty($doc['end'] ?? null) && $ongoing) { ?>
                     <!-- End user activity even if activity is locked -->
                     <div class="dropdown">
-                        <button class="btn primary" data-toggle="dropdown" type="button" id="update-end-date" aria-haspopup="true" aria-expanded="false">
+                        <button class="btn secondary" data-toggle="dropdown" type="button" id="update-end-date" aria-haspopup="true" aria-expanded="false">
                             <i class="ph ph-calendar-check"></i>
                             <?= lang('End activity', 'Beenden') ?> <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
                         </button>
@@ -583,7 +620,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
                 <div class="btn-toolbar mb-10 float-sm-right">
                     <?php if (($user_activity || $Settings->hasPermission('activities.edit')) && (!$locked || $Settings->hasPermission('activities.edit-locked'))) { ?>
-                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>/<?= $role ?>" class="btn primary">
+                        <a href="<?= ROOTPATH ?>/activities/edit/<?= $id ?>/<?= $role ?>" class="btn secondary">
                             <i class="ph ph-pencil-simple-line"></i>
                             <?= lang("Edit", "Bearbeiten") ?>
                         </a>
@@ -633,13 +670,33 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                                     </td>
                                 <?php endif; ?>
                                 <td>
-                                    <?php if (isset($author['user']) && !empty($author['user'])) {
-                                    ?>
+                                    <?php if (isset($author['user']) && !empty($author['user'])) : ?>
                                         <a href="<?= ROOTPATH ?>/profile/<?= $author['user'] ?>"><?= $author['user'] ?></a>
                                         <span data-toggle="tooltip" data-title="<?= lang('Author approved activity?', 'Autor hat die Aktivität bestätigt?') ?>">
                                             <?= bool_icon($author['approved'] ?? 0) ?>
                                         </span>
-                                    <?php } ?>
+                                    <?php else : ?>
+                                        <div class="dropdown">
+                                            <button class="btn small" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                                                <?=lang('Claim', 'Beanspruchen')?>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right w-300" aria-labelledby="dropdown-1">
+                                                <div class="content">
+                                                    <small class="d-block text-danger mb-10">
+                                                        <?= lang(
+                                                            'You claim that you are this author.<br> This activity will be added to your list and the author name will be added to your list of alternative names.', 
+                                                        'Du beanspruchst, dass du diese Person bist.<br> Du fügst diese Aktivität deiner Liste hinzu und den Namen zur Liste deiner alternativen Namen.') ?>
+                                                    </small>
+                                                    <form action="<?= ROOTPATH ?>/crud/activities/claim/<?= $id ?>" method="post">
+                                                        <input type="hidden" name="role" value="<?= $role ?>">
+                                                        <input type="hidden" name="index" value="<?= $i ?>">
+                                                        <input type="hidden" name="redirect" value="<?= ROOTPATH . "/activities/view/$id" ?>">
+                                                        <button class="btn btn-block" type="submit"><?=lang('Claim', 'Beanspruchen')?></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -717,7 +774,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 <?php if ($Settings->featureEnabled('projects')) { ?>
     <section id="projects" style="display: none;">
         <div class="btn-toolbar float-sm-right">
-            <a href="#projects" class="btn primary mr-5">
+            <a href="#projects" class="btn secondary mr-5">
                 <i class="ph ph-tree-structure"></i>
                 <?= lang("Connect", "Verknüpfen") ?>
             </a>
@@ -774,7 +831,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
     <div class="btn-toolbar float-sm-right">
-        <a href="#upload-files" class="btn primary">
+        <a href="#upload-files" class="btn secondary">
             <i class="ph ph-upload"></i>
             <?= lang('Upload', 'Hochladen') ?>
         </a>
@@ -821,7 +878,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
 
     <div class="btn-toolbar float-sm-right">
-        <a href="#connect" class="btn primary mr-5">
+        <a href="#connect" class="btn secondary mr-5">
             <i class="ph ph-circles-three-plus"></i>
             <?= lang("Connect", "Verknüpfen") ?>
         </a>
@@ -850,7 +907,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         <td>
                             <?php if (!empty($con['link'])) { ?>
                                 <a href="<?= $con['link'] ?>" class="badge " target="_blank">
-                                    <i class="ph ph-link text-secondary" style="line-height: 0;"></i>
+                                    <i class="ph ph-link text-primary" style="line-height: 0;"></i>
                                     <?= $con['link'] ?>
                                 </a>
                             <?php } ?>
@@ -963,7 +1020,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 if (!is_array($h)) continue;
             ?>
                 <div class="box p-20">
-                    <span class="badge secondary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
+                    <span class="badge primary float-md-right"><?= date('d.m.Y', strtotime($h['date'])) ?></span>
                     <h5 class="m-0">
                         <?php if ($h['type'] == 'created') {
                             echo lang('Created by ', 'Erstellt von ');

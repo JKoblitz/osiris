@@ -6,7 +6,7 @@
  * Either user specific or all (editor).
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /queue/user
  * @link        /queue/editor
@@ -14,8 +14,8 @@
  * @package     OSIRIS
  * @since       1.1.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -63,7 +63,7 @@ if ($n_queue == 0) {
                             <button class="btn text-success" onclick="_queue('<?= $id ?>', true)" data-toggle="tooltip" data-title="<?= lang('No duplicate: Accept and add to the database.', 'Kein Duplikat: akzeptieren und zur Datenbank hinzufügen.') ?>">
                                 <i class="ph ph-check ph-fw"></i>
                             </button>
-                            <a target="_self" href="<?= ROOTPATH ?>/add-activity?doi=<?= $doc['doi'] ?>" class="btn text-primary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
+                            <a target="_self" href="<?= ROOTPATH ?>/add-activity?doi=<?= $doc['doi'] ?>" class="btn text-secondary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
                                 <i class="ph ph-pencil-simple-line"></i>
                             </a>
                         <?php } else { ?>
@@ -73,7 +73,7 @@ if ($n_queue == 0) {
                             <button class="btn text-danger" onclick="_queue('<?= $id ?>', false)" data-toggle="tooltip" data-title="<?= lang('Decline and remove from queue.', 'Ablehnen und aus der Warteschlange entfernen.') ?>">
                                 <i class="ph ph-x ph-fw"></i>
                             </button>
-                            <a target="_self" href="<?= ROOTPATH ?>/add-activity?doi=<?= $doc['doi'] ?>" class="btn text-primary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
+                            <a target="_self" href="<?= ROOTPATH ?>/add-activity?doi=<?= $doc['doi'] ?>" class="btn text-secondary" data-toggle="tooltip" data-title="<?= lang('Add manually', 'Manuell hinzufügen') ?>">
                                 <i class="ph ph-pencil-simple-line"></i>
                             </a>
                         <?php } ?>

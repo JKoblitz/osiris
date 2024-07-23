@@ -4,13 +4,13 @@
  * Class for all project associated methods.
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @package OSIRIS
  * @since 1.2.2
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -49,13 +49,29 @@ class Project
                 return "<span class='badge'>-</span>";
         }
     }
+    public function getType()
+    {
+        $type = $this->project['type'] ?? 'Drittmittel';
+        if ($type == 'Drittmittel') { ?>
+            <span class="badge text-danger no-wrap">
+                <i class="ph ph-hand-coins"></i>
+                <?= lang('Third-party funded', 'Drittmittel') ?>
+            </span>
+
+        <?php } else { ?>
+            <span class="badge text-signal no-wrap">
+                <i class="ph ph-piggy-bank"></i>
+                <?= lang('Self-funded', 'Eigenfinanziert') ?>
+            </span>
+<?php }
+    }
 
     public function getRole()
     {
         if (($this->project['role'] ?? '') == 'coordinator') {
-            return "<span class='badge'>" . '<i class="ph ph-crown text-signal"></i> ' . lang('Coordinator', 'Koordinator') . "</span>";
+            return "<span class='badge no-wrap'>" . '<i class="ph ph-crown text-signal"></i> ' . lang('Coordinator', 'Koordinator') . "</span>";
         }
-        return "<span class='badge'>" . '<i class="ph ph-handshake text-muted"></i> ' . lang('Partner') . "</span>";
+        return "<span class='badge no-wrap'>" . '<i class="ph ph-handshake text-muted"></i> ' . lang('Partner') . "</span>";
     }
 
     public static function getCollaboratorIcon($collab, $cls = "")
@@ -116,8 +132,8 @@ class Project
      */
     public function getDateRange()
     {
-        $start = sprintf('%02d', $this->project['start']['month']) . "/" . $this->project['start']['year'];
-        $end = sprintf('%02d', $this->project['end']['month']) . "/" . $this->project['end']['year'];
+        $start = $this->getStartDate();
+        $end = $this->getEndDate();
         return "$start - $end";
     }
 
@@ -134,13 +150,52 @@ class Project
         return false;
     }
 
+    public function getStartDate()
+    {
+        return sprintf('%02d', $this->project['start']['month']) . "/" . $this->project['start']['year'];
+    }
+    public function getEndDate()
+    {
+        return sprintf('%02d', $this->project['end']['month']) . "/" . $this->project['end']['year'];
+    }
+    public function getProgress()
+    {
+        $end = new DateTime();
+        $end->setDate(
+            $this->project['end']['year'],
+            $this->project['end']['month'] ?? 1,
+            $this->project['end']['day'] ?? 1
+        );
+        $start = new DateTime();
+        $start->setDate(
+            $this->project['start']['year'],
+            $this->project['start']['month'] ?? 1,
+            $this->project['start']['day'] ?? 1
+        );
+        $today = new DateTime();
+        $progress = 0;
+        if ($end < $today) {
+            $progress = 100;
+        } else {
+            $progress = $start->diff($today)->days / $start->diff($end)->days * 100;
+        }
+        return round($progress);
+    }
+
     public static function personRole($role, $gender = 'n')
     {
         switch ($role) {
             case 'PI':
-                return '<i class="ph ph-crown text-signal"></i>' . lang('Project lead', 'Projektleitung');
+                // '<i class="ph ph-crown text-signal"></i>' . 
+                return lang('Project lead', 'Projektleitung');
+            case 'applicant':
+                return lang('Applicant', 'Antragsteller:in');
             case 'worker':
-                return lang('Project member', 'Projektmitarbeiter');
+                return lang('Project member', 'Projektmitarbeiter:in');
+            case 'scholar':
+                return lang('Scholar', 'Stipediat:in');
+            case 'supervisor':
+                return lang('Supervisor', 'Betreuer:in');
             default:
                 return lang('Associate', 'Beteiligte Person');
         }
@@ -151,18 +206,20 @@ class Project
         $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
-        $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
+        if (isset($this->project['funder']))
+            $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
         $widget .= '<span class="text-muted">' . $this->getDateRange() . '</span>';
         $widget .= '</a>';
         return $widget;
     }
 
-    public function widgetPortal()
+    public function widgetPortal($cls = "module")
     {
-        $widget = '<a class="module" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
+        $widget = '<a class="'.$cls.'" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<p class="d-block text-muted">' . $this->project['title'] . '</p>';
-        $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
+        if (isset($this->project['funder']))
+            $widget .= '<span class="float-right text-muted">' . $this->project['funder'] . '</span>';
         $widget .= '<span class="text-muted">' . $this->getDateRange() . '</span>';
         $widget .= '</a>';
         return $widget;
@@ -190,11 +247,8 @@ class Project
             $widget .= '<span class="float-right badge">' . $this->personRole($userrole) . '</span> ';
         }
         $widget .= '<span class="mr-10">' . $this->getStatus() . '</span> ';
-        $widget .= '<span class="mr-10">' . $this->project['funder'];
-        if (!empty($this->project['funding_number'])) {
-            $widget .= " (" . $this->getFundingNumbers(', ') . ")";
-        }
-        $widget .=  '</span>';
+        if (isset($this->project['funder']))
+            $widget .= '<span class="text-muted">' . $this->project['funder'] . '</span>';
         $widget .= '</a>';
         return $widget;
     }
@@ -207,7 +261,7 @@ class Project
         $institute['role'] = $this->project['role'] ?? 'Partner';
 
         $collaborators = DB::doc2Arr($this->project['collaborators'] ?? []);
-        if (!empty($collaborators)){
+        if (!empty($collaborators)) {
             $collaborators = array_merge($collaborators, [$institute]);
         }
 

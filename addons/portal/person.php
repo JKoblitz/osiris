@@ -2,44 +2,58 @@
 $Format = new Document(false, 'portal');
 ?>
 <style>
-    .profile-img {
-        max-width: 100px; margin-right: 2rem;
+    img.profile-img {
+        max-width: 8rem;
+        margin-right: 2rem;
+    }
+
+    /* .module {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 1rem 0;
+    } */
+    #activities-table thead,
+    #publication-table thead,
+    #past-project-table thead {
+        display: none;
     }
 </style>
+
 <div class="container">
 
     <div class="profile-header" style="display: flex; align-items: center;">
-        <div class="col" style="flex-grow: 0;">
-        <?=$Settings->printProfilePicture($user, 'profile-img rounded')?>
+        <div class="col mr-20" style="flex-grow: 0;">
+           <?php if (isset($scientist['public_image']) && $scientist['public_image'] === true) { ?>
+            <?= $Settings->printProfilePicture($user, 'profile-img rounded') ?>
+           <?php } else { ?>
+            <img src="<?= ROOTPATH ?>/img/no-photo.png" alt="Profilbild" class="profile-img rounded">
+           <?php } ?>
+            
         </div>
-        <div class="col ml-20">
+
+        <div class="col">
             <h1 class="m-0">
                 <?= $scientist['academic_title'] ?? '' ?>
                 <?= $scientist['first'] ?? '' ?>
                 <?= $scientist['last'] ?>
             </h1>
-
-
+            <p class="my-0 lead"><?= lang($scientist['position'] ?? '', $scientist['position_de'] ?? null) ?></p>
             <?php
             foreach ($scientist['depts'] as $i => $d) {
                 $dept = $Groups->getGroup($d);
                 if ($i > 0) echo ', ';
             ?>
                 <a href="<?= PORTALPATH ?>/group/<?= $dept['id'] ?>" style="color:<?= $dept['color'] ?? 'inherit' ?>">
-                    <?php if (in_array($user, $dept['head'] ?? [])) { ?>
-                        <i class="ph ph-crown"></i>
-                    <?php } ?>
                     <?= $dept['name'] ?>
                 </a>
             <?php } ?>
-            <?php if (isset($scientist['position']) && !empty($scientist['position'])) { ?>
-                <p class="my-0 lead"><?= $scientist['position'] ?></p>
-            <?php } ?>
+
         </div>
     </div>
 
     <div class="row row-eq-spacing my-0">
-        <div class="col-md-8">
+        <div class="col-md-8" id="research">
             <?php if (isset($scientist['research']) && !empty($scientist['research'])) { ?>
                 <div class="pb-10">
                     <h2 class="title"><?= lang('Research interest', 'Forschungsinteressen') ?></h2>
@@ -53,10 +67,12 @@ $Format = new Document(false, 'portal');
             <?php } ?>
             <?php if (isset($scientist['cv']) && !empty($scientist['cv'])) {
                 $cv = DB::doc2Arr($scientist['cv']);
+                $cv = array_filter($cv, function ($entry) {
+                    return ($entry['hide'] ?? false) != true;
+                });
             ?>
                 <div class="pb-10">
                     <h2 class="title"><?= lang('Curriculum Vitae') ?></h2>
-
 
                     <div class="biography">
                         <?php foreach ($cv as $entry) { ?>
@@ -70,19 +86,24 @@ $Format = new Document(false, 'portal');
                 </div>
             <?php } ?>
 
+
+
+
+
+
             <?php
             $highlights = DB::doc2Arr($scientist['highlighted'] ?? array());
             if (!empty($highlights)) { ?>
                 <div class="pb-10">
 
                     <h2>Highlighted research</h2>
-                    <table class="table simple">
+                    <table class="table">
                         <?php
                         // $highlights = ['632da4672199cd3df8dbc166'];
 
                         foreach ($highlights as $h) {
                             $doc = $DB->getActivity($h);
-                            echo "<tr><td>";
+                            echo "<tr><td class='w-50'>";
                             echo $doc['rendered']['icon'];
                             echo "</td><td>";
                             // echo $doc['rendered']['web'];
@@ -96,51 +117,181 @@ $Format = new Document(false, 'portal');
             <?php } ?>
 
 
+
             <?php
-            $filter = ['authors.user' => $user, 'type' => 'publication'];
+            $filter = ['authors.user' => $user, 'type' => 'publication', 'hide' => ['$ne' => true]];
             $options = ['sort' => ['year' => -1, 'month' => -1, 'day' => -1]];
             $N = $osiris->activities->count($filter);
 
             if ($N > 0) { ?>
                 <div class="pb-10">
                     <h2>Publications</h2>
-                    <table class="table simple">
-                        <?php
-                        foreach ($osiris->activities->find($filter, $options) as $doc) {
-                            if (!empty($highlights) && in_array(strval($doc['_id']), $highlights))
-                                continue;
-                            echo "<tr><td>";
-                            echo $doc['rendered']['icon'];
-                            echo "</td><td>";
-                            // echo $doc['rendered']['web'];
-                            $Format->setDocument($doc);
-                            echo $Format->formatShort();
-                            echo "</td></tr>";
-                        }
-                        ?>
+                    <table class="table" id="publication-table">
+                        <thead>
+                            <tr>
+                                <th><?= lang('Type', 'Typ') ?></th>
+                                <th><?= lang('Title', 'Titel') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($osiris->activities->find($filter, $options) as $doc) {
+                                if (!empty($highlights) && in_array(strval($doc['_id']), $highlights))
+                                    continue;
+                                echo "<tr><td class='w-50'>";
+                                echo $doc['rendered']['icon'];
+                                echo "</td><td>";
+                                // echo $doc['rendered']['web'];
+                                $Format->setDocument($doc);
+                                echo $Format->formatShort();
+                                echo "</td></tr>";
+                            }
+                            ?>
+                        </tbody>
                     </table>
                 </div>
 
+                <?php if ($N > 6) { ?>
+                    <script>
+                        $(document).ready(function() {
+                            $('#publication-table').DataTable({
+                                "sort": false,
+
+                                "pageLength": 6,
+                                "lengthChange": false,
+                                "searching": false,
+                                // "info": false,
+                                "pagingType": "numbers"
+                            });
+                        });
+                    </script>
+                <?php } ?>
+
             <?php } ?>
+
+
+            <?php
+            $filter = ['authors.user' => $user, 'type' => ['$in' => ['poster', 'lecture', 'award', 'software']], 'hide' => ['$ne' => true]];
+            $N = $osiris->activities->count($filter);
+
+            if ($N > 0) { ?>
+                <div class="pb-10">
+                    <h2><?= lang('Research activities', 'Forschungsaktivitäten') ?></h2>
+                    <table class="table" id="activities-table">
+                        <thead>
+                            <tr>
+                                <th><?= lang('Type', 'Typ') ?></th>
+                                <th><?= lang('Title', 'Titel') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            foreach ($osiris->activities->find($filter, $options) as $doc) {
+                                if (!empty($highlights) && in_array(strval($doc['_id']), $highlights))
+                                    continue;
+                                echo "<tr><td class='w-50'>";
+                                echo $doc['rendered']['icon'];
+                                echo "</td><td>";
+                                // echo $doc['rendered']['web'];
+                                $Format->setDocument($doc);
+                                echo $Format->formatShort();
+                                echo "</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php if ($N > 6) { ?>
+                    <script>
+                        $(document).ready(function() {
+                            $('#activities-table').DataTable({
+                                "sort": false,
+
+                                "pageLength": 6,
+                                "lengthChange": false,
+                                "searching": false,
+                                // "info": false,
+                                "pagingType": "numbers"
+                            });
+                        });
+                    </script>
+                <?php } ?>
+
+            <?php } ?>
+
+
+            <!-- Teaching activities -->
+            <?php
+            $teaching = $osiris->activities->aggregate([
+                ['$match' => ['authors.user' => $user, 'type' => 'teaching', 'module_id' => ['$ne' => null], 'hide' => ['$ne' => true]]],
+                [
+                    '$group' => [
+                        '_id' => '$module_id',
+                        'count' => ['$sum' => 1],
+                        // 'doc' => ['$push' => '$$ROOT']
+                    ]
+                ],
+                ['$sort' => ['count' => -1]]
+            ])->toArray();
+
+            if (count($teaching) > 0) { ?>
+
+                <h2><?= lang('Participation in Teaching', 'Lehrbeteiligung') ?></h2>
+
+                <table class="table">
+                    <thead></thead>
+                    <tbody>
+                        <?php foreach ($teaching as $t) {
+                            $module = $osiris->teaching->findOne(['_id' => DB::to_ObjectID($t['_id'])]);
+                        ?>
+                            <tr>
+                                <td id="<?= $t['_id'] ?>">
+                                    <h5 class="mt-0">
+                                        <span class="highlight-text"><?= $module['module'] ?></span>
+                                        <?= $module['title'] ?>
+                                    </h5>
+
+                                    <em><?= $module['affiliation'] ?></em>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                    </tbody>
+                </table>
+            <?php } ?>
+
         </div>
 
 
-        <div class="col-md-4">
+        <div class="col-md-4" id="contact">
             <h2 class="title">Contact</h2>
-            <table class="table simple small">
+            <table class="table small">
                 <tbody>
-                    <tr>
-                        <td>
-                            <span class="key">Email</span>
-                            <?= $scientist['mail'] ?? '' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="key"><?= lang('Telephone', 'Telefon') ?></span>
-                            <?= $scientist['telephone'] ?? '' ?>
-                        </td>
-                    </tr>
+                    <?php if (($scientist['public_email'] ?? true && !empty($scientist['mail'])) || !empty($scientist['mail_alternative'] ?? null)) { ?>
+                        <tr>
+                            <td>
+                                <?php if ($scientist['public_email'] ?? true && !empty($scientist['mail'])) { ?>
+                                    <span class="key">Email</span>
+                                    <a href="mailto:<?= $scientist['mail'] ?>"><?= $scientist['mail'] ?></a>
+                                <?php } ?>
+
+                                <?php if (isset($scientist['mail_alternative']) && !empty($scientist['mail_alternative'])) { ?>
+                                    <p class="mb-0 font-weight-bold"><?= $scientist['mail_alternative_comment'] ?? '' ?></p>
+                                    <a href="mailto:<?= $scientist['mail_alternative'] ?>"><?= $scientist['mail_alternative'] ?></a>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    <?php if ($scientist['public_phone'] ?? false) { ?>
+                        <tr>
+                            <td>
+                                <span class="key"><?= lang('Telephone', 'Telefon') ?></span>
+                                <?= $scientist['telephone'] ?? '' ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
                     <?php if (!empty($scientist['twitter'] ?? null)) { ?>
                         <tr>
                             <td>
@@ -200,9 +351,10 @@ $Format = new Document(false, 'portal');
             $project_filter = [
                 '$or' => array(
                     ['contact' => $user],
-                    ['persons.user' => $user]
+                    ['persons.user' => $user],
                 ),
-                "status" => ['$ne' => "rejected"]
+                "status" => ['$ne' => "rejected"],
+                'public' => true
             ];
 
             $count_projects = $osiris->projects->count($project_filter);
@@ -228,19 +380,62 @@ $Format = new Document(false, 'portal');
                 ?>
                 <?php if (!empty($ongoing)) { ?>
 
-                    <h3><?= lang('Ongoing projects', 'Laufende Projekte') ?></h3>
-                    <?php foreach ($ongoing as $html) {
-                        echo $html;
-                    } ?>
+                    <!-- <h3><?= lang('Ongoing projects', 'Laufende Projekte') ?></h3> -->
+                    <table class="table">
+                        <thead></thead>
+                        <tbody>
+                            <?php foreach ($ongoing as $html) {
+                                echo "<tr><td>$html</td></tr>";
+                            } ?>
+                        </tbody>
+                    </table>
                 <?php } ?>
                 <?php if (!empty($past)) { ?>
                     <h3><?= lang('Past projects', 'Vergangene Projekte') ?></h3>
 
-                    <?php foreach ($past as $html) {
-                        echo $html;
-                    } ?>
+                    <table class="table" id="past-project-table">
+                        <thead>
+                            <tr>
+                                <th><?= lang('Project', 'Projekt') ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($past as $html) {
+                                echo "<tr><td>$html</td></tr>";
+                            } ?>
+                        </tbody>
+                    </table>
+
+                    <?php if (count($past) > 3) { ?>
+
+                        <script>
+                            $(document).ready(function() {
+                                $('#past-project-table').DataTable({
+                                    "sort": false,
+                                    "pageLength": 3,
+                                    "lengthChange": false,
+                                    "searching": false,
+                                    "info": false,
+                                    "pagingType": "numbers"
+                                });
+                            });
+                        </script>
+                    <?php } ?>
                 <?php } ?>
+
             <?php } ?>
         </div>
     </div>
 </div>
+
+<script>
+    // remove research col if empty
+    if (document.getElementById('research').innerHTML.trim() == '') {
+        document.getElementById('research').remove();
+    }
+
+    // remove contact col if empty (text)
+    if (document.getElementById('contact').textContent.trim() == 'Contact') {
+        document.getElementById('contact').remove();
+    }
+</script>

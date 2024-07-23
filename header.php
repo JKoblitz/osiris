@@ -4,13 +4,13 @@
  * Header component
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.0.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -76,8 +76,8 @@ $pageactive = function ($p) use ($page) {
     <title><?= $pagetitle ?? 'OSIRIS' ?></title>
 
     <!-- Icon font -->
-    <link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css" rel="stylesheet" />
-    <link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/phosphoricons/regular/style.css?v=2" rel="stylesheet" />
+    <link href="<?= ROOTPATH ?>/css/phosphoricons/fill/style.css?v=2" rel="stylesheet" />
     <!-- for open access icons -->
     <link href="<?= ROOTPATH ?>/css/fontello/css/osiris.css?v=2" rel="stylesheet" />
 
@@ -196,12 +196,12 @@ $pageactive = function ($p) use ($page) {
             <!-- Accessibility menu -->
 
             <div class="dropdown d-none d-md-block">
-                <button class="btn text-secondary border-secondary square mr-5" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
-                    <i class="ph ph- ph-person-arms-spread"></i>
+                <button class="btn text-primary border-primary square mr-5" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
+                    <i class="ph ph-person-arms-spread ph-person-simple-circle"></i>
                     <span class="sr-only"><?= lang('Accessibility Options', 'Accessibility-Optionen') ?></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-center w-300" aria-labelledby="accessibility-menu">
-                    <h6 class="header text-secondary">Accessibility</h6>
+                    <h6 class="header text-primary">Accessibility</h6>
                     <form action="#" method="get" class="content">
                         <input type="hidden" name="accessibility[check]">
 
@@ -232,12 +232,12 @@ $pageactive = function ($p) use ($page) {
                                 </small>
                             </div>
                         </div>
-                        <button class="btn secondary">Apply</button>
+                        <button class="btn primary">Apply</button>
                     </form>
                 </div>
             </div>
 
-            <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="btn text-secondary border-secondary mr-5">
+            <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="btn text-primary border-primary mr-5">
                 <i class="ph ph-translate" aria-hidden="true"></i>
                 <span class="sr-only"><?= lang('Change language', 'Sprache ändern') ?></span>
                 <?= lang('DE', 'EN') ?>
@@ -245,9 +245,9 @@ $pageactive = function ($p) use ($page) {
 
             <form id="navbar-search" action="<?= ROOTPATH ?>/activities" method="get" class="nav-search">
                 <div class="input-group">
-                    <input type="text" name="q" class="form-control border-secondary" autocomplete="off" placeholder="<?= lang('Search in activities', 'Suche in Aktivitäten') ?>">
+                    <input type="text" name="q" class="form-control border-primary" autocomplete="off" placeholder="<?= lang('Search in activities', 'Suche in Aktivitäten') ?>">
                     <div class="input-group-append">
-                        <button class="btn secondary filled"><i class="ph ph-magnifying-glass"></i></button>
+                        <button class="btn primary filled"><i class="ph ph-magnifying-glass"></i></button>
                     </div>
                 </div>
             </form>
@@ -315,7 +315,7 @@ $pageactive = function ($p) use ($page) {
                             <a href="<?= ROOTPATH ?>/queue/editor" class="sidebar-link with-icon sidebar-link-osiris <?= $pageactive('queue/editor') ?>">
                                 <i class="ph ph-queue" aria-hidden="true"></i>
                                 <?= lang('Queue', 'Warteschlange') ?>
-                                <span class="badge primary badge-pill ml-10" id="cart-counter">
+                                <span class="badge secondary badge-pill ml-10" id="cart-counter">
                                     <?= $n_queue ?>
                                 </span>
                             </a>
@@ -335,7 +335,7 @@ $pageactive = function ($p) use ($page) {
                         <?php } ?>
 
 
-                        <a href="<?= ROOTPATH ?>/user/logout" class=" with-icon" style="--secondary-color:var(--danger-color);--secondary-color-20:var(--danger-color-20);">
+                        <a href="<?= ROOTPATH ?>/user/logout" class=" with-icon" style="--primary-color:var(--danger-color);--primary-color-20:var(--danger-color-20);">
                             <i class="ph ph-sign-out" aria-hidden="true"></i>
                             Logout
                         </a>
@@ -454,11 +454,11 @@ $pageactive = function ($p) use ($page) {
                             <?php
                             $cart = readCart();
                             if (!empty($cart)) { ?>
-                                <span class="badge primary badge-pill ml-10" id="cart-counter">
+                                <span class="badge secondary badge-pill ml-10" id="cart-counter">
                                     <?= count($cart) ?>
                                 </span>
                             <?php } else { ?>
-                                <span class="badge primary badge-pill ml-10 hidden" id="cart-counter">
+                                <span class="badge secondary badge-pill ml-10 hidden" id="cart-counter">
                                     0
                                 </span>
                             <?php } ?>

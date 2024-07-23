@@ -4,15 +4,15 @@
  * Page for reports
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  * 
  * @link        /controlling
  *
  * @package     OSIRIS
  * @since       1.0 
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 ?>
@@ -30,7 +30,7 @@
 </style>
 
 
-<div class="box primary">
+<div class="box secondary">
     <div class="content">
 
         <h2 class="title">
@@ -61,7 +61,7 @@
                 </select>
             </div>
 
-            <button class="btn primary" type="submit"><?= lang('Generate report', 'Report erstellen') ?></button>
+            <button class="btn secondary" type="submit"><?= lang('Generate report', 'Report erstellen') ?></button>
         </form>
 
     </div>

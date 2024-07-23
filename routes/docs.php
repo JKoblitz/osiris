@@ -4,13 +4,13 @@
  * Routing file for the documentation
  * 
  * This file is part of the OSIRIS package.
- * Copyright (c) 2024, Julia Koblitz
+ * Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
  *
  * @package     OSIRIS
  * @since       1.3.0
  * 
- * @copyright	Copyright (c) 2024, Julia Koblitz
- * @author		Julia Koblitz <julia.koblitz@dsmz.de>
+ * @copyright	Copyright (c) 2024 Julia Koblitz, OSIRIS Solutions GmbH
+ * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
 
@@ -84,6 +84,20 @@ Route::get('/docs/([\w-]+)', function ($doc) {
     } else {
         echo "Doc not found.";
     }
+    ?>
+
+<style>
+pre {
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+  background-color: var(--gray-color-very-light);
+  width: 100%;
+  border: var(--border-width) solid #afafaf;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  overflow-y: auto;
+}
+</style>
+<?php
     // include BASEPATH . "/pages/error.php";
     include BASEPATH . "/footer.php";
 });
