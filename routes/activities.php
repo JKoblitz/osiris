@@ -694,6 +694,46 @@ Route::post('/crud/activities/approve/([A-Za-z0-9]*)', function ($id) {
 });
 
 
+Route::post('/crud/activities/claim/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    // get all necessary data
+    if (!isset($_POST['index']) || !is_numeric($_POST['index'])) {
+        echo "Error: No index given.";
+        die();
+    }
+    $index = intval($_POST['index']);
+    $role = $_POST['role'] ?? 'authors';
+
+    // prepare id
+    $id = $DB->to_ObjectID($id);
+    $filter = ['_id' => $id, "$role.user" => null];
+
+    // get name of author
+    $activity = $osiris->activities->findOne(['_id' => $id]);
+    $author = $activity[$role][$index] ?? null;
+    if (empty($author)) {
+        echo "Error: No author found.";
+        die();
+    }
+    // add author name to list of names of user
+    $osiris->persons->updateOne(
+        ['username' => $_SESSION['username']],
+        ['$addToSet' => ['names' => $author['last'] . ", " . $author['first']]
+    ]);
+
+    $updateResult = $osiris->activities->updateOne(
+        $filter,
+        ['$set' => ["$role.$index.user" => $_SESSION['username']]
+    ]);
+
+
+    // $updateCount = $updateResult->getModifiedCount();
+
+    header("Location: " . ROOTPATH . "/activities/view/$id?msg=update-success");
+    die();
+});
+
+
 Route::post('/crud/activities/approve-all', function () {
     include_once BASEPATH . "/php/init.php";
     // prepare id

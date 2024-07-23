@@ -320,7 +320,8 @@ Route::get('/portfolio/(unit|person|project)/([^/]*)/(publications|activities|al
         $users = array_column($persons, 'username');
         $filter = [
             'authors.user' => ['$in' => $users],
-            'hide' => ['$ne' => true]
+            'hide' => ['$ne' => true],
+            'authors.aoi' => ['$in' => [1, '1', true, 'true']]
         ];
     } elseif ($context == 'project') {
         if (DB::is_ObjectID($id)) {
@@ -331,11 +332,16 @@ Route::get('/portfolio/(unit|person|project)/([^/]*)/(publications|activities|al
         }
         $filter = [
             'projects' => $id,
-            'hide' => ['$ne' => true]
+            'hide' => ['$ne' => true],
+            'authors.aoi' => ['$in' => [1, '1', true, 'true']]
         ];
     } else {
         $id = DB::to_ObjectID($id);
         $person = $osiris->persons->findOne(['_id' => $id]);
+        if (empty($person)) {
+            echo rest('Person not found', 0, 404);
+            die;
+        }
         $id = $person['username'];
         $filter = [
             'authors.user' => $id,
@@ -1045,27 +1051,25 @@ Route::get('/portfolio/(unit|project)/([^/]*)/collaborators-map', function ($con
         }
     } else {
         $filter = ['collaborators' => ['$exists' => 1]];
-        if (isset($_GET['dept'])) {
-            // only for portal
-            $dept = $id;
+        // only for portal
+        $dept = $id;
 
-            $child_ids = $Groups->getChildren($dept);
-            $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
-            $users = array_column($persons, 'username');
-            $filter = [
-                'persons.user' => ['$in' => $users],
-                "public" => true,
-                "status" => ['$ne' => "rejected"],
-                'collaborators' => ['$exists' => 1]
-            ];
-        }
+        $child_ids = $Groups->getChildren($dept);
+        $persons = $osiris->persons->find(['depts' => ['$in' => $child_ids], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+        $users = array_column($persons, 'username');
+        $filter = [
+            'persons.user' => ['$in' => $users],
+            "public" => true,
+            "status" => ['$ne' => "rejected"],
+            'collaborators' => ['$exists' => 1]
+        ];
         $result = $osiris->projects->aggregate([
             ['$match' => $filter],
             ['$project' => ['collaborators' => 1]],
             ['$unwind' => '$collaborators'],
             [
                 '$group' => [
-                    '_id' => '$collaborators.ror',
+                    '_id' => '$collaborators.name',
                     'count' => ['$sum' => 1],
                     'data' => [
                         '$first' => '$collaborators'
@@ -1184,134 +1188,6 @@ Route::get('/portfolio/unit/([^/]*)/cooperation', function ($id) {
         }
         $matrix[] = $row;
     }
-
-    // dump([$matrix, $labels], true);
-    // die;
-
-
-    // // count the number of shared publications per department
-    // $departments = [];
-    // foreach ($result as $doc) {
-    //     foreach ($doc['depts'] as $dept) {
-    //         if ($dept == $id) continue;
-    //         if (!isset($departments[$dept])) {
-    //             $departments[$dept] = 0;
-    //         }
-    //         $departments[$dept]++;
-    //     }
-    // }
-
-    // $lvl = 1;
-    // $dept = $Groups->getGroup($id);
-    // if ($dept['level'] !== 1) {
-    //     echo rest('Invalid department', 0, 404);
-    // }
-
-    // $departments = array_filter($Groups->groups, function ($a) use ($lvl) {
-    //     return ($a['level'] ?? '') == $lvl;
-    // });
-
-    // $dept_users = [];
-    // foreach (array_column($departments, 'id') as $id) {
-    //     $dept_users[$id] = [];
-    // }
-    // $users = [];
-    // $warnings = [];
-    // foreach ($osiris->persons->find() as $person) {
-    //     if (!isset($person['depts'])) continue;
-    //     $d = [];
-    //     foreach ($person['depts'] as $key) {
-    //         // get parent dept
-    //         $p = $Groups->getParents($key, true);
-    //         if (!isset($p[$lvl])) $p = end($p);
-    //         else $p = $p[$lvl];
-    //         if (!in_array($p, $d)) {
-    //             if (!empty($d)) $warnings[] =  $person['displayname'] . ' has multiple associations.';
-    //             $d[] = $p;
-    //             $dept_users[$p][] = $person['username'];
-    //             $users[$person['username']] = $p;
-    //         }
-    //     }
-    // }
-
-    // // select activities from database
-    // $filter = [];
-    // if (isset($_GET['type']))
-    //     $filter['type'] = $_GET['type'];
-    // if (!empty($dept_filter)) {
-    //     $filter['authors.user'] = ['$in' => $dept_users[$dept_filter] ?? []];
-    // }
-    // if (isset($_GET['year'])) {
-    //     $filter['year'] = $_GET['year'];
-    // } else {
-    //     // past 5 years is default
-    //     $filter['year'] = ['$gte' => CURRENTYEAR - 4];
-    // }
-    // if (isset($_GET['activity'])) {
-    //     //overwrite
-    //     $filter = ['_id' => DB::to_ObjectID($_GET['activity'])];
-    // }
-    // $activities = $osiris->activities->find($filter);
-    // $activities = $activities->toArray();
-
-
-    // // generate graph json
-    // $combinations = [];
-
-    // $labels = $departments;
-    // foreach ($departments as $dept) {
-    //     $labels[$dept['id']]['count'] = 0;
-    // }
-
-    // foreach ($activities as $doc) {
-    //     $authors = [];
-    //     foreach ($doc['authors'] as $aut) {
-    //         if (!($aut['aoi'] ?? false) || empty($aut['user']) || !array_key_exists($aut['user'], $users)) continue;
-
-    //         $id = $aut['user'];
-
-    //         // get top level unit
-    //         $dept = $users[$id];
-
-    //         if (!empty($dept) && !in_array($dept, $authors)) {
-    //             if (!isset($labels[$dept])) {
-    //                 $labels[$dept] = $Groups->getGroup($dept);
-    //                 $labels[$dept]['count'] = 0;
-    //             }
-    //             $labels[$dept]['count']++;
-    //             $authors[] = $dept;
-    //         }
-    //     }
-    //     if (count($authors) == 1)
-    //         $combinations = array_merge($combinations, [[$authors[0], $authors[0]]]);
-    //     else
-    //         $combinations = array_merge($combinations, combinations($authors));
-    // }
-
-    // // remove depts without publications
-    // $labels = array_filter($labels, function ($d) {
-    //     return $d['count'] !== 0;
-    // });
-
-    // // add index (needed for following steps)
-    // $i = 0;
-    // foreach ($labels as $key => $val) {
-    //     $labels[$key]['index'] = $i++;
-    // }
-
-    // // init matrix of n x n
-    // $matrix = array_fill(0, count($labels), 0);
-    // $matrix = array_fill(0, count($labels), $matrix);
-
-    // // fill matrix based on all combinations
-    // foreach ($combinations as $c) {
-    //     $a = $labels[$c[0]]['index'];
-    //     $b = $labels[$c[1]]['index'];
-
-    //     $matrix[$a][$b] += 1;
-    //     if ($a != $b)
-    //         $matrix[$b][$a] += 1;
-    // }
 
     echo rest([
         'matrix' => $matrix,

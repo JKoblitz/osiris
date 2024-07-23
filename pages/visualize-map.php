@@ -194,7 +194,7 @@ $institute = $Settings->get('affiliation_details');
                     data.marker.color.push(item.color ?? 'rgba(0, 128, 131, 0.7)')
                     data.lon.push(item.data.lng)
                     data.lat.push(item.data.lat)
-                    data.text.push(`<b>${item.data.name}</b><br>${item.data.location}`)
+                    data.text.push(`<b>${item.data.name}</b><br>${item.data.location}<br>${item.count} <?= lang('Projects', 'Projekte') ?>`)
 
                 });
                 console.log(data);

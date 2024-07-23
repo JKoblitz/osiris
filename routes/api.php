@@ -1100,7 +1100,7 @@ Route::get('/api/dashboard/collaborators', function () {
             ['$unwind' => '$collaborators'],
             [
                 '$group' => [
-                    '_id' => '$collaborators.ror',
+                    '_id' => '$collaborators.name',
                     'count' => ['$sum' => 1],
                     'data' => [
                         '$first' => '$collaborators'
@@ -1113,7 +1113,7 @@ Route::get('/api/dashboard/collaborators', function () {
         if (isset($institute['lat']) && isset($institute['lng'])) {
             $result[] = [
                 '_id' => $institute['ror'] ?? '',
-                'count' => count($result) / 2,
+                'count' => 3,
                 'data' => $institute,
                 'color' => '#f78104'
             ];

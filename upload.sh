@@ -26,4 +26,5 @@ scp -r footer.php ambrosia:/var/www/html/
 scp -r index.php ambrosia:/var/www/html/
 scp -r CONFIG.fallback.php ambrosia:/var/www/html/
 scp -r *.md ambrosia:/var/www/html/
+scp -r roles.json ambrosia:/var/www/html/
 # scp -r *.json ambrosia:/var/www/html/

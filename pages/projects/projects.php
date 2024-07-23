@@ -170,6 +170,8 @@ if (!$Settings->hasPermission('projects.view')) {
             <dd>${d.title}</dd>
             <dt>Funding numbers:</dt>
             <dd>${d.funding_numbers}</dd>
+            <dt>Partners:</dt>
+            <dd>${d.collaborators ? d.collaborators.length : 0}</dd>
             </dl>
             `
         );

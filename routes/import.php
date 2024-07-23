@@ -44,7 +44,7 @@ Route::post('/import/google', function () {
     $result['issue'] = $pub['Ausgabe'] ?? null;
     $result['pages'] = $pub['Seiten'] ?? null;
 
-    $result['pubtype'] = 'article';
+    $result['subtype'] = 'article';
 
     if (isset($pub['Zeitschrift']) || isset($pub['Quelle'])) {
         $result['journal'] = $pub['Zeitschrift'] ?? $pub['Quelle'];
@@ -57,11 +57,16 @@ Route::post('/import/google', function () {
     } else if (isset($pub['Buch'])) {
         $result['book'] = $pub['Buch'];
         $result['publisher'] = $pub['Verlag'];
-        $result['pubtype'] = 'chapter';
+        $result['subtype'] = 'chapter';
     } else {
         $result['publisher'] = $pub['Verlag'];
-        $result['pubtype'] = 'book';
+        $result['subtype'] = 'book';
     }
+
+    // add history
+    $result['history'] = [
+        ['date' => date('Y-m-d'), 'type' => 'imported', 'user' => $_SESSION['username']]
+    ];
 
     // update authors and check if they are in the database
     $result['authors'] = array();

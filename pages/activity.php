@@ -252,7 +252,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             <!-- <b><?= lang('This is your activity.', 'Dies ist deine Aktivität.') ?></b> -->
             <div class="mt-10 d-flex">
                 <!-- switch -->
-                 
+
                 <?php if ($user_activity) { ?>
                     <div class="custom-switch ml-10">
                         <input type="checkbox" id="highlight" <?= ($highlighted) ? 'checked' : '' ?> name="values[highlight]" onchange="fav()">
@@ -670,13 +670,33 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                                     </td>
                                 <?php endif; ?>
                                 <td>
-                                    <?php if (isset($author['user']) && !empty($author['user'])) {
-                                    ?>
+                                    <?php if (isset($author['user']) && !empty($author['user'])) : ?>
                                         <a href="<?= ROOTPATH ?>/profile/<?= $author['user'] ?>"><?= $author['user'] ?></a>
                                         <span data-toggle="tooltip" data-title="<?= lang('Author approved activity?', 'Autor hat die Aktivität bestätigt?') ?>">
                                             <?= bool_icon($author['approved'] ?? 0) ?>
                                         </span>
-                                    <?php } ?>
+                                    <?php else : ?>
+                                        <div class="dropdown">
+                                            <button class="btn small" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                                                <?=lang('Claim', 'Beanspruchen')?>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right w-300" aria-labelledby="dropdown-1">
+                                                <div class="content">
+                                                    <small class="d-block text-danger mb-10">
+                                                        <?= lang(
+                                                            'You claim that you are this author.<br> This activity will be added to your list and the author name will be added to your list of alternative names.', 
+                                                        'Du beanspruchst, dass du diese Person bist.<br> Du fügst diese Aktivität deiner Liste hinzu und den Namen zur Liste deiner alternativen Namen.') ?>
+                                                    </small>
+                                                    <form action="<?= ROOTPATH ?>/crud/activities/claim/<?= $id ?>" method="post">
+                                                        <input type="hidden" name="role" value="<?= $role ?>">
+                                                        <input type="hidden" name="index" value="<?= $i ?>">
+                                                        <input type="hidden" name="redirect" value="<?= ROOTPATH . "/activities/view/$id" ?>">
+                                                        <button class="btn btn-block" type="submit"><?=lang('Claim', 'Beanspruchen')?></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php } ?>

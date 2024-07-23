@@ -24,7 +24,7 @@ function writeMail()
         $mail->setFrom('no-reply@osiris-app.de', 'OSIRIS');
         $mail->addAddress('juk20@dsmz.de', 'Julia Koblitz');     //Add a recipient
         // $mail->addAddress('ellen@example.com');               //Name is optional
-        $mail->addReplyTo(ADMIN . '@dsmz.de', 'OSIRIS Admin');
+        // $mail->addReplyTo(ADMIN . '@dsmz.de', 'OSIRIS Admin');
         $mail->addCC('julia.koblitz@dsmz.de');
         // $mail->addBCC('bcc@example.com');
 

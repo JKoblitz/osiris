@@ -15,3 +15,4 @@ jobs/config.ini
 composer.lock
 upload.sh
 .DS_Store
+upload.sh
