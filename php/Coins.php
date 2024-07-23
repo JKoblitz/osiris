@@ -68,8 +68,11 @@ class Coins
             if ($thingy == 'SWS') {
                 $val = $author['sws'] ?? 0;
             }
+            if (empty($val)) return [
+                'coins' => 0, 'comment' => 'Undefined value'
+            ];
             if ($position == 'middle') $coins /= 2;
-            $c = ($coins) * $val;
+            $c = ($coins) * intval($val);
             return [
                 'coins' => $c, 'comment' => "$coins &times; $val ($thingy) "
             ];
@@ -147,7 +150,12 @@ class Coins
                         [
                             '$group' => [
                                 '_id' => ['$toLower' => '$authors.user'],
-                                'sum' => ['$sum' => ['$toDouble' => '$authors.sws']]
+                                'sum' => ['$sum' => ['$convert' => [
+                                    'input' => '$authors.sws',
+                                    'to' => 'int',
+                                    'onError' => 0
+                                ]]],
+                                'onError' => ['$sum' => 0]
                             ]
                         ]
                     ]);
