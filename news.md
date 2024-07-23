@@ -1,5 +1,14 @@
 # Neuigkeiten
 
+<span class="badge float-right">in Development</span>
+<a class="anchor" href="#version-1.3.6" id="version-1.3.6"></a>
+
+## Version 1.3.6
+
+#### <i class="ph ph-student text-osiris"></i> Neues Feature: Claim Authorship
+
+Es wurde ein neues Feature hinzugefügt, mit dem Autor:innen ihre Autorenschaft beanspruchen können. Dazu gibt es in der Übersicht der Aktivität jetzt einen neuen Knopf bei Autor:innen, mit denen kein Nutzer verknüpft ist. Wenn eine Person eine Autorenschaft beansprucht, wird sie ihrem Profil hinzugefügt und der in der Autorenschaft verwendete Name wird ggf. der Liste der alternativen Namen hinzugefügt.
+
 
 <span class="badge float-right">21.06.2024</span>
 <a class="anchor" href="#version-1.3.5" id="version-1.3.5"></a>
