@@ -38,6 +38,7 @@ class Modules
     private $authorcount = 0;
     private $user = '';
     private $userlist = array();
+    private $conference = array();
 
     public $all_modules = array(
         "authors" => [
@@ -424,7 +425,7 @@ class Modules
         ],
     );
 
-    function __construct($form = array(), $copy = false)
+    function __construct($form = array(), $copy = false, $conference = false)
     {
         global $USER;
         global $osiris;
@@ -465,6 +466,20 @@ class Modules
         }
 
         $this->userlist = $osiris->persons->find([], ['sort' => ["last" => 1]])->toArray();
+
+        if (!empty($conference)) {
+            $conf = $osiris->conferences->findOne(['_id' => DB::to_ObjectID($conference)]);
+            if (!empty($conf) && empty($this->form)){
+                $this->form['conference'] = $conf['title'] ?? null;
+                // _id as string
+                $this->form['conference_id'] = strval($conf['_id']);
+                $this->form['location'] = $conf['location'] ?? null;
+                $this->form['link'] = $conf['url'] ?? null;
+                $this->form['start'] = $conf['start'] ?? null;
+                $this->form['end'] = $conf['end'] ?? null;
+            }
+
+        }
     }
 
     private function val($index, $default = '')
@@ -1263,6 +1278,7 @@ class Modules
             case "conference":
             ?>
                 <div class="data-module col-sm-6" data-module="conference">
+                    <input type="text" class="hidden" name="values[conference_id]" value="<?=$this->val('conference_id', null)?>">
                     <label for="conference" class="element-other <?= $required ?>"><?= lang('Conference', 'Konferenz') ?></label>
                     <input type="text" class="form-control" <?= $required ?> name="values[conference]" id="conference" list="conference-list" placeholder="VAAM 2022" value="<?= $this->val('conference') ?>">
                     <p class="m-0 font-size-12 ">

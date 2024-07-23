@@ -67,3 +67,19 @@ function navigate(key) {
 
 }
 
+function conferenceToggle(el, id, type='interests') {
+    // ajax call to update user's conference interests
+    $.ajax({
+        url: ROOTPATH+'/ajax/conferences/toggle-interest',
+        type: 'POST',
+        data: { type: type, conference: id },
+        success: function (data) {
+            if (data) {
+                $('#conference-' + type).toggleClass('active')
+                $(el).toggleClass('active')
+                $(el).find('b').html(data)
+            }
+
+        }
+    })
+}

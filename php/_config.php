@@ -445,6 +445,7 @@ function getDateTime($date)
 function valueFromDateArray($date)
 {
     // this function is used to generate a input:date-like string from arrays
+    if (is_string($date)) return $date;
     if (empty($date) || !isset($date['year'])) return '';
     $d = new DateTime();
     $d->setDate(

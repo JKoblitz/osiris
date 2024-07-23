@@ -391,8 +391,17 @@ Route::post('/crud/activities/create', function () {
         }
     }
 
+    
+
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
+
+    if (isset($values['conference_id']) && !empty($values['conference_id'])) {
+        $osiris->conferences->updateOne(
+            ['_id' => $DB->to_ObjectID($values['conference_id'])],
+            ['$push' => ['activities' => $id]]
+        );
+    }
 
     renderActivities(['_id' => $id]);
 
@@ -723,7 +732,7 @@ Route::post('/crud/activities/claim/([A-Za-z0-9]*)', function ($id) {
 
     $updateResult = $osiris->activities->updateOne(
         $filter,
-        ['$set' => ["$role.$index.user" => $_SESSION['username']]
+        ['$set' => ["$role.$index.user" => $_SESSION['username'], "$role.$index.approved" => true]
     ]);
 
 

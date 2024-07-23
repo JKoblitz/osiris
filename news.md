@@ -1,19 +1,27 @@
 # Neuigkeiten
 
-<span class="badge float-right">in Development</span>
-<a class="anchor" href="#version-1.3.6" id="version-1.3.6"></a>
-
-## Version 1.3.6
-
-#### <i class="ph ph-student text-osiris"></i> Neues Feature: Claim Authorship
-
-Es wurde ein neues Feature hinzugefügt, mit dem Autor:innen ihre Autorenschaft beanspruchen können. Dazu gibt es in der Übersicht der Aktivität jetzt einen neuen Knopf bei Autor:innen, mit denen kein Nutzer verknüpft ist. Wenn eine Person eine Autorenschaft beansprucht, wird sie ihrem Profil hinzugefügt und der in der Autorenschaft verwendete Name wird ggf. der Liste der alternativen Namen hinzugefügt.
-
-
-<span class="badge float-right">21.06.2024</span>
+<span class="badge float-right">23.06.2024</span>
 <a class="anchor" href="#version-1.3.5" id="version-1.3.5"></a>
 
 ## Version 1.3.5
+
+
+
+#### <i class="ph ph-presentation-chart text-osiris"></i> Überarbeitete Startseite und Konferenzen
+
+Die Startseite wurde überarbeitet
+- Auf der eigenen Profilseite gibt es jetzt den Reiter **News**
+- Hier findet ihr alle wichtigen Neuigkeiten und Benachrichtigungen
+- Warnmeldungen und Hinweise wurden hierher verschoben und verbessert
+- Die Neuesten Publikationen des Instituts werden hier angezeigt
+  
+Der Startseite wurde der neue Bereich "Konferenzen" hinzugefügt.
+- Man kann Konferenzen anlegen und so die Zusammenarbeit im Institut fördern
+- Bei zukünftigen Konferenzen kann Interesse und Teilnahme bekundet werden und das Event kann für den Kalender als iCal exportiert werden
+- Bei vergangenen Konferenzen kann nun ganz einfach ein neuer Beitrag (z.B. Poster oder Vortrag) hinzugefügt werden.
+
+
+
 
 #### <i class="ph ph-code text-osiris"></i> Anpassungen für OSIRIS Portfolio
 
@@ -21,6 +29,11 @@ Es wurde ein neues Feature hinzugefügt, mit dem Autor:innen ihre Autorenschaft 
 - Eine neue API-Dokumentation
 - Profilbild ist jetzt per Default nicht mehr angezeigt
 - Portfolio-Preview wurde verbessert
+
+
+#### <i class="ph ph-student text-osiris"></i> Neues Feature: Claim Authorship
+
+Es wurde ein neues Feature hinzugefügt, mit dem Autor:innen ihre Autorenschaft beanspruchen können. Dazu gibt es in der Übersicht der Aktivität jetzt einen neuen Knopf bei Autor:innen, mit denen kein Nutzer verknüpft ist. Wenn eine Person eine Autorenschaft beansprucht, wird sie ihrem Profil hinzugefügt und der in der Autorenschaft verwendete Name wird ggf. der Liste der alternativen Namen hinzugefügt.
 
 
 #### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen

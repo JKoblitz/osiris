@@ -42,7 +42,7 @@ if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
 <script>
     const CURRENT_USER = '<?= $user ?>';
 </script>
-<script src="<?= ROOTPATH ?>/js/profile.js"></script>
+<script src="<?= ROOTPATH ?>/js/profile.js?v=2"></script>
 
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">
@@ -208,7 +208,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     <div class="col ml-20">
         <h1 class="mt-0"><?= $name ?></h1>
         <h5 class="subtitle">
-            <?= lang($scientist['position'] ?? '', $scientist['position_de']??null) ?>
+            <?= lang($scientist['position'] ?? '', $scientist['position_de'] ?? null) ?>
         </h5>
 
         <style>
@@ -366,99 +366,6 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                 </button>
             </form>
         </div>
-
-
-        <?php
-        $issues = $DB->getUserIssues($user);
-        if (!empty($issues)) {
-            // dump(array_merge(array_values($issues)), true;
-            $issues = array_sum(array_map("count", $issues));
-        ?>
-            <div class="alert danger mt-10">
-                <a class="link text-danger text-decoration-none" href='<?= ROOTPATH ?>/issues'>
-                    <?= lang(
-                        "You have <b>$issues</b> " . ($issues == 1 ? 'message' : 'messages') . " for your activities.",
-                        "Du hast <b>$issues</b> " . ($issues == 1 ? 'Benachrichtigung' : 'Benachrichtigungen') . " zu deinen Aktivitäten."
-                    ) ?>
-                </a>
-            </div>
-        <?php } ?>
-
-        <?php
-        $queue = $osiris->queue->count(['authors.user' => $user, 'duplicate' => ['$exists' => false]]);
-        if ($queue !== 0) { ?>
-            <div class="alert success mt-10">
-                <a class="link text-success" href='<?= ROOTPATH ?>/queue/user'>
-                    <?= lang(
-                        "We found $queue new " . ($queue == 1 ? 'activity' : 'activities') . " for you. Review them now.",
-                        "Wir haben $queue " . ($queue == 1 ? 'Aktivität' : 'Aktivitäten') . " von dir gefunden. Überprüfe sie jetzt."
-                    ) ?>
-                </a>
-            </div>
-        <?php } ?>
-
-        <?php
-        if (lang('en', 'de') == 'de') {
-            // no news in english
-            if (empty($scientist['lastversion'] ?? '') || $scientist['lastversion'] !== OSIRIS_VERSION) { ?>
-                <div class="alert secondary mt-10">
-                    <a class="link text-decoration-none" href='<?= ROOTPATH ?>/new-stuff#version-<?= OSIRIS_VERSION ?>'>
-                        <?= lang(
-                            "There has been an OSIRIS-Update since your last login. Have a look at the news.",
-                            "Es gab ein OSIRIS-Update, seitdem du das letzte Mal hier warst. Schau in die News, um zu wissen, was neu ist."
-                        ) ?>
-                    </a>
-                </div>
-        <?php }
-        } ?>
-
-        <?php
-        $approvedQ = array();
-        if (isset($scientist['approved'])) {
-            $approvedQ = $scientist['approved']->bsonSerialize();
-        }
-
-
-        if ($Settings->hasPermission('scientist') && !in_array($lastquarter, $approvedQ)) { ?>
-            <div class="alert success bg-light mt-10">
-
-                <div class="title">
-                    <?= lang("The past quarter ($lastquarter) has not been approved yet.", "Das vergangene Quartal ($lastquarter) wurde von dir noch nicht freigegeben.") ?>
-                </div>
-
-                <p>
-                    <?= lang('
-                            For the quarterly controlling, you need to confirm that all activities from the previous quarter are stored in OSIRIS and saved correctly.
-                            To do this, go to your year and check your activities. Afterwards you can release the quarter via the green button.
-                            ', '
-                            Für das Quartalscontrolling musst du bestätigen, dass alle Aktivitäten aus dem vergangenen Quartal in OSIRIS hinterlegt und korrekt gespeichert sind.
-                            Gehe dazu in dein Jahr und überprüfe deine Aktivitäten. Danach kannst du über den grünen Button das Quartal freigeben.
-                            ') ?>
-                </p>
-
-                <a class="btn success filled" href="<?= ROOTPATH ?>/my-year/<?= $user ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
-                    <?= lang('Review & Approve', 'Überprüfen & Freigeben') ?>
-                </a>
-            </div>
-        <?php } ?>
-
-
-        <?php
-        if ($show_achievements) {
-            $new = $Achievement->new;
-
-            if (!empty($new)) {
-                echo '<div class="mt-20">';
-                echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
-                foreach ($new as $i => $n) {
-                    $Achievement->snack($n);
-                }
-                $Achievement->save();
-                echo '</div>';
-            }
-        }
-        ?>
-
     </div>
 
 <?php } else { ?>
@@ -521,7 +428,14 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
 <!-- TAB AREA -->
 
 <nav class="pills mt-20 mb-0">
-    <a onclick="navigate('general')" id="btn-general" class="btn active">
+    <?php if ($currentuser) { ?>
+        <a onclick="navigate('news')" id="btn-news" class="btn active">
+            <i class="ph ph-star" aria-hidden="true"></i>
+            <?= lang('News') ?>
+        </a>
+    <?php } ?>
+
+    <a onclick="navigate('general')" id="btn-general" class="btn <?= $currentuser ? '' : 'active' ?>">
         <i class="ph ph-info" aria-hidden="true"></i>
         <?= lang('General', 'Allgemein') ?>
     </a>
@@ -615,7 +529,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <?php } ?>
     <?php } ?>
 
-    
+
     <!-- Teaching activities -->
     <?php
     $teaching = $osiris->activities->aggregate([
@@ -756,7 +670,361 @@ if ($currentuser) { ?>
 
 <?php } ?>
 
-<section id="general">
+<?php if ($currentuser) { ?>
+    <section id="news">
+        <div class="row row-eq-spacing my-0">
+            <div class="col-md-6">
+                <div class="box h-full">
+                    <div class="content">
+                        <h4 class="title">
+                            <?= lang('Notifications', 'Benachrichtigungen') ?>
+                        </h4>
+                        <?php
+                        $notification = false;
+                        ?>
+
+                        <p class="text-muted">
+                            <?= lang('Here you can find the latest news about OSIRIS and your activities.', 'Hier findest du die neuesten Nachrichten über OSIRIS und deine Aktivitäten.') ?>
+                        </p>
+
+
+                        <?php
+                        $issues = $DB->getUserIssues($user);
+                        if (!empty($issues)) {
+                            $notification = true;
+                            // dump(array_merge(array_values($issues)), true;
+                            $n_issues = array_sum(array_map("count", $issues));
+                            $approvalDict = [
+                                'approval' => lang('Approval of activities', 'Freigabe von Aktivitäten'),
+                                'epub' => '<em>Online ahead of print</em>-' . lang('Publications', 'Publikationen'),
+                                'students' => lang('Expired theses', 'Abgelaufene Abschlussarbeiten'),
+                                'openend' => lang('Ongoing activities', 'Laufende Aktivitäten'),
+                                'project-open' => lang('Open project applications', 'Offene Projektanträge'),
+                                'project-end' => lang('Expired publications', 'Abgelaufene Projekte'),
+                            ];
+                        ?>
+                            <a class="alert danger mt-10 d-block colorless" href='<?= ROOTPATH ?>/issues'>
+                                <h5 class="title mb-10">
+                                    <?= lang(
+                                        "You have <b>$n_issues</b> " . ($n_issues == 1 ? 'message' : 'messages') . " for your activities.",
+                                        "Du hast <b>$n_issues</b> " . ($n_issues == 1 ? 'Benachrichtigung' : 'Benachrichtigungen') . " zu deinen Aktivitäten."
+                                    ) ?>
+                                </h5>
+                                <?= lang('Please review the following', 'Bitte überprüfe die folgenden Probleme') ?>:
+                                <ul class="list danger mb-0">
+                                    <?php foreach ($issues as $key => $val) {
+                                        $val = count($val);
+                                    ?>
+                                        <li>
+                                            <?= $approvalDict[$key] ?? lang('Issues', 'Probleme') ?>:
+                                            <b><?= $val ?></b>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+
+                            </a>
+                        <?php } ?>
+
+                        <?php
+                        $queue = $osiris->queue->count(['authors.user' => $user, 'duplicate' => ['$exists' => false]]);
+                        if ($queue !== 0) {
+                            $notification = true;
+                        ?>
+                            <div class="alert success mt-10">
+                                <a class="link text-success" href='<?= ROOTPATH ?>/queue/user'>
+                                    <?= lang(
+                                        "We found $queue new " . ($queue == 1 ? 'activity' : 'activities') . " for you. Review them now.",
+                                        "Wir haben $queue " . ($queue == 1 ? 'Aktivität' : 'Aktivitäten') . " von dir gefunden. Überprüfe sie jetzt."
+                                    ) ?>
+                                </a>
+                            </div>
+                        <?php } ?>
+
+                        <?php
+                        if (lang('en', 'de') == 'de') {
+                            // no news in english
+                            if (empty($scientist['lastversion'] ?? '') || $scientist['lastversion'] !== OSIRIS_VERSION) {
+                                $notification = true;
+                        ?>
+                                <div class="alert secondary mt-10">
+                                    <a class="link text-decoration-none" href='<?= ROOTPATH ?>/new-stuff#version-<?= OSIRIS_VERSION ?>'>
+                                        <?= lang(
+                                            "There has been an OSIRIS-Update since your last login. Have a look at the news.",
+                                            "Es gab ein OSIRIS-Update, seitdem du das letzte Mal hier warst. Schau in die News, um zu wissen, was neu ist."
+                                        ) ?>
+                                    </a>
+                                </div>
+                        <?php }
+                        } ?>
+
+                        <?php
+                        $approvedQ = array();
+                        if (isset($scientist['approved'])) {
+                            $approvedQ = $scientist['approved']->bsonSerialize();
+                        }
+
+
+                        if ($Settings->hasPermission('scientist') && !in_array($lastquarter, $approvedQ)) {
+                            $notification = true;
+                        ?>
+                            <div class="alert success bg-light mt-10">
+
+                                <div class="title">
+                                    <?= lang("The past quarter ($lastquarter) has not been approved yet.", "Das vergangene Quartal ($lastquarter) wurde von dir noch nicht freigegeben.") ?>
+                                </div>
+
+                                <p>
+                                    <?= lang('
+                            For the quarterly controlling, you need to confirm that all activities from the previous quarter are stored in OSIRIS and saved correctly.
+                            To do this, go to your year and check your activities. Afterwards you can release the quarter via the green button.
+                            ', '
+                            Für das Quartalscontrolling musst du bestätigen, dass alle Aktivitäten aus dem vergangenen Quartal in OSIRIS hinterlegt und korrekt gespeichert sind.
+                            Gehe dazu in dein Jahr und überprüfe deine Aktivitäten. Danach kannst du über den grünen Button das Quartal freigeben.
+                            ') ?>
+                                </p>
+
+                                <a class="btn success filled" href="<?= ROOTPATH ?>/my-year/<?= $user ?>?year=<?= $Y ?>&quarter=<?= $Q ?>">
+                                    <?= lang('Review & Approve', 'Überprüfen & Freigeben') ?>
+                                </a>
+                            </div>
+                        <?php } ?>
+
+
+                        <?php
+                        if ($show_achievements) {
+                            $new = $Achievement->new;
+
+                            if (!empty($new)) {
+                                $notification = true;
+                                echo '<div class="mt-20">';
+                                echo '<h5 class="title font-size-16">' . lang('Congratulation, you achieved something new: ', 'Glückwunsch, du hast neue Errungenschaften erlangt:') . '</h5>';
+                                foreach ($new as $i => $n) {
+                                    $Achievement->snack($n);
+                                }
+                                $Achievement->save();
+                                echo '</div>';
+                            }
+                        }
+                        ?>
+                        <?php if (!$notification) { ?>
+                            <p>
+                                <?= lang('There are no new notifications.', 'Es gibt keine neuen Benachrichtigungen.') ?>
+                            </p>
+                        <?php } ?>
+
+
+                    </div>
+                    <hr>
+                    <div class="content">
+                        <h4 class="title">
+                            <?= lang('Newest publications', 'Neuste Publikationen') ?>
+                        </h4>
+                        <p class="text-muted">
+                            <?= lang('Here you can find the latest publications from your institute.', 'Hier findest du die neusten Publikationen deines Instituts.') ?>
+                        </p>
+
+                        <?php
+                        $pubs = $osiris->activities->find(
+                            ['authors.aoi' => true, 'type' => 'publication'],
+                            [
+                                'sort' => ['year' => -1, 'month' => -1],
+                                'limit' => 5,
+                                'projection' => ['html' => '$rendered.web', 'date' => '$rendered.start']
+                            ]
+                        )->toArray();
+                        ?>
+                        <table class="table simple">
+                            <?php foreach ($pubs as $doc) { ?>
+                                <tr>
+                                    <td>
+                                        <small class="badge primary font-weight-bold"><?= format_date($doc['date']) ?></small><br>
+                                        <?= $doc['html'] ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+
+                        </table>
+
+                        <a href="<?= ROOTPATH ?>/activities" class="btn primary">
+                            <?= lang('All activities', 'Zeige alle Aktivitäten') ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+
+                <!-- modal for adding conference -->
+                <div class="modal" id="add-conference" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                            <h4 class="title mt-0">
+                                <?= lang('Add conference', 'Konferenz hinzufügen') ?>
+                            </h4>
+
+                            <form action="<?= ROOTPATH ?>/crud/conferences/add" method="post" id="conference-form">
+                                <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+
+                                <div class="form-group mb-10">
+                                    <label for="title" class="required"><?= lang('(Short) Title', 'Kurztitel') ?></label>
+                                    <input type="text" name="title" required class="form-control">
+                                </div>
+                                <div class="form-group mb-10">
+                                    <label for="title"><?= lang('Full Title', 'Kompletter Titel') ?></label>
+                                    <input type="text" name="title_full" class="form-control">
+                                </div>
+
+                                <div class="form-row row-eq-spacing mb-10">
+                                    <div class="col">
+                                        <label for="start" class="required"><?= lang('Start date', 'Anfangsdatum') ?></label>
+                                        <input type="date" name="start" required class="form-control" onchange="$('#conference-end-date').val(this.value)">
+                                    </div>
+                                    <div class="col">
+                                        <label for="end" class="required"><?= lang('End date', 'Enddatum') ?></label>
+                                        <input type="date" name="end" class="form-control" id="conference-end-date">
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-10">
+                                    <label for="location" class="required"><?= lang('Location', 'Ort') ?></label>
+                                    <input type="text" name="location" required class="form-control">
+                                </div>
+
+                                <div class="form-group mb-10">
+                                    <label for="url"><?= lang('URL', 'URL') ?></label>
+                                    <input type="url" name="url" class="form-control">
+                                </div>
+
+                                <button class="btn mb-10" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="box h-full">
+                    <div class="content">
+                        <a href="#add-conference" class="float-md-right btn primary">
+                            <i class="ph ph-plus"></i>
+                            <?=lang('Add conference', 'Konferenz hinzufügen')?>
+                        </a>
+                        <h4 class="title">
+                            <?= lang('Conferences', 'Konferenzen') ?>
+                        </h4>
+                        <p class="text-muted">
+                            <?=lang('Shown are approaching conferences and conferences within the past three month.', 'Gezeigt sind zukünftige Konferenzen und vergangene aus den letzten drei Monaten.')?>
+                            <br>
+                           <small> <?= lang('Conferences were added by users of the OSIRIS system.', 'Konferenzen wurden von Nutzenden des OSIRIS-Systems angelegt.') ?></small>
+                        </p>
+
+                        <?php
+                        // conferences max past 3 month
+                        $conferences = $osiris->conferences->find(
+                            ['start' => ['$gte' => date('Y-m-d', strtotime('-3 month'))]],
+                            ['sort' => ['start' => 1]]
+                            )->toArray();
+                        ?>
+                        <table class="table simple">
+                            <?php foreach ($conferences as $n => $c) { 
+                                // 
+                                ?>
+                                <tr>
+                                    <td>
+                                        <!-- <?php
+                                                dump($c, true);
+                                                ?> -->
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="m-0">
+                                                <?= $c['title'] ?>
+                                                <?php if (!empty($c['url'] ?? null)) { ?>
+                                                    <a href="<?= $c['url'] ?>" target="_blank" rel="noopener noreferrer">
+                                                        <i class="ph ph-link"></i>
+                                                    </a>
+                                                <?php } ?>
+                                            </h6>
+
+                                            <!-- <a class="" onclick="toggleDetails(this)">
+                                                <i class="ph ph-caret-down"></i>
+                                            </a> -->
+                                        </div>
+                                        <p class="my-5 text-muted">
+                                            <?= $c['title_full'] ?? '' ?>
+                                        </p>
+                                        <p class="my-5 text-muted">
+                                            <small class="text- mr-10">
+                                                <?= fromToDate($c['start'], $c['end']) ?>
+                                            </small>
+                                            <small>
+                                                <?= $c['location'] ?>
+                                            </small>
+                                        </p>
+
+                                        <div class="btn-toolbar font-size-12">
+                                            <?php
+                                            // check if conference is in the future
+                                            if (strtotime($c['end']) > time()) {
+                                                $days = ceil((strtotime($c['start']) - time()) / 86400);
+                                                $days = $days > 0 ? $days : 0;
+                                                $days = $days == 0 ? lang('today', 'heute') : 'in ' . $days . ' ' . lang('days', 'Tagen');
+
+                                                // user is interested in conference
+                                                $interest = in_array($user, DB::doc2Arr($c['interests'] ?? []));
+                                                $participate = in_array($user, DB::doc2Arr($c['participants'] ?? []));
+                                                $interestTooltip = $interest ? lang('Click to remove interest', 'Klicken um Interesse zu entfernen') : lang('Click to show interest', 'Klicken um Interesse zu zeigen');
+                                                $participateTooltip = $participate ? lang('Click to remove participation', 'Klicken um Teilnahme zu entfernen') : lang('Click to show participation', 'Klicken um Teilnahme zu zeigen');
+                                            ?>
+                                               <div class="btn-group">
+                                               <small class="btn small cursor-default">
+                                                    <?= $days ?>
+                                                </small>
+                                                <a class="btn small primary" href="<?=ROOTPATH?>/conference/ics/<?=$c['_id']?>">
+                                                    <i class="ph ph-calendar-plus"></i>
+                                                    iCal
+                                                </a>
+                                               </div>
+                                               <div class="btn-group">
+                                               <a class="btn small primary <?= $interest ? 'active' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'interests')" data-toggle="tooltip" data-title="<?= $interestTooltip ?>">
+                                                    <b><?= count($c['interests'] ?? []) ?></b>
+                                                    <?= lang('Interested', 'Interessiert') ?>
+                                                </a>
+                                                <a class="btn small primary <?= $participate ? 'active' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'participants')" data-toggle="tooltip" data-title="<?= $participateTooltip ?>">
+                                                    <b><?= count($c['participants'] ?? []) ?></b>
+                                                    <?= lang('Participants', 'Teilnehmer') ?>
+                                                </a>
+                                               </div>
+                                            <?php } else { ?>
+                                                <a class="btn small primary" href="<?= ROOTPATH ?>/add-activity?type=poster&conference=<?= $c['_id'] ?>">
+                                                    <i class="ph ph-plus-circle"></i>
+                                                    <?= lang('Add contribution', 'Beitrag hinzufügen') ?>
+                                                </a>
+                                            <?php } ?>
+                                            <?php if ($c['created_by'] == $_SESSION['username']) { ?>
+                                                <form action="<?= ROOTPATH ?>/crud/conferences/delete/<?= $c['_id'] ?>" method="post" class="float-right">
+                                                    <button class="btn small danger">
+                                                        <i class="ph ph-trash"></i>
+                                                    </button>
+                                                </form>
+                                            <?php } ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php } ?>
+
+
+
+<section id="general" <?= $currentuser ? 'style="display:none"' : '' ?>>
 
     <div class="row row-eq-spacing my-0">
         <div class="col-md-6 col-lg-4">

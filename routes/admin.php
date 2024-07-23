@@ -182,13 +182,14 @@ Route::get('/settings/modules', function () {
         $mongoid = $DB->to_ObjectID($_GET['id']);
         $form = $osiris->activities->findOne(['_id' => $mongoid]);
     }
-    $Modules = new Modules($form, $_GET['copy'] ?? false);
+    $Modules = new Modules($form, $_GET['copy'] ?? false, $_GET['conference'] ?? false);
 
     if (isset($_GET['modules'])) {
         $Modules->print_modules($_GET['modules']);
     } else {
         $Modules->print_all_modules();
     }
+
 });
 
 

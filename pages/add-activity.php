@@ -64,7 +64,7 @@ function val($index, $default = '')
 <script src="<?= ROOTPATH ?>/js/moment.min.js"></script>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
-<script src="<?= ROOTPATH ?>/js/add-activity.js?v=2"></script>
+<script src="<?= ROOTPATH ?>/js/add-activity.js?v=3"></script>
 
 
 <div class="modal" id="author-help" tabindex="-1" role="dialog">
@@ -534,6 +534,7 @@ function val($index, $default = '')
     let UPDATE = false;
     let ID = null;
     let COPY = false;
+    let CONFERENCE = '<?=$_GET['conference']??''?>';
 </script>
 
 <?php if (!empty($form)) {

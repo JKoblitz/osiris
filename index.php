@@ -108,6 +108,7 @@ include_once BASEPATH . "/routes/export.php";
 include_once BASEPATH . "/routes/reports.php";
 include_once BASEPATH . "/routes/concepts.php";
 include_once BASEPATH . "/routes/admin.php";
+include_once BASEPATH . "/routes/conferences.php";
 // include_once BASEPATH . "/routes/adminGeneral.php";
 // include_once BASEPATH . "/routes/adminRoles.php";
 

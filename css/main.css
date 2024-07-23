@@ -2985,6 +2985,24 @@ ul.list > li::before {
   border-color: transparent;
   box-shadow: none;
 }
+ul.list.secondary > li::before {
+  background-color: var(--secondary-color);
+}
+ul.list.primary > li::before {
+  background-color: var(--primary-color);
+}
+ul.list.success > li::before {
+  background-color: var(--success-color);
+}
+ul.list.danger > li::before {
+  background-color: var(--danger-color);
+}
+ul.list.signal > li::before {
+  background-color: var(--signal-color);
+}
+ul.list.muted > li::before {
+  background-color: var(--muted-color);
+}
 
 /* Ordered list */
 ol.list {
