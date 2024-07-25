@@ -716,7 +716,7 @@ Route::get('/api/projects', function () {
             $project['date_range'] = $Project->getDateRange();
             $project['funder'] = $project['funder'] ?? '';
             $project['funding_numbers'] = $Project->getFundingNumbers('<br />');
-            $project['applicant'] = $DB->getNameFromId($project['contact'] ?? '');
+            $project['applicant'] = $DB->getNameFromId($project['contact'] ?? $project['supervisor'] ?? '');
             $project['activities'] = $osiris->activities->count(['projects' => strval($project['name'])]);
             $data[] = $project;
         }

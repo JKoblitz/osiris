@@ -21,12 +21,81 @@ class Project
 {
     public $project = array();
 
+    public $fields = [
+        'Drittmittel' => [
+            'name',
+            'title',
+            'status',
+            'time',
+            'abstract',
+            'public',
+            'internal_number',
+            'website',
+            'grant_sum',
+            'grant_income',
+            'funder',
+            'funding_organization',
+            'funding_number',
+            'grant_sum_proposed',
+            'grant_income_proposed',
+            'personnel',
+            'ressources',
+            'contact',
+            'purpose',
+            'role',
+            'coordinator',
+        ],
+        'Stipendium' => [
+            'name',
+            'title',
+            'status',
+            'time',
+            'abstract',
+            'public',
+            'internal_number',
+            'website',
+            'grant_sum',
+            'grant_income',
+            'supervisor',
+            'scholar',
+            'scholarship',
+            'university',
+        ],
+        'Eigenfinanziert' => [
+            'name',
+            'title',
+            'status',
+            'time',
+            'abstract',
+            'public',
+            'internal_number',
+            'website',
+            'personnel',
+            'ressources',
+            'contact',
+        ],
+        'default' => [
+            'name',
+            'title',
+            'status',
+            'time',
+            'abstract',
+            'public',
+            'internal_number',
+            'website',
+        ]
+    ];
+
     function __construct($project = null)
     {
         if ($project !== null)
             $this->project = $project;
     }
 
+    public function getFields($type)
+    {
+        return $this->fields[$type] ?? $this->fields['default'];
+    }
     public function setProject($project)
     {
         $this->project = $project;
@@ -58,6 +127,11 @@ class Project
                 <?= lang('Third-party funded', 'Drittmittel') ?>
             </span>
 
+        <?php } elseif ($type == 'Stipendium') { ?>
+            <span class="badge text-success no-wrap">
+                <i class="ph ph-tip-jar"></i>
+                <?= lang('Stipendiate', 'Stipendium') ?>
+            </span>
         <?php } else { ?>
             <span class="badge text-signal no-wrap">
                 <i class="ph ph-piggy-bank"></i>
@@ -215,7 +289,7 @@ class Project
 
     public function widgetPortal($cls = "module")
     {
-        $widget = '<a class="'.$cls.'" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
+        $widget = '<a class="' . $cls . '" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
         $widget .= '<p class="d-block text-muted">' . $this->project['title'] . '</p>';
         if (isset($this->project['funder']))

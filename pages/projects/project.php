@@ -206,118 +206,214 @@ $institute = $Settings->get('affiliation_details');
                 <div class="btn-toolbar mb-10">
 
                     <?php if ($edit_perm) { ?>
-                        <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn secondary">
+                        <a href="<?= ROOTPATH ?>/projects/edit/<?= $id ?>" class="btn primary">
                             <i class="ph ph-edit"></i>
                             <?= lang('Edit', 'Bearbeiten') ?>
                         </a>
+
+                    <?php } ?>
+                    <?php if ($Settings->hasPermission('projects.delete') || ($Settings->hasPermission('projects.delete-own') && $edit_perm)) { ?>
+
+                        <div class="dropdown">
+                            <button class="btn danger" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
+                                <i class="ph ph-trash"></i>
+                                <?= lang('Delete', 'Löschen') ?>
+                                <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdown-1">
+                                <div class="content">
+                                    <b class="text-danger"><?= lang('Attention', 'Achtung') ?>!</b><br>
+                                    <small>
+                                        <?= lang(
+                                            'The project is permanently deleted and the connection to all associated persons and activities is also removed. This cannot be undone.',
+                                            'Das Projekt wird permanent gelöscht und auch die Verbindung zu allen zugehörigen Personen und Aktivitäten entfernt. Dies kann nicht rückgängig gemacht werden.'
+                                        ) ?>
+                                    </small>
+                                    <form action="<?= ROOTPATH ?>/crud/projects/delete/<?= $project['_id'] ?>" method="post">
+                                        <button class="btn btn-block danger" type="submit"><?= lang('Delete permanently', 'Permanent löschen') ?></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     <?php } ?>
 
                 </div>
 
                 <table class="table">
+
+                    <?php
+                    $fields = $Project->getFields($project['type'] ?? 'Drittmittel');
+                    ?>
+
                     <tbody>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Short title', 'Kurztitel') ?></span>
-                                <?= $project['name'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
-                                <?= $project['title'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
-                                <?= $project['type'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Kostenträger') ?></span>
-                                <?= $project['internal_number'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Applicant', 'Antragsteller:in') ?></span>
-                                <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Status', 'Status') ?></span>
-                                <?= $Project->getStatus() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Third-party funder', 'Drittmittelgeber') ?></span>
-                                <?= $project['funder'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Funding organization', 'Förderorganisation') ?></span>
-                                <?= $project['funding_organization'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
-                                <?= $Project->getFundingNumbers('<br>') ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
-                                <?= $Project->getPurpose() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?></span>
-                                <?= $Project->getRole() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?></span>
-                                <?= $project['coordinator'] ?? '-' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key">Projektbeginn</span>
-                                <?= Document::format_date($project['start'] ?? null) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key">Projektende</span>
-                                <?= Document::format_date($project['end'] ?? null) ?>
-                            </td>
-                        </tr>
+                        <?php if (in_array('name', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Short title', 'Kurztitel') ?></span>
+                                    <?= $project['name'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('title', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
+                                    <?= $project['title'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('type', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
+                                    <?= $project['type'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('internal_number', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Kostenträger') ?></span>
+                                    <?= $project['internal_number'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('contact', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Applicant', 'Antragsteller:in') ?></span>
+                                    <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('status', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Status', 'Status') ?></span>
+                                    <?= $Project->getStatus() ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('funder', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Third-party funder', 'Drittmittelgeber') ?></span>
+                                    <?= $project['funder'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('funding_organization', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Funding organization', 'Förderorganisation') ?></span>
+                                    <?= $project['funding_organization'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('funding_number', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
+                                    <?= $Project->getFundingNumbers('<br>') ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+
+                        <?php if (in_array('scholarship', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Scholarship institution', 'Stipendiengeber') ?></span>
+                                    <?= $project['scholarship'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        <?php if (in_array('university', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Partner University', 'Partner-Universität') ?></span>
+                                    <?= $project['university'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('purpose', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
+                                    <?= $Project->getPurpose() ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('role', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?></span>
+                                    <?= $Project->getRole() ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('coordinator', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?></span>
+                                    <?= $project['coordinator'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('start', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key">Projektbeginn</span>
+                                    <?= Document::format_date($project['start'] ?? null) ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('end', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key">Projektende</span>
+                                    <?= Document::format_date($project['end'] ?? null) ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
                         <!-- <tr>
                         <td>
                             <span class="key"><?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?></span>
                             <?= $project['personnel'] ?? '-' ?>
                         </td>
                     </tr> -->
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Project website', 'Webseite des Projekts') ?></span>
-                                <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="key"><?= lang('Abstract', 'Kurzbeschreibung') ?></span>
-                                <?= $project['abstract'] ?? '-' ?>
-                            </td>
-                        </tr>
+                        <?php if (in_array('website', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Project website', 'Webseite des Projekts') ?></span>
+                                    <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
+                        <?php if (in_array('abstract', $fields)) { ?>
+                            <tr>
+                                <td>
+                                    <span class="key"><?= lang('Abstract', 'Kurzbeschreibung') ?></span>
+                                    <?= $project['abstract'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
                         <tr>
 
                             <td>
@@ -325,6 +421,7 @@ $institute = $Settings->get('affiliation_details');
                                 <?= bool_icon($project['public'] ?? false) ?>
                             </td>
                         </tr>
+
                         <tr>
                             <td>
                                 <span class="key"><?= lang('Created by', 'Erstellt von') ?></span>
@@ -413,12 +510,11 @@ $institute = $Settings->get('affiliation_details');
 
                                         </table>
 
-                                        <button class="btn secondary mt-20">
+                                        <button class="btn primary mt-20">
                                             <i class="ph ph-check"></i>
                                             <?= lang('Submit', 'Bestätigen') ?>
                                         </button>
                                     </form>
-
 
                                     <script>
                                         var counter = <?= $i ?? 0 ?>;
@@ -441,7 +537,7 @@ $institute = $Settings->get('affiliation_details');
 
                 <div class="btn-toolbar mb-10">
                     <?php if ($edit_perm) { ?>
-                        <a href="#persons" class="btn secondary">
+                        <a href="#persons" class="btn primary">
                             <i class="ph ph-edit"></i>
                             <?= lang('Edit', 'Bearbeiten') ?>
                         </a>
@@ -498,7 +594,7 @@ $institute = $Settings->get('affiliation_details');
 
         <?php if ($edit_perm) { ?>
             <div class="btn-toolbar mb-10">
-                <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn secondary">
+                <a href="<?= ROOTPATH ?>/projects/collaborators/<?= $id ?>" class="btn primary">
                     <i class="ph ph-edit"></i>
                     <?= lang('Edit', 'Bearbeiten') ?>
                 </a>
@@ -597,7 +693,7 @@ $institute = $Settings->get('affiliation_details');
 
         <div class="btn-toolbar mb-10">
             <?php if ($edit_perm) { ?>
-                <a href="#add-activity" class="btn secondary">
+                <a href="#add-activity" class="btn primary">
                     <i class="ph ph-plus"></i>
                     <?= lang('Connect activities', 'Aktivitäten verknüpfen') ?>
                 </a>
@@ -605,7 +701,7 @@ $institute = $Settings->get('affiliation_details');
 
 
             <div class="dropdown with-arrow btn-group ">
-                <button class="btn secondary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
+                <button class="btn primary" <?= $N == 0 ? 'disabled' : '' ?> data-toggle="dropdown" type="button" id="download-btn" aria-haspopup="true" aria-expanded="false">
                     <i class="ph ph-download"></i> Download
                     <i class="ph ph-caret-down ml-5" aria-hidden="true"></i>
                 </button>
@@ -652,7 +748,7 @@ $institute = $Settings->get('affiliation_details');
                                 </div>
 
                             </div>
-                            <button class="btn secondary">Download</button>
+                            <button class="btn primary">Download</button>
                         </form>
                     </div>
                 </div>
@@ -686,7 +782,7 @@ $institute = $Settings->get('affiliation_details');
 
         <div class="btn-toolbar mb-10">
             <?php if ($edit_perm) { ?>
-                <a href="<?= ROOTPATH ?>/projects/public/<?= $id ?>" class="btn secondary">
+                <a href="<?= ROOTPATH ?>/projects/public/<?= $id ?>" class="btn primary">
                     <i class="ph ph-edit"></i>
                     <?= lang('Edit', 'Bearbeiten') ?>
                 </a>
@@ -762,7 +858,7 @@ $institute = $Settings->get('affiliation_details');
 
             <div class="btn-toolbar mb-10">
                 <?php if ($Settings->hasPermission('project.finance.edit')) { ?>
-                    <a href="<?= ROOTPATH ?>/projects/finance/<?= $id ?>" class="btn secondary">
+                    <a href="<?= ROOTPATH ?>/projects/finance/<?= $id ?>" class="btn primary">
                         <i class="ph ph-edit"></i>
                         <?= lang('Edit', 'Bearbeiten') ?>
                     </a>
@@ -921,7 +1017,7 @@ $institute = $Settings->get('affiliation_details');
                         </div>
                         <input type="hidden" name="activity" id="activity-selected" required value="">
 
-                        <button class="btn secondary">
+                        <button class="btn primary">
                             <i class="ph ph-check"></i>
                             <?= lang('Submit', 'Bestätigen') ?>
                         </button>

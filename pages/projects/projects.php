@@ -212,14 +212,25 @@ if (!$Settings->hasPermission('projects.view')) {
                         ${lang('Self-funded', 'Eigenfinanziert')}
                         </span>`
                         }
+                        if (data == 'Stipendium') {
+                            return `<span class="badge text-success no-wrap">
+                        <i class="ph ph-tip-jar"></i>
+                        ${lang('Stipendiate', 'Stipendium')}
+                        </span>`
+                        }
+                        if (data == 'Drittmittel') {
                         return `<span class="badge text-danger">
                         <i class="ph ph-hand-coins"></i>
                         ${lang('Third-party funded', 'Drittmittel')}
                         </span>`
+                        }
                     }
                 },
                 {
-                    data: 'funder'
+                    data: 'funder', render: function(data, type, row) {
+                        if (!data && row.scholarship) return row.scholarship;
+                        return data;
+                    }
                 },
                 {
                     data: 'date_range'
@@ -241,7 +252,10 @@ if (!$Settings->hasPermission('projects.view')) {
                 {
                     data: 'applicant',
                     render: function(data, type, row) {
-                        if (!row.contact) return data;
+                        if (!row.contact && row.supervisor)  
+                            return `<a href="<?= ROOTPATH ?>/profile/${row.supervisor}">${data}</a>`;
+                        if (!row.contact) 
+                            return data;
                         return `<a href="<?= ROOTPATH ?>/profile/${row.contact}">${data}</a>`
                     }
                 },

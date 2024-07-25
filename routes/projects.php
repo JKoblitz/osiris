@@ -233,6 +233,45 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
 });
 
 
+Route::post('/crud/projects/delete/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $project = $osiris->projects->findOne(['_id' => $DB->to_ObjectID($id)]);
+
+    // check if user has permission to delete project
+    $edit_perm = (
+        $Settings->hasPermission('projects.delete')
+        ||
+        ($Settings->hasPermission('projects.delete-own') &&
+            (
+                $project['created_by'] == $_SESSION['username']
+                ||
+                in_array($_SESSION['username'], array_column(DB::doc2Arr($project['persons']), 'user'))
+            ))
+    );
+
+    // if user has no permission: redirect to project view
+    if (!$edit_perm) {
+        header("Location: " . ROOTPATH . "/projects/view/$id?msg=no-permission");
+        die;
+    }
+
+    // remove project name from activities
+    $osiris->activities->updateMany(
+        ['projects' => $project['name']],
+        ['$pull' => ['projects' => $project['name']]]
+    );
+
+    // remove project
+    $osiris->projects->deleteOne(
+        ['_id' => $DB::to_ObjectID($id)]
+    );
+
+    $_SESSION['msg'] = lang("Project has been deleted successfully.", "Projekt wurde erfolgreich gelöscht.");
+    header("Location: " . ROOTPATH . "/projects");
+});
+
+
 Route::post('/crud/projects/update-persons/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     $values = $_POST['persons'];

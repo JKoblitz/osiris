@@ -2916,7 +2916,7 @@ Buttons
   margin-right: 0;
   margin-left: -1px;
 }
-.btn-toolbar .badge {
+.btn-toolbar > .badge {
   height: 3.2rem;
   line-height: 3.2rem;
   padding: 0 1.5rem;

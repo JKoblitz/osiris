@@ -1152,7 +1152,7 @@ function projectTimeline(selector, data = {}) {
                     enddate: end,
                     title: element.name,
                     role: element.persons.role,
-                    funder: element.funder
+                    funder: element.funder ?? element.scholarship
                 })
             });
 
@@ -1185,6 +1185,8 @@ function projectTimeline(selector, data = {}) {
                 'applicant': { color: '#B61F29', label: lang('Applicant', 'Antragsteller:in') },
                 'worker': { color: '#008083', label: lang('Worker', 'Projektmitarbeiter:in') },
                 'associate': { color: '#AAAAAA', label: lang('Associate', 'Beteiligte Person') },
+                'scholar': { color: '#008083', label: lang('Scholar', 'Stipenidat') },
+                'supervisor': { color: '#f78104', label: lang('Supervisor', 'Betreuende Person') },
             }
 
             var axisBottom = d3.axisBottom(timescale)
@@ -1270,7 +1272,7 @@ function projectTimeline(selector, data = {}) {
                         if (typeInfo[d.role] !== undefined) {
                             role = `<span style="color:${typeInfo[d.role].color}">${typeInfo[d.role].label}</span>`
                         }
-                        return `<b>${d.title ?? 'No title available'}</b><br>${d.funder ?? 'Eigenmittel'}<br>${role}`
+                        return `<b>${d.title ?? 'No title available'}</b><br><span class="text-muted">${d.funder ?? '-'}</span><br>${role}`
                     }
                 });
                 $(this).popover('show');
