@@ -178,6 +178,9 @@ $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission(
     </h1>
     <h3 class="subtitle">
         <?= $Groups->getUnit($group['unit'] ?? null, 'name') ?>
+        <b class="badge pill primary font-size-12 ml-10">
+            Level <?= $Groups->getLevel($id) ?>
+        </b>
     </h3>
 
 

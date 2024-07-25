@@ -939,9 +939,6 @@ if ($currentuser) { ?>
                                 ?>
                                 <tr>
                                     <td>
-                                        <!-- <?php
-                                                dump($c, true);
-                                                ?> -->
                                         <div class="d-flex justify-content-between">
                                             <h6 class="m-0">
                                                 <?= $c['title'] ?>
@@ -986,17 +983,19 @@ if ($currentuser) { ?>
                                                <small class="btn small cursor-default">
                                                     <?= $days ?>
                                                 </small>
-                                                <a class="btn small primary" href="<?=ROOTPATH?>/conference/ics/<?=$c['_id']?>">
+                                                <a class="btn small" 
+                                                href="<?=ROOTPATH?>/conference/ics/<?=$c['_id']?>"
+                                                data-toggle="tooltip" data-title="<?= lang('Add to calendar', 'Zum Kalender hinzufügen') ?>"
+                                                >
                                                     <i class="ph ph-calendar-plus"></i>
-                                                    iCal
                                                 </a>
                                                </div>
                                                <div class="btn-group">
-                                               <a class="btn small primary <?= $interest ? 'active' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'interests')" data-toggle="tooltip" data-title="<?= $interestTooltip ?>">
+                                               <a class="btn small <?= $interest ? 'active primary' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'interests')" data-toggle="tooltip" data-title="<?= $interestTooltip ?>">
                                                     <b><?= count($c['interests'] ?? []) ?></b>
                                                     <?= lang('Interested', 'Interessiert') ?>
                                                 </a>
-                                                <a class="btn small primary <?= $participate ? 'active' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'participants')" data-toggle="tooltip" data-title="<?= $participateTooltip ?>">
+                                                <a class="btn small <?= $participate ? 'active primary' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'participants')" data-toggle="tooltip" data-title="<?= $participateTooltip ?>">
                                                     <b><?= count($c['participants'] ?? []) ?></b>
                                                     <?= lang('Participants', 'Teilnehmer') ?>
                                                 </a>

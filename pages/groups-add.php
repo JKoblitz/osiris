@@ -87,7 +87,7 @@ function sel($index, $value)
                     <?= lang('Parent group', 'Übergeordnete Gruppe') ?>
                 </label>
                 <select class="form-control" name="values[parent]" id="parent" onchange="deptSelect(this.value)">
-                    <option value=""><?= lang('!!!Attention: No parent group chosen', '!!! Achtung: Keine übergeordnete Gruppe gewählt') ?></option>
+                    <option value="" data-level="99"><?= lang('!!!Attention: No parent group chosen', '!!! Achtung: Keine übergeordnete Gruppe gewählt') ?></option>
                     <?php foreach ($Groups->groups as $d => $dept) { ?>
                         <option value="<?= $d ?>" <?= sel('parent', $d) ?> data-level="<?= $dept['level'] ?? $Groups->getLevel($d) ?>">
                             <?= $dept['name'] != $d ? "$d: " : '' ?><?= $dept['name'] ?>
@@ -107,7 +107,7 @@ function sel($index, $value)
         </div>
         <div class="form-group" id="color-row" <?= $level != 1 ? 'style="display:none;"' : '' ?>>
             <label for="color" class=""><?= lang('Color', 'Farbe') ?></label>
-            <input type="color" class="form-control w-50" name="type[color]" required value="<?= val('color') ?>">
+            <input type="color" class="form-control w-50" name="values[color]" required value="<?= val('color') ?>">
             <span><?= lang('Note that only level 1 groups can have a color.', 'Bitte beachte, dass nur Level 1-Gruppen eine eigene Farbe haben können.') ?></span>
         </div>
     </fieldset>
@@ -238,7 +238,10 @@ function sel($index, $value)
 
 <script>
     function deptSelect(val) {
-        console.log(val);
+        if (val === '') {
+            $('#color-row').hide()
+            return;
+        }
         var opt = $('#parent').find('[value=' + val + ']')
         console.log(opt.attr('data-level'));
         if (opt.attr('data-level') != '0') {

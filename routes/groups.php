@@ -156,38 +156,54 @@ Route::post('/crud/groups/create', function () {
 Route::post('/crud/groups/update/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     if (!isset($_POST['values'])) die("no values given");
-    $collection = $osiris->groups;
+
+    $id = $DB->to_ObjectID($id);
+
+    $group = $osiris->groups->findOne(['_id' => $id]);
 
     $values = validateValues($_POST['values'], $DB);
     // add information on creating process
     $values['updated'] = date('Y-m-d');
     $values['updated_by'] = $_SESSION['username'];
 
-    if (isset($values['hide'])) {
-        $values['hide'] = true;
-    } else {
-        $values['hide'] = false;
-    }
-
-    $id = $DB->to_ObjectID($id);
-
+    if (isset($values['hide'])) $values['hide'] = boolval($values['hide']);
     // check if ID has changes
-    if (isset($values['id'])) {
-        $group = $osiris->groups->findOne(['_id' => $id]);
-        if ($group['id'] != $values['id']) {
-            // change IDs of Members
-            $osiris->persons->updateMany(
-                ['depts' => $group['id']],
-                ['$set' => ['depts.$[elem]' => $values['id']]],
-                ['arrayFilters' => [['elem' => ['$eq' => $group['id']]]], 'multi' => true]
-            );
-        }
+    if (isset($values['id']) && $group['id'] != $values['id']) {
+        // change IDs of Members
+        $osiris->persons->updateMany(
+            ['depts' => $group['id']],
+            ['$set' => ['depts.$[elem]' => $values['id']]],
+            ['arrayFilters' => [['elem' => ['$eq' => $group['id']]]], 'multi' => true]
+        );
+        // change ID of child elements
+        $osiris->groups->updateMany(
+            ['parent' => $group['id']],
+            ['$set' => ['parent' => $values['id']]]
+        );
     }
 
     if (!empty($values['parent'])) {
         $parent = $Groups->getGroup($values['parent']);
-        if ($parent['color'] != '#000000') $values['color'] = $parent['color'];
         $values['level'] = $parent['level'] + 1;
+        if ($values['level'] == 1){
+            // spread color to all children
+            $osiris->groups->updateMany(
+                ['parent' => $values['id']],
+                ['$set' => ['color' => $values['color']]]
+            );
+
+        } else {
+            $values['color'] = $parent['color'] ?? '#000000';
+        }
+    } else {
+        $values['level'] = 0;
+    }
+    if ($values['level'] != $group['level']) {
+        // change level of all children
+        $osiris->groups->updateMany(
+            ['parent' => $values['id']],
+            ['$set' => ['level' => $values['level']+1]]
+        );
     }
 
     // check if head is connected 
@@ -202,16 +218,10 @@ Route::post('/crud/groups/update/([A-Za-z0-9]*)', function ($id) {
             }
         }
     }
-    // dump($values, true);
-    // die;
-
-    $updateResult = $collection->updateOne(
+    $updateResult = $osiris->groups->updateOne(
         ['_id' => $id],
         ['$set' => $values]
     );
-
-    // dump($updateResult->getModifiedCount(), true);
-    // die;
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");

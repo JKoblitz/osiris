@@ -109,6 +109,7 @@ include_once BASEPATH . "/routes/reports.php";
 include_once BASEPATH . "/routes/concepts.php";
 include_once BASEPATH . "/routes/admin.php";
 include_once BASEPATH . "/routes/conferences.php";
+require_once BASEPATH . '/routes/guests.php';
 // include_once BASEPATH . "/routes/adminGeneral.php";
 // include_once BASEPATH . "/routes/adminRoles.php";
 
@@ -117,7 +118,6 @@ include_once BASEPATH . "/routes/rest.php";
 // include_once BASEPATH . "/routes/CRUD.php";
 
 include_once BASEPATH . "/addons/ida/index.php";
-require_once BASEPATH . '/addons/guestforms/index.php';
 
 
 

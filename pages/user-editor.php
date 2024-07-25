@@ -140,7 +140,7 @@
         <legend><?= lang('Organisational unit', 'Organisationseinheiten') ?></legend>
 
         <?php
-        $tree = $Groups->getHirarchyTree();
+        $tree = $Groups->getHierarchyTree();
         $depts = DB::doc2Arr($data['depts'] ?? []);
         ?>
         <div class="form-group">
