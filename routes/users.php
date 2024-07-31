@@ -276,6 +276,14 @@ Route::get('/user/picture/(.*)', function ($user, $cls = 'profile-img') {
 
 // Synchronize users
 
+Route::get('/test-lib/synchronize-users', function () {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/_login.php";
+    $users = getUsers();
+    dump($users, true);
+});
+
+
 Route::get('/synchronize-users', function () {
     include_once BASEPATH . "/php/init.php";
     include_once BASEPATH . "/php/_login.php";

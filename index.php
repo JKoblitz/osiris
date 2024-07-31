@@ -119,29 +119,6 @@ include_once BASEPATH . "/routes/rest.php";
 
 include_once BASEPATH . "/addons/ida/index.php";
 
-
-
-Route::get('/test-user/(.*)', function ($username) {
-    include_once BASEPATH . "/php/_login.php";
-    include_once BASEPATH . "/php/init.php";
-    $user = getUser($username);
-    dump($user);
-    $_SESSION['username'] = $username;
-    // $osiris->persons->deleteOne(
-    //     ['username' => 'sna']
-    // );
-    // $osiris->persons->updateOne(
-    //     ['username' => 'sna'],
-    //     ['$set' => ['username' => 'SNA']]
-    // );
-
-    // $osiris->activities->updateMany(
-    //     ['authors.last' => 'Nagel'],
-    //     ['$set' => ['authors.$[elem].user' => 'SNA']],
-    //     ['arrayFilters' => [['elem.last' => 'Nagel', 'elem.first'=>'Stefan']]]
-    // );
-});
-
 /**
  * Routes for OSIRIS Portal
  */
