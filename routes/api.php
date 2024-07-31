@@ -859,7 +859,7 @@ Route::get('/api/journals', function () {
             'abbr' => $doc['abbr'],
             'publisher' => $doc['publisher'] ?? '',
             'open_access' => $oa,
-            'issn' => implode(', ', $doc['issn']->bsonSerialize()),
+            'issn' => implode(', ', DB::doc2Arr($doc['issn'])),
             'if' => $DB->latest_impact($doc) ?? '',
             'count' => $activities[strval($doc['_id'])] ?? 0
         ];

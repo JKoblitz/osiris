@@ -126,7 +126,7 @@ class OpenAlexParser
                 'publisher' => $source['host_organization_name'],
                 'issn' => $source['issn'],
                 'oa' => $source['is_oa'],
-                'openalex' => str_replace('https://openalex.org/', '', $source['id'])
+                // 'openalex' => str_replace('https://openalex.org/', '', $source['id'])
             ];
         }
 
