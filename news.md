@@ -1,5 +1,20 @@
 # Neuigkeiten
 
+<span class="badge float-right">XX.2024</span>
+<a class="anchor" href="#version-1.3.6" id="version-1.3.6"></a>
+
+## Version 1.3.6
+
+#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
+- Probleme mit Stipendien wurden behoben
+- Probleme mit dem Level und der Farbe von Organisationseinheiten wurden behoben
+- Das Laden der Profilseite wurde deutlich verbessert.
+
+
+
+
+----
+
 <span class="badge float-right">23.06.2024</span>
 <a class="anchor" href="#version-1.3.5" id="version-1.3.5"></a>
 
@@ -48,6 +63,8 @@ Die Synchronisation zu LDAP hat jetzt ein Interface spendiert bekommen, über da
 - Die Ersteller von Projekten können sie jetzt auch bearbeiten
 - Bei Projekten wurden Stipendien hinzugefügt
 
+
+----
 
 <span class="badge float-right">23.05.2024</span>
 <a class="anchor" href="#version-1.3.4" id="version-1.3.4"></a>

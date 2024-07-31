@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page to import activities
  * 
@@ -23,233 +24,93 @@
     Import
 </h1>
 
+<!-- import from OpenAlex -->
+ <?php 
+ $affiliation = $Settings->get('affiliation_details');
+ if (!empty($affiliation['openalex'] ?? null)) { ?>
+<div class="box success">
+
+    <div class="content">
+        <b class="badge success">
+            RECOMMENDED
+        </b>
+        <h2 class="title mt-10">OpenAlex Import</h2>
+        <p>
+            <?= lang(
+                'You can import data from OpenAlex! This method is very reliable, so we recommend it.',
+                'Du kannst Publikationen von OpenAlex importieren! Da diese Methode sehr zuverlässig ist, empfehlen wir sie.'
+            ) ?>
+        </p>
+        <p>
+            <b>
+            <?=lang('
+            How you can find your OpenAlex ID:', 
+            'Wie du deine OpenAlex-ID herausfindest:')?>
+            </b>
+        </p>
+
+        <ol class="list success">
+            <li>
+                <?=lang('Go to OpenAlex and search for your name or for one of your publications.', 'Gehe zu OpenAlex und suche nach deinem Namen oder nach einer deiner Publikationen.')?>
+            </li>
+            <li>
+                <?=lang('Click on one of your publications. A side window will open showing the details. In the list of authors, you click on your name.', 'Klicke auf eine deiner Publikationen, woraufhin sich eine Seitenleiste mit den Details öffnet. Dort klickst du auf deinen Namen in der Autorenliste.')?>
+            </li>
+            <li>
+                <?=lang('You are now on your OpenAlex profile page. To import all the publications shown there into OSIRIS at once, you need the OpenAlex ID, which is the last part of the URL. It starts with `a` followed by numbers. Copy it into the field below and start the import.', 'Nun bist du auf deiner OpenAlex-Profilseite. Um alle dort gezeigten Publikationen mit einmal in OSIRIS zu importieren brauchst du die OpenAlex-ID, die der letzte Teil der URL ist. Sie beginnt mit einem `a` gefolgt von Zahlen. Kopiere sie in das Feld unten und starte mit dem Import.')?>
+            </li>
+
+        <form action="<?= ROOTPATH ?>/import/openalex" method="get">
+            <div class="form-group">
+                <label for="openalex-id">OpenAlex ID</label>
+                <input type="text" name="openalex-id" id="openalex-id" class="form-control" required>
+            </div>
+            <button type="submit" class="btn">Import</button>
+        </form>
+    </div>
+
+
+</div>
+
+<?php } else { ?>
+    <div class="box danger">
+        <div class="content">
+            <h2 class="title">OpenAlex Import</h2>
+            <p>
+                <?= lang(
+                    'Your Institute must add the institutional OpenAlex ID in their general settings to use this feature.',
+                    'Dein Institut muss die institutionelle OpenAlex-ID in den allgemeinen Einstellungen hinterlegen, um dieses Feature zu nutzen.'
+                ) ?>
+            </p>
+        </div>
+    </div>
+ <?php } ?>
 
 <?php
-$Format = new Document();
-
 if (!empty($USER['google_scholar'] ?? null)) { ?>
 
-    <?php if (isset($_GET['googlescholar'])) { ?>
-        <?php
-        include(BASEPATH . '/php/GoogleScholar.php');
-        $user = $_GET["googlescholar"];
-        $google = new GoogleScholar($user);
-
-        $result = $google->getAllUserEntries();
-
-        if (empty($result) || empty($result['publications'])) { ?>
-            <p class="text-danger">
-                <?= lang('We could not find any articles from your Google Scholar Account. Sorry.', 'Wir haben keine Artikel auf deinem Google Scholar Account gefunden. Sorry.') ?>
+    <div class="box secondary">
+        <div class="content">
+            <h2 class="title">Google Scholar Import</h2>
+            <p>
+                <?= lang(
+                    'You can import data from your Google scholar account',
+                    'Du kannst Publikationen von deinem Google Scholar-Account importieren'
+                ) ?>:
             </p>
-        <?php
-        } else {
-            include(BASEPATH . '/php/Levenshtein.php');
-            $levenshtein = new Levenshtein($osiris);
-
-            $pubs = array();
-            foreach ($result['publications'] as $i => $pub) {
-                $l = $levenshtein->findDuplicate($pub['title']);
-                $id = $l[0];
-                $sim = round($l[2], 1);
-                if ($sim < 50) $sim = 0;
-                $years_ago = 100;
-                if (is_numeric($pub['year'])) $years_ago = CURRENTYEAR - intval($pub['year']);
-                $pubs[] = [$sim, $years_ago, $id, $pub];
-            }
-
-            sort($pubs);
-        ?>
-            <p class="text-success">
-                <?= lang('We found the following articles from your Google Scholar Account:', 'Wir haben die folgenden Artikel auf deinem Google Scholar Account gefunden:') ?>
+            <p class="mt-0 font-size-16 font-weight-bold">
+                Account-ID: <a href="https://scholar.google.com/citations?user=<?= $USER['google_scholar'] ?>"><?= $USER['google_scholar'] ?></a>
             </p>
 
-            <table class="table">
-                <tbody>
-                    <?php foreach ($pubs as $i => $array) {
-                        $sim = $array[0];
-                        $id = $array[2];
-                        $pub = $array[3];
-                        $pub_id = $pub['link'];
-                    ?>
+            <p class="font-size-12 text-muted">
+                <?= lang('Please note that only the 100 latest entries can be imported.', 'Bitte beachte, dass nur die 100 neusten Einträge importiert werden können.') ?>
+            </p>
 
-                        <tr class="<?php if ($sim >= 98) echo "row-muted"; ?>" id="<?= $pub_id ?>">
-                            <td>
-                                <a class="title colorless" href="<?= $google->googleDocLink($pub_id) ?>" target="_blank">
-                                    <?= $pub['title'] ?>
-                                </a>
-                                <small class="text-muted d-block">
-                                    <?= $pub['authors'] ?>
-                                </small>
-                                <small class="text-muted d-block mb-10">
-                                    <?= $pub['venue'] ?>
-                                </small>
-
-                                <?php if (!empty($id) && $sim > 50) {
-                                    $activity = $DB->getActivity($id);
-
-                                    $Format->setDocument($activity);
-                                    $dupl = $Format->formatShort();
-                                    if ($sim >= 98) $alert = 'duplicate';
-                                    else $alert = 'signal';
-                                ?>
-
-                                    <div class="alert <?= $alert ?>">
-                                        <p class="mt-0">
-                                            <?php if ($sim >= 98) { ?>
-                                                <?= lang('This is a 100% duplicate of the follwing publication:', 'Dies ist ein 100%iges Duplikat der folgenden Publikation:') ?>
-                                            <?php } else { ?>
-                                                <?= lang('This might be a duplicate of the follwing publication', 'Dies könnte ein Duplikat der folgenden Publikation sein') ?>
-                                                (<b><?= $sim ?>&nbsp;%</b>):
-                                            <?php } ?>
-                                        </p>
-                                        <?= $dupl ?>
-                                    </div>
-                                <?php } ?>
-
-                                <?php if ($sim < 98) { ?>
-                                    <button class="btn mt-5" onclick='addGoogleActivity("<?= $user ?>", "<?= $pub_id ?>")'>
-                                        <i class="ph ph-plus"></i>
-                                        <?= lang('Add to database', 'Zur DB hinzufügen') ?>
-                                    </button>
-                                <?php } ?>
-
-                            </td>
-
-                        </tr>
-
-                    <?php
-                    }
-                    ?>
-
-                </tbody>
-            </table>
-        <?php
-        }
-        ?>
-
-        <script>
-            function googleScholar(user) {
-                $('.loader').addClass('show')
-                $.ajax({
-                    type: "GET",
-                    data: {
-                        user: user
-                    },
-                    dataType: "json",
-                    url: ROOTPATH + '/api/google',
-                    success: function(response) {
-                        console.log(response);
-                        $('.loader').removeClass('show')
-
-                        var table = $('#result');
-
-                        response.publications.forEach(pub => {
-                            var tr = $('<tr id="' + pub.link + '">')
-                            var td = $('<td>')
-                            td.append(pub.title)
-                            td.append('<br />')
-                            td.append(`<small class="text-muted d-block">${pub.authors}</small>`)
-                            td.append(`<small class="text-muted d-block">${pub.venue}</small>`)
-                            tr.append(td)
-
-                            var btn = $('<button>')
-                            btn.addClass('btn sm')
-                                .html('Import')
-                            btn.on('click', googleScholarDetails(user, pub.link))
-                            tr.append($('<td>').append(btn))
-                            table.append(tr)
-                        });
-
-                        // $('#result').html(JSON.stringify(response))
-                    },
-                    error: function(response) {
-                        $('.loader').removeClass('show')
-                        toastError(response.responseText)
-                    }
-                })
-            }
-
-            function googleScholarDetails(user, doc) {
-                $('.loader').addClass('show')
-                $.ajax({
-                    type: "GET",
-                    data: {
-                        user: user,
-                        doc: doc
-                    },
-                    dataType: "json",
-                    url: ROOTPATH + '/api/google',
-                    success: function(response) {
-                        console.log(response);
-                        $('.loader').removeClass('show')
-
-
-                    },
-                    error: function(response) {
-                        $('.loader').removeClass('show')
-                        toastError(response.responseText)
-                    }
-                })
-            }
-
-            function addGoogleActivity(user, doc) {
-                $('.loader').addClass('show')
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        user: user,
-                        doc: doc
-                    },
-                    dataType: "json",
-                    url: ROOTPATH + '/import/google',
-                    success: function(response) {
-                        console.log(response);
-                        if (response.inserted > 0) {
-                            var td = $('tr#' + doc).find('td:first')
-                            td.find('.alert,.btn').remove()
-                            var alert = $('<div class="alert success">')
-                            alert.append('<p class="my-0">' + lang('Publication successfully added. Please review the result carefully.', 'Publikation wurde hinzugefügt. Bitte überprüfe das Ergebnis sorgfältig!') + '</p>')
-                            alert.append(response.formatted)
-                            alert.append('<br><a class="btn mt-5" href="' + ROOTPATH + '/activities/view/' + response.id + '" target="_blank">Review</a>')
-                            td.append(alert)
-                        }
-                        $('.loader').removeClass('show')
-                    },
-                    error: function(response) {
-                        $('.loader').removeClass('show')
-                        toastError(response.responseText)
-                        console.log(response.responseText);
-                    }
-                })
-            }
-        </script>
-
-    <?php } else { ?>
-
-
-        <div class="box secondary">
-            <div class="content">
-                <h2 class="title">Google Scholar Import</h2>
-                <p>
-                    <?= lang(
-                        'You can import data from your Google scholar account',
-                        'Du kannst Publikationen von deinem Google Scholar-Account importieren'
-                    ) ?>:
-                </p>
-                <p class="mt-0 font-size-16 font-weight-bold">
-                    Account-ID: <a href="https://scholar.google.com/citations?user=<?= $USER['google_scholar'] ?>"><?= $USER['google_scholar'] ?></a>
-                </p>
-
-                <p class="font-size-12 text-muted">
-                    <?= lang('Please note that only the 100 latest entries can be imported.', 'Bitte beachte, dass nur die 100 neusten Einträge importiert werden können.') ?>
-                </p>
-
-                <a href="?googlescholar=<?= $USER['google_scholar'] ?>" class="btn">Import</a>
-
-            </div>
+            <form action="<?= ROOTPATH ?>/import/googlescholar/<?=$USER['google_scholar']?>" method="get">
+                <button type="submit" class="btn">Import</button>
+            </form>
         </div>
-
-    <?php } ?>
+    </div>
 
 <?php } else { ?><!-- if empty(USER[googlescholar]) -->
     <div class="box secondary">

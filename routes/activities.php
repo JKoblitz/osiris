@@ -165,6 +165,7 @@ Route::get('/activities/view/([a-zA-Z0-9]*)', function ($id) {
 }, 'login');
 
 
+// @deprecated 1.2.0
 Route::get('/activities/view/([a-zA-Z0-9]*)/file', function ($id) {
     include_once BASEPATH . "/php/init.php";
 

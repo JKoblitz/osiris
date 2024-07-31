@@ -6,12 +6,14 @@ if (!defined('ROOTPATH'))
 
 // define ADMIN user name
 if (!defined('ADMIN'))
-    define('ADMIN', 'juk20');
+    define('ADMIN', '');
 
-// if you do not use LDAP, change the following to 'AUTH'
 if (!defined('USER_MANAGEMENT'))
     define('USER_MANAGEMENT', 'AUTH');
 
+if (!defined('LIVE'))
+    define('LIVE', true);
+    
 // define LDAP connection
 if (USER_MANAGEMENT == 'LDAP') {
     if (!defined('LDAP_IP'))

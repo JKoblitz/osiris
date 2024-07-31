@@ -155,6 +155,10 @@ $pageactive = function ($p) use ($page) {
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
                 <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
+                <?php if (!LIVE) { ?>
+                    <span class=" position-absolute bottom-0 left-0 secondary" style="font-size: 1rem;z-index:1">TESTSYSTEM</span>
+                <?php } ?>
+                
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
