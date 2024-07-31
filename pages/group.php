@@ -26,7 +26,7 @@ $parsedown = new Parsedown;
 $level = $Groups->getLevel($id);
 
 $children = $Groups->getChildren($group['id']);
-$persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+$persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => ['$in'=>[true, 'true', 1, '1']]], ['sort' => ['last' => 1]])->toArray();
 
 if (isset($group['head'])) {
 
