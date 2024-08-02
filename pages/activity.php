@@ -249,27 +249,31 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
     <div class="box">
         <div class="p-10">
-            <!-- <b><?= lang('This is your activity.', 'Dies ist deine Aktivität.') ?></b> -->
+            <b><?= lang('Portfolio visibility', 'Sichtbarkeit in Portfolio') ?></b>
             <div class="mt-10 d-flex">
-                <!-- switch -->
-
-                <?php if ($user_activity) { ?>
-                    <div class="custom-switch ml-10">
-                        <input type="checkbox" id="highlight" <?= ($highlighted) ? 'checked' : '' ?> name="values[highlight]" onchange="fav()">
-                        <label for="highlight">
-                            <?= lang('Highlight on your profile', 'Auf deinem Profil hervorheben') ?>
-                        </label>
-                    </div>
-                <?php } ?>
+                <?php if (in_array($doc['type'], ['publication', 'poster', 'lecture', 'awards', 'software'])) { ?>
+                    <?php if ($user_activity) { ?>
+                        <div class="custom-switch ml-10">
+                            <input type="checkbox" id="highlight" <?= ($highlighted) ? 'checked' : '' ?> name="values[highlight]" onchange="fav()">
+                            <label for="highlight">
+                                <?= lang('Highlight on your profile', 'Auf deinem Profil hervorheben') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
 
                 <!-- hide in all activities on portal -->
-                <!-- checkbox to hide -->
-                <div class="custom-switch ml-10">
-                    <input type="checkbox" id="hide" <?= ($doc['hide'] ?? false) ? 'checked' : '' ?> name="values[hide]" onchange="hide()">
-                    <label for="hide">
-                        <?= lang('Hide in portfolio', 'Im Portfolio verstecken') ?>
-                    </label>
-                </div>
+                    <div class="custom-switch ml-10">
+                        <input type="checkbox" id="hide" <?= ($doc['hide'] ?? false) ? 'checked' : '' ?> name="values[hide]" onchange="hide()">
+                        <label for="hide">
+                            <?= lang('Hide in portfolio', 'Im Portfolio verstecken') ?>
+                        </label>
+                    </div>
+                <?php } else { ?>
+                    <span class="badge signal ml-10" data-toggle="tooltip" data-title="<?= lang('This activity cannot be shown on Portfolio due to institute settings.', 'Diese Aktivität kann aufgrund von Instituts-Einstellungen nicht im Portfolio gezeigt werden.') ?>">
+                        <i class="ph ph-eye-slash"></i>
+                        <?= lang('Not visible', 'Nicht sichtbar') ?>
+                    </span>
+                <?php } ?>
             </div>
             <script>
                 function fav() {
@@ -678,20 +682,21 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                                     <?php else : ?>
                                         <div class="dropdown">
                                             <button class="btn small" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
-                                                <?=lang('Claim', 'Beanspruchen')?>
+                                                <?= lang('Claim', 'Beanspruchen') ?>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right w-300" aria-labelledby="dropdown-1">
                                                 <div class="content">
                                                     <small class="d-block text-danger mb-10">
                                                         <?= lang(
-                                                            'You claim that you are this author.<br> This activity will be added to your list and the author name will be added to your list of alternative names.', 
-                                                        'Du beanspruchst, dass du diese Person bist.<br> Du fügst diese Aktivität deiner Liste hinzu und den Namen zur Liste deiner alternativen Namen.') ?>
+                                                            'You claim that you are this author.<br> This activity will be added to your list and the author name will be added to your list of alternative names.',
+                                                            'Du beanspruchst, dass du diese Person bist.<br> Du fügst diese Aktivität deiner Liste hinzu und den Namen zur Liste deiner alternativen Namen.'
+                                                        ) ?>
                                                     </small>
                                                     <form action="<?= ROOTPATH ?>/crud/activities/claim/<?= $id ?>" method="post">
                                                         <input type="hidden" name="role" value="<?= $role ?>">
                                                         <input type="hidden" name="index" value="<?= $i ?>">
                                                         <input type="hidden" name="redirect" value="<?= ROOTPATH . "/activities/view/$id" ?>">
-                                                        <button class="btn btn-block" type="submit"><?=lang('Claim', 'Beanspruchen')?></button>
+                                                        <button class="btn btn-block" type="submit"><?= lang('Claim', 'Beanspruchen') ?></button>
                                                     </form>
                                                 </div>
                                             </div>
