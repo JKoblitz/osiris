@@ -182,29 +182,32 @@ Route::post('/crud/groups/update/([A-Za-z0-9]*)', function ($id) {
         );
     }
 
-    if (!empty($values['parent'])) {
-        $parent = $Groups->getGroup($values['parent']);
-        $values['level'] = $parent['level'] + 1;
-        if ($values['level'] == 1){
-            // spread color to all children
+    if (isset($values['id'])) {
+        // check if the right form is used
+        if (!empty($values['parent'])) {
+            $parent = $Groups->getGroup($values['parent']);
+            $values['level'] = $parent['level'] + 1;
+            if ($values['level'] == 1) {
+                // spread color to all children
+                $osiris->groups->updateMany(
+                    ['parent' => $values['id']],
+                    ['$set' => ['color' => $values['color']]]
+                );
+            } else {
+                $values['color'] = $parent['color'] ?? '#000000';
+            }
+        } else {
+            $values['level'] = 0;
+        }
+        if ($values['level'] != $group['level']) {
+            // change level of all children
             $osiris->groups->updateMany(
                 ['parent' => $values['id']],
-                ['$set' => ['color' => $values['color']]]
+                ['$set' => ['level' => $values['level'] + 1]]
             );
-
-        } else {
-            $values['color'] = $parent['color'] ?? '#000000';
         }
-    } else {
-        $values['level'] = 0;
     }
-    if ($values['level'] != $group['level']) {
-        // change level of all children
-        $osiris->groups->updateMany(
-            ['parent' => $values['id']],
-            ['$set' => ['level' => $values['level']+1]]
-        );
-    }
+
 
     // check if head is connected 
     if (isset($values['head'])) {
