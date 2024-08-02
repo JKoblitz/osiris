@@ -106,8 +106,9 @@ Route::get('/portfolio/units', function () {
     //     die;
     // }
     $result = $osiris->groups->find(
-        ['hide' => ['$ne' => true]],
-        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'parent' => 1, 'unit' => 1, 'level' => 1]]
+        [],
+        // ['hide' => ['$ne' => true]],
+        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'parent' => 1, 'unit' => 1, 'level' => 1, 'hide'=>1]]
     )->toArray();
     echo rest($result);
 });
@@ -296,7 +297,7 @@ Route::get('/portfolio/unit/([^/]*)/numbers', function ($id) {
             ['$sort' => ['count' => -1]]
         ])->toArray();
 
-        $result['cooperation'] = count($coop) - 1;
+        $result['cooperation'] = max(0, count($coop) - 1);
     }
 
     echo rest($result);
@@ -628,16 +629,6 @@ Route::get('/portfolio/activity/([^/]*)', function ($id) {
         echo rest('Activity not found', 0, 404);
         die;
     }
-
-    // $result = $doc['rendered'];
-    // $result['id'] = strval($doc['_id']);
-    // $result['type'] = $doc['type'];
-    // $result['subtype'] = $doc['subtype'];
-    // $result['year'] = $doc['year'] ?? null;
-    // $result['month'] = $doc['month'] ?? null;
-    // $result['abstract'] = $doc['abstract'] ?? null;
-    // $result['doi'] = $doc['doi'] ?? null;
-    // $result['pubmed'] = $doc['pubmed'] ?? null;
     $result = [
         'id' => strval($doc['_id']),
         'type' => $doc['type'],
@@ -650,7 +641,7 @@ Route::get('/portfolio/activity/([^/]*)', function ($id) {
         'title' => $doc['rendered']['title'],
         'authors' => [],
         'depts' => [],
-        'projects' => []
+        'projects' => [],
     ];
 
     foreach ($doc['authors'] as $a) {
@@ -737,8 +728,8 @@ Route::get('/portfolio/activity/([^/]*)', function ($id) {
     $result['fields'] = $fields;
 
     // bibtex format
+    $result['print'] = $doc['rendered']['print'];
     $result['bibtex'] = $Format->bibtex();
-
     $result['ris'] = $Format->ris();
 
     echo rest($result);
@@ -940,89 +931,6 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
     echo rest($result);
 });
 
-
-Route::get('/portfolio/test', function () {
-    error_reporting(E_ERROR | E_PARSE);
-    include(BASEPATH . '/php/init.php');
-    // if (!apikey_check($_GET['apikey'] ?? null)) {
-    //     echo return_permission_denied();
-    //     die;
-    // }
-
-    $hierarchy = $Groups->tree;
-    // Beispielpersonen und ihre Einheiten
-    $personsUnits = [
-        'Monika' => ['MÖD-BPGD'],
-        'Tim' => ['BID', 'MIOS'],
-        'Julia' => ['BID', 'INTEGR']
-    ];
-
-    // Funktion zur Auflösung des Hierarchiebaums
-    function getHierarchyTree($personUnits, $hierarchy)
-    {
-        $result = [];
-
-        foreach ($personUnits as $unit) {
-            $path = findUnitPath($unit, $hierarchy);
-            if ($path) {
-                mergePaths($result, $path);
-            }
-        }
-
-        return $result;
-    }
-
-    function findUnitPath($unit, $hierarchy, $currentPath = [])
-    {
-        $newPath = array_merge($currentPath, [$hierarchy['id']]);
-
-        if ($hierarchy['id'] === $unit) {
-            return $newPath;
-        }
-
-        if (!empty($hierarchy['children'])) {
-            foreach ($hierarchy['children'] as $child) {
-                $path = findUnitPath($unit, $child, $newPath);
-                if ($path) {
-                    return $path;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    function mergePaths(&$result, $path)
-    {
-        $current = &$result;
-        foreach ($path as $node) {
-            if (!isset($current[$node])) {
-                $current[$node] = [];
-            }
-            $current = &$current[$node];
-        }
-    }
-
-
-    // Funktion zum Ausdrucken des Hierarchiebaums mit Pfeilen
-    function printHierarchyTree($tree, $indent = 0)
-    {
-        foreach ($tree as $key => $subTree) {
-            echo str_repeat("  ", $indent) . ($indent > 0 ? str_repeat(">", $indent) . " " : "") . "$key\n";
-            if (!empty($subTree)) {
-                printHierarchyTree($subTree, $indent + 1);
-            }
-        }
-    }
-
-    // Hierarchiebaum für jede Person erstellen
-    foreach ($personsUnits as $person => $units) {
-        echo "$person:\n";
-        $tree = getHierarchyTree($units, $hierarchy);
-        printHierarchyTree($tree);
-        echo "\n";
-    }
-});
 
 
 Route::get('/portfolio/(unit|project)/([^/]*)/collaborators-map', function ($context, $id) {
