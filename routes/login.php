@@ -136,4 +136,26 @@ Route::get('/user/logout', function () {
 }, 'login');
 
 
+
+Route::get('/user/test', function(){
+    include BASEPATH . "/php/init.php";
+    include BASEPATH . "/php/_login.php";
+    $arr = getUsers();
+    dump($arr, true);
+
+});
+
+Route::get('/user/test/(.*)', function($id){
+    include BASEPATH . "/php/init.php";
+    // $accountExpires = 133748892000000000;
+    // $isExpired = ($accountExpires != 0 && $accountExpires <= time() * 10000000 + 116444736000000000);
+
+    // dump($isExpired);
+    include BASEPATH . "/php/_login.php";
+    $arr = getUser($id);
+    dump($arr, true);
+
+});
+
+
 ?>

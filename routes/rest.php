@@ -566,6 +566,7 @@ Route::get('/portfolio/project/([^/]*)/staff', function ($id) {
         echo rest([]);
         die;
     }
+
     $persons = DB::doc2Arr($project['persons']);
     // sort project team by role (custom order)
     $roles = ['applicant', 'PI', 'Co-PI', 'worker', 'associate', 'student'];
@@ -756,13 +757,24 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
     }
     $id = $result['name'];
 
-    include(BASEPATH . '/php/MyParsedown.php');
+    // public information replace others
+    if (isset($result['public_title']) && !empty($result['public_title'])) 
+        $result['name'] = $result['public_title'];
+    if (isset($result['public_subtitle']) && !empty($result['public_subtitle'])) 
+        $result['title'] = $result['public_subtitle'];
+    if (isset($result['public_abstract']) && !empty($result['public_abstract'])) 
+        $result['abstract'] = $result['public_abstract'];
+    if (isset($result['public_image']) && !empty($result['public_image']))
+        $result['img'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . ROOTPATH . '/uploads/' . $result['public_image'];
 
-    if (!empty($project['abstract']) && is_string($project['abstract'])) {
-        $result['abstract'] = $parsedown->text($project['abstract']);
+    include(BASEPATH . '/php/MyParsedown.php');
+    $parsedown = new Parsedown();
+
+    if (!empty($result['abstract']) && is_string($result['abstract'])) {
+        $result['abstract'] = $parsedown->text($result['abstract']);
     }
-    if (!empty($project['abstract_de']) && is_string($project['abstract_de'])) {
-        $result['abstract_de'] = $parsedown->text($project['abstract_de']);
+    if (!empty($result['abstract_de']) && is_string($result['abstract_de'])) {
+        $result['abstract_de'] = $parsedown->text($result['abstract_de']);
     }
 
     $result['activities'] = $osiris->activities->count(['projects' => $id, 'hide' => ['$ne' => true]]);

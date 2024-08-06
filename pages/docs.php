@@ -64,9 +64,15 @@ Um die Lesbarkeit zu erhöhen, wird in der Dokumentation das generische Maskulin
     <i class="ph mr-10 text-secondary ph-code"></i>
         <?= lang('API Docs') ?>
     </a>
+
+    
+    <a href="<?= ROOTPATH ?>/docs/portfolio">
+    <i class="ph mr-10 text-secondary ph-globe"></i>
+        <?= lang('Portfolio FAQ') ?>
+    </a>
     
     <a href="<?= ROOTPATH ?>/docs/portfolio-api">
-    <i class="ph mr-10 text-secondary ph-globe"></i>
+    <i class="ph mr-10 text-secondary ph-code"></i>
         <?= lang('Portfolio API Docs') ?>
     </a>
 </div>

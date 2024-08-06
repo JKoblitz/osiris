@@ -124,7 +124,7 @@ function getUsers()
         $filter = '(cn=*)';
         // overwrite filter if set in CONFIG
         if (defined('LDAP_FILTER') && !empty(LDAP_FILTER)) $filter = LDAP_FILTER;
-        $attributes = ['samaccountname', 'useraccountcontrol'];
+        $attributes = ['samaccountname', 'useraccountcontrol', 'accountexpires'];
 
         $result = @ldap_search(
             $connect,
@@ -162,7 +162,12 @@ function getUsers()
             if (!isset($entry['samaccountname'][0])) continue;
 
             $accountControl = isset($entry['useraccountcontrol'][0]) ? (int)$entry['useraccountcontrol'][0] : 0;
-            $active = !($accountControl & 2); // 2 = ACCOUNTDISABLE
+            $accountExpires = isset($entry['accountexpires'][0]) ? (int)$entry['accountexpires'][0] : 0;
+            
+            $isDisabled = ($accountControl & 2); // 2 = ACCOUNTDISABLE
+            $isExpired = ($accountExpires != 0 && $accountExpires <= time() * 10000000 + 116444736000000000);
+
+            $active = !$isDisabled && !$isExpired;
 
             $res[$entry['samaccountname'][0]] = $active;
         }

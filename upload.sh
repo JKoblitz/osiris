@@ -19,7 +19,7 @@ scp -r pages ambrosia:/var/www/html/
 scp -r routes ambrosia:/var/www/html/
 scp -r components ambrosia:/var/www/html/
 scp -r js ambrosia:/var/www/html/
-# scp -r img ambrosia:/var/www/html/
+# scp img/* ambrosia:/var/www/html/img/
 scp -r css ambrosia:/var/www/html/
 scp -r header.php ambrosia:/var/www/html/
 scp -r footer.php ambrosia:/var/www/html/
