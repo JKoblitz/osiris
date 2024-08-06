@@ -34,9 +34,6 @@ if (isset($group['head'])) {
     if (is_string($head)) $head = [$head];
     else $head = DB::doc2Arr($head);
 
-    // usort($persons, function ($a, $b) use ($head) {
-    //     return in_array($a['username'], $head)  ? -1 : 1;
-    // });
 } else {
     $head = [];
 }
@@ -44,7 +41,6 @@ if (isset($group['head'])) {
 $users = array_column($persons, 'username');
 
 $show_general = (isset($group['description']) || isset($group['description_de']) || (isset($group['research']) && !empty($group['research'])));
-
 
 $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission($id));
 ?>

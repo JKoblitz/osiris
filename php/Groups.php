@@ -168,7 +168,7 @@ class Groups
         // get all parent units
         $parents = $this->getParents($id);
         foreach ($parents as $p) {
-            if ($p == $id) continue;
+            // if ($p == $id) continue;
             $g = $this->getGroup($p);
             if (isset($g) && isset($g['head'])) {
                 $head = $g['head'];
