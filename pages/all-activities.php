@@ -262,16 +262,6 @@ $user = $user ?? $_SESSION['username'];
             },
             deferRender: true,
             responsive: true,
-            // searchPanes: {
-            //     layout: 'columns-1',
-            //     // preSelect: [{
-            //     //     rows: ['false'],
-            //     //     column: 8
-            //     // }],
-            //     order: ['type', 'units', 'year', 'epub'],
-            //     // cascadePanes: true,
-            //     // viewTotal: true
-            // },
             language: {
                 url: lang(null, ROOTPATH + '/js/datatables/de-DE.json')
             },
@@ -315,13 +305,6 @@ $user = $user ?? $_SESSION['username'];
                         return 'OSIRIS ' + filters.join('_')
                     }
                 },
-                // {
-                //     extend: 'pdfHtml5',
-                //     exportOptions: {
-                //         columns: [0, 1, 2, 5]
-                //     },
-                //     className: 'btn'
-                // }
             ],
             dom: 'fBrtip',
             // dom: '<"dtsp-dataTable"frtip>',
@@ -476,22 +459,57 @@ $user = $user ?? $_SESSION['username'];
             window.location.hash = "type=<?= $_GET['type'] ?>";
         <?php } ?>
 
-        var hash = readHash();
-        if (hash.type !== undefined) {
-            filterActivities(document.getElementById(hash.type + '-btn'), hash.type, 1)
-        }
-        if (hash.unit !== undefined) {
-            filterActivities(document.getElementById(hash.unit + '-btn'), hash.unit, 7)
-        }
 
-        if (hash.start !== undefined) {
-            minEl.value = hash.start
-            minEl.dispatchEvent(new Event('input'));
-        }
-        if (hash.end !== undefined) {
-            maxEl.value = hash.end
-            maxEl.dispatchEvent(new Event('input'));
-        }
+        var initializing = true;
+        dataTable.on('init', function() {
+
+            var hash = readHash();
+            console.log(hash);
+            if (hash.type !== undefined) {
+                filterActivities(document.getElementById(hash.type + '-btn'), hash.type, 1)
+            }
+            if (hash.unit !== undefined) {
+                filterActivities(document.getElementById(hash.unit + '-btn'), hash.unit, 7)
+            }
+
+            if (hash.start !== undefined) {
+                minEl.value = hash.start
+                minEl.dispatchEvent(new Event('input'));
+            }
+            if (hash.end !== undefined) {
+                maxEl.value = hash.end
+                maxEl.dispatchEvent(new Event('input'));
+            }
+
+            if (hash.epub !== undefined) {
+                $('#epub-switch').prop('checked', true)
+                filterEpub()
+            }
+
+            if (hash.time !== undefined) {
+                resetTime()
+            }
+
+
+            if (hash.search !== undefined) {
+                dataTable.search(hash.search).draw();
+            }
+            if (hash.page !== undefined) {
+                dataTable.page(parseInt(hash.page) - 1).draw('page');
+            }
+            initializing = false;
+        });
+
+
+        dataTable.on('draw', function(e, settings) {
+            if (initializing) return;
+            var info = dataTable.page.info();
+            console.log(settings.oPreviousSearch.sSearch);
+            writeHash({
+                page: info.page + 1,
+                search: settings.oPreviousSearch.sSearch
+            })
+        });
 
     });
 
@@ -506,6 +524,9 @@ $user = $user ?? $_SESSION['username'];
         } else {
             dataTable.columns(8).search("", true, false, true).draw();
         }
+        writeHash({
+            epub: $('#epub-switch').prop('checked')
+        })
     }
 
     function filterActivities(btn, activity = null, column = 1) {
