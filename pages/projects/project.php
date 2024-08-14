@@ -134,12 +134,10 @@ $institute = $Settings->get('affiliation_details');
             <?= lang('General', 'Allgemein') ?>
         </a>
 
-        <!-- <a onclick="navigate('persons')" id="btn-persons" class="btn">
-        <i class="ph ph-users" aria-hidden="true"></i>
-        <?= lang('Project members', 'Projektmitarbeiter') ?>
-        <span class="index"><?= count($project['persons'] ?? array()) ?></span> -->
-        </a>
-        <?php if (count($project['collaborators'] ?? []) > 0) { ?>
+
+        <?php if ($type == 'Teilprojekt') {
+            // collaborators are inherited from parent project
+        } elseif (count($project['collaborators'] ?? []) > 0) { ?>
             <a onclick="navigate('collabs')" id="btn-collabs" class="btn">
                 <i class="ph ph-handshake" aria-hidden="true"></i>
                 <?= lang('Collaborators', 'Kooperationspartner') ?>
@@ -210,7 +208,6 @@ $institute = $Settings->get('affiliation_details');
                             <i class="ph ph-edit"></i>
                             <?= lang('Edit', 'Bearbeiten') ?>
                         </a>
-
                     <?php } ?>
                     <?php if ($Settings->hasPermission('projects.delete') || ($Settings->hasPermission('projects.delete-own') && $edit_perm)) { ?>
 
@@ -243,179 +240,168 @@ $institute = $Settings->get('affiliation_details');
 
                     <?php
                     $fields = $Project->getFields($project['type'] ?? 'Drittmittel');
+                    $inherited = [];
+
+                    if ($type == 'Teilprojekt') { #
+                        $inherited = Project::INHERITANCE;
+                        $fields = array_merge($fields, $inherited);
+                    }
                     ?>
 
                     <tbody>
-                        <?php if (in_array('name', $fields)) { ?>
+                        <?php if (!empty($project['parent'])) {
+                            $Parentproject = new Project();
+                        ?>
                             <tr>
                                 <td>
-                                    <span class="key"><?= lang('Short title', 'Kurztitel') ?></span>
-                                    <?= $project['name'] ?? '-' ?>
+                                    <span class="key"><?= lang('Parent project', 'Übergeordnetes Projekt') ?></span>
+                                    <?php
+
+                                    $parent = $osiris->projects->findOne(['name' => $project['parent']]);
+                                    $Parentproject->setProject($parent);
+                                    echo $Parentproject->widgetLarge();
+                                    ?>
+
                                 </td>
                             </tr>
                         <?php } ?>
 
-                        <?php if (in_array('title', $fields)) { ?>
+                        <!-- Subprojects -->
+                        <?php if (!isset($project['parent']) && $type == 'Drittmittel') { ?>
                             <tr>
                                 <td>
-                                    <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
-                                    <?= $project['title'] ?? '-' ?>
+                                    <span class="key">
+                                        <?= lang('Subprojects', 'Teilprojekte') ?>
+                                    </span>
+                                    <?php if (count($project['subprojects'] ?? []) > 0) {
+                                        $Subproject = new Project();
+                                        foreach ($project['subprojects'] as $sub) {
+                                            $sub = $osiris->projects->findOne(['name' => $sub]);
+                                            $Subproject->setProject($sub);
+                                            echo $Subproject->widgetSubproject();
+                                        }
+                                    } ?>
+                                    <a href="<?= ROOTPATH ?>/projects/subproject/<?= $id ?>" id="btn-collabs" class="btn">
+                                        <i class="ph ph-plus-circle" aria-hidden="true"></i>
+                                        <?= lang('Add Subproject', 'Teilprojekt anlegen') ?>
+                                    </a>
                                 </td>
                             </tr>
                         <?php } ?>
 
-                        <?php if (in_array('type', $fields)) { ?>
+                        <?php foreach ($fields as $key) {
+                            if (!in_array($key, ['name', 'title', 'type', 'internal_number', 'contact', 'status', 'funder', 'funding_organization', 'funding_number', 'scholarship', 'university', 'purpose', 'role', 'coordinator', 'start', 'end', 'website', 'abstract', 'nagoya'])) {
+                                continue;
+                            }
+                            if ($key == 'nagoya' && !$Settings->featureEnabled('nagoya')) {
+                                continue;
+                            }
+                        ?>
                             <tr>
                                 <td>
-                                    <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
-                                    <?= $project['type'] ?? '-' ?>
+                                    <?php if (in_array($key, $inherited)) { ?>
+                                        <small class="badge muted float-right">Inherited</small>
+                                    <?php } ?>
+
+                                    <?php
+                                    switch ($key) {
+                                        case 'name': ?>
+                                            <span class="key"><?= lang('Short title', 'Kurztitel') ?></span>
+                                            <?= $project['name'] ?? '-' ?>
+                                        <?php break;
+                                        case 'title': ?>
+                                            <span class="key"><?= lang('Full title of the project', 'Voller Titel des Projekts') ?></span>
+                                            <?= $project['title'] ?? '-' ?>
+                                        <?php break;
+                                        case 'type': ?>
+                                            <span class="key"><?= lang('Type of the project', 'Projekt-Typ') ?></span>
+                                            <?= $project['type'] ?? '-' ?>
+                                        <?php break;
+                                        case 'internal_number': ?>
+                                            <span class="key"><?= lang('Kostenträger') ?></span>
+                                            <?= $project['internal_number'] ?? '-' ?>
+                                        <?php break;
+                                        case 'contact': ?>
+                                            <span class="key"><?= lang('Applicant', 'Antragsteller:in') ?></span>
+                                            <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
+                                        <?php break;
+                                        case 'status': ?>
+                                            <span class="key"><?= lang('Status', 'Status') ?></span>
+                                            <?= $Project->getStatus() ?>
+                                        <?php break;
+                                        case 'funder': ?>
+                                            <span class="key"><?= lang('Third-party funder', 'Drittmittelgeber') ?></span>
+                                            <?= $project['funder'] ?? '-' ?>
+                                        <?php break;
+                                        case 'funding_organization': ?>
+                                            <span class="key"><?= lang('Funding organization', 'Förderorganisation') ?></span>
+                                            <?= $project['funding_organization'] ?? '-' ?>
+                                        <?php break;
+                                        case 'funding_number': ?>
+                                            <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
+                                            <?= $Project->getFundingNumbers('<br>') ?>
+                                        <?php break;
+                                        case 'scholarship': ?>
+                                            <span class="key"><?= lang('Scholarship institution', 'Stipendiengeber') ?></span>
+                                            <?= $project['scholarship'] ?? '-' ?>
+                                        <?php break;
+                                        case 'university': ?>
+                                            <span class="key"><?= lang('Partner University', 'Partner-Universität') ?></span>
+                                            <?= $project['university'] ?? '-' ?>
+                                        <?php break;
+                                        case 'purpose': ?>
+                                            <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
+                                            <?= $Project->getPurpose() ?>
+                                        <?php break;
+                                        case 'role': ?>
+                                            <span class="key"><?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?></span>
+                                            <?= $Project->getRole() ?>
+                                        <?php break;
+                                        case 'coordinator': ?>
+                                            <span class="key"><?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?></span>
+                                            <?= $project['coordinator'] ?? '-' ?>
+                                        <?php break;
+                                        case 'start': ?>
+                                            <span class="key">Projektbeginn</span>
+                                            <?= Document::format_date($project['start'] ?? null) ?>
+                                        <?php break;
+                                        case 'end': ?>
+                                            <span class="key">Projektende</span>
+                                            <?= Document::format_date($project['end'] ?? null) ?>
+                                        <?php break;
+                                        case 'nagoya':
+                                            $n = $project['nagoya'] ?? 'no';
+                                        ?>
+                                            <span class="key"><?= lang('Nagoya Protocol Compliance') ?></span>
+                                            <?php if ($n == 'no') { ?>
+                                                <span class="badge"><?= lang('Not relevant', 'Nicht relevant') ?></span>
+                                            <?php } else { ?>
+                                                <span class="badge danger"><?= lang('Relevant') ?></span>
+                                                <br>
+                                                <h6><?= lang('Countries', 'Länder:') ?></h6>
+                                                <ul class="list signal">
+                                                    <?php foreach ($project['nagoya_countries'] ?? [] as $c) { ?>
+                                                        <li><?= Country::get($c) ?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            <?php } ?>
+
+                                        <?php break;
+                                        case 'website': ?>
+                                            <span class="key"><?= lang('Project website', 'Webseite des Projekts') ?></span>
+                                            <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
+                                        <?php break;
+                                        case 'abstract': ?>
+                                            <span class="key"><?= lang('Abstract', 'Kurzbeschreibung') ?></span>
+                                            <?= $project['abstract'] ?? '-' ?>
+                                    <?php break;
+                                    }
+                                    ?>
+
                                 </td>
                             </tr>
                         <?php } ?>
-
-                        <?php if (in_array('internal_number', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Kostenträger') ?></span>
-                                    <?= $project['internal_number'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('contact', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Applicant', 'Antragsteller:in') ?></span>
-                                    <a href="<?= ROOTPATH ?>/profile/<?= $project['contact'] ?? '' ?>"><?= $DB->getNameFromId($project['contact'] ?? '') ?></a>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('status', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Status', 'Status') ?></span>
-                                    <?= $Project->getStatus() ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('funder', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Third-party funder', 'Drittmittelgeber') ?></span>
-                                    <?= $project['funder'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('funding_organization', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Funding organization', 'Förderorganisation') ?></span>
-                                    <?= $project['funding_organization'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('funding_number', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Funding reference number(s)', 'Förderkennzeichen') ?></span>
-                                    <?= $Project->getFundingNumbers('<br>') ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-
-                        <?php if (in_array('scholarship', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Scholarship institution', 'Stipendiengeber') ?></span>
-                                    <?= $project['scholarship'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                        <?php if (in_array('university', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Partner University', 'Partner-Universität') ?></span>
-                                    <?= $project['university'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('purpose', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Purpose of the project', 'Zwecks des Projekts') ?></span>
-                                    <?= $Project->getPurpose() ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('role', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?></span>
-                                    <?= $Project->getRole() ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('coordinator', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?></span>
-                                    <?= $project['coordinator'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('start', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key">Projektbeginn</span>
-                                    <?= Document::format_date($project['start'] ?? null) ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('end', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key">Projektende</span>
-                                    <?= Document::format_date($project['end'] ?? null) ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <!-- <tr>
-                        <td>
-                            <span class="key"><?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?></span>
-                            <?= $project['personnel'] ?? '-' ?>
-                        </td>
-                    </tr> -->
-                        <?php if (in_array('website', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Project website', 'Webseite des Projekts') ?></span>
-                                    <a href="<?= $project['website'] ?? '' ?>" target="_blank" rel="noopener noreferrer"> <?= $project['website'] ?? '-' ?></a>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
-                        <?php if (in_array('abstract', $fields)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="key"><?= lang('Abstract', 'Kurzbeschreibung') ?></span>
-                                    <?= $project['abstract'] ?? '-' ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-
                         <tr>
-
                             <td>
                                 <span class="key">Zustimmung zur Internetpräsentation des bewilligten Vorhaben</span>
                                 <?= bool_icon($project['public'] ?? false) ?>
@@ -428,10 +414,13 @@ $institute = $Settings->get('affiliation_details');
                                 <?= $DB->getNameFromId($project['created_by']) ?? '-' ?> (<?= $project['created'] ?>)
                             </td>
                         </tr>
+
+
                     </tbody>
                 </table>
 
             </div>
+
             <div class="col-md-6">
 
                 <h2>
@@ -1094,3 +1083,6 @@ $institute = $Settings->get('affiliation_details');
             </div>
         </div>
     <?php } ?>
+
+
+</div>

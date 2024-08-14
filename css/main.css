@@ -4824,6 +4824,72 @@ input[type=number] {
   align-self: baseline;
 }
 
+.floating-title {
+  font-size: 75%;
+  font-weight: bold;
+  color: var(--muted-color);
+}
+.floating-title.required {
+  color: var(--danger-color);
+}
+
+.floating-form {
+  position: relative;
+}
+.floating-form > .form-control,
+.floating-form > .form-select {
+  height: calc(4rem + 1px);
+  line-height: 1.25;
+}
+.floating-form > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  padding: 1rem 0.8rem;
+  pointer-events: none;
+  border: 1px solid transparent;
+  transform-origin: 0 0;
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+  color: var(--muted-color);
+}
+.floating-form > label.required {
+  color: var(--danger-color);
+}
+.floating-form > .form-control {
+  padding: 1rem 0.8rem;
+}
+.floating-form > .form-control::placeholder {
+  color: transparent;
+}
+.floating-form > .form-control:focus, .floating-form > .form-control:not(:placeholder-shown) {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+.floating-form > .form-control:-webkit-autofill {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+.floating-form > .form-select {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+.floating-form > .form-control:focus ~ label,
+.floating-form > .form-control:not(:placeholder-shown) ~ label,
+.floating-form > .form-select ~ label {
+  opacity: 0.65;
+  transform: scale(0.75) translateY(-0.8rem) translateX(0.15rem);
+  font-weight: bold;
+}
+.floating-form > .form-control:-webkit-autofill ~ label {
+  opacity: 0.65;
+  transform: scale(0.75) translateY(-0.8rem) translateX(0.15rem);
+}
+
+.row.row-eq-spacing > [class^=col].floating-form > label {
+  padding-left: 1.8rem;
+}
+
 /*
 -------------------------------------------------------------------------------
 12. Dropdown [hm-12]
@@ -12116,6 +12182,20 @@ img.profile-img.small {
   left: -2rem;
 }
 
+a.module {
+  color: inherit;
+  /* add transition */
+  transition: all 0.2s ease-in-out;
+}
+
+a.module:hover {
+  color: inherit;
+  /* raise on hover effect */
+  transform: translateY(-2px);
+  /* larger shadow */
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.15);
+}
+
 .module.is-valid {
   border-color: var(--success-color);
   -moz-box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
@@ -13474,6 +13554,7 @@ a.concept:hover {
   content: "Bitte Rechtschreibung und Formatierung sorgsam prüfen.";
   display: inline-block;
   color: var(--muted-color);
+  font-size: small;
 }
 
 .lang-en .ql-snow.ql-toolbar::after,

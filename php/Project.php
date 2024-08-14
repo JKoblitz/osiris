@@ -44,6 +44,7 @@ class Project
             'purpose',
             'role',
             'coordinator',
+            'nagoya',
         ],
         'Stipendium' => [
             'name',
@@ -74,6 +75,31 @@ class Project
             'ressources',
             'contact',
         ],
+        'Teilprojekt' => [
+            'name',
+            'title',
+            'time',
+            'abstract',
+            'public',
+            'internal_number',
+            'grant_subproject',
+            'funding_number',
+            'grant_subproject_proposed',
+            'personnel',
+            'ressources',
+            'contact',
+            // 'status',
+            // 'website',
+            // 'grant_sum',
+            // 'grant_income',
+            // 'funder',
+            // 'funding_organization',
+            // 'grant_sum_proposed',
+            // 'grant_income_proposed',
+            // 'purpose',
+            // 'role',
+            // 'coordinator',
+        ],
         'default' => [
             'name',
             'title',
@@ -84,6 +110,76 @@ class Project
             'internal_number',
             'website',
         ]
+    ];
+
+    public const STATUS = [
+        'applied' => 'beantragt',
+        'approved' => 'bewilligt',
+        'rejected' => 'abgelehnt',
+        'finished' => 'abgeschlossen',
+    ];
+
+    public const PURPOSE = [
+        'research' => 'Forschung',
+        'teaching' => 'Lehre',
+        'promotion' => 'Förderung des wissenschaftlichen Nachwuchs',
+        'transfer' => 'Transfer',
+        'others' => 'Sonstiger Zweck',
+    ];
+
+    public const TYPE = [
+        'Drittmittel' => 'Drittmittel',
+        'Stipendium' => 'Stipendium',
+        'Eigenfinanziert' => 'Eigenfinanziert',
+        'Teilprojekt' => 'Teilprojekt',
+        'other' => 'Sonstiges',
+    ];
+
+    public const ROLE = [
+        'coordinator' => 'Koordinator',
+        'partner' => 'Partner',
+    ];
+
+    public const FUNDING = [
+        'funding' => 'Förderung',
+        'scholarship' => 'Stipendium',
+        'self_funded' => 'Eigenfinanziert',
+        'subproject' => 'Teilprojekt',
+        'other' => 'Sonstiges',
+    ];
+
+    public const PERSON_ROLE = [
+        'PI' => 'Projektleitung',
+        'applicant' => 'Antragsteller:in',
+        'worker' => 'Projektmitarbeiter:in',
+        'scholar' => 'Stipediat:in',
+        'supervisor' => 'Betreuer:in',
+        'associate' => 'Beteiligte Person',
+    ];
+
+    public const COLLABORATOR = [
+        'Education' => 'Bildung',
+        'Healthcare' => 'Gesundheit',
+        'Company' => 'Unternehmen',
+        'Archive' => 'Archiv',
+        'Nonprofit' => 'Nonprofit',
+        'Government' => 'Regierung',
+        'Facility' => 'Einrichtung',
+        'Other' => 'Sonstiges',
+    ];
+
+    public const INHERITANCE = [
+        'status',
+        'website',
+        'grant_sum',
+        'grant_income',
+        'funder',
+        'funding_organization',
+        'grant_sum_proposed',
+        'grant_income_proposed',
+        'purpose',
+        'role',
+        'coordinator',
     ];
 
     function __construct($project = null)
@@ -99,6 +195,11 @@ class Project
     public function setProject($project)
     {
         $this->project = $project;
+    }
+    public function setProjectById($project_id)
+    {
+        $DB = new DB();
+        $this->project = $DB->db->projects->findOne(['_id' => $DB->to_ObjectID($project_id)]);
     }
 
     public function getStatus()
@@ -132,10 +233,20 @@ class Project
                 <i class="ph ph-tip-jar"></i>
                 <?= lang('Stipendiate', 'Stipendium') ?>
             </span>
-        <?php } else { ?>
+        <?php } else if ($type == 'Eigenfinanziert') { ?>
             <span class="badge text-signal no-wrap">
                 <i class="ph ph-piggy-bank"></i>
                 <?= lang('Self-funded', 'Eigenfinanziert') ?>
+            </span>
+        <?php } else if ($type == 'Teilprojekt') { ?>
+            <span class="badge text-danger no-wrap">
+                <i class="ph ph-hand-coins"></i>
+                <?= lang('Subproject', 'Teilprojekt') ?>
+            </span>
+        <?php } else { ?>
+            <span class="badge text-muted no-wrap">
+                <i class="ph ph-coin"></i>
+                <?= lang('Other', 'Sonstiges') ?>
             </span>
 <?php }
     }
@@ -248,7 +359,7 @@ class Project
         );
         $today = new DateTime();
         $progress = 0;
-        if ($end < $today) {
+        if ($end <= $today) {
             $progress = 100;
         } else {
             $progress = $start->diff($today)->days / $start->diff($end)->days * 100;
@@ -287,6 +398,22 @@ class Project
         return $widget;
     }
 
+    public function widgetSubproject()
+    {
+        $contacts = array_column(DB::doc2Arr($this->project['persons']), 'name');
+        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';
+        $widget .= '<small class="d-block text-muted mb-5">' . $this->project['title'] . '</small>';
+        // contact
+        if (!empty($contacts)) {
+            $widget .= '<span class=" text-muted">';
+            $widget .= '<i class="ph ph-user"></i> ' . implode(', ', $contacts) . ' ';
+            $widget .= '</span>';
+        }
+        $widget .= '</a>';
+        return $widget;
+    }
+
     public function widgetPortal($cls = "module")
     {
         $widget = '<a class="' . $cls . '" href="' . PORTALPATH . '/project/' . $this->project['_id'] . '">';
@@ -300,9 +427,9 @@ class Project
     }
 
 
-    public function widgetLarge($user = null)
+    public function widgetLarge($user = null, $external = false)
     {
-        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '">';
+        $widget = '<a class="module ' . ($this->inPast() ? 'inactive' : '') . '" href="' . ROOTPATH . '/projects/view/' . $this->project['_id'] . '" ' . ($external ? 'target="_blank"' : '') . '>';
 
         $widget .= '<span class="float-right">' . $this->getDateRange() . '</span>';
         $widget .= '<h5 class="m-0">' . $this->project['name'] . '</h5>';

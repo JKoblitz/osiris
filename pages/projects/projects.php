@@ -97,7 +97,7 @@ if (!$Settings->hasPermission('projects.view')) {
         <i class="ph ph-plus"></i>
         <?= lang('Add new project', 'Neues Projekt anlegen') ?>
     </a>
-<?php } ?>
+<?php } ?> 
 
 
 <div class="btn-toolbar float-sm-right filters">
@@ -208,21 +208,26 @@ if (!$Settings->hasPermission('projects.view')) {
                     render: function(data) {
                         if (data == 'Eigenfinanziert') {
                             return `<span class="badge text-signal">
-                        <i class="ph ph-piggy-bank"></i>
-                        ${lang('Self-funded', 'Eigenfinanziert')}
+                        <i class="ph ph-piggy-bank"></i>&nbsp;${lang('Self-funded', 'Eigenfinanziert')}
                         </span>`
                         }
                         if (data == 'Stipendium') {
                             return `<span class="badge text-success no-wrap">
-                        <i class="ph ph-tip-jar"></i>
-                        ${lang('Stipendiate', 'Stipendium')}
+                        <i class="ph ph-tip-jar"></i>&nbsp;${lang('Stipendiate', 'Stipendium')}
                         </span>`
                         }
                         if (data == 'Drittmittel') {
                         return `<span class="badge text-danger">
-                        <i class="ph ph-hand-coins"></i>
-                        ${lang('Third-party funded', 'Drittmittel')}
+                        <i class="ph ph-hand-coins"></i>&nbsp;${lang('Third-party funded', 'Drittmittel')}
                         </span>`
+                        }
+                        if (data == 'Teilprojekt') {
+                        return `<span class="badge text-danger">
+                        <i class="ph ph-hand-coins"></i>&nbsp;${lang('Subproject', 'Teilprojekt')}
+                        </span>`
+                        }
+                        else {
+                            return data;
                         }
                     }
                 },

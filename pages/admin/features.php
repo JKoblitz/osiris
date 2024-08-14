@@ -401,8 +401,32 @@
             </div>
 
         </div>
+    </div>
 
+    
+    <div class="box px-20">
+        <h3>
+            <?= lang('Nagoya Protocol Compliance') ?>
+        </h3>
+        <div class="form-group">
+            <label for="">
+                <?= lang('Add Nagoya Protocol Compliance to projects', 'Füge Nagoya-Protokoll Compliance zu Projekten hinzu') ?>
+            </label>
+            <?php
+            $nagoya = $Settings->featureEnabled('nagoya');
+            ?>
 
+            <div class="custom-radio">
+                <input type="radio" id="nagoya-true" value="1" name="values[nagoya]" <?= $nagoya ? 'checked' : '' ?>>
+                <label for="nagoya-true"><?= lang('enabled', 'aktiviert') ?></label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="nagoya-false" value="0" name="values[nagoya]" <?= $nagoya ? '' : 'checked' ?>>
+                <label for="nagoya-false"><?= lang('disabled', 'deaktiviert') ?></label>
+            </div>
+
+        </div>
     </div>
 
     <button class="btn success">

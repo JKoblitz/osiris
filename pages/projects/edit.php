@@ -19,19 +19,16 @@
 require_once BASEPATH . "/php/Project.php";
 $Project = new Project();
 
-// $Format = new Document(true);
 $form = $form ?? array();
+$type = $type ?? $_GET['type'] ?? $form['type'] ?? 'Drittmittel';
+$fields = $Project->getFields($type);
 
-
-$formaction = ROOTPATH;
-if (!empty($form) && isset($form['_id'])) {
-    $formaction .= "/crud/projects/update/" . $form['_id'];
-    $btntext = '<i class="ph ph-check"></i> ' . lang("Update", "Aktualisieren");
-    $url = ROOTPATH . "/projects/view/" . $form['_id'];
-} else {
-    $formaction .= "/crud/projects/create";
-    $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
+if (empty($form) || !isset($form['_id'])) {
+    $formaction = ROOTPATH . "/crud/projects/create";
     $url = ROOTPATH . "/projects/view/*";
+} else {
+    $formaction = ROOTPATH . "/crud/projects/update/" . $form['_id'];
+    $url = ROOTPATH . "/projects/view/" . $form['_id'];
 }
 
 function val($index, $default = '')
@@ -51,253 +48,145 @@ function sel($index, $value)
     return val($index) == $value ? 'selected' : '';
 }
 
-$type = $_GET['type'] ?? $form['type'] ?? 'Drittmittel';
-$fields = $Project->getFields($type);
-
 ?>
+
+<style>
+</style>
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
+<div class="container w-600">
 
-<?php if (empty($form)) { ?>
-    <h3 class="title">
-        <?= lang('Add new project', 'Neues Projekt') ?>
-    </h3>
-<?php } else { ?>
-    <h3 class="title">
-        <?= lang('Edit project', 'Projekt bearbeiten') ?>
-    </h3>
-<?php } ?>
-
-
-<!-- only new projects can be changed -->
-<?php if (empty($form)) { ?><?php } ?>
-<?php
-// get current url without query string
-$current_url = strtok($_SERVER["REQUEST_URI"], '?');
-?>
+    <?php if (empty($form)) { ?>
+        <h3 class="title">
+            <?= lang('Add new project', 'Neues Projekt') ?>
+        </h3>
+    <?php } elseif ($type == 'Teilprojekt') { ?>
+        <h3 class="title">
+            <?= lang('Add subproject', 'Teilprojekt hinzufügen') ?>
+        </h3>
+    <?php } else { ?>
+        <h3 class="title">
+            <?= lang('Edit project', 'Projekt bearbeiten') ?>
+        </h3>
+    <?php } ?>
 
 
-<div class="select-btns">
-    <a href="<?= $current_url ?>?type=Drittmittel" class="btn select text-danger <?= $type == 'Drittmittel' ? 'active' : '' ?>">
-        <i class="ph ph-hand-coins"></i>
-        <?= lang('Third-party funded', 'Drittmittelprojekt') ?>
-    </a>
-    <!-- <a href="<?= $current_url ?>?type=Eigenfinanziert" class="btn select text-signal <?= $type == 'Eigenfinanziert' ? 'active' : '' ?>">
+    <!-- only new projects can be changed -->
+    <?php if (empty($form)) { ?><?php } ?>
+    <?php
+    // get current url without query string
+    $current_url = strtok($_SERVER["REQUEST_URI"], '?');
+    ?>
+
+
+    <?php if ($type != 'Teilprojekt') { ?>
+
+        <div class="select-btns">
+            <a href="<?= $current_url ?>?type=Drittmittel" class="btn select text-danger <?= $type == 'Drittmittel' ? 'active' : '' ?>">
+                <i class="ph ph-hand-coins"></i>
+                <?= lang('Third-party funded', 'Drittmittelprojekt') ?>
+            </a>
+            <!-- <a href="<?= $current_url ?>?type=Eigenfinanziert" class="btn select text-signal <?= $type == 'Eigenfinanziert' ? 'active' : '' ?>">
             <i class="ph ph-piggy-bank"></i>
             <?= lang('Self-funded', 'Eigenfinanziert') ?>
         </a> -->
-    <a href="<?= $current_url ?>?type=Stipendium" class="btn select text-success <?= $type == 'Stipendium' ? 'active' : '' ?>">
-        <i class="ph ph-tip-jar"></i>
-        <?= lang('Scholarship', 'Stipendium') ?>
-    </a>
-</div>
-<!-- <small class="text-muted">
-        <i class="ph ph-warning"></i>
-        <?= lang('Please note that the type of funding cannot be changed after the project has been created.', 'Bitte beachten Sie, dass der Förderungstyp nach Erstellung des Projekts nicht mehr geändert werden kann.') ?>
-    </small> -->
+            <a href="<?= $current_url ?>?type=Stipendium" class="btn select text-success <?= $type == 'Stipendium' ? 'active' : '' ?>">
+                <i class="ph ph-tip-jar"></i>
+                <?= lang('Scholarship', 'Stipendium') ?>
+            </a>
+        </div>
+    <?php } ?>
+
+    <form action="<?= $formaction ?>" method="post" id="project-form">
+        <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
+        <input type="hidden" class="hidden" name="values[type]" value="<?= $type ?>">
 
 
 
-<form action="<?= $formaction ?>" method="post" id="project-form">
-    <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
-    <input type="hidden" class="hidden" name="values[type]" value="<?= $type ?>">
+        <div class="box p-20" id="">
 
-    <div class="row row-eq-spacing" id="data-modules">
-        <?php if (in_array('name', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label for="project" class="required element-other">
-                    <?= lang('Short title', 'Kurztitel') ?>
-                </label>
-                <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>" maxlength="30">
-            </div>
-        <?php } ?>
 
-        <?php if (in_array('status', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label class="required" for="status">
-                    <?= lang('Status', 'Status') ?>
-                </label>
-                <select class="form-control" id="status" name="values[status]" required autocomplete="off">
-                    <option value="applied" <?= sel('status', 'applied') ?>><?= lang('applied', 'beantragt') ?></option>
-                    <option value="approved" <?= sel('status', 'approved') ?>><?= lang('approved', 'bewilligt') ?></option>
-                    <option value="rejected" <?= sel('status', 'rejected') ?>><?= lang('rejected', 'abgelehnt') ?></option>
-                    <option value="finished" <?= sel('status', 'abgeschlossen') ?>><?= lang('finished', 'abgeschlossen') ?></option>
-                </select>
-            </div>
-        <?php } ?>
 
-        <?php if (in_array('title', $fields)) { ?>
-            <div class="data-module col-12">
-                <div class=" lang-<?= lang('en', 'de') ?>">
-                    <label for="title" class="required element-title">
-                        <?= lang('Full title of the project', 'Voller Titel des Projekts') ?>
+            <?php if ($type == 'Teilprojekt') { ?>
+                <!-- add parent project info -->
+                <input type="hidden" class="hidden" name="values[parent]" value="<?= $form['parent'] ?>">
+                <input type="hidden" class="hidden" name="values[parent_id]" value="<?= $form['parent_id'] ?>">
+
+                <h6 class="mt-0">
+                    <?= lang('Parent project', 'Übergeordnetes Projekt') ?>
+                </h6>
+
+                <?php
+                $Project->setProjectById($form['parent_id']);
+                echo $Project->widgetLarge($user = null, $external = true);
+                ?>
+                <br>
+
+            <?php } ?>
+
+            <h6 class="mt-0">
+                <?= lang('General information', 'Allgemeine Informationen') ?>
+            </h6>
+            <?php if (in_array('name', $fields)) { ?>
+
+                <div class="form-group floating-form">
+                    <input type="text" class="form-control" name="values[name]" id="name" required value="<?= val('name') ?>" maxlength="30" placeholder="Short title">
+                    <label for="project" class="required">
+                        <?= lang('Short title', 'Kurztitel') ?>
                     </label>
-
-                    <div class="form-group title-editor" id="title-editor"><?= $form['title'] ?? '' ?></div>
-                    <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= val('title') ?>">
                 </div>
+            <?php } ?>
 
-                <script>
-                    initQuill(document.getElementById('title-editor'));
-                </script>
-            </div>
-        <?php } ?>
+            <?php if (in_array('title', $fields)) { ?>
+                <div class="form-group">
+                    <div class=" lang-<?= lang('en', 'de') ?>">
+                        <label for="title" class="required floating-title">
+                            <?php if ($type == 'Teilprojekt') {
+                                echo lang('Full title of the subproject / work package', 'Voller Titel des Teilprojektes / Arbeitspaketes');
+                            } else {
+                                echo lang('Full title of the project', 'Voller Titel des Projekts');
+                            } ?>
+                        </label>
 
-        <?php if (in_array('contact', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label class="required element-author" for="username">
-                    <?= lang('Applicant', 'Antragstellende Person') ?>
-                </label>
-                <select class="form-control" id="username" name="values[contact]" required autocomplete="off">
-                    <?php
-                    $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
-                    foreach ($userlist as $j) { ?>
-                        <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['contact'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        <?php } ?>
+                        <div class="form-group title-editor" id="title-editor"><?= $form['title'] ?? '' ?></div>
+                        <input type="text" class="form-control hidden" name="values[title]" id="title" required value="<?= val('title') ?>">
+                    </div>
 
+                    <script>
+                        initQuill(document.getElementById('title-editor'));
+                    </script>
+                </div>
+            <?php } ?>
 
-        <?php if (in_array('scholar', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label class="required element-author" for="username">
-                    <?= lang('Scholar', 'Stipendiat:in') ?>
-                </label>
-                <select class="form-control" id="username" name="values[scholar]" required autocomplete="off">
-                    <?php
-                    $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
-                    foreach ($userlist as $j) { ?>
-                        <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['scholar'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        <?php } ?>
+            <?php if (in_array('status', $fields)) { ?>
+                <div class="form-group floating-form">
+                    <select class="form-control" id="status" name="values[status]" required autocomplete="off">
+                        <option value="applied" <?= sel('status', 'applied') ?>><?= lang('applied', 'beantragt') ?></option>
+                        <option value="approved" <?= sel('status', 'approved') ?>><?= lang('approved', 'bewilligt') ?></option>
+                        <option value="rejected" <?= sel('status', 'rejected') ?>><?= lang('rejected', 'abgelehnt') ?></option>
+                        <option value="finished" <?= sel('status', 'abgeschlossen') ?>><?= lang('finished', 'abgeschlossen') ?></option>
+                    </select>
 
-
-        <?php if (in_array('supervisor', $fields)) {
-
-            $selected = '';
-            if (empty($form)) {
-                include_once BASEPATH . "/php/Groups.php";
-                // default: head of group
-                $dept = $USER['depts'] ?? [];
-                if (!empty($dept)) {
-                    $Groups = new Groups();
-                    $heads = $Groups->getGroup($dept[0])['head'] ?? array();
-                    $selected = $heads[0] ?? '';
-                }
-            } else {
-                $selected = $form['supervisor'] ?? '';
-            }
-
-        ?>
-            <div class="data-module col-sm-6">
-                <label class="required element-author" for="username">
-                    <?= lang('Supervisor', 'Betreuende Person') ?>
-                </label>
-                <select class="form-control" id="username" name="values[supervisor]" required autocomplete="off">
-                    <?php
-                    $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
-                    foreach ($userlist as $j) { ?>
-                        <option value="<?= $j['username'] ?>" <?= $j['username'] == $selected ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        <?php } ?>
+                    <label class="required" for="status">
+                        <?= lang('Status', 'Status') ?>
+                    </label>
+                </div>
+            <?php } ?>
 
 
-        <?php if (in_array('funder', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="funder" class="required">
-                    <?= lang('Third-party funder', 'Drittmittelgeber') ?>
-                </label>
-                <select class="form-control" name="values[funder]" value="<?= val('funder') ?>" required id="funder">
-                    <!-- <option <?= sel('funder', 'Eigenmittel') ?>>Eigenmittel</option> -->
-                    <option <?= sel('funder', 'DFG') ?>>DFG</option>
-                    <option <?= sel('funder', 'Bund') ?>>Bund</option>
-                    <option <?= sel('funder', 'Bundesländer') ?>>Bundesländer</option>
-                    <option <?= sel('funder', 'Wirtschaft') ?>>Wirtschaft</option>
-                    <option <?= sel('funder', 'EU') ?>>EU</option>
-                    <option <?= sel('funder', 'Stiftungen') ?>>Stiftungen</option>
-                    <option <?= sel('funder', 'Leibniz Wettbewerb') ?>>Leibniz Wettbewerb</option>
-                    <option <?= sel('funder', 'Sonstige Drittmittelgeber') ?>>Sonstige Drittmittelgeber</option>
-                    <!-- <option>Sonstige öffentliche internationale Förderorganisationen</option>
-                <option>Nicht erklärt (Private Mittelgeber)</option>
-                <option>Nicht erklärt (Öffentliche Mittelgeber)</option> -->
-                </select>
-            </div>
-        <?php } ?>
+            <?php if (in_array('time', $fields)) { ?>
+                <div class="row row-eq-spacing mt-0 align-items-end ">
+                    <div class="col-sm-4 floating-form">
+                        <input type="date" class="form-control" name="values[start]" value="<?= valueFromDateArray(val('start')) ?>" id="start" required>
 
-        <?php if (in_array('funding_organization', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="funding_organization" class="required">
-                    <?= lang('Funding organization', 'Zuwendungsgeber') ?>
-                    <!-- Förderorganisation laut KDSF -->
-                </label>
-                <input type="text" class="form-control" name="values[funding_organization]" value="<?= val('funding_organization') ?>" id="funding_organization" required>
-
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('funding_number', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="funding_number">
-                    <?= lang('Funding reference number', 'Förderkennzeichen') ?>
-                </label>
-                <input type="text" class="form-control" name="values[funding_number]" value="<?= val('funding_number') ?>" id="funding_number">
-                <span class="text-muted"><?= lang('Multiple seperated by comma', 'Mehrere durch Komma getrennt') ?></span>
-            </div>
-        <?php } ?>
-
-
-        <?php if (in_array('purpose', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="purpose">
-                    <?= lang('Purpose of the project', 'Zwecks des Projekts') ?>
-                </label>
-                <select class="form-control" name="values[purpose]" id="purpose">
-                    <option value="research" <?= sel('purpose', 'research') ?>><?= lang('Research', 'Forschung') ?></option>
-                    <option value="teaching" <?= sel('purpose', 'teaching') ?>><?= lang('Teaching', 'Lehre') ?></option>
-                    <option value="promotion" <?= sel('purpose', 'promotion') ?>><?= lang('Promotion of young scientists', 'Förderung des wissenschaftlichen Nachwuchs') ?></option>
-                    <option value="transfer" <?= sel('purpose', 'transfer') ?>><?= lang('Transfer', 'Transfer') ?></option>
-                    <option value="others" <?= sel('purpose', 'others') ?>><?= lang('Other purpose', 'Sonstiger Zweck') ?></option>
-                </select>
-            </div>
-        <?php } ?>
-        <?php if (in_array('role', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="role">
-                    <?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?>
-                </label>
-                <select class="form-control" name="values[role]" id="role">
-                    <option value="coordinator" <?= sel('role', 'coordinator') ?>><?= lang('Coordinator', 'Koordinator') ?></option>
-                    <option value="partner" <?= sel('role', 'partner') ?>><?= lang('Partner') ?></option>
-                </select>
-            </div>
-        <?php } ?>
-        <?php if (in_array('coordinator', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="coordinator">
-                    <?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?>
-                </label>
-                <input type="text" class="form-control" name="values[coordinator]" id="coordinator" value="<?= val('coordinator', $Settings->get('affiliation')) ?>">
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('time', $fields)) { ?>
-            <div class="col-12 data-module">
-                <div class="row row-eq-spacing align-items-end my-0">
-                    <div class="col-sm-4">
                         <label for="start" class="required">
                             Projektbeginn
                         </label>
-                        <input type="date" class="form-control" name="values[start]" value="<?= valueFromDateArray(val('start')) ?>" id="start" required>
                     </div>
                     <div class="col-sm-4">
-                        <label for="">
+                        <span class="floating-title">
                             <?= lang('Shortcut Length', 'Schnell-Auswahl Laufzeit') ?>
-                        </label>
+                        </span>
                         <div class="btn-group w-full">
                             <div class="btn" onclick="timeframe(36)"><?= lang('3 yr', '3 J') ?></div>
                             <!-- <div class="btn"><?= lang('2 yr', '2 J') ?></div> -->
@@ -305,163 +194,476 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                             <div class="btn" onclick="timeframe(6)"><?= lang('6 mo', '6 Mo') ?></div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-4 floating-form">
+                        <input type="date" class="form-control" name="values[end]" value="<?= valueFromDateArray(val('end')) ?>" id="end" required>
+
                         <label for="end" class="required">
                             Projektende
                         </label>
-                        <input type="date" class="form-control" name="values[end]" value="<?= valueFromDateArray(val('end')) ?>" id="end" required>
                     </div>
                 </div>
 
-            </div>
-        <?php } ?>
+            <?php } ?>
 
 
-        <script>
-            function timeframe(month) {
-                let startField = document.querySelector('#start');
-                let start = startField.valueAsDate;
-                if (start == '' || start === null) {
-                    toastError(lang('Please select a start date first.', 'Bitte wähle zuerst ein Startdatum.'))
-                    return;
+            <script>
+                function timeframe(month) {
+                    let startField = document.querySelector('#start');
+                    let start = startField.valueAsDate;
+                    if (start == '' || start === null) {
+                        toastError(lang('Please select a start date first.', 'Bitte wähle zuerst ein Startdatum.'))
+                        return;
+                    }
+
+                    let end = new Date(start.setMonth(start.getMonth() + month));
+                    end.setDate(end.getDate() - 1);
+                    let endField = document.querySelector('#end');
+                    endField.valueAsDate = end;
                 }
-
-                let end = new Date(start.setMonth(start.getMonth() + month));
-                end.setDate(end.getDate() - 1);
-                let endField = document.querySelector('#end');
-                endField.valueAsDate = end;
-            }
-        </script>
+            </script>
 
 
-
-        <?php if (in_array('scholarship', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label for="scholarship">
-                    <?= lang('Scholarship institution', 'Stipendiengeber') ?>
-                </label>
-                <input type="text" class="form-control" name="values[scholarship]" id="scholarship" value="<?= val('scholarship') ?>">
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('university', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label for="university">
-                    <?= lang('Partner University', 'Partner-Universität') ?>
-                </label>
-                <input type="text" class="form-control" name="values[university]" id="university" value="<?= val('university') ?>">
-            </div>
-        <?php } ?>
-
-
-        <?php if (in_array('grant_sum', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="grant_sum">
-                    <?= lang('Grant amount', 'Bewilligungssumme') ?> [Euro]
-                </label>
-                <input type="number" step="1" class="form-control" name="values[grant_sum]" id="grant_sum" value="<?= val('grant_sum') ?>">
-            </div>
-        <?php } ?>
-        <?php if (in_array('grant_income', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="grant_income">
-                    <?= lang('Funding income', 'Drittmitteleinnahmen') ?> [Euro]
-                </label>
-                <input type="number" step="1" class="form-control" name="values[grant_income]" id="grant_income" value="<?= val('grant_income') ?>">
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('internal_number', $fields)) { ?>
-            <div class="data-module col-sm-4">
-                <label for="internal_number">
-                    <?= lang('Kostenträger') ?>
-                </label>
-                <input type="number" class="form-control" name="values[internal_number]" id="internal_number" value="<?= val('internal_number') ?>">
-            </div>
-        <?php } ?>
-
-
-        <?php if (in_array('grant_sum_proposed', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label for="grant_sum_proposed">
-                    <?= lang('Proposed grant amount (total)', 'Beantragte Fördersumme (gesamt)') ?> [Euro]
-                </label>
-                <input type="number" step="1" class="form-control" name="values[grant_sum_proposed]" id="grant_sum_proposed" value="<?= val('grant_sum_proposed') ?>">
-            </div>
-        <?php } ?>
-        <?php if (in_array('grant_income_proposed', $fields)) { ?>
-            <div class="data-module col-sm-6">
-                <label for="grant_income_proposed">
-                    <?= lang('Proposed grant amount (institute)', 'Beantragte Fördersumme (Institut)') ?> [Euro]
-                </label>
-                <input type="number" step="1" class="form-control" name="values[grant_income_proposed]" id="grant_income_proposed" value="<?= val('grant_income_proposed') ?>">
-            </div>
-        <?php } ?>
-
-
-        <?php if (in_array('personnel', $fields)) { ?>
-            <div class="data-module col-12">
-                <label for="personnel" class="">
-                    <?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?>
-                </label>
-                <textarea name="values[personnel]" id="personnel" cols="30" rows="2" class="form-control"><?= val('personnel') ?></textarea>
-                <small class="text-muted">
-                    Einstellungen/Verlängerungen in Personenmonaten & Kategorie
-                </small>
-            </div>
-            <div class="data-module col-12">
-                <label for="in-kind" class="">
-                    <?= lang('In-kind personnel', 'Umfang des geplanten eigenen Personaleinsatzes') ?>
-                </label>
-                <textarea name="values[in-kind]" id="in-kind" cols="30" rows="2" class="form-control"><?= val('in-kind') ?></textarea>
-                <small class="text-muted">
-                    Nachrichtliche Angaben in % unter Nennung der mitarbeitenden Personen (z.B. Antragsteller 10%, ABC 15%, etc.)
-                </small>
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('website', $fields)) { ?>
-            <div class="data-module col-6">
-                <label for="website">
-                    <?= lang('Project website', 'Webseite des Projekts') ?>
-                </label>
-                <input type="text" class="form-control" name="values[website]" id="website" value="<?= val('website') ?>">
-                <small class="text-muted">
-                    <?= lang('Please enter full ULR (incl. http...)', 'Bitte vollständige URL angeben (inkl. http...)') ?>
-                </small>
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('abstract', $fields)) { ?>
-            <div class="data-module col-12">
-                <label for="abstract" class="">
-                    <?= lang('Abstract', 'Kurzbeschreibung') ?>
-                </label>
-                <textarea name="values[abstract]" id="abstract" cols="30" rows="5" class="form-control"><?= val('abstract') ?></textarea>
-            </div>
-        <?php } ?>
-
-        <?php if (in_array('public', $fields)) { ?>
-            <div class="data-module col-12">
-                <div class="custom-checkbox">
-                    <input type="checkbox" id="public-check" <?= val('public', false) ? 'checked' : '' ?> name="values[public]">
-                    <label for="public-check">
-                        Zustimmung zur Internetpräsentation des bewilligten Vorhabens
+            <?php if (in_array('purpose', $fields)) { ?>
+                <div class="form-group floating-form">
+                    <select class="form-control" name="values[purpose]" id="purpose">
+                        <option value="research" <?= sel('purpose', 'research') ?>><?= lang('Research', 'Forschung') ?></option>
+                        <option value="teaching" <?= sel('purpose', 'teaching') ?>><?= lang('Teaching', 'Lehre') ?></option>
+                        <option value="promotion" <?= sel('purpose', 'promotion') ?>><?= lang('Promotion of young scientists', 'Förderung des wissenschaftlichen Nachwuchs') ?></option>
+                        <option value="transfer" <?= sel('purpose', 'transfer') ?>><?= lang('Transfer', 'Transfer') ?></option>
+                        <option value="others" <?= sel('purpose', 'others') ?>><?= lang('Other purpose', 'Sonstiger Zweck') ?></option>
+                    </select>
+                    <label for="purpose">
+                        <?= lang('Purpose of the project', 'Zwecks des Projekts') ?>
                     </label>
                 </div>
-            </div>
-        <?php } ?>
+            <?php } ?>
 
-        <?php if (in_array('ressources', $fields)) {
-            $res = $form['ressources'] ?? [];
-        ?>
-            <!-- fieldset -->
-            <div class="data-module col-12">
-                <fieldset>
-                    <legend>
-                        <?= lang('Ressources', 'Ressourcen') ?>
-                    </legend>
 
+            <?php if (in_array('internal_number', $fields)) { ?>
+                <div class="form-group floating-form">
+                    <input type="number" class="form-control" name="values[internal_number]" id="internal_number" value="<?= val('internal_number') ?>" placeholder="1234">
+
+                    <label for="internal_number">
+                        <?= lang('Kostenträger') ?>
+                    </label>
+                </div>
+            <?php } ?>
+
+
+            <?php if (array_intersect(['contact', 'scholar', 'supervisor'], $fields)) { ?>
+
+                <h6>
+                    <?= lang('Persons', 'Personen') ?>
+                </h6>
+
+
+                <?php if (in_array('contact', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <select class="form-control" id="username" name="values[contact]" required autocomplete="off">
+                            <?php
+                            $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+                            foreach ($userlist as $j) { ?>
+                                <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['contact'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                            <?php } ?>
+                        </select>
+                        <label class="required element-author" for="username">
+                            <?= lang('Applicant', 'Antragstellende Person') ?>
+                        </label>
+                        <small class="text-muted">
+                            <?= lang('More persons may be added later', 'Weitere Personen können später hinzugefügt werden') ?>
+                        </small>
+                    </div>
+                <?php } ?>
+
+
+                <?php if (in_array('scholar', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <label class="required element-author" for="username">
+                            <?= lang('Scholar', 'Stipendiat:in') ?>
+                        </label>
+                        <select class="form-control" id="username" name="values[scholar]" required autocomplete="off">
+                            <?php
+                            $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+                            foreach ($userlist as $j) { ?>
+                                <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['scholar'] ?? $user) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                <?php } ?>
+
+
+                <?php if (in_array('supervisor', $fields)) {
+
+                    $selected = '';
+                    if (empty($form)) {
+                        include_once BASEPATH . "/php/Groups.php";
+                        // default: head of group
+                        $dept = $USER['depts'] ?? [];
+                        if (!empty($dept)) {
+                            $Groups = new Groups();
+                            $heads = $Groups->getGroup($dept[0])['head'] ?? array();
+                            $selected = $heads[0] ?? '';
+                        }
+                    } else {
+                        $selected = $form['supervisor'] ?? '';
+                    }
+
+                ?>
+                    <div class="form-group floating-form">
+                        <select class="form-control" id="username" name="values[supervisor]" required autocomplete="off">
+                            <?php
+                            $userlist = $osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]);
+                            foreach ($userlist as $j) { ?>
+                                <option value="<?= $j['username'] ?>" <?= $j['username'] == $selected ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
+                            <?php } ?>
+                        </select>
+                        <label class="required element-author" for="username">
+                            <?= lang('Supervisor', 'Betreuende Person') ?>
+                        </label>
+                    </div>
+                <?php } ?>
+
+            <?php } ?>
+
+
+
+            <?php if (array_intersect(['funder', 'funding_organization', 'funding_number', 'role', 'coordinator'], $fields)) { ?>
+
+                <h6>
+                    <?= lang('Funding', 'Förderung') ?>
+                </h6>
+                <?php if (in_array('funder', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <select class="form-control" name="values[funder]" value="<?= val('funder') ?>" required id="funder">
+                            <!-- <option <?= sel('funder', 'Eigenmittel') ?>>Eigenmittel</option> -->
+                            <option <?= sel('funder', 'DFG') ?>>DFG</option>
+                            <option <?= sel('funder', 'Bund') ?>>Bund</option>
+                            <option <?= sel('funder', 'Bundesländer') ?>>Bundesländer</option>
+                            <option <?= sel('funder', 'Wirtschaft') ?>>Wirtschaft</option>
+                            <option <?= sel('funder', 'EU') ?>>EU</option>
+                            <option <?= sel('funder', 'Stiftungen') ?>>Stiftungen</option>
+                            <option <?= sel('funder', 'Leibniz Wettbewerb') ?>>Leibniz Wettbewerb</option>
+                            <option <?= sel('funder', 'Sonstige Drittmittelgeber') ?>>Sonstige Drittmittelgeber</option>
+                            <!-- <option>Sonstige öffentliche internationale Förderorganisationen</option>
+                <option>Nicht erklärt (Private Mittelgeber)</option>
+                <option>Nicht erklärt (Öffentliche Mittelgeber)</option> -->
+                        </select>
+                        <label for="funder" class="required">
+                            <?= lang('Third-party funder', 'Drittmittelgeber') ?>
+                        </label>
+                    </div>
+                <?php } ?>
+
+                <?php if (in_array('funding_organization', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <input type="text" class="form-control" name="values[funding_organization]" value="<?= val('funding_organization') ?>" id="funding_organization" required placeholder="DFG">
+
+                        <label for="funding_organization" class="required">
+                            <?= lang('Funding organization', 'Zuwendungsgeber') ?>
+                            <!-- Förderorganisation laut KDSF -->
+                        </label>
+                    </div>
+                <?php } ?>
+
+                <?php if (in_array('funding_number', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <input type="text" class="form-control" name="values[funding_number]" value="<?= val('funding_number') ?>" id="funding_number" placeholder="ABC123">
+                        <label for="funding_number">
+                            <?= lang('Funding reference number', 'Förderkennzeichen') ?>
+                        </label>
+                        <small class="text-muted"><?= lang('Multiple seperated by comma', 'Mehrere durch Komma getrennt') ?></small>
+                    </div>
+                <?php } ?>
+
+
+
+                <div class="row row-eq-spacing">
+                    <?php if (in_array('role', $fields)) { ?>
+                        <div class="col floating-form">
+                            <select class="form-control" name="values[role]" id="role">
+                                <option value="coordinator" <?= sel('role', 'coordinator') ?>><?= lang('Coordinator', 'Koordinator') ?></option>
+                                <option value="partner" <?= sel('role', 'partner') ?>><?= lang('Partner') ?></option>
+                            </select>
+                            <label for="role">
+                                <?= lang('Role of', 'Rolle von') ?> <?= $Settings->get('affiliation') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                    <?php if (in_array('coordinator', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="text" class="form-control" name="values[coordinator]" id="coordinator" value="<?= val('coordinator', $Settings->get('affiliation')) ?>" placeholder="DSMZ">
+                            <label for="coordinator">
+                                <?= lang('Coordinator facility', 'Koordinator-Einrichtung') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
+
+
+
+            <?php if (array_intersect(['scholarship', 'university'], $fields)) { ?>
+                <h6>
+                    <?= lang('Scholarship', 'Stipendium') ?>
+                </h6>
+                <div class="row row-eq-spacing mt-0">
+                    <?php if (in_array('scholarship', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="text" class="form-control" name="values[scholarship]" id="scholarship" value="<?= val('scholarship') ?>" placeholder="DAAD">
+                            <label for="scholarship">
+                                <?= lang('Scholarship institution', 'Stipendiengeber') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+
+                    <?php if (in_array('university', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="text" class="form-control" name="values[university]" id="university" value="<?= val('university') ?>" placeholder="TU Braunschweig">
+                            <label for="university">
+                                <?= lang('Partner University', 'Partner-Universität') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
+
+            <?php if (array_intersect(['grant_sum_proposed', 'grant_income_proposed', 'grant_subproject_proposed'], $fields)) { ?>
+
+                <h6>
+                    <?= lang('Proposed grant sum', 'Beantragte Fördersumme') ?> in EURO
+                </h6>
+                <div class="row row-eq-spacing mt-0">
+
+                    <?php if (in_array('grant_sum_proposed', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="number" step="1" class="form-control" name="values[grant_sum_proposed]" id="grant_sum_proposed" value="<?= val('grant_sum_proposed') ?>" placeholder="112345">
+                            <label for="grant_sum_proposed">
+                                <?= lang('Total', 'Insgesamt') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                    <?php if (in_array('grant_income_proposed', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="number" step="1" class="form-control" name="values[grant_income_proposed]" id="grant_income_proposed" value="<?= val('grant_income_proposed') ?>" placeholder="112345">
+
+                            <label for="grant_income_proposed">
+                                <?= lang('Institute', 'Institut') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                    <?php if (in_array('grant_subproject_proposed', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="number" step="1" class="form-control" name="values[grant_subproject_proposed]" id="grant_subproject_proposed" value="<?= val('grant_subproject_proposed') ?>" placeholder="1234">
+
+                            <label for="grant_subproject_proposed">
+                                <?= lang('Subproject', 'Teilprojekt') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
+
+
+            <?php if (array_intersect(['grant_sum', 'grant_income', 'grant_subproject'], $fields)) { ?>
+
+                <h6>
+                    <?= lang('Grant sum', 'Bewilligungssumme') ?> in EURO
+                </h6>
+                <div class="row row-eq-spacing mt-0">
+
+                    <?php if (in_array('grant_sum', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="number" step="1" class="form-control" name="values[grant_sum]" id="grant_sum" value="<?= val('grant_sum') ?>" placeholder="1234">
+                            <label for="grant_sum">
+                                <?= lang('Total', 'Insgesamt') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                    <?php if (in_array('grant_income', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="number" step="1" class="form-control" name="values[grant_income]" id="grant_income" value="<?= val('grant_income') ?>" placeholder="1234">
+                            <label for="grant_income">
+                                <?= lang('Institute', 'Institut') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+                    <?php if (in_array('grant_subproject', $fields)) { ?>
+                        <div class="col floating-form">
+                            <input type="number" step="1" class="form-control" name="values[grant_subproject]" id="grant_subproject" value="<?= val('grant_subproject') ?>" placeholder="1234">
+                            <label for="grant_subproject">
+                                <?= lang('Subproject', 'Teilprojekt') ?>
+                            </label>
+                        </div>
+                    <?php } ?>
+
+                </div>
+            <?php } ?>
+
+
+
+            <?php if (array_intersect(['public', 'abstract', 'website'], $fields)) { ?>
+                <h6>
+                    <?= lang('Outreach') ?>
+                </h6>
+
+                <?php if (in_array('public', $fields)) { ?>
+                    <div class="form-group ">
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="public-check" <?= val('public', false) ? 'checked' : '' ?> name="values[public]">
+                            <label for="public-check">
+                                Zustimmung zur Internetpräsentation des bewilligten Vorhabens
+                            </label>
+                        </div>
+                    </div>
+                <?php } ?>
+
+                <?php if (in_array('abstract', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <textarea name="values[abstract]" id="abstract" cols="30" rows="5" class="form-control" placeholder="Abstract"><?= val('abstract') ?></textarea>
+                        <label for="abstract" class="">
+                            <?= lang('Abstract', 'Kurzbeschreibung') ?>
+                        </label>
+                    </div>
+                <?php } ?>
+
+
+                <?php if (in_array('website', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <input type="text" class="form-control" name="values[website]" id="website" value="<?= val('website') ?>" placeholder="https://example.com">
+                        <label for="website">
+                            <?= lang('Project website', 'Webseite des Projekts') ?>
+                        </label>
+                        <small class="text-muted">
+                            <?= lang('Please enter full ULR (incl. http...)', 'Bitte vollständige URL angeben (inkl. http...)') ?>
+                        </small>
+                    </div>
+                <?php } ?>
+
+            <?php } ?>
+
+
+
+            <?php if (in_array('nagoya', $fields) && $Settings->featureEnabled('nagoya')) {
+                $countries = $form['nagoya_countries'] ?? [];
+                $nagoya = $form['nagoya'] ?? 'no';
+                include_once BASEPATH . "/php/Country.php";
+            ?>
+
+                <h6>
+                    <?= lang('Nagoya Protocol') ?>
+                </h6>
+
+                <div class="form-group">
+                    <label for="nagoya">
+                        <?= lang('
+                Will you collect or receive genetic resources from a country outside of Germany?
+                ', 'Werden im Projekt genetische Ressourcen aus einem Land außerhalb Deutschlands gesammelt oder erhalten? ') ?>
+                    </label>
+                    <div>
+                        <input type="radio" name="values[nagoya]" id="nagoya-yes" value="yes" <?= ($nagoya == 'yes') ? 'checked' : '' ?>>
+                        <label for="nagoya-yes">Yes</label>
+                        <input type="radio" name="values[nagoya]" id="nagoya-no" value="no" <?= ($nagoya == 'no') ? 'checked' : '' ?>>
+                        <label for="nagoya-no">No</label>
+                    </div>
+
+                    <div id="ressource-nagoya" style="display: <?= ($nagoya == 'yes') ? 'block' : 'none' ?>;">
+
+                        <b>
+                            <?= lang('Please list all countries:', 'Liste bitte alle Länder auf:') ?>
+                        </b>
+
+                        <div class="author-widget" id="author-widget">
+                            <div class="author-list p-10" id="author-list">
+                                <?php foreach ($countries as $iso) { ?>
+                                    <div class='author'>
+                                        <input type='hidden' name='values[nagoya_countries][]' value='<?= $iso ?>'>
+                                        <?= Country::get($iso) ?>
+                                        <a onclick="$(this).closest('.author').remove()">&times;</a>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
+                            <div class="footer">
+                                <div class="input-group sm d-inline-flex w-auto">
+                                    <select id="add-country" >
+                                        <option value="" disabled checked><?=lang('Please select a country', 'Bitte wähle ein Land aus')?></option>
+                                        <?php foreach (Country::COUNTRIES as $iso => $name) { ?>
+                                            <option value="<?= $iso ?>"><?= $name ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button class="btn secondary h-full" type="button" onclick="addCountry(event);">
+                                            <i class="ph ph-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                function addCountry(event) {
+                                    var el = $('#add-country')
+                                    var data = el.val()
+                                    if ((event.type == 'keypress' && event.keyCode == '13') || event.type == 'click') {
+                                        event.preventDefault();
+                                        if (data) {
+                                            $('#author-list').append('<div class="author"><input type="hidden" name="values[nagoya_countries][]" value="' + data + '">' + el.find('option:selected').text() + '<a onclick="$(this).closest(\'.author\').remove()">&times;</a></div>')
+                                        }
+                                        $(el).val('')
+                                        return false;
+                                    }
+                                }
+                            </script>
+
+                        </div>
+                    </div>
+
+                    <script>
+                        document.getElementById('nagoya-yes').addEventListener('change', function() {
+                            document.getElementById('ressource-nagoya').style.display = 'block';
+                        });
+                        document.getElementById('nagoya-no').addEventListener('change', function() {
+                            document.getElementById('ressource-nagoya').style.display = 'none';
+                        });
+                    </script>
+
+                </div>
+            <?php } ?>
+
+
+
+            <?php if (array_intersect(['personnel', 'in-kind', 'ressources'], $fields)) { ?>
+                <h6>
+                    <?= lang('Resources and Personnel', 'Ressourcen und Personal') ?>
+                </h6>
+
+                <?php if (in_array('personnel', $fields)) { ?>
+                    <div class="form-group floating-form">
+                        <textarea name="values[personnel]" id="personnel" cols="30" rows="2" class="form-control" placeholder="1 Doktorand:in"><?= val('personnel') ?></textarea>
+
+                        <label for="personnel">
+                            <?= lang('Personnel measures planned', 'Geplante Personalmaßnahmen') ?>
+                        </label>
+                        <small class="text-muted">
+                            Einstellungen/Verlängerungen in Personenmonaten & Kategorie
+                        </small>
+                    </div>
+                    <div class="form-group floating-form">
+                        <textarea name="values[in-kind]" id="in-kind" cols="30" rows="2" class="form-control" placeholder="Antragsteller 5%"><?= val('in-kind') ?></textarea>
+
+                        <label for="in-kind">
+                            <?= lang('In-kind personnel', 'Umfang des geplanten eigenen Personaleinsatzes') ?>
+                        </label>
+                        <small class="text-muted">
+                            Nachrichtliche Angaben in % unter Nennung der mitarbeitenden Personen (z.B. Antragsteller 10%, ABC 15%, etc.)
+                        </small>
+                    </div>
+                <?php } ?>
+
+                <?php if (in_array('ressources', $fields)) {
+                    $res = $form['ressources'] ?? [];
+                ?>
                     <!-- each: Sachmittel, Personalmittel, Raumkapitäten, sonstige Ressourcen -->
                     <div class="ressources">
                         <div class="form-group">
@@ -550,14 +752,13 @@ $current_url = strtok($_SERVER["REQUEST_URI"], '?');
                                 });
                             </script>
                         </div>
-                </fieldset>
-            </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
 
-        <?php } ?>
-
-    </div>
-    <button class="btn secondary" type="submit" id="submit-btn">
-        <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
-    </button>
-
-</form>
+            <button class="btn secondary" type="submit" id="submit-btn">
+                <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
+            </button>
+        </div>
+    </form>
+</div>
