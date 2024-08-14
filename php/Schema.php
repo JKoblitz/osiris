@@ -57,7 +57,7 @@ class Schema
 
     public static function journal($journal)
     {
-        $issn = $journal['issn']->bsonSerialize();
+        $issn = DB::doc2Arr($journal['issn']);
         if (empty($issn)) $issn = null;
         elseif (count($issn) == 1) $issn = $issn[0];
         return $journal = [

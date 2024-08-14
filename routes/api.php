@@ -318,10 +318,8 @@ Route::get('/api/all-activities', function () {
         }
 
         // $depts = $Groups->getDeptFromAuthors($doc['authors']??[]);
-        $depts = $rendered['depts'];
-        if ($depts instanceof MongoDB\Model\BSONArray) {
-            $depts = $depts->bsonSerialize();
-        }
+        $depts = DB::doc2Arr($rendered['depts'] ?? []);
+        
         $type = $doc['type'];
         $format_full = $rendered['print'];
         if (($_GET['display_activities'] ?? 'web') == 'web') {

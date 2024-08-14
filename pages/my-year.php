@@ -173,7 +173,7 @@ if (!$Settings->featureEnabled('coins')) {
 
             <?php
             if ($currentuser) {
-                $approved = isset($USER['approved']) && in_array($q, $USER['approved']->bsonSerialize());
+                $approved = isset($USER['approved']) && in_array($q, DB::doc2Arr($USER['approved']));
                 $approval_needed = array();
 
                 $q_end = new DateTime($YEAR . '-' . (3 * $QUARTER) . '-' . ($QUARTER == 1 || $QUARTER == 4 ? 31 : 30) . ' 23:59:59');

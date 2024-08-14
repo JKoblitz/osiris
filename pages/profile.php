@@ -424,7 +424,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     </div>
 
     <?php if (($Settings->hasPermission('report.dashboard')) && isset($scientist['approved'])) {
-        $approvedQ = $scientist['approved']->bsonSerialize();
+        $approvedQ = DB::doc2Arr($scientist['approved']);
         sort($approvedQ);
         echo "<div class='mt-20'>";
         echo "<b>" . lang('Quarters approved', 'Bestätigte Quartale') . ":</b>";
@@ -774,7 +774,7 @@ if ($currentuser) { ?>
                         <?php
                         $approvedQ = array();
                         if (isset($scientist['approved'])) {
-                            $approvedQ = $scientist['approved']->bsonSerialize();
+                            $approvedQ = DB::doc2Arr($scientist['approved']);
                         }
 
 

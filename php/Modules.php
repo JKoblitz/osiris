@@ -446,9 +446,8 @@ class Modules
             );
 
         if (!empty($form) && !empty($form['authors'])) {
-            if ($form['authors'] instanceof MongoDB\Model\BSONArray) {
-                $form['authors'] = $form['authors']->bsonSerialize();
-            }
+            
+            $form['authors'] = DB::doc2Arr($form['authors']);
             if (is_array($form['authors'])) {
                 $pos = array_count_values(array_column($form['authors'], 'position'));
                 $this->first = $pos['first'] ?? 1;
@@ -1158,6 +1157,23 @@ class Modules
                         <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= $this->val('day') ?>">
                     </div>
                 </div>
+                <!-- <h6>
+                <?= lang('Date', 'Datum') ?>
+            </h6>
+                <div class="col-12 row row-eq-spacing mt-0" data-module="date">
+                    <div class="col-sm floating-form">
+                        <input type="number" min="1901" max="2155" step="1" class="form-control" name="values[year]" id="year" <?= $required ?> value="<?= $this->val('year') ?>" placeholder="2012">
+                        <label for="year" class="<?= $required ?> element-time">Year</label>
+                    </div>
+                    <div class="col-sm floating-form">
+                        <input type="number" min="1" max="12" step="1" class="form-control" name="values[month]" id="month" <?= $required ?> value="<?= $this->val('month') ?>" placeholder="2">
+                        <label for="month" class="<?= $required ?> element-time">Month</label>
+                    </div>
+                    <div class="col-sm floating-form">
+                        <input type="number" min="1" max="31" step="1" class="form-control" name="values[day]" id="day" value="<?= $this->val('day') ?>" placeholder="12">
+                        <label for="day" class="element-time">Day</label>
+                    </div>
+                </div> -->
             <?php
                 break;
 

@@ -23,7 +23,7 @@
         if (empty($cursor)) {
             echo "<div class='content'>" . lang('No scientists found.', 'Keine Forschenden gefunden.') . "</div>";
         } else foreach ($cursor as $s) {
-            $approved = isset($s['approved']) && in_array($yq, $s['approved']->bsonSerialize());
+            $approved = isset($s['approved']) && in_array($yq, DB::doc2Arr($s['approved']));
         ?>
             <tr class="row-<?= $approved ? 'success' : '' ?>">
                 <td>

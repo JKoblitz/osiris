@@ -25,9 +25,6 @@ Route::get('/journals-open-access', function () {
         echo "<h5>$name</h5>";
 
         $issn = $journal['issn'];
-        // if ($issn instanceof MongoDB\Model\BSONArray) {
-        //     $issn = $issn->bsonSerialize();
-        // }
         $query = [];
         foreach ($issn as $i) {
             $query[] = "issn:" . $i;
