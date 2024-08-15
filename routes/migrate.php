@@ -198,6 +198,7 @@ Route::get('/install', function () {
 Route::get('/migrate', function () {
     include_once BASEPATH . "/php/init.php";
     include BASEPATH . "/header.php";
+    echo "Please wait...<br>";
 
     set_time_limit(6000);
     $DBversion = $osiris->system->findOne(['key' => 'version']);
