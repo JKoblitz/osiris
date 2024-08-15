@@ -232,7 +232,7 @@
                 ) ?>
             </small>
 
-            <h6 class="mb-0"><?= lang('Configure email addresses', 'Email-Adressen konfigurieren') ?></h6>
+            <!-- <h6 class="mb-0"><?= lang('Configure email addresses', 'Email-Adressen konfigurieren') ?></h6>
             <small class="text-muted">
                 <?= lang('Enter multiple addresses separated by comma.', 'Du kannst mehrere Adressen durch Komma getrennt angeben.') ?>
             </small>
@@ -264,7 +264,7 @@
                     </div>
                 <?php } ?>
 
-            </div>
+            </div> -->
 
         </div>
     </div>

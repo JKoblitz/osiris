@@ -643,15 +643,15 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Last name</th>
-                            <th>First name</th>
+                            <th><?=lang('Last', 'Nachname')?></th>
+                            <th><?=lang('First', 'Vorname')?></th>
 
                             <?php if ($sws) : ?>
                                 <th>SWS</th>
                             <?php elseif ($role == 'authors') : ?>
                                 <th>Position</th>
                             <?php endif; ?>
-                            <th>Username</th>
+                            <th>User</th>
                         </tr>
                     </thead>
                     <tbody id="<?= $role ?>">
@@ -675,7 +675,7 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                                 <?php endif; ?>
                                 <td>
                                     <?php if (isset($author['user']) && !empty($author['user'])) : ?>
-                                        <a href="<?= ROOTPATH ?>/profile/<?= $author['user'] ?>"><?= $author['user'] ?></a>
+                                        <a href="<?= ROOTPATH ?>/profile/<?= $author['user'] ?>"><i class="ph ph-user"></i></a>
                                         <span data-toggle="tooltip" data-title="<?= lang('Author approved activity?', 'Autor hat die Aktivität bestätigt?') ?>">
                                             <?= bool_icon($author['approved'] ?? 0) ?>
                                         </span>

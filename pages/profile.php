@@ -1051,12 +1051,12 @@ if ($currentuser) { ?>
                 </div>
                 <table class="table simple small">
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td>
                                 <span class="key"><?= lang('Username', 'Benutzername') ?></span>
                                 <?= $user ?>
                             </td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td>
                                 <span class="key"><?= lang('Last name', 'Nachname') ?></span>

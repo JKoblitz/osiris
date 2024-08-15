@@ -26,9 +26,9 @@
 <form action="<?= ROOTPATH ?>/crud/users/update/<?= $data['username'] ?>" method="post">
     <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
-    <p>
+    <!-- <p>
         <b>Username:</b> <?= $data['username'] ?? '' ?>
-    </p>
+    </p> -->
 
 
     <fieldset>
