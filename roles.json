@@ -201,5 +201,16 @@
                 "en": "Edit guest documents"
             }
         ]
+    },
+    {
+        "de": "Nagoya-Protokoll",
+        "en": "Nagoya Protocol",
+        "fields": [
+            {
+                "id": "nagoya.view",
+                "de": "Nagoya-relevante Informationen sehen",
+                "en": "See Nagoya-relevant information"
+            }
+        ]
     }
 ]

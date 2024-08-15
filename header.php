@@ -412,6 +412,13 @@ $pageactive = function ($p) use ($page) {
                             </a>
                         <?php } ?>
 
+                        <?php if ($Settings->featureEnabled('nagoya') && $Settings->hasPermission('nagoya.view')) { ?>
+                            <a href="<?= ROOTPATH ?>/nagoya" class="with-icon <?= $pageactive('nagoya') ?>">
+                                <i class="ph ph-scales" aria-hidden="true"></i>
+                                <?= lang('Nagoya Protocol', 'Nagoya-Protokoll') ?>
+                            </a>
+                        <?php } ?>
+                        
 
                     </nav>
 

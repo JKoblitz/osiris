@@ -376,14 +376,16 @@ $institute = $Settings->get('affiliation_details');
                                             <?php if ($n == 'no') { ?>
                                                 <span class="badge"><?= lang('Not relevant', 'Nicht relevant') ?></span>
                                             <?php } else { ?>
-                                                <span class="badge danger"><?= lang('Relevant') ?></span>
-                                                <br>
-                                                <h6><?= lang('Countries', 'Länder:') ?></h6>
-                                                <ul class="list signal">
+                                                <!-- <span class="badge danger"><?= lang('Relevant') ?></span>
+                                                <br> -->
+                                                <div class="alert signal">
+                                                <h6 class="title"><?= lang('Countries', 'Länder:') ?></h6>
+                                                <ul class="list signal mb-0">
                                                     <?php foreach ($project['nagoya_countries'] ?? [] as $c) { ?>
                                                         <li><?= Country::get($c) ?></li>
                                                     <?php } ?>
                                                 </ul>
+                                                </div>
                                             <?php } ?>
 
                                         <?php break;

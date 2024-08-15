@@ -559,8 +559,8 @@ function sel($index, $value)
                 <div class="form-group">
                     <label for="nagoya">
                         <?= lang('
-                Will you collect or receive genetic resources from a country outside of Germany?
-                ', 'Werden im Projekt genetische Ressourcen aus einem Land außerhalb Deutschlands gesammelt oder erhalten? ') ?>
+                            Do you plan to collect or receive genetic resources (biological samples) from outside of Germany over the course of this project?
+                            ', 'Planst du, im Rahmen dieses Projekts genetische Ressourcen (biologische Proben) von außerhalb Deutschlands zu sammeln oder zu erhalten? ') ?>
                     </label>
                     <div>
                         <input type="radio" name="values[nagoya]" id="nagoya-yes" value="yes" <?= ($nagoya == 'yes') ? 'checked' : '' ?>>
@@ -588,8 +588,8 @@ function sel($index, $value)
                             </div>
                             <div class="footer">
                                 <div class="input-group sm d-inline-flex w-auto">
-                                    <select id="add-country" >
-                                        <option value="" disabled checked><?=lang('Please select a country', 'Bitte wähle ein Land aus')?></option>
+                                    <select id="add-country">
+                                        <option value="" disabled checked><?= lang('Please select a country', 'Bitte wähle ein Land aus') ?></option>
                                         <?php foreach (Country::COUNTRIES as $iso => $name) { ?>
                                             <option value="<?= $iso ?>"><?= $name ?></option>
                                         <?php } ?>

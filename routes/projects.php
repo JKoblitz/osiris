@@ -64,6 +64,31 @@ Route::get('/projects/view/(.*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+Route::get('/nagoya', function () {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Project.php";
+
+    $allowed = $Settings->featureEnabled('nagoya') && $Settings->hasPermission('nagoya.view');
+    if (!$allowed) {
+        header("Location: " . ROOTPATH . "/projects?msg=no-permission");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' => 'Nagoya Protocol']
+    ];
+
+    $nagoya = $osiris->projects->find(
+        ['nagoya' => 'yes']
+        )->toArray();
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/nagoya.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/projects/(edit|collaborators|finance|public)/([a-zA-Z0-9]*)', function ($page, $id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
