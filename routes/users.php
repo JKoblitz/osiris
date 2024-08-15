@@ -301,13 +301,18 @@ Route::get('/synchronize-users', function () {
     }
 
     $users = getUsers();
-    // dump($users);
+
+    $removed = $osiris->persons->find(
+        ['username' => ['$nin' => array_keys($users)], 'is_active'=>['$in'=>[1,true, '1']]], 
+        ['projection' => ['username' => 1, 'is_active' => 1, 'displayname' => 1]]);
+    $removed = array_column(iterator_to_array($removed), 'displayname', 'username' );
 
     $actions = [
         'blacklisted' => [],
         'inactivate' => [],
         'reactivate' => [],
         'add' => [],
+        'delete'=> $removed ?? [],
         'unchanged' => []
     ];
     foreach ($users as $username => $active) {
@@ -337,7 +342,7 @@ Route::get('/synchronize-users', function () {
             $actions['add'][$username] = $name;
         } else {
             $actions['unchanged'][$username] = $name;
-        }
+        } 
     }
 ?>
 
@@ -375,6 +380,7 @@ Route::get('/synchronize-users', function () {
                 <div class="">
                     <input type="checkbox" name="reactivate[]" id="reactivate-<?= $u ?>" value="<?= $u ?>">
                     <label for="reactivate-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
+
                 </div>
             <?php } ?>
         <?php
