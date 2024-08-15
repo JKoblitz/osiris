@@ -318,10 +318,8 @@ Route::get('/api/all-activities', function () {
         }
 
         // $depts = $Groups->getDeptFromAuthors($doc['authors']??[]);
-        $depts = $rendered['depts'];
-        if ($depts instanceof MongoDB\Model\BSONArray) {
-            $depts = $depts->bsonSerialize();
-        }
+        $depts = DB::doc2Arr($rendered['depts'] ?? []);
+        
         $type = $doc['type'];
         $format_full = $rendered['print'];
         if (($_GET['display_activities'] ?? 'web') == 'web') {
@@ -716,7 +714,7 @@ Route::get('/api/projects', function () {
             $project['date_range'] = $Project->getDateRange();
             $project['funder'] = $project['funder'] ?? '';
             $project['funding_numbers'] = $Project->getFundingNumbers('<br />');
-            $project['applicant'] = $DB->getNameFromId($project['contact'] ?? '');
+            $project['applicant'] = $DB->getNameFromId($project['contact'] ?? $project['supervisor'] ?? '');
             $project['activities'] = $osiris->activities->count(['projects' => strval($project['name'])]);
             $data[] = $project;
         }
@@ -859,7 +857,7 @@ Route::get('/api/journals', function () {
             'abbr' => $doc['abbr'],
             'publisher' => $doc['publisher'] ?? '',
             'open_access' => $oa,
-            'issn' => implode(', ', $doc['issn']->bsonSerialize()),
+            'issn' => implode(', ', DB::doc2Arr($doc['issn'])),
             'if' => $DB->latest_impact($doc) ?? '',
             'count' => $activities[strval($doc['_id'])] ?? 0
         ];

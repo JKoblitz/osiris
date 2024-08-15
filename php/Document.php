@@ -415,9 +415,7 @@ class Document extends Settings
         $last = 1;
         $corresponding = false;
 
-        if (!empty($raw_authors) && $raw_authors instanceof MongoDB\Model\BSONArray) {
-            $raw_authors = $raw_authors->bsonSerialize();
-        }
+        $raw_authors = DB::doc2Arr($raw_authors);
         if (!empty($raw_authors) && is_array($raw_authors)) {
             $pos = array_count_values(array_column($raw_authors, 'position'));
             // dump($pos);
@@ -437,7 +435,7 @@ class Document extends Settings
                 if (isset($a['user']) && !empty($a['user'])) {
                     if ($this->usecase == 'portal') {
                         $person = $this->db->getPerson($a['user']);
-                        if ($person && ($person['hide'] ?? false) === false && ($person['is_active'] ?? true) !== false )
+                        if ($person && ($person['hide'] ?? false) === false && ($person['is_active'] ?? true) !== false)
                             $author = "<a href='/person/" . strval($person['_id']) . "'>$author</a>";
                     } else if (!$this->full)
                         $author = "<a href='" . ROOTPATH . "/profile/" . $a['user'] . "'>$author</a>";
@@ -580,9 +578,7 @@ class Document extends Settings
 
     function getUserAuthor($authors, $user)
     {
-        if ($authors instanceof MongoDB\Model\BSONArray) {
-            $authors = $authors->bsonSerialize();
-        }
+        $authors = DB::doc2Arr($authors);
         $author = array_filter($authors, function ($author) use ($user) {
             return $author['user'] == $user;
         });
@@ -594,14 +590,10 @@ class Document extends Settings
     {
         if (!isset($this->doc['authors'])) return true;
         $authors = $this->doc['authors'];
+        $authors = DB::doc2Arr($authors);
         if (isset($this->doc['editors'])) {
             $editors = $this->doc['editors'];
-            if (!is_array($authors)) {
-                $authors = $authors->bsonSerialize();
-            }
-            if (!is_array($editors)) {
-                $editors = $editors->bsonSerialize();
-            }
+            $editors = DB::doc2Arr($editors);
             $authors = array_merge($authors, $editors);
         }
         return $this->getUserAuthor($authors, $user)['approved'] ?? false;

@@ -145,13 +145,23 @@
             },
             {
                 "id": "projects.edit",
-                "de": "Existierende Projekte editieren",
-                "en": "Edit existing projects"
+                "de": "Alle Projekte bearbeiten",
+                "en": "Edit all projects"
             },
             {
                 "id": "projects.edit-own",
                 "de": "Eigene Projekte editieren",
                 "en": "Edit own projects"
+            },
+            {
+                "id": "projects.delete",
+                "de": "Projekte löschen",
+                "en": "Delete projects"
+            },
+            {
+                "id": "projects.delete-own",
+                "de": "Eigene Projekte löschen",
+                "en": "Delete own projects"
             }
         ]
     },
@@ -189,6 +199,17 @@
                 "id": "guests.edit.documents",
                 "de": "Gastdokumente bearbeiten",
                 "en": "Edit guest documents"
+            }
+        ]
+    },
+    {
+        "de": "Nagoya-Protokoll",
+        "en": "Nagoya Protocol",
+        "fields": [
+            {
+                "id": "nagoya.view",
+                "de": "Nagoya-relevante Informationen sehen",
+                "en": "See Nagoya-relevant information"
             }
         ]
     }

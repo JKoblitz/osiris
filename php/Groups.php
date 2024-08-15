@@ -75,7 +75,7 @@ class Groups
                     'id' => $data[$i]['id'],
                     'name' => $data[$i]['name'],
                     'unit' => $data[$i]['unit'],
-                    'color' => $data[$i]['color'],
+                    'color' => $data[$i]['color'] ?? '#000000',
                     'level' => $depth,
                     // 'head' => $v,
                     'children' => $this->tree($data, $data[$i]['id'], $depth + 1)
@@ -131,7 +131,7 @@ class Groups
 
     public function cssVar($id)
     {
-        $color = $this->getGroup($id)['color'];
+        $color = $this->getGroup($id)['color'] ?? '#000000';
         return "style=\"--highlight-color: $color;\"";
     }
 
@@ -168,7 +168,7 @@ class Groups
         // get all parent units
         $parents = $this->getParents($id);
         foreach ($parents as $p) {
-            if ($p == $id) continue;
+            // if ($p == $id) continue;
             $g = $this->getGroup($p);
             if (isset($g) && isset($g['head'])) {
                 $head = $g['head'];
@@ -199,13 +199,13 @@ class Groups
         return $result;
     }
 
-    public function getHirarchy()
+    public function getHierarchy()
     {
         $groups = array_values($this->groups);
-        return Groups::hirarchyList($groups);
+        return Groups::hierarchyList($groups);
     }
 
-    static function hirarchyList($datas, $parent = 0, $depth = 0)
+    static function hierarchyList($datas, $parent = 0, $depth = 0)
     {
         $ni = count($datas);
         if ($ni === 0 || $depth > 1000) return ''; // Make sure not to have an endless recursion
@@ -216,7 +216,7 @@ class Groups
                 $tree .= "<a class='colorless' href='" . ROOTPATH . "/groups/view/" . $datas[$i]['id'] . "' >";
                 $tree .= $datas[$i]['name'];
                 $tree .= "</a>";
-                $tree .= Groups::hirarchyList($datas, $datas[$i]['id'], $depth + 1);
+                $tree .= Groups::hierarchyList($datas, $datas[$i]['id'], $depth + 1);
                 $tree .= '</li>';
             }
         }
@@ -224,13 +224,13 @@ class Groups
         return $tree;
     }
 
-    public function getHirarchyTree()
+    public function getHierarchyTree()
     {
         $groups = array_values($this->groups);
-        return Groups::hirarchyTree($groups);
+        return Groups::hierarchyTree($groups);
     }
 
-    static function hirarchyTree($datas, $parent = 0, $depth = 0)
+    static function hierarchyTree($datas, $parent = 0, $depth = 0)
     {
         $ni = count($datas);
         $tree = [];
@@ -242,7 +242,7 @@ class Groups
                     $element = str_repeat('-', $depth) . ' ' . $element;
                 }
                 $tree[$datas[$i]['id']] = $element;
-                $tree = array_merge($tree, Groups::hirarchyTree($datas, $datas[$i]['id'], $depth + 1));
+                $tree = array_merge($tree, Groups::hierarchyTree($datas, $datas[$i]['id'], $depth + 1));
             }
         }
         return $tree;

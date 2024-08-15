@@ -64,6 +64,31 @@ Route::get('/projects/view/(.*)', function ($id) {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+Route::get('/nagoya', function () {
+    include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Project.php";
+
+    $allowed = $Settings->featureEnabled('nagoya') && $Settings->hasPermission('nagoya.view');
+    if (!$allowed) {
+        header("Location: " . ROOTPATH . "/projects?msg=no-permission");
+        die;
+    }
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' => 'Nagoya Protocol']
+    ];
+
+    $nagoya = $osiris->projects->find(
+        ['nagoya' => 'yes']
+        )->toArray();
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/nagoya.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/projects/(edit|collaborators|finance|public)/([a-zA-Z0-9]*)', function ($page, $id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
@@ -115,12 +140,77 @@ Route::get('/projects/(edit|collaborators|finance|public)/([a-zA-Z0-9]*)', funct
     include BASEPATH . "/footer.php";
 }, 'login');
 
+
+
+Route::get('/projects/subproject/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    $user = $_SESSION['username'];
+
+    // get project
+    if (DB::is_ObjectID($id)) {
+        $mongo_id = $DB->to_ObjectID($id);
+        $project = $osiris->projects->findOne(['_id' => $mongo_id]);
+    } else {
+        $project = $osiris->projects->findOne(['name' => $id]);
+        $id = strval($project['_id'] ?? '');
+    }
+    // check if project exists
+    if (empty($project)) {
+        header("Location: " . ROOTPATH . "/projects?msg=not-found");
+        die;
+    }
+
+    // set breadcrumb
+    $breadcrumb = [
+        ['name' => lang('Projects', 'Projekte'), 'path' => "/projects"],
+        ['name' => $project['name'], 'path' => "/projects/view/$id"],
+        ['name' => lang("Add subproject", "Teilprojekt hinzufügen")]
+    ];
+
+    // create new form
+    global $form;
+    $form = DB::doc2Arr($project);
+    // user abbreviation (first letter of first and last name)
+    try {
+        // in case of unicode errors or sth like that
+        $suffix = $USER['first'][0] . $USER['last'][0];
+    } catch (\Throwable $th) {
+        $suffix = 'XX';
+    }
+
+    // add suffix to project name
+    $form['name'] = $form['name'] . "-" . $suffix;
+    // check if name is unique
+    $project_exist = $osiris->projects->findOne(['name' => $form['name']]);
+    if (!empty($project_exist)) {
+        $form['name'] = $form['name'] . "-" . uniqid();
+    }
+    // delete stuff that should not be inherited
+    unset($form['title']);
+    unset($form['ressources']);
+    unset($form['personnel']);
+    unset($form['in-kind']);
+    unset($form['_id']);
+
+    // add parent project
+    $form['parent'] = $project['name'];
+    $form['parent_id'] = strval($project['_id']);
+
+    // set type to subproject
+    $type = 'Teilprojekt';
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/projects/edit.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 /**
  * CRUD routes
  */
 
 Route::post('/crud/projects/create', function () {
     include_once BASEPATH . "/php/init.php";
+    include_once BASEPATH . "/php/Project.php";
     if (!isset($_POST['values'])) die("no values given");
     $collection = $osiris->projects;
 
@@ -166,6 +256,31 @@ Route::post('/crud/projects/create', function () {
         );
     }
 
+    // check if type is Teilprojekt
+    if (isset($values['parent_id'])) {
+        // get parent project
+        $parent = $osiris->projects->findOne(['_id' => $DB->to_ObjectID($values['parent_id'])]);
+
+        // take over parent projects parameters
+        if (!empty($parent)) {
+            $values['type'] = 'Teilprojekt';
+            $values['parent'] = $parent['name'];
+            foreach (Project::INHERITANCE as $key) {
+                if (isset($parent[$key])) {
+                    $values[$key] = $parent[$key];
+                }
+            }
+            // add project to parent project
+            $osiris->projects->updateOne(
+                ['_id' => $DB->to_ObjectID($values['parent_id'])],
+                ['$push' => ['subprojects' => $values['name']]]
+            );
+        }
+    }
+
+    // dump($values, true);
+    // die;
+
     $insertOneResult  = $collection->insertOne($values);
     $id = $insertOneResult->getInsertedId();
 
@@ -207,12 +322,24 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
         $values['persons'] = array_values($values['persons']);
     }
 
-    // check if module already exists:
-    // $project_exist = $collection->findOne(['name' => $values['name']]);
-
     if (isset($values['funding_number'])) {
         $values['funding_number'] = explode(',', $values['funding_number']);
         $values['funding_number'] = array_map('trim', $values['funding_number']);
+    }
+
+    // update all children
+    if ($osiris->projects->count(['parent_id' => $id]) > 0) {
+        include_once BASEPATH . "/php/Project.php";
+        $sub = [];
+        foreach ($values as $key => $value) {
+            if (in_array($key, Project::INHERITANCE)) {
+                $sub[$key] = $value;
+            }
+        }
+        $collection->updateMany(
+            ['parent_id' => $id],
+            ['$set' => $sub]
+        );
     }
 
     $id = $DB->to_ObjectID($id);
@@ -220,6 +347,7 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
         ['_id' => $id],
         ['$set' => $values]
     );
+
 
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=update-success");
@@ -230,6 +358,45 @@ Route::post('/crud/projects/update/([A-Za-z0-9]*)', function ($id) {
         'inserted' => $updateResult->getModifiedCount(),
         'id' => $id,
     ]);
+});
+
+
+Route::post('/crud/projects/delete/([A-Za-z0-9]*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $project = $osiris->projects->findOne(['_id' => $DB->to_ObjectID($id)]);
+
+    // check if user has permission to delete project
+    $edit_perm = (
+        $Settings->hasPermission('projects.delete')
+        ||
+        ($Settings->hasPermission('projects.delete-own') &&
+            (
+                $project['created_by'] == $_SESSION['username']
+                ||
+                in_array($_SESSION['username'], array_column(DB::doc2Arr($project['persons']), 'user'))
+            ))
+    );
+
+    // if user has no permission: redirect to project view
+    if (!$edit_perm) {
+        header("Location: " . ROOTPATH . "/projects/view/$id?msg=no-permission");
+        die;
+    }
+
+    // remove project name from activities
+    $osiris->activities->updateMany(
+        ['projects' => $project['name']],
+        ['$pull' => ['projects' => $project['name']]]
+    );
+
+    // remove project
+    $osiris->projects->deleteOne(
+        ['_id' => $DB::to_ObjectID($id)]
+    );
+
+    $_SESSION['msg'] = lang("Project has been deleted successfully.", "Projekt wurde erfolgreich gelöscht.");
+    header("Location: " . ROOTPATH . "/projects");
 });
 
 

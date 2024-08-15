@@ -6,12 +6,14 @@ if (!defined('ROOTPATH'))
 
 // define ADMIN user name
 if (!defined('ADMIN'))
-    define('ADMIN', 'juk20');
+    define('ADMIN', '');
 
-// if you do not use LDAP, change the following to 'AUTH'
 if (!defined('USER_MANAGEMENT'))
     define('USER_MANAGEMENT', 'AUTH');
 
+if (!defined('LIVE'))
+    define('LIVE', true);
+    
 // define LDAP connection
 if (USER_MANAGEMENT == 'LDAP') {
     if (!defined('LDAP_IP'))
@@ -26,6 +28,9 @@ if (USER_MANAGEMENT == 'LDAP') {
         die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_PASSWORD is not set.");
     if (!defined('LDAP_BASEDN'))
         die("Error in your CONFIG: USER_MANAGEMENT is set to LDAP, but LDAP_BASEDN is not set.");
+    if (!defined('LDAP_FILTER'))
+        // z.B. for filtering by group: (&(memberOf=CN=GroupName,OU=Groups,DC=example,DC=com)(objectClass=user))
+        define('LDAP_FILTER', null);
 }
 
 // define DB connection

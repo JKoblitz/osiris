@@ -366,10 +366,7 @@ class DB
         if (!isset($journal['impact']) || empty($journal['impact'])) return 0;
 
         // get impact factors from journal
-        $impact = $journal['impact'];
-        if ($impact instanceof MongoDB\Model\BSONArray) {
-            $impact = $impact->bsonSerialize();
-        }
+        $impact = DB::doc2Arr($journal['impact']);
         // sort ascending by year
         usort($impact, function ($a, $b) {
             return $a['year'] - $b['year'];
@@ -392,10 +389,7 @@ class DB
     {
         $if = 0.0;
         if (!isset($journal['impact'])) return $if;
-        $impact = $journal['impact'];
-        if ($impact instanceof MongoDB\Model\BSONArray) {
-            $impact = $impact->bsonSerialize();
-        }
+        $impact = DB::doc2Arr($journal['impact']);
         if (empty($impact)) return $if;
         $if = end($impact)['impact'] ?? $if;
         return $if;

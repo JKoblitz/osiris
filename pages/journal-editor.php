@@ -66,7 +66,7 @@ dump($data, true);
             if (isset($data['issn'])) {
                 $issn = $data['issn'];
                 try {
-                    $issn = $issn->bsonSerialize();
+                    $issn = DB::doc2Arr($issn);
                 } catch (\Throwable $th) {
                 }
                 if (is_array($issn)) $issn = implode(' ', $issn);

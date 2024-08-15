@@ -120,6 +120,15 @@ if ($N > 0) {
                     <input type="text" class="form-control" name="general[affiliation][link]" required value="<?= $affiliation['link'] ?? '' ?>">
                 </div>
             </div>
+            <div class="form-group">
+                <label for="openalex-id">
+                    OpenAlex ID
+                </label>
+                <input type="text" class="form-control" name="general[affiliation][openalex]" value="<?= $affiliation['openalex'] ?? '' ?>">
+                <small class="text-primary">
+                    <?=lang('Needed for OpenAlex imports!', 'Diese ID ist notwendig um OpenAlex-Importe zu ermöglichen!')?>
+                </small>
+            </div>
             <div class="row row-eq-spacing">
                 <div class="col-sm-2">
                     <label for="ror">ROR (inkl. URL)</label>

@@ -1,5 +1,50 @@
 # Neuigkeiten
 
+<span class="badge float-right">15.08.2024</span>
+<a class="anchor" href="#version-1.3.6" id="version-1.3.6"></a>
+
+## Version 1.3.6
+
+#### <i class="ph ph-tree-structure text-osiris"></i> Teilprojekte wurden hinzugefügt
+- Einem Projekt können jetzt Teilprojekte hinzugefügt werden
+- Teilprojekte erben einige Eigenschaften (Fördermittelgeber, Kooperationspartner, etc.) vom Elternprojekt
+- Die Beziehungen werden in OSIRIS und in Portfolio dargestellt
+
+#### <i class="ph ph-tree-structure text-osiris"></i> Erste Schritte für Nagoya-Compliance
+Es wurden erste Schritte unternommen, um Compliance mit dem [Nagoya-Protokoll](https://de.wikipedia.org/wiki/Nagoya-Protokoll) in OSIRIS einzufügen.
+
+- Das Feature kann im Feature-Bereich eingeschaltet werden. 
+- Beim Eintragen eines Projekt können Herkunftsländer für biologisches Material angegeben werden
+- Es gibt einen neuen Rechte-Bereich für Nagoya-Compliance
+- Personen mit entsprechenden Rechten haben Zugriff auf den Nagoya-Bereich, in dem alle relevanten Projekte mit Ländern aufgeführt sind
+- Weitere Entwicklungen (Status, Dokumente, etc.) folgen
+
+#### <i class="ph ph-users text-osiris"></i> Verbesserung im LDAP_Interface
+- Es wurde ein LDAP-Filter für den Sync hinzugefügt
+- Fehlermeldungen beim Login wurden verbessert
+- Es wurde eine Möglichkeit hinzugefügt, mehr als 1000 Nutzende zu synchronisieren
+
+
+#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
+- Wenn man die Seite "Alle Aktivitäten" filtert, die Seite verlässt und über den Zurück-Knopf des Browsers zurückkehrt, wird der letzte Status der Suche/Filter/Seitenauswahl wiederhergestellt
+- Probleme mit Stipendien wurden behoben
+- Probleme mit dem Level und der Farbe von Organisationseinheiten wurden behoben
+- Ein Problem wurde behoben, durch das Gruppenleiter ihre Gruppen nicht mehr bearbeiten konnten
+- Es wurde ein Problem mit nicht öffentlich gezeigten Gruppen im Portfolio behoben
+- Das Laden der Profilseite wurde deutlich verbessert.
+- Dem DOI-Import wurde besseres Error-Handling hinzugefügt
+- Es wurden Fehler behoben, die die Darstellung von Listen, z.B. ISSNs betrafen
+- Diverse Bugs Portofolio betreffend wurden gefixt
+  - Die Karte zeigt nun korrekt die Kooperationspartner
+  - Beantragte Projekte werden nicht mehr gezeigt
+  - Die ungleichmäßige Darstellung der Namen wurde gefixt
+  - OSIRIS liefert keine sensiblen Nutzerdaten mehr aus (betraf Version 1.3.5)
+- Es wurde ein Portfolio-FAQ hinzugefügt
+- Aus Gründen der Datensicherheit wurden Nutzernamen an einigen Stellen unkenntlich gemacht.
+
+
+----
+
 <span class="badge float-right">23.06.2024</span>
 <a class="anchor" href="#version-1.3.5" id="version-1.3.5"></a>
 
@@ -48,6 +93,8 @@ Die Synchronisation zu LDAP hat jetzt ein Interface spendiert bekommen, über da
 - Die Ersteller von Projekten können sie jetzt auch bearbeiten
 - Bei Projekten wurden Stipendien hinzugefügt
 
+
+----
 
 <span class="badge float-right">23.05.2024</span>
 <a class="anchor" href="#version-1.3.4" id="version-1.3.4"></a>

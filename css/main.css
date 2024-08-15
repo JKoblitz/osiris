@@ -2916,7 +2916,7 @@ Buttons
   margin-right: 0;
   margin-left: -1px;
 }
-.btn-toolbar .badge {
+.btn-toolbar > .badge {
   height: 3.2rem;
   line-height: 3.2rem;
   padding: 0 1.5rem;
@@ -2981,7 +2981,7 @@ ul.list > li::before {
   left: 0;
   border-radius: 50%;
   border-width: 0;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   border-color: transparent;
   box-shadow: none;
 }
@@ -3027,10 +3027,35 @@ ol.list > li::before {
   border-width: 0;
   font-size: 1.2rem;
   line-height: 2rem;
-  color: var(--secondary-color);
-  background-color: rgba(0, 0, 0, 0.15);
+  color: var(--primary-color);
+  background-color: var(--primary-color-20);
   border-color: transparent;
   box-shadow: none;
+  font-weight: bold;
+}
+ol.list.secondary > li::before {
+  background-color: var(--secondary-color-20);
+  color: var(--secondary-color);
+}
+ol.list.primary > li::before {
+  background-color: var(--primary-color-20);
+  color: var(--primary-color);
+}
+ol.list.success > li::before {
+  background-color: var(--success-color-20);
+  color: var(--success-color);
+}
+ol.list.danger > li::before {
+  background-color: var(--danger-color-20);
+  color: var(--danger-color);
+}
+ol.list.signal > li::before {
+  background-color: var(--signal-color-20);
+  color: var(--signal-color);
+}
+ol.list.muted > li::before {
+  background-color: var(--muted-color-20);
+  color: var(--muted-color);
 }
 
 ul.horizontal {
@@ -4797,6 +4822,72 @@ input[type=number] {
 .content > .row.row-eq-spacing > [class^=col] {
   padding: 1rem !important;
   align-self: baseline;
+}
+
+.floating-title {
+  font-size: 75%;
+  font-weight: bold;
+  color: var(--muted-color);
+}
+.floating-title.required {
+  color: var(--danger-color);
+}
+
+.floating-form {
+  position: relative;
+}
+.floating-form > .form-control,
+.floating-form > .form-select {
+  height: calc(4rem + 1px);
+  line-height: 1.25;
+}
+.floating-form > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  padding: 1rem 0.8rem;
+  pointer-events: none;
+  border: 1px solid transparent;
+  transform-origin: 0 0;
+  transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+  color: var(--muted-color);
+}
+.floating-form > label.required {
+  color: var(--danger-color);
+}
+.floating-form > .form-control {
+  padding: 1rem 0.8rem;
+}
+.floating-form > .form-control::placeholder {
+  color: transparent;
+}
+.floating-form > .form-control:focus, .floating-form > .form-control:not(:placeholder-shown) {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+.floating-form > .form-control:-webkit-autofill {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+.floating-form > .form-select {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+.floating-form > .form-control:focus ~ label,
+.floating-form > .form-control:not(:placeholder-shown) ~ label,
+.floating-form > .form-select ~ label {
+  opacity: 0.65;
+  transform: scale(0.75) translateY(-0.8rem) translateX(0.15rem);
+  font-weight: bold;
+}
+.floating-form > .form-control:-webkit-autofill ~ label {
+  opacity: 0.65;
+  transform: scale(0.75) translateY(-0.8rem) translateX(0.15rem);
+}
+
+.row.row-eq-spacing > [class^=col].floating-form > label {
+  padding-left: 1.8rem;
 }
 
 /*
@@ -11662,31 +11753,31 @@ a.text-muted:focus {
 }
 @keyframes ball1 {
   0% {
-    box-shadow: 3rem 0 0 var(--color-logo-gray);
+    box-shadow: 3rem 0 0 var(--primary-color-light);
   }
   50% {
-    box-shadow: 0 0 0 var(--color-logo-gray);
+    box-shadow: 0 0 0 var(--primary-color-light);
     margin-bottom: 0;
     -webkit-transform: translate(15px, 15px);
     -moz-transform: translate(15px, 15px);
   }
   100% {
-    box-shadow: 3rem 0 0 var(--color-logo-gray);
+    box-shadow: 3rem 0 0 var(--primary-color-light);
     margin-bottom: 1rem;
   }
 }
 @keyframes ball2 {
   0% {
-    box-shadow: 3rem 0 0 var(--color-logo-blue);
+    box-shadow: 3rem 0 0 var(--primary-color-dark);
   }
   50% {
-    box-shadow: 0 0 0 var(--color-logo-blue);
+    box-shadow: 0 0 0 var(--primary-color-dark);
     margin-top: -2rem;
     -webkit-transform: translate(15px, 15px);
     -moz-transform: translate(15px, 15px);
   }
   100% {
-    box-shadow: 3rem 0 0 var(--color-logo-blue);
+    box-shadow: 3rem 0 0 var(--primary-color-dark);
     margin-top: 0;
   }
 }
@@ -11722,14 +11813,14 @@ a.text-muted:focus {
 }
 .loader span:before {
   animation: ball1 1s infinite;
-  background-color: var(--color-logo-green);
-  box-shadow: 3rem 0 0 var(--color-logo-gray);
+  background-color: var(--secondary-color);
+  box-shadow: 3rem 0 0 var(--primary-color-light);
   margin-bottom: 1rem;
 }
 .loader span:after {
   animation: ball2 1s infinite;
-  background-color: var(--color-logo-red);
-  box-shadow: 3rem 0 0 var(--color-logo-blue);
+  background-color: var(--primary-color);
+  box-shadow: 3rem 0 0 var(--primary-color-dark);
 }
 .loader.show {
   display: block;
@@ -12089,6 +12180,20 @@ img.profile-img.small {
 .module .module td > .module.inactive::after {
   top: -1rem;
   left: -2rem;
+}
+
+a.module {
+  color: inherit;
+  /* add transition */
+  transition: all 0.2s ease-in-out;
+}
+
+a.module:hover {
+  color: inherit;
+  /* raise on hover effect */
+  transform: translateY(-2px);
+  /* larger shadow */
+  box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.15);
 }
 
 .module.is-valid {
@@ -13449,6 +13554,7 @@ a.concept:hover {
   content: "Bitte Rechtschreibung und Formatierung sorgsam prüfen.";
   display: inline-block;
   color: var(--muted-color);
+  font-size: small;
 }
 
 .lang-en .ql-snow.ql-toolbar::after,

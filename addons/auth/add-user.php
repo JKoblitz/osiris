@@ -54,7 +54,7 @@ $data = $_POST['values'] ?? [];
             <label for="dept"><?= lang('Department', 'Abteilung') ?></label>
            
         <?php
-        $tree = $Groups->getHirarchyTree();
+        $tree = $Groups->getHierarchyTree();
         ?>
         <div class="form-group">
             <?= lang('Select multiple with <kbd>Ctrl</kbd>.', 'Wähle mehrere mit <kbd>Strg</kbd>.') ?>

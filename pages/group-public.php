@@ -94,6 +94,7 @@ function sel($index, $value)
         </legend>
 
         <div class="form-group">
+        <input type="hidden" name="values[hide]" value="0">
             <div class="custom-switch">
                 <input type="checkbox" id="hide-check" <?= val('hide') ? 'checked' : '' ?> name="values[hide]" value="1" onchange="toggleVisibility()">
                 <label for="hide-check">

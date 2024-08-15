@@ -32,7 +32,7 @@ class Coins
         $subtype = $doc['subtype'];
         $coins = $this->matrix[$subtype];
 
-        $authors = $doc['authors']->bsonSerialize();
+        $authors = DB::doc2Arr($doc['authors']);
         $author = array_filter($authors, function ($author) use ($user) {
             return $author['user'] == $user;
         });

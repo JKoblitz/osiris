@@ -265,6 +265,13 @@ Route::post('/crud/admin/roles', function () {
             }
         }
     }
+    if (isset($_POST['roles'])) {
+        $osiris->adminGeneral->deleteOne(['key' => 'roles']);
+        $osiris->adminGeneral->insertOne([
+            'key' => 'roles',
+            'value' => array_map('strtolower', $_POST['roles'])
+        ]);
+    }
 
     $msg = 'settings-saved';
 

@@ -7,7 +7,7 @@
 
 <!-- <style>
     form .title {
-        margin-bottom: 1rem;
+        margin-bottom: 1rem; 
         /* padding-top: .5rem; */
         border-bottom: 1px solid var(--border-color);
     }
@@ -20,10 +20,10 @@
         <?= lang('Guest Forms', 'Gast anmelden') ?>
     </h1>
     <div class="alert danger mb-20">
-    <p class="text-danger">
-        Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
-    </p>
-</div>
+        <p class="text-danger">
+            Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
+        </p>
+    </div>
     <form action="<?= ROOTPATH ?>/guests/save" method="post" class="">
         <p class="text-muted">ID: <?= $id ?></p>
 
@@ -60,7 +60,7 @@
                     </label>
                     <select class="form-control" id="username" name="values[user]" autocomplete="off" required>
                         <?php
-                        foreach ($osiris->persons->find(['username'=>['$ne'=>null]], ['sort' => ["last" => 1]]) as $j) { ?>
+                        foreach ($osiris->persons->find(['username' => ['$ne' => null]], ['sort' => ["last" => 1]]) as $j) { ?>
                             <option value="<?= $j['username'] ?>" <?= $j['username'] == ($form['supervisor']['user'] ?? $_SESSION['username']) ? 'selected' : '' ?>><?= $j['last'] ?>, <?= $j['first'] ?></option>
                         <?php } ?>
                     </select>
@@ -147,7 +147,7 @@
                     </div>
                 </div>
 
-                </div>
+            </div>
             <hr>
             <div class="content">
 
@@ -197,14 +197,14 @@
             </div>
 
         </div>
-            <button type="submit" class="btn secondary">
-                <i class="ph ph-user-plus"></i>
-                <?php if (empty($form)){ 
-                    echo lang('Save guest', 'Gast anlegen');
-                } else {
-                    echo lang('Save guest', 'Gast speichern');
-                } ?>
-            </button>
+        <button type="submit" class="btn secondary">
+            <i class="ph ph-user-plus"></i>
+            <?php if (empty($form)) {
+                echo lang('Save guest', 'Gast anlegen');
+            } else {
+                echo lang('Save guest', 'Gast speichern');
+            } ?>
+        </button>
 
     </form>
 

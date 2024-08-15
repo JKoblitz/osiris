@@ -310,6 +310,7 @@ Route::get('/synchronize-users', function () {
     $actions = [
         'blacklisted' => [],
         'inactivate' => [],
+        'reactivate' => [],
         'add' => [],
         'delete'=> $removed ?? [],
         'unchanged' => []
@@ -335,6 +336,8 @@ Route::get('/synchronize-users', function () {
             $actions['blacklisted'][$username] = $name;
         } else if (!$active && $exists && $dbactive) {
             $actions['inactivate'][$username] = $name;
+        } else if ($active && $exists && !$dbactive) {
+            $actions['reactivate'][$username] = $name;
         } else if (!$exists) {
             $actions['add'][$username] = $name;
         } else {
@@ -365,22 +368,24 @@ Route::get('/synchronize-users', function () {
         <?php
         }
 
-        // deleted
-        if (!empty($actions['delete'])) {
-            // interface to delete users
+        if (!empty($actions['reactivate'])) {
+            // interface to reactivate users
         ?>
-            <h2><?= lang('Deleted users', 'Gelöschte Nutzer') ?></h2>
+            <h2><?= lang('Reactivated users', ' Reaktivierte Nutzer') ?></h2>
+            <!-- checkboxes -->
             <?php
-            $delete = $actions['delete'];
-            asort($delete);
-            foreach ($delete as $u => $n) { ?>
+            $reactivate = $actions['reactivate'];
+            asort($reactivate);
+            foreach ($reactivate as $u => $n) { ?>
                 <div class="">
-                    <input type="checkbox" name="inactivate[]" id="inactivate-<?= $u ?>" value="<?= $u ?>" checked>
-                    <label for="inactivate-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
+                    <input type="checkbox" name="reactivate[]" id="reactivate-<?= $u ?>" value="<?= $u ?>">
+                    <label for="reactivate-<?= $u ?>"><?= $n . ' (' . $u . ')' ?></label>
+
                 </div>
             <?php } ?>
         <?php
         }
+
 
         // new users 
         if (!empty($actions['add'])) {
@@ -488,6 +493,20 @@ Route::post('/synchronize-users', function () {
             echo "<p><i class='ph ph-user-minus text-danger'></i> $name ($username) inactivated and personal data deleted.</p>";
         }
     }
+
+    
+    if (isset($_POST['reactivate'])) {
+        foreach ($_POST['reactivate'] as $username) {
+            
+            $osiris->persons->updateOne(
+                ['username' => $username],
+                ['$set' => ['is_active'=>true]]
+            );
+            echo "<p><i class='ph ph-user-check text-danger'></i> $name ($username) reactivated.</p>";
+        }
+    }
+
+
     if (isset($_POST['add'])) {
         foreach ($_POST['add'] as $username) {
             // check if user exists

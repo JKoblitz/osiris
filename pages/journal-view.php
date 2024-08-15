@@ -49,7 +49,7 @@
     </tr>
     <tr>
         <td>ISSN</td>
-        <td><?= implode('<br>', $data['issn']->bsonSerialize()) ?></td>
+        <td><?= implode('<br>', DB::doc2Arr($data['issn'])) ?></td>
     </tr>
     <tr>
         <td>Open Access</td>
@@ -78,7 +78,7 @@
     <!--     
     <tr>
         <td>WoS Categories</td>
-        <td><?= isset($data['categories']) ? implode('<br>', $data['categories']->bsonSerialize()) : '' ?></td>
+        <td><?= isset($data['categories']) ? implode('<br>', DB::doc2Arr($data['categories'])) : '' ?></td>
     </tr> -->
 </table>
 
@@ -201,7 +201,7 @@
 <?php
 $impacts = $data['impact'] ?? array();
 if ($impacts instanceof MongoDB\Model\BSONArray) {
-    $impacts = $impacts->bsonSerialize();
+    $impacts = DB::doc2Arr($impacts);
 }
 ?>
 

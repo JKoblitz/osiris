@@ -101,11 +101,6 @@ if ($Settings->featureEnabled('achievements')) {
 }
 
 
-include_once BASEPATH . "/php/Coins.php";
-$Coins = new Coins();
-
-$coins = $Coins->getCoins($user);
-
 // $showcoins = (!($scientist['hide_coins'] ?? true));
 if (!$Settings->featureEnabled('coins')) {
     $showcoins = false;
@@ -119,6 +114,19 @@ if (!$Settings->featureEnabled('coins')) {
         $showcoins = false;
     }
 }
+
+if ($showcoins) {
+    if (!isset($_SESSION['coins']) || empty($_SESSION['coins'])) {
+        include_once BASEPATH . "/php/Coins.php";
+        $Coins = new Coins();
+        $coins = $Coins->getCoins($user);
+        $_SESSION['coins'] = $coins;
+    } else {
+        $coins = $_SESSION['coins'];
+    }
+}
+
+
 ?>
 
 <?php if ($showcoins) { ?>
@@ -210,11 +218,11 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <h5 class="subtitle">
             <?= lang($scientist['position'] ?? '', $scientist['position_de'] ?? null) ?>
             <?php if ($scientist['hide'] ?? false) { ?>
-                <small class="badge danger" data-toggle="tooltip" data-title="<?=lang('This person does not wish to be found in Portfolio', 'Diese Person möchte nicht in OSIRIS Portfolio gefunden werden.')?>">
+                <small class="badge danger" data-toggle="tooltip" data-title="<?= lang('This person does not wish to be found in Portfolio', 'Diese Person möchte nicht in OSIRIS Portfolio gefunden werden.') ?>">
                     <i class="ph ph-globe-x m-0"></i>
                 </small>
             <?php } ?>
-            
+
         </h5>
 
         <style>
@@ -416,7 +424,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
     </div>
 
     <?php if (($Settings->hasPermission('report.dashboard')) && isset($scientist['approved'])) {
-        $approvedQ = $scientist['approved']->bsonSerialize();
+        $approvedQ = DB::doc2Arr($scientist['approved']);
         sort($approvedQ);
         echo "<div class='mt-20'>";
         echo "<b>" . lang('Quarters approved', 'Bestätigte Quartale') . ":</b>";
@@ -766,7 +774,7 @@ if ($currentuser) { ?>
                         <?php
                         $approvedQ = array();
                         if (isset($scientist['approved'])) {
-                            $approvedQ = $scientist['approved']->bsonSerialize();
+                            $approvedQ = DB::doc2Arr($scientist['approved']);
                         }
 
 
@@ -915,15 +923,15 @@ if ($currentuser) { ?>
                     <div class="content">
                         <a href="#add-conference" class="float-md-right btn primary">
                             <i class="ph ph-plus"></i>
-                            <?=lang('Add conference', 'Konferenz hinzufügen')?>
+                            <?= lang('Add conference', 'Konferenz hinzufügen') ?>
                         </a>
                         <h4 class="title">
                             <?= lang('Conferences', 'Konferenzen') ?>
                         </h4>
                         <p class="text-muted">
-                            <?=lang('Shown are approaching conferences and conferences within the past three month.', 'Gezeigt sind zukünftige Konferenzen und vergangene aus den letzten drei Monaten.')?>
+                            <?= lang('Shown are approaching conferences and conferences within the past three month.', 'Gezeigt sind zukünftige Konferenzen und vergangene aus den letzten drei Monaten.') ?>
                             <br>
-                           <small> <?= lang('Conferences were added by users of the OSIRIS system.', 'Konferenzen wurden von Nutzenden des OSIRIS-Systems angelegt.') ?></small>
+                            <small> <?= lang('Conferences were added by users of the OSIRIS system.', 'Konferenzen wurden von Nutzenden des OSIRIS-Systems angelegt.') ?></small>
                         </p>
 
                         <?php
@@ -931,17 +939,14 @@ if ($currentuser) { ?>
                         $conferences = $osiris->conferences->find(
                             ['start' => ['$gte' => date('Y-m-d', strtotime('-3 month'))]],
                             ['sort' => ['start' => 1]]
-                            )->toArray();
+                        )->toArray();
                         ?>
                         <table class="table simple">
-                            <?php foreach ($conferences as $n => $c) { 
+                            <?php foreach ($conferences as $n => $c) {
                                 // 
-                                ?>
+                            ?>
                                 <tr>
                                     <td>
-                                        <!-- <?php
-                                                dump($c, true);
-                                                ?> -->
                                         <div class="d-flex justify-content-between">
                                             <h6 class="m-0">
                                                 <?= $c['title'] ?>
@@ -982,25 +987,24 @@ if ($currentuser) { ?>
                                                 $interestTooltip = $interest ? lang('Click to remove interest', 'Klicken um Interesse zu entfernen') : lang('Click to show interest', 'Klicken um Interesse zu zeigen');
                                                 $participateTooltip = $participate ? lang('Click to remove participation', 'Klicken um Teilnahme zu entfernen') : lang('Click to show participation', 'Klicken um Teilnahme zu zeigen');
                                             ?>
-                                               <div class="btn-group">
-                                               <small class="btn small cursor-default">
-                                                    <?= $days ?>
-                                                </small>
-                                                <a class="btn small primary" href="<?=ROOTPATH?>/conference/ics/<?=$c['_id']?>">
-                                                    <i class="ph ph-calendar-plus"></i>
-                                                    iCal
-                                                </a>
-                                               </div>
-                                               <div class="btn-group">
-                                               <a class="btn small primary <?= $interest ? 'active' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'interests')" data-toggle="tooltip" data-title="<?= $interestTooltip ?>">
-                                                    <b><?= count($c['interests'] ?? []) ?></b>
-                                                    <?= lang('Interested', 'Interessiert') ?>
-                                                </a>
-                                                <a class="btn small primary <?= $participate ? 'active' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'participants')" data-toggle="tooltip" data-title="<?= $participateTooltip ?>">
-                                                    <b><?= count($c['participants'] ?? []) ?></b>
-                                                    <?= lang('Participants', 'Teilnehmer') ?>
-                                                </a>
-                                               </div>
+                                                <div class="btn-group">
+                                                    <small class="btn small cursor-default">
+                                                        <?= $days ?>
+                                                    </small>
+                                                    <a class="btn small" href="<?= ROOTPATH ?>/conference/ics/<?= $c['_id'] ?>" data-toggle="tooltip" data-title="<?= lang('Add to calendar', 'Zum Kalender hinzufügen') ?>">
+                                                        <i class="ph ph-calendar-plus"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <a class="btn small <?= $interest ? 'active primary' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'interests')" data-toggle="tooltip" data-title="<?= $interestTooltip ?>">
+                                                        <b><?= count($c['interests'] ?? []) ?></b>
+                                                        <?= lang('Interested', 'Interessiert') ?>
+                                                    </a>
+                                                    <a class="btn small <?= $participate ? 'active primary' : '' ?>" onclick="conferenceToggle(this, '<?= $c['_id'] ?>', 'participants')" data-toggle="tooltip" data-title="<?= $participateTooltip ?>">
+                                                        <b><?= count($c['participants'] ?? []) ?></b>
+                                                        <?= lang('Participants', 'Teilnehmer') ?>
+                                                    </a>
+                                                </div>
                                             <?php } else { ?>
                                                 <a class="btn small primary" href="<?= ROOTPATH ?>/add-activity?type=poster&conference=<?= $c['_id'] ?>">
                                                     <i class="ph ph-plus-circle"></i>
@@ -1047,12 +1051,12 @@ if ($currentuser) { ?>
                 </div>
                 <table class="table simple small">
                     <tbody>
-                        <tr>
+                        <!-- <tr>
                             <td>
                                 <span class="key"><?= lang('Username', 'Benutzername') ?></span>
                                 <?= $user ?>
                             </td>
-                        </tr>
+                        </tr> -->
                         <tr>
                             <td>
                                 <span class="key"><?= lang('Last name', 'Nachname') ?></span>

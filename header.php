@@ -155,6 +155,10 @@ $pageactive = function ($p) use ($page) {
         <div class="navbar navbar-top">
             <a href="<?= ROOTPATH ?>/" class="navbar-brand ml-20">
                 <img src="<?= ROOTPATH ?>/img/logo.svg" alt="OSIRIS">
+                <?php if (!LIVE) { ?>
+                    <span class=" position-absolute bottom-0 left-0 secondary" style="font-size: 1rem;z-index:1">TESTSYSTEM</span>
+                <?php } ?>
+                
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
@@ -408,6 +412,13 @@ $pageactive = function ($p) use ($page) {
                             </a>
                         <?php } ?>
 
+                        <?php if ($Settings->featureEnabled('nagoya') && $Settings->hasPermission('nagoya.view')) { ?>
+                            <a href="<?= ROOTPATH ?>/nagoya" class="with-icon <?= $pageactive('nagoya') ?>">
+                                <i class="ph ph-scales" aria-hidden="true"></i>
+                                <?= lang('Nagoya Protocol', 'Nagoya-Protokoll') ?>
+                            </a>
+                        <?php } ?>
+                        
 
                     </nav>
 
@@ -568,7 +579,7 @@ $pageactive = function ($p) use ($page) {
 
             <div class="content-container">
                 <?php
-                if (function_exists('printMsg') && (isset($_GET['msg']) || isset($_GET['error']))) {
+                if (function_exists('printMsg') && (isset($_GET['msg']) || isset($_GET['error'])) || isset($_SESSION['msg']) ) {
                     printMsg();
                 }
 

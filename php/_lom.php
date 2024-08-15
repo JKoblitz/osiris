@@ -28,15 +28,13 @@ class LOM
 
     function get_author($doc)
     {
-        $authors = $doc['authors'];
-        if (!is_array($authors))
-            $authors = $authors->bsonSerialize();
+        $authors = DB::doc2Arr($doc['authors']);
         $author = array_filter($authors, function ($author) {
             return $author['user'] == $this->user;
         });
 
         if (empty($author) && isset($doc['editors'])) {
-            $authors = $doc['authors']->bsonSerialize();
+            $authors = DB::doc2Arr($doc['editors']);
             $author = array_filter($authors, function ($author) {
                 return $author['user'] == $this->user;
             });
@@ -186,7 +184,7 @@ class LOM
     {
         $author = $this->get_author($doc);
         if (!isset($author['position']) || $author['position'] !== 'first') {
-            $authors = $doc['authors']->bsonSerialize();
+            $authors = DB::doc2Arr($doc['authors']);
             $author = array_shift($authors);
             if ($author['user'] != $this->user) {
                 return array(

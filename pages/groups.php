@@ -36,7 +36,7 @@ $style = $_GET['style'] ?? 'cards';
     <div class="pills small ml-auto">
         <span class="badge text-muted"><?= lang('Show as', 'Zeige als') ?></span>
         <a class="btn <?= $style == 'cards' ? 'active' : '' ?>" href="?style=cards"><?= lang('Cards', 'Karten') ?></a>
-        <a class="btn <?= $style == 'hirarchy' ? 'active' : '' ?>" href="?style=hirarchy"><?= lang('Hirarchy', 'Hirarchie') ?></a>
+        <a class="btn <?= $style == 'hierarchy' ? 'active' : '' ?>" href="?style=hierarchy"><?= lang('Hierarchy', 'Hierarchie') ?></a>
         <a class="btn <?= $style == 'organigramm' ? 'active' : '' ?>" href="?style=organigramm"><?= lang('Organization Chart', 'Organigramm') ?></a>
     </div>
 </div>
@@ -197,9 +197,9 @@ $style = $_GET['style'] ?? 'cards';
     </script>
 
 
-<?php } else if ($style == 'hirarchy') {
+<?php } else if ($style == 'hierarchy') {
 
-    echo $Groups->getHirarchy();
+    echo $Groups->getHierarchy();
 } else if ($style == 'organigramm') { ?>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-org-chart@3"></script>

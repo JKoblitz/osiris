@@ -26,7 +26,7 @@ $parsedown = new Parsedown;
 $level = $Groups->getLevel($id);
 
 $children = $Groups->getChildren($group['id']);
-$persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => true], ['sort' => ['last' => 1]])->toArray();
+$persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => ['$in'=>[true, 'true', 1, '1']]], ['sort' => ['last' => 1]])->toArray();
 
 if (isset($group['head'])) {
 
@@ -34,9 +34,6 @@ if (isset($group['head'])) {
     if (is_string($head)) $head = [$head];
     else $head = DB::doc2Arr($head);
 
-    // usort($persons, function ($a, $b) use ($head) {
-    //     return in_array($a['username'], $head)  ? -1 : 1;
-    // });
 } else {
     $head = [];
 }
@@ -44,7 +41,6 @@ if (isset($group['head'])) {
 $users = array_column($persons, 'username');
 
 $show_general = (isset($group['description']) || isset($group['description_de']) || (isset($group['research']) && !empty($group['research'])));
-
 
 $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission($id));
 ?>
@@ -178,6 +174,9 @@ $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission(
     </h1>
     <h3 class="subtitle">
         <?= $Groups->getUnit($group['unit'] ?? null, 'name') ?>
+        <b class="badge pill primary font-size-12 ml-10">
+            Level <?= $Groups->getLevel($id) ?>
+        </b>
     </h3>
 
 

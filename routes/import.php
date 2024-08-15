@@ -10,6 +10,34 @@ Route::get('/import', function () {
     include BASEPATH . "/footer.php";
 }, 'login');
 
+Route::get('/import/googlescholar/(.*)', function ($scholar_id) {
+    $breadcrumb = [
+        ['name' => lang('Import'), 'path' => '/import'],
+        ['name' => lang('Google Scholar', 'Google Scholar')]
+    ];
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/import-googlescholar.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+Route::get('/import/openalex', function () {
+    // if no openalex id redirect to import page
+    if (!isset($_GET['openalex-id'])) {
+        header('Location: ' . ROOTPATH . '/import');
+        exit;
+    }
+
+    $breadcrumb = [
+        ['name' => lang('Import'), 'path' => '/import'],
+        ['name' => 'OpenAlex']
+    ];
+    include_once BASEPATH . "/php/init.php";
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/import-openalex.php";
+    include BASEPATH . "/footer.php";
+}, 'login');
+
 
 Route::post('/import/google', function () {
     header("Content-Type: application/json");
@@ -56,11 +84,11 @@ Route::post('/import/google', function () {
         }
     } else if (isset($pub['Buch'])) {
         $result['book'] = $pub['Buch'];
-        $result['publisher'] = $pub['Verlag'];
+        $result['publisher'] = $pub['Verlag'] ?? null;
         $result['subtype'] = 'chapter';
     } else {
-        $result['publisher'] = $pub['Verlag'];
-        $result['subtype'] = 'book';
+        $result['publisher'] = $pub['Verlag'] ?? null;
+        $result['subtype'] = 'others';
     }
 
     // add history
