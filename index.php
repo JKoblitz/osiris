@@ -86,38 +86,45 @@ if (defined('USER_MANAGEMENT') && strtoupper(USER_MANAGEMENT) == 'AUTH') {
     require_once BASEPATH . '/addons/auth/index.php';
 }
 
-
-include_once BASEPATH . "/routes/components.php";
-include_once BASEPATH . "/routes/controlling.php";
-include_once BASEPATH . "/routes/database.php";
-include_once BASEPATH . "/routes/docs.php";
-include_once BASEPATH . "/routes/groups.php";
-include_once BASEPATH . "/routes/import.php";
-include_once BASEPATH . "/routes/journals.php";
 include_once BASEPATH . "/routes/login.php";
-include_once BASEPATH . "/routes/migrate.php";
-include_once BASEPATH . "/routes/projects.php";
-include_once BASEPATH . "/routes/queue.php";
-include_once BASEPATH . "/routes/tags.php";
-include_once BASEPATH . "/routes/static.php";
-include_once BASEPATH . "/routes/teaching.php";
-include_once BASEPATH . "/routes/users.php";
-include_once BASEPATH . "/routes/visualize.php";
-include_once BASEPATH . "/routes/activities.php";
-include_once BASEPATH . "/routes/export.php";
-include_once BASEPATH . "/routes/reports.php";
-include_once BASEPATH . "/routes/concepts.php";
-include_once BASEPATH . "/routes/admin.php";
-include_once BASEPATH . "/routes/conferences.php";
-require_once BASEPATH . '/routes/guests.php';
-// include_once BASEPATH . "/routes/adminGeneral.php";
-// include_once BASEPATH . "/routes/adminRoles.php";
+
+if (
+    isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true
+    &&
+    isset($_SESSION['username']) && !empty($_SESSION['username'])
+) {
+    include_once BASEPATH . "/routes/components.php";
+    include_once BASEPATH . "/routes/controlling.php";
+    include_once BASEPATH . "/routes/database.php";
+    include_once BASEPATH . "/routes/docs.php";
+    include_once BASEPATH . "/routes/groups.php";
+    include_once BASEPATH . "/routes/import.php";
+    include_once BASEPATH . "/routes/journals.php";
+    include_once BASEPATH . "/routes/migrate.php";
+    include_once BASEPATH . "/routes/projects.php";
+    include_once BASEPATH . "/routes/queue.php";
+    include_once BASEPATH . "/routes/tags.php";
+    include_once BASEPATH . "/routes/static.php";
+    include_once BASEPATH . "/routes/teaching.php";
+    include_once BASEPATH . "/routes/users.php";
+    include_once BASEPATH . "/routes/visualize.php";
+    include_once BASEPATH . "/routes/activities.php";
+    include_once BASEPATH . "/routes/export.php";
+    include_once BASEPATH . "/routes/reports.php";
+    include_once BASEPATH . "/routes/concepts.php";
+    include_once BASEPATH . "/routes/admin.php";
+    include_once BASEPATH . "/routes/conferences.php";
+    require_once BASEPATH . '/routes/guests.php';
+    // include_once BASEPATH . "/routes/adminGeneral.php";
+    // include_once BASEPATH . "/routes/adminRoles.php";
+
+    include_once BASEPATH . "/addons/ida/index.php";
+}
 
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/rest.php";
 // include_once BASEPATH . "/routes/CRUD.php";
 
-include_once BASEPATH . "/addons/ida/index.php";
 
 /**
  * Routes for OSIRIS Portal
