@@ -207,7 +207,8 @@ class DB
      */
     public function getPerson($user = null)
     {
-        $person = $this->db->persons->findOne(['username' => $user ?? $_SESSION['username']]);
+        if ($user === null) $user = $_SESSION['username'];
+        $person = $this->db->persons->findOne(['username' => $user]);
         if (empty($person)) return array();
         $person['name'] = $person['first'] . " " . $person['last'];
         $person['first_abbr'] = $this->abbreviateName($person['first']);

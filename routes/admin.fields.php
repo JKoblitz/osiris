@@ -49,7 +49,6 @@ Route::get('/admin/fields/(.*)', function ($id) {
 
     $user = $_SESSION['username'];
 
-    $id = urldecode($id);
     $category = $osiris->adminFields->findOne(['id' => $id]);
     if (empty($category)) {
         header("Location: " . ROOTPATH . "/fields?msg=not-found");

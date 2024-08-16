@@ -48,7 +48,6 @@ Route::get('/groups/view/(.*)', function ($id) {
         $id = $group['id'];
     } else {
         // wichtig für umlaute
-        $id = urldecode($id);
         $group = $osiris->groups->findOne(['id' => $id]);
         // $id = strval($group['_id'] ?? '');
     }
@@ -70,7 +69,6 @@ Route::get('/groups/(edit|public)/(.*)', function ($page, $id) {
     include_once BASEPATH . "/php/init.php";
     $user = $_SESSION['username'];
 
-    $id = urldecode($id);
     $group = $osiris->groups->findOne(['id' => $id]);
     if (empty($group)) {
         header("Location: " . ROOTPATH . "/groups?msg=not-found");
@@ -272,7 +270,6 @@ Route::post('/crud/groups/addperson/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     // select the right collection
 
-    $id = urldecode($id);
     // add id to person dept
     // $person = $osiris->persons->findOne(['username' => $_POST['username']]);
     $updateResult = $osiris->persons->updateOne(

@@ -28,7 +28,6 @@ Route::get('/concepts', function () {
 
 Route::get('/concepts/(.*)', function ($name) {
     include_once BASEPATH . "/php/init.php";
-    $name = urldecode($name);
     $breadcrumb = [
         ['name' => lang("Concepts", "Konzepte"), 'path' => "/concepts"],
         ['name' => $name]

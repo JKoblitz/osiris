@@ -98,6 +98,8 @@ class Route
           if ($basepath != '' && $basepath != '/') {
             array_shift($matches); // Remove basepath
           }
+          // urlencoded values
+          $matches = array_map('urldecode', $matches);
           
           // check if route is only allowed for logged-in users
          if ($route['visibility'] === 'login' && (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true)) {
