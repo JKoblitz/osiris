@@ -202,6 +202,14 @@ Route::get('/migrate', function () {
 
     set_time_limit(6000);
     $DBversion = $osiris->system->findOne(['key' => 'version']);
+
+    // check if DB version is current version
+    if (!empty($DBversion) && $DBversion['value'] == OSIRIS_VERSION) {
+        echo "OSIRIS is already up to date. Nothing to do.";
+        include BASEPATH . "/footer.php";
+        die;
+    }
+
     if (empty($DBversion)) {
         $DBversion = "1.0.0";
         $osiris->system->insertOne([
@@ -251,10 +259,6 @@ Route::get('/migrate', function () {
         ];
 
         $account_keys = [
-            // "is_admin",
-            // "is_controlling",
-            // "is_scientist",
-            // "is_leader",
             "is_active",
             "maintenance",
             "hide_achievements",
@@ -524,9 +528,16 @@ Route::get('/migrate', function () {
     renderActivities();
 
     echo "<p>Done.</p>";
-    $insertOneResult  = $osiris->system->updateOne(
+    $osiris->system->updateOne(
         ['key' => 'version'],
-        ['$set' => ['value' => OSIRIS_VERSION]]
+        ['$set' => ['value' => OSIRIS_VERSION]],
+        ['upsert' => true]
+    );
+    
+    $osiris->system->updateOne(
+        ['key' => 'last_update'],
+        ['$set' => ['value' => date('Y-m-d')]],
+        ['upsert' => true]
     );
     include BASEPATH . "/footer.php";
 });
