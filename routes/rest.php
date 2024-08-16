@@ -78,7 +78,6 @@ function help_getProject($osiris, $id)
 
 function help_getGroup($osiris, $id)
 {
-    $id = urldecode($id);
     if ($id == 0)
         $group = $osiris->groups->findOne(['level' => 0]);
     else
@@ -121,7 +120,6 @@ Route::get('/portfolio/unit/([^/]*)', function ($id) {
     //     echo return_permission_denied();
     //     die;
     // }
-    $id = urldecode($id);
     if ($id == 0)
         $group = $osiris->groups->findOne(['level' => 0]);
     else
@@ -172,7 +170,6 @@ Route::get('/portfolio/unit/([^/]*)/research', function ($id) {
     //     echo return_permission_denied();
     //     die;
     // }
-    $id = urldecode($id);
 
     if ($id == 0)
         $group = $osiris->groups->findOne(['level' => 0]);
@@ -220,7 +217,6 @@ Route::get('/portfolio/unit/([^/]*)/numbers', function ($id) {
     // }
 
 
-    $id = urldecode($id);
     $result = [];
     if ($id == 0) {
         $group = $osiris->groups->findOne(['level' => 0]);
@@ -310,7 +306,6 @@ Route::get('/portfolio/(unit|person|project)/([^/]*)/(publications|activities|al
     //     echo return_permission_denied();
     //     die;
     // }
-    $id = urldecode($id);
 
     if ($context == 'unit') {
         if ($id == 0) {
@@ -388,7 +383,6 @@ Route::get('/portfolio/(unit|person)/([^/]*)/teaching', function ($context, $id)
     //     echo return_permission_denied();
     //     die;
     // }
-    $id = urldecode($id);
 
     $filter = ['type' => 'teaching', 'module_id' => ['$ne' => null], 'hide' => ['$ne' => true]];
     if ($context == 'unit') {
@@ -447,7 +441,6 @@ Route::get('/portfolio/(unit|person)/([^/]*)/projects', function ($context, $id)
     //     echo return_permission_denied();
     //     die;
     // }
-    $id = urldecode($id);
 
     $filter = [
         'public' => true,
@@ -502,7 +495,6 @@ Route::get('/portfolio/unit/([^/]*)/staff', function ($id) {
     // }
     // dump($_SERVER, true);
 
-    $id = urldecode($id);
     $filter = [
         'hide' => ['$ne' => true],
         'is_active' => true, 'hide' => ['$ne' => true]
@@ -547,7 +539,6 @@ Route::get('/portfolio/project/([^/]*)/staff', function ($id) {
     //     die;
     // }
     header('Access-Control-Allow-Origin: *');
-    $id = urldecode($id);
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
     header('Content-Type: application/json');
@@ -617,7 +608,6 @@ Route::get('/portfolio/activity/([^/]*)', function ($id) {
     //     die;
     // }
     header('Access-Control-Allow-Origin: *');
-    $id = urldecode($id);
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
     header('Content-Type: application/json');
@@ -747,7 +737,6 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
     //     die;
     // }
     header('Access-Control-Allow-Origin: *');
-    $id = urldecode($id);
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
     header('Content-Type: application/json');
@@ -873,7 +862,6 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
     //     die;
     // }
     header('Access-Control-Allow-Origin: *');
-    $id = urldecode($id);
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
     header('Content-Type: application/json');
@@ -1086,7 +1074,6 @@ Route::get('/portfolio/unit/([^/]*)/cooperation', function ($id) {
     // error_reporting(E_ERROR | E_PARSE);
     include(BASEPATH . '/php/init.php');
 
-    $id = urldecode($id);
 
     // select publications from the past five years where the department is involved
     $filter = [

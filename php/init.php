@@ -5,7 +5,7 @@ include_once BASEPATH . "/php/_config.php";
 include_once BASEPATH . "/php/DB.php";
 
 // Language settings and cookies
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('language', $_GET)) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('language', $_GET)) {
     $_COOKIE['osiris-language'] = $_GET['language'] === 'en' ? 'en' : 'de';
     $domain = ($_SERVER['HTTP_HOST'] != 'testserver') ? $_SERVER['HTTP_HOST'] : false;
     setcookie('osiris-language', $_COOKIE['osiris-language'], [
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('language', $_GET))
     ]);
 }
 // check if accessibility settings are given
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('accessibility', $_GET)) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && array_key_exists('accessibility', $_GET)) {
     // define base parameter
     $domain = $_SERVER['HTTP_HOST'];
     $cookie_settings = [

@@ -64,7 +64,6 @@ Route::get('/admin/categories/(.*)', function ($id) {
 
     $user = $_SESSION['username'];
 
-    $id = urldecode($id);
     $category = $osiris->adminCategories->findOne(['id' => $id]);
     if (empty($category)) {
         header("Location: " . ROOTPATH . "/categories?msg=not-found");
@@ -132,7 +131,6 @@ Route::get('/admin/types/(.*)', function ($id) {
 
     $user = $_SESSION['username'];
 
-    $id = urldecode($id);
     $type = $osiris->adminTypes->findOne(['id' => $id]);
     if (empty($type)) {
         header("Location: " . ROOTPATH . "/categories?msg=not-found");
@@ -164,7 +162,7 @@ Route::get('/admin/types/(.*)', function ($id) {
 Route::get('/settings/activities', function () {
     include_once BASEPATH . "/php/init.php";
 
-    $t = urldecode($_GET['type']);
+    $t = $_GET['type'];
     $type = $osiris->adminTypes->findOne(['id' => $t]);
     $parent = $osiris->adminCategories->findone(['id'=>$type['parent']]);
     echo return_rest([

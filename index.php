@@ -40,8 +40,8 @@ define('CURRENTYEAR', intval($year));
 if (isset($_GET['OSIRIS-SELECT-MAINTENANCE-USER'])) {
     // someone tries to switch users
     include_once BASEPATH . "/php/init.php";
-    $realusername = $_SESSION['realuser'] ?? $_SESSION['username'];
-    $username = $_GET['OSIRIS-SELECT-MAINTENANCE-USER'];
+    $realusername = ($_SESSION['realuser'] ?? $_SESSION['username']);
+    $username = ($_GET['OSIRIS-SELECT-MAINTENANCE-USER']);
 
     // check if the user is allowed to do that
     $allowed = $osiris->persons->count(['username' => $username, 'maintenance' => $realusername]);

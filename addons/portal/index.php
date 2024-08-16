@@ -92,7 +92,7 @@ Route::get('/preview/(activities|persons|projects|groups)', function ($type) {
 
 Route::get('/portal/activity/(.*)', function ($id) {
     include BASEPATH . "/php/init.php";
-    $id = urldecode($id);
+    $id = ($id);
     include_once BASEPATH . "/php/Modules.php";
     $doc = $DB->getActivity($id);
     if (empty($doc)) {
@@ -105,7 +105,7 @@ Route::get('/portal/activity/(.*)', function ($id) {
 
 Route::get('/portal/group/(.*)', function ($id) {
     include BASEPATH . "/php/init.php";
-    $id = urldecode($id);
+    $id = ($id);
     if (DB::is_ObjectID($id)) {
         $mongo_id = $DB->to_ObjectID($id);
         $group = $osiris->groups->findOne(['_id' => $mongo_id]);
@@ -140,7 +140,7 @@ Route::get('/portal/person/(.*)', function ($user) {
 
 Route::get('/portal/project/(.*)', function ($id) {
     include BASEPATH . "/php/init.php";
-    $id = urldecode($id);
+    $id = ($id);
     $mongo_id = $DB->to_ObjectID($id);
     $project = $osiris->projects->findOne(['_id' => $mongo_id]);
     if (empty($project)) {

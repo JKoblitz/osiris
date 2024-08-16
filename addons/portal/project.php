@@ -15,7 +15,6 @@
  * @author		Julia Koblitz <julia.koblitz@osiris-solutions.de>
  * @license     MIT
  */
-$id = urldecode($id);
 $project = $osiris->projects->findOne(['$or' => [['name' => $id], ['_id' => $DB->to_ObjectID($id)]]]);
 
 include_once BASEPATH . "/php/Project.php";
