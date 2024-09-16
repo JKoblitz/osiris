@@ -13,7 +13,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' &&
         'path' => ROOTPATH . '/',
         'domain' =>  $domain,
         'httponly' => false,
-        'samesite' => 'Strict',
+        'samesite' => 'Lax',
     ]);
 }
 // check if accessibility settings are given
@@ -25,7 +25,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' &&
         'path' => ROOTPATH . '/',
         'domain' =>  $domain,
         'httponly' => false,
-        'samesite' => 'Strict',
+        'samesite' => 'Lax',
     ];
 
     // set cookies for current sessions
