@@ -917,6 +917,10 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
         }
     }
 
+    
+    if ($person['research'] ?? false) {
+        $result['research'] = $person['research'];
+    }
     if ($person['public_image'] ?? false) {
         $result['img'] = $Settings->printProfilePicture($person['username'], 'profile-img');
     } else {
