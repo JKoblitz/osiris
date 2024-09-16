@@ -26,6 +26,32 @@ Route::get('/conferences', function () {
     include BASEPATH . "/footer.php";
 });
 
+
+Route::get('/conferences/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    $conf_id = DB::to_ObjectID($id);
+    // get conference
+    $conference = $osiris->conferences->findOne(['_id' => $conf_id]);
+    if (!$conference) {
+        $_SESSION['msg'] = lang('Conference not found', 'Konferenz nicht gefunden');
+        header("Location: " . ROOTPATH . '/conferences');
+        die();
+    }
+
+    $breadcrumb = [
+        ['name' => lang('Conferences', 'Konferenzen'), 'path' => '/conferences'],
+        ['name' => $conference['title']]
+    ];
+
+    $activities = $osiris->activities->find(['conference_id' => $id])->toArray();
+
+    include BASEPATH . "/header.php";
+    include BASEPATH . "/pages/conference.php";
+    include BASEPATH . "/footer.php";
+});
+
+
 // download conference as ics
 Route::get('/conference/ics/(.*)', function ($id) {
     include BASEPATH . '/php/ICS.php';

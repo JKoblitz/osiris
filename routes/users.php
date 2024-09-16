@@ -145,7 +145,7 @@ Route::get('/user/delete/(.*)', function ($user) {
 // Profile
 
 Route::get('/profile/?(.*)', function ($user) {
-    include_once BASEPATH . "/php/init.php";    
+    include_once BASEPATH . "/php/init.php";
     if (empty($user)) $user = $_SESSION['username'];
     if (!empty($user) && DB::to_ObjectID($user)) {
         $mongo_id = DB::to_ObjectID($user);
@@ -303,16 +303,17 @@ Route::get('/synchronize-users', function () {
     $users = getUsers();
 
     $removed = $osiris->persons->find(
-        ['username' => ['$nin' => array_keys($users)], 'is_active'=>['$in'=>[1,true, '1']]], 
-        ['projection' => ['username' => 1, 'is_active' => 1, 'displayname' => 1]]);
-    $removed = array_column(iterator_to_array($removed), 'displayname', 'username' );
+        ['username' => ['$nin' => array_keys($users)], 'is_active' => ['$in' => [1, true, '1']]],
+        ['projection' => ['username' => 1, 'is_active' => 1, 'displayname' => 1]]
+    );
+    $removed = array_column(iterator_to_array($removed), 'displayname', 'username');
 
     $actions = [
         'blacklisted' => [],
         'inactivate' => [],
         'reactivate' => [],
         'add' => [],
-        'delete'=> $removed ?? [],
+        'delete' => $removed ?? [],
         'unchanged' => []
     ];
     foreach ($users as $username => $active) {
@@ -322,7 +323,7 @@ Route::get('/synchronize-users', function () {
         // first: check if user is in database
         $USER = $DB->getPerson($username);
         if (!empty($USER)) {
-            if ($USER['is_active']) 
+            if ($USER['is_active'])
                 $dbactive = 'active';
             $exists = true;
             $name = $USER['displayname'];
@@ -342,7 +343,7 @@ Route::get('/synchronize-users', function () {
             $actions['add'][$username] = $name;
         } else {
             $actions['unchanged'][$username] = $name;
-        } 
+        }
     }
 ?>
 
@@ -466,7 +467,8 @@ Route::post('/synchronize-users', function () {
             'displayname',
             'formalname',
             'first_abbr',
-            'updated', 'updated_by',
+            'updated',
+            'updated_by',
             "academic_title",
             "first",
             "last",
@@ -494,13 +496,13 @@ Route::post('/synchronize-users', function () {
         }
     }
 
-    
+
     if (isset($_POST['reactivate'])) {
         foreach ($_POST['reactivate'] as $username) {
-            
+
             $osiris->persons->updateOne(
                 ['username' => $username],
-                ['$set' => ['is_active'=>true]]
+                ['$set' => ['is_active' => true]]
             );
             echo "<p><i class='ph ph-user-check text-danger'></i> $name ($username) reactivated.</p>";
         }
@@ -575,10 +577,9 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         foreach (["public_image", "public_email", "public_phone", "hide"] as $key) {
             $person[$key] = boolval($values[$key] ?? false);
         }
-
     }
 
-    
+
     if (isset($values['cv'])) {
         $cv = $values['cv'];
         foreach ($values['cv'] as $key => $entry) {
@@ -609,9 +610,9 @@ Route::post('/crud/users/update/(.*)', function ($user) {
         ['$set' => $person]
     );
 
-    if (isset($person['hide'])){
+    if (isset($person['hide'])) {
         // check if hide value changed
-       
+
         if ($old['hide'] != $person['hide']) {
             // rerender all activities
             include_once BASEPATH . "/php/Render.php";
@@ -640,7 +641,8 @@ Route::post('/crud/users/delete/(.*)', function ($user) {
         'displayname',
         'formalname',
         'first_abbr',
-        'updated', 'updated_by',
+        'updated',
+        'updated_by',
         "academic_title",
         "first",
         "last",
@@ -704,14 +706,24 @@ Route::post('/crud/users/profile-picture/(.*)', function ($user) {
             //     header("Location: " . ROOTPATH . "/profile/$user?msg=success");
             //     die;
         } else {
-            $img = new MongoDB\BSON\Binary(file_get_contents($_FILES["file"]["tmp_name"]), MongoDB\BSON\Binary::TYPE_GENERIC);
-            // first: delete old image, then: insert new one
-            $osiris->userImages->deleteOne(['user' => $user]);
-            $updateResult = $osiris->userImages->insertOne([
-                'user' => $user,
-                'img' => $img,
-                'ext' => $filetype
-            ]);
+            // check image settings
+            if ($Settings->featureEnabled('db_pictures')) {
+                $img = new MongoDB\BSON\Binary(file_get_contents($_FILES["file"]["tmp_name"]), MongoDB\BSON\Binary::TYPE_GENERIC);
+                // first: delete old image, then: insert new one
+                $filetype = 'jpg';
+                $osiris->userImages->deleteOne(['user' => $user]);
+                $updateResult = $osiris->userImages->insertOne([
+                    'user' => $user,
+                    'img' => $img,
+                    'ext' => $filetype
+                ]);
+            } else {
+                // upload to file system
+                if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
+                    header("Location: " . ROOTPATH . "/profile/$user?msg=success");
+                    die;
+                }
+            }
             header("Location: " . ROOTPATH . "/profile/$user?msg=success");
             die;
             // printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");

@@ -43,6 +43,11 @@
                 "id": "journals.edit",
                 "de": "Journale hinzufügen und bearbeiten",
                 "en": "Add and edit journals"
+            },
+            {
+                "id": "conferences.edit",
+                "de": "Konferenzen hinzufügen und bearbeiten",
+                "en": "Add and edit conferences"
             }
         ]
     },

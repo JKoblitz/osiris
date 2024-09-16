@@ -180,11 +180,11 @@ Route::post('/download', function () {
     // dump($params, true);
     $filter = [];
     if (isset($params['type']) && !empty($params['type'])) {
-        $filter['type'] = trim($params['type']);
+        $filter['$and'][] = array('type'=> trim($params['type']));
         $filename .= "_" . trim($params['type']);
     }
     if (isset($params['user']) && !empty($params['user'])) {
-        $filter['$or'] = [['authors.user' => $params['user']], ['editors.user' => $params['user']]];
+        $filter['$and'][] = array('$or'=> [['authors.user' => $params['user']], ['editors.user' => $params['user']]]);
         $filename .= "_" . trim($params['user']);
     }
     if (isset($params['dept']) && !empty($params['dept'])) {
@@ -195,17 +195,17 @@ Route::post('/download', function () {
             if (empty($u['username'] ?? '')) continue;
             $users[] = strtolower($u['username']);
         }
-        $filter['authors.user'] = ['$in' => $users]; //, ['editors.user' => ['$in'=>$users]]];
+        $filter['$and'][] = array('authors.user'=> ['$in' => $users]); //, ['editors.user' => ['$in'=>$users]]]
         $filename .= "_" . trim($params['dept']);
     }
     if (isset($params['id']) && !empty($params['id'])) {
         $id = DB::to_ObjectID($params['id']);
-        $filter['_id'] = $id;
+        $filter['$and'][] = array('_id'=> $id);
         $filename .= "_" . trim($params['id']);
     }
 
     if (isset($params['project']) && !empty($params['project'])) {
-        $filter['projects'] = trim($params['project']);
+        $filter['$and'][] = array('projects'=> trim($params['project']));
         $filename .= "_" . trim($params['project']);
     }
 
@@ -231,21 +231,23 @@ Route::post('/download', function () {
                 $years[] = intval($i);
             }
 
-            $filter['$or'] =   array(
-                [
-                    "start.year" => array('$lte' => intval($startyear)),
-                    '$and' => array(
-                        ['$or' => array(
-                            ['end.year' => array('$gte' => intval($endyear))],
-                            ['end' => null]
-                        )],
-                        ['$or' => array(
-                            ['type' => 'misc', 'subtype' => 'annual'],
-                            ['type' => 'review', 'subtype' =>  'editorial'],
-                        )]
-                    )
-                ],
-                ['year' => ['$in' => $years]]
+            $filter['$and'][] =   array(
+                '$or'=> [
+                    [
+                        "start.year" => array('$lte' => intval($startyear)),
+                        '$and' => array(
+                            ['$or' => array(
+                                ['end.year' => array('$gte' => intval($endyear))],
+                                ['end' => null]
+                            )],
+                            ['$or' => array(
+                                ['type' => 'misc', 'subtype' => 'annual'],
+                                ['type' => 'review', 'subtype' =>  'editorial'],
+                            )]
+                        )
+                    ],
+                    ['year' => ['$in' => $years]]
+                ]
             );
             $filename .= "_" . implode("-", $years);
         }
@@ -266,7 +268,6 @@ Route::post('/download', function () {
     } else {
         $cursor = $collection->find($filter, $options);
     }
-
 
     $headers = [];
 
