@@ -143,8 +143,8 @@ function getCookie(cname) {
     return "";
 }
 function lang(en, de = null) {
-    var language = getCookie('osiris-language');
     if (de === null) return en;
+    var language = getCookie('osiris-language');
     if (language === undefined) return de;
     if (language == "en") return en;
     if (language == "de") return de;

@@ -387,6 +387,12 @@ $pageactive = function ($p) use ($page) {
                             <i class="ph ph-newspaper-clipping" aria-hidden="true"></i>
                             <?= lang('Journals', 'Journale') ?>
                         </a>
+                        
+                        <a href="<?= ROOTPATH ?>/conferences" class="with-icon <?= $pageactive('conferences') ?>">
+                            <i class="ph ph-presentation-chart" aria-hidden="true"></i>
+                            <?= lang('Conferences', 'Konferenzen') ?>
+                        </a>
+
                         <a href="<?= ROOTPATH ?>/teaching" class="with-icon <?= $pageactive('teaching') ?>">
                             <i class="ph ph-chalkboard-simple" aria-hidden="true"></i>
                             <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>

@@ -419,7 +419,6 @@ Route::get('/api/concept-activities', function () {
 
     include_once BASEPATH . "/php/Document.php";
 
-    $result = [];
     $name = $_GET['concept'];
 
     $concepts = $osiris->activities->aggregate(
@@ -440,9 +439,33 @@ Route::get('/api/concept-activities', function () {
         ]
     )->toArray();
 
-    echo return_rest($concepts, count($result));
+    echo return_rest($concepts);
 });
 
+
+Route::get('/api/conferences', function () {
+    error_reporting(E_ERROR | E_PARSE);
+    include_once BASEPATH . "/php/init.php";
+
+    if (!apikey_check($_GET['apikey'] ?? null)) {
+        echo return_permission_denied();
+        die;
+    }
+
+    include_once BASEPATH . "/php/Document.php";
+
+    $concepts = $osiris->conferences->find(
+        [], 
+        ['sort' => ['start' => -1]]
+    )->toArray();
+
+    foreach ($concepts as $i=> $row) {
+        $concepts[$i]['activities'] = $osiris->activities->count(['conference_id' => strval($row['_id'])]);
+        $concepts[$i]['id'] = strval($row['_id']);
+    }
+
+    echo return_rest($concepts);
+});
 
 Route::get('/api/users', function () {
     error_reporting(E_ERROR | E_PARSE);

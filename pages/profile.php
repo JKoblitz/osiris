@@ -867,64 +867,70 @@ if ($currentuser) { ?>
             </div>
             <div class="col-md-6">
 
-                <!-- modal for adding conference -->
-                <div class="modal" id="add-conference" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </a>
-                            <h4 class="title mt-0">
-                                <?= lang('Add conference', 'Konferenz hinzufügen') ?>
-                            </h4>
+                <?php if ($Settings->hasPermission('conferences.edit')) { ?>
 
-                            <form action="<?= ROOTPATH ?>/crud/conferences/add" method="post" id="conference-form">
-                                <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                    <!-- modal for adding conference -->
+                    <div class="modal" id="add-conference" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <a href="#close-modal" class="btn float-right" role="button" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                                <h4 class="title mt-0">
+                                    <?= lang('Add conference', 'Konferenz hinzufügen') ?>
+                                </h4>
 
-                                <div class="form-group mb-10">
-                                    <label for="title" class="required"><?= lang('(Short) Title', 'Kurztitel') ?></label>
-                                    <input type="text" name="title" required class="form-control">
-                                </div>
-                                <div class="form-group mb-10">
-                                    <label for="title"><?= lang('Full Title', 'Kompletter Titel') ?></label>
-                                    <input type="text" name="title_full" class="form-control">
-                                </div>
+                                <form action="<?= ROOTPATH ?>/crud/conferences/add" method="post" id="conference-form">
+                                    <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
-                                <div class="form-row row-eq-spacing mb-10">
-                                    <div class="col">
-                                        <label for="start" class="required"><?= lang('Start date', 'Anfangsdatum') ?></label>
-                                        <input type="date" name="start" required class="form-control" onchange="$('#conference-end-date').val(this.value)">
+                                    <div class="form-group mb-10">
+                                        <label for="title" class="required"><?= lang('(Short) Title', 'Kurztitel') ?></label>
+                                        <input type="text" name="title" required class="form-control">
                                     </div>
-                                    <div class="col">
-                                        <label for="end" class="required"><?= lang('End date', 'Enddatum') ?></label>
-                                        <input type="date" name="end" class="form-control" id="conference-end-date">
+                                    <div class="form-group mb-10">
+                                        <label for="title"><?= lang('Full Title', 'Kompletter Titel') ?></label>
+                                        <input type="text" name="title_full" class="form-control">
                                     </div>
-                                </div>
 
-                                <div class="form-group mb-10">
-                                    <label for="location" class="required"><?= lang('Location', 'Ort') ?></label>
-                                    <input type="text" name="location" required class="form-control">
-                                </div>
+                                    <div class="form-row row-eq-spacing mb-10">
+                                        <div class="col">
+                                            <label for="start" class="required"><?= lang('Start date', 'Anfangsdatum') ?></label>
+                                            <input type="date" name="start" required class="form-control" onchange="$('#conference-end-date').val(this.value)">
+                                        </div>
+                                        <div class="col">
+                                            <label for="end" class="required"><?= lang('End date', 'Enddatum') ?></label>
+                                            <input type="date" name="end" class="form-control" id="conference-end-date">
+                                        </div>
+                                    </div>
 
-                                <div class="form-group mb-10">
-                                    <label for="url"><?= lang('URL', 'URL') ?></label>
-                                    <input type="url" name="url" class="form-control">
-                                </div>
+                                    <div class="form-group mb-10">
+                                        <label for="location" class="required"><?= lang('Location', 'Ort') ?></label>
+                                        <input type="text" name="location" required class="form-control">
+                                    </div>
 
-                                <button class="btn mb-10" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
-                            </form>
+                                    <div class="form-group mb-10">
+                                        <label for="url"><?= lang('URL', 'URL') ?></label>
+                                        <input type="url" name="url" class="form-control">
+                                    </div>
+
+                                    <button class="btn mb-10" type="submit"><?= lang('Save changes', 'Änderungen speichern') ?></button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php } ?>
 
 
 
                 <div class="box h-full">
                     <div class="content">
-                        <a href="#add-conference" class="float-md-right btn primary">
-                            <i class="ph ph-plus"></i>
-                            <?= lang('Add conference', 'Konferenz hinzufügen') ?>
-                        </a>
+                        <?php if ($Settings->hasPermission('conferences.edit')) { ?>
+                            <a href="#add-conference" class="float-md-right btn primary">
+                                <i class="ph ph-plus"></i>
+                                <?= lang('Add conference', 'Konferenz hinzufügen') ?>
+                            </a>
+                        <?php } ?>
+
                         <h4 class="title">
                             <?= lang('Conferences', 'Konferenzen') ?>
                         </h4>
