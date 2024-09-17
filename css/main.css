@@ -12365,6 +12365,30 @@ a.concept:hover {
   align-self: center;
 }
 
+.dataTable thead th {
+  cursor: pointer;
+}
+.dataTable thead th.sorting::after {
+  content: "\e140";
+  font-family: "Phosphor";
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+}
+.dataTable thead th.sorting_asc::after {
+  content: "\e124";
+  font-family: "Phosphor";
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  color: var(--primary-color);
+}
+.dataTable thead th.sorting_desc::after {
+  content: "\e11e";
+  font-family: "Phosphor";
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  color: var(--primary-color);
+}
+
 /*!
  * Quill Editor v1.3.6
  * https://quilljs.com/
