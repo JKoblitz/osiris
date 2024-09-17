@@ -56,7 +56,7 @@ $participate = in_array($_SESSION['username'], $conference['participants']);
     <tr>
         <td>
             <?php if (!$in_past) { ?>
-                <a class="btn small" href="<?= ROOTPATH ?>/conference/ics/<?= $c['_id'] ?>">
+                <a class="btn small" href="<?= ROOTPATH ?>/conference/ics/<?= $conference['_id'] ?>">
                     <i class="ph ph-calendar-plus"></i>
                     <?= lang('Add to calendar', 'Zum Kalender hinzufügen') ?>
                 </a>
@@ -68,30 +68,33 @@ $participate = in_array($_SESSION['username'], $conference['participants']);
 </table>
 
 <h2>
-    <?= lang('Scientists', 'Wissenschaftler:innen') ?>
+    <?= lang('Persons', 'Personen') ?>
 </h2>
 
 <h4><?= lang('Participating persons', 'Teilnehmende Personen') ?>:</h4>
 
 <div class="btn-toolbar">
     <?php if ($participate) { ?>
-    <a class="btn active primary" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'participants')">
-       <i class="ph ph-user-circle-minus"></i> <?= lang('Withdraw participation', 'Teilnahme zurückziehen') ?>
-    </a>
-<?php } else { ?>
-    <a class="btn" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'participants')">
-       <i class="ph ph-user-circle-plus"></i> <?= lang('Participate', 'Teilnehmen') ?>
-    </a>
-<?php } ?>
+        <a class="btn active primary" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'participants')">
+            <i class="ph ph-user-circle-minus"></i> <?= lang('Withdraw participation', 'Teilnahme zurückziehen') ?>
+        </a>
+    <?php } else { ?>
+        <a class="btn" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'participants')">
+            <i class="ph ph-user-circle-plus"></i> <?= lang('Participate', 'Teilnehmen') ?>
+        </a>
+    <?php } ?>
 </div>
 
-<?php if (empty($conference['participants'])) : ?>
-    <div class="alert muted">
-        <?= lang('No one will participate or has participated', 'Niemand wird teilnehmen oder hat teilgenommen') ?>
-    </div>
-<?php else : ?>
-    <table class="table">
-        <tbody>
+<table class="table">
+    <tbody>
+
+        <?php if (empty($conference['participants'])) : ?>
+            <tr class="text-muted">
+                <td>
+                    <?= lang('No one will participate or has participated', 'Niemand wird teilnehmen oder hat teilgenommen') ?>
+                </td>
+            </tr>
+        <?php else : ?>
             <?php foreach ($conference['participants'] as $username) : ?>
                 <tr>
                     <td>
@@ -109,32 +112,35 @@ $participate = in_array($_SESSION['username'], $conference['participants']);
                     </td>
                 </tr>
             <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endif; ?>
+        <?php endif; ?>
+    </tbody>
+</table>
 
 
 
 <h4><?= lang('Interested persons', 'Interessierte Personen') ?>:</h4>
 <div class="btn-toolbar">
 
-<?php if ($interest) { ?>
-    <a class="btn active primary" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'interests')">
-       <i class="ph ph-user-circle-minus"></i> <?= lang('Withdraw interest', 'Interesse zurückziehen') ?>
-    </a>
-<?php } else { ?>
-    <a class="btn" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'interests')">
-       <i class="ph ph-user-circle-plus"></i> <?= lang('Show interest', 'Interesse bekunden') ?>
-    </a>
-<?php } ?>
+    <?php if ($interest) { ?>
+        <a class="btn active primary" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'interests')">
+            <i class="ph ph-user-circle-minus"></i> <?= lang('Withdraw interest', 'Interesse zurückziehen') ?>
+        </a>
+    <?php } else { ?>
+        <a class="btn" onclick="conferenceToggle(this, '<?= $conference['_id'] ?>', 'interests')">
+            <i class="ph ph-user-circle-plus"></i> <?= lang('Show interest', 'Interesse bekunden') ?>
+        </a>
+    <?php } ?>
 </div>
-<?php if (empty($conference['interests'])) : ?>
-    <div class="alert muted">
-        <?= lang('No one is currently interested', 'Keine Personen sind zurzeit interessiert') ?>
-    </div>
-<?php else : ?>
-    <table class="table">
-        <tbody>
+
+<table class="table">
+    <tbody>
+        <?php if (empty($conference['interests'])) : ?>
+            <tr class="text-muted">
+                <td>
+                    <?= lang('No one is currently interested', 'Keine Personen sind zurzeit interessiert') ?>
+                </td>
+            </tr>
+        <?php else : ?>
             <?php foreach ($conference['interests'] as $username) : ?>
                 <tr>
                     <td>
@@ -152,16 +158,16 @@ $participate = in_array($_SESSION['username'], $conference['participants']);
                     </td>
                 </tr>
             <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endif; ?>
+        <?php endif; ?>
+    </tbody>
+</table>
 
 
 
 <h2><?= lang('Activities', 'Aktivitäten') ?></h2>
 <?php if (empty($activities)) : ?>
     <div class="alert muted">
-        <?= lang('No activities connected', 'Keine Aktivitäten verknüpft') ?>
+        <?= lang('No activities connected', 'Noch keine Aktivitäten verknüpft') ?>
     </div>
 <?php else : ?>
 
