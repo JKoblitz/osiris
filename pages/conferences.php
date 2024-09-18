@@ -127,7 +127,11 @@ $conferences = $osiris->conferences->find(
                     render: function(data, type, row) {
                         // formatted date
                         var date = new Date(data);
-                        return date.toLocaleDateString('de-DE');
+
+                        return `
+                        <span class="d-none">${date.getTime()}</span>
+                        ${date.toLocaleDateString('de-DE')}
+                        `;
                     }
                 },
                 {
@@ -137,7 +141,10 @@ $conferences = $osiris->conferences->find(
                     render: function(data, type, row) {
                         // formatted date
                         var date = new Date(data);
-                        return date.toLocaleDateString('de-DE');
+                        return `
+                        <span class="d-none">${date.getTime()}</span>
+                        ${date.toLocaleDateString('de-DE')}
+                        `;
                     }
                 },
                 {

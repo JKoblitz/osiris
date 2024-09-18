@@ -53,17 +53,16 @@ $participate = in_array($_SESSION['username'], $conference['participants']);
             <a href="<?= $conference['url'] ?>" target="_blank"><?= $conference['url'] ?></a>
         </td>
     </tr>
-    <tr>
-        <td>
-            <?php if (!$in_past) { ?>
+    <?php if (!$in_past) { ?>
+        <tr>
+            <td>
                 <a class="btn small" href="<?= ROOTPATH ?>/conference/ics/<?= $conference['_id'] ?>">
                     <i class="ph ph-calendar-plus"></i>
                     <?= lang('Add to calendar', 'Zum Kalender hinzufügen') ?>
                 </a>
-            <?php } ?>
-        </td>
-    </tr>
-
+            </td>
+        </tr>
+    <?php } ?>
 
 </table>
 
@@ -197,6 +196,18 @@ $participate = in_array($_SESSION['username'], $conference['participants']);
     </table>
 
 <?php endif; ?>
+
+<?php if ($conference['created_by'] == $_SESSION['username']) { ?>
+    <form action="<?= ROOTPATH ?>/crud/conferences/delete/<?= $conference['_id'] ?>" method="post">
+        <div class="alert danger mt-20">
+           <p>
+           <?= lang('Do you want to delete this conference?', 'Möchten Sie diese Konferenz löschen?') ?>
+           <?=lang('Please note: this cannot be undone.', 'Achtung: dies kann nicht rückgängig gemacht werden.')?>
+           </p>
+            <button class="btn danger" type="submit"><?= lang('Delete', 'Löschen') ?></button>
+        </div>
+    </form>
+<?php } ?>
 
 
 <script>

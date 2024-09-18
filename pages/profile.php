@@ -902,7 +902,9 @@ if ($currentuser) { ?>
                                     <td>
                                         <div class="d-flex justify-content-between">
                                             <h6 class="m-0">
+                                                <a href="<?=ROOTPATH?>/conferences/<?=$c['_id']?>">
                                                 <?= $c['title'] ?>
+                                                </a>
                                                 <?php if (!empty($c['url'] ?? null)) { ?>
                                                     <a href="<?= $c['url'] ?>" target="_blank" rel="noopener noreferrer">
                                                         <i class="ph ph-link"></i>
@@ -963,13 +965,6 @@ if ($currentuser) { ?>
                                                     <i class="ph ph-plus-circle"></i>
                                                     <?= lang('Add contribution', 'Beitrag hinzufügen') ?>
                                                 </a>
-                                            <?php } ?>
-                                            <?php if ($c['created_by'] == $_SESSION['username']) { ?>
-                                                <form action="<?= ROOTPATH ?>/crud/conferences/delete/<?= $c['_id'] ?>" method="post" class="float-right">
-                                                    <button class="btn small danger">
-                                                        <i class="ph ph-trash"></i>
-                                                    </button>
-                                                </form>
                                             <?php } ?>
                                         </div>
                                     </td>
