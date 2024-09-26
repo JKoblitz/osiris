@@ -96,6 +96,25 @@ Route::post('/crud/fields/create', function () {
     header("Location: " . ROOTPATH . "/admin/fields?msg=success");
 });
 
+Route::post('/crud/fields/update/(.*)', function($id) {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
+
+    if (!isset($_POST['values'])) die("no values given");
+
+    $values = validateValues($_POST['values'], $DB);
+    $values['id'] = $id;
+    // dump($values, true);
+    // die;
+
+    $updateResult = $osiris->adminFields->updateOne(
+        ['id' => $id],
+        ['$set' => $values]
+    );
+
+    header("Location: " . ROOTPATH . "/admin/fields?msg=success");
+});
+
 
 Route::post('/crud/fields/delete/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";

@@ -30,30 +30,33 @@
     </a>
 </div>
 <table class="table">
-<thead>
-    <tr>
-        <th>ID</th>
-        <th>Format</th>
-        <th>Name</th>
-        <th></th>
-    </tr>
-</thead>
-<?php foreach ($osiris->adminFields->find() as $field) { ?>
-    <tr>
-       <td>
-        <?=$field['id']?>
-       </td>
-       <td>
-        <?=$field['format']?>
-       </td>
-       <td>
-        <?=lang($field['name'], $field['name_de'])?>
-       </td>
-       <td>
-        <form action="<?=ROOTPATH?>/crud/fields/delete/<?=$field['_id']?>" method="post">
-    <button type="submit" class="btn link"><i class="ph ph-trash text-danger"></i></button>
-    </form>
-       </td>
-    </tr>
-<?php } ?>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Format</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <?php foreach ($osiris->adminFields->find() as $field) { ?>
+        <tr>
+            <td>
+                <?= $field['id'] ?>
+            </td>
+            <td>
+                <?= $field['format'] ?>
+            </td>
+            <td>
+                <?= lang($field['name'], $field['name_de']) ?>
+            </td>
+            <td class="unbreakable">
+                <form action="<?= ROOTPATH ?>/crud/fields/delete/<?= $field['_id'] ?>" method="post" class="d-inline">
+                    <button type="submit" class="btn link"><i class="ph ph-trash text-danger"></i></button>
+                </form>
+                <a href="<?= ROOTPATH ?>/admin/fields/<?= $field['id'] ?>">
+                    <i class="ph ph-pencil"></i>
+                </a>
+            </td>
+        </tr>
+    <?php } ?>
 </table>

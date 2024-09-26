@@ -568,8 +568,9 @@ class Modules
                 if (!$req) {
                     '<option value="" ' . (empty($val) ? 'selected' : '') . '>-</option>';
                 }
-                foreach ($field['values'] as $opt) {
-                    echo '<option ' . ($val == $opt ? 'selected' : '') . '>' . $opt . '</option>';
+                foreach ($field['values'] as $i => $opt) {
+                    $opt_de = $field['values_de'][$i] ?? $opt;
+                    echo '<option ' . ($val == $opt ? 'selected' : '') . ' value="'.$opt.'">' . lang($opt, $opt_de) . '</option>';
                 }
                 echo '</select>';
                 break;
