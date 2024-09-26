@@ -39,7 +39,6 @@ if (!empty($form) && isset($form['_id'])) {
         ]]
     );
     $member = $osiris->activities->count(['subtype' => $id]);
-    
 } else {
     $formaction .= "/crud/types/create";
     $btntext = '<i class="ph ph-check"></i> ' . lang("Save", "Speichern");
@@ -153,6 +152,14 @@ if (!empty($form) && isset($form['_id'])) {
                 </div>
             </div>
 
+            <div class="mt-20">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="guest-question" value="1" name="values[guests]" <?=($type['guests'] ?? false) ? 'checked': ''?>>
+                    <label for="guest-question">
+                        <?= lang('Guests should be registered for this activity', 'Gäste sollen zu dieser Aktivität angemeldet werden können?') ?>
+                    </label>
+                </div>
+            </div>
         </div>
         <hr>
 
@@ -187,14 +194,14 @@ if (!empty($form) && isset($form['_id'])) {
                             <?php
                             // read custom modules first
                             $custom_modules = $osiris->adminFields->distinct('id');
-                            if (!empty($custom_modules)){
+                            if (!empty($custom_modules)) {
                                 foreach ($custom_modules as $m) {
                                     if (in_array($m, $module_lst)) continue;
-                                ?>
+                            ?>
                                     <option><?= $m ?></option>
                                 <?php } ?>
-                                  <option disabled>---</option>
-                              <?php
+                                <option disabled>---</option>
+                            <?php
                             }
                             include_once BASEPATH . "/php/Modules.php";
                             $Modules = new Modules();

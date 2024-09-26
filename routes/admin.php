@@ -478,3 +478,64 @@ Route::post('/crud/categories/update-order', function () {
         die();
     }
 });
+
+
+
+// <!-- Test Email Settings by sending a test mail -->
+// // /crud/admin/mail-test
+
+Route::post('/crud/admin/mail-test', function () {
+    include_once BASEPATH . "/php/init.php";
+    
+    // include_once BASEPATH . "/php/mail.php";
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
+
+    // get mail settings:
+    $mail = $osiris->adminGeneral->findOne(['key' => 'mail']);
+    $mail = DB::doc2Arr($mail);
+    // if (empty($mail)) {
+    //     $msg = 'mail-settings-not-set';
+    //     header("Location: " . ROOTPATH . "/admin/general?msg=" . $msg);
+    //     die();
+    // }
+
+    // mail contains email (from), smtp_server, smtp_port, smtp_user, smtp_password, smtp_security
+
+    $msg = 'mail-sent';
+    $to = $_POST['email'];
+    $subject = "OSIRIS Test Mail";
+    $message = "This is a test mail from OSIRIS. If you received this mail, everything is set up correctly.";
+
+    $Mailer = new PHPMailer\PHPMailer\PHPMailer(true);
+
+    $Mailer->isSMTP();
+    $Mailer->Host = $mail['smtp_server'] ?? 'localhost';
+    if (isset($mail['user']) && isset($mail['smtp_password'])){
+        $Mailer->SMTPAuth = true;
+        $Mailer->Username = $mail['smtp_user'];
+        $Mailer->Password = $mail['smtp_password'];
+    }
+    if (isset($mail['smtp_security'])) {
+        if ($mail['smtp_security'] == 'ssl')
+        $Mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        elseif ($mail['smtp_security'] == 'tls')
+            $Mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+    }
+    
+    $Mailer->Port = $mail['smtp_port'] ?? 25;
+
+    $Mailer->setFrom($mail['email'] ?? 'no-reply@osiris-app.de', 'OSIRIS');
+    $Mailer->addAddress($to);
+    $Mailer->isHTML(true);
+
+    $Mailer->Subject = $subject;
+    $Mailer->Body = $message;
+
+    try {
+        $Mailer->send();
+    } catch (PHPMailer\PHPMailer\Exception $e) {
+        $msg = "mail-error: " . $Mailer->ErrorInfo;
+    }
+
+    header("Location: " . ROOTPATH . "/admin/general?msg=" . $msg);
+}, 'login');

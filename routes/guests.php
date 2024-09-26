@@ -103,7 +103,8 @@ Route::post('/guests/save', function () {
         // add supervisor information
         $values['supervisor'] = [
             "user" => $supervisor['username'],
-            "name" => $supervisor['displayname']
+            "name" => $supervisor['displayname'],
+            "email" => $supervisor['mail'],
         ];
 
         // check if mail should be sent
@@ -115,7 +116,7 @@ Route::post('/guests/save', function () {
     }
 
     $msg = "success";
-    
+
     if (!$finished && $Settings->featureEnabled('guest-forms')) {
 
         // check if server and secret key are defined
@@ -153,6 +154,47 @@ Route::post('/guests/save', function () {
     header("Location: " . ROOTPATH . "/guests/view/$id?msg=$msg");
 }, 'login');
 
+
+
+Route::post('/guests/activity-qr/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+
+    if (!$Settings->featureEnabled('guest-forms')) {
+        die("Guest forms are not enabled.");
+    }
+
+    $mongo_id = DB::to_ObjectID($id);
+    $activity = $osiris->activities->findOne(['id' => $mongo_id]);
+
+    $values = $_POST['values'];
+
+    // check if server and secret key are defined
+    $guest_server = $Settings->get('guest-forms-server');
+    $guest_secret = $Settings->get('guest-forms-secret-key');
+    if (empty($guest_server)) {
+        $msg = "Guest+server+is+not+defined.+Please+contact+admin.";
+    } else if (empty($guest_secret)) {
+        $msg = "Secret+key+is+not+defined.+Please+contact+admin.";
+    } else {
+        // if server and key is defined:
+        // send data to guest server
+        $URL = $guest_server . '/api/post';
+        $postData = $values;
+        $postData['secret'] = $guest_secret;
+        $postRes = CallAPI('JSON', $URL, $postData);
+        $postRes = json_decode($postRes, true);
+        if ($postRes['message'] != 'Success') {
+            die($postRes['message']);
+        }
+    }
+
+    $osiris->activities->updateOne(
+        ['id' => $mongo_id],
+        ['$set' => ['guest-qrcode' => true]]
+    );
+
+    header("Location: " . ROOTPATH . "/guests/view/$id?msg=$msg");
+}, 'login');
 
 
 
@@ -226,7 +268,7 @@ Route::post('/guests/cancel/([a-z0-9]*)', function ($id) {
 
     $cancel = boolval($_POST['cancel'] ?? true);
 
-    if ($cancel){
+    if ($cancel) {
         $values = [
             'cancelled' => true,
             'cancelled_by' => $_SESSION['username'],
@@ -305,7 +347,7 @@ Route::post('/guests/upload-files/(.*)', function ($id) {
         } else {
             printMsg(lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload."), "error");
         }
-    
+
         header("Location: " . ROOTPATH . "/guests/view/" . $id . "?msg=upload-successful");
         die();
     } else if (isset($_POST['delete'])) {
@@ -329,4 +371,3 @@ Route::post('/guests/upload-files/(.*)', function ($id) {
         die();
     }
 });
-

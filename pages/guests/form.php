@@ -19,11 +19,6 @@
         <i class="ph ph-user-circle-plus text-osiris"></i>
         <?= lang('Guest Forms', 'Gast anmelden') ?>
     </h1>
-    <div class="alert danger mb-20">
-        <p class="text-danger">
-            Achtung! Dies ist nur ein Prototyp für die Entwicklung! Bitte noch nicht verwenden!
-        </p>
-    </div>
     <form action="<?= ROOTPATH ?>/guests/save" method="post" class="">
         <p class="text-muted">ID: <?= $id ?></p>
 
@@ -82,7 +77,7 @@
 
                 <div class="form-row row-eq-spacing">
 
-                    <div class="col-sm-6">
+                    <div class="col-sm">
                         <label for="category-guest" class="required"><?= lang('Purpose of stay', 'Zweck des Aufenthalts') ?>:</label>
                         <select name="values[category]" id="category-guest" class="form-control" required>
                             <option value="">-- bitte ausfüllen --</option>
@@ -95,7 +90,7 @@
                             <option value="other" <?= ($form['category'] ?? '') == 'other' ? 'selected' : '' ?>>Sonstiges</option>
                         </select>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm">
                         <label for="guest-payment" class="required"><?= lang('The visit is financed by', 'Die Finanzierung erfolgt') ?>:</label>
                         <select name="values[payment]" id="guest-payment" class="form-control" required>
                             <option value="">-- bitte ausfüllen --</option>
@@ -106,6 +101,21 @@
                             <option value="sonstiges" <?= ($form['payment'] ?? '') == 'sonstiges' ? 'selected' : '' ?>><?= lang('Others (please comment)', 'Weiteres (bitte begründen)') ?></option>
                         </select>
                     </div>
+
+                    <!-- if sonstiges is selected -->
+                    <div class="col-sm" id="payment-comment" style="display: <?= ($form['payment'] ?? '') == 'sonstiges' ? 'block' : 'none' ?>">
+                        <label for="payment-comment"><?= lang('Comment', 'Begründung') ?>:</label>
+                        <input type="text" class="form-control" name="values[payment_comment]" id="payment-comment" value="<?= $form['payment_comment'] ?? '' ?>">
+                    </div>
+                    <script>
+                        $('#guest-payment').change(function() {
+                            if ($(this).val() == 'sonstiges') {
+                                $('#payment-comment').show();
+                            } else {
+                                $('#payment-comment').hide();
+                            }
+                        });
+                    </script>
                 </div>
 
             </div>

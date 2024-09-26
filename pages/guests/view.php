@@ -107,7 +107,7 @@ require_once BASEPATH . "/vendor/autoload.php";
 
 
             $guest_server = $Settings->get('guest-forms-server');
-            $url = $guest_server . "/" . $id;
+            $url = $guest_server . "/g/" . $id;
             $options = new QROptions([]);
 
             try {
@@ -185,12 +185,6 @@ require_once BASEPATH . "/vendor/autoload.php";
                         <?= $form['guest']['birthday'] ?? '-' ?>
                     </td>
                 </tr>
-                <!-- <tr>
-    <td><?= lang('Nationality') ?></td>
-    <td>
-        <?= $form['guest']['nationality'] ?? '-' ?>
-    </td>
-</tr> -->
                 <tr>
                     <th class="w-300"><?= lang('Telephone', 'Telefon') ?></th>
                     <td>
@@ -259,6 +253,11 @@ require_once BASEPATH . "/vendor/autoload.php";
                     <th class="w-300"><?= lang('The visit is financed by', 'Die Finanzierung erfolgt') ?></th>
                     <td>
                         <?= $form['payment'] ?? '-' ?>
+                        <?php if (isset($form['payment_comment'])) { ?>
+                            <br>
+                            <small>Begründung: <q><?= $form['payment_comment'] ?></q></small>
+                        <?php } ?>
+                        
                     </td>
                 </tr>
                 <tr>
@@ -299,7 +298,6 @@ require_once BASEPATH . "/vendor/autoload.php";
 
 
     <?php if ($Settings->hasPermission('guests.see.documents') || $Settings->hasPermission('guests.edit.documents')) { ?>
-
 
         
     <?php if ($Settings->hasPermission('guests.edit.documents')) { ?>

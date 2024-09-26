@@ -197,6 +197,119 @@ if ($N > 0) {
     </div>
 </form>
 
+<!-- Email settings -->
+<form action="<?= ROOTPATH ?>/crud/admin/general" method="post" id="modules-form">
+    <div class="box info">
+        <h2 class="header">
+            <?= lang('Email Settings', 'E-Mail Einstellungen') ?>
+        </h2>
+        <div class="content">
+            <div class="form-group">
+                <label for="email"><?= lang('Email address', 'E-Mail-Adresse') ?></label>
+                <input type="email" class="form-control" name="mail[email]" value="<?= $Settings->get('email') ?>">
+                <span class="text-muted">
+                    <?= lang(
+                        'This email address is used for sending notifications and as the default sender address.',
+                        'Diese E-Mail-Adresse wird für Benachrichtigungen und als Standard-Absenderadresse verwendet.'
+                    ) ?>
+
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><?= lang('SMTP Server', 'SMTP-Server') ?></label>
+                <input type="text" class="form-control" name="mail[smtp_server]" value="<?= $Settings->get('smtp_server') ?>">
+                <span class="text-muted">
+                    <?= lang(
+                        'The SMTP server is used to send emails. If you do not provide a server, the default PHP mail function will be used.',
+                        'Der SMTP-Server wird verwendet, um E-Mails zu senden. Falls kein Server angegeben wird, wird die Standard-PHP-Mail-Funktion verwendet.'
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><?= lang('SMTP Port', 'SMTP-Port') ?></label>
+                <input type="number" class="form-control" name="mail[smtp_port]" value="<?= $Settings->get('smtp_port') ?>">
+                <span class="text-muted">
+                    <?= lang(
+                        'The SMTP port is used to send emails. If you do not provide a port, the default PHP mail function will be used.',
+                        'Der SMTP-Port wird verwendet, um E-Mails zu senden. Falls kein Port angegeben wird, wird die Standard-PHP-Mail-Funktion verwendet.'
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><?= lang('SMTP User', 'SMTP-Benutzer') ?></label>
+                <input type="text" class="form-control" name="mail[smtp_user]" value="<?= $Settings->get('smtp_user') ?>">
+                <span class="text-muted">
+                    <?= lang(
+                        'The SMTP user is used to authenticate the SMTP server. If you do not provide a user, the default PHP mail function will be used.',
+                        'Der SMTP-Benutzer wird verwendet, um den SMTP-Server zu authentifizieren. Falls kein Benutzer angegeben wird, wird die Standard-PHP-Mail-Funktion verwendet.'
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><?= lang('SMTP Password', 'SMTP-Passwort') ?></label>
+                <input type="password" class="form-control" name="mail[smtp_password]" value="<?= $Settings->get('smtp_password') ?>">
+                <span class="text-muted">
+                    <?= lang(
+                        'The SMTP password is used to authenticate the SMTP server. If you do not provide a password, the default PHP mail function will be used.',
+                        'Das SMTP-Passwort wird verwendet, um den SMTP-Server zu authentifizieren. Falls kein Passwort angegeben wird, wird die Standard-PHP-Mail-Funktion verwendet.'
+                    ) ?>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><?= lang('SMTP Security', 'SMTP-Sicherheit') ?></label>
+                <select class="form-control" name="general[smtp_security]">
+                    <option value="none" <?= $Settings->get('smtp_security') == 'none' ? 'selected' : '' ?>>None</option>
+                    <option value="ssl" <?= $Settings->get('smtp_security') == 'ssl' ? 'selected' : '' ?>>SSL</option>
+                    <option value="tls" <?= $Settings->get('smtp_security') == 'tls' ? 'selected' : '' ?>>TLS</option>
+                </select>
+                <span class="text-muted">
+                    <?= lang(
+                        'The SMTP security is used to encrypt the connection to the SMTP server. If you do not provide a security, the default PHP mail function will be used.',
+                        'Die SMTP-Sicherheit wird verwendet, um die Verbindung zum SMTP-Server zu verschlüsseln. Falls keine Sicherheit angegeben wird, wird die Standard-PHP-Mail-Funktion verwendet.'
+                    ) ?>
+                </span>
+            </div>
+
+            <button class="btn info">
+                <i class="ph ph-floppy-disk"></i>
+                Save
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Test Email Settings by sending a test mail -->
+<form action="<?= ROOTPATH ?>/crud/admin/mail-test" method="post" id="modules-form">
+    <div class="box info">
+        <h2 class="header">
+            <?= lang('Test Email Settings', 'Teste E-Mail-Einstellungen') ?>
+        </h2>
+        <div class="content">
+            <div class="form-group">
+                <label for="email"><?= lang('Test Email address', 'Test-E-Mail-Adresse') ?></label>
+                <input type="email" class="form-control" name="email" required>
+                <span class="text-muted">
+                    <?= lang(
+                        'This email address is used to send a test email to check the email settings.',
+                        'Diese E-Mail-Adresse wird verwendet, um eine Test-E-Mail zu senden und die E-Mail-Einstellungen zu überprüfen.'
+                    ) ?>
+                </span>
+            </div>
+
+            <button class="btn info">
+                <i class="ph ph-mail-send"></i>
+                Send Test Email
+            </button>
+        </div>
+    </div>
+</form>
+
+
 <!-- 
 <div class="box danger">
     <h2 class="header">
