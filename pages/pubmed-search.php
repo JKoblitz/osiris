@@ -164,7 +164,11 @@
 
                     var element = $(`<div id="${item.uid}" class="box">`)
                     var content = $('<div class="content">')
-
+                    var link = "pubmed=" + item.uid;
+                    if (item.elocationid && item.elocationid.startsWith('doi:')) {
+                        link = "doi=" + item.elocationid.replace('doi:', '').trim()
+                    }
+                    
                     content.append(`
                     <a href="${ROOTPATH}/add-activity?${link}" target='_blank' class="btn secondary float-right"><i class="ph ph-plus"></i></a>
                     `)
@@ -175,10 +179,7 @@
                         <small class='text-muted'>${item.fulljournalname} (${item.pubdate})</small>
                         `
                     )
-                    var link = "pubmed=" + item.uid
-                    if (item.elocationid && item.elocationid.startsWith('doi:')) {
-                        link = "doi=" + item.elocationid.replace('doi:', '').trim()
-                    }
+                    
                     element.append(content)
                     table.append(element)
 
