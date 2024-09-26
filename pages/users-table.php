@@ -141,46 +141,4 @@
     }
 
 
-    // function editUser(id) {
-    //     // loadModal();
-
-    //     $.ajax({
-    //         type: "GET",
-    //         dataType: "html",
-    //         // data: {},
-    //         url: ROOTPATH + '/form/user/' + id,
-    //         success: function(response) {
-    //             $('#modal-content').html(response)
-    //             $('#the-modal').addClass('show')
-
-    //             console.log($('#the-modal form'));
-    //             $('#the-modal form').on('submit', function(event, element) {
-    //                 event.preventDefault()
-    //                 data = {}
-    //                 var raw = objectifyForm(this)
-    //                 console.log(raw);
-    //                 for (var key in raw) {
-    //                     var val = raw[key];
-    //                     if (key.includes('values')) {
-    //                         key = key.slice(7).replace(']', '')
-    //                         data[key] = val
-    //                     }
-    //                 }
-    //                 console.log(data);
-    //                 // return
-    //                 _updateUser(id, data)
-    //                 $('#the-modal').removeClass('show')
-    //                 toastWarning("Table will be updated after reload.")
-
-    //                 return false;
-    //             })
-    //         },
-    //         error: function(response) {
-    //             console.log(response);
-    //             toastError(response.responseText)
-    //             $('.loader').removeClass('show')
-    //         }
-    //     })
-
-    // }
 </script>

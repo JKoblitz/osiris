@@ -536,6 +536,7 @@ Route::get('/api/users', function () {
                     </small>
                 </div>",
                 'name' => $user['first'] . " " . $user['last'],
+                'names' => !empty($user['names'] ?? null) ? implode(', ', DB::doc2Arr($user['names'])) : '',
                 'first' => $user['first'],
                 'last' => $user['last'],
                 'email' => $user['email'],
