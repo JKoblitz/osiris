@@ -14,7 +14,7 @@
  * @license     MIT
  */
 
- include_once BASEPATH . "/routes/admin.fields.php";
+include_once BASEPATH . "/routes/admin.fields.php";
 
 Route::get('/admin/(general|roles|features)', function ($page) {
     include_once BASEPATH . "/php/init.php";
@@ -66,7 +66,7 @@ Route::get('/admin/categories/(.*)', function ($id) {
 
     $category = $osiris->adminCategories->findOne(['id' => $id]);
     if (empty($category)) {
-        header("Location: " . ROOTPATH . "/categories?msg=not-found");
+        header("Location: " . ROOTPATH . "/admin/categories?msg=not-found");
         die;
     }
     $name = lang($category['name'], $category['name_de']);
@@ -133,7 +133,7 @@ Route::get('/admin/types/(.*)', function ($id) {
 
     $type = $osiris->adminTypes->findOne(['id' => $id]);
     if (empty($type)) {
-        header("Location: " . ROOTPATH . "/categories?msg=not-found");
+        header("Location: " . ROOTPATH . "/admin/categories?msg=not-found");
         die;
     }
     $name = lang($type['name'], $type['name_de']);
@@ -164,10 +164,18 @@ Route::get('/settings/activities', function () {
 
     $t = $_GET['type'];
     $type = $osiris->adminTypes->findOne(['id' => $t]);
-    $parent = $osiris->adminCategories->findone(['id'=>$type['parent']]);
+    if (empty($type)) {
+        // try if it is a category with otherwise named children
+        $type = $osiris->adminTypes->findOne(['parent' => $t]);
+    }
+    if (empty($type)) {
+        header("Location: " . ROOTPATH . "/admin/categories?msg=not-found");
+        die;
+    }
+    $parent = $osiris->adminCategories->findone(['id' => $type['parent']]);
     echo return_rest([
         'category' => DB::doc2Arr($parent),
-        'type'=> DB::doc2Arr($type)
+        'type' => DB::doc2Arr($type)
     ]);
 });
 
@@ -187,7 +195,6 @@ Route::get('/settings/modules', function () {
     } else {
         $Modules->print_all_modules();
     }
-
 });
 
 
@@ -393,7 +400,6 @@ Route::post('/crud/(categories|types)/update/([A-Za-z0-9]*)', function ($col, $i
         }
         // checkbox default
         $values['disabled'] = $values['disabled'] ?? false;
-        
     }
 
     // add information on updating process
@@ -462,11 +468,11 @@ Route::post('/crud/categories/update-order', function () {
     foreach ($_POST['order'] as $i => $id) {
         $osiris->adminCategories->updateOne(
             ['id' => $id],
-            ['$set' => ['order'=>$i]]
+            ['$set' => ['order' => $i]]
         );
         # code...
     }
-   
+
     if (isset($_POST['redirect']) && !str_contains($_POST['redirect'], "//")) {
         header("Location: " . $_POST['redirect'] . "?msg=deleted-" . $deletedCount);
         die();

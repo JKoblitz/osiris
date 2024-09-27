@@ -25,8 +25,10 @@ class Document extends Settings
 
     private $schemaType = null;
     public $schema = [];
-    private $db = null;
+    private $DB = null;
     private $id = null;
+
+    private $custom_fields = [];
 
 
     function __construct($highlight = true, $usecase = 'web')
@@ -34,7 +36,10 @@ class Document extends Settings
         parent::__construct();
         $this->highlight = $highlight;
         $this->usecase = $usecase;
-        $this->db = new DB;
+        $this->DB = new DB;
+
+        $fields = $this->DB->db->adminFields->find()->toArray();
+        $this->custom_fields = array_column($fields, 'values', 'id');
     }
 
     public function setDocument($doc)
@@ -110,7 +115,7 @@ class Document extends Settings
                 }
 
                 if (isset($d['journal_id'])) {
-                    $j = $this->db->getConnected('journal', $d['journal_id']);
+                    $j = $this->DB->getConnected('journal', $d['journal_id']);
                     if (!empty($j)) {
                         $journal = Schema::journal($j);
                         if (!empty($d['volume'])) {
@@ -434,7 +439,7 @@ class Document extends Settings
                 }
                 if (isset($a['user']) && !empty($a['user'])) {
                     if ($this->usecase == 'portal') {
-                        $person = $this->db->getPerson($a['user']);
+                        $person = $this->DB->getPerson($a['user']);
                         if ($person && ($person['hide'] ?? false) === false && ($person['is_active'] ?? true) !== false)
                             $author = "<a href='/person/" . strval($person['_id']) . "'>$author</a>";
                     } else if (!$this->full)
@@ -445,7 +450,7 @@ class Document extends Settings
                 $author = Document::abbreviateAuthor($a['last'], $a['first']);
                 if ($this->usecase == 'portal') {
                     if (isset($a['user']) && !empty($a['user'])) {
-                        $person = $this->db->getPerson($a['user']);
+                        $person = $this->DB->getPerson($a['user']);
                         if ($person)
                             $author = "<a href='/person/" . strval($person['_id']) . "'>$author</a>";
                     }
@@ -770,14 +775,14 @@ class Document extends Settings
             case "journal": // ["journal", "journal_id"],
                 $val = $this->doc['journal_id'] ?? $default;
                 if ($val != $default) {
-                    $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
+                    $j = $this->DB->getConnected('journal', $this->getVal('journal_id'));
                     return $j['journal'];
                 }
                 return $this->getVal('journal');
             case "journal-abbr":
                 $val = $this->doc['journal_id'] ?? $default;
                 if ($val != $default) {
-                    $j = $this->db->getConnected('journal', $this->getVal('journal_id'));
+                    $j = $this->DB->getConnected('journal', $this->getVal('journal_id'));
                     return $j['abbr'];
                 }
                 return $this->getVal('journal');
@@ -883,13 +888,13 @@ class Document extends Settings
                 return $this->translateCategory($this->getVal('category'));
             case "teaching-course": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
-                    $m = $this->db->getConnected('teaching', $this->getVal('module_id'));
+                    $m = $this->DB->getConnected('teaching', $this->getVal('module_id'));
                     return $m['module'] . ': ' . $m['title'];
                 }
                 return $this->getVal('title');
             case "teaching-course-short": // ["title", "module", "module_id"],
                 if (isset($this->doc['module_id'])) {
-                    $m = $this->db->getConnected('teaching', $this->getVal('module_id'));
+                    $m = $this->DB->getConnected('teaching', $this->getVal('module_id'));
                     return $m['module'];
                 }
                 return 'Unknown';
@@ -933,22 +938,23 @@ class Document extends Settings
                 }
                 return $val;
             default:
-                return $this->getVal($module);
+                $val = $this->getVal($module);
+                // only in german because standard is always english
+                if (lang('en', 'de') == 'de' && isset($this->custom_fields[$module])) {
+                    foreach ($this->custom_fields[$module] as $field) {
+                        if ($val == $field[0] ?? '') return lang(...$field);
+                    }
+                }
+                return $val;
         }
     }
 
     public function format()
     {
         $this->full = true;
-        $template = '{title}';
-
-        // $this->usecase = 'print';
-        $template = $this->subtypeArr['template']['print'] ?? $template;
+        $template = $this->subtypeArr['template']['print'] ?? '{title}';
 
         $line = $this->template($template);
-        // if ($this->usecase == 'web')
-        //     $line .= $this->get_field('file-icons');
-
         if (!empty($this->appendix)) {
             $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
         }
@@ -981,9 +987,6 @@ class Document extends Settings
         $line .= $this->get_field('file-icons');
         $line .= "</small>";
 
-        // if (!empty($this->appendix)) {
-        //     $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
-        // }
         return $line;
     }
 
@@ -1005,12 +1008,8 @@ class Document extends Settings
 
         $line .= "<br><small class='text-muted d-block'>";
         $line .= $this->getSubtitle();
-        // $line .= $this->get_field('file-icons');
         $line .= "</small>";
 
-        // if (!empty($this->appendix)) {
-        //     $line .= "<br><small style='color:#878787;'>" . $this->appendix . "</small>";
-        // }
         return $line;
     }
 
