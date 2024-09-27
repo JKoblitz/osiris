@@ -42,7 +42,7 @@ if (defined('OSIRIS_DB_VERSION') && OSIRIS_DB_VERSION != OSIRIS_VERSION) { ?>
 <script>
     const CURRENT_USER = '<?= $user ?>';
 </script>
-<script src="<?= ROOTPATH ?>/js/profile.js?v=2"></script>
+<script src="<?= ROOTPATH ?>/js/profile.js?v=3"></script>
 
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/achievements.css?<?= filemtime(BASEPATH . '/css/achievements.css') ?>">

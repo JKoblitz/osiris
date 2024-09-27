@@ -736,6 +736,8 @@ Route::get('/api/projects', function () {
             $Project->setProject($project);
             $project['id'] = strval($project['_id']);
             $project['date_range'] = $Project->getDateRange();
+            $project['start'] = format_date($project['start'] ?? '', 'Y-m-d');
+            // $project['end'] = format_date($project['end'] ?? '', 'Y-m-d');
             $project['funder'] = $project['funder'] ?? '';
             $project['funding_numbers'] = $Project->getFundingNumbers('<br />');
             $project['applicant'] = $DB->getNameFromId($project['contact'] ?? $project['supervisor'] ?? '');

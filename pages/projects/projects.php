@@ -238,7 +238,11 @@ if (!$Settings->hasPermission('projects.view')) {
                     }
                 },
                 {
-                    data: 'date_range'
+                    data: 'date_range', render: function(data, type, row) {
+                        return `<span class="hidden">${row.start}</span>
+                        ${data}`
+
+                    }
                 },
                 {
                     data: 'role', render: function(data) {

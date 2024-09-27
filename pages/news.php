@@ -26,6 +26,10 @@
         color: var(--primary-color);
     }
 
+    h4 i.ph {
+        color: var(--secondary-color);
+    }
+
 </style>
 
 <?php if (isset($USER) && !empty($USER)) {

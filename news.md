@@ -1,16 +1,27 @@
 # Neuigkeiten
 
+
+
+#### <i class="ph ph-presentation-chart"></i> Konferenzen
+- Es wurde eine eigene Seite für Konferenzen hinzugefügt
+
+#### <i class="ph ph-code"></i> Bug Fixes und UI Verbesserungen
+- Es werden jetzt alle Namen einer Person bei der Suche in der Personenliste berücksichtigt  
+- Ein Fehler wurde behoben, durch den bei der Pubmed-Suche immer die nächste Publikation hinzugefügt wurde
+- Die Navigation auf der Profilseite wurde verbessert, sodass beim Nutzen der "Zurück"-Taste des Browsers automatisch das zuvor ausgewählte Fenster ausgewählt wird
+- Ein Fehler wurde behoben, durch den Projekte nicht korrekt nach Laufzeit sortiert wurden
+
 <span class="badge float-right">15.08.2024</span>
 <a class="anchor" href="#version-1.3.6" id="version-1.3.6"></a>
 
 ## Version 1.3.6
 
-#### <i class="ph ph-tree-structure text-osiris"></i> Teilprojekte wurden hinzugefügt
+#### <i class="ph ph-tree-structure"></i> Teilprojekte wurden hinzugefügt
 - Einem Projekt können jetzt Teilprojekte hinzugefügt werden
 - Teilprojekte erben einige Eigenschaften (Fördermittelgeber, Kooperationspartner, etc.) vom Elternprojekt
 - Die Beziehungen werden in OSIRIS und in Portfolio dargestellt
 
-#### <i class="ph ph-tree-structure text-osiris"></i> Erste Schritte für Nagoya-Compliance
+#### <i class="ph ph-tree-structure"></i> Erste Schritte für Nagoya-Compliance
 Es wurden erste Schritte unternommen, um Compliance mit dem [Nagoya-Protokoll](https://de.wikipedia.org/wiki/Nagoya-Protokoll) in OSIRIS einzufügen.
 
 - Das Feature kann im Feature-Bereich eingeschaltet werden. 
@@ -19,13 +30,13 @@ Es wurden erste Schritte unternommen, um Compliance mit dem [Nagoya-Protokoll](h
 - Personen mit entsprechenden Rechten haben Zugriff auf den Nagoya-Bereich, in dem alle relevanten Projekte mit Ländern aufgeführt sind
 - Weitere Entwicklungen (Status, Dokumente, etc.) folgen
 
-#### <i class="ph ph-users text-osiris"></i> Verbesserung im LDAP_Interface
+#### <i class="ph ph-users"></i> Verbesserung im LDAP_Interface
 - Es wurde ein LDAP-Filter für den Sync hinzugefügt
 - Fehlermeldungen beim Login wurden verbessert
 - Es wurde eine Möglichkeit hinzugefügt, mehr als 1000 Nutzende zu synchronisieren
 
 
-#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
+#### <i class="ph ph-code"></i> Bug Fixes und Verbesserungen
 - Wenn man die Seite "Alle Aktivitäten" filtert, die Seite verlässt und über den Zurück-Knopf des Browsers zurückkehrt, wird der letzte Status der Suche/Filter/Seitenauswahl wiederhergestellt
 - Probleme mit Stipendien wurden behoben
 - Probleme mit dem Level und der Farbe von Organisationseinheiten wurden behoben
@@ -51,7 +62,7 @@ Es wurden erste Schritte unternommen, um Compliance mit dem [Nagoya-Protokoll](h
 ## Version 1.3.5
 
 
-#### <i class="ph ph-presentation-chart text-osiris"></i> Überarbeitete Startseite und Konferenzen
+#### <i class="ph ph-presentation-chart"></i> Überarbeitete Startseite und Konferenzen
 
 Die Startseite wurde überarbeitet
 - Auf der eigenen Profilseite gibt es jetzt den Reiter **News**
@@ -65,7 +76,7 @@ Der Startseite wurde der neue Bereich "**Konferenzen**" hinzugefügt.
 - Bei vergangenen Konferenzen kann nun ganz einfach ein neuer Beitrag (z.B. Poster oder Vortrag) hinzugefügt werden.
 
 
-#### <i class="ph ph-code text-osiris"></i> Anpassungen für OSIRIS Portfolio
+#### <i class="ph ph-code"></i> Anpassungen für OSIRIS Portfolio
 
 - Eine neue API-Schnittstelle, die speziell auf Portfolio zugeschnitten ist
 - Eine neue API-Dokumentation
@@ -73,15 +84,15 @@ Der Startseite wurde der neue Bereich "**Konferenzen**" hinzugefügt.
 - Portfolio-Preview wurde verbessert
 
 
-#### <i class="ph ph-student text-osiris"></i> Neues Feature: Claim Authorship
+#### <i class="ph ph-student"></i> Neues Feature: Claim Authorship
 
 Es wurde ein neues Feature hinzugefügt, mit dem Autor:innen ihre Autorenschaft beanspruchen können. Dazu gibt es in der Übersicht der Aktivität jetzt einen neuen Knopf bei Autor:innen, mit denen kein Nutzer verknüpft ist. Wenn eine Person eine Autorenschaft beansprucht, wird sie ihrem Profil hinzugefügt und der in der Autorenschaft verwendete Name wird ggf. der Liste der alternativen Namen hinzugefügt.
 
-#### <i class="ph ph-code text-osiris"></i> Besserer LDAP-Sync
+#### <i class="ph ph-code"></i> Besserer LDAP-Sync
 
 Die Synchronisation zu LDAP hat jetzt ein Interface spendiert bekommen, über das man einzelne Nutzer:innen auswählen und ggf. blacklisten kann.
 
-#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
+#### <i class="ph ph-code"></i> Bug Fixes und Verbesserungen
 
 - Bessere Erkennung von Artikeln, die mittels DOI hinzugefügt werden
   - Bessere Erkennung vom Veröffentlichungsdatum
@@ -101,7 +112,7 @@ Die Synchronisation zu LDAP hat jetzt ein Interface spendiert bekommen, über da
 
 ## Version 1.3.4
 
-#### <i class="ph ph-users-three text-osiris"></i> Seite für Organisationseinheiten
+#### <i class="ph ph-users-three"></i> Seite für Organisationseinheiten
 Organisationseinheiten haben jetzt eine überarbeitete Seite, die eine Übersicht über die folgenden Punkte bietet:
 
 - Eine Übersicht, gepflegt von den leitenden Personen, die neben einem allgemeinen Beschreibungstext auch Forschungsinteressen enthält
@@ -114,17 +125,17 @@ Organisationseinheiten haben jetzt eine überarbeitete Seite, die eine Übersich
 Bitte beachtet, dass sich diese Seite noch immer im Aufbau befindet und sich noch weiter ändern und (hoffentlich) verbessern wird.
 
 
-#### <i class="ph ph-user-plus text-osiris"></i> Personen zu Organisationseinheiten hinzufügen
+#### <i class="ph ph-user-plus"></i> Personen zu Organisationseinheiten hinzufügen
 Personen können jetzt (mit entsprechenden Rechten) direkt über die Seite der Organisationseinheit zur Einheit hinzugefügt werden.
 
 
-#### <i class="ph ph-plus-circle text-osiris"></i> Aktivitäten über die Projektseite verknüpfen
+#### <i class="ph ph-plus-circle"></i> Aktivitäten über die Projektseite verknüpfen
 
 Um eine Aktivität mit einem Projekt zu verknüpfen, musste man bislang immer jede Aktivität einzeln auswählen und dann das Projekt. Weil das für später hinzugefügte Projekte sehr umständlich war, wurde ein Mechanismus hinzugefügt, um Aktivitäten schnell zu Projekten hinzuzufügen. 
 
 Dazu wählt ihr ein Projekt aus, klickt auf Aktivitäten und dann auf <span class="btn secondary small"><i class="ph ph-plus"></i> Aktivitäten verknüpfen</span>. Es öffnet sich ein Fenster, indem ihr Aktivitäten einfach durchsuchen könnt. Klickt die gewünschte Aktivität an und klickt dann auf Bestätigen.
 
-#### <i class="ph ph-magnifying-glass-plus text-osiris"></i> Überarbeitung der Erweiterten Suche
+#### <i class="ph ph-magnifying-glass-plus"></i> Überarbeitung der Erweiterten Suche
 Die Erweiterte Suche wurde überarbeitet und bietet jetzt mehr Filtermöglichkeiten und eine verbesserte Benutzeroberfläche.
 
 
@@ -138,11 +149,11 @@ Sie können jetzt Ihre Suchanfragen speichern, um sie später wieder abzurufen. 
 Es wurden eine Dokumentationen hinzugefügt, um dir bei der Nutzung des Systems zu helfen. Du kannst jetzt auf detaillierte Anleitungen und Informationen zu den verschiedenen Funktionen zugreifen. Die Dokumentation findest du [hier](docs/search).
 
 
-#### <i class="ph ph-book text-osiris"></i> Documentation in English
+#### <i class="ph ph-book"></i> Documentation in English
 Parts of the documentation has been translated into English. You can now access the English version of the documentation to learn more about the different features of the system, e.g. on how to add activities, how to search and what the warnings mean.
 
 
-#### <i class="ph ph-code text-osiris"></i> Bug Fixes und Verbesserungen
+#### <i class="ph ph-code"></i> Bug Fixes und Verbesserungen
 Es wurde ein Problem behoben, durch das bei der Nutzung der LDAP-Schnittstelle ein neuer Nutzeraccount angelegt wurde, wenn der Nutzername in Groß- und Kleinschreibung vom gespeicherten Nutzernamen abgewichen ist. Es sollte nun immer der im LDAP hinterlegte Accountname für die Verifizierung gespeichert und verwendet werden.
 
 Es wurde ein Problem behoben, durch das Aktivitäten mit einer rein numerischen ID nicht bearbeitet werden können.
@@ -158,7 +169,7 @@ Es gab außerdem einige UI-Improvements, z.B. beim Festlegen der Leitung einer O
 
 ## Version 1.3.3
 
-#### <i class="ph ph-clock-counter-clockwise text-osiris"></i> Historie
+#### <i class="ph ph-clock-counter-clockwise"></i> Historie
 
 Es wurde eine überarbeitete Historie zu Aktivitäten hinzugefügt, die jetzt alle Ereignisse aufnimmt (zuvor nur jeweils das letzte Ereignis) und auch Änderungen speichert.
 Sie ist auf der Detailseite einer Aktivität unter dem Reiter *Historie* verfügbar.
@@ -171,13 +182,13 @@ Sie ist auf der Detailseite einer Aktivität unter dem Reiter *Historie* verfüg
 
 ## Version 1.3.2
 
-#### <i class="ph ph-code text-osiris"></i> API Changes und API-Key
+#### <i class="ph ph-code"></i> API Changes und API-Key
 
 Es gibt ein paar kleinere Änderungen an der API, hauptsächlich wurden mehr Filtermöglichkeiten hinzugefügt.
 
 Außerdem gibt es jetzt **API-Keys** mit denen sich die API nach außen hin absichern lässt. Erstellt euch einen einzigartigen API-Key und sichert damit eure Daten vor unbefugtem Zugriff. Die Einstellungen dazu findet ihr in den allgemeinen Einstellungen im Admin-Bereich.
 
-#### <i class="ph ph-book text-osiris"></i> API Docs
+#### <i class="ph ph-book"></i> API Docs
 In der Dokumentation ist ein neuer Reiter API Docs, unter dem die wichtigsten Endpunkte beschrieben sind.
 
 ----
@@ -189,7 +200,7 @@ In der Dokumentation ist ein neuer Reiter API Docs, unter dem die wichtigsten En
 
 In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom fields enthalten.
 
-#### <i class="ph ph-textbox text-osiris"></i> Custom Fields
+#### <i class="ph ph-textbox"></i> Custom Fields
 - definiert **Custom fields** im Admin-Bereich
 - wählt den Typ des Feldes, legt Default-Werte fest und definiert Listen mit Auswahlmöglichkeiten
 - Benutzt die "ID" des neuen Feldes, um es zu den Formularen hinzuzufügen. Geht dazu in den Aktivitäten-Konfigurator im Admin-Bereich und wählt eure eigenen Module aus (custom fields erscheinen ganz oben in der Sortierung)
@@ -205,15 +216,15 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
 
 ## Version 1.3.0
 
-#### <i class="ph ph-sparkle text-osiris"></i> Neues Design
+#### <i class="ph ph-sparkle"></i> Neues Design
 - OSIRIS erstrahlt im neuen Design, das jetzt noch moderner (und etwas weniger orange-lastig) ist.
 
-#### <i class="ph ph-user-gear text-osiris"></i> Biographie wurde hinzugefügt
+#### <i class="ph ph-user-gear"></i> Biographie wurde hinzugefügt
 - Position kann erfasst werden
 - Forschungsinteressen können angegeben werden
 - CV kann hinzugefügt werden (mit Download-Funktion)
 
-#### <i class="ph ph-users-three text-osiris"></i> Organisationseinheiten wurden hinzugefügt
+#### <i class="ph ph-users-three"></i> Organisationseinheiten wurden hinzugefügt
 - Die Hierarchie des Organigramms kann abgebildet werden
 - Anzeige als
   - Karten
@@ -232,7 +243,7 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
   - Zusammenarbeit mit anderen Gruppen (falls vorhanden)
 - Zugangsbeschränkung und Rechte wurden hinzugefügt
 
-#### <i class="ph ph-tree-structure text-osiris"></i> Projekte wurden weiter ausgebaut
+#### <i class="ph ph-tree-structure"></i> Projekte wurden weiter ausgebaut
 - Projekte lassen sich anzeigen, hinzufügen, bearbeiten, löschen, Personen lassen sich mit ihrer Rolle im Projekt verknüpfen
 - Kooperationspartner verknüpfen (semi-automatisch dank ROR-Intergration)
   - Visualisierung auf einer Karte
@@ -242,12 +253,12 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
   - Download aller verknüpften Aktivitäten
 <!-- - *Metriken und Visualisierung* -->
 
-#### <i class="ph ph-circles-three-plus text-osiris"></i> Verschlagwortung von Aktivitäten ist möglich
+#### <i class="ph ph-circles-three-plus"></i> Verschlagwortung von Aktivitäten ist möglich
 - Rudimentäre Verknüpfung von Schlagwörtern (mit Links und Kategorien)
 - Gruppierung nach Entität
 - **Achtung**: Es handelt sich um einen sehr rudimentären Prototypen, der später noch weiter ausgebaut werden soll
 
-#### <i class="ph ph-lightbulb text-osiris"></i> Concepts wurden eingeführt
+#### <i class="ph ph-lightbulb"></i> Concepts wurden eingeführt
 - Konzepte werden von [OpenAlex](https://docs.openalex.org/api-entities/concepts) bezogen
 - Werden *automatisch* zu Publikationen hinzugefügt
 - Ansicht in der Aktivitätenseite
@@ -256,7 +267,7 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
 - Detailseiten mit Expert:innen und allen verknüpften Aktivitäten
   - Weitere Konzepte können zum Graph hinzugefügt werden
 
-#### <i class="ph ph-user-switch text-osiris"></i> Anmeldung von Gästen und externe Gästeformulare
+#### <i class="ph ph-user-switch"></i> Anmeldung von Gästen und externe Gästeformulare
 - Anmeldung von neuen Gästen in OSIRIS
 - Externes Gäste-Formular zur Ergänzung der Details und Kenntnisnahme der Belehrungen
 - Verknüpfung weiterer Daten, z.B. Nutzer:in, Dokumente
@@ -265,13 +276,13 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
 - Die Gästeliste ist zugangsbeschränkt
 - **Achtung**: die Gästeliste ist noch nicht 100%ig fertig. Es fehlen noch Email-Benachrichtigungen und es können noch keine Dokumente und keine Schlüsselcodes hinterlegt werden.
 
-#### <i class="ph ph-eye text-osiris"></i> Port*folio*: das Forschungs-Portal
+#### <i class="ph ph-eye"></i> Port*folio*: das Forschungs-Portal
 - Die Darstellung von Forschungsinformationen nach außen soll durch das Port*folio* möglich werden
 - Vorschau-Seiten wurden hinzugefügt, um die Außendarstellung zu sehen
 - Übersichtstabellen wurden hinzugefügt
 - Es wurde begonnen, Port*folio* zu implementieren
 
-#### <i class="ph ph-gear text-osiris"></i> Verbessertes Admin-Dashboard
+#### <i class="ph ph-gear"></i> Verbessertes Admin-Dashboard
 - Die Einstellungen werden jetzt in der Datenbank gespeichert
 - Das Institutslogo wird nun in der Datenbank gespeichert, was in einigen Fällen Probleme mit Schreibrechten umgeht
 - Features
@@ -282,7 +293,7 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
   - Automatisch generierte Beispiele wurden hinzugefügt
 - Rechte und Rollensystem: Detaillierte Definition von Rollen und dazugehörigen Rechten
 
-#### <i class="ph ph-student text-osiris"></i> Verbesserung der Profilseite
+#### <i class="ph ph-student"></i> Verbesserung der Profilseite
 - Bessere Struktur durch Navigation
 - Tabellen und Graphen werden jetzt dynamisch geladen
 - Tabellen enthalten jetzt alle Daten (paginiert und durchsuchbar)
@@ -294,7 +305,7 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
 - Neue Daten: Projekte und Konzepte
 - Inaktivierung von Nutzer:innen jetzt detaillierter möglich
 
-#### <i class="ph ph-folders text-osiris"></i> Aktivitätenseite überarbeitet
+#### <i class="ph ph-folders"></i> Aktivitätenseite überarbeitet
 - Bessere Struktur durch Navigation
 - Organisationseinheiten eingepflegt
 - Koautoren-Visualisierung
@@ -303,25 +314,25 @@ In dieser Version sind ein paar Fixes zur vorherigen Version, sowie neue Custom 
 - Verknüpfte Konzepte
 - Link zur Vorschau-Seite
 
-#### <i class="ph ph-suitcase text-osiris"></i> Aktivitätenübersicht überarbeitet
+#### <i class="ph ph-suitcase"></i> Aktivitätenübersicht überarbeitet
 - Neue Darstellung mit besseren Filtermöglichkeiten
 - Download der Tabelle als Excel oder CSV möglich
 - Kopieren der Tabelle möglich (Print-Version aller Aktivitäten wird in den Zwischenspeicher geladen)
 
-#### <i class="ph ph-users text-osiris"></i> Personenübersicht verbessert
+#### <i class="ph ph-users"></i> Personenübersicht verbessert
 - Neue Darstellung mit Karten statt Tabelle
 - Neue Filtermöglichkeiten
 - Inaktive Mitarbeiter:innen lassen sich jetzt einfacher finden
 
 
-#### <i class="ph ph-sync text-osiris"></i> Verbesserung der LDAP-Schnittstelle
+#### <i class="ph ph-sync"></i> Verbesserung der LDAP-Schnittstelle
 - ldaps wurde hinzugefügt (über Port identifiziert)
 - Nutzer, die nicht in der BASEDN sind, wurden vom Log-In ausgeschlossen.
 - Es wurde eine User-Whitelist und eine Blacklist hinzugefügt (in Feature Settings)
 - Aktive LDAP-Synchronisation wurde hinzugefügt (manuell, Knopf findet sich ebenfalls in Feature Settings)
 
 
-#### <i class="ph ph-star text-osiris"></i> Weiteres
+#### <i class="ph ph-star"></i> Weiteres
 - Das Ergebnis der Erweiterten Suche lässt sich ebenfalls in die Zwischenablage kopieren und als Excel bzw. CSV herunterladen
 - Name in MyActivities wurde gefixt
 - Ein Problem wurde behoben, wegen dem der Institutsname in Autorenlisten nicht geändert werden konnte.
@@ -348,7 +359,7 @@ Es kann sein, dass einige wenige Einstellungen von Euch nicht in das neue Format
 ## Version 1.2.2
 
 
-#### <i class="ph ph-tree-structure text-osiris"></i> Projekte
+#### <i class="ph ph-tree-structure"></i> Projekte
 
 Projekte wurden eingeführt.
 - Eine Übersicht über alle Projekte wird als Tabelle dargestellt. Diese ist durchsuchbar und kann nach Status und Rolle des Instituts gefiltert werden.
@@ -364,10 +375,10 @@ Projekte wurden eingeführt.
 - Alle Projektseiten sind zurzeit noch mit dem Flag     <span class="badge danger text-normal font-size-16" data-toggle="tooltip" data-title="Nicht für den Produktions-einsatz">BETA</span> versehen. Sobald das Feature ausreichend getestet wurde, wird es entfernt. Feedback dazu wie immer an <a href="mailto:julia.koblitz@dsmz.de"><i class="ph ph-envelope"></i>&nbsp;Julia</a>.
 
 
-#### <i class="ph ph-person-arms-spread text-osiris"></i> Accessibility
+#### <i class="ph ph-person-arms-spread"></i> Accessibility
 Es wurden neue Features für die verbesserte Accessibility hinzugefügt, insbesondere ein Modus mit erhöhtem Kontrast, verringerte Animationen, sowie eine Schriftart speziell für Personen mit Dyslexie. All diese Features findest du in einem neuen Dropdown-Menü im Header.
 
-#### <i class="ph ph-user-switch text-osiris"></i> Gäste (Prototyp)
+#### <i class="ph ph-user-switch"></i> Gäste (Prototyp)
 
 Das Gästeaddon wurde weiterentwickelt (**immer noch im Prototyp-Stadium**)
 - Gäste können jetzt über das Modul angemeldet werden
@@ -388,7 +399,7 @@ Das Gästeaddon wurde weiterentwickelt (**immer noch im Prototyp-Stadium**)
   Außerdem funktionieren einige Knöpfe noch nicht, z.B. die Verknüpfung von Chips und der Upload von Dokumenten. Des Weiteren soll auch eine Lösung für Universitätspraktika geschaffen werden, bei denen viele Studierende an die Einrichtung kommen. 
 </div>
 
-#### <i class="ph ph-gear text-osiris"></i> Generell
+#### <i class="ph ph-gear"></i> Generell
 
 Es wurden einige generelle Verbesserungen durchgeführt:
 - Im Zuge der Einführung von Projekten wurde die visuelle Darstellung der Aktivitätsseite weiter verbessert. Die wichtigsten Knöpfe sind jetzt zusätzlich in einer Toolbar ganz oben zu finden.
@@ -412,7 +423,7 @@ Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund.
 
 ## Version 1.2.0
 
-#### <i class="ph ph-users text-osiris"></i> Rollensystem
+#### <i class="ph ph-users"></i> Rollensystem
 
 - Ein ausgeklügeltes Rollensystem wurde hinzugefügt
 - Einem Nutzer können jetzt mehrere Rollen zugewiesen werden (im Nutzer-Editor)
@@ -420,7 +431,7 @@ Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund.
 - Die Einstellungen wurden im Hintergund verbessert
 
 
-#### <i class="ph ph-user-minus text-osiris"></i> Verbessertes Inaktivieren von Nutzern
+#### <i class="ph ph-user-minus"></i> Verbessertes Inaktivieren von Nutzern
 
 - Nutzer können jetzt leichter als "Inaktiv" markiert werden
 - Dazu wurde ein Knopf zur Toolbar im Nutzerprofil hinzugefügt (nur für Nutzer mit entsprechenden Rechten sichtbar)
@@ -428,37 +439,37 @@ Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund.
 - Um einen Nutzer wieder zu aktivieren, kann man in "Nutzerprofil bearbeiten" einen entsprechenden Haken setzen.
 
 
-#### <i class="ph ph-circles-three-plus text-osiris"></i> Forschungsdaten
+#### <i class="ph ph-circles-three-plus"></i> Forschungsdaten
 
 - Nein, wir fügen zu OSIRIS keine Forschungsdaten hinzu. Niemals.
 - Stattdessen kann man Foschungsdaten mit Aktivitäten verknüpfen. Das geht über Entität (z.B. Genomsequenz), Freitext und Link. Geht dazu auf die Übersichtsseite einer Aktivität und klickt auf "Verknüpfen".
 - Eine umfassende Suche für Forschungsdaten wurde hinzugefügt. Ihr müsst wissen, wie viele Genomsequenzen ihr im Jahr 2022 veröffentlicht habt? Mit OSIRIS ist das jetzt möglich (solange ihr die Daten eingepflegt habt).
 
 
-#### <i class="ph ph-gear text-osiris"></i> Mehr Einstellungen im Admin-Panel
+#### <i class="ph ph-gear"></i> Mehr Einstellungen im Admin-Panel
 
 - Coins und Achievements lassen sich jetzt global ausstellen
 - Fremde Nutzermetriken lassen sich jetzt im Profil ausstellen. Daraufhin sind die Graphen nur noch für einen selbst sichtbar.
 
-#### <i class="ph ph-copy text-osiris"></i> Verbesserungen bei der Dubletten-Erkennung
+#### <i class="ph ph-copy"></i> Verbesserungen bei der Dubletten-Erkennung
 
 - Die beste Lösung für Dubletten ist zu verhindern, dass sie entstehen. OSIRIS warnt euch, falls ihr dabei seid, gerade eine Dublette anzulegen.
 
 
-#### <i class="ph ph-chalkboard-simple text-osiris"></i> Verbesserung der Lehrveranstaltungen
+#### <i class="ph ph-chalkboard-simple"></i> Verbesserung der Lehrveranstaltungen
 
 - Lehrveranstaltungen wurden optisch überarbeitet
 - Ein Filter wurde hinzugefügt
 - Es wurde eine Möglichkeit hinzugefügt, um Lehrveranstaltungen zu löschen (nur wenn keine Aktivitäten verknüpft sind)
 
-#### <i class="ph ph-textbox text-osiris"></i> Neue Module
+#### <i class="ph ph-textbox"></i> Neue Module
 
 - Open Access Status
 - Abstract
 - Gender
 - Country (nach ISO-Standard)
 
-#### <i class="ph ph-star text-osiris"></i> Kleinere Features und Bug Fixes
+#### <i class="ph ph-star"></i> Kleinere Features und Bug Fixes
 
 - Im Header ist nun ein Suchfeld für Aktivitäten zu finden
 - Nutzer können ihre Profilbilder jetzt selbst bearbeiten.
@@ -469,7 +480,7 @@ Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund.
 - Der Style von Buttons und Badges wurde angepasst.
 - Es gibt jetzt eine neue 404 Seite. Die ist schön, schaut sie euch gern mal an.
 
-#### <i class="ph ph-code text-osiris"></i> Hintergrundverbesserungen
+#### <i class="ph ph-code"></i> Hintergrundverbesserungen
 
 - Es gibt außerdem ein paar Verbesserungen hinter den Szenen. Das wird in Zukunft zu noch schnellerer und konsistenterer Entwicklung führen. 
 - Eine neue Datenbank-Klasse war längst überfällig.
@@ -479,7 +490,7 @@ Diese Version beinhaltet vornehmlich Bug Fixes und Optimierungen im Hintergrund.
 
 **10.07.23**
 
-#### <i class="ph ph-briefcase text-osiris"></i> Altdaten-Import
+#### <i class="ph ph-briefcase"></i> Altdaten-Import
 
 
 Es können jetzt auch Altdaten importiert werden. Wie genau das funktioniert, liest du am besten in der [Anleitung](https://osiris-app.de/install#import). 
@@ -487,7 +498,7 @@ Es können jetzt auch Altdaten importiert werden. Wie genau das funktioniert, li
 **06.07.23**
 
 
-#### <i class="ph ph-swap text-osiris"></i> IDA-Integration
+#### <i class="ph ph-swap"></i> IDA-Integration
 
 
 Mit einer IDA-Integration wurde begonnen. Um das Feature zu aktivieren, muss in der CONFIG-Datei der folgende Wert auf true gesetzt werden:
@@ -501,7 +512,7 @@ Zurzeit wird nur Formular 18.3 als Proof of Concept unterstützt. An weiteren Fo
 
 Außerdem wurden einige neue Module hinzugefügt, die für die IDA-Abfrage relevant sind, z.B. gender, nationality, open access status. 
 
-#### <i class="ph ph-tree-structure text-osiris"></i> Schema.org Integration
+#### <i class="ph ph-tree-structure"></i> Schema.org Integration
 
 
 OSIRIS-Aktivitäten sind jetzt auch als Schema.org hinterlegt und exportierbar. Falls ihr nicht wisst, was das ist, könnt ihr es auf der [offiziellen Seite von Schema.org](https://schema.org/) nachlesen. Und falls ihr wissen wollt, wie so ein maschinen-lesbares Format aussieht, habe ich es euch hier mal für eine meiner Publikationen dargestellt:
@@ -574,7 +585,7 @@ OSIRIS-Aktivitäten sind jetzt auch als Schema.org hinterlegt und exportierbar. 
 
 **05.06.23**
 
-#### <i class="ph ph-queue text-osiris"></i> Neues Feature: Warteschlange
+#### <i class="ph ph-queue"></i> Neues Feature: Warteschlange
 
 
 OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob es neue Publikationen für die Institution gibt. Wenn für dich neue Publikationen gefunden wurden, erhältst du einen Hinweis auf deiner Startseite.
@@ -587,14 +598,14 @@ OSIRIS prüft jetzt selbstständig einmal in der Woche (sonntags um 2 Uhr), ob e
 ## Version 1.1.0
 Ich habe mehrere kleinere Releases in einem großen zusammengeführt.
 
-#### <i class="ph ph-cake text-osiris"></i> Neue Icons wurden eingeführt
+#### <i class="ph ph-cake"></i> Neue Icons wurden eingeführt
 
 
 Aufgrund von Lizenzproblemen wurden die Icons auf der Seite vollständig durch [Phosphor-Icons](https://phosphoricons.com/) ersetzt. Die sind (genau wie OSIRIS) unter der Open Source-Lizenz MIT veröffentlicht.
 
 Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr werdet euch aber sicher schnell daran gewöhnen.
 
-#### <i class="ph ph-plus-circle text-osiris"></i> Verbesserungen beim Hinzufügen der Aktivitäten
+#### <i class="ph ph-plus-circle"></i> Verbesserungen beim Hinzufügen der Aktivitäten
 
 - Viele Module wurden umstrukturiert und verbessert
 - Ein neuer Date-Picker für Zeiträume erleichtert (hoffentlich) die Bedienung
@@ -605,7 +616,7 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Ein Fehler wurde behoben, durch den sich das Interface aufhängen konnte, wenn die DOI nicht gefunden wurde
 - Ein Fehler wurde behoben, durch den OSIRIS sich 'verschluckt' hat, wenn Autoren-Vornamen mit einem Sonderzeichen beginnen
 
-#### <i class="ph ph-chalkboard-simple text-osiris"></i> Umstrukturierung der Lehre
+#### <i class="ph ph-chalkboard-simple"></i> Umstrukturierung der Lehre
 
 - Lehrveranstaltungen sind jetzt standardisiert
 - Jedes Modul hat eine einzigartige Modulnummer, über die es leicht gefunden werden kann
@@ -615,19 +626,19 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Gäste, die wegen einer Lehrveranstaltung hier sind (i.e. Studenten), können ebenfalls mit dem Modul verknüpft werden
 
 
-#### <i class="ph ph-book-open-text text-osiris"></i> Neue Pubmed-Suche
+#### <i class="ph ph-book-open-text"></i> Neue Pubmed-Suche
 
 - Pubmed kann nun nach Autor(en), Titel, Jahr und Affiliation [durchsucht werden](activities/pubmed-search?authors=Koblitz&year=2023)
 - Mittels der Levenshtein-Distanz wird die Wahrscheinlichkeit berechnet, ob es sich um ein Duplikat handelt oder nicht (nur basierend auf dem Titel)
 - Die neue Suche kann z.B. bei Publikationen in [Mein Jahr](scientist) gefunden werden
 
 
-#### <i class="ph ph-newspaper-clipping text-osiris"></i> Verbesserungen bei Journalen
+#### <i class="ph ph-newspaper-clipping"></i> Verbesserungen bei Journalen
 
 - Das UI/UX-Design der Journale wurde verbessert
 - Es wird nun eine bessere API verwendet, um Journale abzufragen. [OpenAlex](https://docs.openalex.org/api-entities/venues) ist nicht nur deutlich schneller als NLM, es enthält auch mehr Journale und mehr Datenfelder. So muss OpenAccess jetzt nicht mehr zusätzlich abgefragt werden.
 
-#### <i class="ph ph-sparkle text-osiris"></i> Verbesserungen bei den Aktivitäten
+#### <i class="ph ph-sparkle"></i> Verbesserungen bei den Aktivitäten
 
 - Als Beta-Feature wurden Awards eingeführt. Falls ihr dort Datenfelder vermisst, meldet euch bitte bei mir.
 - Die Filter-Funktionen in Alle Aktivitäten wurden verbessert
@@ -636,7 +647,7 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
   - Der mittlerweile sehr viel Platz fressende Aktivitätenfilter wurde in ein Dropdown gepackt
   - Es wurde die Möglichkeit hinzugefügt, nach Abteilung zu filtern und Epubs (Online ahead of print) auszuschließen
 
-#### <i class="ph ph-shapes text-osiris"></i> Sonstiges
+#### <i class="ph ph-shapes"></i> Sonstiges
 
 - Nicht aktive Nutzer werden in der Expertise-Suche nicht mehr berücksichtigt
 - Widgets auf der Profilseite sind nur noch sichtbar, wenn sie Daten enthalten
@@ -647,7 +658,7 @@ Dadurch sieht die Seite auf den ersten Blick vielleicht etwas ungewohnt aus, ihr
 - Man erhält nur noch Erfolge für Aktivitäten, die man bereits bestätigt hat
 
 
-#### <i class="ph ph-hammer text-osiris"></i> Maximale Flexibilität
+#### <i class="ph ph-hammer"></i> Maximale Flexibilität
 
 - durch einige umfangreiche Umstellungen ist es nun kinderleicht, neue Aktivitätsarten hinzuzufügen, zu konfigurieren, formatieren und zu bearbeiten. Dafür sind jetzt nicht mal mehr Programmierkenntnisse erforderlich.
 - Die Konfiguration bei anderen Instituten wird auch bei neuen Updates nicht überschrieben, wodurch sie die maximale Flexibilität haben, OSIRIS nach ihren Wünschen zu gestalten.
