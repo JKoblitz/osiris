@@ -811,6 +811,15 @@ function getDOI(doi) {
                 pages = pub['article-number'] ?? null;
             }
 
+            var abstract = pub.abstract ?? ''
+            if (abstract !== '') {
+                abstract = abstract.replace(/<[^>]*>?/gm, '')
+                // remove line breaks and multiple spaces
+                abstract = abstract.replace(/\s\s+/g, ' ')
+                // remove leading "abstract"
+                abstract = abstract.replace(/^abstract/i, '').trim()
+            }
+
             var pubdata = {
                 title: pub.title[0],
                 first_authors: first,
@@ -826,7 +835,7 @@ function getDOI(doi) {
                 pages: pages,
                 doi: pub.DOI,
                 // pubmed: null,
-                abstract: (pub.abstract ?? '').replace(/<[^>]*>?/gm, ''),
+                abstract: abstract,
                 // edition: pub.edition,
                 publisher: pub['publisher'] ?? pub['publisher-name'],
                 isbn: pub['ISBN'],
