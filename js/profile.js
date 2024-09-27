@@ -62,10 +62,22 @@ function navigate(key) {
             wordcloud('#wordcloud-chart', { user: CURRENT_USER })
             break;
         default:
+            $('section#news').show()
             break;
     }
 
+    // save as hash
+    window.location.hash = 'section-'+key
 }
+
+
+$(document).ready(function () {
+     // get hash
+     var hash = window.location.hash
+     if (hash) {
+         navigate(hash.replace('#section-', ''))
+     }
+});
 
 function conferenceToggle(el, id, type='interests') {
     // ajax call to update user's conference interests
