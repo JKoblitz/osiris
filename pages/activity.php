@@ -16,6 +16,8 @@
  * @license     MIT
  */
 
+use chillerlan\QRCode\{QRCode, QROptions};
+
 include_once BASEPATH . "/php/Modules.php";
 
 // check if this is an ongoing activity type
@@ -32,9 +34,9 @@ foreach ($M as $m) {
 }
 
 $guests_involved = boolval($typeArr['guests'] ?? false);
-$guests = [];
-if ($guests_involved)
-    $guests = $osiris->guests->find(['activity' => $id])->toArray();
+$guests = $doc['guests'] ?? [];
+// if ($guests_involved)
+//     $guests = $osiris->guests->find(['activity' => $id])->toArray();
 
 if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
@@ -1068,6 +1070,198 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 </section>
 
 <?php if ($guests_involved) { ?>
+
+
+    <?php if ($Settings->featureEnabled('guest-forms')) {
+
+        $guest_server = $Settings->get('guest-forms-server');
+        $url = $guest_server . "/a/" . $id;
+    ?>
+        <script src="<?= ROOTPATH ?>/js/papaparse.min.js"></script>
+        <!-- modals -->
+        <div class="modal" id="add-guests" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                        <span aria-hidden="true">&times;</span>
+                    </a>
+                    <h5 class="title">
+                        <?= lang('Add guests', 'Gäste hinzufügen') ?>
+                    </h5>
+                    <div>
+                        <h3>
+                            <?= lang('Add guests to this activity', 'Füge Gäste zu dieser Aktivität hinzu') ?>
+                        </h3>
+                        <p>
+                            <?= lang('You can add guests to this activity by entering their names and affiliations.', 'Du kannst Gäste zu dieser Aktivität hinzufügen, indem du ihre Namen und Zugehörigkeiten eingibst.') ?>
+                        </p>
+
+                        <form action="<?= ROOTPATH ?>/crud/activities/guests" method="post">
+                            <input type="hidden" name="id" value="<?= $id ?>">
+                            <table class="table mb-20">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th><?= lang('Last', 'Nachname') ?></th>
+                                        <th><?= lang('First', 'Vorname') ?></th>
+                                        <th><?= lang('Email') ?></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="guest-list">
+                                    <?php foreach ($guests as $guest) { ?>
+                                        <tr>
+                                            <td>
+                                                <input type="text" name="guests[id][]" class="form-control disabled" required value="<?= $guest['id'] ?>" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="guests[last][]" class="form-control" required value="<?= $guest['last'] ?>">
+                                            </td>
+                                            <td>
+                                                <input type="text" name="guests[first][]" class="form-control" required value="<?= $guest['first'] ?>">
+                                            </td>
+                                            <td>
+                                                <input type="email" name="guests[email][]" class="form-control" required value="<?= $guest['email'] ?>">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn small link" id="remove-guest" onclick="$(this).closest('tr').remove()">
+                                                    <i class="ph ph-trash text-danger"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5">
+                                            <button type="button" class="btn small" id="add-guest" onclick="addGuestRow()">
+                                                <i class="ph ph-plus"></i>
+                                                <?= lang('Add guest', 'Gast hinzufügen') ?>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                            <button type="submit" class="btn primary">
+                                <i class="ph ph-save"></i>
+                                <?= lang('Save guests', 'Gäste speichern') ?>
+                            </button>
+
+                        </form>
+
+                        <div class="box">
+                            <div class="content">
+                                <h3>
+                                    <?= lang('Import guests from CSV', 'Gäste aus CSV importieren') ?>
+                                </h3>
+                                <p>
+                                    <?= lang('You can import a list of guests from a CSV file.', 'Du kannst eine Liste von Gästen aus einer CSV-Datei importieren.') ?>
+                                </p>
+                                <div class="custom-file">
+                                    <input type="file" id="guest-file">
+                                    <label for="guest-file"><?= lang('Select file', 'Datei auswählen') ?></label>
+                                </div>
+                                <small>
+                                    <?= lang('The file should contain columns for last name, first name and email address. A header row is required.', 'Die Datei sollte Spalten für Nachname, Vorname und E-Mail-Adresse enthalten. Eine Zeile mit Überschriften ist notwendig.') ?>
+                                </small>
+                            </div>
+
+                            <script>
+                                document.getElementById('guest-file').addEventListener('change', function(e) {
+                                    var file = e.target.files[0];
+                                    if (!file) return;
+                                    Papa.parse(file, {
+                                        header: true,
+                                        complete: function(results) {
+                                            console.log(results);
+                                            results.data.forEach(function(raw) {
+                                                var row = {};
+                                                // try to find first and last name and email
+                                                ['first', 'first name', 'vorname', 'First name', 'First', 'Vorname', 'FIRST', 'FIRST NAME', 'VORNAME'].forEach(key => {
+                                                    if (raw[key]) {
+                                                        row.first = raw[key];
+                                                        return
+                                                    }
+                                                });
+                                                ['last', 'last name', 'nachname', 'Last name', 'Last', 'Nachname', 'LAST', 'LAST NAME', 'NACHNAME'].forEach(key => {
+                                                    if (raw[key]) {
+                                                        row.last = raw[key];
+                                                        return
+                                                    }
+                                                });
+                                                ['email', 'mail', 'Email', 'Mail', 'E-Mail'].forEach(key => {
+                                                    if (raw[key]) {
+                                                        row.email = raw[key];
+                                                        return
+                                                    }
+                                                });
+                                                if (!row.first && !row.last) {
+                                                    ['name', 'Name', 'NAME'].forEach(key => {
+                                                        if (raw[key]) {
+
+                                                            // try last, first
+                                                            var parts = raw[key].split(', ');
+                                                            if (parts.length == 2) {
+                                                                row.last = parts[0];
+                                                                row.first = parts[1];
+                                                                return
+                                                            }
+                                                            // try first last
+                                                            var parts = raw[key].split(' ');
+                                                            if (parts.length == 2) {
+                                                                row.first = parts[0];
+                                                                row.last = parts[1];
+                                                                return
+                                                            }
+                                                        }
+                                                    });
+                                                }
+
+
+                                                addGuestRow(row);
+                                            });
+                                        }
+                                    });
+                                });
+                            </script>
+
+                        </div>
+
+                        <script>
+                            function addGuestRow(data = {}) {
+                                var row = document.createElement('tr');
+                                var id = Math.random().toString(36).substring(7);
+                                row.innerHTML = `
+                                    <td>
+                                        <input type="text" name="guests[id][]" class="form-control disabled" required readonly value="${id}">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="guests[last][]" class="form-control" required value="${data.last ?? ''}">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="guests[first][]" class="form-control" required value="${data.first ?? ''}">
+                                    </td>
+                                    <td>
+                                        <input type="email" name="guests[email][]" class="form-control" required value="${data.email ?? ''}">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn small link" id="remove-guest" onclick="$(this).closest('tr').remove()">
+                                            <i class="ph ph-trash text-danger"></i>
+                                        </button>
+                                    </td>
+                                `;
+                                document.getElementById('guest-list').appendChild(row);
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <?php } ?>
+
+
     <section id="guests" style="display:none">
 
         <h2 class="title">
@@ -1076,138 +1270,10 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 
         <?php if ($Settings->featureEnabled('guest-forms')) {
 
-            $guest_server = $Settings->get('guest-forms-server');
-            $url = $guest_server . "/a/" . $id;
-            // $options = new chillerlan\QRCode\QROptions([]);
-
-            // try {
-            //     $qr = (new chillerlan\QRCode\QRCode($options))->render($url);
-            // } catch (Throwable $e) {
-            //     exit($e->getMessage());
-            // }
-            // for ($i = 0; $i < 10; $i++) {
-            //     // unique id for the guest form
-            //     $id = bin2hex(random_bytes(2)).$i;
-            //     echo $id . "<br>";
-            // }
         ?>
-            <!-- modals -->
-            <div class="modal" id="add-guests" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
-                            <span aria-hidden="true">&times;</span>
-                        </a>
-                        <h5 class="title">
-                            <?= lang('Add guests', 'Gäste hinzufügen') ?>
-                        </h5>
-                        <div>
-                            <h3>
-                                <?= lang('Add guests to this activity', 'Füge Gäste zu dieser Aktivität hinzu') ?>
-                            </h3>
-                            <p>
-                                <?= lang('You can add guests to this activity by entering their names and affiliations.', 'Du kannst Gäste zu dieser Aktivität hinzufügen, indem du ihre Namen und Zugehörigkeiten eingibst.') ?>
-                            </p>
-
-                            <form action="<?= ROOTPATH ?>/crud/activities/guests" method="post">
-                                <input type="hidden" name="id" value="<?= $id ?>">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th><?= lang('Last', 'Nachname') ?></th>
-                                            <th><?= lang('First', 'Vorname') ?></th>
-                                            <th><?= lang('Email') ?></th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="guest-list">
-                                        <?php foreach ($guests as $guest) { ?>
-                                            <tr>
-                                                <td>
-                                                    <input type="text" name="guests[id]" class="form-control disabled" required value="<?= $guest['id'] ?>" readonly>
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="guests[last]" class="form-control" required value="<?= $guest['last'] ?>">
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="guests[first]" class="form-control" required value="<?= $guest['first'] ?>">
-                                                </td>
-                                                <td>
-                                                    <input type="email" name="guests[email]" class="form-control" required value="<?= $guest['email'] ?>">
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn small link" id="remove-guest" onclick="$(this).closest('tr').remove()">
-                                                        <i class="ph ph-trash text-danger"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="5">
-                                                <button type="button" class="btn small" id="add-guest">
-                                                    <i class="ph ph-plus"></i>
-                                                    <?= lang('Add guest', 'Gast hinzufügen') ?>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-
-                                <button type="submit" class="btn primary">
-                                    <i class="ph ph-save"></i>
-                                    <?= lang('Save guests', 'Gäste speichern') ?>
-                                </button>
-                                
-                            </form>
-
-                            <script>
-                                document.getElementById('add-guest').addEventListener('click', function() {
-                                    var row = document.createElement('tr');
-                                    var id = Math.random().toString(36).substring(7);
-                                    row.innerHTML = `
-                                        <td>
-                                            <input type="text" name="guests[id]" class="form-control disabled" required readonly value="${id}">
-                                        </td>
-                                        <td>
-                                            <input type="text" name="guests[last]" class="form-control" required>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="guests[first]" class="form-control" required>
-                                        </td>
-                                        <td>
-                                            <input type="email" name="guests[email]" class="form-control" required>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn small link" id="remove-guest" onclick="$(this).closest('tr').remove()">
-                                                <i class="ph ph-trash text-danger"></i>
-                                            </button>
-                                        </td>
-                                    `;
-                                    document.getElementById('guest-list').appendChild(row);
-                                });
-                            </script>
-
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <!-- Add guests -->
-
             <a href="#add-guests" class="btn primary">
                 <i class="ph ph-plus" aria-hidden="true"></i>
                 <?= lang('Add guests', 'Gäste hinzufügen') ?>
-            </a>
-
-            <a href="#upload-guests" class="btn primary">
-                <i class="ph ph-upload" aria-hidden="true"></i>
-                <?= lang('Upload guests', 'Gäste hochladen') ?>
             </a>
 
         <?php } ?>
@@ -1216,16 +1282,17 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
             <?= lang('There are currently ' . count($guests) . ' guests involved in this activity.', 'Aktuell sind ' . count($guests) . ' Gäste an dieser Aktivität beteiligt.') ?>
         </p>
 
-        <?php if ($user_activity || $Settings->hasPermission('guests.view')) { ?>
+        <?php if ($user_activity || $Settings->hasPermission('guests.view')) {
+            $new_guests = false;
+        ?>
 
-            <table class="table">
+            <table class="table mb-20">
                 <thead>
                     <tr>
                         <th><?= lang('Last', 'Nachname') ?></th>
                         <th><?= lang('First', 'Vorname') ?></th>
-                        <th><?= lang('Affiliation', 'Institut') ?></th>
-                        <th><?= lang('Role', 'Rolle') ?></th>
-                        <th><?= lang('User', 'Benutzer') ?></th>
+                        <th><?= lang('Email') ?></th>
+                        <th><?= lang('Status') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1233,42 +1300,95 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
                         <tr>
                             <td><?= $guest['last'] ?></td>
                             <td><?= $guest['first'] ?></td>
-                            <td><?= $guest['affiliation'] ?></td>
-                            <td><?= $guest['role'] ?></td>
+                            <td><?= $guest['email'] ?></td>
                             <td>
-                                <?php if (isset($guest['user']) && !empty($guest['user'])) : ?>
-                                    <a href="<?= ROOTPATH ?>/profile/<?= $guest['user'] ?>"><i class="ph ph-user"></i></a>
-                                    <span data-toggle="tooltip" data-title="<?= lang('Author approved activity?', 'Autor hat die Aktivität bestätigt?') ?>">
-                                        <?= bool_icon($guest['approved'] ?? 0) ?>
-                                    </span>
-                                <?php else : ?>
-                                    <div class="dropdown">
-                                        <button class="btn small" data-toggle="dropdown" type="button" id="dropdown-1" aria-haspopup="true" aria-expanded="false">
-                                            <?= lang('Claim', 'Beanspruchen') ?>
+                                <?php
+                                switch ($guest['status'] ?? 'new') {
+                                    case 'pending':
+                                        echo '<span class="badge primary">' . lang('Pending', 'Ausstehend') . '</span>';
+                                        break;
+                                    case 'approved':
+                                        echo '<span class="badge success">' . lang('Approved', 'Bestätigt') . '</span>';
+                                        break;
+                                    case 'new':
+                                        echo '<span class="badge signal">' . lang('New', 'Neu') . '</span>';
+                                        $new_guests = true;
+                                        break;
+                                    default:
+                                        echo '<span class="badge danger">' . lang('Unknown', 'Unbekannt') . '</span>';
+                                        break;
+                                }
+                                ?>
+
+                                <!-- action buttons -->
+                                <!-- send mail -->
+                                <?php if (($guest['status'] ?? 'new') == 'new') { ?>
+                                    <form action="<?= ROOTPATH ?>/crud/activities/guest-mail/<?= $id ?>" method="post" class="d-inline-block">
+                                        <input type="hidden" name="guest" value="<?= $guest['id'] ?>">
+                                        <button type="submit" class="btn small">
+                                            <i class="ph ph-envelope" aria-hidden="true"></i>
+                                            <?= lang('Send email', 'E-Mail senden') ?>
                                         </button>
-                                        <div class="dropdown-menu dropdown-menu-right w-300" aria-labelledby="dropdown-1">
-                                            <div class="content">
-                                                <small class="d-block text-danger mb-10">
-                                                    <?= lang(
-                                                        'You claim that you are this author.<br> This activity will be added to your list and the author name will be added to your list of alternative names.',
-                                                        'Du beanspruchst, dass du diese Person bist.<br> Du fügst diese Aktivität deiner Liste hinzu und den Namen zur Liste deiner alternativen Namen.'
-                                                    ) ?>
-                                                </small>
-                                                <form action="<?= ROOTPATH ?>/crud/activities/claim/<?= $id ?>" method="post">
-                                                    <input type="hidden" name="role" value="guests">
-                                                    <input type="hidden" name="index" value="<?= $i ?>">
-                                                    <input type="hidden" name="redirect" value="<?= ROOTPATH . "/activities/view/$id" ?>">
-                                                    <button class="btn btn-block" type="submit"><?= lang('Claim', 'Beanspruchen') ?></button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
+                                    </form>
+                                <?php } ?>
+
+                                <!-- show qr code -->
+                                <button type="button" class="btn small" data-toggle="modal" data-target="qr-<?= $guest['id'] ?>">
+                                    <i class="ph ph-qr-code" aria-hidden="true"></i>
+                                    <?= lang('QR code', 'QR-Code') ?>
+                                </button>
+
                             </td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
+
+            <!-- qr modals -->
+            <?php foreach ($guests as $guest) {
+                $guest_server = $Settings->get('guest-forms-server');
+                $url = $guest_server . "/a/" . $id . "." . $guest['id'];
+                $options = new QROptions([]);
+
+                try {
+                    $qr = (new QRCode($options))->render($url);
+                } catch (Throwable $e) {
+                    $qr = '';
+                    exit($e->getMessage());
+                }
+            ?>
+                <div class="modal" id="qr-<?= $guest['id'] ?>" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <a data-dismiss="modal" class="btn float-right" role="button" aria-label="Close" href="#close-modal">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                            <h5 class="title">
+                                <?= lang('QR code for ', 'QR-Code für ') . $guest['first'] . ' ' . $guest['last'] ?>
+                            </h5>
+                            <div>
+                                <div style="background-color: white; display: inline-block;">
+                                    <img src="<?= $qr ?>" alt="QR code for <?= $guest['first'] . ' ' . $guest['last'] ?>" class="w-200">
+                                </div>
+                                <br>
+                                <b>Link:</b>
+                                <a href="<?= $url ?>" target="_blank"><?= $url ?></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
+            <?php if ($new_guests) { ?>
+                <!-- send email to all new guests -->
+                <form action="<?= ROOTPATH ?>/crud/activities/guest-mail/<?= $id ?>" method="post">
+                    <button type="submit" class="btn primary">
+                        <i class="ph ph-envelope" aria-hidden="true"></i>
+                        <?= lang('Send email to new guests', 'Sende E-Mail an neue Gäste') ?>
+                    </button>
+                </form>
+            <?php } ?>
+
 
         <?php } else { ?>
             <p>

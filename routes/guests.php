@@ -371,3 +371,106 @@ Route::post('/guests/upload-files/(.*)', function ($id) {
         die();
     }
 });
+
+
+// crud/activities/guests
+Route::post('/crud/activities/guests', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    if (!isset($_POST['id'])) {
+        echo "no id given";
+        die;
+    }
+    $activity_id = $_POST['id'];
+    $mongo_id = DB::to_ObjectID($activity_id);
+
+    $activity = $osiris->activities->findOne(['_id' => $mongo_id]);
+    $existing_guests = DB::doc2Arr($activity['guests'] ?? []);
+
+    if (!empty($existing_guests)){
+        $existing_guests = array_column($existing_guests, null, 'id');
+    }
+
+    $guests = $_POST['guests'];
+
+    // zip arrays with keys
+    $result = [];
+    foreach ($guests['id'] as $key => $id) {
+        $guest = [
+            'id' => $id,
+            'last' => $guests['last'][$key],
+            'first' => $guests['first'][$key],
+            'email' => $guests['email'][$key],
+            'form' => false,
+            'status' => 'new'
+        ];
+
+        if (isset($existing_guests[$id])) {
+            $guest['qr'] = $existing_guests[$id]['qr'] ?? false;
+            $guest['status'] = $existing_guests[$id]['status'] ?? 'new';
+
+            // if if not new but mail changed
+            if ($guest['status'] !== 'new' && $existing_guests[$id]['email'] != $guest['email']) {
+                $guest['status'] = 'changed';
+            }
+        }
+
+        $result[] = $guest;
+    }
+
+    $osiris->activities->updateOne(
+        ['_id' => $mongo_id],
+        ['$set' => ['guests' => $result]]
+    );
+
+    header("Location: " . ROOTPATH . "/activities/view/$activity_id?msg=success");
+
+}, 'login');
+
+
+Route::post('/crud/activities/guests/qr', function () {
+    include_once BASEPATH . "/php/init.php";
+
+    if (!isset($_POST['id'])) {
+        echo "no id given";
+        die;
+    }
+    $activity_id = $_POST['id'];
+    $mongo_id = DB::to_ObjectID($activity_id);
+
+    $activity = $osiris->activities->findOne(['_id' => $mongo_id]);
+    $existing_guests = DB::doc2Arr($activity['guests'] ?? []);
+
+    if (!empty($existing_guests)){
+        $existing_guests = array_column($existing_guests, null, 'id');
+    }
+
+    $guests = $_POST['guests'];
+
+    // zip arrays with keys
+    $result = [];
+    foreach ($guests['id'] as $key => $id) {
+        $guest = [
+            'id' => $id,
+            'last' => $guests['last'][$key],
+            'first' => $guests['first'][$key],
+            'email' => $guests['email'][$key],
+            'qr' => $guests['qr'][$key] ?? false,
+            'status' => 'new'
+        ];
+
+        if (isset($existing_guests[$id])) {
+            $guest['status'] = $existing_guests[$id]['status'] ?? 'new';
+        }
+
+        $result[] = $guest;
+    }
+
+    $osiris->activities->updateOne(
+        ['_id' => $mongo_id],
+        ['$set' => ['guests' => $result]]
+    );
+
+    header("Location: " . ROOTPATH . "/activities/view/$activity_id?msg=success");
+
+}, 'login');

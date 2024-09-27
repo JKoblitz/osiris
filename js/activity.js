@@ -18,8 +18,17 @@ function navigate(key) {
             break;
     }
 
+    // save as hash
+    window.location.hash = 'section-'+key
 }
 
+$(document).ready(function () {
+    // get hash
+    var hash = window.location.hash
+    if (hash) {
+        navigate(hash.replace('#section-', ''))
+    }
+});
 
 coauthorsExists = false;
 function coauthors() {

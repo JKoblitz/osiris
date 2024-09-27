@@ -1,9 +1,12 @@
 # Neuigkeiten
 
 
-
 #### <i class="ph ph-presentation-chart"></i> Konferenzen
 - Es wurde eine eigene Seite für Konferenzen hinzugefügt
+
+#### <i class="ph ph-input"></i> Custom Fields
+- Custom Fields können jetzt auch auf Englisch übersetzt werden
+- Es ist nun möglich, Custom Fields im Nachhinein zu bearbeiten  
 
 #### <i class="ph ph-code"></i> Bug Fixes und UI Verbesserungen
 - Es werden jetzt alle Namen einer Person bei der Suche in der Personenliste berücksichtigt  
