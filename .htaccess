@@ -1,0 +1,13 @@
+DirectoryIndex index.php
+
+# enable apache rewrite engine
+RewriteEngine on
+
+# set your rewrite base
+RewriteBase /
+
+# Deliver the folder or file directly if it exists on the server
+RewriteRule ^(css|img|js|uploads|settings.json|manifest.json)($|/) - [L]
+
+# Push every request to index.php
+RewriteRule ^(.*)$ index.php [QSA]
