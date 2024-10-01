@@ -19,7 +19,7 @@ $user = $_SESSION['username'];
                 </h4>
 
                 <form action="<?= ROOTPATH ?>/crud/conferences/add" method="post" id="conference-form">
-                    <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
+                    <input type="hidden" class="hidden" name="redirect" value="<?= $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
 
                     <div class="form-group mb-10">
                         <label for="title" class="required"><?= lang('(Short) Title', 'Kurztitel') ?></label>
@@ -127,7 +127,11 @@ $conferences = $osiris->conferences->find(
                     render: function(data, type, row) {
                         // formatted date
                         var date = new Date(data);
-                        return date.toLocaleDateString('de-DE');
+
+                        return `
+                        <span class="d-none">${date.getTime()}</span>
+                        ${date.toLocaleDateString('de-DE')}
+                        `;
                     }
                 },
                 {
@@ -137,7 +141,10 @@ $conferences = $osiris->conferences->find(
                     render: function(data, type, row) {
                         // formatted date
                         var date = new Date(data);
-                        return date.toLocaleDateString('de-DE');
+                        return `
+                        <span class="d-none">${date.getTime()}</span>
+                        ${date.toLocaleDateString('de-DE')}
+                        `;
                     }
                 },
                 {

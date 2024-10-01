@@ -158,7 +158,7 @@ $pageactive = function ($p) use ($page) {
                 <?php if (!LIVE) { ?>
                     <span class=" position-absolute bottom-0 left-0 secondary" style="font-size: 1rem;z-index:1">TESTSYSTEM</span>
                 <?php } ?>
-                
+
             </a>
 
             <a href="<?= $Settings->get('affiliation_details')['link'] ?? '#' ?>" class="navbar-brand ml-auto" target="_blank">
@@ -198,7 +198,6 @@ $pageactive = function ($p) use ($page) {
             </ul>
 
             <!-- Accessibility menu -->
-
             <div class="dropdown d-none d-md-block">
                 <button class="btn text-primary border-primary square mr-5" data-toggle="dropdown" type="button" id="accessibility-menu" aria-haspopup="true" aria-expanded="false">
                     <i class="ph ph-person-arms-spread ph-person-simple-circle"></i>
@@ -206,8 +205,9 @@ $pageactive = function ($p) use ($page) {
                 </button>
                 <div class="dropdown-menu dropdown-menu-center w-300" aria-labelledby="accessibility-menu">
                     <h6 class="header text-primary">Accessibility</h6>
-                    <form action="#" method="get" class="content">
+                    <form action="<?= ROOTPATH ?>/set-preferences" method="get" class="content">
                         <input type="hidden" name="accessibility[check]">
+                        <input type="hidden" name="redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
 
                         <div class="form-group">
                             <div class="custom-checkbox">
@@ -241,11 +241,15 @@ $pageactive = function ($p) use ($page) {
                 </div>
             </div>
 
-            <a href="<?= currentGET([], ['language' => lang('de', 'en')]) ?>" class="btn text-primary border-primary mr-5">
-                <i class="ph ph-translate" aria-hidden="true"></i>
-                <span class="sr-only"><?= lang('Change language', 'Sprache ändern') ?></span>
-                <?= lang('DE', 'EN') ?>
-            </a>
+            <form action="<?= ROOTPATH ?>/set-preferences" method="get">
+                <input type="hidden" name="language" value="<?= lang('de', 'en') ?>">
+                <input type="hidden" name="redirect" value="<?= $_SERVER['REQUEST_URI'] ?>">
+                <button type="submit" class="btn text-primary border-primary mr-5">
+                    <i class="ph ph-translate" aria-hidden="true"></i>
+                    <span class="sr-only"><?= lang('Change language', 'Sprache ändern') ?></span>
+                    <?= lang('DE', 'EN') ?>
+                </button>
+            </form>
 
             <form id="navbar-search" action="<?= ROOTPATH ?>/activities" method="get" class="nav-search">
                 <div class="input-group">
@@ -387,7 +391,7 @@ $pageactive = function ($p) use ($page) {
                             <i class="ph ph-newspaper-clipping" aria-hidden="true"></i>
                             <?= lang('Journals', 'Journale') ?>
                         </a>
-                        
+
                         <a href="<?= ROOTPATH ?>/conferences" class="with-icon <?= $pageactive('conferences') ?>">
                             <i class="ph ph-presentation-chart" aria-hidden="true"></i>
                             <?= lang('Conferences', 'Konferenzen') ?>
@@ -424,7 +428,7 @@ $pageactive = function ($p) use ($page) {
                                 <?= lang('Nagoya Protocol', 'Nagoya-Protokoll') ?>
                             </a>
                         <?php } ?>
-                        
+
 
                     </nav>
 
@@ -585,7 +589,7 @@ $pageactive = function ($p) use ($page) {
 
             <div class="content-container">
                 <?php
-                if (function_exists('printMsg') && (isset($_GET['msg']) || isset($_GET['error'])) || isset($_SESSION['msg']) ) {
+                if (function_exists('printMsg') && (isset($_GET['msg']) || isset($_GET['error'])) || isset($_SESSION['msg'])) {
                     printMsg();
                 }
 
