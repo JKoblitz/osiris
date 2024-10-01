@@ -11987,7 +11987,7 @@ img.profile-img.small {
 }
 
 .coins::before {
-  content: "\ea5e";
+  content: "\e60e";
   font-family: "Phosphor";
   color: var(--signal-color);
   margin-right: 0.5rem;
