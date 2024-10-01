@@ -4825,9 +4825,12 @@ input[type=number] {
 }
 
 .floating-title {
-  font-size: 75%;
+  font-size: 85%;
   font-weight: bold;
   color: var(--muted-color);
+}
+.floating-title small {
+  font-weight: normal;
 }
 .floating-title.required {
   color: var(--danger-color);
@@ -4852,6 +4855,11 @@ input[type=number] {
   transform-origin: 0 0;
   transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
   color: var(--muted-color);
+  overflow: hidden;
+  text-wrap: nowrap;
+}
+.floating-form > label small {
+  font-weight: normal;
 }
 .floating-form > label.required {
   color: var(--danger-color);
@@ -12219,19 +12227,31 @@ a.module:hover {
   padding: 0;
   margin: 0 -1rem;
 }
-
 #data-modules .data-module {
   padding: 1rem;
-  align-self: baseline;
+  align-self: end;
+  padding-bottom: 1.5rem;
 }
-
+#data-modules .data-module .help-text {
+  position: absolute;
+  color: var(--muted-color);
+  text-overflow: ellipsis;
+}
 #data-modules .row {
   padding: 0;
 }
-
 #data-modules .row [class^=col] {
   padding: 1rem;
-  align-self: baseline;
+}
+#data-modules .floating-form > label {
+  padding: 2rem 1.8rem;
+}
+#data-modules .floating-form > .form-control:focus, #data-modules .floating-form > .form-control:not(:placeholder-shown) {
+  padding-top: 1.625rem;
+  padding-bottom: 0.2rem;
+}
+#data-modules .floating-form > .form-control:focus ~ label, #data-modules .floating-form > .form-control:not(:placeholder-shown) ~ label, #data-modules .floating-form > .form-select ~ label {
+  transform: scale(0.75) translateY(-0.6rem) translateX(0.4rem);
 }
 
 .file-link {

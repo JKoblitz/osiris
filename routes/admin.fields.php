@@ -14,7 +14,7 @@
  * @license     MIT
  */
 
- Route::get('/admin/fields', function () {
+Route::get('/admin/fields', function () {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
@@ -82,17 +82,59 @@ Route::post('/crud/fields/create', function () {
 
     $values = validateValues($_POST['values'], $DB);
 
-    $collection = $osiris->adminFields;
-   
+    if (isset($values['values']) && !empty($values['values'])) {
+        $en = $values['values'];
+        $de = $values['values_de'] ?? $en;
+
+        $values['values'] = [];
+        foreach ($en as $i => $e) {
+            $values['values'][] = [
+                $e,
+                $de[$i] ?? $e
+            ];
+        }
+    }
+
     // check if category ID already exists:
-    $category_exist = $collection->findOne(['id' => $values['id']]);
+    $category_exist = $osiris->adminFields->findOne(['id' => $values['id']]);
     if (!empty($category_exist)) {
         header("Location: " . ROOTPATH . "/fields/new?msg=Field Name does already exist.");
         die();
     }
 
-    $collection->insertOne($values);
+    $osiris->adminFields->insertOne($values);
+
+    header("Location: " . ROOTPATH . "/admin/fields?msg=success");
+});
+
+Route::post('/crud/fields/update/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
+
+    if (!isset($_POST['values'])) die("no values given");
+
+    $values = validateValues($_POST['values'], $DB);
+    $values['id'] = $id;
+
     
+    if (isset($values['values']) && !empty($values['values'])) {
+        $en = $values['values'];
+        $de = $values['values_de'] ?? $en;
+
+        $values['values'] = [];
+        foreach ($en as $i => $e) {
+            $values['values'][] = [
+                $e,
+                $de[$i] ?? $e
+            ];
+        }
+    }
+
+    $updateResult = $osiris->adminFields->updateOne(
+        ['id' => $id],
+        ['$set' => $values]
+    );
+
     header("Location: " . ROOTPATH . "/admin/fields?msg=success");
 });
 
@@ -101,10 +143,10 @@ Route::post('/crud/fields/delete/(.*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
-    $mongo_id = DB::to_ObjectID($id);   
+    $mongo_id = DB::to_ObjectID($id);
     $updateResult = $osiris->adminFields->deleteOne(
         ['_id' => $mongo_id]
     );
-   
+
     header("Location: " . ROOTPATH . "/admin/fields?msg=success");
 });
