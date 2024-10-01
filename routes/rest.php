@@ -765,7 +765,8 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
         'persons' => [],
         'activities' => 0,
         'subprojects' => [],
-        'collaborators' => $result['collaborators'] ?? []
+        'collaborators' => $result['collaborators'] ?? [],
+        'website' => $result['website'] ?? null,
     ];
 
     // public information replace others

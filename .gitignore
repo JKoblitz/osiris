@@ -7,7 +7,7 @@ img/users/*
 scss
 *.OLD
 css/*zip
-# .htaccess
+.htaccess
 settings.json
 CONFIG.php
 jobs/config.ini
