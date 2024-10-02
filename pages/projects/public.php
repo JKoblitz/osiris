@@ -20,20 +20,7 @@
 <script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
 
 <div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1><?= lang('Public Information', 'Öffentliche Informationen') ?></h1>
-        </div>
-    </div>
-    <?php
-    /**
-     * fields for the following information:
-     * - public_title (text)
-     * - public_abstract (textarea, mardown supported)
-     * - website (url)
-     * - public_image (image upload)
-     */
-    ?>
+    <h1><?= lang('Public Information', 'Öffentliche Informationen') ?></h1>
     <div class="row">
         <div class="col-12">
             <form action="<?= ROOTPATH ?>/crud/projects/update-public/<?= $project['_id'] ?>" method="post" enctype="multipart/form-data">
@@ -93,7 +80,7 @@
                 </div>
 
                 <hr>
-                
+
                 <div class="form-group">
                     <h5>
                         <?= lang('Image', 'Bild') ?>
@@ -111,7 +98,9 @@
                     </div>
                 </div>
 
+
                 <hr>
+
 
                 <h4>
                     <?= lang('Abstract', 'Zusammenfassung') ?>
@@ -119,37 +108,9 @@
                 </h4>
                 <div class="form-group">
                     <div id="public_abstract-quill"><?= $project['public_abstract'] ?? $project['abstract'] ?? '' ?></div>
-                    <input type="hidden" id="public_abstract" name="values[public_abstract]" value="<?= $project['public_abstract'] ?? $project['abstract'] ?? '' ?>">
-
+                    <textarea name="values[public_abstract]" id="public_abstract" class="d-none" readonly><?= $project['public_abstract'] ?? $project['abstract'] ?? '' ?></textarea>
                     <script>
-                        const quill = new Quill('#public_abstract-quill', {
-                            modules: {
-                                toolbar: [
-                                    [{
-                                        header: [1, 2, false]
-                                    }],
-                                    ['bold', 'italic', 'underline'],
-                                    [{
-                                        'list': 'ordered'
-                                    }, {
-                                        'list': 'bullet'
-                                    }],
-                                    [{
-                                        'script': 'sub'
-                                    }, {
-                                        'script': 'super'
-                                    }],
-                                    ['link', 'image'],
-                                    ['clean']
-                                ],
-                            },
-                            formats: ['italic', 'bold', 'underline', 'script', 'symbol', 'link', 'image', 'list', 'bullet', 'header'],
-                            placeholder: 'Compose an abstract...',
-                            theme: 'snow', // or 'bubble' 
-                        });
-                        quill.on('text-change', (delta, oldDelta, source) => {
-                            document.getElementById('public_abstract').value = quill.getSemanticHTML();
-                        });
+                        quillEditor('public_abstract');
                     </script>
                 </div>
 
@@ -160,37 +121,10 @@
                 </h4>
                 <div class="form-group">
                     <div id="public_abstract_de-quill"><?= $project['public_abstract_de'] ?? '' ?></div>
-                    <input type="hidden" id="public_abstract_de" name="values[public_abstract_de]" value="<?= $project['public_abstract_de'] ?? '' ?>">
+                    <textarea name="values[public_abstract_de]" id="public_abstract_de" class="d-none"><?= $project['public_abstract_de'] ?? '' ?></textarea>
 
                     <script>
-                        const quill_de = new Quill('#public_abstract_de-quill', {
-                            modules: {
-                                toolbar: [
-                                    [{
-                                        header: [1, 2, false]
-                                    }],
-                                    ['bold', 'italic', 'underline'],
-                                    [{
-                                        'list': 'ordered'
-                                    }, {
-                                        'list': 'bullet'
-                                    }],
-                                    [{
-                                        'script': 'sub'
-                                    }, {
-                                        'script': 'super'
-                                    }],
-                                    ['link', 'image'],
-                                    ['clean']
-                                ],
-                            },
-                            formats: ['italic', 'bold', 'underline', 'script', 'symbol', 'link', 'image', 'list', 'bullet', 'header'],
-                            placeholder: 'Compose an abstract...',
-                            theme: 'snow', // or 'bubble' 
-                        });
-                        quill_de.on('text-change', (delta, oldDelta, source) => {
-                            document.getElementById('public_abstract_de').value = quill_de.getSemanticHTML();
-                        });
+                        quillEditor('public_abstract_de');
                     </script>
                 </div>
                 <button type="submit" class="btn secondary"><?= lang('Save', 'Speichern') ?></button>

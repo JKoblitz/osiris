@@ -799,7 +799,13 @@ $institute = $Settings->get('affiliation_details');
                 <tr>
                     <td>
                         <span class="key"><?= lang('Public title', 'Öffentlicher Titel') ?></span>
-                        <?= lang($project['public_title'] ?? $project['title'] ?? '-', $project['public_title_de'] ?? null) ?>
+                        <?= lang($project['public_title'] ?? $project['name'] ?? '-', $project['public_title_de'] ?? null) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="key"><?= lang('Public subtitle', 'Öffentlicher Untertitel') ?></span>
+                        <?= lang($project['public_subtitle'] ?? $project['title'] ?? '-', $project['public_subtitle_de'] ?? null) ?>
                     </td>
                 </tr>
                 <tr>
@@ -825,7 +831,6 @@ $institute = $Settings->get('affiliation_details');
                 <tr>
                     <td>
                         <span class="key"><?= lang('Public image', 'Öffentliches Bild') ?></span>
-
 
                         <?php if (!empty($project['public_image']) ?? '') { ?>
                             <img src="<?= ROOTPATH . '/uploads/' . $project['public_image'] ?>" alt="<?= $project['public_title'] ?>" class="img-fluid">

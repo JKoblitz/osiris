@@ -63,6 +63,38 @@ function initQuill(element) {
     $('.ql-toolbar').append(additional)
 }
 
+function quillEditor(selector) {
+    const quill = new Quill('#'+selector+'-quill', {
+        modules: {
+            toolbar: [
+                [{
+                    header: [1, 2, false]
+                }],
+                ['bold', 'italic', 'underline'],
+                [{
+                    'list': 'ordered'
+                }, {
+                    'list': 'bullet'
+                }],
+                [{
+                    'script': 'sub'
+                }, {
+                    'script': 'super'
+                }],
+                ['link', 'image'],
+                ['clean']
+            ],
+        },
+        formats: ['italic', 'bold', 'underline', 'script', 'symbol', 'link', 'image', 'list', 'bullet', 'header'],
+        placeholder: 'Compose an abstract...',
+        theme: 'snow', // or 'bubble' 
+    });
+    quill.on('text-change', (delta, oldDelta, source) => {
+        document.getElementById(selector).value = quill.getSemanticHTML();
+    });
+}
+
+
 function readHash() {
     var hash = window.location.hash.substr(1);
     // console.log(hash);

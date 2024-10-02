@@ -367,23 +367,28 @@ class Project
         return round($progress);
     }
 
-    public static function personRole($role, $gender = 'n')
+    public static function personRoleRaw($role)
     {
         switch ($role) {
             case 'PI':
-                // '<i class="ph ph-crown text-signal"></i>' . 
-                return lang('Project lead', 'Projektleitung');
+                return ['en'=>'Project lead', 'de'=> 'Projektleitung'];
             case 'applicant':
-                return lang('Applicant', 'Antragsteller:in');
+                return ['en'=>'Applicant', 'de'=> 'Antragsteller:in'];
             case 'worker':
-                return lang('Project member', 'Projektmitarbeiter:in');
+                return ['en'=>'Project member', 'de'=> 'Projektmitarbeiter:in'];
             case 'scholar':
-                return lang('Scholar', 'Stipediat:in');
+                return ['en'=>'Scholar', 'de'=> 'Stipediat:in'];
             case 'supervisor':
-                return lang('Supervisor', 'Betreuer:in');
+                return ['en'=>'Supervisor', 'de'=> 'Betreuer:in'];
             default:
-                return lang('Associate', 'Beteiligte Person');
+                return ['en'=>'Associate', 'de'=> 'Beteiligte Person'];
         }
+    }
+
+    public static function personRole($role, $gender = 'n')
+    {
+        $role = self::personRoleRaw($role);
+        return lang($role['en'], $role['de']);
     }
 
     public function widgetSmall()

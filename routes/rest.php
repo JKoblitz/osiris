@@ -107,7 +107,7 @@ Route::get('/portfolio/units', function () {
     $result = $osiris->groups->find(
         [],
         // ['hide' => ['$ne' => true]],
-        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'parent' => 1, 'unit' => 1, 'level' => 1, 'hide'=>1]]
+        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'parent' => 1, 'unit' => 1, 'level' => 1, 'hide' => 1]]
     )->toArray();
     echo rest($result);
 });
@@ -237,7 +237,8 @@ Route::get('/portfolio/unit/([^/]*)/numbers', function ($id) {
 
     $filter = [
         'depts' => ['$in' => $child_ids],
-        'is_active' => true, 'hide' => ['$ne' => true],
+        'is_active' => true,
+        'hide' => ['$ne' => true],
         'hide' => ['$ne' => true]
     ];
 
@@ -497,7 +498,8 @@ Route::get('/portfolio/unit/([^/]*)/staff', function ($id) {
 
     $filter = [
         'hide' => ['$ne' => true],
-        'is_active' => true, 'hide' => ['$ne' => true]
+        'is_active' => true,
+        'hide' => ['$ne' => true]
     ];
     if ($id == 0) {
         $group = $osiris->groups->findOne(['level' => 0]);
@@ -749,10 +751,12 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
 
     $project = [
         'id' => strval($result['_id']),
-        'name' => $result['name'],
-        'title' => $result['title'] ?? '',
-        'abstract' => $result['abstract'] ?? '',
-        'abstract_de' => $result['abstract_de'] ?? '',
+        'name' => $result['public_title'] ?? $result['name'],
+        'name_de' => $result['public_title_de'] ?? null,
+        'title' => $result['public_subtitle'] ?? $result['title'] ?? '',
+        'title_de' => $result['public_subtitle_de'] ?? null,
+        'abstract' => $result['public_abstract'] ?? $result['abstract'] ?? '',
+        'abstract_de' => $result['public_abstract_de'] ?? null,
         'funder' => $result['funder'] ?? null,
         'funding_organization' => $result['funding_organization'] ?? null,
         'funding_number' => $result['funding_number'] ?? null,
@@ -767,28 +771,11 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
         'subprojects' => [],
         'collaborators' => $result['collaborators'] ?? [],
         'website' => $result['website'] ?? null,
+        'img' => null
     ];
 
-    // public information replace others
-    if (isset($result['public_title']) && !empty($result['public_title'])) 
-        $project['name'] = $result['public_title'];
-    if (isset($result['public_subtitle']) && !empty($result['public_subtitle'])) 
-        $project['title'] = $result['public_subtitle'];
-    if (isset($result['public_abstract']) && !empty($result['public_abstract'])) 
-        $project['abstract'] = $result['public_abstract'];
     if (isset($result['public_image']) && !empty($result['public_image']))
         $project['img'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . ROOTPATH . '/uploads/' . $result['public_image'];
-
-    include(BASEPATH . '/php/MyParsedown.php');
-    $parsedown = new Parsedown();
-
-    if (!empty($result['abstract']) && is_string($result['abstract'])) {
-        $project['abstract'] = $parsedown->text($result['abstract']);
-    }
-    if (!empty($result['abstract_de']) && is_string($result['abstract_de'])) {
-        $project['abstract_de'] = $parsedown->text($result['abstract_de']);
-    }
-
 
     $project['activities'] = $osiris->activities->count(['projects' => $id, 'hide' => ['$ne' => true]]);
 
@@ -811,7 +798,7 @@ Route::get('/portfolio/project/([^/]*)', function ($id) {
             }
             unset($row['user']);
             $row['id'] = strval($person['_id']);
-            $row['role'] = Project::personRole($row['role']);
+            $row['role'] = Project::personRoleRaw($row['role']);
             $depts = [];
             if (!empty($person['depts'])) {
                 foreach ($Groups->personDepts($person['depts']) as $d) {
@@ -903,22 +890,24 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
     if ($person['public_phone'] ?? true) {
         $result['contact']['phone'] = $person['telephone'];
     }
-    foreach ([
-        'mail_alternative',
-        'mail_alternative_comment',
-        'twitter',
-        'linkedin',
-        'orcid',
-        'researchgate',
-        'google_scholar',
-        'webpage'
-    ] as $key) {
+    foreach (
+        [
+            'mail_alternative',
+            'mail_alternative_comment',
+            'twitter',
+            'linkedin',
+            'orcid',
+            'researchgate',
+            'google_scholar',
+            'webpage'
+        ] as $key
+    ) {
         if (isset($person[$key]) && !empty($person[$key])) {
             $result['contact'][$key] = $person[$key];
         }
     }
 
-    
+
     if ($person['research'] ?? false) {
         $result['research'] = $person['research'];
     }
@@ -1020,7 +1009,6 @@ Route::get('/portfolio/(unit|project)/([^/]*)/collaborators-map', function ($con
                     "data" => $c
                 ];
             }
-           
         }
     } else {
         $filter = ['collaborators' => ['$exists' => 1]];
@@ -1050,7 +1038,7 @@ Route::get('/portfolio/(unit|project)/([^/]*)/collaborators-map', function ($con
                 ]
             ],
         ])->toArray();
-        
+
         // set all roles to 'partner'
         foreach ($result as $r) {
             $r['data']['role'] = 'partner';
