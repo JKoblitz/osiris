@@ -108,26 +108,6 @@ function sel($index, $value)
     <div class="row row-eq-spacing mb-0">
         <div class="col-md-6">
             <fieldset>
-                <legend class="d-flex"><?= lang('German', 'Deutsch') ?> <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></legend>
-                <div class="form-group">
-                    <label for="name_de" class="required">
-                        <?= lang('Full Name', 'Voller Name') ?> (DE)
-                    </label>
-                    <input type="text" class="form-control large" name="values[name_de]" id="name_de" required value="<?= val('name_de') ?>">
-                </div>
-                <div class="form-group">
-                    <label for="description_de"><?= lang('Description', 'Beschreibung') ?> (DE)</label>
-                    <textarea name="values[description_de]" id="description_de" cols="30" rows="10" class="form-control"><?= val('description_de') ?></textarea>
-                    <small class="text-muted">
-                        <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
-                            <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
-                        </a>
-                    </small>
-                </div>
-            </fieldset>
-        </div>
-        <div class="col-md-6">
-            <fieldset>
                 <legend class="d-flex"><?= lang('English', 'Englisch') ?> <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></legend>
                 <div class="form-group">
                     <label for="name" class="required">
@@ -139,6 +119,26 @@ function sel($index, $value)
                 <div class="form-group">
                     <label for="description"><?= lang('Description', 'Beschreibung') ?> (EN)</label>
                     <textarea name="values[description]" id="description" cols="30" rows="10" class="form-control"><?= val('description') ?></textarea>
+                    <small class="text-muted">
+                        <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
+                            <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
+                        </a>
+                    </small>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-md-6">
+            <fieldset>
+                <legend class="d-flex"><?= lang('German', 'Deutsch') ?> <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></legend>
+                <div class="form-group">
+                    <label for="name_de" class="required">
+                        <?= lang('Full Name', 'Voller Name') ?> (DE)
+                    </label>
+                    <input type="text" class="form-control large" name="values[name_de]" id="name_de" required value="<?= val('name_de') ?>">
+                </div>
+                <div class="form-group">
+                    <label for="description_de"><?= lang('Description', 'Beschreibung') ?> (DE)</label>
+                    <textarea name="values[description_de]" id="description_de" cols="30" rows="10" class="form-control"><?= val('description_de') ?></textarea>
                     <small class="text-muted">
                         <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
                             <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
@@ -161,24 +161,6 @@ function sel($index, $value)
 
                     <div class="row row-eq-spacing my-0">
                         <div class="col-md-6">
-                            <h5 class="mt-0 ">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></h5>
-                            <div class="form-group my-10">
-                                <input name="values[research][<?= $i ?>][title_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title_de'] ?? '') ?>" placeholder="Title">
-                            </div>
-                             <div class="form-group my-10">
-                                <input name="values[research][<?= $i ?>][subtitle_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['subtitle_de'] ?? '') ?>" placeholder="Subtitle">
-                            </div>
-                            <div class="form-group mb-0">
-                                <textarea name="values[research][<?= $i ?>][info_de]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)"><?= htmlspecialchars($con['info_de'] ?? '') ?></textarea>
-                                <small class="text-muted">
-                                    <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
-                                        <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
-                                    </a>
-                                </small>
-                            </div>
-
-                        </div>
-                        <div class="col-md-6">
                             <h5 class="mt-0 ">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></h5>
                             <div class="form-group my-10">
                                 <input name="values[research][<?= $i ?>][title]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
@@ -188,6 +170,24 @@ function sel($index, $value)
                             </div>
                             <div class="form-group mb-0">
                                 <textarea name="values[research][<?= $i ?>][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required><?= htmlspecialchars($con['info'] ?? '') ?></textarea>
+                                <small class="text-muted">
+                                    <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
+                                        <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
+                                    </a>
+                                </small>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mt-0 ">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></h5>
+                            <div class="form-group my-10">
+                                <input name="values[research][<?= $i ?>][title_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title_de'] ?? '') ?>" placeholder="Title">
+                            </div>
+                             <div class="form-group my-10">
+                                <input name="values[research][<?= $i ?>][subtitle_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['subtitle_de'] ?? '') ?>" placeholder="Subtitle">
+                            </div>
+                            <div class="form-group mb-0">
+                                <textarea name="values[research][<?= $i ?>][info_de]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)"><?= htmlspecialchars($con['info_de'] ?? '') ?></textarea>
                                 <small class="text-muted">
                                     <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
                                         <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
@@ -288,20 +288,20 @@ function sel($index, $value)
             <div class="box padded">
                 <div class="row row-eq-spacing my-0">
                     <div class="col-md-6">
-                        <h5 class="mt-0 ">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></h5>
-                        <div class="form-group">
-                            <input name="values[research][${i}][title_de]" type="text" class="form-control large" value="" placeholder="Title">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
                         <h5 class="mt-0 ">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></h5>
                         <div class="form-group">
                             <input name="values[research][${i}][title]" type="text" class="form-control large" value="" placeholder="Title" required>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <h5 class="mt-0 ">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></h5>
+                        <div class="form-group">
+                            <input name="values[research][${i}][title_de]" type="text" class="form-control large" value="" placeholder="Title">
+                        </div>
+                    </div>
                 </div>
                 ${lang('Please save once to add more information.', 'Bitte speichere einmal, um weitere Informationen hinzuzufügen.')}<br>
-                <button class="btn danger" type="button" onclick="$(this).closest('.alert').remove()"><i class="ph ph-trash"></i> ${lang('Delete', 'Löschen')}</button>
+                <button class="btn danger" type="button" onclick="$(this).closest('.box').remove()"><i class="ph ph-trash"></i> ${lang('Delete', 'Löschen')}</button>
             </div>
 
                 `;

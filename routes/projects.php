@@ -443,6 +443,9 @@ Route::post('/crud/projects/update-public/([A-Za-z0-9]*)', function ($id) {
 
     $values['public'] = boolval($values['public'] ?? false);
 
+    // dump($values, true);
+    // die;
+
     $target_dir = BASEPATH . "/uploads/";
     if (!is_writable($target_dir)) {
         die("Upload directory $target_dir is unwritable. Please contact admin.");

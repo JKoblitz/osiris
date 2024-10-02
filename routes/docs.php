@@ -48,7 +48,7 @@ Route::get('/docs/([\w-]+)', function ($doc) {
     ];
     include BASEPATH . "/header.php";
     echo '<link href="' . ROOTPATH . '/css/documentation.css" rel="stylesheet">';
-    echo '<script src="' . ROOTPATH . '/js/quill.min.js"></script>';
+    echo '<script src="' . ROOTPATH . '/js/quill.min.js?v=2"></script>';
     echo '<script src="' . ROOTPATH . '/js/jquery-ui.min.js"></script>';
     $path    = BASEPATH . '/pages/docs/'. $language;
 

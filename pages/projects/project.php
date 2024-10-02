@@ -379,12 +379,12 @@ $institute = $Settings->get('affiliation_details');
                                                 <!-- <span class="badge danger"><?= lang('Relevant') ?></span>
                                                 <br> -->
                                                 <div class="alert signal">
-                                                <h6 class="title"><?= lang('Countries', 'Länder:') ?></h6>
-                                                <ul class="list signal mb-0">
-                                                    <?php foreach ($project['nagoya_countries'] ?? [] as $c) { ?>
-                                                        <li><?= Country::get($c) ?></li>
-                                                    <?php } ?>
-                                                </ul>
+                                                    <h6 class="title"><?= lang('Countries', 'Länder:') ?></h6>
+                                                    <ul class="list signal mb-0">
+                                                        <?php foreach ($project['nagoya_countries'] ?? [] as $c) { ?>
+                                                            <li><?= Country::get($c) ?></li>
+                                                        <?php } ?>
+                                                    </ul>
                                                 </div>
                                             <?php } ?>
 
@@ -799,20 +799,21 @@ $institute = $Settings->get('affiliation_details');
                 <tr>
                     <td>
                         <span class="key"><?= lang('Public title', 'Öffentlicher Titel') ?></span>
-                        <?= $project['public_title'] ?? $project['title'] ?? '-' ?>
+                        <?= lang($project['public_title'] ?? $project['title'] ?? '-', $project['public_title_de'] ?? null) ?>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <span class="key"><?= lang('Public abstract', 'Öffentliche Kurzbeschreibung') ?></span>
-                        <!-- markdown -->
-                        <?php
-                        // markdown support
-                        require_once BASEPATH . '/php/MyParsedown.php';
-                        $Parsedown = new Parsedown();
-                        echo $Parsedown->text($project['public_abstract'] ?? $project['abstract'] ?? '-');
-                        ?>
-
+                        <div class="abstract">
+                            <?php if (lang('en', 'de') == 'de' && isset($project['public_abstract_de'])) { ?>
+                                <?= $project['public_abstract_de'] ?>
+                            <?php } else if (isset($project['public_abstract'])) { ?>
+                                <?= $project['public_abstract'] ?>
+                            <?php } else { ?>
+                                <?= $project['abstract'] ?? '-' ?>
+                            <?php } ?>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -905,12 +906,14 @@ $institute = $Settings->get('affiliation_details');
                 <tbody>
                     <?php
                     $res = $project['ressources'];
-                    foreach ([
-                        'material' => lang('Material', 'Material'),
-                        'personnel' => lang('Personnel', 'Personal'),
-                        'room' => lang('Room', 'Raum'),
-                        'other' => lang('Other', 'Sonstiges')
-                    ] as $r => $h) { ?>
+                    foreach (
+                        [
+                            'material' => lang('Material', 'Material'),
+                            'personnel' => lang('Personnel', 'Personal'),
+                            'room' => lang('Room', 'Raum'),
+                            'other' => lang('Other', 'Sonstiges')
+                        ] as $r => $h
+                    ) { ?>
                         <tr>
                             <td>
                                 <span class="key"><?= $h ?></span>

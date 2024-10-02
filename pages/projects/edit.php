@@ -52,7 +52,7 @@ function sel($index, $value)
 
 <style>
 </style>
-<script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/quill.min.js?v=2"></script>
 
 <div class="container w-600">
 

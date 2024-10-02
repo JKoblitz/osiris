@@ -12409,6 +12409,12 @@ a.concept:hover {
   color: var(--primary-color);
 }
 
+.abstract img {
+  max-width: 30rem;
+  max-height: 30rem;
+  margin-bottom: 1rem;
+}
+
 /*!
  * Quill Editor v1.3.6
  * https://quilljs.com/
@@ -12460,6 +12466,10 @@ a.concept:hover {
   text-align: left;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+.ql-editor img {
+  max-width: 30rem;
+  max-height: 30rem;
 }
 
 .ql-editor > * {
@@ -13593,16 +13603,15 @@ a.concept:hover {
   box-shadow: 0 0.2rem 0 var(--success-box-shadow-color);
 }
 
-.ql-snow.ql-toolbar::after,
-.ql-snow .ql-toolbar::after {
+#data-modules .ql-snow.ql-toolbar::after,
+#data-modules .ql-snow .ql-toolbar::after {
   content: "Bitte Rechtschreibung und Formatierung sorgsam prüfen.";
   display: inline-block;
   color: var(--muted-color);
   font-size: small;
 }
-
-.lang-en .ql-snow.ql-toolbar::after,
-.lang-en .ql-snow .ql-toolbar::after {
+#data-modules .lang-en .ql-snow.ql-toolbar::after,
+#data-modules .lang-en .ql-snow .ql-toolbar::after {
   content: "Please check spelling and formatting carefully.";
 }
 

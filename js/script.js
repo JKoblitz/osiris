@@ -35,8 +35,9 @@ function initQuill(element) {
     });
 
     quill.on('text-change', function (delta, oldDelta, source) {
-        var delta = quill.getContents()
+        // var delta = quill.getContents()
         var str = $(element).find('.ql-editor p').html()
+        // var str = quill.getSemanticHTML()
         $(element).next().val(str)
 
         // TODO: add doubletCheck() with underscore
