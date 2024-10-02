@@ -85,7 +85,7 @@
         <h4>
             <i class="ph ph-dots-six-vertical text-muted handle"></i>
             <?= lang('Activities', 'Aktivitäten') ?>
-            <button type="button" class="btn link" onclick="$(this).closest('step').remove()"><i class="ph ph-trash" aria-label="Delete"></i></button>
+            <button type="button" class="btn link" onclick="$(this).closest('.step').remove()"><i class="ph ph-trash" aria-label="Delete"></i></button>
         </h4>
         <input type="hidden" class="hidden" name="values[*][type]" value="activities">
         <textarea type="text" class="form-control" name="values[*][filter]" placeholder="Filter" required></textarea>
@@ -98,7 +98,7 @@
         <h4>
             <i class="ph ph-dots-six-vertical text-muted handle"></i>
             <?= lang('Table', 'Tabelle') ?>
-            <button type="button" class="btn link" onclick="$(this).closest('step').remove()"><i class="ph ph-trash" aria-label="Delete"></i></button>
+            <button type="button" class="btn link" onclick="$(this).closest('.step').remove()"><i class="ph ph-trash" aria-label="Delete"></i></button>
         </h4>
         <input type="hidden" class="hidden" name="values[*][type]" value="table">
         <textarea type="text" class="form-control" name="values[*][filter]" placeholder="Filter" required></textarea>
@@ -122,7 +122,7 @@
         <h4 class="m-0">
             <i class="ph ph-dots-six-vertical text-muted handle"></i>
             <?= lang('Line', 'Trennlinie') ?>
-            <button type="button" class="btn link" onclick="$(this).closest('step').remove()"><i class="ph ph-trash" aria-label="Delete"></i></button>
+            <button type="button" class="btn link" onclick="$(this).closest('.step').remove()"><i class="ph ph-trash" aria-label="Delete"></i></button>
         </h4>
         <input type="hidden" class="hidden" name="values[*][type]" value="line">
     </div>
