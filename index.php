@@ -184,19 +184,26 @@ Route::get('/error/([0-9]*)', function ($error) {
 
 // Add a 404 not found route
 Route::pathNotFound(function ($path) {
-    // Do not forget to send a status header back to the client
-    // The router will not send any headers by default
-    // So you will have the full flexibility to handle this case
-    // header('HTTP/1.0 404 Not Found');
     http_response_code(404);
-    $error = 404;
-    // header('HTTP/1.0 404 Not Found');
-    include BASEPATH . "/header.php";
-    // $browser = $_SERVER['HTTP_USER_AGENT'];
-    // var_dump($browser);
-    include BASEPATH . "/pages/error.php";
-    // echo "Error 404";
-    include BASEPATH . "/footer.php";
+    // Check the Accept header to determine the content type
+    $acceptHeader = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : 'text/html';
+
+    header("HTTP/1.0 404 Not Found");
+    if (strpos($acceptHeader, 'application/json') !== false) {
+        // Send JSON response for scripts expecting JSON
+        header('Content-Type: application/json');
+        echo json_encode(['error' => '404 Not Found']);
+    } elseif (strpos($acceptHeader, 'text/plain') !== false) {
+        // Send plain text response for scripts expecting text
+        header('Content-Type: text/plain');
+        echo "404 Not Found";
+    } else {
+        // Send HTML response for users
+        $error = 404;
+        include BASEPATH . "/header.php";
+        include BASEPATH . "/pages/error.php";
+        include BASEPATH . "/footer.php";
+    }
 });
 
 // Add a 405 method not allowed route
