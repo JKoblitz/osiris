@@ -870,15 +870,15 @@ if ($currentuser) { ?>
                 <div class="box h-full">
                     <div class="content">
                         <?php if ($Settings->hasPermission('conferences.edit')) { ?>
-                            <a href="<?=ROOTPATH?>/conferences#add-conference" class="float-md-right btn primary">
+                            <a href="<?= ROOTPATH ?>/conferences#add-conference" class="float-md-right btn primary">
                                 <i class="ph ph-plus"></i>
                                 <?= lang('Add', 'Hinzufügen') ?>
                             </a>
                         <?php } ?>
 
                         <h4 class="title">
-                            <a href="<?=ROOTPATH?>/conferences" class="link">
-                            <?= lang('Conferences', 'Konferenzen') ?>
+                            <a href="<?= ROOTPATH ?>/conferences" class="link">
+                                <?= lang('Conferences', 'Konferenzen') ?>
                             </a>
                         </h4>
                         <p class="text-muted">
@@ -902,8 +902,8 @@ if ($currentuser) { ?>
                                     <td>
                                         <div class="d-flex justify-content-between">
                                             <h6 class="m-0">
-                                                <a href="<?=ROOTPATH?>/conferences/<?=$c['_id']?>">
-                                                <?= $c['title'] ?>
+                                                <a href="<?= ROOTPATH ?>/conferences/<?= $c['_id'] ?>">
+                                                    <?= $c['title'] ?>
                                                 </a>
                                                 <?php if (!empty($c['url'] ?? null)) { ?>
                                                     <a href="<?= $c['url'] ?>" target="_blank" rel="noopener noreferrer">
@@ -1115,9 +1115,16 @@ if ($currentuser) { ?>
                         <?php } ?>
                     </h4>
 
-                    <?php if (isset($scientist['research']) && !empty($scientist['research'])) { ?>
+                    <?php if (isset($scientist['research']) && !empty($scientist['research'])) {
+                        $scientist['research_de'] = array_map(
+                            fn($val1, $val2) => empty($val1) ? $val2 : $val1,
+                            DB::doc2Arr($scientist['research_de'] ?? $scientist['research']),
+                            DB::doc2Arr($scientist['research'])
+                        );
+                        $research = lang($scientist['research'], $scientist['research_de'] ?? null);
+                    ?>
                         <ul class="list">
-                            <?php foreach ($scientist['research'] as $key) { ?>
+                            <?php foreach ($research as $key) { ?>
                                 <li><?= $key ?></li>
                             <?php } ?>
                         </ul>

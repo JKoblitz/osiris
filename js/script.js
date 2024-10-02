@@ -82,11 +82,11 @@ function quillEditor(selector) {
                     'script': 'super'
                 }],
                 ['link', 'image'],
-                ['clean']
+                // ['clean']
             ],
         },
-        formats: ['italic', 'bold', 'underline', 'script', 'symbol', 'link', 'image', 'list', 'bullet', 'header'],
-        placeholder: 'Compose an abstract...',
+        formats: ['italic', 'bold', 'underline', 'script', 'link', 'image', 'list', 'bullet', 'header'],
+        placeholder: lang('Start typing here ...', 'Hier tippen ...'),
         theme: 'snow', // or 'bubble' 
     });
     quill.on('text-change', (delta, oldDelta, source) => {

@@ -1,6 +1,20 @@
 # Neuigkeiten
 
 
+<span class="badge float-right">02.10.2024</span>
+<a class="anchor" href="#version-1.3.7" id="version-1.3.7"></a>
+
+## Version 1.3.7
+
+#### <i class="ph ph-text-aa"></i> Rich Text-Editoren und mehr Übersetzungen
+- Mehr Felder lassen sich jetzt zweisprachig definieren:
+  - Forschungsinteressen von Personen
+  - Forschungsinteressen von Gruppen
+  - Titel, Untertitel und Public Abstract von Projekten
+- Es wurde ein Rich-Text Editor hinzugefügt, der das bisherige Markdown ersetzt
+  - Bilder können darüber direkt eingefügt werden (bitte auf die Größe achten)
+  - Links und Formatierungen lassen sich jetzt einfacher bearbeiten
+
 #### <i class="ph ph-presentation-chart"></i> Konferenzen
 - Es wurde eine eigene Seite für Konferenzen hinzugefügt
 
@@ -13,6 +27,11 @@
 - Ein Fehler wurde behoben, durch den bei der Pubmed-Suche immer die nächste Publikation hinzugefügt wurde
 - Die Navigation auf der Profilseite wurde verbessert, sodass beim Nutzen der "Zurück"-Taste des Browsers automatisch das zuvor ausgewählte Fenster ausgewählt wird
 - Ein Fehler wurde behoben, durch den Projekte nicht korrekt nach Laufzeit sortiert wurden
+- Ein Fehler wurde behoben, durch den einige Infos (z.B. Forschungsinteressen und Links von Projekten) nicht zu Portfolio ausgeliefert wurden
+- Es wurde das Coin Icon gefixt
+- Es wurde ein Fehler behoben, durch den Template-Bausteine im Berichte-Editor nicht löschbar waren
+
+
 
 <span class="badge float-right">15.08.2024</span>
 <a class="anchor" href="#version-1.3.6" id="version-1.3.6"></a>

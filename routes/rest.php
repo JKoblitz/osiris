@@ -152,13 +152,18 @@ Route::get('/portfolio/unit/([^/]*)', function ($id) {
         }
     }
 
-    include(BASEPATH . '/php/MyParsedown.php');
-    $parsedown = new Parsedown();
-    foreach (['description', 'description_de'] as $key) {
-        if (isset($group[$key]) && is_string($group[$key])) {
-            $group[$key] = $parsedown->text($group[$key]);
-        }
-    }
+    $group['parent_details'] = $osiris->groups->findOne(['id' => $group['parent']], ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'level' => 1, 'hide' => 1]]);
+    $group['children'] = $osiris->groups->find(['parent' => $group['id'], 'hide' => ['$ne' => true]], ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'level' => 1, 'hide' => 1]])->toArray();
+
+
+
+    // include(BASEPATH . '/php/MyParsedown.php');
+    // $parsedown = new Parsedown();
+    // foreach (['description', 'description_de'] as $key) {
+    //     if (isset($group[$key]) && is_string($group[$key])) {
+    //         $group[$key] = $parsedown->text($group[$key]);
+    //     }
+    // }
     echo rest($group);
 });
 
@@ -176,8 +181,8 @@ Route::get('/portfolio/unit/([^/]*)/research', function ($id) {
     else
         $group = $osiris->groups->findOne(['id' => $id]);
 
-    include(BASEPATH . '/php/MyParsedown.php');
-    $parsedown = new Parsedown();
+    // include(BASEPATH . '/php/MyParsedown.php');
+    // $parsedown = new Parsedown();
 
     $research = [];
     if (isset($group['research'])) foreach ($group['research'] as $key => $value) {
@@ -186,8 +191,10 @@ Route::get('/portfolio/unit/([^/]*)/research', function ($id) {
             'title_de' => $value['title_de'] ?? '',
             'subtitle' => $value['subtitle'] ?? '',
             'subtitle_de' => $value['subtitle_de'] ?? '',
-            'info' => (!empty($value['info'] ?? '') ? $parsedown->text($value['info']) : null),
-            'info_de' => (!empty($value['info_de'] ?? '') ? $parsedown->text($value['info_de']) : null)
+            // 'info' => (!empty($value['info'] ?? '') ? $parsedown->text($value['info']) : null),
+            'info' => $value['info'] ?? '',
+            // 'info_de' => (!empty($value['info_de'] ?? '') ? $parsedown->text($value['info_de']) : null)
+            'info_de' => $value['info_de'] ?? '',
         ];
         if (!empty($value['activities'])) {
             $res['activities'] = [];
@@ -875,6 +882,7 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
         'first' => $person['first'],
         'academic_title' => $person['academic_title'],
         'position' => $person['position'],
+        'position_de' => $person['position_de'] ?? null,
         'depts' => [],
         'cv' => $person['cv'] ?? [],
         'contact' => []
@@ -909,7 +917,19 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
 
 
     if ($person['research'] ?? false) {
-        $result['research'] = $person['research'];
+        $person['research_de'] = $person['research_de'] ?? [];
+        // $person['research_de'] = array_map(
+        //     fn($val1, $val2) => empty($val1) ? $val2 : $val1,
+        //     DB::doc2Arr($person['research_de'] ?? $person['research']),
+        //     DB::doc2Arr($person['research'])
+        // );
+        $result['research'] = [];
+        foreach ($person['research'] as $key => $value) {
+            $result['research'][] = [
+                'en' => $value, 
+                'de' => $person['research_de'][$key] ?? null 
+            ];
+        }
     }
     if ($person['public_image'] ?? false) {
         $result['img'] = $Settings->printProfilePicture($person['username'], 'profile-img');

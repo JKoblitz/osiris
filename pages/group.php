@@ -16,24 +16,15 @@
  * @license     MIT
  */
 
-include_once BASEPATH . "/php/MyParsedown.php";
-$parsedown = new Parsedown;
-
-//  $children = $Groups->getChildren($id);
-//  dump($children, true);
-
-//  dump($Groups->tree, true);
 $level = $Groups->getLevel($id);
 
 $children = $Groups->getChildren($group['id']);
-$persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => ['$in'=>[true, 'true', 1, '1']]], ['sort' => ['last' => 1]])->toArray();
+$persons = $osiris->persons->find(['depts' => ['$in' => $children], 'is_active' => ['$in' => [true, 'true', 1, '1']]], ['sort' => ['last' => 1]])->toArray();
 
 if (isset($group['head'])) {
-
     $head = $group['head'];
     if (is_string($head)) $head = [$head];
     else $head = DB::doc2Arr($head);
-
 } else {
     $head = [];
 }
@@ -42,7 +33,7 @@ $users = array_column($persons, 'username');
 
 $show_general = (isset($group['description']) || isset($group['description_de']) || (isset($group['research']) && !empty($group['research'])));
 
-$edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission($id));
+$edit_perm = ($Settings->hasPermission('units.add') || $Groups->editPermission($id));
 ?>
 
 <link rel="stylesheet" href="<?= ROOTPATH ?>/css/usertable.css">
@@ -317,14 +308,12 @@ $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission(
         <?php } ?>
 
 
-
         <?php if (isset($group['description']) || isset($group['description_de'])) { ?>
 
             <h5>
                 <?= lang('About', 'Information') ?>
             </h5>
-            <?= $parsedown->text(lang($group['description'] ?? '-', $group['description_de'] ?? null)) ?>
-
+            <?= lang($group['description'] ?? '-', $group['description_de'] ?? null) ?>
         <?php } ?>
 
 
@@ -345,11 +334,13 @@ $edit_perm = ( $Settings->hasPermission('units.add') || $Groups->editPermission(
         <?php if (isset($group['research']) && !empty($group['research'])) { ?>
             <?php foreach ($group['research'] as $r) { ?>
                 <div class="box">
-                    <h5 class="header">
-                        <?= lang($r['title'], $r['title_de'] ?? null) ?>
-                    </h5>
                     <div class="content">
-                        <?= $parsedown->text(lang($r['info'], $r['info_de'] ?? null)) ?>
+                        <h5 class="title">
+                            <?= lang($r['title'], $r['title_de'] ?? null) ?>
+                            <br>
+                            <small class="text-muted"><?= lang($r['subtitle'] ?? '', $r['subtitle_de'] ?? null) ?></small>
+                        </h5>
+                        <?= lang($r['info'], $r['info_de'] ?? null) ?>
                     </div>
                     <?php if (!empty($r['projects'] ?? null)) {
                         echo '<hr>';

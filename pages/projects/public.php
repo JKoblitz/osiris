@@ -17,7 +17,7 @@
  */
 
 ?>
-<script src="<?= ROOTPATH ?>/js/quill.min.js"></script>
+<script src="<?= ROOTPATH ?>/js/quill.min.js?v=2"></script>
 
 <div class="container">
     <h1><?= lang('Public Information', 'Öffentliche Informationen') ?></h1>

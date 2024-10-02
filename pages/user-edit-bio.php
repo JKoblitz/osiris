@@ -23,7 +23,7 @@
 </h1>
 
 <form action="<?= ROOTPATH ?>/crud/users/update/<?= $data['username'] ?>" method="post">
-    <div class="box w-500 mw-full">
+    <div class="box w-600 mw-full">
         <div class="content">
 
             <input type="hidden" class="hidden" name="redirect" value="<?= $url ?? $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?>">
@@ -56,18 +56,36 @@
             <h4 class="title mt-0" id="research">
                 <?= lang('Research interest', 'Forschungsinteressen') ?>
             </h4>
+            
             <small class="text-muted">Max. 5</small><br>
+            <table class="table simple">
+                <thead>
+                    <tr>
+                        <th><label for="position" class="d-flex">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></label></th>
+                        <th><label for="position_de" class="d-flex">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></label></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="research-interests">
+                    <?php 
+                    $data['research_de'] = $data['research_de'] ?? array();
+                    foreach (($data['research'] ?? array()) as $i => $n) {
+                        $n_de = $data['research_de'][$i] ?? '';
+                    ?>
+                        <tr class="research-interest">
+                            <td>
+                                <input type="text" name="values[research][]" value="<?= $n ?>" list="research-list" required class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="values[research_de][]" value="<?= $n_de ?>" list="research-list-de" class="form-control">
+                            </td>
+                            <td><a class="btn text-danger" onclick="$(this).closest('.research-interest').remove();"><i class="ph ph-trash"></i></a></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
 
-            <?php foreach (($data['research'] ?? array()) as $n) { ?>
-                <div class="input-group mb-10 research-interest">
-                    <input type="text" name="values[research][]" value="<?= $n ?>" list="research-list" required class="form-control">
-                    <div class="input-group-append">
-                        <a class="btn text-danger" onclick="$(this).closest('.input-group').remove();"><i class="ph ph-trash"></i></a>
-                    </div>
-                </div>
-            <?php } ?>
-
-            <button class="btn" type="button" onclick="addResearchInterest(event, this);">
+            <button class="btn" type="button" onclick="addResearchInterest(event);">
                 <i class="ph ph-plus"></i>
             </button>
 
@@ -77,26 +95,32 @@
                     <option><?= $d ?></option>
                 <?php } ?>
             </datalist>
+            <datalist id="research-list-de">
+                <?php
+                foreach ($osiris->persons->distinct('research-de') as $d) { ?>
+                    <option><?= $d ?></option>
+                <?php } ?>
+            </datalist>
 
             <script>
-                function addResearchInterest(evt, el) {
+                function addResearchInterest(evt) {
                     if ($('.research-interest').length >= 5) {
                         toastError(lang('Max. 5 research interests.', 'Maximal 5 Forschungsinteressen können angegeben werden.'));
                         return;
                     }
 
-                    var group = $('<div class="input-group mb-10 research-interest"> ')
-                    group.append('<input type="text" name="values[research][]" value="" list="research-list" required class="form-control">')
-                    // var input = $()
-                    var btn = $('<a class="btn text-danger">')
-                    btn.on('click', function() {
-                        $(this).closest('.input-group').remove();
-                    })
-                    btn.html('<i class="ph ph-trash"></i>')
-
-                    group.append($('<div class="input-group-append">').append(btn))
-                    // $(el).prepend(group);
-                    $(group).insertBefore(el);
+                    var tr = `
+                        <tr class="research-interest">
+                            <td>
+                                <input type="text" name="values[research][]" list="research-list" required class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="values[research_de][]" list="research-list-de" class="form-control">
+                            </td>
+                            <td><a class="btn text-danger" onclick="$(this).closest('.research-interest').remove();"><i class="ph ph-trash"></i></a></td>
+                        </tr>
+                        `;
+                    $('#research-interests').append(tr);
                 }
             </script>
 

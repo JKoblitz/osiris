@@ -79,7 +79,13 @@ function sel($index, $value)
     .suggestions a:hover {
         background-color: #f0f0f0;
     }
+
+    .form-control.large {
+        font-weight: bold;
+    }
 </style>
+
+<script src="<?= ROOTPATH ?>/js/quill.min.js?v=2"></script>
 
 <h3 class="title">
     <?= $title ?>
@@ -94,7 +100,7 @@ function sel($index, $value)
         </legend>
 
         <div class="form-group">
-        <input type="hidden" name="values[hide]" value="0">
+            <input type="hidden" name="values[hide]" value="0">
             <div class="custom-switch">
                 <input type="checkbox" id="hide-check" <?= val('hide') ? 'checked' : '' ?> name="values[hide]" value="1" onchange="toggleVisibility()">
                 <label for="hide-check">
@@ -118,12 +124,12 @@ function sel($index, $value)
 
                 <div class="form-group">
                     <label for="description"><?= lang('Description', 'Beschreibung') ?> (EN)</label>
-                    <textarea name="values[description]" id="description" cols="30" rows="10" class="form-control"><?= val('description') ?></textarea>
-                    <small class="text-muted">
-                        <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
-                            <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
-                        </a>
-                    </small>
+
+                    <div id="description-quill"><?= $form['description'] ?? '' ?></div>
+                    <textarea name="values[description]" id="description" class="d-none" readonly><?= $form['description'] ?? '' ?></textarea>
+                    <script>
+                        quillEditor('description');
+                    </script>
                 </div>
             </fieldset>
         </div>
@@ -138,12 +144,12 @@ function sel($index, $value)
                 </div>
                 <div class="form-group">
                     <label for="description_de"><?= lang('Description', 'Beschreibung') ?> (DE)</label>
-                    <textarea name="values[description_de]" id="description_de" cols="30" rows="10" class="form-control"><?= val('description_de') ?></textarea>
-                    <small class="text-muted">
-                        <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
-                            <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
-                        </a>
-                    </small>
+
+                    <div id="description_de-quill"><?= $form['description_de'] ?? '' ?></div>
+                    <textarea name="values[description_de]" id="description_de" class="d-none" readonly><?= $form['description_de'] ?? '' ?></textarea>
+                    <script>
+                        quillEditor('description_de');
+                    </script>
                 </div>
             </fieldset>
         </div>
@@ -162,56 +168,58 @@ function sel($index, $value)
                     <div class="row row-eq-spacing my-0">
                         <div class="col-md-6">
                             <h5 class="mt-0 ">English <img src="<?= ROOTPATH ?>/img/gb.svg" alt="EN" class="flag"></h5>
-                            <div class="form-group my-10">
+                            <div class="form-group floating-form">
                                 <input name="values[research][<?= $i ?>][title]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title'] ?? '') ?>" placeholder="Title" required>
+                                <label for="values[research][<?= $i ?>][title]" class="required"><?=lang('Title', 'Titel')?></label>
                             </div>
-                             <div class="form-group my-10">
-                                <input name="values[research][<?= $i ?>][subtitle]" type="text" class="form-control large" value="<?= htmlspecialchars($con['subtitle'] ?? '') ?>" placeholder="Subtitle">
+                            <div class="form-group floating-form">
+                                <input name="values[research][<?= $i ?>][subtitle]" type="text" class="form-control" value="<?= htmlspecialchars($con['subtitle'] ?? '') ?>" placeholder="Subtitle">
+                                <label for="values[research][<?= $i ?>][subtitle]"><?=lang('Subtitle', 'Untertitel')?></label>
                             </div>
                             <div class="form-group mb-0">
-                                <textarea name="values[research][<?= $i ?>][info]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)" required><?= htmlspecialchars($con['info'] ?? '') ?></textarea>
-                                <small class="text-muted">
-                                    <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
-                                        <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
-                                    </a>
-                                </small>
+                                <div id="info-<?=$i?>-quill"><?= $con['info'] ?? '' ?></div>
+                                <textarea name="values[research][<?= $i ?>][info]" id="info-<?=$i?>" class="d-none" readonly><?= $con['info'] ?? '' ?></textarea>
+                                <script>
+                                    quillEditor('info-<?=$i?>');
+                                </script>
                             </div>
 
                         </div>
                         <div class="col-md-6">
                             <h5 class="mt-0 ">Deutsch <img src="<?= ROOTPATH ?>/img/de.svg" alt="DE" class="flag"></h5>
-                            <div class="form-group my-10">
+                            <div class="form-group floating-form">
                                 <input name="values[research][<?= $i ?>][title_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['title_de'] ?? '') ?>" placeholder="Title">
+                                <label for="values[research][<?= $i ?>][title_de]"><?=lang('Title', 'Titel')?></label>
                             </div>
-                             <div class="form-group my-10">
-                                <input name="values[research][<?= $i ?>][subtitle_de]" type="text" class="form-control large" value="<?= htmlspecialchars($con['subtitle_de'] ?? '') ?>" placeholder="Subtitle">
+                            <div class="form-group floating-form">
+                                <input name="values[research][<?= $i ?>][subtitle_de]" type="text" class="form-control" value="<?= htmlspecialchars($con['subtitle_de'] ?? '') ?>" placeholder="Subtitle">
+                                <label for="values[research][<?= $i ?>][subtitle_de]"><?=lang('Subtitle', 'Untertitel')?></label>
                             </div>
                             <div class="form-group mb-0">
-                                <textarea name="values[research][<?= $i ?>][info_de]" id="" cols="30" rows="5" class="form-control" value="" placeholder="Information (Markdown support)"><?= htmlspecialchars($con['info_de'] ?? '') ?></textarea>
-                                <small class="text-muted">
-                                    <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" rel="noopener noreferrer">
-                                        <?= lang('Markdown supported', 'Markdown unterstützt') ?> <i class="ph ph-info"></i>
-                                    </a>
-                                </small>
+                                <div id="info_de-<?=$i?>-quill"><?= $con['info_de'] ?? '' ?></div>
+                                <textarea name="values[research][<?= $i ?>][info_de]" id="info_de-<?=$i?>" class="d-none" readonly><?= $con['info_de'] ?? '' ?></textarea>
+                                <script>
+                                    quillEditor('info_de-<?=$i?>');
+                                </script>
                             </div>
 
                         </div>
                     </div>
 
                     <div id="activities-<?= $i ?>">
-                        <h5><?=lang('Connected activities', 'Verknüpfte Aktivitäten')?></h5>
-                        
+                        <h5><?= lang('Connected activities', 'Verknüpfte Aktivitäten') ?></h5>
+
                         <ul>
-                            <?php foreach ($con['activities']??[] as $res) { 
+                            <?php foreach ($con['activities'] ?? [] as $res) {
                                 $doc = $DB->getActivity($res);
-                                ?>
+                            ?>
                                 <li>
-                                <?=$doc['rendered']['icon']?>
-                                <?=$doc['rendered']['plain']?>
-                                    <input type="hidden" name="values[research][<?= $i ?>][activities][]" value="<?=$res?>">
+                                    <?= $doc['rendered']['icon'] ?>
+                                    <?= $doc['rendered']['plain'] ?>
+                                    <input type="hidden" name="values[research][<?= $i ?>][activities][]" value="<?= $res ?>">
                                 </li>
                             <?php } ?>
-                            
+
                         </ul>
 
                         <div class="input-group">
