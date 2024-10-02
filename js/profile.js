@@ -61,6 +61,8 @@ function navigate(key) {
             wordcloudExists = true;
             wordcloud('#wordcloud-chart', { user: CURRENT_USER })
             break;
+        case 'general': 
+            break;
         default:
             $('section#news').show()
             break;
