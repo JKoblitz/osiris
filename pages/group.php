@@ -514,6 +514,43 @@ $edit_perm = ($Settings->hasPermission('units.add') || $Groups->editPermission($
         </section>
     <?php } ?>
 
+    <?php
+    $children = $osiris->groups->find(['parent' => $id], ['sort'=>['order'=> 1]])->toArray();
+    
+    if ($edit_perm) { ?>
+    <script src="<?= ROOTPATH ?>/js/jquery-ui.min.js"></script>
+        <!-- reorder modal -->
+        <div id="reorder-modal" class="modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2><?= lang('Reorder child units', 'Untereinheiten neu anordnen') ?></h2>
+                    <form action="<?= ROOTPATH ?>/crud/groups/reorder/<?= $id ?>" method="post">
+                            <p>
+                                <?= lang('Drag and drop to reorder', 'Ziehen und Ablegen zum Neuanordnen') ?>
+                            </p>
+                                <ul id="reorder-list" class="list">
+                                <?php foreach ($children as $child) { ?>
+                                    <li class="cursor-pointer">
+                                            <input type="hidden" name="order[]" value="<?= $child['_id'] ?>">
+                                            <?= $child['name'] ?>
+                                    </li>
+                                <?php } ?>
+                                </ul>
+                        <button type="submit" class="btn"><?= lang('Save', 'Speichern') ?></button>
+                    </form>
+                    <script>
+                        $('#reorder-list').sortable({
+            // handle: ".handle",
+            // change: function( event, ui ) {}
+        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+    <?php } ?>
+
 
     <section id="collab" style="display:none">
 
@@ -535,10 +572,16 @@ $edit_perm = ($Settings->hasPermission('units.add') || $Groups->editPermission($
                         </tr>
                         <tr>
                             <td>
+                                <?php if ($edit_perm) { ?>
+                                    <a href="#reorder-modal" class="btn primary" id="reorder">
+                                        <i class="ph ph-sort-ascending"></i>
+                                        <?= lang('Reorder child units', 'Untereinheiten neu anordnen') ?>
+                                    </a>
+                                    <br><br>
+                                <?php } ?>
+
                                 <span class="key"><?= lang('Child units', 'Untereinheiten') ?></span>
-                                <?php
-                                $children = $osiris->groups->find(['parent' => $id])->toArray();
-                                ?>
+
                                 <?php if (!empty($children)) { ?>
                                     <ul class="list">
                                         <?php foreach ($children as $child) { ?>

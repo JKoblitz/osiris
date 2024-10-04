@@ -280,3 +280,21 @@ Route::post('/crud/groups/addperson/(.*)', function ($id) {
     // addUserActivity('delete');
     header("Location: " . ROOTPATH . "/groups/view/$id?msg=added-person#add-person-modal");
 });
+
+
+Route::post('/crud/groups/reorder/(.*)', function ($id) {
+    include_once BASEPATH . "/php/init.php";
+    
+    $order = $_POST['order'];
+    $i = 0;
+    foreach ($order as $o) {
+        $osiris->groups->updateOne(
+            ['_id' => $DB->to_ObjectID($o)],
+            ['$set' => ['order' => $i]]
+        );
+        $i++;
+    }
+
+    // addUserActivity('delete');
+    header("Location: " . ROOTPATH . "/groups/view/$id?msg=reordered");
+});

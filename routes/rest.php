@@ -107,7 +107,7 @@ Route::get('/portfolio/units', function () {
     $result = $osiris->groups->find(
         [],
         // ['hide' => ['$ne' => true]],
-        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'parent' => 1, 'unit' => 1, 'level' => 1, 'hide' => 1]]
+        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'parent' => 1, 'unit' => 1, 'level' => 1, 'hide' => 1, 'order' => 1]]
     )->toArray();
     echo rest($result);
 });
@@ -128,6 +128,8 @@ Route::get('/portfolio/unit/([^/]*)', function ($id) {
     $head = $group['head'] ?? [];
     if (is_string($head)) $head = [$head];
     else $head = DB::doc2Arr($head);
+    unset($group['head']);
+
 
     $unit = $Groups->getUnit($group['unit'] ?? null);
     $group['unit'] = $unit;
@@ -152,18 +154,15 @@ Route::get('/portfolio/unit/([^/]*)', function ($id) {
         }
     }
 
-    $group['parent_details'] = $osiris->groups->findOne(['id' => $group['parent']], ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'level' => 1, 'hide' => 1]]);
-    $group['children'] = $osiris->groups->find(['parent' => $group['id'], 'hide' => ['$ne' => true]], ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'level' => 1, 'hide' => 1]])->toArray();
+    $group['parent_details'] = $osiris->groups->findOne(
+        ['id' => $group['parent']],
+        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'level' => 1, 'hide' => 1]]
+    );
+    $group['children'] = $osiris->groups->find(
+        ['parent' => $group['id'], 'hide' => ['$ne' => true]],
+        ['projection' => ['_id' => 0, 'id' => 1, 'name' => 1, 'name_de' => 1, 'level' => 1, 'hide' => 1]]
+    )->toArray();
 
-
-
-    // include(BASEPATH . '/php/MyParsedown.php');
-    // $parsedown = new Parsedown();
-    // foreach (['description', 'description_de'] as $key) {
-    //     if (isset($group[$key]) && is_string($group[$key])) {
-    //         $group[$key] = $parsedown->text($group[$key]);
-    //     }
-    // }
     echo rest($group);
 });
 
@@ -245,7 +244,6 @@ Route::get('/portfolio/unit/([^/]*)/numbers', function ($id) {
     $filter = [
         'depts' => ['$in' => $child_ids],
         'is_active' => true,
-        'hide' => ['$ne' => true],
         'hide' => ['$ne' => true]
     ];
 
@@ -926,8 +924,8 @@ Route::get('/portfolio/person/([^/]*)', function ($id) {
         $result['research'] = [];
         foreach ($person['research'] as $key => $value) {
             $result['research'][] = [
-                'en' => $value, 
-                'de' => $person['research_de'][$key] ?? null 
+                'en' => $value,
+                'de' => $person['research_de'][$key] ?? null
             ];
         }
     }
