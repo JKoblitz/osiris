@@ -161,8 +161,7 @@ Route::get('/journal/edit/([a-zA-Z0-9]*)', function ($id) {
             foreach ($values['issn'] as $issn) {
                 if (empty($issn)) continue;
 
-                $url = "http://localhost/osiris-app/api/v1/journals/";
-                $url .= $issn;
+                $url = "https://osiris-app.de/api/v1/journals/" . $issn;
 
                 $curl = curl_init();
                 curl_setopt($curl, CURLOPT_HTTPHEADER, [
@@ -218,8 +217,7 @@ Route::post('/crud/journal/update-metrics/(.*)', function ($id){
     foreach ($journal['issn'] as $issn) {
         if (empty($issn)) continue;
 
-        $url = "http://localhost/osiris-app/api/v1/journals/";
-        $url .= $issn;
+        $url = "https://osiris-app.de/api/v1/journals/" . $issn;
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
