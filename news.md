@@ -12,6 +12,7 @@
   - Forschungsinteressen von Gruppen
   - Titel, Untertitel und Public Abstract von Projekten
 - Es wurde ein Rich-Text Editor hinzugefügt, der das bisherige Markdown ersetzt
+  - Bei der Beschreibung von Einheiten, ihren Forschungsbereichen und bei der öffentlichen Beschreibung von Projekten
   - Bilder können darüber direkt eingefügt werden (bitte auf die Größe achten)
   - Links und Formatierungen lassen sich jetzt einfacher bearbeiten
 
@@ -30,6 +31,7 @@
 - Ein Fehler wurde behoben, durch den einige Infos (z.B. Forschungsinteressen und Links von Projekten) nicht zu Portfolio ausgeliefert wurden
 - Es wurde das Coin Icon gefixt
 - Es wurde ein Fehler behoben, durch den Template-Bausteine im Berichte-Editor nicht löschbar waren
+- Untereinheiten können jetzt sortiert werden
 
 
 

@@ -146,11 +146,11 @@ if ($N > 0) {
             <div class="row row-eq-spacing">
                 <div class="col-sm">
                     <label for="lat">Latitude</label>
-                    <input type="number" class="form-control" name="general[affiliation][lat]" value="<?= $affiliation['lat'] ?? '' ?>">
+                    <input type="float" class="form-control" name="general[affiliation][lat]" value="<?= $affiliation['lat'] ?? '' ?>">
                 </div>
                 <div class="col-sm">
                     <label for="lng">Longitude</label>
-                    <input type="number" class="form-control" name="general[affiliation][lng]" value="<?= $affiliation['lng'] ?? '' ?>">
+                    <input type="float" class="form-control" name="general[affiliation][lng]" value="<?= $affiliation['lng'] ?? '' ?>">
                 </div>
             </div>
 

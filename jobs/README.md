@@ -23,9 +23,7 @@ The queue job gets new activities from online sources and saves them in a queue.
 To set up this feature, you must first install diophila with pip:
 
 ```bash
-pip install diophila
-pip install nameparser
-pip install levenshtein
+pip install nameparser levenshtein
 ```
 
 Additionally, you must change the OpenAlex-ID of your institute in the `config.ini` file.

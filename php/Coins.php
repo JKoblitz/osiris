@@ -17,9 +17,9 @@ class Coins
         $types = $this->db->adminTypes->find()->toArray();
         foreach ($types as $typeArr) {
             $type = $typeArr['id'];
-            if (is_numeric($typeArr['coins']))
+            if (is_numeric($typeArr['coins'] ?? null))
                 $typeArr['coins'] = floatval($typeArr['coins']);
-            $this->matrix[$type] = $typeArr['coins'];
+            $this->matrix[$type] = $typeArr['coins'] ?? 0;
         }
     }
 

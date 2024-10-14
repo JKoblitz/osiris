@@ -512,7 +512,7 @@ $pageactive = function ($p) use ($page) {
 
 
 
-                <?php if ($Settings->hasPermission('admin.see') || $Settings->hasPermission('report.templates')) { ?>
+                <?php if ($Settings->hasPermission('admin.see') || $Settings->hasPermission('report.templates') || $Settings->hasPermission('user.synchronize')) { ?>
                     <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-admin">
                         ADMIN
                     </div>
@@ -545,6 +545,12 @@ $pageactive = function ($p) use ($page) {
                             <a href="<?= ROOTPATH ?>/admin/reports" class="with-icon <?= $pageactive('admin/reports') ?>">
                                 <i class="ph ph-clipboard-text"></i>
                                 <?= lang('Report templates', 'Berichte-Vorlagen') ?>
+                            </a>
+                        <?php } ?>
+                        <?php if ($Settings->hasPermission('user.synchronize')) { ?>
+                            <a href="<?= ROOTPATH ?>/admin/users" class="with-icon <?= $pageactive('admin/reports') ?>">
+                                <i class="ph ph-users"></i>
+                                <?= lang('Users', 'Nutzer') ?>
                             </a>
                         <?php } ?>
                     </nav>

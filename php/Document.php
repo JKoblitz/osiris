@@ -783,7 +783,8 @@ class Document extends Settings
                 $val = $this->doc['journal_id'] ?? $default;
                 if ($val != $default) {
                     $j = $this->DB->getConnected('journal', $this->getVal('journal_id'));
-                    return $j['abbr'];
+                    if (isset($j['abbr']) && !empty($j['abbr'])) return $j['abbr'];
+                    return $j['journal'];
                 }
                 return $this->getVal('journal');
             case "lecture-invited": // ["invited_lecture"],

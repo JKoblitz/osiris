@@ -872,11 +872,11 @@ Route::get('/api/journals', function () {
     foreach ($journals as $doc) {
         if (!isset($doc['oa']) || $doc['oa'] === false) {
             $oa = $no;
-        } elseif ($doc['oa'] === 0) {
-            $oa =  $yes;
-        } elseif ($doc['oa'] > 0) {
+        } elseif ($doc['oa'] > 1900) {
             $oa =  $since . $doc['oa'];
-        }
+        } else {
+            $oa =  $yes;
+        } 
         $result['data'][] = [
             'id' => strval($doc['_id']),
             'name' => $doc['journal'],

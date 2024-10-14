@@ -35,7 +35,10 @@ Route::get('/migrate/test', function () {
 
 Route::get('/install', function () {
     // include_once BASEPATH . "/php/init.php";
-    // include BASEPATH . "/header.php";
+    unset($_SESSION['username']);
+    $_SESSION['logged_in'] = false;
+
+    include BASEPATH . "/header.php";
 
     include_once BASEPATH . "/php/DB.php";
 
@@ -90,18 +93,6 @@ Route::get('/install', function () {
     echo "Ich habe die generellen Einstellungen vorgenommen. ";
 
 
-    // echo "<h3>Features</h3>";
-    // $osiris->adminFeatures->deleteMany([]);
-    // foreach (["coins", "achievements", "user-metrics"] as $key) {
-    //     $osiris->adminFeatures->insertOne([
-    //         'feature' => $key,
-    //         'enabled' => boolval(!$settings['general']['disable-' . $key])
-    //     ]);
-    // }
-
-
-    // echo "<h3>Rechte und Rollen</h3>";
-
     $json = file_get_contents(BASEPATH . "/roles.json");
     $rights = json_decode($json, true, 512, JSON_NUMERIC_CHECK);
 
@@ -154,7 +145,7 @@ Route::get('/install', function () {
 
     // add institute as root level
     $dept = [
-        'id' => $affiliation['id'],
+        'id' => $affiliation['id'] ?? 'INSTITUTE',
         'color' => '#000000',
         'name' => $affiliation['name'],
         'parent' => null,
@@ -162,7 +153,7 @@ Route::get('/install', function () {
         'unit' => 'Institute',
     ];
     $osiris->groups->insertOne($dept);
-    echo "Ich die Organisationseinheiten initialisiert, indem ich eine übergeordnete Einheit hinzugefügt habe. 
+    echo "Ich habe die Organisationseinheiten initialisiert, indem ich eine übergeordnete Einheit hinzugefügt habe. 
         Bitte bearbeite diese und füge weitere Einheiten hinzu. ";
 
 
@@ -193,6 +184,9 @@ Route::get('/install', function () {
     if (strtoupper(USER_MANAGEMENT) == 'AUTH') {
         echo '<b style="color:#e95709;">Wichtig:</b> Wie ich sehe benutzt du das Auth-Addon für die Nutzer-Verwaltung. Wenn du deinen Account anlegst, achte bitte darauf, dass der Nutzername mit dem vorkonfigurierten Admin-Namen (in <code>CONFIG.php</code>)  exakt übereinstimmt. Nur der vorkonfigurierte Admin kann die Ersteinstellung übernehmen und weiteren Personen diese Rolle übertragen.';
     }
+
+    include BASEPATH . "/footer.php";
+
 });
 
 Route::get('/migrate', function () {

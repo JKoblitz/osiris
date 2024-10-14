@@ -14,8 +14,10 @@ $osiris = $DB->db;
 
 // get installed OSIRIS version
 $version = $osiris->system->findOne(['key' => 'version']);
-if (empty($version)){ 
+if (empty($version) && !str_ends_with($_SERVER['REQUEST_URI'], '/install')) { 
+    // echo $_SERVER['REQUEST_URI'] ;
     die ('OSIRIS has not been installed yet. <a href="'.ROOTPATH.'/install">Click here to install it</a>.');
+    
 }
 define('OSIRIS_DB_VERSION', $version['value']);
 

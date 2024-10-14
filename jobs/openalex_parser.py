@@ -42,6 +42,8 @@ class OpenAlexParser():
             "dataset": "others",
             "book-series": "book",
             "edited-book": "book",
+            "review": "magazine",
+            "preprint": "preprint",
         }
 
 
@@ -56,8 +58,6 @@ class OpenAlexParser():
         # set up database connection
         client = MongoClient(config['Database']['Connection'])
         self.osiris = client[config['Database']['Database']]
-
-        # osiris['queue'].delete_many({})
 
 
         # set up OpenAlex
@@ -77,13 +77,19 @@ class OpenAlexParser():
 
     def getUserId(self, name, orcid=None):
         if orcid:
-            user = self.osiris['users'].find_one({'orcid': orcid})
+            user = self.osiris['persons'].find_one({'orcid': orcid})
             if user:
-                return user['_id']
-        user = self.osiris['users'].find_one(
-            {'last': name.last, 'first': {'$regex': '^'+name.first+'.*'}})
+                return user['username']
+        user = self.osiris['persons'].find_one(
+            {'$or': [
+                {'last': name.last, 'first': {'$regex': '^'+name.first+'.*'}},
+                {'names': f'{name.last}, {name.first}'}
+            ]}
+        )
+        # print(user)
+        # exit()
         if user:
-            return user['_id']
+            return user['username']
         return None
 
     def getAbstract(self, inverted_abstract):
@@ -156,6 +162,7 @@ class OpenAlexParser():
             print(f'Activity type {work['type']} is unknown (DOI: {doi}).')
             return False
 
+        # print(doi)
         authors = []
         for a in work['authorships']:
             # match via name and ORCID
@@ -227,16 +234,20 @@ class OpenAlexParser():
                 element['magazine'] = loc.get('display_name') if loc else None
             else:
                 journal = self.getJournal(loc['issn'])
-                element.update({
-                    'volume': work['biblio']['volume'],
-                    'issue': work['biblio']['issue'],
-                    'journal': journal['journal'],
-                    'journal_id': str(journal['_id'])
-                })
-                if (not element['volume']) and not element['issue']:
-                    element['epub'] = True
+                if not journal:
+                    element['subtype'] = 'magazine'
+                    element['magazine'] = loc.get('display_name') if loc else None
+                else:
+                    element.update({
+                        'volume': work['biblio']['volume'],
+                        'issue': work['biblio']['issue'],
+                        'journal': journal['journal'],
+                        'journal_id': str(journal['_id'])
+                    })
+                    if (not element['volume']) and not element['issue']:
+                        element['epub'] = True
 
-        if (typ == 'chapter'):
+        if (typ == 'chapter' and loc and loc.get('display_name')):
             element.update({
                 'book': loc['display_name'],
             })
@@ -276,10 +287,15 @@ class OpenAlexParser():
         i = 0
         for page in pages_of_works:
             for work in page['results']:
-                element = self.parseWork(work)
-                if element == False: continue
-                i+=1
-                yield element
+                try: 
+                    element = self.parseWork(work)
+                    if element == False: continue
+                    i+=1
+                    yield element
+                except Exception as e:
+                    print(f'Error with DOI {work["doi"]}')
+                    print(e)
+                    continue
         print(f'--- Finished. Imported {i} documents.')
     
     def queueJob(self):

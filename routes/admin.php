@@ -16,6 +16,25 @@
 
 include_once BASEPATH . "/routes/admin.fields.php";
 
+
+Route::get('/admin/users', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('user.synchronize')) die('You have no permission to be here.');
+
+    $breadcrumb = [
+        ['name' => lang("Admin Panel Users")]
+    ];
+    include BASEPATH . "/header.php";
+    if (USER_MANAGEMENT == 'LDAP') {
+        include BASEPATH . "/pages/synchronize-users.php";
+    } else {
+        include BASEPATH . "/pages/admin/users.php";
+    }
+
+    include BASEPATH . "/footer.php";
+}, 'login');
+
+
 Route::get('/admin/(general|roles|features)', function ($page) {
     include_once BASEPATH . "/php/init.php";
     if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
@@ -486,7 +505,7 @@ Route::post('/crud/categories/update-order', function () {
 
 Route::post('/crud/admin/mail-test', function () {
     include_once BASEPATH . "/php/init.php";
-    
+
     // include_once BASEPATH . "/php/mail.php";
     if (!$Settings->hasPermission('admin.see')) die('You have no permission to be here.');
 
@@ -510,18 +529,18 @@ Route::post('/crud/admin/mail-test', function () {
 
     $Mailer->isSMTP();
     $Mailer->Host = $mail['smtp_server'] ?? 'localhost';
-    if (isset($mail['user']) && isset($mail['smtp_password'])){
+    if (isset($mail['user']) && isset($mail['smtp_password'])) {
         $Mailer->SMTPAuth = true;
         $Mailer->Username = $mail['smtp_user'];
         $Mailer->Password = $mail['smtp_password'];
     }
     if (isset($mail['smtp_security'])) {
         if ($mail['smtp_security'] == 'ssl')
-        $Mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+            $Mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
         elseif ($mail['smtp_security'] == 'tls')
             $Mailer->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
     }
-    
+
     $Mailer->Port = $mail['smtp_port'] ?? 25;
 
     $Mailer->setFrom($mail['email'] ?? 'no-reply@osiris-app.de', 'OSIRIS');
@@ -538,4 +557,41 @@ Route::post('/crud/admin/mail-test', function () {
     }
 
     header("Location: " . ROOTPATH . "/admin/general?msg=" . $msg);
+}, 'login');
+
+
+// crud/admin/add-user
+
+Route::post('/crud/admin/add-user', function () {
+    include_once BASEPATH . "/php/init.php";
+    if (!$Settings->hasPermission('user.synchronize')) die('You have no permission to be here.');
+
+    
+    if ($osiris->persons->count(['username' => $_POST['username']]) > 0) {
+        $msg = lang("The username is already taken. Please try again.", "Der Nutzername ist bereits vergeben. Versuche es erneut.");
+        include BASEPATH . "/header.php";
+        printMsg($msg, 'error');
+        $form = $_POST;
+        include BASEPATH . "/pages/admin/users.php";
+        include BASEPATH . "/footer.php";
+        die;
+    }
+
+    $person = $_POST['values'];
+    $person['username'] = $_POST['username'];
+    $person['password'] = $_POST['password'];
+    $person['displayname'] = "$person[first] $person[last]";
+    $person['formalname'] = "$person[last], $person[first]";
+    $person['first_abbr'] = "";
+    foreach (explode(" ", $person['first']) as $name) {
+        $person['first_abbr'] .= " " . $name[0] . ".";
+    }
+    $person['created'] = date('d.m.Y');
+    $person['roles'] = array_keys($person['roles'] ?? []);
+    
+    $person['is_active'] = true;
+
+    $osiris->persons->insertOne($person);
+
+    header("Location: " . ROOTPATH . "/admin/users?success=" . $person['username']);
 }, 'login');

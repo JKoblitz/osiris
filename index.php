@@ -129,6 +129,7 @@ Route::get('/set-preferences', function () {
     header("Location: " . $redirect);
 });
 
+
 if (
     isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true
     &&
@@ -141,7 +142,6 @@ if (
     include_once BASEPATH . "/routes/groups.php";
     include_once BASEPATH . "/routes/import.php";
     include_once BASEPATH . "/routes/journals.php";
-    include_once BASEPATH . "/routes/migrate.php";
     include_once BASEPATH . "/routes/projects.php";
     include_once BASEPATH . "/routes/queue.php";
     include_once BASEPATH . "/routes/tags.php";
@@ -161,6 +161,7 @@ if (
 
     include_once BASEPATH . "/addons/ida/index.php";
 }
+include_once BASEPATH . "/routes/migrate.php";
 
 include_once BASEPATH . "/routes/api.php";
 include_once BASEPATH . "/routes/rest.php";
