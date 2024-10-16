@@ -4,7 +4,7 @@ var activitiesTable = false,
     coauthorsExists = false,
     conceptsExists = false,
     wordcloudExists = false;
-    
+
 function navigate(key) {
     $('section').hide()
     $('section#' + key).show()
@@ -61,30 +61,32 @@ function navigate(key) {
             wordcloudExists = true;
             wordcloud('#wordcloud-chart', { user: CURRENT_USER })
             break;
-        case 'general': 
+        case 'general':
+            break;
+        case 'news':
+            $('section#news').show()
             break;
         default:
-            $('section#news').show()
             break;
     }
 
     // save as hash
-    window.location.hash = 'section-'+key
+    window.location.hash = 'section-' + key
 }
 
 
 $(document).ready(function () {
-     // get hash
-     var hash = window.location.hash
-     if (hash) {
-         navigate(hash.replace('#section-', ''))
-     }
+    // get hash
+    var hash = window.location.hash
+    if (hash) {
+        navigate(hash.replace('#section-', ''))
+    }
 });
 
-function conferenceToggle(el, id, type='interests') {
+function conferenceToggle(el, id, type = 'interests') {
     // ajax call to update user's conference interests
     $.ajax({
-        url: ROOTPATH+'/ajax/conferences/toggle-interest',
+        url: ROOTPATH + '/ajax/conferences/toggle-interest',
         type: 'POST',
         data: { type: type, conference: id },
         success: function (data) {
