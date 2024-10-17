@@ -177,6 +177,25 @@ function validateValues($values, $DB)
     return $values;
 }
 
+
+function get_preview($html, $length = 150) {
+    // 1. Entferne HTML-Tags
+    $text = strip_tags($html);
+
+    if (empty($text)) return null;
+
+    // 2. Kürze den Text auf die gewünschte Länge
+    if (strlen($text) > $length) {
+        $preview = substr($text, 0, $length);
+        // 3. Stelle sicher, dass das letzte Wort nicht abgeschnitten wird
+        $preview = substr($preview, 0, strrpos($preview, ' ')) . '...';
+    } else {
+        $preview = $text;
+    }
+
+    return $preview;
+}
+
 function valiDate($date)
 {
     if (empty($date)) return null;

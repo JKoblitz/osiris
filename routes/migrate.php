@@ -14,8 +14,9 @@
  * @license     MIT
  */
 
+
 Route::get('/migrate/test', function () {
-    include_once BASEPATH . "/php/mail.php";
+    include_once BASEPATH . "/php/init.php";
     // $filter = "$and":[{"authors.last":"Eberth"},{"authors.user":{"$ne":"seb14"}}];
     // $filter = ['authors.last' => 'Eberth', 'authors.user' => ['$ne' => 'seb14']];
     // $cursor = $osiris->activities->find($filter);
@@ -27,7 +28,28 @@ Route::get('/migrate/test', function () {
     //         ['arrayFilters' => [['elem.last' => 'Eberth']]]
     //     );
     // }
-    writeMail();
+    // writeMail();
+
+    // render teaser from abstract of publications
+    $cursor = $osiris->projects->find(['teaser' => ['$exists' => false]]);
+    foreach ($cursor as $doc) {
+        $abstract_en = $doc['public_abstract'] ?? $doc['abstract'] ?? '';
+        $abstract_de = $doc['public_abstract_de'] ?? $abstract_en;
+        // $teaser_de = substr($doc['abstract'], 0, 200);
+        // break at words or sentences
+        $teaser_en = get_preview($abstract_en, 200);
+        $teaser_de = get_preview($abstract_de, 200);
+
+        dump($teaser_en, true);
+        dump($teaser_de, true);
+
+        if (empty($teaser_en) && empty($teaser_de)) continue;
+
+        $osiris->projects->updateOne(
+            ['_id' => $doc['_id']],
+            ['$set' => ['teaser_en' => $teaser_en, 'teaser_de' => $teaser_de]]
+        );
+    }
 
     echo "Done";
 });
@@ -186,7 +208,6 @@ Route::get('/install', function () {
     }
 
     include BASEPATH . "/footer.php";
-
 });
 
 Route::get('/migrate', function () {
@@ -541,7 +562,7 @@ Route::get('/migrate', function () {
                 foreach ($group['research'] as $key => $value) {
                     if (!empty($value['info'] ?? ''))
                         $result['research'][$key]['info'] = $parsedown->text($value['info']);
-                    
+
                     if (!empty($value['info_de'] ?? ''))
                         $result['research'][$key]['info_de'] = $parsedown->text($value['info_de']);
                 }
@@ -568,7 +589,27 @@ Route::get('/migrate', function () {
                 ['$set' => $result]
             );
         }
+    }
 
+    if (version_compare($DBversion, '1.3.8', '<')) {
+        echo "<p>Update persons</p>";
+
+        $cursor = $osiris->projects->find(['teaser' => ['$exists' => false]]);
+        foreach ($cursor as $doc) {
+            $abstract_en = $doc['public_abstract'] ?? $doc['abstract'] ?? '';
+            $abstract_de = $doc['public_abstract_de'] ?? $abstract_en;
+            // $teaser_de = substr($doc['abstract'], 0, 200);
+            // break at words or sentences
+            $teaser_en = get_preview($abstract_en, 200);
+            $teaser_de = get_preview($abstract_de, 200);
+
+            if (empty($teaser_en) && empty($teaser_de)) continue;
+
+            $osiris->projects->updateOne(
+                ['_id' => $doc['_id']],
+                ['$set' => ['teaser_en' => $teaser_en, 'teaser_de' => $teaser_de]]
+            );
+        }
     }
 
 

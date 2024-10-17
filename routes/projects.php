@@ -81,7 +81,7 @@ Route::get('/nagoya', function () {
 
     $nagoya = $osiris->projects->find(
         ['nagoya' => 'yes']
-        )->toArray();
+    )->toArray();
 
     include BASEPATH . "/header.php";
     include BASEPATH . "/pages/nagoya.php";
@@ -442,6 +442,20 @@ Route::post('/crud/projects/update-public/([A-Za-z0-9]*)', function ($id) {
     $values = $_POST['values'];
 
     $values['public'] = boolval($values['public'] ?? false);
+
+    foreach (['public_abstract', 'public_abstract_de', 'public_image', 'teaser_en', 'teaser_de', 'public_subtitle_de', 'public_title_de', 'public_subtitle', 'public_title'] as $key) {
+        if (!isset($values[$key]) || empty($values[$key])) {
+            $values[$key] = null;
+        }
+    }
+
+    if (isset($values['public_abstract']) && !empty($values['public_abstract'])) {
+        $abstract_en = $values['public_abstract'];
+        $abstract_de = $values['public_abstract_de'] ?? $abstract_en;
+
+        $values['teaser_en'] = get_preview($abstract_en);
+        $values['teaser_de'] = get_preview($abstract_de);
+    }
 
     // dump($values, true);
     // die;

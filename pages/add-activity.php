@@ -523,9 +523,9 @@ function val($index, $default = '')
 
 <datalist id="scientist-list">
     <?php
-    foreach ($osiris->persons->find(['last'=>['$ne'=> '']], ['projection'=>['last'=> 1, 'first'=>1], 'sort'=> ['last'=>1]]) as $s) { 
+    foreach ($osiris->persons->find(['last' => ['$ne' => '']], ['projection' => ['last' => 1, 'first' => 1], 'sort' => ['last' => 1]]) as $s) {
         if (empty($s['last'])) continue;
-        ?>
+    ?>
         <option><?= $s['last'] ?>, <?= $s['first'] ?></option>
     <?php } ?>
 </datalist>
@@ -536,7 +536,7 @@ function val($index, $default = '')
     let UPDATE = false;
     let ID = null;
     let COPY = false;
-    let CONFERENCE = '<?=$_GET['conference']??''?>';
+    let CONFERENCE = '<?= $_GET['conference'] ?? '' ?>';
 </script>
 
 <?php if (!empty($form)) {

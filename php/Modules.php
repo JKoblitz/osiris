@@ -1319,7 +1319,7 @@ class Modules
                         <?php
                         $conferences = $this->DB->db->conferences->find(
                             ['start' => ['$lte' => date('Y-m-d', strtotime('today'))]],
-                            ['sort' => ['start' => -1], 'limit' => 3, 'projection' => ['title' => 1]]
+                            ['sort' => ['start' => -1], 'limit' => 5, 'projection' => ['title' => 1]]
                         )->toArray();
                         foreach ($conferences as $c) {
                         ?>

@@ -481,6 +481,8 @@ Route::get('/portfolio/(unit|person)/([^/]*)/projects', function ($context, $id)
             'start' => 1,
             'end' => 1,
             'type' => 1,
+            'teaser_en' => 1,
+            'teaser_de' => 1,
         ]
     ];
 
