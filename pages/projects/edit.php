@@ -50,8 +50,6 @@ function sel($index, $value)
 
 ?>
 
-<style>
-</style>
 <script src="<?= ROOTPATH ?>/js/quill.min.js?v=2"></script>
 
 <div class="container w-600">
@@ -101,12 +99,7 @@ function sel($index, $value)
         <input type="hidden" class="hidden" name="redirect" value="<?= $url ?>">
         <input type="hidden" class="hidden" name="values[type]" value="<?= $type ?>">
 
-
-
-        <div class="box p-20" id="">
-
-
-
+        <div class="box padded" id="">
             <?php if ($type == 'Teilprojekt') { ?>
                 <!-- add parent project info -->
                 <input type="hidden" class="hidden" name="values[parent]" value="<?= $form['parent'] ?>">
