@@ -530,7 +530,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                 ['contact' => $user],
                 ['persons.user' => $user]
             ),
-            "status" => ['$ne' => "rejected"]
+            "status" => ['$in' => ["approved", 'finished']]
         ];
 
         $count_projects = $osiris->projects->count($project_filter);
