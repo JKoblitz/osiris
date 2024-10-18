@@ -66,6 +66,9 @@ if (empty($form) || !isset($form['_id'])) {
             <?php if (empty($form)) { ?>
                 <input type="text" id="id" class="form-control" name="values[id]" required value="<?= uniqid() ?>" placeholder="ID is a required field">
             <label for="id" class="required">ID</label>
+            <small class="text-muted">
+                <?=lang('It it recommended to choose something short you can recognize.', 'Es wird empfohlen, etwas Kurzes, Wiedererkennbares zu nehmen.')?>
+            </small>
             <?php } else { ?>
                 <small class="font-weight-bold">ID:</small><br>
                 <?=$form['id']?>

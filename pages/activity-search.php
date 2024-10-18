@@ -196,7 +196,14 @@ $Format = new Document(true);
                 input: 'select',
                 values: subtypes
             },
-            {
+            <?php if ($Settings->featureEnabled('topics')) { ?> {
+                    id: 'topics',
+                    label: lang('Research Topics', 'Forschungsbereiche'),
+                    type: 'string',
+                    input: 'select',
+                    values: <?= json_encode($osiris->topics->distinct('id')) ?>
+                },
+            <?php } ?> {
                 id: 'title',
                 label: lang('Title', 'Titel'),
                 type: 'string'

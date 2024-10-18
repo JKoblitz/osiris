@@ -18,9 +18,10 @@
 ?>
 
 
-<h3 class="title">
+<h1>
+    <i class="ph ph-puzzle-piece"></i>
     <?= lang('Research Topics', 'Forschungsbereiche') ?>
-</h3>
+</h1>
 
 <a href="<?=ROOTPATH?>/topics/new"><?=lang('Add new topic', 'Neuen Bereich hinzufügen')?></a>
 
