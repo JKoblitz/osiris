@@ -150,7 +150,7 @@ Route::post('/crud/topics/create', function () {
 });
 
 
-Route::post('/crud/topics/add-image/([A-Za-z0-9]*)', function ($id) {
+Route::post('/crud/topics/upload/([A-Za-z0-9]*)', function ($id) {
     include_once BASEPATH . "/php/init.php";
 
     if (!$Settings->hasPermission('topics.edit')) {
@@ -186,11 +186,15 @@ Route::post('/crud/topics/add-image/([A-Za-z0-9]*)', function ($id) {
                 8 => lang('A PHP extension stopped the file upload.', 'Eine PHP-Erweiterung hat den Datei-Upload gestoppt.'),
                 default => lang('Something went wrong.', 'Etwas ist schiefgelaufen.') . " (" . $_FILES['file']['error'] . ")"
             };
-            printMsg($errorMsg, "error");
-        } else if ($filesize > 16000000) {
-            printMsg(lang("File is too big: max 16 MB is allowed.", "Die Datei ist zu groß: maximal 16 MB sind erlaubt."), "error");
+            $_SESSION['msg'] = $errorMsg;
+        } else if ($filesize > 2000000) {
+            $_SESSION['msg'] = lang("File is too big: max 2 MB is allowed.", "Die Datei ist zu groß: maximal 2 MB sind erlaubt.");
         } else if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir . $filename)) {
-            printMsg(lang("The file $filename has been uploaded.", "Die Datei <q>$filename</q> wurde hochgeladen."), "success");
+            $osiris->topics->updateOne(
+                ['_id' => $DB->to_ObjectID($id)],
+                ['$set' => $values]
+            );
+            $_SESSION['msg'] = lang("The file $filename has been uploaded.", "Die Datei <q>$filename</q> wurde hochgeladen.");
         } else {
             $_SESSION['msg'] = lang("Sorry, there was an error uploading your file.", "Entschuldigung, aber es gab einen Fehler beim Dateiupload.");
         }
@@ -205,6 +209,7 @@ Route::post('/crud/topics/add-image/([A-Za-z0-9]*)', function ($id) {
             }
         }
     }
+    header("Location: " . ROOTPATH . "/topics/view/$id");
 });
 
 
