@@ -284,7 +284,7 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         }
         ?>
         
-        <?php foreach ($scientist['roles'] as $role) { ?>
+        <?php foreach (($scientist['roles'] ?? []) as $role) { ?>
             <span class="badge">
                 <?= strtoupper($role) ?>
             </span>
