@@ -64,8 +64,11 @@ $cursor = $osiris->persons->aggregate([
                     <h3 class="title"><?= strtoupper($doc['_id']) ?></h3>
                     <p class="text-muted"><?= $doc['count'] ?> <?= lang('experts found:', 'Expert:innen gefunden:') ?></p>
                     <?php foreach ($doc['users'] as $u) { 
-                        
-                        ?><a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge mr-5 mb-5" <?=$Groups->cssVar($u['depts'][0])?>><?= $u['displayname'] ?></a><?php 
+                        $color = 'bg-light';
+                        if (isset($u['depts'][0])) {
+                            $color = $Groups->cssVar($u['depts'][0]);
+                        }
+                        ?><a href="<?= ROOTPATH ?>/profile/<?= $u['username'] ?>" class="badge mr-5 mb-5" <?=$color?>><?= $u['displayname'] ?></a><?php 
                     } ?>
                 </div>
             </div>
