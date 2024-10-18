@@ -350,17 +350,59 @@ $pageactive = function ($p) use ($page) {
 
                     </nav>
 
-                    <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-data">
-                        <?= lang('Data', 'Daten') ?>
+                    <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-activities">
+                        <?= lang('Activities', 'Aktivitäten') ?>
                     </div>
 
                     <nav>
-
                         <a href="<?= ROOTPATH ?>/activities" class="with-icon <?= $pageactive('activities') ?>">
                             <i class="ph ph-folders" aria-hidden="true"></i>
                             <?= lang('All activities', 'Alle Aktivitäten') ?>
                         </a>
 
+
+                        <a href="<?= ROOTPATH ?>/journal" class="with-icon <?= $pageactive('journal') ?>">
+                            <i class="ph ph-newspaper-clipping" aria-hidden="true"></i>
+                            <?= lang('Journals', 'Journale') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>/conferences" class="with-icon <?= $pageactive('conferences') ?>">
+                            <i class="ph ph-presentation-chart" aria-hidden="true"></i>
+                            <?= lang('Conferences', 'Konferenzen') ?>
+                        </a>
+
+                        <a href="<?= ROOTPATH ?>/teaching" class="with-icon <?= $pageactive('teaching') ?>">
+                            <i class="ph ph-chalkboard-simple" aria-hidden="true"></i>
+                            <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
+                        </a>
+
+                        <?php if ($Settings->featureEnabled('topics')) { ?>
+                            <a href="<?= ROOTPATH ?>/topics" class="with-icon <?= $pageactive('topics') ?>">
+                                <i class="ph ph-puzzle-piece" aria-hidden="true"></i>
+                                <?= lang('Research Topics', 'Forschungsbereiche') ?>
+                            </a>
+                        <?php } ?>
+
+                        <a href="<?= ROOTPATH ?>/tags" class="with-icon <?= $pageactive('tags') ?>">
+                            <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
+                            <?= lang('Tags', 'Schlagwörter') ?>
+                        </a>
+
+                        <?php if ($Settings->featureEnabled('concepts')) { ?>
+                            <a href="<?= ROOTPATH ?>/concepts" class="with-icon <?= $pageactive('concepts') ?>">
+                                <i class="ph ph-lightbulb" aria-hidden="true"></i>
+                                <?= lang('Concepts', 'Konzepte') ?>
+                            </a>
+                        <?php } ?>
+
+                    </nav>
+
+
+                    <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-users">
+                        <?= lang('Users', 'Personen') ?>
+                    </div>
+
+                    <nav>
                         <?php
                         $active =  $pageactive('user/browse');
                         if (empty($active) && !str_contains($uri, "profile/" . $_SESSION['username'])) {
@@ -384,58 +426,31 @@ $pageactive = function ($p) use ($page) {
                             </a>
                         <?php } ?>
 
+                    </nav>
 
 
+                    <?php if ($Settings->featureEnabled('projects')) { ?>
+                        <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-projects">
+                            <?= lang('Projects', 'Projekte') ?>
+                        </div>
 
-                        <a href="<?= ROOTPATH ?>/journal" class="with-icon <?= $pageactive('journal') ?>">
-                            <i class="ph ph-newspaper-clipping" aria-hidden="true"></i>
-                            <?= lang('Journals', 'Journale') ?>
-                        </a>
-
-                        <a href="<?= ROOTPATH ?>/conferences" class="with-icon <?= $pageactive('conferences') ?>">
-                            <i class="ph ph-presentation-chart" aria-hidden="true"></i>
-                            <?= lang('Conferences', 'Konferenzen') ?>
-                        </a>
-
-                        <a href="<?= ROOTPATH ?>/teaching" class="with-icon <?= $pageactive('teaching') ?>">
-                            <i class="ph ph-chalkboard-simple" aria-hidden="true"></i>
-                            <?= lang('Teaching modules', 'Lehrveranstaltungen') ?>
-                        </a>
-                        <?php if ($Settings->featureEnabled('projects')) { ?>
+                        <nav>
                             <a href="<?= ROOTPATH ?>/projects" class="with-icon <?= $pageactive('projects') ?>">
                                 <i class="ph ph-tree-structure" aria-hidden="true"></i>
                                 <?= lang('Projects', 'Projekte') ?>
                             </a>
-                        <?php } ?>
 
-                        <?php if ($Settings->featureEnabled('topics')) { ?>
-                            <a href="<?= ROOTPATH ?>/topics" class="with-icon <?= $pageactive('topics') ?>">
-                                <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
-                                <?= lang('Research Topics', 'Forschungsbereiche') ?>
-                            </a>
-                        <?php } ?>
+                            <?php if ($Settings->featureEnabled('nagoya') && $Settings->hasPermission('nagoya.view')) { ?>
+                                <a href="<?= ROOTPATH ?>/nagoya" class="with-icon <?= $pageactive('nagoya') ?>">
+                                    <i class="ph ph-scales" aria-hidden="true"></i>
+                                    <?= lang('Nagoya Protocol', 'Nagoya-Protokoll') ?>
+                                </a>
+                            <?php } ?>
 
-                        <a href="<?= ROOTPATH ?>/tags" class="with-icon <?= $pageactive('tags') ?>">
-                            <i class="ph ph-circles-three-plus" aria-hidden="true"></i>
-                            <?= lang('Tags', 'Schlagwörter') ?>
-                        </a>
-
-                        <?php if ($Settings->featureEnabled('concepts')) { ?>
-                            <a href="<?= ROOTPATH ?>/concepts" class="with-icon <?= $pageactive('concepts') ?>">
-                                <i class="ph ph-lightbulb" aria-hidden="true"></i>
-                                <?= lang('Concepts', 'Konzepte') ?>
-                            </a>
-                        <?php } ?>
-
-                        <?php if ($Settings->featureEnabled('nagoya') && $Settings->hasPermission('nagoya.view')) { ?>
-                            <a href="<?= ROOTPATH ?>/nagoya" class="with-icon <?= $pageactive('nagoya') ?>">
-                                <i class="ph ph-scales" aria-hidden="true"></i>
-                                <?= lang('Nagoya Protocol', 'Nagoya-Protokoll') ?>
-                            </a>
-                        <?php } ?>
+                        </nav>
+                    <?php } ?>
 
 
-                    </nav>
 
                     <div class="title collapse open" onclick="toggleSidebar(this);" id="sidebar-tools">
                         <?= lang('Tools', 'Werkzeuge') ?>
