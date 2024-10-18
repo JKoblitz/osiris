@@ -232,7 +232,8 @@ Route::get('/api/html', function () {
 
     $result = [];
     $docs = $osiris->activities->find([
-        'type' => 'publication', 'authors.aoi' => ['$in' => [true, 1, '1']],
+        'type' => 'publication',
+        'authors.aoi' => ['$in' => [true, 1, '1']],
         'year' => ['$gte' => 2023]
     ]);
 
@@ -319,7 +320,7 @@ Route::get('/api/all-activities', function () {
 
         // $depts = $Groups->getDeptFromAuthors($doc['authors']??[]);
         $depts = DB::doc2Arr($rendered['depts'] ?? []);
-        
+
         $type = $doc['type'];
         $format_full = $rendered['print'];
         if (($_GET['display_activities'] ?? 'web') == 'web') {
@@ -456,11 +457,11 @@ Route::get('/api/conferences', function () {
     include_once BASEPATH . "/php/Document.php";
 
     $concepts = $osiris->conferences->find(
-        [], 
+        [],
         ['sort' => ['start' => -1]]
     )->toArray();
 
-    foreach ($concepts as $i=> $row) {
+    foreach ($concepts as $i => $row) {
         $concepts[$i]['activities'] = $osiris->activities->count(['conference_id' => strval($row['_id'])]);
         $concepts[$i]['id'] = strval($row['_id']);
     }
@@ -500,11 +501,14 @@ Route::get('/api/users', function () {
     }
     $result = $osiris->persons->find($filter)->toArray();
 
-    if (isset($_GET['table'])) {
+    if (!isset($_GET['full'])) {
         $table = [];
         foreach ($result as $user) {
             $subtitle = "";
-            if (isset($_GET['subtitle'])) {
+            if (isset($user['is_active']) && !$user['is_active']) {
+                $subtitle = '<span class="badge text-danger">'. lang('Former employee', 'Ehemalige Beschäftigte') .'</span>';
+            }
+            elseif (isset($_GET['subtitle'])) {
                 if ($_GET['subtitle'] == 'position') {
                     $subtitle = lang($user['position'] ?? '', $user['position_de'] ?? null);
                 } else {
@@ -516,9 +520,13 @@ Route::get('/api/users', function () {
                     ' . $dept . '
                 </a>';
             }
-            $username = "";
-            if (!isset($_GET['hide_usernames'])) {
-                $username = $user['username'];
+            $topics = '';
+            if ($user['topics'] ?? false) {
+                $topics = '<span class="float-right topic-icons">';
+                foreach ($user['topics'] as $topic) {
+                    $topics .= '<a href="' . ROOTPATH . '/topics/view/' . $topic . '" class="topic-icon topic-' . $topic . '"></a> ';
+                }
+                $topics .= '</span>';
             }
             $table[] = [
                 'id' => strval($user['_id']),
@@ -526,7 +534,7 @@ Route::get('/api/users', function () {
                 'img' => $Settings->printProfilePicture($user['username'], 'profile-img'),
                 'html' =>  "<div class='w-full'>
                     <div style='display: none;'>" . $user['first'] . " " . $user['last'] . "</div>
-                    <span class='float-right text-muted'>" . $username . "</span>
+                    $topics
                     <h5 class='my-0'>
                         <a href='" . $path . "/profile/" . $user['_id'] . "'>
                             " . ($user['academic_title'] ?? '') . " " . $user['first'] . " " . $user['last'] . "
@@ -535,6 +543,7 @@ Route::get('/api/users', function () {
                     <small>
                         " . $subtitle . "
                     </small>
+                    <span class='hidden'>$user[username]</span>
                 </div>",
                 'name' => $user['first'] . " " . $user['last'],
                 'names' => !empty($user['names'] ?? null) ? implode(', ', DB::doc2Arr($user['names'])) : '',
@@ -544,7 +553,8 @@ Route::get('/api/users', function () {
                 'academic_title' => $user['academic_title'],
                 'dept' => $Groups->personDept($user['depts'], 1)['id'],
                 'active' => ($user['is_active'] ?? true) ? 'yes' : 'no',
-                'public_image' => $user['public_image'] ?? true
+                'public_image' => $user['public_image'] ?? true,
+                'topics' => $user['topics'] ?? array()
             ];
         }
         $result = $table;
@@ -877,7 +887,7 @@ Route::get('/api/journals', function () {
             $oa =  $since . $doc['oa'];
         } else {
             $oa =  $yes;
-        } 
+        }
         $result['data'][] = [
             'id' => strval($doc['_id']),
             'name' => $doc['journal'],

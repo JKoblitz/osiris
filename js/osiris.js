@@ -1690,6 +1690,12 @@ function userTable(selector, data = {}) {
                 data: 'names',
                 searchable: true,
                 visible: false
+            },
+            {
+                target: 5,
+                data: 'topics',
+                searchable: true,
+                visible: false
             }
 
         ],
