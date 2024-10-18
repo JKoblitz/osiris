@@ -451,7 +451,8 @@ function val($index, $default = '')
                 <input type="text" class="hidden" id="funding" name="values[funding]" value="">
             <?php } ?>
 
-
+            <!-- if topics are registered, you can choose them here -->
+            <?php $Settings->topicChooser($form['topics'] ?? []) ?>
 
             <?php if (!$copy && (!isset($form['comment']) || empty($form['comment']))) { ?>
                 <div class="form-group">

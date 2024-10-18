@@ -12415,6 +12415,93 @@ a.concept:hover {
   margin-bottom: 1rem;
 }
 
+.topic-icon {
+  width: .8em;
+  height: .8em;
+  display: inline-block;
+  background-color: var(--topic-color);
+  color: white;
+  border-radius: 50%;
+  margin-right: .5rem;
+}
+
+.topic-icons {
+  border: 1px solid var(--border-color);
+  border-radius: 1em;
+  display: flex;
+}
+
+.topic-icons .topic-icon {
+  margin: .25rem;
+}
+
+.topic .title {
+  color: var(--topic-color);
+}
+.pill-checkbox {
+  display: inline-block;
+}
+.pill-checkbox label {
+  display: inline-block;
+  /* background-color: var(--primary-color); */
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: .25rem .5rem;
+  animation: ease .5s;
+}
+
+.pill-checkbox input {
+  display: none;
+}
+
+.pill-checkbox input:checked+label {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.pill-checkbox label::before {
+  content: '\E69A';
+  font-family: 'Phosphor';
+  display: inline-block;
+  margin-right: .5rem;
+}
+
+.pill-checkbox input:checked+label::before {
+  content: '\E182';
+}
+
+/* for showing topics */
+.topic-pill {
+  padding: .25rem .5rem;
+  background: white;
+  display: inline-block;
+  border-radius: var(--border-radius);
+  /* border: 1px solid white; */
+  font-weight: bold;
+  color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  margin-right: .5rem;
+  border: 1px solid var(--primary-color);
+}
+
+.topic-pill::before {
+  /* white circle */
+  content: '';
+  width: .8em;
+  height: .8em;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  margin-right: .5em;
+}
+
+.topic-pill:hover {
+  opacity: 0.8;
+  color: var(--primary-color);
+}
+
+
 /*!
  * Quill Editor v1.3.6
  * https://quilljs.com/

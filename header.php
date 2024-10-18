@@ -405,10 +405,15 @@ $pageactive = function ($p) use ($page) {
                             <a href="<?= ROOTPATH ?>/projects" class="with-icon <?= $pageactive('projects') ?>">
                                 <i class="ph ph-tree-structure" aria-hidden="true"></i>
                                 <?= lang('Projects', 'Projekte') ?>
-                                <!-- <span class="badge ml-10">SOON</span> -->
                             </a>
                         <?php } ?>
 
+                        <?php if ($Settings->featureEnabled('topics')) { ?>
+                            <a href="<?= ROOTPATH ?>/topics" class="with-icon <?= $pageactive('topics') ?>">
+                                <i class="ph ph-chat-circle-dots" aria-hidden="true"></i>
+                                <?= lang('Research Topics', 'Forschungsbereiche') ?>
+                            </a>
+                        <?php } ?>
 
                         <a href="<?= ROOTPATH ?>/tags" class="with-icon <?= $pageactive('tags') ?>">
                             <i class="ph ph-circles-three-plus" aria-hidden="true"></i>

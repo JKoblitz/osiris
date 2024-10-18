@@ -171,6 +171,22 @@
         ]
     },
     {
+        "de": "Research Topics",
+        "en": "Forschungsbereiche",
+        "fields": [
+            {
+                "id": "topics.edit",
+                "de": "Forschungsbereiche hinzufügen und bearbeiten",
+                "en": "Add and edit all topics"
+            },
+            {
+                "id": "topics.delete",
+                "de": "Forschungsbereiche löschen",
+                "en": "Delete topics"
+            }
+        ]
+    },
+    {
         "de": "Organisationseinheiten",
         "en": "Organisational Units",
         "fields": [

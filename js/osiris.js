@@ -880,6 +880,119 @@ function initActivities(selector, data = {}) {
 
 
 
+function initProjects(selector, data = {}) {
+    data['formatted'] = true;
+    $(selector).DataTable({
+        ajax: {
+            url: ROOTPATH + '/api/projects',
+            data: data
+        },
+        type: 'GET',
+        dom: 'frtipP',
+        columns: [{
+                className: 'dt-control',
+                orderable: false,
+                data: null,
+                defaultContent: ''
+            },
+            {
+                data: 'name',
+                render: function(data, type, row) {
+                    return `<a href="${ROOTPATH}/projects/view/${row.id}">${data}</a>`
+                }
+            },
+            {
+                data: 'type',
+                render: function(data) {
+                    if (data == 'Eigenfinanziert') {
+                        return `<span class="badge text-signal">
+                    <i class="ph ph-piggy-bank"></i>&nbsp;${lang('Self-funded', 'Eigenfinanziert')}
+                    </span>`
+                    }
+                    if (data == 'Stipendium') {
+                        return `<span class="badge text-success no-wrap">
+                    <i class="ph ph-tip-jar"></i>&nbsp;${lang('Stipendiate', 'Stipendium')}
+                    </span>`
+                    }
+                    if (data == 'Drittmittel') {
+                    return `<span class="badge text-danger">
+                    <i class="ph ph-hand-coins"></i>&nbsp;${lang('Third-party funded', 'Drittmittel')}
+                    </span>`
+                    }
+                    if (data == 'Teilprojekt') {
+                    return `<span class="badge text-danger">
+                    <i class="ph ph-hand-coins"></i>&nbsp;${lang('Subproject', 'Teilprojekt')}
+                    </span>`
+                    }
+                    else {
+                        return data;
+                    }
+                }
+            },
+            {
+                data: 'funder', render: function(data, type, row) {
+                    if (!data && row.scholarship) return row.scholarship;
+                    return data;
+                }
+            },
+            {
+                data: 'date_range', render: function(data, type, row) {
+                    return `<span class="hidden">${row.start}</span>
+                    ${data}`
+
+                }
+            },
+            {
+                data: 'role', render: function(data) {
+                    if (data == 'coordinator') {
+                        return `<span class="badge text-signal">
+                    <i class="ph ph-crown"></i>
+                    ${lang('Coordinator', 'Koordinator')}
+                    </span>`
+                    }
+                    return `<span class="badge text-muted">
+                    <i class="ph ph-handshake"></i>
+                    ${lang('Partner')}
+                    </span>`
+                }
+            },
+            {
+                data: 'applicant',
+                render: function(data, type, row) {
+                    if (!row.contact && row.supervisor)  
+                        return `<a href="${ROOTPATH}/profile/${row.supervisor}">${data}</a>`;
+                    if (!row.contact) 
+                        return data;
+                    return `<a href="${ROOTPATH}/profile/${row.contact}">${data}</a>`
+                }
+            },
+            {
+                data: 'status',
+                render: function(data) {
+                    console.log(data);
+                    switch (data) {
+                        case 'approved':
+                            return `<span class='badge success'>${lang('approved', 'bewilligt') }</span>`;
+                        case 'finished':
+                            return `<span class='badge success'>${lang('finished', 'abgeschlossen') }</span>`;
+                        case 'applied':
+                            return `<span class='badge signal'>${lang('applied', 'beantragt') }</span>`;
+                        case 'rejected':
+                            return `<span class='badge danger'>${lang('rejected', 'abgelehnt') }</span>`;
+                        case 'expired':
+                            return `<span class='badge dark'>${lang('expired', 'abgelaufen') }</span>`;
+                    }
+                }
+            }
+        ],
+        order: [
+            [4, 'desc']
+        ]
+    });
+}
+
+
+
 function impactfactors(containerID, canvasID, data = {}) {
     $.ajax({
         type: "GET",

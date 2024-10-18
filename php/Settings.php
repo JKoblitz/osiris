@@ -100,7 +100,7 @@ class Settings
         if (empty($user)) return $default;
         if ($this->featureEnabled('db_pictures')) {
             $img = $this->osiris->userImages->findOne(['user' => $user]);
-            
+
             if (empty($img)) {
                 return $default;
             }
@@ -261,6 +261,60 @@ class Settings
             ";
         }
         $style = preg_replace('/\s+/', ' ', $style);
+
+        foreach ($this->osiris->topics->find() as $t) {
+            $style .= "
+            .topic-" . $t['id'] . " {
+                --topic-color: " . $t['color'] . ";
+            }
+            ";
+        }
         return "<style>$style</style>";
+    }
+
+    function topicChooser($selected = [])
+    {
+        if (!$this->featureEnabled('topics')) return '';
+
+        $topics = $this->osiris->topics->find();
+        if (empty($topics)) return '';
+
+        $selected = DB::doc2Arr($selected);
+?>
+        <div class="form-group">
+            <h5 for="topics"><?= lang('Research Topics', 'Forschungsbereiche') ?></h5>
+            <!-- make suire that an empty value is submitted in case no checkbox is ticked -->
+            <input type="hidden" name="values[topics]" value="">
+            <div>
+                <?php
+                foreach ($topics as $topic) {
+                    $checked = in_array($topic['id'], $selected);
+                ?>
+                    <div class="pill-checkbox" style="--primary-color:<?= $topic['color'] ?? 'var(--primary-color)' ?>">
+                        <input type="checkbox" id="topic-<?= $topic['id'] ?>" value="<?= $topic['id'] ?>" name="values[topics][]" <?= $checked ? 'checked' : '' ?>>
+                        <label for="topic-<?= $topic['id'] ?>">
+                            <?= lang($topic['name'], $topic['name_de'] ?? null) ?>
+                        </label>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+<?php }
+
+    function printTopics($topics, $class = "", $header = false)
+    {
+        if (!$this->featureEnabled('topics')) return '';
+        if (empty($topics)) return '';
+
+        $topics = $this->osiris->topics->find(['id' => ['$in' => $topics]]);
+        $html = '<div class="topics ' . $class . '">';
+        if ($header) {
+            $html .= '<h5 class="m-0">' . lang('Research Topics', 'Forschungsbereiche') . '</h5>';
+        }
+        foreach ($topics as $topic) {
+            $html .= "<a class='topic-pill' href='" . ROOTPATH . "/topics/view/$topic[_id]' style='--primary-color:$topic[color]'>" . lang($topic['name'], $topic['name_de'] ?? null) . "</a>";
+        }
+        $html .= '</div>';
+        return $html;
     }
 }

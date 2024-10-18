@@ -250,6 +250,10 @@ if (isset($_GET['msg']) && $_GET['msg'] == 'add-success') { ?>
 </div>
 
 
+<!-- show research topics -->
+ <?= $Settings->printTopics($doc['topics'] ?? []) ?>
+
+
 <?php if ($Settings->featureEnabled('portal') && ($user_activity || $Settings->hasPermission('activities.edit'))) {
     $highlights = DB::doc2Arr($USER['highlighted'] ?? []);
     $highlighted = in_array($id, $highlights);

@@ -104,6 +104,8 @@ $institute = $Settings->get('affiliation_details');
     </h2>
 
 
+<!-- show research topics -->
+<?= $Settings->printTopics($project['topics'] ?? [], 'mb-20', true) ?>
 
     <div class="d-flex">
 

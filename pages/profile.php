@@ -222,8 +222,8 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
                     <i class="ph ph-globe-x m-0"></i>
                 </small>
             <?php } ?>
-
         </h5>
+
 
         <style>
             .dept-list {
@@ -283,17 +283,11 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
         <?php }
         }
         ?>
-
-
-        <?php if ($showcoins) { ?>
-            <p class="lead m-0">
-                <i class="ph ph-lg ph-coin text-signal"></i>
-                <b id="lom-points"><?= $coins ?></b>
-                Coins
-                <a href='#coins' class="text-muted">
-                    <i class="ph ph-question text-muted"></i>
-                </a>
-            </p>
+        
+        <?php foreach ($scientist['roles'] as $role) { ?>
+            <span class="badge">
+                <?= strtoupper($role) ?>
+            </span>
         <?php } ?>
 
     </div>
@@ -309,16 +303,25 @@ if ($currentuser || $Settings->hasPermission('user.image')) { ?>
             ?>
         <?php
         } ?>
-
-        <?php foreach ($scientist['roles'] as $role) { ?>
-            <span class="badge">
-                <?= strtoupper($role) ?>
-            </span>
+        
+        <?php if ($showcoins) { ?>
+            <p class="lead m-0">
+                <i class="ph ph-lg ph-coin text-signal"></i>
+                <b id="lom-points"><?= $coins ?></b>
+                Coins
+                <a href='#coins' class="text-muted">
+                    <i class="ph ph-question text-muted"></i>
+                </a>
+            </p>
         <?php } ?>
     </div>
 </div>
 
 
+<!-- show research topics -->
+<div class="my-20">
+<?= $Settings->printTopics($scientist['topics'] ?? []) ?>
+</div>
 
 <?php if ($currentuser) { ?>
 

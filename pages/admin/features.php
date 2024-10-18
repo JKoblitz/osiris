@@ -323,6 +323,33 @@
 
     </div>
 
+    
+    <div class="box px-20">
+        <h3>
+            <?= lang('Research Topics', 'Forschungsbereiche') ?>
+        </h3>
+        <div class="form-group">
+            <label for="">
+                <?= lang('Research Topics in OSIRIS', 'Forschungsbereiche in OSIRIS') ?>
+            </label>
+            <?php
+            $topics = $Settings->featureEnabled('topics');
+            ?>
+
+            <div class="custom-radio">
+                <input type="radio" id="topics-true" value="1" name="values[topics]" <?= $topics ? 'checked' : '' ?>>
+                <label for="topics-true"><?= lang('enabled', 'aktiviert') ?></label>
+            </div>
+
+            <div class="custom-radio">
+                <input type="radio" id="topics-false" value="0" name="values[topics]" <?= $topics ? '' : 'checked' ?>>
+                <label for="topics-false"><?= lang('disabled', 'deaktiviert') ?></label>
+            </div>
+
+        </div>
+
+    </div>
+
 
     <div class="box px-20">
         <h3>

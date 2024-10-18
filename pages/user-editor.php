@@ -173,6 +173,10 @@
                 </div>
             </div>
         </div>
+
+        <!-- if topics are registered, you can choose them here -->
+        <?php $Settings->topicChooser($data['topics'] ?? []) ?>
+
     </fieldset>
 
     <?php if ($Settings->featureEnabled('portal')) { ?>
@@ -186,8 +190,10 @@
                     <label for="hide"><?= lang('Hide profile in Portfolio', 'Profil nicht im Portfolio zeigen') ?></label>
                 </div>
                 <small class="text-danger">
-                    <?= lang('By hiding your profile, you prevent OSIRIS Portfolio from displaying your profile to the public. You can revoke this at any time by unticking the checkbox again.', 
-                    'Indem du dein Profil versteckst, verhinderst du, dass OSIRIS Portfolio dein Profil öffentlich zeigt. Du kannst dies jederzeit wieder rückgängig machen, indem du das Häkchen wieder entfernst.') ?>
+                    <?= lang(
+                        'By hiding your profile, you prevent OSIRIS Portfolio from displaying your profile to the public. You can revoke this at any time by unticking the checkbox again.',
+                        'Indem du dein Profil versteckst, verhinderst du, dass OSIRIS Portfolio dein Profil öffentlich zeigt. Du kannst dies jederzeit wieder rückgängig machen, indem du das Häkchen wieder entfernst.'
+                    ) ?>
                 </small>
             </div>
 

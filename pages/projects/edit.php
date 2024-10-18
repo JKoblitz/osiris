@@ -749,6 +749,9 @@ function sel($index, $value)
                 <?php } ?>
             <?php } ?>
 
+             <!-- if topics are registered, you can choose them here -->
+        <?php $Settings->topicChooser(DB::doc2Arr($form['topics'] ?? [])) ?>
+
             <button class="btn secondary" type="submit" id="submit-btn">
                 <i class="ph ph-check"></i> <?= lang("Save", "Speichern") ?>
             </button>

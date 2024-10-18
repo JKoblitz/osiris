@@ -374,6 +374,7 @@ Route::get('/api/all-activities', function () {
             'year' => $doc['year'] ?? 0,
             'authors' => $rendered['authors'] ?? '',
             'title' => $rendered['title'] ?? '',
+            'topics' => $doc['topics'] ?? []
         ];
 
         if ($active) {

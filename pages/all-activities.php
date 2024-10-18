@@ -87,6 +87,7 @@ $user = $user ?? $_SESSION['username'];
                     <th><?= lang('Title', 'Titel') ?></th>
                     <th><?= lang('Authors', 'Autoren') ?></th>
                     <th><?= lang('Year', 'Jahr') ?></th>
+                    <th><?= lang('Research Topics', 'Forschungsbereiche') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -164,6 +165,29 @@ $user = $user ?? $_SESSION['username'];
                 </div>
                 <input type="date" name="to" id="filter-to" class="form-control">
             </div>
+
+            <?php if ($Settings->featureEnabled('topics')) { ?>
+                <h6><?= lang('Research Topics', 'Forschungsbereiche') ?></h6>
+
+                <div class="filter">
+                    <table id="filter-type" class="table small simple">
+                        <?php foreach ($osiris->topics->find([], ['sort' => ['order' => 1]]) as $a) {
+                            $id = $a['id'];
+                        ?>
+                            <tr style="--highlight-color:  <?= $a['color'] ?>;">
+                                <td>
+                                    <a data-type="<?= $id ?>" onclick="filterActivities(this, '<?= $id ?>', 14)" class="item" id="<?= $id ?>-btn">
+                                        <span style="color: var(--highlight-color)">
+                                            <?= lang($a['name'], $a['name_en'] ?? null) ?>
+                                        </span>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </table>
+
+                </div>
+            <?php } ?>
 
 
             <h6><?= lang('More', 'Weiteres') ?></h6>
@@ -247,6 +271,10 @@ $user = $user ?? $_SESSION['username'];
             title: lang('Year', 'Jahr'),
             'key': 'year'
         },
+        {
+            title: lang('Research topics', 'Forschungsbereiche'),
+            'key': 'topics'
+        }
     ]
 
     $(document).ready(function() {
@@ -313,7 +341,7 @@ $user = $user ?? $_SESSION['username'];
                     data: "quarter",
                     searchPanes: {
                         show: false
-                    },
+                    }
                 },
                 {
                     targets: 1,
@@ -322,6 +350,17 @@ $user = $user ?? $_SESSION['username'];
                 {
                     targets: 2,
                     data: 'activity',
+                    render: function(data, type, row) {
+                        var text = data;
+                        if (row.topics && row.topics.length > 0) {
+                            text = '<span class="float-right topic-icons">'
+                            row.topics.forEach(function(topic) {
+                                text += `<a href="<?= ROOTPATH ?>/topics/view/${topic}" class="topic-icon topic-${topic}"></a> `
+                            })
+                            text += '</span>'+data
+                        }
+                        return text;
+                    }
                 },
                 {
                     targets: 3,
@@ -418,6 +457,17 @@ $user = $user ?? $_SESSION['username'];
                     //     header: lang('Year', 'Jahr')
                     // },
                 },
+                {
+                    targets: 14,
+                    data: 'topics',
+                    searchable: true,
+                    visible: false,
+                    render: function(data, type, row) {
+                        return data.join(', ')
+                        return `<a href="<?= ROOTPATH ?>/topics/view/${row.topics}">${data}</a>`
+                    }
+
+                }
             ],
             "order": [
                 [5, 'desc'],
